@@ -398,13 +398,17 @@ public static class Interactions
     /// Selects <paramref name="item"/>, as tapping its row does: SelectedItem (single) or SelectedItems
     /// (multiple), SelectionChanged and SelectionChangedCommand.
     /// </summary>
-    /// <exception cref="ElementNotInteractableException">Selection is off, or the item is not in ItemsSource.</exception>
+    /// <exception cref="ElementNotInteractableException">
+    /// Selection is off, or the item is not in ItemsSource (in one of its groups, for a grouped list).
+    /// </exception>
     public static TView Select<TView>(this TView view, object item) where TView : SelectableItemsView
     {
         if (view.SelectionMode == SelectionMode.None)
             throw new ElementNotInteractableException($"Cannot select in {Name(view)}: its SelectionMode is None.");
-        if (view.ItemsSource is not { } source || IndexOf(source, item) < 0)
-            throw new ElementNotInteractableException($"Cannot select '{item}' in {Name(view)}: it is not in ItemsSource.");
+        if (view.ItemsSource is not { } source || !Holds(view, source, item))
+            throw new ElementNotInteractableException(view is GroupableItemsView { IsGrouped: true }
+                ? $"Cannot select '{item}' in {Name(view)}: it is in none of the groups in ItemsSource."
+                : $"Cannot select '{item}' in {Name(view)}: it is not in ItemsSource.");
 
         Act(view, "select in", () =>
         {
@@ -520,6 +524,12 @@ public static class Interactions
         if (input.IsReadOnly)
             throw new ElementNotInteractableException($"Cannot {verb} {Name(input)}: it is read-only.", InteractionRefusal.ReadOnly);
     }
+
+    // A grouped list's ItemsSource holds the groups, and its items are in them.
+    private static bool Holds(SelectableItemsView view, IEnumerable source, object item)
+        => view is GroupableItemsView { IsGrouped: true }
+            ? source.Cast<object?>().OfType<IEnumerable>().Any(group => IndexOf(group, item) >= 0)
+            : IndexOf(source, item) >= 0;
 
     private static int IndexOf(IEnumerable source, object item)
     {

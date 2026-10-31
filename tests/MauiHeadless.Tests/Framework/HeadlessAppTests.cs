@@ -89,6 +89,27 @@ public sealed class HeadlessAppTests
         Assert.Equal(["Fruit", "Apple", "Pear", "Veg", "Leek"], texts);
     }
 
+    [Fact]
+    public void Select_finds_an_item_inside_a_group_of_a_grouped_list()
+    {
+        using var ctx = new MauiTestContext();
+        var list = new CollectionView
+        {
+            IsGrouped = true,
+            SelectionMode = SelectionMode.Single,
+            ItemsSource = new[] { new Group("Fruit", ["Apple", "Pear"]), new Group("Veg", ["Leek"]) },
+            GroupHeaderTemplate = new DataTemplate(() => Bound(nameof(Group.Name))),
+            ItemTemplate = new DataTemplate(() => Bound(".")),
+        };
+        ctx.Render(new ContentPage { Content = list });
+
+        list.Select("Leek");
+
+        Assert.Equal("Leek", list.SelectedItem);
+        var refused = Assert.Throws<ElementNotInteractableException>(() => list.Select("Kale"));
+        Assert.Contains("none of the groups", refused.Message, StringComparison.Ordinal);
+    }
+
 #pragma warning disable CS0618 // ListView is obsolete, but apps still show it.
     [Fact]
     public void A_ListView_cell_tap_raises_ItemTapped()
