@@ -1,0 +1,4 @@
+# Findings gitleaks may skip, by fingerprint (AD-033): each a placeholder, not a secret.
+# The "hardcoded secret" counter-example in the best-practices guide, and its archived copy.
+40553e153543135b40d7aa7291e4d08ea760971d:Archive/docs/UITests/21d16_BestPractices.md:generic-api-key:290
+bf23b9ec6f3b7772d36977d758b75422e445a6fd:docs/12-best-practices.md:generic-api-key:297
