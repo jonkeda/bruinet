@@ -53,28 +53,28 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
     public bool WaitTextStartsWith(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
-           element => GetTextCore(element)?.StartsWith(expected!) == true,
+           element => GetTextCore(element)?.StartsWith(expected!, StringComparison.Ordinal) == true,
            timeoutMs);
     }
 
     public TScope AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
-           element => GetTextCore(element), (actual, expected1) => (actual?.StartsWith(expected1!) == true),
+           element => GetTextCore(element), (actual, expected1) => (actual?.StartsWith(expected1!, StringComparison.Ordinal) == true),
            message ?? $"Expected TextStartsWith to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
     public bool WaitTextEndsWith(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
-           element => GetTextCore(element)?.EndsWith(expected!) == true,
+           element => GetTextCore(element)?.EndsWith(expected!, StringComparison.Ordinal) == true,
            timeoutMs);
     }
 
     public TScope AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
-           element => GetTextCore(element), (actual, expected1) => (actual?.EndsWith(expected1!) == true),
+           element => GetTextCore(element), (actual, expected1) => (actual?.EndsWith(expected1!, StringComparison.Ordinal) == true),
            message ?? $"Expected TextEndsWith to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 

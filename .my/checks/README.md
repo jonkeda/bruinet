@@ -55,6 +55,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 7 | Public API | built 2026-11-01 (AD-033): 31 libraries declared (about 9,600 lines, all unshipped until the first release); package validation on pack; update-public-api.ps1 for the loop |
 | 8 | Architecture tests | built 2026-11-01 (AD-033): six invariants in Bruinet.Core.Tests; found the Presenter's Uat names (renamed to Bdd) |
 | 9 | Mutation testing | built 2026-11-01 (AD-033): mutate.ps1, Stryker on changed files of five libraries; a report until the scores rise (Core 24% whole; today's touched files 14-41%) |
+| 10 | Approval tests | built 2026-11-01 (AD-033): every .gen.cs against its .tpl.cs; found five stale (two from today's generator change, three missing the IControlHost the templates declare), regenerated |
 
 ## How teams arrange them
 

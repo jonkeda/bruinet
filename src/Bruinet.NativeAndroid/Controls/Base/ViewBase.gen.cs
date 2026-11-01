@@ -2,6 +2,7 @@ using Bruinet.Core.Calls;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Interfaces;
 using Bruinet.Core.Locators;
+using Bruinet.Core.Scopes;
 using Bruinet.Core.Utilities;
 using Bruinet.NativeAndroid.Interfaces;
 using System.Runtime.CompilerServices;
@@ -20,7 +21,7 @@ namespace Bruinet.NativeAndroid.Controls;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 
-public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TScope>
+public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TScope>, IControlHost<INativeAndroidElement>
     where TScope : INativeAndroidScope<TScope>
 {
     #region SendKeys

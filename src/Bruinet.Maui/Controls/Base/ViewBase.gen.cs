@@ -16,7 +16,7 @@ namespace Bruinet.Maui.Controls.Base;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent method chaining.</typeparam>
 
-public abstract partial class ViewBase<TScope> : IElementObject<TScope>
+public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IControlHost<IMauiElement>
     where TScope : IMauiScope<TScope>
 {
     #region Visible (IsVisible / WaitVisible / AssertVisible)
