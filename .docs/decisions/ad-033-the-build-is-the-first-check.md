@@ -12,6 +12,7 @@ and `src/`'s `Directory.Build.props` import it. Frainet stands alone and is left
 | **Machine output is invariant** | What Bruinet writes, compares or types uses `CultureInfo.InvariantCulture` and ordinal comparison; only text a person reads in a sample app uses the current culture. |
 | **The UI suites' forbidden APIs are banned** | Projects named `*UITests*` or `*.Uat` get `BannedSymbols.UiTests.txt` (RS0030): sleeps and delays, the contexts' `Driver`, `AppElement`, `Find*`, `ContainerRoot` and `TryGetItemRoot`, each with what to use instead. `.editorconfig` exempts by path only what forbidden-apis.md already exempts: library code, the driver and bridge framework tests, fixtures and their host loops, row plumbing, and the named known debt. |
 | **Whitespace is checked, line ends are not** | `dotnet format whitespace Bruinet.sln --verify-no-changes` runs in CI after the build; run it without `--verify-no-changes` to fix. `.editorconfig` sets no `end_of_line`: git sets line ends on checkout, so a check of them fails on another OS. |
+| **A known vulnerability fails the restore** | `NuGetAuditMode` all at level low, transitive packages too. An accepted advisory is a `NuGetAuditSuppress` by its URL with the reason beside it, never `NoWarn` on NU190x. Every package comes from nuget.org through `packageSourceMapping`; versions are central. Dependabot proposes updates weekly. No lock files: the MAUI and Android workloads make them change with the SDK, and central versions already pin what Bruinet asks for. |
 | **A one-off exception is a pragma with its reason** | `#pragma warning disable` around the line, with a comment saying why: an ADO.NET contract, a secret kept out of a message, a fixture's extension point. |
 
 **Why:** with coding agents writing much of the code, the cheapest check is the one that runs on
@@ -26,7 +27,7 @@ fixed, so the build starts clean. Evidence: [.my/checks](../../.my/checks/README
 - Roslynator and SonarAnalyzer beside Meziantou: more overlap than new findings for now.
 
 **Broken when:**
-- a project sets `TreatWarningsAsErrors` to false, or adds an analyzer rule to `NoWarn` instead of the globalconfig;
+- a project sets `TreatWarningsAsErrors` to false, or adds an analyzer rule or an NU190x warning to `NoWarn`;
 - a rule is turned off without a reason on its line;
 - a UI test file is added to the RS0030 exemptions to make it build, rather than given the control member it lacks;
 - generated code (`.gen.cs`) is fixed by hand instead of in the generator.

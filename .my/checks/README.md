@@ -49,6 +49,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 1 | Analyzers as errors | built 2026-11-01 (AD-033): every project clean; about 600 findings fixed, the rest's rules off with why |
 | 2 | Banned APIs | built 2026-11-01 (AD-033): the UI and UAT suites; 74 existing uses all in paths forbidden-apis.md exempts, so exempted by path |
 | 3 | Format | built 2026-11-01 (AD-033): applied once to 308 files, whitespace only; verified in CI |
+| 4 | Supply chain | built 2026-11-01 (AD-033): audit of every package at level low; two blanket suppressions replaced (Mocking's was stale, Stride's now four advisories by URL); source mapping to nuget.org; Dependabot weekly; no lock files (why in AD-033) |
 
 ## How teams arrange them
 

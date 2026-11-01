@@ -7,9 +7,17 @@
     <Nullable>enable</Nullable>
     <RootNamespace>Bruinet.Samples.Stride.App</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- Suppress transitive vulnerability warnings from Stride.CommunityToolkit packages. -->
-    <NoWarn>$(NoWarn);NU1901;NU1903</NoWarn>
   </PropertyGroup>
+
+  <!-- Known advisories in Stride's own asset-build tools (MSBuild, NuGet, SSH.NET), pulled in by
+       Stride.Engine; the sample app ships nowhere. Each one by name, so a new advisory still fails
+       the restore (AD-033). -->
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-h4j7-5rxr-p4wc" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-g4vj-cjjj-v7hg" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-mggc-4xg6-vcxf" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-q939-rpr3-3284" />
+  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>$(DefineConstants);AUTOMATION_ENABLED</DefineConstants>

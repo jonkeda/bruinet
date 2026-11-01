@@ -6,8 +6,6 @@
     <Description>API mocking infrastructure for UI tests. Provides WireMock-based mock servers for simulating backend services during testing.</Description>
     <PackageId>Bruinet.Mocking</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <!-- Suppress WireMock transitive dependency vulnerability (System.Linq.Dynamic.Core) -->
-    <NoWarn>$(NoWarn);NU1902;NU1903</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
