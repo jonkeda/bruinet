@@ -746,6 +746,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on Windows ran in under 2 minutes instead of 3.
 
 ### Fixed
+- Bruinet.Blazor's `NavMenuControl` named the first item as the active one whatever was active: with its
+  default item selector (a list, `a, .nav-link, [role='menuitem']`) the active state joined only the last
+  part, so every link matched. Found by C4's tests of Blazor's own controls on bUnit and in Chromium.
 - Two transitive packages pinned past their security advisories, so the solution restores again:
   `System.Security.Cryptography.Pkcs` 9.0.21 in the Stride sample (from Stride's toolkit,
   GHSA-2fmv-rv2c-59x7) and `MessagePack` 2.5.303 in `Bruinet.Cli` (from StreamJsonRpc,

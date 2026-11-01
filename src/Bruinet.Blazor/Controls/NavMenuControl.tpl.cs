@@ -43,8 +43,10 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     /// <param name="element">The pre-found element.</param>
     protected virtual string? GetActiveItemCore(IHtmlElement element)
     {
-        var active = element.FindElements(Locator.ByCss(
-            $"{_itemSelector}.active, {_itemSelector}[aria-current='page'], {_itemSelector}[aria-current='true']"));
+        // Each part of a selector list gets the state: "a, .nav-link" is "a.active, .nav-link.active", not "a, .nav-link.active".
+        var parts = _itemSelector.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var active = element.FindElements(Locator.ByCss(string.Join(", ",
+            parts.SelectMany(part => new[] { $"{part}.active", $"{part}[aria-current='page']", $"{part}[aria-current='true']" }))));
         return active.Count > 0 ? active[0].Text?.Trim() : null;
     }
 

@@ -26,3 +26,5 @@ public sealed class ChromiumRangeInputContract : HtmlRangeInputBinding<ChromiumH
 public sealed class ChromiumSelectContract : HtmlSelectBinding<ChromiumHead>;
 
 public sealed class ChromiumRadioGroupContract : HtmlRadioGroupBinding<ChromiumHead>;
+
+public sealed class ChromiumBlazorControls : BlazorControlsBinding<ChromiumHead>;

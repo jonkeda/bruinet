@@ -1,0 +1,25 @@
+@page "/blazor"
+@* Bruinet.Blazor's own controls (.my/coverage/plan.md, C4): an image, a nav menu whose clicked item becomes
+   active, an iframe with a button, a field and a text inside, and an audio element over a two-second silence
+   the site serves (media/tone.wav). *@
+<img data-testid="image" alt="A red square" title="Red"
+     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAIAAAASFvFNAAAAEElEQVR4nGP4z8AAQQxwFgBB0gX7h/C5SAAAAABJRU5ErkJggg==" />
+
+<nav data-testid="menu">
+    @foreach (var item in Items)
+    {
+        <a href="#@item.ToLowerInvariant()" class="@(item == active ? "active" : null)"
+           @onclick="() => active = item" @onclick:preventDefault>@item</a>
+    }
+</nav>
+
+<iframe data-testid="frame" name="inner" title="Inside"
+        srcdoc="<button id='go' onclick=&quot;document.getElementById('said').textContent='gone'&quot;>Go</button><input id='field' /><span id='said'>waiting</span>"></iframe>
+
+@* With controls: an audio element without them is not shown, and Bruinet acts on what is shown. *@
+<audio data-testid="audio" src="media/tone.wav" preload="auto" muted controls></audio>
+
+@code {
+    private static readonly string[] Items = ["Apple", "Banana", "Cherry"];
+    private string active = "Apple";
+}

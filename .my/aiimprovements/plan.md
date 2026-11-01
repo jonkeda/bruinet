@@ -235,7 +235,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI18 | open | | |
 | AI19 | open | | |
 | AI20 | open | | |
-| C4 | open | | |
+| C4 | done | (this commit) | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
 | C5 | open | | |
 | C6 | open | | |
 | C7 | open | | |

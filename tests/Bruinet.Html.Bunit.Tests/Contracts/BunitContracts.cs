@@ -64,3 +64,20 @@ public sealed class BunitRangeInputContract : HtmlRangeInputBinding<BunitHead>;
 public sealed class BunitSelectContract : HtmlSelectBinding<BunitHead>;
 
 public sealed class BunitRadioGroupContract : HtmlRadioGroupBinding<BunitHead>;
+
+public sealed class BunitBlazorControls : BlazorControlsBinding<BunitHead>
+{
+    private const string NoScript = "bUnit has no script or layout: an image's size, a frame's document, media; Chromium runs it (C4).";
+
+    [Fact(Skip = NoScript)]
+    public override void Image_Loaded_WithItsOwnSize() => base.Image_Loaded_WithItsOwnSize();
+
+    [Fact(Skip = NoScript)]
+    public override void IFrame_ReadsFillsAndClicksInside() => base.IFrame_ReadsFillsAndClicksInside();
+
+    [Fact(Skip = NoScript)]
+    public override void Audio_PlaysPausesAndSeeks() => base.Audio_PlaysPausesAndSeeks();
+
+    [Fact(Skip = NoScript)]
+    public override void Audio_VolumeAndMute() => base.Audio_VolumeAndMute();
+}
