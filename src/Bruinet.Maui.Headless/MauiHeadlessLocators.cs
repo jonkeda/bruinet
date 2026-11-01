@@ -67,6 +67,7 @@ internal static class MauiHeadlessLocators
         ["slider"] = [typeof(Slider)],
         ["progressbar"] = [typeof(ProgressBar)],
         ["tabitem"] = [typeof(ShellSection)],
+        ["list"] = [typeof(ItemsView)],
     };
 
     // "Button" names Button and every type derived from it, as a platform's class name names the control.
