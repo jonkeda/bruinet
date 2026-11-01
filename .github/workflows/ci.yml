@@ -70,13 +70,19 @@ jobs:
       - name: Format
         run: dotnet format whitespace Bruinet.sln --verify-no-changes --no-restore -v:minimal
 
-      # Unit tests only. The *.UITests projects (UI tests and UAT suites) launch real apps and
-      # stay local; see AGENTS.md "Match the test scope to the change". The MAUI ones also run in
-      # memory, below. The project list is the script's; it also measures coverage, a report in the
-      # run's summary and the coverage-report artifact, never a gate (AD-033).
-      - name: Unit tests
+      # Chromium for the Category=Browser tests and the Html and Blazor UI suites, headless.
+      - name: Install Chromium
         shell: pwsh
-        run: ./tools/Scripts/coverage.ps1 -NoBuild -Results TestResults/ci
+        run: ./tests/Bruinet.Html.UITests/bin/Debug/net10.0/playwright.ps1 install chromium
+
+      # The unit tests, the MAUI UI and UAT suites on the MauiHeadless head (AD-032: the apps in the
+      # test process, no window; the device tests skip with their reason) and the browser suites.
+      # The Wpf and WinForms suites need a desktop and stay local; see AGENTS.md "Match the test
+      # scope to the change". The script also measures coverage: a report in the run's summary and
+      # the coverage-report artifact, never a gate (AD-033).
+      - name: Tests and coverage
+        shell: pwsh
+        run: ./tools/Scripts/coverage.ps1 -Headless -Browser -NoBuild -Results TestResults/ci
 
       - name: Upload coverage report
         if: always()
@@ -85,15 +91,6 @@ jobs:
           name: coverage-report
           path: TestResults/ci/report
           if-no-files-found: warn
-
-      # The MAUI UI and UAT suites on the MauiHeadless head (AD-032): the apps rendered in the test
-      # process, no app launched, no window. The device tests skip with their reason.
-      - name: MAUI suites on MauiHeadless
-        if: always()
-        shell: pwsh
-        env:
-          BRUINET_HEAD: headless
-        run: ./tools/Scripts/test-maui-headless.ps1 -NoBuild -Results TestResults/ci
 
       - name: Upload test results
         if: always()

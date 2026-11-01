@@ -17,12 +17,16 @@
 .PARAMETER NoBuild
     Use the existing build (dotnet test --no-build), as CI does after building the solution.
 
+.PARAMETER Coverage
+    Also collect code coverage (coverage.runsettings) into Results, for coverage.ps1 -Headless.
+
 .EXAMPLE
     ./tools/Scripts/test-maui-headless.ps1
 #>
 param(
     [string] $Results = 'TestResults/headless',
-    [switch] $NoBuild
+    [switch] $NoBuild,
+    [switch] $Coverage
 )
 
 $ErrorActionPreference = 'Stop'
@@ -41,6 +45,7 @@ foreach ($project in $projects) {
     $arguments = @('test', (Join-Path $root $project), '-v:minimal',
         '--logger', "trx;LogFileName=$name.headless.trx", '--results-directory', $Results)
     if ($NoBuild) { $arguments += '--no-build' }
+    if ($Coverage) { $arguments += '--collect', 'XPlat Code Coverage', '--settings', (Join-Path $root 'coverage.runsettings') }
 
     dotnet @arguments
     if ($LASTEXITCODE -ne 0) { $failed += $name }
