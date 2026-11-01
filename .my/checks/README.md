@@ -59,6 +59,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 11 | Complexity | built 2026-11-01 (AD-033): CA1502 at 25 and CA1505 as errors; 17 existing methods (26 to 58) marked known debt; duplication not checked |
 | 12 | Property-based tests | built 2026-11-01 (AD-033): CsCheck in Bruinet.Bdd.Tests, the step-value reader and writer round trip under nl-NL; a culture bug planted in the writer fails it |
 | 13 | Independent review | dropped 2026-11-01 |
+| 14 | Coverage report | built 2026-11-01 (AD-033): coverage.ps1 and CI's unit test step, a report with no threshold; coverlet was referenced by every test project but never collected |
 
 ## How teams arrange them
 

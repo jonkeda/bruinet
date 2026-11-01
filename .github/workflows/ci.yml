@@ -72,33 +72,19 @@ jobs:
 
       # Unit tests only. The *.UITests projects (UI tests and UAT suites) launch real apps and
       # stay local; see AGENTS.md "Match the test scope to the change". The MAUI ones also run in
-      # memory, below.
+      # memory, below. The project list is the script's; it also measures coverage, a report in the
+      # run's summary and the coverage-report artifact, never a gate (AD-033).
       - name: Unit tests
         shell: pwsh
-        run: |
-          $projects = @(
-            'Bruinet.Core.Tests',
-            'Bruinet.Maui.Tests',
-            'Bruinet.Wpf.Tests',
-            'Bruinet.WinForms.Tests',
-            'Bruinet.Blazor.Tests',
-            'Bruinet.Html.Tests',
-            'Bruinet.Stride.Automation.Tests',
-            'Bruinet.Mocking.Tests',
-            'Bruinet.Uat.Tests',
-            'Bruinet.TestData.Tests',
-            'Bruinet.Appium.Tests',
-            'Bruinet.NativeAndroid.Tests',
-            'Bruinet.Cli.Tests'
-          )
-          $failed = @()
-          foreach ($p in $projects) {
-            # Category=Browser drives Chromium against a local site; not installed here.
-            dotnet test "tests/$p/$p.csproj" --no-build -v:minimal --filter "Category!=Browser" `
-              --logger "trx;LogFileName=$p.trx" --results-directory TestResults/ci
-            if ($LASTEXITCODE -ne 0) { $failed += $p }
-          }
-          if ($failed) { Write-Error "Failed: $($failed -join ', ')"; exit 1 }
+        run: ./tools/Scripts/coverage.ps1 -NoBuild -Results TestResults/ci
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: TestResults/ci/report
+          if-no-files-found: warn
 
       # The MAUI UI and UAT suites on the MauiHeadless head (AD-032): the apps rendered in the test
       # process, no app launched, no window. The device tests skip with their reason.
