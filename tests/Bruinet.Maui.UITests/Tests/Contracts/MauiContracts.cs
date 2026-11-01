@@ -4,12 +4,14 @@ using Bruinet.Maui.UITests.Pages;
 
 namespace Bruinet.Maui.UITests.Tests.Contracts;
 
-// The control contracts on Bruinet.Maui's controls (.my/coverage/plan.md, C5), on the sample app's pages: each
-// test opens its page afresh, so the controls start as the page's view model sets them. Run on any MAUI head;
-// MauiHeadless is the one CI runs. A test a head cannot keep is overridden with Skip and why.
+// The control contracts on Bruinet.Maui's controls, on the sample app's pages: each test opens its page afresh, so
+// the controls start as the page's view model sets them. Run on MauiHeadless only so far: a run on Windows and
+// Android is still to say which tests those heads keep (a slider's step may differ); --filter "Head!=MauiHeadless"
+// leaves them out of a device run until then.
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiSliderContract : RangeContract<RangeTestPage>
 {
     private readonly RangeTestPage _page;
@@ -30,6 +32,7 @@ public sealed class MauiSliderContract : RangeContract<RangeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiStepperContract : RangeContract<RangeTestPage>
 {
     private readonly RangeTestPage _page;
@@ -50,6 +53,7 @@ public sealed class MauiStepperContract : RangeContract<RangeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiCheckBoxContract : ToggleContract<ToggleTestPage>
 {
     private readonly ToggleTestPage _page;
@@ -67,6 +71,7 @@ public sealed class MauiCheckBoxContract : ToggleContract<ToggleTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiSwitchContract : ToggleContract<ToggleTestPage>
 {
     private readonly ToggleTestPage _page;
@@ -84,6 +89,7 @@ public sealed class MauiSwitchContract : ToggleContract<ToggleTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiEntryContract : EditableTextContract<TextTestPage>
 {
     private readonly TextTestPage _page;
@@ -105,6 +111,7 @@ public sealed class MauiEntryContract : EditableTextContract<TextTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
 {
     private readonly TextTestPage _page;
@@ -122,6 +129,7 @@ public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
 public sealed class MauiPickerContract : SelectorContract<SelectionTestPage>
 {
     private readonly SelectionTestPage _page;

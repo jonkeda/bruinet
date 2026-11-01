@@ -9,7 +9,8 @@ namespace Bruinet.Bdd.LanguageServer;
 /// </summary>
 internal static class CoverageReport
 {
-    private static readonly string[] SourceExtensions = [".cs", ".razor", ".xaml", ".cshtml"];
+    // What the collector maps lines of: C# and Razor (XAML and Razor pages without line mapping it does not).
+    private static readonly string[] SourceExtensions = [".cs", ".razor"];
 
     /// <summary>Each file's lines by number: whether the run ran it. A line in several classes counts when any ran it.</summary>
     /// <param name="path">The cobertura file.</param>
@@ -26,7 +27,11 @@ internal static class CoverageReport
                 continue;
             }
 
-            var file = Path.IsPathRooted(name) ? Path.GetFullPath(name) : Path.GetFullPath(Path.Combine(sources.FirstOrDefault() ?? string.Empty, name));
+            // A relative name under the source root it exists in: a report can have several (code on two drives).
+            var file = Path.IsPathRooted(name)
+                ? Path.GetFullPath(name)
+                : sources.Select(source => Path.GetFullPath(Path.Combine(source, name))).FirstOrDefault(File.Exists)
+                    ?? Path.GetFullPath(Path.Combine(sources.FirstOrDefault() ?? string.Empty, name));
             if (!files.TryGetValue(file, out var lines))
             {
                 files[file] = lines = [];

@@ -75,7 +75,7 @@ public sealed class BddMcpServer : IDisposable
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint), 'stop' ends it. Answers where it paused next, or how it ended.", Schema(("move", "string", "over, into, out, continue or stop; required."), ("timeoutMinutes", "integer", "Stop waiting after this long; 5 when left out."))),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
-        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows the branch a passing one never took. Slower than run_scenario: a build check and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."))),
+        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
         ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
@@ -415,66 +415,120 @@ public sealed class BddMcpServer : IDisposable
     // One scenario through the gate with .NET's code coverage (Microsoft.NET.Test.Sdk brings it): the lines it ran.
     private object Coverage(JsonObject arguments)
     {
+        const int FilesShown = 20;
         var uri = FileUri(Required(arguments, "path"));
         var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
-        var suiteName = (string?)arguments["suite"];
+        var timeout = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10);
         var path = new Uri(uri).LocalPath;
-        var suite = _server.Context(path, suiteName).Suite ?? throw new ToolProblem("No suite holds or links this feature file.");
+        var file = _server.Context(path, (string?)arguments["suite"]);
+        var suite = file.Suite ?? throw new ToolProblem("No suite holds or links this feature file.");
         var project = suite.ProjectFile ?? throw new ToolProblem($"{suite.Name} has no project file to run with dotnet test.");
+        if (file.Catalogs is null || !suite.HasScenarioTheory)
+        {
+            throw new ToolProblem(file.Catalogs is null
+                ? $"{suite.Name} is not bound: {file.Reason}"
+                : $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [UatScenarioTheory].");
+        }
+
         var names = _server.ScenarioNames(uri, line);
         if (names.Count == 0)
         {
             throw new ToolProblem($"There is no scenario heading at line {line}.");
         }
 
+        // The files first: a run is slow, and without them there is nothing to report.
+        var wanted = CoverageFiles(arguments);
         var relative = suite.RelativeToConfig(path);
         var filter = string.Join('|', names.Select(name => $"{BddScenarioAddress.Trait}={BddScenarioAddress.Of(relative, name)}"));
         var results = Path.Combine(Path.GetTempPath(), "Bruinet", "coverage", Guid.NewGuid().ToString("N"));
-        List<string> test = ["test", project, "--filter", filter, "--collect", "Code Coverage;Format=cobertura", "--results-directory", results, "--logger", "console;verbosity=minimal"];
-        if ((bool?)arguments["build"] == false)
+        List<string> test = ["test", project, "--filter", filter, "--collect", "Code Coverage;Format=cobertura", "--results-directory", results, "--logger", "console;verbosity=normal"];
+        var built = (bool?)arguments["build"] != false;
+        if (!built)
         {
             test.Add("--no-build");
         }
 
-        var run = Run("dotnet", test, new Dictionary<string, string>());
-        var report = Directory.Exists(results) ? Directory.EnumerateFiles(results, "*.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault() : null;
-        if (report is null)
+        Dictionary<string, string> environment = [];
+        if ((string?)arguments["head"] is { Length: > 0 } head)
         {
-            throw new ToolProblem($"No coverage was written (exit code {run.Code}):{Environment.NewLine}{run.Tail}");
+            environment["BRUINET_HEAD"] = head;
         }
 
-        List<string> wanted;
         try
         {
-            wanted = (arguments["files"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(file => Path.GetFullPath(file, _solutionDir)).ToList() is { Count: > 0 } given
-                ? given
-                : [.. Bruinet.Cli.Selection.SelectionCommands.Changed(_solutionDir, "HEAD").Where(file => CoverageReport.IsSource(file))];
+            var run = Run("dotnet", test, environment, timeout);
+            if (built)
+            {
+                _server.BuildDone();
+            }
+
+            if (run.TimedOut)
+            {
+                throw new ToolProblem($"The run took longer than {timeout.TotalMinutes} minutes and was ended:{Environment.NewLine}{Cap(run.Tail, 2000, fromEnd: true)}");
+            }
+
+            if (run.Tail.Contains("No test matches the given testcase filter", StringComparison.Ordinal) || run.Tail.Contains("Total tests: 0", StringComparison.Ordinal))
+            {
+                throw new ToolProblem($"No test ran by the filter {filter}: is the suite built with this scenario?");
+            }
+
+            var report = Directory.Exists(results) ? Directory.EnumerateFiles(results, "*.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault() : null;
+            if (report is null)
+            {
+                throw new ToolProblem($"No coverage was written (exit code {run.Code}):{Environment.NewLine}{Cap(run.Tail, 2000, fromEnd: true)}");
+            }
+
+            var lines = CoverageReport.Read(report);
+            return new
+            {
+                Scenarios = names,
+                Passed = run.Code == 0,
+                Files = wanted.Take(FilesShown).Select(source => lines.TryGetValue(source, out var hits)
+                    ? new { File = Path.GetRelativePath(_solutionDir, source), Hit = Cap(CoverageReport.Ranges(hits.Where(pair => pair.Value).Select(pair => pair.Key)), 300), Missed = Cap(CoverageReport.Ranges(hits.Where(pair => !pair.Value).Select(pair => pair.Key)), 300), Note = (string?)null }
+                    : new { File = Path.GetRelativePath(_solutionDir, source), Hit = (string?)null, Missed = (string?)null, Note = (string?)"not in the report: no line of it ran, or the collector left its assembly out" })
+                    .ToList(),
+                MoreFiles = wanted.Count > FilesShown ? wanted.Count - FilesShown : (int?)null,
+                Output = run.Code == 0 ? null : Cap(run.Tail, 2000, fromEnd: true),
+            };
         }
-        catch (InvalidOperationException exception)
+        finally
         {
-            throw new ToolProblem(exception.Message);
+            TryDelete(results);
+        }
+    }
+
+    // The given files, or the working tree's changed code files that still exist.
+    private List<string> CoverageFiles(JsonObject arguments)
+    {
+        if ((arguments["files"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(file => Path.GetFullPath(file, _solutionDir)).ToList() is { Count: > 0 } given)
+        {
+            return given;
         }
 
-        var lines = CoverageReport.Read(report);
         try
         {
-            Directory.Delete(results, recursive: true);
+            return [.. Bruinet.Cli.Selection.SelectionCommands.Changed(_solutionDir, "HEAD").Where(file => CoverageReport.IsSource(file) && File.Exists(file))];
         }
-        catch (IOException)
+        catch (Exception exception) when (exception is InvalidOperationException or System.ComponentModel.Win32Exception)
         {
-            // A collector still closing the file: the temp folder is cleaned by the OS.
+            throw new ToolProblem($"Give 'files': there is no git working tree here to take the changed files from ({exception.Message}).");
         }
+    }
 
-        return new
+    // A temp folder removed; one still held open (a collector closing) is left, and said so.
+    private static void TryDelete(string folder)
+    {
+        try
         {
-            Scenarios = names,
-            Passed = run.Code == 0,
-            Files = wanted.Select(file => lines.TryGetValue(file, out var hits)
-                ? new { File = Path.GetRelativePath(_solutionDir, file), Hit = CoverageReport.Ranges(hits.Where(pair => pair.Value).Select(pair => pair.Key)), Missed = CoverageReport.Ranges(hits.Where(pair => !pair.Value).Select(pair => pair.Key)), Note = (string?)null }
-                : new { File = Path.GetRelativePath(_solutionDir, file), Hit = (string?)null, Missed = (string?)null, Note = (string?)"not loaded by the run: none of its lines ran" })
-                .ToList(),
-            Output = run.Code == 0 ? null : Cap(run.Tail, 2000),
-        };
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder, recursive: true);
+            }
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            Trace.TraceWarning($"Could not delete {folder}: {exception.Message}");
+        }
     }
 
     // The newest failed run of the scenario at a heading (or of the file), as an agent acts on it.
@@ -699,7 +753,10 @@ public sealed class BddMcpServer : IDisposable
 
     private string FileUri(string path) => new Uri(Path.GetFullPath(path, _solutionDir)).AbsoluteUri;
 
-    private static string? Cap(string? text, int length) => text is null || text.Length <= length ? text : $"{text[..length]}… ({text.Length - length} more characters)";
+    private static string? Cap(string? text, int length, bool fromEnd = false)
+        => text is null || text.Length <= length ? text
+            : fromEnd ? $"({text.Length - length} characters before) …{text[^length..]}"
+            : $"{text[..length]}… ({text.Length - length} more characters)";
 
     // An agent is not asked first, so it only counts unless it says dryRun: false.
     private DeleteResultsResult DeleteResults(JsonObject arguments)
@@ -776,6 +833,13 @@ public sealed class BddMcpServer : IDisposable
     // A process to its end, its output kept: the last lines say why a build or a run failed.
     private static (int Code, string Tail) Run(string command, IReadOnlyList<string> arguments, IReadOnlyDictionary<string, string> variables)
     {
+        var (code, tail, _) = Run(command, arguments, variables, Timeout.InfiniteTimeSpan);
+        return (code, tail);
+    }
+
+    // As above, ended with its process tree when it runs longer than timeout.
+    private static (int Code, string Tail, bool TimedOut) Run(string command, IReadOnlyList<string> arguments, IReadOnlyDictionary<string, string> variables, TimeSpan timeout)
+    {
         var info = new ProcessStartInfo(command) { RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false, CreateNoWindow = true };
         foreach (var argument in arguments)
         {
@@ -810,10 +874,16 @@ public sealed class BddMcpServer : IDisposable
         process.ErrorDataReceived += (_, e) => Keep(e.Data);
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
-        process.WaitForExit();
+        var timedOut = !process.WaitForExit(timeout);
+        if (timedOut)
+        {
+            process.Kill(entireProcessTree: true);
+            process.WaitForExit();
+        }
+
         lock (lines)
         {
-            return (process.ExitCode, string.Join(Environment.NewLine, lines));
+            return (timedOut ? -1 : process.ExitCode, string.Join(Environment.NewLine, lines), timedOut);
         }
     }
 

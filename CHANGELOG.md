@@ -758,14 +758,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - The MAUI sample's slider started at 1, not its view model's 50: it set `Value` before `Minimum` and
-  `Maximum`, and MAUI clamps a value to the bounds it has then (1 by default). Found by C5's control
+  `Maximum`, and MAUI clamps a value to the bounds it has then (1 by default). Found by the new control
   contracts on MauiHeadless; the sample sets the bounds first now.
 - A step definition's exception kept only Bruinet's frames: `BddInvoker` threw the inner exception again,
   which starts its stack anew, so the step's own code and the app's were lost to the IDE, logs and reports.
   It is rethrown with its stack now.
 - Bruinet.Blazor's `NavMenuControl` named the first item as the active one whatever was active: with its
   default item selector (a list, `a, .nav-link, [role='menuitem']`) the active state joined only the last
-  part, so every link matched. Found by C4's tests of Blazor's own controls on bUnit and in Chromium.
+  part, so every link matched. Found by new tests of Blazor's own controls on bUnit and in Chromium.
 - Two transitive packages pinned past their security advisories, so the solution restores again:
   `System.Security.Cryptography.Pkcs` 9.0.21 in the Stride sample (from Stride's toolkit,
   GHSA-2fmv-rv2c-59x7) and `MessagePack` 2.5.303 in `Bruinet.Cli` (from StreamJsonRpc,

@@ -86,8 +86,9 @@ public class SliderTests
     {
         var page = GetPage();
         // Act & Assert
+        // The value itself: the label's "50.0" holds a "0" before anything is set.
         page.TestSlider.SetValue(0)
-            .SliderValueLabel.AssertTextContains("0");
+            .TestSlider.AssertValue(0);
 
         return Task.CompletedTask;
     }

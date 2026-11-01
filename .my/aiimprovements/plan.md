@@ -218,7 +218,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | --- | --- | --- | --- |
 | AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
 | AI2 | done | (this commit) | BddInvoker lost every step's own frames (`throw ex.InnerException`); the locator is often only in the message |
-| AI2b | done | (this commit) | the gate with .NET's own collector, a process per scenario: no tool to install; dotnet-coverage snapshots (faster, a runner per suite) left for later |
+| AI2b | partly | c25cc7ee + review fixes | a `coverage` tool through the gate with .NET's own collector (nothing to install), proved on MauiHeadless by hand; not built: `run_scenario {coverage: true}`, a stored `__coverage.json`, the Done-when on bUnit and Chromium (open, see AI2b-review.md) |
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
 | AI4 | partly | (this commit) | step_start, step_move, step_screenshot built; step_state (the page's controls and values) is AI4b: it needs a runner message that reads the current page object |
@@ -239,8 +239,8 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI18 | open | | |
 | AI19 | open | | |
 | AI20 | open | | |
-| C4 | done | (this commit) | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
-| C5 | done | (this commit) | Maui 49 to 50.9%; the rest is platform code a device head runs; the sample slider started at 1 |
+| C4 | built, target open | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
+| C5 | built, target open | Maui 49 to 50.9%; the rest is platform code a device head runs; the sample slider started at 1 |
 | C6 | open | | |
 | C7 | open | | |
 | C8 | open | | |
