@@ -1,0 +1,13 @@
+diff --git a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoRowViewModel.cs b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoRowViewModel.cs
+index 662b83c7..6eac5b47 100644
+--- a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoRowViewModel.cs
++++ b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoRowViewModel.cs
+@@ -27,7 +27,7 @@ public sealed class TodoRowViewModel(TodoItem item, DateOnly today, IFormatProvi
+     public bool IsOverdue { get; } = TodoStatusRules.IsOverdue(item.Status, item.DueDate, today);
+ 
+     /// <summary>Whether the due date has passed; the status control shows Overdue for it unless Done.</summary>
+-    public bool IsPastDue { get; } = item.DueDate < today;
++    public bool IsPastDue { get; } = item.DueDate > today;
+ 
+     /// <summary>Whether the row has changes the server has not seen (TOD.01.6).</summary>
+     public bool IsPending { get; } = item.NeedsPush;

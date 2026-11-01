@@ -78,8 +78,9 @@ The item helps an AI only if an agent uses it to do better. Per item, `.my/aiimp
 Run it with a fresh general-purpose agent in a worktree with the patch applied and only the Bruinet MCP server, file
 reading and editing, and `dotnet` allowed. Give it the task and the server's `instructions` text (as an MCP client
 would), never the expected fix. The fixture must not be solvable by reading alone: no comment or name that states the
-broken rule, a task that names a symptom; otherwise the check proves nothing (AI1's first check: both agents fixed it
-by reading). Passes when it succeeds and needs
+broken rule, a task that names a symptom, and no history: the worktree is a `git archive` of the commit into a
+folder with the patch applied, no `.git` (AI1's check was solved by reading a comment, AI2's by `git show` of the seeding
+commit); otherwise the check proves nothing. Passes when it succeeds and needs
 no more calls than the baseline (or succeeds where the baseline failed). A fail goes back to phase 2: usually a tool's
 description or result shape, not the code.
 

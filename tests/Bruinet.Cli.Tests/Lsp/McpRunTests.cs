@@ -141,6 +141,18 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
+    public void Failing_AfterARun_NamesOnlyTheFailedScenarios_InOneCall()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature });
+
+        var answer = Answer(Call("failing", new JsonObject()));
+
+        Assert.Equal(1, (int?)answer["count"]);
+        var failed = answer["failing"]![0]!;
+        Assert.Equal(("Fails", "Features/counter.feature.md#Fails", "assertion"), ((string?)failed["scenario"], (string?)failed["address"], (string?)failed["kind"]));
+    }
+
+    [Fact]
     public void GetFailure_OfAScenarioThatPassed_IsAToolError_SayingSo()
     {
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });

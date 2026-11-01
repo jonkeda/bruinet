@@ -19,6 +19,7 @@ failed. Wave 1 closes that loop, mostly by wrapping what exists.
 | AI1 | `run_scenario` and `last_runs` MCP tools | AP1 | S | `bruinet/run/start`, `bruinet/runner/warm`, `bruinet/lastRuns` |
 | AI2 | Failures as structured data | AP2, bdd-gaps D1's run fields | M | AI1, `__result.json`, `BddStepResult` |
 | AI2b | App code coverage per scenario | the coverage session | M | AI1, the coverage session's collection |
+| AI2c | `failing`: every scenario whose newest run failed, for a suite, in one call | AI2's agent check | S | AI2 |
 | AI3 | `tests_affected` MCP tool | test selection | S | `bruinet tests affected --json` |
 | AI4 | Step session via MCP, with page state | AP1, AP6 | M | `bruinet/step/start`, `move`, `screenshot` |
 | AI5 | `rename_step`, `rename_page_object` MCP tools | AP7 (part 1) | S | `textDocument/rename`, `bruinet/scraper/renamePageObject` |
@@ -79,6 +80,7 @@ between the larger AI items.
 | 5 | AI2 | the failure an agent reads |
 | 6 | C5 | MauiHeadless contracts; parity's pages |
 | 7 | AI2b | coverage per scenario, on `coverage.ps1`'s collection |
+| 7b | AI2c | small; agents looked for failures file by file |
 | 8 | AI4 | step session and page state |
 | 9 | C6 | mutation runner, shared with parity and AI20 |
 | 10 | C7 | the hand-written rest |
@@ -217,6 +219,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
 | AI2 | done | (this commit) | BddInvoker lost every step's own frames (`throw ex.InnerException`); the locator is often only in the message |
 | AI2b | open | | |
+| AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
 | AI4 | open | | |
 | AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
