@@ -131,6 +131,19 @@ public sealed class BunitHtmlElement : IHtmlElement
         var href = node.Closest("a")?.GetAttribute("href") is { Length: > 0 } link && !link.StartsWith('#') && !prevented ? link : null;
         var fold = !prevented && FoldToggledBy(node) is { } details ? KeyOf(details) : null;
 
+        // A browser checks a radio, or turns a check box over, and sends change when it is clicked: what @bind
+        // and @onchange listen to. The click's own handler runs first, as in the browser.
+        if (!prevented && node is IHtmlInputElement { Type: "radio" or "checkbox" } && Handles(node, "onchange"))
+        {
+            if (handler is not null)
+            {
+                Raise(handler, "onclick", new MouseEventArgs { Type = "click", Detail = 1 });
+            }
+
+            SetChecked(IsRadio(Node) || !IsChecked);
+            return;
+        }
+
         // bUnit itself submits the form after a submit button's own click handler.
         var target = handler ?? node;
         var form = SubmitsForm(target) ? target.Closest("form") : null;
