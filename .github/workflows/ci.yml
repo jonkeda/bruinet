@@ -17,6 +17,25 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 jobs:
+  # A pull request that takes tests away (deleted, fewer, skipped, fewer assertions) fails unless
+  # its description says why; the script's -Reason is that why (AD-033).
+  test-guard:
+    name: Test guard
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: No tests taken away
+        shell: pwsh
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          $reason = if ($env:BODY -match 'Tests removed because:\s*(.+)') { $Matches[1] } else { '' }
+          ./tools/Scripts/check-test-guard.ps1 -Base origin/${{ github.base_ref }} -Head HEAD -Reason $reason
+
   build-and-test:
     name: Build and unit test
     runs-on: windows-latest
