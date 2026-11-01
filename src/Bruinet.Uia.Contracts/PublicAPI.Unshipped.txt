@@ -1,0 +1,149 @@
+#nullable enable
+Bruinet.Uia.AlertPayload
+Bruinet.Uia.BruinetBridgeGate
+Bruinet.Uia.BruinetPatternRegistration
+Bruinet.Uia.BruinetPatternRegistration.IsPatternAvailablePropertyId.get -> int
+Bruinet.Uia.BruinetPatternRegistration.PatternId.get -> int
+Bruinet.Uia.BruinetUiaClient
+Bruinet.Uia.BruinetUiaException
+Bruinet.Uia.BruinetUiaException.BruinetUiaException(string! message) -> void
+Bruinet.Uia.BruinetUiaException.BruinetUiaException(string! message, System.Exception! innerException) -> void
+Bruinet.Uia.BruinetUiaIds
+Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.AppendText = 301 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.ClearText = 302 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.CloseFlyout = 703 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.CurrentAlert = 900 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.CurrentRoute = 502 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.DismissAlert = 901 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.DoubleTap = 101 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Focus = 200 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetBounds = 4 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetCapabilities = 1 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetProtocolVersion = 2 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetState = 600 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetText = 304 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.InvokeMenuItem = 902 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.InvokeToolbarItem = 903 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.IsFocused = 202 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.IsIdle = 601 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.LongPress = 102 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.NavigateBack = 500 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.NavigateTo = 501 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.None = 0 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.OpenFlyout = 702 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Pan = 107 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Pinch = 108 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Ping = 3 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.ScrollPosition = 402 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.ScrollTo = 400 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.ScrollToIndex = 401 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SelectByText = 801 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SelectIndex = 800 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SetDate = 700 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SetText = 300 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SetTime = 701 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Submit = 303 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SwipeDown = 106 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SwipeLeft = 103 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SwipeRight = 104 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.SwipeUp = 105 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Tap = 100 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.Unfocus = 201 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerbFailure
+Bruinet.Uia.BruinetVerbKind
+Bruinet.Uia.BruinetVerbKind.AppAction = 2 -> Bruinet.Uia.BruinetVerbKind
+Bruinet.Uia.BruinetVerbKind.ElementAction = 1 -> Bruinet.Uia.BruinetVerbKind
+Bruinet.Uia.BruinetVerbKind.Read = 0 -> Bruinet.Uia.BruinetVerbKind
+Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.DateAndTime = 700 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.DialogsAndMenus = 900 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Focus = 200 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Gestures = 100 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Meta = 1 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Navigation = 500 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Scrolling = 400 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Selection = 800 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.State = 600 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Text = 300 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbRange.Unknown = 0 -> Bruinet.Uia.BruinetVerbRange
+Bruinet.Uia.BruinetVerbTransport
+Bruinet.Uia.BruinetVerbTransport.Exchange = 1 -> Bruinet.Uia.BruinetVerbTransport
+Bruinet.Uia.BruinetVerbTransport.Invoke = 0 -> Bruinet.Uia.BruinetVerbTransport
+Bruinet.Uia.BruinetVerbs
+Bruinet.Uia.HResults
+Bruinet.Uia.IBruinetAutomationPattern
+Bruinet.Uia.IBruinetAutomationPattern.Exchange(int verb, string! argument, out string! result) -> int
+Bruinet.Uia.IBruinetAutomationPattern.Invoke(int verb, int arg1, int arg2) -> int
+Bruinet.Uia.IBruinetAutomationProvider
+Bruinet.Uia.IBruinetAutomationProvider.Exchange(int verb, string! argument, out string! result) -> int
+Bruinet.Uia.IBruinetAutomationProvider.Invoke(int verb, int arg1, int arg2) -> int
+Bruinet.Uia.Provider.BruinetBounds
+Bruinet.Uia.Provider.BruinetBounds.BruinetBounds() -> void
+Bruinet.Uia.Provider.BruinetBounds.BruinetBounds(double Left, double Top, double Width, double Height) -> void
+Bruinet.Uia.Provider.BruinetBounds.Height.get -> double
+Bruinet.Uia.Provider.BruinetBounds.Height.init -> void
+Bruinet.Uia.Provider.BruinetBounds.Left.get -> double
+Bruinet.Uia.Provider.BruinetBounds.Left.init -> void
+Bruinet.Uia.Provider.BruinetBounds.Top.get -> double
+Bruinet.Uia.Provider.BruinetBounds.Top.init -> void
+Bruinet.Uia.Provider.BruinetBounds.Width.get -> double
+Bruinet.Uia.Provider.BruinetBounds.Width.init -> void
+Bruinet.Uia.Provider.BruinetUiaBridge
+Bruinet.Uia.Provider.BruinetUiaBridge.Dispose() -> void
+Bruinet.Uia.Provider.BruinetUiaBridge.Handle.get -> nint
+Bruinet.Uia.Provider.BruinetUiaBridge.Register(Bruinet.Uia.Provider.IBruinetVerbTarget! target) -> void
+Bruinet.Uia.Provider.BruinetUiaBridge.RegisteredTargets.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Uia.Provider.BruinetUiaBridge.Unregister(string! automationId) -> bool
+Bruinet.Uia.Provider.BruinetUiaBridge.Unregister(string! automationId, System.Func<Bruinet.Uia.Provider.IBruinetVerbTarget!, bool>! stillTheSameTarget) -> bool
+Bruinet.Uia.Provider.IBruinetVerbTarget
+Bruinet.Uia.Provider.IBruinetVerbTarget.AutomationId.get -> string!
+Bruinet.Uia.Provider.IBruinetVerbTarget.Capabilities.get -> System.Collections.Generic.IReadOnlyCollection<Bruinet.Uia.BruinetVerb>!
+Bruinet.Uia.Provider.IBruinetVerbTarget.Exchange(Bruinet.Uia.BruinetVerb verb, string! argument, out string! result) -> int
+Bruinet.Uia.Provider.IBruinetVerbTarget.Invoke(Bruinet.Uia.BruinetVerb verb, int arg1, int arg2) -> int
+Bruinet.Uia.Provider.IBruinetVerbTarget.IsAvailable.get -> bool
+Bruinet.Uia.Provider.IBruinetVerbTarget.TryGetScreenBounds(out Bruinet.Uia.Provider.BruinetBounds bounds) -> bool
+const Bruinet.Uia.AlertPayload.None = "" -> string!
+const Bruinet.Uia.BruinetBridgeGate.EnableVariable = "BRUINET_UIA_BRIDGE" -> string!
+const Bruinet.Uia.BruinetUiaIds.BridgeAutomationId = "BruinetUiaBridge.Root" -> string!
+const Bruinet.Uia.BruinetUiaIds.BridgeClassName = "BruinetUiaBridge" -> string!
+const Bruinet.Uia.BruinetUiaIds.ClientInterfaceIid = "1a5456c2-a3a3-4175-9679-ec46b85915a8" -> string!
+const Bruinet.Uia.BruinetUiaIds.PatternProgrammaticName = "BruinetAutomationPattern" -> string!
+const Bruinet.Uia.BruinetUiaIds.ProtocolVersion = 1 -> int
+const Bruinet.Uia.BruinetUiaIds.ProviderDescription = "Bruinet UI Automation bridge (test instrumentation)" -> string!
+const Bruinet.Uia.BruinetUiaIds.ProviderInterfaceIid = "d890790c-64e5-47fb-8539-c1a73c307c46" -> string!
+const Bruinet.Uia.BruinetUiaIds.TargetAutomationIdPrefix = "BruinetUia." -> string!
+const Bruinet.Uia.BruinetUiaIds.TargetClassName = "BruinetUiaTarget" -> string!
+const Bruinet.Uia.HResults.BRUINET_E_DECLINED = -1610350591 -> int
+const Bruinet.Uia.HResults.E_FAIL = -2147467259 -> int
+const Bruinet.Uia.HResults.E_INVALIDARG = -2147024809 -> int
+const Bruinet.Uia.HResults.S_FALSE = 1 -> int
+const Bruinet.Uia.HResults.S_OK = 0 -> int
+const Bruinet.Uia.HResults.UIA_E_ELEMENTNOTAVAILABLE = -2147220991 -> int
+const Bruinet.Uia.HResults.UIA_E_NOTSUPPORTED = -2147220988 -> int
+const Bruinet.Uia.HResults.UIA_E_TIMEOUT = -2146233083 -> int
+static Bruinet.Uia.AlertPayload.Format(string? title, string? message, string? accept, string? cancel) -> string!
+static Bruinet.Uia.AlertPayload.TryParse(string? payload, out string! title, out string! message, out string! accept, out string! cancel) -> bool
+static Bruinet.Uia.BruinetBridgeGate.CompiledIn.get -> bool
+static Bruinet.Uia.BruinetBridgeGate.Explain() -> string!
+static Bruinet.Uia.BruinetBridgeGate.IsOpen.get -> bool
+static Bruinet.Uia.BruinetBridgeGate.RequestedByEnvironment.get -> bool
+static Bruinet.Uia.BruinetPatternRegistration.Current.get -> Bruinet.Uia.BruinetPatternRegistration!
+static Bruinet.Uia.BruinetPatternRegistration.TryGetCurrent(out Bruinet.Uia.BruinetPatternRegistration? registration, out string? error) -> bool
+static Bruinet.Uia.BruinetUiaClient.IsPatternAvailablePropertyId.get -> int
+static Bruinet.Uia.BruinetUiaClient.PatternId.get -> int
+static Bruinet.Uia.BruinetUiaClient.TryGetPattern(System.Func<int, object?>! getCurrentPattern, out Bruinet.Uia.IBruinetAutomationPattern? pattern) -> bool
+static Bruinet.Uia.BruinetUiaIds.TargetAutomationIdFor(string! targetAutomationId) -> string!
+static Bruinet.Uia.BruinetVerbFailure.Describe(Bruinet.Uia.BruinetVerb verb, int hresult) -> string!
+static Bruinet.Uia.BruinetVerbFailure.Succeeded(int hresult) -> bool
+static Bruinet.Uia.BruinetVerbs.FormatCapabilities(System.Collections.Generic.IEnumerable<Bruinet.Uia.BruinetVerb>! verbs) -> string!
+static Bruinet.Uia.BruinetVerbs.KindOf(Bruinet.Uia.BruinetVerb verb) -> Bruinet.Uia.BruinetVerbKind
+static Bruinet.Uia.BruinetVerbs.ParseCapabilities(string? capabilities) -> System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>!
+static Bruinet.Uia.BruinetVerbs.RangeOf(int verb) -> Bruinet.Uia.BruinetVerbRange
+static Bruinet.Uia.BruinetVerbs.TransportFor(Bruinet.Uia.BruinetVerb verb) -> Bruinet.Uia.BruinetVerbTransport
+static Bruinet.Uia.Provider.BruinetBounds.Empty.get -> Bruinet.Uia.Provider.BruinetBounds
+static Bruinet.Uia.Provider.BruinetUiaBridge.ActiveCount.get -> int
+static Bruinet.Uia.Provider.BruinetUiaBridge.Attach(nint parentHwnd) -> Bruinet.Uia.Provider.BruinetUiaBridge!
+static Bruinet.Uia.Provider.BruinetUiaBridge.DisconnectFailures.get -> int
+static Bruinet.Uia.Provider.BruinetUiaBridge.LastDisconnectHResult.get -> int
+static readonly Bruinet.Uia.BruinetUiaIds.PatternGuid -> System.Guid

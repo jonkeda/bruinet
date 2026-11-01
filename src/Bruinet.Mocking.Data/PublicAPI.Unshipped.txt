@@ -1,0 +1,460 @@
+#nullable enable
+Bruinet.Mocking.Data.CaptureState
+Bruinet.Mocking.Data.CaptureState.CaptureState() -> void
+Bruinet.Mocking.Data.CaptureState.Database.get -> string!
+Bruinet.Mocking.Data.CaptureState.Database.set -> void
+Bruinet.Mocking.Data.CaptureState.Files.get -> string!
+Bruinet.Mocking.Data.CaptureState.Files.set -> void
+Bruinet.Mocking.Data.CaptureState.Marker.get -> string!
+Bruinet.Mocking.Data.CaptureState.Marker.set -> void
+Bruinet.Mocking.Data.CaptureState.MarkerDone.get -> System.DateTime
+Bruinet.Mocking.Data.CaptureState.MarkerDone.set -> void
+Bruinet.Mocking.Data.CaptureState.MarkerSent.get -> System.DateTime
+Bruinet.Mocking.Data.CaptureState.MarkerSent.set -> void
+Bruinet.Mocking.Data.CaptureState.Save(string! path) -> void
+Bruinet.Mocking.Data.CaptureState.Session.get -> string!
+Bruinet.Mocking.Data.CaptureState.Session.set -> void
+Bruinet.Mocking.Data.ExtendedEvents
+Bruinet.Mocking.Data.LoggingDbCommand
+Bruinet.Mocking.Data.LoggingDbCommand.Inner.get -> System.Data.Common.DbCommand!
+Bruinet.Mocking.Data.LoggingDbConnection
+Bruinet.Mocking.Data.LoggingDbConnection.Inner.get -> System.Data.Common.DbConnection!
+Bruinet.Mocking.Data.LoggingDbConnection.LoggingDbConnection(System.Data.Common.DbConnection! inner, Bruinet.Mocking.Data.SqlLog! log) -> void
+Bruinet.Mocking.Data.LoggingDbDataReader
+Bruinet.Mocking.Data.LoggingDbDataReader.Inner.get -> System.Data.Common.DbDataReader!
+Bruinet.Mocking.Data.LoggingDbProviderFactory
+Bruinet.Mocking.Data.LoggingDbProviderFactory.LoggingDbProviderFactory(System.Data.Common.DbProviderFactory! inner, Bruinet.Mocking.Data.SqlLog! log) -> void
+Bruinet.Mocking.Data.LoggingDbTransaction
+Bruinet.Mocking.Data.LoggingDbTransaction.Inner.get -> System.Data.Common.DbTransaction!
+Bruinet.Mocking.Data.LoggingDbTransaction.LoggingDbTransaction(System.Data.Common.DbTransaction! inner, Bruinet.Mocking.Data.LoggingDbConnection! connection) -> void
+Bruinet.Mocking.Data.Projected
+Bruinet.Mocking.Data.Projected.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.Projected.Columns.init -> void
+Bruinet.Mocking.Data.Projected.Prefix.get -> string!
+Bruinet.Mocking.Data.Projected.Prefix.init -> void
+Bruinet.Mocking.Data.Projected.Projected(string! Prefix, System.Collections.Generic.IReadOnlyList<string!>! Columns, string! Tail) -> void
+Bruinet.Mocking.Data.Projected.Tail.get -> string!
+Bruinet.Mocking.Data.Projected.Tail.init -> void
+Bruinet.Mocking.Data.Replay.Exchange
+Bruinet.Mocking.Data.Replay.Exchange.Error.get -> Bruinet.Mocking.Data.Replay.RecordedError?
+Bruinet.Mocking.Data.Replay.Exchange.Error.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Exchange() -> void
+Bruinet.Mocking.Data.Replay.Exchange.Index.get -> int
+Bruinet.Mocking.Data.Replay.Exchange.Index.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.IsWrite.get -> bool
+Bruinet.Mocking.Data.Replay.Exchange.Kind.get -> string!
+Bruinet.Mocking.Data.Replay.Exchange.Kind.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Outputs.get -> System.Collections.Generic.Dictionary<string!, System.Text.Json.Nodes.JsonNode?>?
+Bruinet.Mocking.Data.Replay.Exchange.Outputs.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Parameters.get -> System.Collections.Generic.Dictionary<string!, System.Text.Json.Nodes.JsonNode?>!
+Bruinet.Mocking.Data.Replay.Exchange.Parameters.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.RecordsAffected.get -> int
+Bruinet.Mocking.Data.Replay.Exchange.RecordsAffected.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Results.get -> System.Collections.Generic.List<Bruinet.Mocking.Data.Replay.RecordedResult!>?
+Bruinet.Mocking.Data.Replay.Exchange.Results.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Scalar.get -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Mocking.Data.Replay.Exchange.Scalar.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Text.get -> string!
+Bruinet.Mocking.Data.Replay.Exchange.Text.set -> void
+Bruinet.Mocking.Data.Replay.Exchange.Volatile.get -> System.Collections.Generic.List<string!>!
+Bruinet.Mocking.Data.Replay.Exchange.Volatile.set -> void
+Bruinet.Mocking.Data.Replay.HookResponse
+Bruinet.Mocking.Data.Replay.HookResponse.Body.get -> string!
+Bruinet.Mocking.Data.Replay.HookResponse.Body.init -> void
+Bruinet.Mocking.Data.Replay.HookResponse.Cookie.get -> string?
+Bruinet.Mocking.Data.Replay.HookResponse.Cookie.init -> void
+Bruinet.Mocking.Data.Replay.HookResponse.HookResponse(int Status, string! Body, string? Cookie) -> void
+Bruinet.Mocking.Data.Replay.HookResponse.Status.get -> int
+Bruinet.Mocking.Data.Replay.HookResponse.Status.init -> void
+Bruinet.Mocking.Data.Replay.ProviderRules
+Bruinet.Mocking.Data.Replay.RecordedColumn
+Bruinet.Mocking.Data.Replay.RecordedColumn.ClrType.get -> string!
+Bruinet.Mocking.Data.Replay.RecordedColumn.ClrType.init -> void
+Bruinet.Mocking.Data.Replay.RecordedColumn.DataTypeName.get -> string!
+Bruinet.Mocking.Data.Replay.RecordedColumn.DataTypeName.init -> void
+Bruinet.Mocking.Data.Replay.RecordedColumn.Name.get -> string!
+Bruinet.Mocking.Data.Replay.RecordedColumn.Name.init -> void
+Bruinet.Mocking.Data.Replay.RecordedColumn.RecordedColumn(string! Name, string! ClrType, string! DataTypeName) -> void
+Bruinet.Mocking.Data.Replay.RecordedError
+Bruinet.Mocking.Data.Replay.RecordedError.Class.get -> byte
+Bruinet.Mocking.Data.Replay.RecordedError.Class.init -> void
+Bruinet.Mocking.Data.Replay.RecordedError.Message.get -> string!
+Bruinet.Mocking.Data.Replay.RecordedError.Message.init -> void
+Bruinet.Mocking.Data.Replay.RecordedError.Number.get -> int
+Bruinet.Mocking.Data.Replay.RecordedError.Number.init -> void
+Bruinet.Mocking.Data.Replay.RecordedError.RecordedError(string! Type, int Number, byte State, byte Class, string! Message, string? Server) -> void
+Bruinet.Mocking.Data.Replay.RecordedError.Server.get -> string?
+Bruinet.Mocking.Data.Replay.RecordedError.Server.init -> void
+Bruinet.Mocking.Data.Replay.RecordedError.State.get -> byte
+Bruinet.Mocking.Data.Replay.RecordedError.State.init -> void
+Bruinet.Mocking.Data.Replay.RecordedError.Type.get -> string!
+Bruinet.Mocking.Data.Replay.RecordedError.Type.init -> void
+Bruinet.Mocking.Data.Replay.RecordedResult
+Bruinet.Mocking.Data.Replay.RecordedResult.Columns.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.Replay.RecordedColumn!>!
+Bruinet.Mocking.Data.Replay.RecordedResult.Columns.init -> void
+Bruinet.Mocking.Data.Replay.RecordedResult.RecordedResult(System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.Replay.RecordedColumn!>! Columns, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonNode?>!>! Rows) -> void
+Bruinet.Mocking.Data.Replay.RecordedResult.Rows.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonNode?>!>!
+Bruinet.Mocking.Data.Replay.RecordedResult.Rows.init -> void
+Bruinet.Mocking.Data.Replay.Recording
+Bruinet.Mocking.Data.Replay.Recording.Exchanges.get -> System.Collections.Generic.List<Bruinet.Mocking.Data.Replay.Exchange!>!
+Bruinet.Mocking.Data.Replay.Recording.Exchanges.set -> void
+Bruinet.Mocking.Data.Replay.Recording.MarkVolatile(Bruinet.Mocking.Data.Replay.Recording! previous) -> void
+Bruinet.Mocking.Data.Replay.Recording.Recording() -> void
+Bruinet.Mocking.Data.Replay.Recording.Save(string! path) -> void
+Bruinet.Mocking.Data.Replay.Recording.Stamp.get -> Bruinet.Mocking.Data.Replay.Stamp?
+Bruinet.Mocking.Data.Replay.Recording.Stamp.set -> void
+Bruinet.Mocking.Data.Replay.Recording.Version.get -> int
+Bruinet.Mocking.Data.Replay.Recording.Version.set -> void
+Bruinet.Mocking.Data.Replay.RecordingCheck
+Bruinet.Mocking.Data.Replay.RecordingDiff
+Bruinet.Mocking.Data.Replay.RecordingReview
+Bruinet.Mocking.Data.Replay.RecordingState
+Bruinet.Mocking.Data.Replay.RecordingState.Differences.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.Replay.RecordingState.Differences.init -> void
+Bruinet.Mocking.Data.Replay.RecordingState.IsStale.get -> bool
+Bruinet.Mocking.Data.Replay.RecordingState.Objects.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.Replay.RecordingState.Objects.init -> void
+Bruinet.Mocking.Data.Replay.RecordingState.Path.get -> string!
+Bruinet.Mocking.Data.Replay.RecordingState.Path.init -> void
+Bruinet.Mocking.Data.Replay.RecordingState.RecordingState(string! Path, System.Collections.Generic.IReadOnlyList<string!>! Objects, System.Collections.Generic.IReadOnlyList<string!>! Differences) -> void
+Bruinet.Mocking.Data.Replay.ReplayDataReader
+Bruinet.Mocking.Data.Replay.ReplayDataReader.GetSqlBytes(int ordinal) -> System.Data.SqlTypes.SqlBytes!
+Bruinet.Mocking.Data.Replay.ReplayDataReader.ReplayDataReader(System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.Replay.RecordedResult!>! results, int recordsAffected) -> void
+Bruinet.Mocking.Data.Replay.ReplayHook
+Bruinet.Mocking.Data.Replay.ReplayMissException
+Bruinet.Mocking.Data.Replay.ReplayMissException.ReplayMissException(string! message) -> void
+Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplayMode.Off = 0 -> Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplayMode.Record = 1 -> Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplayMode.Replay = 2 -> Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplayRegistry
+Bruinet.Mocking.Data.Replay.ReplayRegistry.Begin(string! test) -> Bruinet.Mocking.Data.Replay.ReplaySession!
+Bruinet.Mocking.Data.Replay.ReplayRegistry.End(string! test) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Mocking.Data.Replay.ReplayRegistry.Find(string! test) -> Bruinet.Mocking.Data.Replay.ReplaySession?
+Bruinet.Mocking.Data.Replay.ReplayRegistry.Folder.get -> string!
+Bruinet.Mocking.Data.Replay.ReplayRegistry.Mode.get -> Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplayRegistry.ReplayRegistry(Bruinet.Mocking.Data.Replay.ReplayMode mode, string! folder, Bruinet.Mocking.Data.Replay.Schema? schema = null) -> void
+Bruinet.Mocking.Data.Replay.ReplayScope
+Bruinet.Mocking.Data.Replay.ReplaySession
+Bruinet.Mocking.Data.Replay.ReplaySession.Answer(Bruinet.Mocking.Data.Replay.Exchange! live) -> Bruinet.Mocking.Data.Replay.Exchange!
+Bruinet.Mocking.Data.Replay.ReplaySession.Bound(System.Text.Json.Nodes.JsonNode? value) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Mocking.Data.Replay.ReplaySession.Finish() -> void
+Bruinet.Mocking.Data.Replay.ReplaySession.Misses.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.Replay.ReplaySession.Mode.get -> Bruinet.Mocking.Data.Replay.ReplayMode
+Bruinet.Mocking.Data.Replay.ReplaySession.Path.get -> string!
+Bruinet.Mocking.Data.Replay.ReplaySession.Record(Bruinet.Mocking.Data.Replay.Exchange! exchange) -> void
+Bruinet.Mocking.Data.Replay.ReplaySession.ReplaySession(Bruinet.Mocking.Data.Replay.ReplayMode mode, string! path, Bruinet.Mocking.Data.Replay.Schema? schema = null, bool ignoreStamp = false) -> void
+Bruinet.Mocking.Data.Replay.ReplayingDbCommand
+Bruinet.Mocking.Data.Replay.ReplayingDbCommand.Inner.get -> System.Data.Common.DbCommand!
+Bruinet.Mocking.Data.Replay.ReplayingDbConnection
+Bruinet.Mocking.Data.Replay.ReplayingDbConnection.Inner.get -> System.Data.Common.DbConnection!
+Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ReplayingDbConnection(System.Data.Common.DbConnection! inner, Bruinet.Mocking.Data.Replay.ReplaySession! session) -> void
+Bruinet.Mocking.Data.Replay.ReplayingDbConnection.Session.get -> Bruinet.Mocking.Data.Replay.ReplaySession!
+Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory
+Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.ReplayingDbProviderFactory(System.Data.Common.DbProviderFactory! inner) -> void
+Bruinet.Mocking.Data.Replay.ReplayingDbTransaction
+Bruinet.Mocking.Data.Replay.ReplayingDbTransaction.Inner.get -> System.Data.Common.DbTransaction?
+Bruinet.Mocking.Data.Replay.ReplayingDbTransaction.ReplayingDbTransaction(System.Data.Common.DbTransaction? inner, Bruinet.Mocking.Data.Replay.ReplayingDbConnection! connection, System.Data.IsolationLevel isolationLevel) -> void
+Bruinet.Mocking.Data.Replay.Schema
+Bruinet.Mocking.Data.Replay.Schema.DefaultSchema.get -> string!
+Bruinet.Mocking.Data.Replay.Schema.DefaultSchema.init -> void
+Bruinet.Mocking.Data.Replay.Schema.Named(string! text) -> System.Collections.Generic.IEnumerable<string!>!
+Bruinet.Mocking.Data.Replay.Schema.Objects.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Mocking.Data.Replay.Schema.Objects.init -> void
+Bruinet.Mocking.Data.Replay.Schema.References.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>!
+Bruinet.Mocking.Data.Replay.Schema.References.init -> void
+Bruinet.Mocking.Data.Replay.Schema.Schema(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Versions, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Objects, System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>! References) -> void
+Bruinet.Mocking.Data.Replay.Schema.StampFor(System.Collections.Generic.IEnumerable<string!>! named) -> Bruinet.Mocking.Data.Replay.Stamp!
+Bruinet.Mocking.Data.Replay.Schema.Versions.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Mocking.Data.Replay.Schema.Versions.init -> void
+Bruinet.Mocking.Data.Replay.Stamp
+Bruinet.Mocking.Data.Replay.Stamp.Differences(Bruinet.Mocking.Data.Replay.Schema! now) -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.Replay.Stamp.Objects.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Mocking.Data.Replay.Stamp.Objects.set -> void
+Bruinet.Mocking.Data.Replay.Stamp.Stamp() -> void
+Bruinet.Mocking.Data.Replay.Stamp.Versions.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Mocking.Data.Replay.Stamp.Versions.set -> void
+Bruinet.Mocking.Data.Replay.Values
+Bruinet.Mocking.Data.SchemaObject
+Bruinet.Mocking.Data.SchemaObject.Dynamic.get -> bool
+Bruinet.Mocking.Data.SchemaObject.Dynamic.set -> void
+Bruinet.Mocking.Data.SchemaObject.Hash.get -> string!
+Bruinet.Mocking.Data.SchemaObject.Hash.set -> void
+Bruinet.Mocking.Data.SchemaObject.Kind.get -> string!
+Bruinet.Mocking.Data.SchemaObject.Kind.set -> void
+Bruinet.Mocking.Data.SchemaObject.Listed.get -> bool
+Bruinet.Mocking.Data.SchemaObject.Listed.set -> void
+Bruinet.Mocking.Data.SchemaObject.References.get -> System.Collections.Generic.List<string!>!
+Bruinet.Mocking.Data.SchemaObject.References.set -> void
+Bruinet.Mocking.Data.SchemaObject.SchemaObject() -> void
+Bruinet.Mocking.Data.SchemaSnapshot
+Bruinet.Mocking.Data.SchemaSnapshot.DefaultSchema.get -> string!
+Bruinet.Mocking.Data.SchemaSnapshot.DefaultSchema.set -> void
+Bruinet.Mocking.Data.SchemaSnapshot.Expand(System.Collections.Generic.IEnumerable<string!>! named) -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Mocking.Data.SchemaSnapshot.MergeReferences(string! path) -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Data.SchemaSnapshot.Objects.get -> System.Collections.Generic.SortedDictionary<string!, Bruinet.Mocking.Data.SchemaObject!>!
+Bruinet.Mocking.Data.SchemaSnapshot.Objects.set -> void
+Bruinet.Mocking.Data.SchemaSnapshot.Save(string! path) -> void
+Bruinet.Mocking.Data.SchemaSnapshot.SchemaSnapshot() -> void
+Bruinet.Mocking.Data.SchemaSnapshot.ToSchema(System.Collections.Generic.IReadOnlyDictionary<string!, string!>? versions = null) -> Bruinet.Mocking.Data.Replay.Schema!
+Bruinet.Mocking.Data.SnapshotOptions
+Bruinet.Mocking.Data.SnapshotOptions.Data.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Mocking.Data.SnapshotOptions.Data.set -> void
+Bruinet.Mocking.Data.SnapshotOptions.DefaultSchema.get -> string!
+Bruinet.Mocking.Data.SnapshotOptions.DefaultSchema.set -> void
+Bruinet.Mocking.Data.SnapshotOptions.Provider.get -> Bruinet.Mocking.Data.SnapshotProvider
+Bruinet.Mocking.Data.SnapshotOptions.Provider.set -> void
+Bruinet.Mocking.Data.SnapshotOptions.SnapshotOptions() -> void
+Bruinet.Mocking.Data.SnapshotProvider
+Bruinet.Mocking.Data.SnapshotProvider.Auto = 0 -> Bruinet.Mocking.Data.SnapshotProvider
+Bruinet.Mocking.Data.SnapshotProvider.SqlServer = 1 -> Bruinet.Mocking.Data.SnapshotProvider
+Bruinet.Mocking.Data.SnapshotProvider.Sqlite = 2 -> Bruinet.Mocking.Data.SnapshotProvider
+Bruinet.Mocking.Data.SqlLog
+Bruinet.Mocking.Data.SqlLog.Clear() -> void
+Bruinet.Mocking.Data.SqlLog.Elapsed.get -> System.TimeSpan
+Bruinet.Mocking.Data.SqlLog.Entries.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.SqlLogEntry!>!
+Bruinet.Mocking.Data.SqlLog.Logged -> System.Action<Bruinet.Mocking.Data.SqlLogEntry!>?
+Bruinet.Mocking.Data.SqlLog.SqlLog(string? folder, bool keep = false) -> void
+Bruinet.Mocking.Data.SqlLog.Write(Bruinet.Mocking.Data.SqlLogEntry! entry) -> void
+Bruinet.Mocking.Data.SqlLogEntry
+Bruinet.Mocking.Data.SqlLogEntry.Affected.get -> int?
+Bruinet.Mocking.Data.SqlLogEntry.Affected.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.End.get -> System.DateTime
+Bruinet.Mocking.Data.SqlLogEntry.Error.get -> int?
+Bruinet.Mocking.Data.SqlLogEntry.Error.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Kind.get -> string!
+Bruinet.Mocking.Data.SqlLogEntry.Kind.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Ms.get -> double
+Bruinet.Mocking.Data.SqlLogEntry.Ms.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Objects.get -> string![]?
+Bruinet.Mocking.Data.SqlLogEntry.Objects.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Parameters.get -> string![]?
+Bruinet.Mocking.Data.SqlLogEntry.Parameters.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Rows.get -> int?
+Bruinet.Mocking.Data.SqlLogEntry.Rows.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Run.get -> string?
+Bruinet.Mocking.Data.SqlLogEntry.Run.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.SqlLogEntry() -> void
+Bruinet.Mocking.Data.SqlLogEntry.Start.get -> System.DateTime
+Bruinet.Mocking.Data.SqlLogEntry.Start.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Test.get -> string?
+Bruinet.Mocking.Data.SqlLogEntry.Test.set -> void
+Bruinet.Mocking.Data.SqlLogEntry.Text.get -> string?
+Bruinet.Mocking.Data.SqlLogEntry.Text.set -> void
+Bruinet.Mocking.Data.SqlLogScope
+Bruinet.Mocking.Data.Statements
+const Bruinet.Mocking.Data.Replay.RecordingReview.FileName = "reviewed.json" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.BeginPath = "/__bruinet/sql/begin" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.Cookie = "bruinet-test" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.EndPath = "/__bruinet/sql/end" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.Header = "X-Bruinet-Test" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayRegistry.FolderVariable = "BRUINET_SQL_RECORDINGS" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable = "BRUINET_SQL_REPLAY" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayRegistry.SchemaVariable = "BRUINET_SQL_SCHEMA" -> string!
+const Bruinet.Mocking.Data.Replay.Schema.Unknown = "?" -> string!
+const Bruinet.Mocking.Data.SqlLog.Variable = "BRUINET_SQL_LOG" -> string!
+override Bruinet.Mocking.Data.LoggingDbCommand.Cancel() -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandText.get -> string!
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandText.set -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandTimeout.get -> int
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandTimeout.set -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandType.get -> System.Data.CommandType
+override Bruinet.Mocking.Data.LoggingDbCommand.CommandType.set -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.DesignTimeVisible.get -> bool
+override Bruinet.Mocking.Data.LoggingDbCommand.DesignTimeVisible.set -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.ExecuteNonQuery() -> int
+override Bruinet.Mocking.Data.LoggingDbCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<int>!
+override Bruinet.Mocking.Data.LoggingDbCommand.ExecuteScalar() -> object?
+override Bruinet.Mocking.Data.LoggingDbCommand.ExecuteScalarAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<object?>!
+override Bruinet.Mocking.Data.LoggingDbCommand.Prepare() -> void
+override Bruinet.Mocking.Data.LoggingDbCommand.UpdatedRowSource.get -> System.Data.UpdateRowSource
+override Bruinet.Mocking.Data.LoggingDbCommand.UpdatedRowSource.set -> void
+override Bruinet.Mocking.Data.LoggingDbConnection.ChangeDatabase(string! databaseName) -> void
+override Bruinet.Mocking.Data.LoggingDbConnection.Close() -> void
+override Bruinet.Mocking.Data.LoggingDbConnection.ConnectionString.get -> string!
+override Bruinet.Mocking.Data.LoggingDbConnection.ConnectionString.set -> void
+override Bruinet.Mocking.Data.LoggingDbConnection.ConnectionTimeout.get -> int
+override Bruinet.Mocking.Data.LoggingDbConnection.DataSource.get -> string!
+override Bruinet.Mocking.Data.LoggingDbConnection.Database.get -> string!
+override Bruinet.Mocking.Data.LoggingDbConnection.GetSchema() -> System.Data.DataTable!
+override Bruinet.Mocking.Data.LoggingDbConnection.GetSchema(string! collectionName) -> System.Data.DataTable!
+override Bruinet.Mocking.Data.LoggingDbConnection.GetSchema(string! collectionName, string?[]! restrictionValues) -> System.Data.DataTable!
+override Bruinet.Mocking.Data.LoggingDbConnection.Open() -> void
+override Bruinet.Mocking.Data.LoggingDbConnection.OpenAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+override Bruinet.Mocking.Data.LoggingDbConnection.ServerVersion.get -> string!
+override Bruinet.Mocking.Data.LoggingDbConnection.State.get -> System.Data.ConnectionState
+override Bruinet.Mocking.Data.LoggingDbDataReader.Close() -> void
+override Bruinet.Mocking.Data.LoggingDbDataReader.Depth.get -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.FieldCount.get -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetBoolean(int ordinal) -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetByte(int ordinal) -> byte
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetBytes(int ordinal, long dataOffset, byte[]? buffer, int bufferOffset, int length) -> long
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetChar(int ordinal) -> char
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetChars(int ordinal, long dataOffset, char[]? buffer, int bufferOffset, int length) -> long
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetDataTypeName(int ordinal) -> string!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetDateTime(int ordinal) -> System.DateTime
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetDecimal(int ordinal) -> decimal
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetDouble(int ordinal) -> double
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetEnumerator() -> System.Collections.IEnumerator!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetFieldType(int ordinal) -> System.Type!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetFieldValue<T>(int ordinal) -> T
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetFieldValueAsync<T>(int ordinal, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<T>!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetFloat(int ordinal) -> float
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetGuid(int ordinal) -> System.Guid
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetInt16(int ordinal) -> short
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetInt32(int ordinal) -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetInt64(int ordinal) -> long
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetName(int ordinal) -> string!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetOrdinal(string! name) -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetSchemaTable() -> System.Data.DataTable?
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetStream(int ordinal) -> System.IO.Stream!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetString(int ordinal) -> string!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetTextReader(int ordinal) -> System.IO.TextReader!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetValue(int ordinal) -> object!
+override Bruinet.Mocking.Data.LoggingDbDataReader.GetValues(object![]! values) -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.HasRows.get -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.IsClosed.get -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.IsDBNull(int ordinal) -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.IsDBNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+override Bruinet.Mocking.Data.LoggingDbDataReader.NextResult() -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.NextResultAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+override Bruinet.Mocking.Data.LoggingDbDataReader.Read() -> bool
+override Bruinet.Mocking.Data.LoggingDbDataReader.ReadAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<bool>!
+override Bruinet.Mocking.Data.LoggingDbDataReader.RecordsAffected.get -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.VisibleFieldCount.get -> int
+override Bruinet.Mocking.Data.LoggingDbDataReader.this[int ordinal].get -> object!
+override Bruinet.Mocking.Data.LoggingDbDataReader.this[string! name].get -> object!
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateCommand() -> System.Data.Common.DbCommand?
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateCommandBuilder() -> System.Data.Common.DbCommandBuilder?
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateConnection() -> System.Data.Common.DbConnection?
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateConnectionStringBuilder() -> System.Data.Common.DbConnectionStringBuilder?
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateDataAdapter() -> System.Data.Common.DbDataAdapter?
+override Bruinet.Mocking.Data.LoggingDbProviderFactory.CreateParameter() -> System.Data.Common.DbParameter?
+override Bruinet.Mocking.Data.LoggingDbTransaction.Commit() -> void
+override Bruinet.Mocking.Data.LoggingDbTransaction.IsolationLevel.get -> System.Data.IsolationLevel
+override Bruinet.Mocking.Data.LoggingDbTransaction.Rollback() -> void
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.Close() -> void
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.Depth.get -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.FieldCount.get -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetBoolean(int ordinal) -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetByte(int ordinal) -> byte
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetBytes(int ordinal, long dataOffset, byte[]? buffer, int bufferOffset, int length) -> long
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetChar(int ordinal) -> char
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetChars(int ordinal, long dataOffset, char[]? buffer, int bufferOffset, int length) -> long
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetDataTypeName(int ordinal) -> string!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetDateTime(int ordinal) -> System.DateTime
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetDecimal(int ordinal) -> decimal
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetDouble(int ordinal) -> double
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetEnumerator() -> System.Collections.IEnumerator!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetFieldType(int ordinal) -> System.Type!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetFieldValue<T>(int ordinal) -> T
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetFloat(int ordinal) -> float
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetGuid(int ordinal) -> System.Guid
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetInt16(int ordinal) -> short
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetInt32(int ordinal) -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetInt64(int ordinal) -> long
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetName(int ordinal) -> string!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetOrdinal(string! name) -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetString(int ordinal) -> string!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetValue(int ordinal) -> object!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.GetValues(object![]! values) -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.HasRows.get -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.IsClosed.get -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.IsDBNull(int ordinal) -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.NextResult() -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.Read() -> bool
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.RecordsAffected.get -> int
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.this[int ordinal].get -> object!
+override Bruinet.Mocking.Data.Replay.ReplayDataReader.this[string! name].get -> object!
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.Cancel() -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandText.get -> string!
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandText.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandTimeout.get -> int
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandTimeout.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandType.get -> System.Data.CommandType
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.CommandType.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.DesignTimeVisible.get -> bool
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.DesignTimeVisible.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.ExecuteNonQuery() -> int
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.ExecuteNonQueryAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<int>!
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.ExecuteScalar() -> object?
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.ExecuteScalarAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<object?>!
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.Prepare() -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.UpdatedRowSource.get -> System.Data.UpdateRowSource
+override Bruinet.Mocking.Data.Replay.ReplayingDbCommand.UpdatedRowSource.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ChangeDatabase(string! databaseName) -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.Close() -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ConnectionString.get -> string!
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ConnectionString.set -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ConnectionTimeout.get -> int
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.DataSource.get -> string!
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.Database.get -> string!
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.Open() -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.OpenAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.ServerVersion.get -> string!
+override Bruinet.Mocking.Data.Replay.ReplayingDbConnection.State.get -> System.Data.ConnectionState
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateCommand() -> System.Data.Common.DbCommand?
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateCommandBuilder() -> System.Data.Common.DbCommandBuilder?
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateConnection() -> System.Data.Common.DbConnection?
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateConnectionStringBuilder() -> System.Data.Common.DbConnectionStringBuilder?
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateDataAdapter() -> System.Data.Common.DbDataAdapter?
+override Bruinet.Mocking.Data.Replay.ReplayingDbProviderFactory.CreateParameter() -> System.Data.Common.DbParameter?
+override Bruinet.Mocking.Data.Replay.ReplayingDbTransaction.Commit() -> void
+override Bruinet.Mocking.Data.Replay.ReplayingDbTransaction.IsolationLevel.get -> System.Data.IsolationLevel
+override Bruinet.Mocking.Data.Replay.ReplayingDbTransaction.Rollback() -> void
+static Bruinet.Mocking.Data.CaptureState.Load(string! path) -> Bruinet.Mocking.Data.CaptureState!
+static Bruinet.Mocking.Data.ExtendedEvents.Entry(System.Xml.Linq.XElement! element, System.TimeSpan offset) -> Bruinet.Mocking.Data.SqlLogEntry?
+static Bruinet.Mocking.Data.ExtendedEvents.ReadAsync(System.Data.Common.DbConnection! connection, Bruinet.Mocking.Data.CaptureState! state, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.SqlLogEntry!>!>!
+static Bruinet.Mocking.Data.ExtendedEvents.SessionName(string! database) -> string!
+static Bruinet.Mocking.Data.ExtendedEvents.StartAsync(System.Data.Common.DbConnection! connection, string! folder, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), string? like = null) -> System.Threading.Tasks.Task<Bruinet.Mocking.Data.CaptureState!>!
+static Bruinet.Mocking.Data.ExtendedEvents.StopAsync(System.Data.Common.DbConnection! connection, string! database, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Bruinet.Mocking.Data.LoggingDbCommand.ErrorNumber(System.Data.Common.DbException! error) -> int
+static Bruinet.Mocking.Data.Replay.ProviderRules.Live(System.Data.Common.DbCommand! command, string! kind) -> Bruinet.Mocking.Data.Replay.Exchange!
+static Bruinet.Mocking.Data.Replay.ProviderRules.Outputs(System.Data.Common.DbCommand! command) -> System.Collections.Generic.Dictionary<string!, System.Text.Json.Nodes.JsonNode?>?
+static Bruinet.Mocking.Data.Replay.ProviderRules.Raise(Bruinet.Mocking.Data.Replay.RecordedError! error) -> System.Exception!
+static Bruinet.Mocking.Data.Replay.ProviderRules.ReadAll(System.Data.Common.DbDataReader! reader) -> System.Collections.Generic.List<Bruinet.Mocking.Data.Replay.RecordedResult!>!
+static Bruinet.Mocking.Data.Replay.ProviderRules.Recorded(System.Exception! exception) -> Bruinet.Mocking.Data.Replay.RecordedError?
+static Bruinet.Mocking.Data.Replay.ProviderRules.Replay(Bruinet.Mocking.Data.Replay.ReplaySession! session, System.Data.Common.DbCommand! command, string! kind) -> Bruinet.Mocking.Data.Replay.Exchange!
+static Bruinet.Mocking.Data.Replay.ProviderRules.SetOutputs(System.Data.Common.DbCommand! command, Bruinet.Mocking.Data.Replay.Exchange! recorded, Bruinet.Mocking.Data.Replay.ReplaySession! session) -> void
+static Bruinet.Mocking.Data.Replay.Recording.Load(string! path) -> Bruinet.Mocking.Data.Replay.Recording?
+static Bruinet.Mocking.Data.Replay.Recording.Parse(string! json) -> Bruinet.Mocking.Data.Replay.Recording?
+static Bruinet.Mocking.Data.Replay.RecordingCheck.Check(string! folder, Bruinet.Mocking.Data.Replay.Schema! schema) -> System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Data.Replay.RecordingState!>!
+static Bruinet.Mocking.Data.Replay.RecordingDiff.Compare(Bruinet.Mocking.Data.Replay.Recording? before, Bruinet.Mocking.Data.Replay.Recording? after, System.Collections.Generic.IReadOnlyCollection<string!>? volatileBefore = null, System.Collections.Generic.IReadOnlyCollection<string!>? volatileAfter = null) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Data.Replay.RecordingReview.Accept(string! folder) -> void
+static Bruinet.Mocking.Data.Replay.RecordingReview.Hash(string! json, System.Collections.Generic.IReadOnlyCollection<string!>? shared = null) -> string!
+static Bruinet.Mocking.Data.Replay.RecordingReview.IsRecording(string! json) -> bool
+static Bruinet.Mocking.Data.Replay.RecordingReview.Recordings(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Data.Replay.RecordingReview.Unreviewed(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Data.Replay.RecordingReview.VolatileValues(System.Collections.Generic.IEnumerable<Bruinet.Mocking.Data.Replay.Recording!>! recordings) -> System.Collections.Generic.IReadOnlyCollection<string!>!
+static Bruinet.Mocking.Data.Replay.RecordingReview.VolatileValues(string! folder) -> System.Collections.Generic.IReadOnlyCollection<string!>!
+static Bruinet.Mocking.Data.Replay.ReplayHook.BeginAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test) -> System.Threading.Tasks.Task!
+static Bruinet.Mocking.Data.Replay.ReplayHook.BeginUrl(System.Uri! app, string! test) -> System.Uri!
+static Bruinet.Mocking.Data.Replay.ReplayHook.Control(Bruinet.Mocking.Data.Replay.ReplayRegistry! registry, string! path, System.Func<string!, string?>! query) -> Bruinet.Mocking.Data.Replay.HookResponse?
+static Bruinet.Mocking.Data.Replay.ReplayHook.EndAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test) -> System.Threading.Tasks.Task!
+static Bruinet.Mocking.Data.Replay.ReplayHook.TestOf(System.Func<string!, string?>! header, System.Func<string!, string?>! cookie) -> string?
+static Bruinet.Mocking.Data.Replay.ReplayRegistry.FromEnvironment() -> Bruinet.Mocking.Data.Replay.ReplayRegistry?
+static Bruinet.Mocking.Data.Replay.ReplayScope.Current.get -> Bruinet.Mocking.Data.Replay.ReplaySession?
+static Bruinet.Mocking.Data.Replay.ReplayScope.Enter(Bruinet.Mocking.Data.Replay.ReplaySession? session) -> System.IDisposable!
+static Bruinet.Mocking.Data.Replay.ReplayScope.Fallback.get -> System.Func<Bruinet.Mocking.Data.Replay.ReplaySession?>?
+static Bruinet.Mocking.Data.Replay.ReplayScope.Fallback.set -> void
+static Bruinet.Mocking.Data.Replay.Values.Canonical(System.Text.Json.Nodes.JsonNode? node) -> string?
+static Bruinet.Mocking.Data.Replay.Values.FromJson(System.Text.Json.Nodes.JsonNode? node) -> object?
+static Bruinet.Mocking.Data.Replay.Values.Same(System.Text.Json.Nodes.JsonNode? left, System.Text.Json.Nodes.JsonNode? right) -> bool
+static Bruinet.Mocking.Data.Replay.Values.ToJson(object? value) -> System.Text.Json.Nodes.JsonNode?
+static Bruinet.Mocking.Data.SchemaSnapshot.Load(string! path) -> Bruinet.Mocking.Data.SchemaSnapshot!
+static Bruinet.Mocking.Data.SchemaSnapshot.ReadAsync(System.Data.Common.DbConnection! connection, Bruinet.Mocking.Data.SnapshotOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Mocking.Data.SchemaSnapshot!>!
+static Bruinet.Mocking.Data.SchemaSnapshot.ReadAsync(System.Data.Common.DbConnection! connection, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Mocking.Data.SchemaSnapshot!>!
+static Bruinet.Mocking.Data.SqlLog.Entry(string! kind, string? text, System.Collections.Generic.IEnumerable<string!>? parameters, System.DateTime start, System.TimeSpan elapsed) -> Bruinet.Mocking.Data.SqlLogEntry!
+static Bruinet.Mocking.Data.SqlLog.FromEnvironment(bool keep = false) -> Bruinet.Mocking.Data.SqlLog?
+static Bruinet.Mocking.Data.SqlLog.Read(string! folderOrFile) -> System.Collections.Generic.IEnumerable<Bruinet.Mocking.Data.SqlLogEntry!>!
+static Bruinet.Mocking.Data.SqlLog.Run.get -> string!
+static Bruinet.Mocking.Data.SqlLogScope.Current.get -> System.Func<string?>!
+static Bruinet.Mocking.Data.SqlLogScope.Current.set -> void
+static Bruinet.Mocking.Data.Statements.InsertParameters(string! text) -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static Bruinet.Mocking.Data.Statements.IsWrite(string! text) -> bool
+static Bruinet.Mocking.Data.Statements.Key(string! text) -> string!
+static Bruinet.Mocking.Data.Statements.Names(string! text) -> System.Collections.Generic.IEnumerable<(string? Schema, string! Name)>!
+static Bruinet.Mocking.Data.Statements.Normalize(string! text) -> string!
+static Bruinet.Mocking.Data.Statements.Objects(string! text) -> System.Collections.Generic.IEnumerable<string!>!
+static Bruinet.Mocking.Data.Statements.Projection(string! normalized) -> Bruinet.Mocking.Data.Projected?
+static Bruinet.Mocking.Data.Statements.WithoutLiterals(string! text) -> string!

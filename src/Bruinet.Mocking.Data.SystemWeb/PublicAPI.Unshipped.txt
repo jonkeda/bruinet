@@ -1,0 +1,5 @@
+#nullable enable
+Bruinet.Mocking.Data.SystemWeb.SqlReplayModule
+Bruinet.Mocking.Data.SystemWeb.SqlReplayModule.Dispose() -> void
+Bruinet.Mocking.Data.SystemWeb.SqlReplayModule.Init(System.Web.HttpApplication! context) -> void
+Bruinet.Mocking.Data.SystemWeb.SqlReplayModule.SqlReplayModule() -> void

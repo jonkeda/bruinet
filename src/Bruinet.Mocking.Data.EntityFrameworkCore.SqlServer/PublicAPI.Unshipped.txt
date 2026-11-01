@@ -1,0 +1,9 @@
+#nullable enable
+Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryMapping<TGeometry>
+Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryPlugin
+Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryPlugin.ReplayGeometryPlugin(NetTopologySuite.NtsGeometryServices! geometryServices) -> void
+Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.SpatialReplay
+override Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryMapping<TGeometry>.GetDataReaderMethod() -> System.Reflection.MethodInfo!
+override Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryPlugin.FindMapping(in Microsoft.EntityFrameworkCore.Storage.RelationalTypeMappingInfo mappingInfo) -> Microsoft.EntityFrameworkCore.Storage.RelationalTypeMapping?
+static Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryMapping<TGeometry>.From(Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerGeometryTypeMapping<TGeometry!>! mapping) -> Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.ReplayGeometryMapping<TGeometry!>!
+static Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer.SpatialReplay.UseSpatialReplay(this Microsoft.EntityFrameworkCore.DbContextOptionsBuilder! options) -> Microsoft.EntityFrameworkCore.DbContextOptionsBuilder!

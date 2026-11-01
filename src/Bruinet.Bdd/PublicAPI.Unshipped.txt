@@ -1,0 +1,1155 @@
+#nullable enable
+Bruinet.Bdd.BddAfterScenarioAttribute
+Bruinet.Bdd.BddAfterScenarioAttribute.BddAfterScenarioAttribute(params string![]! tags) -> void
+Bruinet.Bdd.BddAfterStepAttribute
+Bruinet.Bdd.BddAfterStepAttribute.BddAfterStepAttribute(params string![]! tags) -> void
+Bruinet.Bdd.BddAppConfig
+Bruinet.Bdd.BddAppConfig.BddAppConfig(string! Name, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Values) -> void
+Bruinet.Bdd.BddAppConfig.Head.get -> string?
+Bruinet.Bdd.BddAppConfig.Name.get -> string!
+Bruinet.Bdd.BddAppConfig.Name.init -> void
+Bruinet.Bdd.BddAppConfig.User.get -> string!
+Bruinet.Bdd.BddAppConfig.Values.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddAppConfig.Values.init -> void
+Bruinet.Bdd.BddArgumentTypeAttribute
+Bruinet.Bdd.BddArgumentTypeAttribute.BddArgumentTypeAttribute() -> void
+Bruinet.Bdd.BddArgumentTypes
+Bruinet.Bdd.BddArgumentTypes.BddArgumentTypes() -> void
+Bruinet.Bdd.BddArgumentTypes.IsRegistered(System.Type! type) -> bool
+Bruinet.Bdd.BddArgumentTypes.Registered.get -> System.Collections.Generic.IEnumerable<System.Type!>!
+Bruinet.Bdd.BddArgumentTypes.TryRead(string! text, System.Type! type, System.IServiceProvider? services, out object? value, out Bruinet.Bdd.BddValueProblem? problem) -> bool
+Bruinet.Bdd.BddArguments
+Bruinet.Bdd.BddAssemblyRegistration
+Bruinet.Bdd.BddAssemblyRegistration.Assembly.get -> string!
+Bruinet.Bdd.BddAssemblyRegistration.Assembly.init -> void
+Bruinet.Bdd.BddAssemblyRegistration.BddAssemblyRegistration(string! Kind, string! Assembly) -> void
+Bruinet.Bdd.BddAssemblyRegistration.Kind.get -> string!
+Bruinet.Bdd.BddAssemblyRegistration.Kind.init -> void
+Bruinet.Bdd.BddBeforeFeatureAttribute
+Bruinet.Bdd.BddBeforeFeatureAttribute.BddBeforeFeatureAttribute() -> void
+Bruinet.Bdd.BddBeforeScenarioAttribute
+Bruinet.Bdd.BddBeforeScenarioAttribute.BddBeforeScenarioAttribute(params string![]! tags) -> void
+Bruinet.Bdd.BddBindResult
+Bruinet.Bdd.BddBindResult.BddBindResult(Bruinet.Bdd.BddBoundDocument? document, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! diagnostics) -> void
+Bruinet.Bdd.BddBindResult.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Bdd.BddBindResult.Document.get -> Bruinet.Bdd.BddBoundDocument?
+Bruinet.Bdd.BddBindResult.Scenarios.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddBoundScenario!>!
+Bruinet.Bdd.BddBindResult.Scenarios.init -> void
+Bruinet.Bdd.BddBindResult.Success.get -> bool
+Bruinet.Bdd.BddBinder
+Bruinet.Bdd.BddBoundDocument
+Bruinet.Bdd.BddBoundDocument.BddBoundDocument(Bruinet.Bdd.BddDocument! Source, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddBoundScenario!>! Scenarios) -> void
+Bruinet.Bdd.BddBoundDocument.Scenarios.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddBoundScenario!>!
+Bruinet.Bdd.BddBoundDocument.Scenarios.init -> void
+Bruinet.Bdd.BddBoundDocument.Source.get -> Bruinet.Bdd.BddDocument!
+Bruinet.Bdd.BddBoundDocument.Source.init -> void
+Bruinet.Bdd.BddBoundScenario
+Bruinet.Bdd.BddBoundScenario.BddBoundScenario(Bruinet.Bdd.BddScenario! Source, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStepInvocation!>! Invocations) -> void
+Bruinet.Bdd.BddBoundScenario.Hooks.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddHook!>!
+Bruinet.Bdd.BddBoundScenario.Hooks.init -> void
+Bruinet.Bdd.BddBoundScenario.Invocations.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStepInvocation!>!
+Bruinet.Bdd.BddBoundScenario.Invocations.init -> void
+Bruinet.Bdd.BddBoundScenario.Source.get -> Bruinet.Bdd.BddScenario!
+Bruinet.Bdd.BddBoundScenario.Source.init -> void
+Bruinet.Bdd.BddBreakpoints
+Bruinet.Bdd.BddBreakpoints.AfterFailure(Bruinet.Bdd.BddStepResult! result) -> bool
+Bruinet.Bdd.BddBreakpoints.BddBreakpoints(string! path, System.Func<string!, string?>? read = null, System.Action<string!, string?>? write = null, System.Action? stop = null) -> void
+Bruinet.Bdd.BddBreakpoints.Before(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context) -> Bruinet.Bdd.BddStepBreak?
+Bruinet.Bdd.BddBreakpoints.Break(Bruinet.Bdd.BddStepBreak! stepBreak) -> void
+Bruinet.Bdd.BddBreakpoints.PausedPath.get -> string!
+Bruinet.Bdd.BddCallFrame
+Bruinet.Bdd.BddCallFrame.BddCallFrame(Bruinet.Bdd.BddCallable! Callable, Bruinet.Bdd.BddStep! Call, int? Row, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Values, Bruinet.Bdd.BddCallFrame? Parent) -> void
+Bruinet.Bdd.BddCallFrame.Call.get -> Bruinet.Bdd.BddStep!
+Bruinet.Bdd.BddCallFrame.Call.init -> void
+Bruinet.Bdd.BddCallFrame.Callable.get -> Bruinet.Bdd.BddCallable!
+Bruinet.Bdd.BddCallFrame.Callable.init -> void
+Bruinet.Bdd.BddCallFrame.Chain.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallFrame!>!
+Bruinet.Bdd.BddCallFrame.Depth.get -> int
+Bruinet.Bdd.BddCallFrame.Describe() -> string!
+Bruinet.Bdd.BddCallFrame.Location.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddCallFrame.Parent.get -> Bruinet.Bdd.BddCallFrame?
+Bruinet.Bdd.BddCallFrame.Parent.init -> void
+Bruinet.Bdd.BddCallFrame.Row.get -> int?
+Bruinet.Bdd.BddCallFrame.Row.init -> void
+Bruinet.Bdd.BddCallFrame.Values.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddCallFrame.Values.init -> void
+Bruinet.Bdd.BddCallable
+Bruinet.Bdd.BddCallable.BddCallable(Bruinet.Bdd.BddCallableKind Kind, string! Phrase, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallableParameterDeclaration!>! Declared, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>! Steps, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddCallable.Declared.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallableParameterDeclaration!>!
+Bruinet.Bdd.BddCallable.Declared.init -> void
+Bruinet.Bdd.BddCallable.HeadingParameters.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddCallable.Kind.get -> Bruinet.Bdd.BddCallableKind
+Bruinet.Bdd.BddCallable.Kind.init -> void
+Bruinet.Bdd.BddCallable.LocalTo.get -> string?
+Bruinet.Bdd.BddCallable.LocalTo.init -> void
+Bruinet.Bdd.BddCallable.Namespace.get -> string!
+Bruinet.Bdd.BddCallable.Namespace.init -> void
+Bruinet.Bdd.BddCallable.Phrase.get -> string!
+Bruinet.Bdd.BddCallable.Phrase.init -> void
+Bruinet.Bdd.BddCallable.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddCallable.Source.init -> void
+Bruinet.Bdd.BddCallable.Steps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>!
+Bruinet.Bdd.BddCallable.Steps.init -> void
+Bruinet.Bdd.BddCallable.Usings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddCallable.Usings.init -> void
+Bruinet.Bdd.BddCallableKind
+Bruinet.Bdd.BddCallableKind.EachRow = 1 -> Bruinet.Bdd.BddCallableKind
+Bruinet.Bdd.BddCallableKind.Once = 0 -> Bruinet.Bdd.BddCallableKind
+Bruinet.Bdd.BddCallableParameterDeclaration
+Bruinet.Bdd.BddCallableParameterDeclaration.BddCallableParameterDeclaration(string! Name, string! TypeName, string? Example, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddCallableParameterDeclaration.Example.get -> string?
+Bruinet.Bdd.BddCallableParameterDeclaration.Example.init -> void
+Bruinet.Bdd.BddCallableParameterDeclaration.Name.get -> string!
+Bruinet.Bdd.BddCallableParameterDeclaration.Name.init -> void
+Bruinet.Bdd.BddCallableParameterDeclaration.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddCallableParameterDeclaration.Source.init -> void
+Bruinet.Bdd.BddCallableParameterDeclaration.TypeName.get -> string!
+Bruinet.Bdd.BddCallableParameterDeclaration.TypeName.init -> void
+Bruinet.Bdd.BddCallableSet
+Bruinet.Bdd.BddCallableSet.BddCallableSet(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddCallable!>! callables) -> void
+Bruinet.Bdd.BddCallableSet.Callables.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallable!>!
+Bruinet.Bdd.BddCallableSet.Prepare(Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddPreparedCallables!
+Bruinet.Bdd.BddCatalogSet
+Bruinet.Bdd.BddCatalogSet.Apps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddCatalogSet.AppsOf(string! user) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddCatalogSet.BddCatalogSet(Bruinet.Bdd.BddCommandCatalog! catalog) -> void
+Bruinet.Bdd.BddCatalogSet.BddCatalogSet(Bruinet.Bdd.BddCommandCatalog! defaultCatalog, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>! apps, string? suiteHead, System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Bdd.BddCommandCatalog!>! catalogsByHead, System.Collections.Generic.IEnumerable<string!>! reservedNames) -> void
+Bruinet.Bdd.BddCatalogSet.CatalogFor(Bruinet.Bdd.BddAppConfig? app) -> Bruinet.Bdd.BddCommandCatalog!
+Bruinet.Bdd.BddCatalogSet.Default.get -> Bruinet.Bdd.BddCommandCatalog!
+Bruinet.Bdd.BddCatalogSet.DescribeApps() -> string!
+Bruinet.Bdd.BddCatalogSet.FindApp(string! name) -> Bruinet.Bdd.BddAppConfig?
+Bruinet.Bdd.BddCatalogSet.Heads.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Bdd.BddCatalogSet.ReservedNames.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Bdd.BddCatalogSet.SuiteHead.get -> string?
+Bruinet.Bdd.BddCatalogSet.TryFindSubject(string! text, out string! subject, out string! rest) -> bool
+Bruinet.Bdd.BddCatalogSet.Usings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddCatalogSet.Usings.init -> void
+Bruinet.Bdd.BddCommandCatalog
+Bruinet.Bdd.BddCommandCatalog.AddHook(Bruinet.Bdd.BddHook! hook) -> void
+Bruinet.Bdd.BddCommandCatalog.AddUnmatchable(Bruinet.Bdd.BddUnmatchableDeclaration! declaration) -> void
+Bruinet.Bdd.BddCommandCatalog.ArgumentTypes.get -> Bruinet.Bdd.BddArgumentTypes!
+Bruinet.Bdd.BddCommandCatalog.ArgumentTypes.set -> void
+Bruinet.Bdd.BddCommandCatalog.BddCommandCatalog() -> void
+Bruinet.Bdd.BddCommandCatalog.Candidates(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
+Bruinet.Bdd.BddCommandCatalog.Hooks.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddHook!>!
+Bruinet.Bdd.BddCommandCatalog.IsGeneric.get -> bool
+Bruinet.Bdd.BddCommandCatalog.IsGeneric.set -> void
+Bruinet.Bdd.BddCommandCatalog.Match(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
+Bruinet.Bdd.BddCommandCatalog.Patterns.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandPattern!>!
+Bruinet.Bdd.BddCommandCatalog.Register(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null, bool namesPage = false, string? page = null, string? pageAfter = null, Bruinet.Bdd.BddControlVerb? controlVerb = null, string? phraseNamespace = null) -> Bruinet.Bdd.BddCommandPattern!
+Bruinet.Bdd.BddCommandCatalog.Scope.get -> Bruinet.Bdd.IStepScopeModel?
+Bruinet.Bdd.BddCommandCatalog.Scope.set -> void
+Bruinet.Bdd.BddCommandCatalog.Unmatchable.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddUnmatchableDeclaration!>!
+Bruinet.Bdd.BddCommandHandler
+Bruinet.Bdd.BddCommandMatch
+Bruinet.Bdd.BddCommandMatch.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddCommandMatch.Arguments.init -> void
+Bruinet.Bdd.BddCommandMatch.BddCommandMatch(Bruinet.Bdd.BddCommandPattern! Pattern, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Arguments) -> void
+Bruinet.Bdd.BddCommandMatch.Pattern.get -> Bruinet.Bdd.BddCommandPattern!
+Bruinet.Bdd.BddCommandMatch.Pattern.init -> void
+Bruinet.Bdd.BddCommandMatch.RawArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddCommandMatch.RawArguments.init -> void
+Bruinet.Bdd.BddCommandPattern
+Bruinet.Bdd.BddCommandPattern.AllowsTable.get -> bool
+Bruinet.Bdd.BddCommandPattern.BddCommandPattern(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null) -> void
+Bruinet.Bdd.BddCommandPattern.Callable.get -> Bruinet.Bdd.BddCallable?
+Bruinet.Bdd.BddCommandPattern.Callable.init -> void
+Bruinet.Bdd.BddCommandPattern.CommandId.get -> string!
+Bruinet.Bdd.BddCommandPattern.ControlVerb.get -> Bruinet.Bdd.BddControlVerb?
+Bruinet.Bdd.BddCommandPattern.ControlVerb.init -> void
+Bruinet.Bdd.BddCommandPattern.Handler.get -> Bruinet.Bdd.BddCommandHandler?
+Bruinet.Bdd.BddCommandPattern.IndexKey.get -> string!
+Bruinet.Bdd.BddCommandPattern.IsExact.get -> bool
+Bruinet.Bdd.BddCommandPattern.IsPageScoped.get -> bool
+Bruinet.Bdd.BddCommandPattern.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddCommandPattern.NamesPage.get -> bool
+Bruinet.Bdd.BddCommandPattern.NamesPage.init -> void
+Bruinet.Bdd.BddCommandPattern.Namespace.get -> string!
+Bruinet.Bdd.BddCommandPattern.Namespace.init -> void
+Bruinet.Bdd.BddCommandPattern.Page.get -> string?
+Bruinet.Bdd.BddCommandPattern.Page.init -> void
+Bruinet.Bdd.BddCommandPattern.PageAfter.get -> string?
+Bruinet.Bdd.BddCommandPattern.PageAfter.init -> void
+Bruinet.Bdd.BddCommandPattern.Parameters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>!
+Bruinet.Bdd.BddCommandPattern.Phrase.get -> string!
+Bruinet.Bdd.BddCommandPattern.Problem.get -> Bruinet.Bdd.BddPhraseProblem?
+Bruinet.Bdd.BddCommandPattern.RequiresTable.get -> bool
+Bruinet.Bdd.BddCommandPattern.Specificity.get -> int
+Bruinet.Bdd.BddCommandPattern.TryMatch(Bruinet.Bdd.BddStep! step) -> Bruinet.Bdd.BddCommandMatch?
+Bruinet.Bdd.BddConfig
+Bruinet.Bdd.BddConfig.Apps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddConfig.Apps.init -> void
+Bruinet.Bdd.BddConfig.Assemblies.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAssemblyRegistration!>!
+Bruinet.Bdd.BddConfig.Assemblies.init -> void
+Bruinet.Bdd.BddConfig.BddConfig(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Runtime, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAssemblyRegistration!>! Assemblies, Bruinet.Bdd.BddDiscoverySettings! Discovery) -> void
+Bruinet.Bdd.BddConfig.BddConfig(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Runtime, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAssemblyRegistration!>! Assemblies, Bruinet.Bdd.BddDiscoverySettings! Discovery, Bruinet.Bdd.BddReportingSettings! Reporting, Bruinet.Bdd.BddSettingsConfig! Settings, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddSkipRule!>! SkipRules) -> void
+Bruinet.Bdd.BddConfig.Discovery.get -> Bruinet.Bdd.BddDiscoverySettings!
+Bruinet.Bdd.BddConfig.Discovery.init -> void
+Bruinet.Bdd.BddConfig.EvaluateSkip(System.Collections.Generic.IEnumerable<string!>! tags, System.Func<string!, string?>? getEnvironmentVariable = null) -> Bruinet.Bdd.BddSkipDecision!
+Bruinet.Bdd.BddConfig.Reporting.get -> Bruinet.Bdd.BddReportingSettings!
+Bruinet.Bdd.BddConfig.Reporting.init -> void
+Bruinet.Bdd.BddConfig.RunsOnHead(System.Collections.Generic.IEnumerable<string!>! tags) -> bool
+Bruinet.Bdd.BddConfig.Runtime.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddConfig.Runtime.init -> void
+Bruinet.Bdd.BddConfig.Settings.get -> Bruinet.Bdd.BddSettingsConfig!
+Bruinet.Bdd.BddConfig.Settings.init -> void
+Bruinet.Bdd.BddConfig.SkipRules.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddSkipRule!>!
+Bruinet.Bdd.BddConfig.SkipRules.init -> void
+Bruinet.Bdd.BddConfig.SuiteHead.get -> string?
+Bruinet.Bdd.BddConfig.Usings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddConfig.Usings.init -> void
+Bruinet.Bdd.BddConfigEdit
+Bruinet.Bdd.BddConfigEdit.Fields.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddConfigFieldEdit!>!
+Bruinet.Bdd.BddConfigEdit.IsEmpty.get -> bool
+Bruinet.Bdd.BddConfigEdit.Rows.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddConfigRowsEdit!>!
+Bruinet.Bdd.BddConfigEdit.WithField(string! section, string! field, string? value) -> Bruinet.Bdd.BddConfigEdit!
+Bruinet.Bdd.BddConfigEdit.WithRows(string! section, System.Collections.Generic.IReadOnlyList<string!>! columns, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>! rows) -> Bruinet.Bdd.BddConfigEdit!
+Bruinet.Bdd.BddConfigFieldEdit
+Bruinet.Bdd.BddConfigFieldEdit.BddConfigFieldEdit(string! Section, string! Field, string? Value) -> void
+Bruinet.Bdd.BddConfigFieldEdit.Field.get -> string!
+Bruinet.Bdd.BddConfigFieldEdit.Field.init -> void
+Bruinet.Bdd.BddConfigFieldEdit.Section.get -> string!
+Bruinet.Bdd.BddConfigFieldEdit.Section.init -> void
+Bruinet.Bdd.BddConfigFieldEdit.Value.get -> string?
+Bruinet.Bdd.BddConfigFieldEdit.Value.init -> void
+Bruinet.Bdd.BddConfigFields
+Bruinet.Bdd.BddConfigParser
+Bruinet.Bdd.BddConfigRowsEdit
+Bruinet.Bdd.BddConfigRowsEdit.BddConfigRowsEdit(string! Section, System.Collections.Generic.IReadOnlyList<string!>! Columns, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>! Rows) -> void
+Bruinet.Bdd.BddConfigRowsEdit.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddConfigRowsEdit.Columns.init -> void
+Bruinet.Bdd.BddConfigRowsEdit.Rows.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!>!
+Bruinet.Bdd.BddConfigRowsEdit.Rows.init -> void
+Bruinet.Bdd.BddConfigRowsEdit.Section.get -> string!
+Bruinet.Bdd.BddConfigRowsEdit.Section.init -> void
+Bruinet.Bdd.BddConfigTemplate
+Bruinet.Bdd.BddConfigTemplate.BddConfigTemplate(string! Project, string? Fixture = null) -> void
+Bruinet.Bdd.BddConfigTemplate.Fixture.get -> string?
+Bruinet.Bdd.BddConfigTemplate.Fixture.init -> void
+Bruinet.Bdd.BddConfigTemplate.Project.get -> string!
+Bruinet.Bdd.BddConfigTemplate.Project.init -> void
+Bruinet.Bdd.BddConfigWriter
+Bruinet.Bdd.BddControlVerb
+Bruinet.Bdd.BddControlVerb.ArgumentCount.get -> int
+Bruinet.Bdd.BddControlVerb.ArgumentCount.init -> void
+Bruinet.Bdd.BddControlVerb.BddControlVerb(string! MethodName, int ArgumentCount, bool NamesControl, bool Navigates) -> void
+Bruinet.Bdd.BddControlVerb.MethodName.get -> string!
+Bruinet.Bdd.BddControlVerb.MethodName.init -> void
+Bruinet.Bdd.BddControlVerb.NamesControl.get -> bool
+Bruinet.Bdd.BddControlVerb.NamesControl.init -> void
+Bruinet.Bdd.BddControlVerb.Navigates.get -> bool
+Bruinet.Bdd.BddControlVerb.Navigates.init -> void
+Bruinet.Bdd.BddDiagnostic
+Bruinet.Bdd.BddDiagnostic.BddDiagnostic(Bruinet.Bdd.BddDiagnosticSeverity Severity, string! Code, string! Message, Bruinet.Bdd.BddSourceLocation! Location) -> void
+Bruinet.Bdd.BddDiagnostic.Code.get -> string!
+Bruinet.Bdd.BddDiagnostic.Code.init -> void
+Bruinet.Bdd.BddDiagnostic.Fix.get -> Bruinet.Bdd.BddTextFix?
+Bruinet.Bdd.BddDiagnostic.Fix.init -> void
+Bruinet.Bdd.BddDiagnostic.Location.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddDiagnostic.Location.init -> void
+Bruinet.Bdd.BddDiagnostic.Message.get -> string!
+Bruinet.Bdd.BddDiagnostic.Message.init -> void
+Bruinet.Bdd.BddDiagnostic.Severity.get -> Bruinet.Bdd.BddDiagnosticSeverity
+Bruinet.Bdd.BddDiagnostic.Severity.init -> void
+Bruinet.Bdd.BddDiagnostic.Within.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddSourceLocation!>!
+Bruinet.Bdd.BddDiagnostic.Within.init -> void
+Bruinet.Bdd.BddDiagnosticSeverity
+Bruinet.Bdd.BddDiagnosticSeverity.Error = 0 -> Bruinet.Bdd.BddDiagnosticSeverity
+Bruinet.Bdd.BddDiagnosticSeverity.Warning = 1 -> Bruinet.Bdd.BddDiagnosticSeverity
+Bruinet.Bdd.BddDiagnosticsFormatter
+Bruinet.Bdd.BddDiscoverySettings
+Bruinet.Bdd.BddDiscoverySettings.AllowNameInference.get -> bool
+Bruinet.Bdd.BddDiscoverySettings.AllowNameInference.init -> void
+Bruinet.Bdd.BddDiscoverySettings.BddDiscoverySettings(bool RequireExplicitUatAttributes = false, bool AllowNameInference = true) -> void
+Bruinet.Bdd.BddDiscoverySettings.RequireExplicitUatAttributes.get -> bool
+Bruinet.Bdd.BddDiscoverySettings.RequireExplicitUatAttributes.init -> void
+Bruinet.Bdd.BddDocument
+Bruinet.Bdd.BddDocument.Background.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>!
+Bruinet.Bdd.BddDocument.Background.init -> void
+Bruinet.Bdd.BddDocument.BddDocument(string! Title, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Metadata, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>! Background, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddNamedDataTable!>! DataTables, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddScenario!>! Scenarios, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddDocument.Callables.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallable!>!
+Bruinet.Bdd.BddDocument.Callables.init -> void
+Bruinet.Bdd.BddDocument.DataTables.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddNamedDataTable!>!
+Bruinet.Bdd.BddDocument.DataTables.init -> void
+Bruinet.Bdd.BddDocument.Metadata.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddDocument.Metadata.init -> void
+Bruinet.Bdd.BddDocument.Scenarios.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddScenario!>!
+Bruinet.Bdd.BddDocument.Scenarios.init -> void
+Bruinet.Bdd.BddDocument.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddDocument.Source.init -> void
+Bruinet.Bdd.BddDocument.Title.get -> string!
+Bruinet.Bdd.BddDocument.Title.init -> void
+Bruinet.Bdd.BddExecutionContext
+Bruinet.Bdd.BddExecutionContext.AppItems.get -> System.Collections.Generic.IDictionary<string!, object?>!
+Bruinet.Bdd.BddExecutionContext.Apps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddExecutionContext.Apps.set -> void
+Bruinet.Bdd.BddExecutionContext.BddExecutionContext() -> void
+Bruinet.Bdd.BddExecutionContext.Breaks.get -> Bruinet.Bdd.IBddBreakHook?
+Bruinet.Bdd.BddExecutionContext.Breaks.set -> void
+Bruinet.Bdd.BddExecutionContext.Clock.get -> Bruinet.Bdd.IBddClock?
+Bruinet.Bdd.BddExecutionContext.Clock.set -> void
+Bruinet.Bdd.BddExecutionContext.CurrentPageName.get -> string?
+Bruinet.Bdd.BddExecutionContext.CurrentPageName.set -> void
+Bruinet.Bdd.BddExecutionContext.CurrentSession.get -> string?
+Bruinet.Bdd.BddExecutionContext.Diagnostics.get -> System.Collections.Generic.IList<string!>!
+Bruinet.Bdd.BddExecutionContext.Items.get -> System.Collections.Generic.IDictionary<string!, object?>!
+Bruinet.Bdd.BddExecutionContext.Now.get -> System.DateTimeOffset?
+Bruinet.Bdd.BddExecutionContext.Now.set -> void
+Bruinet.Bdd.BddExecutionContext.Pacer.get -> Bruinet.Bdd.IBddStepPacer?
+Bruinet.Bdd.BddExecutionContext.Pacer.set -> void
+Bruinet.Bdd.BddExecutionContext.SessionHost.get -> Bruinet.Bdd.IBddSessionHost?
+Bruinet.Bdd.BddExecutionContext.SessionHost.set -> void
+Bruinet.Bdd.BddExecutionContext.SwitchApp(string! app) -> void
+Bruinet.Bdd.BddExecutionContextSettingsExtensions
+Bruinet.Bdd.BddFileCheck
+Bruinet.Bdd.BddFileCheck.BddFileCheck(System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! Diagnostics, Bruinet.Bdd.BddBindResult? Bind) -> void
+Bruinet.Bdd.BddFileCheck.Bind.get -> Bruinet.Bdd.BddBindResult?
+Bruinet.Bdd.BddFileCheck.Bind.init -> void
+Bruinet.Bdd.BddFileCheck.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Bdd.BddFileCheck.Diagnostics.init -> void
+Bruinet.Bdd.BddFileFormat
+Bruinet.Bdd.BddHook
+Bruinet.Bdd.BddHook.AppliesTo(System.Collections.Generic.IEnumerable<string!>! scenarioTags) -> bool
+Bruinet.Bdd.BddHook.BddHook(Bruinet.Bdd.BddHookKind Kind, string! Name, System.Collections.Generic.IReadOnlyList<string!>! Tags, System.Func<Bruinet.Bdd.BddExecutionContext!, Bruinet.Bdd.BddStepResult?, System.Threading.CancellationToken, System.Threading.Tasks.Task!>! Run) -> void
+Bruinet.Bdd.BddHook.Kind.get -> Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddHook.Kind.init -> void
+Bruinet.Bdd.BddHook.Name.get -> string!
+Bruinet.Bdd.BddHook.Name.init -> void
+Bruinet.Bdd.BddHook.Run.get -> System.Func<Bruinet.Bdd.BddExecutionContext!, Bruinet.Bdd.BddStepResult?, System.Threading.CancellationToken, System.Threading.Tasks.Task!>!
+Bruinet.Bdd.BddHook.Run.init -> void
+Bruinet.Bdd.BddHook.Tags.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddHook.Tags.init -> void
+Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddHookKind.AfterScenario = 2 -> Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddHookKind.AfterStep = 3 -> Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddHookKind.BeforeFeature = 0 -> Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddHookKind.BeforeScenario = 1 -> Bruinet.Bdd.BddHookKind
+Bruinet.Bdd.BddIgnoreAttribute
+Bruinet.Bdd.BddIgnoreAttribute.BddIgnoreAttribute() -> void
+Bruinet.Bdd.BddLoadedScenarioFile
+Bruinet.Bdd.BddLoadedScenarioFile.BddLoadedScenarioFile(Bruinet.Bdd.BddDocument? Document, Bruinet.Bdd.BddCallableSet! Callables, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! Diagnostics) -> void
+Bruinet.Bdd.BddLoadedScenarioFile.Bind(Bruinet.Bdd.BddCatalogSet! catalogs, string? only = null) -> Bruinet.Bdd.BddBindResult!
+Bruinet.Bdd.BddLoadedScenarioFile.Callables.get -> Bruinet.Bdd.BddCallableSet!
+Bruinet.Bdd.BddLoadedScenarioFile.Callables.init -> void
+Bruinet.Bdd.BddLoadedScenarioFile.Check(Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddFileCheck!
+Bruinet.Bdd.BddLoadedScenarioFile.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Bdd.BddLoadedScenarioFile.Diagnostics.init -> void
+Bruinet.Bdd.BddLoadedScenarioFile.Document.get -> Bruinet.Bdd.BddDocument?
+Bruinet.Bdd.BddLoadedScenarioFile.Document.init -> void
+Bruinet.Bdd.BddLoadedScenarioFile.Success.get -> bool
+Bruinet.Bdd.BddMarkdownParser
+Bruinet.Bdd.BddMetadataFields
+Bruinet.Bdd.BddNamedDataTable
+Bruinet.Bdd.BddNamedDataTable.BddNamedDataTable(string! Name, Bruinet.Bdd.BddTable! Table, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddNamedDataTable.Name.get -> string!
+Bruinet.Bdd.BddNamedDataTable.Name.init -> void
+Bruinet.Bdd.BddNamedDataTable.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddNamedDataTable.Source.init -> void
+Bruinet.Bdd.BddNamedDataTable.Table.get -> Bruinet.Bdd.BddTable!
+Bruinet.Bdd.BddNamedDataTable.Table.init -> void
+Bruinet.Bdd.BddNamespaces
+Bruinet.Bdd.BddParameterSource
+Bruinet.Bdd.BddParameterSource.DocString = 2 -> Bruinet.Bdd.BddParameterSource
+Bruinet.Bdd.BddParameterSource.Phrase = 0 -> Bruinet.Bdd.BddParameterSource
+Bruinet.Bdd.BddParameterSource.Table = 1 -> Bruinet.Bdd.BddParameterSource
+Bruinet.Bdd.BddParseResult
+Bruinet.Bdd.BddParseResult.BddParseResult(Bruinet.Bdd.BddDocument? document, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! diagnostics) -> void
+Bruinet.Bdd.BddParseResult.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Bdd.BddParseResult.Document.get -> Bruinet.Bdd.BddDocument?
+Bruinet.Bdd.BddParseResult.Success.get -> bool
+Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddPassedBlock.DocString = 2 -> Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddPassedBlock.None = 0 -> Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddPassedBlock.Table = 1 -> Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddPhraseClassBinding
+Bruinet.Bdd.BddPhraseClassBinding.BddPhraseClassBinding(System.Type! Type, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseClassMethodBinding!>! Methods) -> void
+Bruinet.Bdd.BddPhraseClassBinding.Methods.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseClassMethodBinding!>!
+Bruinet.Bdd.BddPhraseClassBinding.Methods.init -> void
+Bruinet.Bdd.BddPhraseClassBinding.Namespace.get -> string!
+Bruinet.Bdd.BddPhraseClassBinding.Namespace.init -> void
+Bruinet.Bdd.BddPhraseClassBinding.Type.get -> System.Type!
+Bruinet.Bdd.BddPhraseClassBinding.Type.init -> void
+Bruinet.Bdd.BddPhraseClassMethodBinding
+Bruinet.Bdd.BddPhraseClassMethodBinding.BddPhraseClassMethodBinding(System.Reflection.MethodInfo! Method, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseMethodPhrase!>! Phrases) -> void
+Bruinet.Bdd.BddPhraseClassMethodBinding.Method.get -> System.Reflection.MethodInfo!
+Bruinet.Bdd.BddPhraseClassMethodBinding.Method.init -> void
+Bruinet.Bdd.BddPhraseClassMethodBinding.Phrases.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseMethodPhrase!>!
+Bruinet.Bdd.BddPhraseClassMethodBinding.Phrases.init -> void
+Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddUnmatchableDeclaration!>!
+Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.init -> void
+Bruinet.Bdd.BddPhraseMethodPhrase
+Bruinet.Bdd.BddPhraseMethodPhrase.BddPhraseMethodPhrase(string! Phrase, Bruinet.Core.Testing.BddEffectiveStepKeyword Keyword) -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.init -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.Parameters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>!
+Bruinet.Bdd.BddPhraseMethodPhrase.Parameters.init -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.Phrase.get -> string!
+Bruinet.Bdd.BddPhraseMethodPhrase.Phrase.init -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.Problem.get -> Bruinet.Bdd.BddPhraseProblem?
+Bruinet.Bdd.BddPhraseMethodPhrase.Problem.init -> void
+Bruinet.Bdd.BddPhraseParameter
+Bruinet.Bdd.BddPhraseParameter.AllowsNull.get -> bool
+Bruinet.Bdd.BddPhraseParameter.AllowsNull.init -> void
+Bruinet.Bdd.BddPhraseParameter.BddPhraseParameter(string! Name, System.Type! Type, Bruinet.Bdd.BddParameterSource Source, bool Optional, bool AllowsNull) -> void
+Bruinet.Bdd.BddPhraseParameter.Name.get -> string!
+Bruinet.Bdd.BddPhraseParameter.Name.init -> void
+Bruinet.Bdd.BddPhraseParameter.Optional.get -> bool
+Bruinet.Bdd.BddPhraseParameter.Optional.init -> void
+Bruinet.Bdd.BddPhraseParameter.Source.get -> Bruinet.Bdd.BddParameterSource
+Bruinet.Bdd.BddPhraseParameter.Source.init -> void
+Bruinet.Bdd.BddPhraseParameter.Type.get -> System.Type!
+Bruinet.Bdd.BddPhraseParameter.Type.init -> void
+Bruinet.Bdd.BddPhraseProblem
+Bruinet.Bdd.BddPhraseProblem.BddPhraseProblem(string! Code, string! Message, string! Declaration) -> void
+Bruinet.Bdd.BddPhraseProblem.Code.get -> string!
+Bruinet.Bdd.BddPhraseProblem.Code.init -> void
+Bruinet.Bdd.BddPhraseProblem.Declaration.get -> string!
+Bruinet.Bdd.BddPhraseProblem.Declaration.init -> void
+Bruinet.Bdd.BddPhraseProblem.Message.get -> string!
+Bruinet.Bdd.BddPhraseProblem.Message.init -> void
+Bruinet.Bdd.BddPhrasesDocument
+Bruinet.Bdd.BddPhrasesDocument.BddPhrasesDocument(string! Title, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallable!>! Callables, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddPhrasesDocument.Callables.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallable!>!
+Bruinet.Bdd.BddPhrasesDocument.Callables.init -> void
+Bruinet.Bdd.BddPhrasesDocument.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddPhrasesDocument.Source.init -> void
+Bruinet.Bdd.BddPhrasesDocument.Title.get -> string!
+Bruinet.Bdd.BddPhrasesDocument.Title.init -> void
+Bruinet.Bdd.BddPhrasesParseResult
+Bruinet.Bdd.BddPhrasesParseResult.BddPhrasesParseResult(Bruinet.Bdd.BddPhrasesDocument? Document, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! Diagnostics) -> void
+Bruinet.Bdd.BddPhrasesParseResult.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Bdd.BddPhrasesParseResult.Diagnostics.init -> void
+Bruinet.Bdd.BddPhrasesParseResult.Document.get -> Bruinet.Bdd.BddPhrasesDocument?
+Bruinet.Bdd.BddPhrasesParseResult.Document.init -> void
+Bruinet.Bdd.BddPhrasesParseResult.Success.get -> bool
+Bruinet.Bdd.BddPreparedCallable
+Bruinet.Bdd.BddPreparedCallable.BddPreparedCallable(Bruinet.Bdd.BddCallable! Callable, System.Collections.Generic.IReadOnlyDictionary<string!, System.Type!>! Types, System.Collections.Generic.IReadOnlyList<string!>! Columns, Bruinet.Bdd.BddPassedBlock Passes, System.Type? BlockType, Bruinet.Bdd.BddPhraseProblem? Problem) -> void
+Bruinet.Bdd.BddPreparedCallable.BlockType.get -> System.Type?
+Bruinet.Bdd.BddPreparedCallable.BlockType.init -> void
+Bruinet.Bdd.BddPreparedCallable.Callable.get -> Bruinet.Bdd.BddCallable!
+Bruinet.Bdd.BddPreparedCallable.Callable.init -> void
+Bruinet.Bdd.BddPreparedCallable.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddPreparedCallable.Columns.init -> void
+Bruinet.Bdd.BddPreparedCallable.Passes.get -> Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddPreparedCallable.Passes.init -> void
+Bruinet.Bdd.BddPreparedCallable.Problem.get -> Bruinet.Bdd.BddPhraseProblem?
+Bruinet.Bdd.BddPreparedCallable.Problem.init -> void
+Bruinet.Bdd.BddPreparedCallable.Types.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Type!>!
+Bruinet.Bdd.BddPreparedCallable.Types.init -> void
+Bruinet.Bdd.BddPreparedCallables
+Bruinet.Bdd.BddPreparedCallables.All.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPreparedCallable!>!
+Bruinet.Bdd.BddPreparedCallables.Callables.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCallable!>!
+Bruinet.Bdd.BddPreparedCallables.Candidates(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
+Bruinet.Bdd.BddPreparedCallables.Get(Bruinet.Bdd.BddCallable! callable) -> Bruinet.Bdd.BddPreparedCallable!
+Bruinet.Bdd.BddPreparedCallables.TypeNamed(string! name) -> System.Type?
+Bruinet.Bdd.BddReportingSettings
+Bruinet.Bdd.BddReportingSettings.BddReportingSettings(string! OutputDirectory, bool ScreenshotOnFailure = false, bool IncludeRuntimeTrace = false) -> void
+Bruinet.Bdd.BddReportingSettings.IncludeRuntimeTrace.get -> bool
+Bruinet.Bdd.BddReportingSettings.IncludeRuntimeTrace.init -> void
+Bruinet.Bdd.BddReportingSettings.OutputDirectory.get -> string!
+Bruinet.Bdd.BddReportingSettings.OutputDirectory.init -> void
+Bruinet.Bdd.BddReportingSettings.ScreenshotOnFailure.get -> bool
+Bruinet.Bdd.BddReportingSettings.ScreenshotOnFailure.init -> void
+Bruinet.Bdd.BddScenario
+Bruinet.Bdd.BddScenario.BddScenario(string! Name, System.Collections.Generic.IReadOnlyList<string!>! Tags, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>! Steps, Bruinet.Bdd.BddSourceLocation! Source, string? OutlineName = null, int? ExampleIndex = null, string? ExamplesName = null) -> void
+Bruinet.Bdd.BddScenario.ExampleIndex.get -> int?
+Bruinet.Bdd.BddScenario.ExampleIndex.init -> void
+Bruinet.Bdd.BddScenario.ExamplesName.get -> string?
+Bruinet.Bdd.BddScenario.ExamplesName.init -> void
+Bruinet.Bdd.BddScenario.Name.get -> string!
+Bruinet.Bdd.BddScenario.Name.init -> void
+Bruinet.Bdd.BddScenario.OutlineName.get -> string?
+Bruinet.Bdd.BddScenario.OutlineName.init -> void
+Bruinet.Bdd.BddScenario.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddScenario.Source.init -> void
+Bruinet.Bdd.BddScenario.Steps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>!
+Bruinet.Bdd.BddScenario.Steps.init -> void
+Bruinet.Bdd.BddScenario.Tags.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddScenario.Tags.init -> void
+Bruinet.Bdd.BddScenarioAddress
+Bruinet.Bdd.BddScenarioExecutionResult
+Bruinet.Bdd.BddScenarioExecutionResult.BddScenarioExecutionResult(Bruinet.Bdd.BddScenarioRunResult! Result, Bruinet.Bdd.BddExecutionContext! Context, string? EvidencePath) -> void
+Bruinet.Bdd.BddScenarioExecutionResult.Context.get -> Bruinet.Bdd.BddExecutionContext!
+Bruinet.Bdd.BddScenarioExecutionResult.Context.init -> void
+Bruinet.Bdd.BddScenarioExecutionResult.EvidencePath.get -> string?
+Bruinet.Bdd.BddScenarioExecutionResult.EvidencePath.init -> void
+Bruinet.Bdd.BddScenarioExecutionResult.Result.get -> Bruinet.Bdd.BddScenarioRunResult!
+Bruinet.Bdd.BddScenarioExecutionResult.Result.init -> void
+Bruinet.Bdd.BddScenarioExecutor
+Bruinet.Bdd.BddScenarioFiles
+Bruinet.Bdd.BddScenarioHookAttribute
+Bruinet.Bdd.BddScenarioHookAttribute.BddScenarioHookAttribute(string![]! tags) -> void
+Bruinet.Bdd.BddScenarioHookAttribute.Tags.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddScenarioReference
+Bruinet.Bdd.BddScenarioReference.BddScenarioReference(string! FilePath, string! ScenarioName, string? TestData, int Index) -> void
+Bruinet.Bdd.BddScenarioReference.FilePath.get -> string!
+Bruinet.Bdd.BddScenarioReference.FilePath.init -> void
+Bruinet.Bdd.BddScenarioReference.Index.get -> int
+Bruinet.Bdd.BddScenarioReference.Index.init -> void
+Bruinet.Bdd.BddScenarioReference.OrderKey.get -> string!
+Bruinet.Bdd.BddScenarioReference.ScenarioName.get -> string!
+Bruinet.Bdd.BddScenarioReference.ScenarioName.init -> void
+Bruinet.Bdd.BddScenarioReference.Tags.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddScenarioReference.Tags.init -> void
+Bruinet.Bdd.BddScenarioReference.TestData.get -> string?
+Bruinet.Bdd.BddScenarioReference.TestData.init -> void
+Bruinet.Bdd.BddScenarioRunResult
+Bruinet.Bdd.BddScenarioRunResult.BddScenarioRunResult(Bruinet.Bdd.BddBoundScenario! Scenario, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStepResult!>! Steps, Bruinet.Bdd.BddSkipDecision? SkipDecision = null) -> void
+Bruinet.Bdd.BddScenarioRunResult.Passed.get -> bool
+Bruinet.Bdd.BddScenarioRunResult.Scenario.get -> Bruinet.Bdd.BddBoundScenario!
+Bruinet.Bdd.BddScenarioRunResult.Scenario.init -> void
+Bruinet.Bdd.BddScenarioRunResult.SkipDecision.get -> Bruinet.Bdd.BddSkipDecision?
+Bruinet.Bdd.BddScenarioRunResult.SkipDecision.init -> void
+Bruinet.Bdd.BddScenarioRunResult.Skipped.get -> bool
+Bruinet.Bdd.BddScenarioRunResult.Steps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStepResult!>!
+Bruinet.Bdd.BddScenarioRunResult.Steps.init -> void
+Bruinet.Bdd.BddScenarioRunner
+Bruinet.Bdd.BddScenarioRunner.BddScenarioRunner(Bruinet.Bdd.BddExecutionContext? context = null) -> void
+Bruinet.Bdd.BddScenarioRunner.Context.get -> Bruinet.Bdd.BddExecutionContext!
+Bruinet.Bdd.BddScenarioRunner.CreateSession(Bruinet.Bdd.BddBoundScenario! scenario) -> Bruinet.Bdd.BddStepExecutionSession!
+Bruinet.Bdd.BddScenarioRunner.RunAsync(Bruinet.Bdd.BddBoundScenario! scenario, Bruinet.Bdd.BddConfig! config, System.Func<string!, string?>? getEnvironmentVariable = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.BddScenarioRunResult!>!
+Bruinet.Bdd.BddScenarioRunner.RunAsync(Bruinet.Bdd.BddBoundScenario! scenario, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.BddScenarioRunResult!>!
+Bruinet.Bdd.BddScenarioSource
+Bruinet.Bdd.BddScope
+Bruinet.Bdd.BddScope.BddScope(string! Namespace, string? File, System.Collections.Generic.IReadOnlyList<string!>! Usings) -> void
+Bruinet.Bdd.BddScope.File.get -> string?
+Bruinet.Bdd.BddScope.File.init -> void
+Bruinet.Bdd.BddScope.Namespace.get -> string!
+Bruinet.Bdd.BddScope.Namespace.init -> void
+Bruinet.Bdd.BddScope.Sees(Bruinet.Bdd.BddCallable! callable) -> bool
+Bruinet.Bdd.BddScope.Sees(Bruinet.Bdd.BddCommandPattern! pattern) -> bool
+Bruinet.Bdd.BddScope.Sees(string? owner) -> bool
+Bruinet.Bdd.BddScope.Usings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddScope.Usings.init -> void
+Bruinet.Bdd.BddScope.UsingsFor(string? owner) -> System.Collections.Generic.IEnumerable<string!>!
+Bruinet.Bdd.BddSets
+Bruinet.Bdd.BddSettingsConfig
+Bruinet.Bdd.BddSettingsConfig.BddSettingsConfig(string! Root = "TestSettings", string! DefaultFile = "testsettings.json", string? LocalFile = "testsettings.local.json", string? ScenarioConvention = "scenarios/{ScenarioId}.json") -> void
+Bruinet.Bdd.BddSettingsConfig.DefaultFile.get -> string!
+Bruinet.Bdd.BddSettingsConfig.DefaultFile.init -> void
+Bruinet.Bdd.BddSettingsConfig.LocalFile.get -> string?
+Bruinet.Bdd.BddSettingsConfig.LocalFile.init -> void
+Bruinet.Bdd.BddSettingsConfig.Root.get -> string!
+Bruinet.Bdd.BddSettingsConfig.Root.init -> void
+Bruinet.Bdd.BddSettingsConfig.ScenarioConvention.get -> string?
+Bruinet.Bdd.BddSettingsConfig.ScenarioConvention.init -> void
+Bruinet.Bdd.BddSkipDecision
+Bruinet.Bdd.BddSkipDecision.BddSkipDecision(bool ShouldSkip, string? Reason, Bruinet.Bdd.BddSkipRule? Rule) -> void
+Bruinet.Bdd.BddSkipDecision.Reason.get -> string?
+Bruinet.Bdd.BddSkipDecision.Reason.init -> void
+Bruinet.Bdd.BddSkipDecision.Rule.get -> Bruinet.Bdd.BddSkipRule?
+Bruinet.Bdd.BddSkipDecision.Rule.init -> void
+Bruinet.Bdd.BddSkipDecision.ShouldSkip.get -> bool
+Bruinet.Bdd.BddSkipDecision.ShouldSkip.init -> void
+Bruinet.Bdd.BddSkipRule
+Bruinet.Bdd.BddSkipRule.BddSkipRule(string! tag, string! environmentVariable) -> void
+Bruinet.Bdd.BddSkipRule.EnvironmentVariable.get -> string!
+Bruinet.Bdd.BddSkipRule.EnvironmentVariable.init -> void
+Bruinet.Bdd.BddSkipRule.Tag.get -> string!
+Bruinet.Bdd.BddSkipRule.Tag.init -> void
+Bruinet.Bdd.BddSourceLocation
+Bruinet.Bdd.BddSourceLocation.BddSourceLocation(string? FilePath, int LineNumber) -> void
+Bruinet.Bdd.BddSourceLocation.FilePath.get -> string?
+Bruinet.Bdd.BddSourceLocation.FilePath.init -> void
+Bruinet.Bdd.BddSourceLocation.LineNumber.get -> int
+Bruinet.Bdd.BddSourceLocation.LineNumber.init -> void
+Bruinet.Bdd.BddStep
+Bruinet.Bdd.BddStep.BddStep(Bruinet.Bdd.BddStepKeyword Keyword, Bruinet.Core.Testing.BddEffectiveStepKeyword EffectiveKeyword, string! Text, Bruinet.Bdd.BddTable? Table, Bruinet.Bdd.BddSourceLocation! Source, string? DocString = null) -> void
+Bruinet.Bdd.BddStep.DocString.get -> string?
+Bruinet.Bdd.BddStep.DocString.init -> void
+Bruinet.Bdd.BddStep.EffectiveKeyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddStep.EffectiveKeyword.init -> void
+Bruinet.Bdd.BddStep.Keyword.get -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStep.Keyword.init -> void
+Bruinet.Bdd.BddStep.Passes.get -> Bruinet.Bdd.BddPassedBlock
+Bruinet.Bdd.BddStep.Passes.init -> void
+Bruinet.Bdd.BddStep.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddStep.Source.init -> void
+Bruinet.Bdd.BddStep.Table.get -> Bruinet.Bdd.BddTable?
+Bruinet.Bdd.BddStep.Table.init -> void
+Bruinet.Bdd.BddStep.Text.get -> string!
+Bruinet.Bdd.BddStep.Text.init -> void
+Bruinet.Bdd.BddStepBreak
+Bruinet.Bdd.BddStepBreak.App.get -> string?
+Bruinet.Bdd.BddStepBreak.App.init -> void
+Bruinet.Bdd.BddStepBreak.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddStepBreak.Arguments.init -> void
+Bruinet.Bdd.BddStepBreak.BddStepBreak(string! Text, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Arguments, string? App, string? Page, Bruinet.Bdd.BddSourceLocation! Source, System.Collections.Generic.IReadOnlyList<string!>! Calls, Bruinet.Bdd.BddStepResult? Result = null) -> void
+Bruinet.Bdd.BddStepBreak.Calls.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddStepBreak.Calls.init -> void
+Bruinet.Bdd.BddStepBreak.Depth.get -> int
+Bruinet.Bdd.BddStepBreak.Depth.init -> void
+Bruinet.Bdd.BddStepBreak.IsCall.get -> bool
+Bruinet.Bdd.BddStepBreak.IsCall.init -> void
+Bruinet.Bdd.BddStepBreak.Page.get -> string?
+Bruinet.Bdd.BddStepBreak.Page.init -> void
+Bruinet.Bdd.BddStepBreak.Result.get -> Bruinet.Bdd.BddStepResult?
+Bruinet.Bdd.BddStepBreak.Result.init -> void
+Bruinet.Bdd.BddStepBreak.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddStepBreak.Source.init -> void
+Bruinet.Bdd.BddStepBreak.Text.get -> string!
+Bruinet.Bdd.BddStepBreak.Text.init -> void
+Bruinet.Bdd.BddStepDefinitionRuntime
+Bruinet.Bdd.BddStepDefinitionRuntime.ArgumentTypes.get -> Bruinet.Bdd.BddArgumentTypes!
+Bruinet.Bdd.BddStepDefinitionRuntime.BddStepDefinitionRuntime(object? root, System.Type! rootType, System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddPhraseClassBinding!>? phraseClasses, Bruinet.Bdd.BddArgumentTypes! argumentTypes) -> void
+Bruinet.Bdd.BddStepDefinitionRuntime.CreateCommandCatalog() -> Bruinet.Bdd.BddCommandCatalog!
+Bruinet.Bdd.BddStepDefinitionRuntime.PhraseClasses.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseClassBinding!>!
+Bruinet.Bdd.BddStepDefinitionsAttribute
+Bruinet.Bdd.BddStepDefinitionsAttribute.BddStepDefinitionsAttribute() -> void
+Bruinet.Bdd.BddStepDefinitionsAttribute.Namespace.get -> string?
+Bruinet.Bdd.BddStepDefinitionsAttribute.Namespace.init -> void
+Bruinet.Bdd.BddStepDefinitionsBase
+Bruinet.Bdd.BddStepDefinitionsBase.BddStepDefinitionsBase() -> void
+Bruinet.Bdd.BddStepExecutionSession
+Bruinet.Bdd.BddStepExecutionSession.BddStepExecutionSession(Bruinet.Bdd.BddExecutionContext! context, Bruinet.Bdd.BddBoundScenario! scenario) -> void
+Bruinet.Bdd.BddStepExecutionSession.HasNext.get -> bool
+Bruinet.Bdd.BddStepExecutionSession.Next.get -> Bruinet.Bdd.BddStepInvocation?
+Bruinet.Bdd.BddStepExecutionSession.Results.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStepResult!>!
+Bruinet.Bdd.BddStepExecutionSession.RunNextAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.BddStepResult!>!
+Bruinet.Bdd.BddStepExecutionSession.SkipNext(string? message = null) -> Bruinet.Bdd.BddStepResult!
+Bruinet.Bdd.BddStepExecutionSession.ToResult() -> Bruinet.Bdd.BddScenarioRunResult!
+Bruinet.Bdd.BddStepInvocation
+Bruinet.Bdd.BddStepInvocation.App.get -> string?
+Bruinet.Bdd.BddStepInvocation.App.init -> void
+Bruinet.Bdd.BddStepInvocation.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddStepInvocation.Arguments.init -> void
+Bruinet.Bdd.BddStepInvocation.BddStepInvocation(string! ScenarioName, Bruinet.Bdd.BddStep! Step, Bruinet.Bdd.BddCommandPattern! Command, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Arguments, Bruinet.Bdd.BddTable? Table, bool FromBackground) -> void
+Bruinet.Bdd.BddStepInvocation.Call.get -> Bruinet.Bdd.BddCallFrame?
+Bruinet.Bdd.BddStepInvocation.Call.init -> void
+Bruinet.Bdd.BddStepInvocation.Command.get -> Bruinet.Bdd.BddCommandPattern!
+Bruinet.Bdd.BddStepInvocation.Command.init -> void
+Bruinet.Bdd.BddStepInvocation.CommandId.get -> string!
+Bruinet.Bdd.BddStepInvocation.FromBackground.get -> bool
+Bruinet.Bdd.BddStepInvocation.FromBackground.init -> void
+Bruinet.Bdd.BddStepInvocation.MatchedPattern.get -> string!
+Bruinet.Bdd.BddStepInvocation.PageAfter.get -> string?
+Bruinet.Bdd.BddStepInvocation.PageAfter.init -> void
+Bruinet.Bdd.BddStepInvocation.RawArguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddStepInvocation.RawArguments.init -> void
+Bruinet.Bdd.BddStepInvocation.ScenarioName.get -> string!
+Bruinet.Bdd.BddStepInvocation.ScenarioName.init -> void
+Bruinet.Bdd.BddStepInvocation.Scope.get -> string!
+Bruinet.Bdd.BddStepInvocation.Step.get -> Bruinet.Bdd.BddStep!
+Bruinet.Bdd.BddStepInvocation.Step.init -> void
+Bruinet.Bdd.BddStepInvocation.Table.get -> Bruinet.Bdd.BddTable?
+Bruinet.Bdd.BddStepInvocation.Table.init -> void
+Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepKeyword.And = 3 -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepKeyword.But = 4 -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepKeyword.Given = 0 -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepKeyword.Then = 2 -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepKeyword.When = 1 -> Bruinet.Bdd.BddStepKeyword
+Bruinet.Bdd.BddStepMove
+Bruinet.Bdd.BddStepMove.Into = 1 -> Bruinet.Bdd.BddStepMove
+Bruinet.Bdd.BddStepMove.Out = 2 -> Bruinet.Bdd.BddStepMove
+Bruinet.Bdd.BddStepMove.Over = 0 -> Bruinet.Bdd.BddStepMove
+Bruinet.Bdd.BddStepResult
+Bruinet.Bdd.BddStepResult.BddStepResult(Bruinet.Bdd.BddStepResultStatus Status, Bruinet.Bdd.BddStepInvocation! Invocation, string? Message = null, System.Exception? Exception = null) -> void
+Bruinet.Bdd.BddStepResult.Exception.get -> System.Exception?
+Bruinet.Bdd.BddStepResult.Exception.init -> void
+Bruinet.Bdd.BddStepResult.Invocation.get -> Bruinet.Bdd.BddStepInvocation!
+Bruinet.Bdd.BddStepResult.Invocation.init -> void
+Bruinet.Bdd.BddStepResult.Message.get -> string?
+Bruinet.Bdd.BddStepResult.Message.init -> void
+Bruinet.Bdd.BddStepResult.Status.get -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResult.Status.init -> void
+Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Canceled = 5 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Failed = 3 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Passed = 2 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Running = 1 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Skipped = 4 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddStepResultStatus.Waiting = 0 -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.BddTable
+Bruinet.Bdd.BddTable.BddTable(System.Collections.Generic.IReadOnlyList<string!>! Columns, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddTableRow!>! Rows, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddTable.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.BddTable.Columns.init -> void
+Bruinet.Bdd.BddTable.GetValue(string! column, int rowIndex = 0) -> string!
+Bruinet.Bdd.BddTable.Rows.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddTableRow!>!
+Bruinet.Bdd.BddTable.Rows.init -> void
+Bruinet.Bdd.BddTable.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddTable.Source.init -> void
+Bruinet.Bdd.BddTable.TryGetValue(string! column, out string! value, int rowIndex = 0) -> bool
+Bruinet.Bdd.BddTableBinding
+Bruinet.Bdd.BddTableRow
+Bruinet.Bdd.BddTableRow.BddTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, Bruinet.Bdd.BddSourceLocation! Source) -> void
+Bruinet.Bdd.BddTableRow.Cells.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Bdd.BddTableRow.Cells.init -> void
+Bruinet.Bdd.BddTableRow.Source.get -> Bruinet.Bdd.BddSourceLocation!
+Bruinet.Bdd.BddTableRow.Source.init -> void
+Bruinet.Bdd.BddTagConventions
+Bruinet.Bdd.BddTextFix
+Bruinet.Bdd.BddTextFix.BddTextFix(string! Original, string! Replacement) -> void
+Bruinet.Bdd.BddTextFix.Original.get -> string!
+Bruinet.Bdd.BddTextFix.Original.init -> void
+Bruinet.Bdd.BddTextFix.Replacement.get -> string!
+Bruinet.Bdd.BddTextFix.Replacement.init -> void
+Bruinet.Bdd.BddUnmatchableDeclaration
+Bruinet.Bdd.BddUnmatchableDeclaration.BddUnmatchableDeclaration(Bruinet.Core.Testing.BddEffectiveStepKeyword Keyword, Bruinet.Bdd.BddPhraseProblem! Problem) -> void
+Bruinet.Bdd.BddUnmatchableDeclaration.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddUnmatchableDeclaration.Keyword.init -> void
+Bruinet.Bdd.BddUnmatchableDeclaration.Problem.get -> Bruinet.Bdd.BddPhraseProblem!
+Bruinet.Bdd.BddUnmatchableDeclaration.Problem.init -> void
+Bruinet.Bdd.BddUserRole
+Bruinet.Bdd.BddUserRole.Apps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddUserRole.Apps.init -> void
+Bruinet.Bdd.BddUserRole.BddUserRole(string! Name, string? Role, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>! Apps) -> void
+Bruinet.Bdd.BddUserRole.Name.get -> string!
+Bruinet.Bdd.BddUserRole.Name.init -> void
+Bruinet.Bdd.BddUserRole.Role.get -> string?
+Bruinet.Bdd.BddUserRole.Role.init -> void
+Bruinet.Bdd.BddValueContext
+Bruinet.Bdd.BddValueContext.Apps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>!
+Bruinet.Bdd.BddValueContext.Apps.init -> void
+Bruinet.Bdd.BddValueContext.BddValueContext(System.DateTimeOffset Now, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>! Apps, Bruinet.Bdd.BddArgumentTypes? Types = null, System.IServiceProvider? Services = null) -> void
+Bruinet.Bdd.BddValueContext.Now.get -> System.DateTimeOffset
+Bruinet.Bdd.BddValueContext.Now.init -> void
+Bruinet.Bdd.BddValueContext.Placeholders.get -> System.Action<string!, System.Type!>?
+Bruinet.Bdd.BddValueContext.Placeholders.init -> void
+Bruinet.Bdd.BddValueContext.Services.get -> System.IServiceProvider?
+Bruinet.Bdd.BddValueContext.Services.init -> void
+Bruinet.Bdd.BddValueContext.Types.get -> Bruinet.Bdd.BddArgumentTypes?
+Bruinet.Bdd.BddValueContext.Types.init -> void
+Bruinet.Bdd.BddValueException
+Bruinet.Bdd.BddValueException.BddValueException(Bruinet.Bdd.BddValueProblem! problem) -> void
+Bruinet.Bdd.BddValueException.Problem.get -> Bruinet.Bdd.BddValueProblem!
+Bruinet.Bdd.BddValueProblem
+Bruinet.Bdd.BddValueProblem.BddValueProblem(string! Code, string! Message, string? Fix = null, string? Original = null) -> void
+Bruinet.Bdd.BddValueProblem.Code.get -> string!
+Bruinet.Bdd.BddValueProblem.Code.init -> void
+Bruinet.Bdd.BddValueProblem.Fix.get -> string?
+Bruinet.Bdd.BddValueProblem.Fix.init -> void
+Bruinet.Bdd.BddValueProblem.Message.get -> string!
+Bruinet.Bdd.BddValueProblem.Message.init -> void
+Bruinet.Bdd.BddValueProblem.Original.get -> string?
+Bruinet.Bdd.BddValueProblem.Original.init -> void
+Bruinet.Bdd.BddValues
+Bruinet.Bdd.BddWrittenStep
+Bruinet.Bdd.IBddArgumentConverter<T>
+Bruinet.Bdd.IBddArgumentConverter<T>.Read(string! text) -> T
+Bruinet.Bdd.IBddBreakHook
+Bruinet.Bdd.IBddBreakHook.AfterFailure(Bruinet.Bdd.BddStepResult! result) -> bool
+Bruinet.Bdd.IBddBreakHook.Before(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context) -> Bruinet.Bdd.BddStepBreak?
+Bruinet.Bdd.IBddBreakHook.Break(Bruinet.Bdd.BddStepBreak! stepBreak) -> void
+Bruinet.Bdd.IBddClock
+Bruinet.Bdd.IBddClock.Now.get -> System.DateTimeOffset
+Bruinet.Bdd.IBddSessionHost
+Bruinet.Bdd.IBddSessionHost.CompositionFor(string! name) -> Bruinet.Core.Composition.TestComposition?
+Bruinet.Bdd.IBddSessionHost.UseSession(string! name) -> System.IServiceProvider!
+Bruinet.Bdd.IBddStepPacer
+Bruinet.Bdd.IBddStepPacer.AfterAsync(Bruinet.Bdd.BddStepResult! result, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Bdd.IBddStepPacer.BeforeAsync(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Bdd.IStepScope
+Bruinet.Bdd.IStepScope.After(Bruinet.Bdd.BddCommandPattern! pattern, Bruinet.Bdd.BddAppConfig? app) -> string?
+Bruinet.Bdd.IStepScope.Bound(Bruinet.Bdd.BddStep! step, Bruinet.Bdd.BddCommandMatch! match, ref System.Collections.Generic.IReadOnlyDictionary<string!, string!>! arguments, Bruinet.Bdd.BddAppConfig? app, Bruinet.Bdd.BddScope! where, System.Collections.Generic.List<Bruinet.Bdd.BddDiagnostic!>! diagnostics) -> bool
+Bruinet.Bdd.IStepScope.Visible(Bruinet.Bdd.BddCommandCatalog! catalog, Bruinet.Bdd.BddStep! step, Bruinet.Bdd.BddAppConfig? app, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>! candidates, System.Collections.Generic.List<Bruinet.Bdd.BddDiagnostic!>! problems) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
+Bruinet.Bdd.IStepScopeModel
+Bruinet.Bdd.IStepScopeModel.Namespaces.get -> System.Collections.Generic.IEnumerable<string!>!
+Bruinet.Bdd.IStepScopeModel.StartWalk(Bruinet.Bdd.BddCatalogSet! catalogs, System.Collections.Generic.HashSet<string!>? used) -> Bruinet.Bdd.IStepScope!
+Bruinet.Bdd.Runner.BddRunnerBreak
+Bruinet.Bdd.Runner.BddRunnerBreak.BddRunnerBreak(double WaitSeconds, bool Launch = false) -> void
+Bruinet.Bdd.Runner.BddRunnerBreak.Launch.get -> bool
+Bruinet.Bdd.Runner.BddRunnerBreak.Launch.init -> void
+Bruinet.Bdd.Runner.BddRunnerBreak.WaitSeconds.get -> double
+Bruinet.Bdd.Runner.BddRunnerBreak.WaitSeconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerCall
+Bruinet.Bdd.Runner.BddRunnerCall.BddRunnerCall(string! Text, string? File, int Line, int Depth) -> void
+Bruinet.Bdd.Runner.BddRunnerCall.Depth.get -> int
+Bruinet.Bdd.Runner.BddRunnerCall.Depth.init -> void
+Bruinet.Bdd.Runner.BddRunnerCall.File.get -> string?
+Bruinet.Bdd.Runner.BddRunnerCall.File.init -> void
+Bruinet.Bdd.Runner.BddRunnerCall.Line.get -> int
+Bruinet.Bdd.Runner.BddRunnerCall.Line.init -> void
+Bruinet.Bdd.Runner.BddRunnerCall.Text.get -> string!
+Bruinet.Bdd.Runner.BddRunnerCall.Text.init -> void
+Bruinet.Bdd.Runner.BddRunnerCancel
+Bruinet.Bdd.Runner.BddRunnerChannel
+Bruinet.Bdd.Runner.BddRunnerChannel.BddRunnerChannel(System.IO.Stream! input, System.IO.Stream! output) -> void
+Bruinet.Bdd.Runner.BddRunnerChannel.BddRunnerChannel(System.IO.Stream! stream) -> void
+Bruinet.Bdd.Runner.BddRunnerChannel.Dispose() -> void
+Bruinet.Bdd.Runner.BddRunnerChannel.ReceiveAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerMessage?>!
+Bruinet.Bdd.Runner.BddRunnerChannel.SendAsync(Bruinet.Bdd.Runner.BddRunnerMessage! message, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Bdd.Runner.BddRunnerClient
+Bruinet.Bdd.Runner.BddRunnerClient.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Bdd.Runner.BddRunnerClient.Log.get -> string!
+Bruinet.Bdd.Runner.BddRunnerClient.Process.get -> System.Diagnostics.Process!
+Bruinet.Bdd.Runner.BddRunnerClient.RequestAsync(Bruinet.Bdd.Runner.BddRunnerMessage! request, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerMessage!>!
+Bruinet.Bdd.Runner.BddRunnerClient.Said.get -> System.Action<Bruinet.Bdd.Runner.BddRunnerSay!>?
+Bruinet.Bdd.Runner.BddRunnerClient.Said.set -> void
+Bruinet.Bdd.Runner.BddRunnerClip
+Bruinet.Bdd.Runner.BddRunnerClip.BddRunnerClip(string! Text, string? Wav, double Seconds) -> void
+Bruinet.Bdd.Runner.BddRunnerClip.Seconds.get -> double
+Bruinet.Bdd.Runner.BddRunnerClip.Seconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerClip.Text.get -> string!
+Bruinet.Bdd.Runner.BddRunnerClip.Text.init -> void
+Bruinet.Bdd.Runner.BddRunnerClip.Wav.get -> string?
+Bruinet.Bdd.Runner.BddRunnerClip.Wav.init -> void
+Bruinet.Bdd.Runner.BddRunnerClips
+Bruinet.Bdd.Runner.BddRunnerClips.BddRunnerClips(Bruinet.Bdd.Runner.BddRunnerClip? Intro, System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Bdd.Runner.BddRunnerClip!>! Says, Bruinet.Bdd.Runner.BddRunnerClip? Outro) -> void
+Bruinet.Bdd.Runner.BddRunnerClips.Intro.get -> Bruinet.Bdd.Runner.BddRunnerClip?
+Bruinet.Bdd.Runner.BddRunnerClips.Intro.init -> void
+Bruinet.Bdd.Runner.BddRunnerClips.Outro.get -> Bruinet.Bdd.Runner.BddRunnerClip?
+Bruinet.Bdd.Runner.BddRunnerClips.Outro.init -> void
+Bruinet.Bdd.Runner.BddRunnerClips.Says.get -> System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Bdd.Runner.BddRunnerClip!>!
+Bruinet.Bdd.Runner.BddRunnerClips.Says.init -> void
+Bruinet.Bdd.Runner.BddRunnerClose
+Bruinet.Bdd.Runner.BddRunnerClose.BddRunnerClose(bool Keep = false) -> void
+Bruinet.Bdd.Runner.BddRunnerClose.Keep.get -> bool
+Bruinet.Bdd.Runner.BddRunnerClose.Keep.init -> void
+Bruinet.Bdd.Runner.BddRunnerDone
+Bruinet.Bdd.Runner.BddRunnerDropRecording
+Bruinet.Bdd.Runner.BddRunnerException
+Bruinet.Bdd.Runner.BddRunnerException.BddRunnerException(string! message) -> void
+Bruinet.Bdd.Runner.BddRunnerExit
+Bruinet.Bdd.Runner.BddRunnerFailed
+Bruinet.Bdd.Runner.BddRunnerFailed.BddRunnerFailed(string! Message) -> void
+Bruinet.Bdd.Runner.BddRunnerFailed.Message.get -> string!
+Bruinet.Bdd.Runner.BddRunnerFailed.Message.init -> void
+Bruinet.Bdd.Runner.BddRunnerFinishRecording
+Bruinet.Bdd.Runner.BddRunnerHello
+Bruinet.Bdd.Runner.BddRunnerHello.BddRunnerHello(int Version) -> void
+Bruinet.Bdd.Runner.BddRunnerHello.Version.get -> int
+Bruinet.Bdd.Runner.BddRunnerHello.Version.init -> void
+Bruinet.Bdd.Runner.BddRunnerJob
+Bruinet.Bdd.Runner.BddRunnerJob.Add(System.Diagnostics.Process! process) -> bool
+Bruinet.Bdd.Runner.BddRunnerJob.BddRunnerJob() -> void
+Bruinet.Bdd.Runner.BddRunnerJob.Dispose() -> void
+Bruinet.Bdd.Runner.BddRunnerMessage
+Bruinet.Bdd.Runner.BddRunnerNext
+Bruinet.Bdd.Runner.BddRunnerOpen
+Bruinet.Bdd.Runner.BddRunnerOpen.BddRunnerOpen(string! Config, string! Pages, string! Feature, string! Scenario, string? Mode = null) -> void
+Bruinet.Bdd.Runner.BddRunnerOpen.Config.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpen.Config.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpen.Feature.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpen.Feature.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpen.Mode.get -> string?
+Bruinet.Bdd.Runner.BddRunnerOpen.Mode.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpen.Pages.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpen.Pages.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpen.Scenario.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpen.Scenario.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpened
+Bruinet.Bdd.Runner.BddRunnerOpened.BddRunnerOpened(int Steps, string! Discovery, string! Catalog, Bruinet.Bdd.Runner.BddRunnerPosition? Next = null) -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.Catalog.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpened.Catalog.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.Discovery.get -> string!
+Bruinet.Bdd.Runner.BddRunnerOpened.Discovery.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.Next.get -> Bruinet.Bdd.Runner.BddRunnerPosition?
+Bruinet.Bdd.Runner.BddRunnerOpened.Next.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.Steps.get -> int
+Bruinet.Bdd.Runner.BddRunnerOpened.Steps.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition
+Bruinet.Bdd.Runner.BddRunnerPosition.App.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPosition.App.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+Bruinet.Bdd.Runner.BddRunnerPosition.Arguments.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.BddRunnerPosition(string? File, int Line, string! Text, int Depth, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerCall!>! Calls) -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerCall!>!
+Bruinet.Bdd.Runner.BddRunnerPosition.Calls.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Depth.get -> int
+Bruinet.Bdd.Runner.BddRunnerPosition.Depth.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.File.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPosition.File.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Line.get -> int
+Bruinet.Bdd.Runner.BddRunnerPosition.Line.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Page.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPosition.Page.init -> void
+Bruinet.Bdd.Runner.BddRunnerPosition.Text.get -> string!
+Bruinet.Bdd.Runner.BddRunnerPosition.Text.init -> void
+Bruinet.Bdd.Runner.BddRunnerPrepare
+Bruinet.Bdd.Runner.BddRunnerPrepare.BddRunnerPrepare(string! Config, string! Pages) -> void
+Bruinet.Bdd.Runner.BddRunnerPrepare.Config.get -> string!
+Bruinet.Bdd.Runner.BddRunnerPrepare.Config.init -> void
+Bruinet.Bdd.Runner.BddRunnerPrepare.Pages.get -> string!
+Bruinet.Bdd.Runner.BddRunnerPrepare.Pages.init -> void
+Bruinet.Bdd.Runner.BddRunnerProtocol
+Bruinet.Bdd.Runner.BddRunnerRecord
+Bruinet.Bdd.Runner.BddRunnerRecord.BddRunnerRecord(int Number, string! Name, string! Scenario, string! Folder, string? Hash, Bruinet.Bdd.Runner.BddRunnerClips! Clips, double BeatMilliseconds, bool SpeakAloud, double? PauseMilliseconds = null, bool SayBefore = false) -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.BeatMilliseconds.get -> double
+Bruinet.Bdd.Runner.BddRunnerRecord.BeatMilliseconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Clips.get -> Bruinet.Bdd.Runner.BddRunnerClips!
+Bruinet.Bdd.Runner.BddRunnerRecord.Clips.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Folder.get -> string!
+Bruinet.Bdd.Runner.BddRunnerRecord.Folder.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Hash.get -> string?
+Bruinet.Bdd.Runner.BddRunnerRecord.Hash.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Name.get -> string!
+Bruinet.Bdd.Runner.BddRunnerRecord.Name.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Number.get -> int
+Bruinet.Bdd.Runner.BddRunnerRecord.Number.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.PauseMilliseconds.get -> double?
+Bruinet.Bdd.Runner.BddRunnerRecord.PauseMilliseconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.SayBefore.get -> bool
+Bruinet.Bdd.Runner.BddRunnerRecord.SayBefore.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.Scenario.get -> string!
+Bruinet.Bdd.Runner.BddRunnerRecord.Scenario.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecord.SpeakAloud.get -> bool
+Bruinet.Bdd.Runner.BddRunnerRecord.SpeakAloud.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecorded
+Bruinet.Bdd.Runner.BddRunnerRecorded.BddRunnerRecorded(string? Timeline, System.Collections.Generic.IReadOnlyList<string!>! Warnings) -> void
+Bruinet.Bdd.Runner.BddRunnerRecorded.Timeline.get -> string?
+Bruinet.Bdd.Runner.BddRunnerRecorded.Timeline.init -> void
+Bruinet.Bdd.Runner.BddRunnerRecorded.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.Runner.BddRunnerRecorded.Warnings.init -> void
+Bruinet.Bdd.Runner.BddRunnerRehearse
+Bruinet.Bdd.Runner.BddRunnerRehearse.BddRunnerRehearse(Bruinet.Bdd.Runner.BddRunnerClips! Clips, double BeatMilliseconds, bool SpeakAloud) -> void
+Bruinet.Bdd.Runner.BddRunnerRehearse.BeatMilliseconds.get -> double
+Bruinet.Bdd.Runner.BddRunnerRehearse.BeatMilliseconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerRehearse.Clips.get -> Bruinet.Bdd.Runner.BddRunnerClips!
+Bruinet.Bdd.Runner.BddRunnerRehearse.Clips.init -> void
+Bruinet.Bdd.Runner.BddRunnerRehearse.SpeakAloud.get -> bool
+Bruinet.Bdd.Runner.BddRunnerRehearse.SpeakAloud.init -> void
+Bruinet.Bdd.Runner.BddRunnerSay
+Bruinet.Bdd.Runner.BddRunnerSay.BddRunnerSay(string! Wav, double Seconds) -> void
+Bruinet.Bdd.Runner.BddRunnerSay.Seconds.get -> double
+Bruinet.Bdd.Runner.BddRunnerSay.Seconds.init -> void
+Bruinet.Bdd.Runner.BddRunnerSay.Wav.get -> string!
+Bruinet.Bdd.Runner.BddRunnerSay.Wav.init -> void
+Bruinet.Bdd.Runner.BddRunnerScreenshot
+Bruinet.Bdd.Runner.BddRunnerScreenshot.BddRunnerScreenshot(string! Description) -> void
+Bruinet.Bdd.Runner.BddRunnerScreenshot.Description.get -> string!
+Bruinet.Bdd.Runner.BddRunnerScreenshot.Description.init -> void
+Bruinet.Bdd.Runner.BddRunnerScreenshotTaken
+Bruinet.Bdd.Runner.BddRunnerScreenshotTaken.BddRunnerScreenshotTaken(string! Path) -> void
+Bruinet.Bdd.Runner.BddRunnerScreenshotTaken.Path.get -> string!
+Bruinet.Bdd.Runner.BddRunnerScreenshotTaken.Path.init -> void
+Bruinet.Bdd.Runner.BddRunnerSkip
+Bruinet.Bdd.Runner.BddRunnerSkip.BddRunnerSkip(string? Message) -> void
+Bruinet.Bdd.Runner.BddRunnerSkip.Message.get -> string?
+Bruinet.Bdd.Runner.BddRunnerSkip.Message.init -> void
+Bruinet.Bdd.Runner.BddRunnerStart
+Bruinet.Bdd.Runner.BddRunnerStart.BddRunnerStart(string! PagesAssembly, string? WorkingDirectory = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? Environment = null) -> void
+Bruinet.Bdd.Runner.BddRunnerStart.Environment.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+Bruinet.Bdd.Runner.BddRunnerStart.Environment.init -> void
+Bruinet.Bdd.Runner.BddRunnerStart.PagesAssembly.get -> string!
+Bruinet.Bdd.Runner.BddRunnerStart.PagesAssembly.init -> void
+Bruinet.Bdd.Runner.BddRunnerStart.ToStartInfo(string! pipe) -> System.Diagnostics.ProcessStartInfo!
+Bruinet.Bdd.Runner.BddRunnerStart.WorkingDirectory.get -> string?
+Bruinet.Bdd.Runner.BddRunnerStart.WorkingDirectory.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep
+Bruinet.Bdd.Runner.BddRunnerStep.BddRunnerStep(int Index, Bruinet.Bdd.BddStepResultStatus Status, string? Message, bool HasNext, System.Collections.Generic.IReadOnlyList<string!>! Report, System.Collections.Generic.IReadOnlyList<string!>! Diagnostics, Bruinet.Bdd.Runner.BddRunnerPosition? Ran = null, Bruinet.Bdd.Runner.BddRunnerPosition? Next = null) -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.Runner.BddRunnerStep.Diagnostics.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.HasNext.get -> bool
+Bruinet.Bdd.Runner.BddRunnerStep.HasNext.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Index.get -> int
+Bruinet.Bdd.Runner.BddRunnerStep.Index.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Message.get -> string?
+Bruinet.Bdd.Runner.BddRunnerStep.Message.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Next.get -> Bruinet.Bdd.Runner.BddRunnerPosition?
+Bruinet.Bdd.Runner.BddRunnerStep.Next.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Ran.get -> Bruinet.Bdd.Runner.BddRunnerPosition?
+Bruinet.Bdd.Runner.BddRunnerStep.Ran.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Report.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Bdd.Runner.BddRunnerStep.Report.init -> void
+Bruinet.Bdd.Runner.BddRunnerStep.Status.get -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Bdd.Runner.BddRunnerStep.Status.init -> void
+Bruinet.Bdd.Runner.BddRunnerStepper
+Bruinet.Bdd.Runner.BddRunnerStepper.BddRunnerStepper(Bruinet.Bdd.Runner.BddRunnerPosition? first, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerStep!>!>! next, System.Func<string?, int, bool>! listed) -> void
+Bruinet.Bdd.Runner.BddRunnerStepper.Last.get -> Bruinet.Bdd.Runner.BddRunnerStep?
+Bruinet.Bdd.Runner.BddRunnerStepper.MoveAsync(Bruinet.Bdd.BddStepMove? move, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerStop?>!
+Bruinet.Bdd.Runner.BddRunnerStepper.Paused.get -> Bruinet.Bdd.Runner.BddRunnerStop?
+Bruinet.Bdd.Runner.BddRunnerStop
+Bruinet.Bdd.Runner.BddRunnerStop.App.get -> string?
+Bruinet.Bdd.Runner.BddRunnerStop.App.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Arguments.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+Bruinet.Bdd.Runner.BddRunnerStop.Arguments.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.BddRunnerStop(string? File, int Line, string! Text, int Depth, bool IsCall, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerCall!>! Calls, Bruinet.Bdd.Runner.BddRunnerStep? Failed = null) -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerCall!>!
+Bruinet.Bdd.Runner.BddRunnerStop.Calls.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Depth.get -> int
+Bruinet.Bdd.Runner.BddRunnerStop.Depth.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Failed.get -> Bruinet.Bdd.Runner.BddRunnerStep?
+Bruinet.Bdd.Runner.BddRunnerStop.Failed.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.File.get -> string?
+Bruinet.Bdd.Runner.BddRunnerStop.File.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.IsCall.get -> bool
+Bruinet.Bdd.Runner.BddRunnerStop.IsCall.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Line.get -> int
+Bruinet.Bdd.Runner.BddRunnerStop.Line.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Page.get -> string?
+Bruinet.Bdd.Runner.BddRunnerStop.Page.init -> void
+Bruinet.Bdd.Runner.BddRunnerStop.Text.get -> string!
+Bruinet.Bdd.Runner.BddRunnerStop.Text.init -> void
+Bruinet.Bdd.Runner.BddShadowCopy
+Bruinet.Bdd.Runner.BddWarmRunners
+Bruinet.Bdd.Runner.BddWarmRunners.BddWarmRunners(string? root = null, System.Action<System.Diagnostics.Process!>? started = null) -> void
+Bruinet.Bdd.Runner.BddWarmRunners.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Bdd.Runner.BddWarmRunners.EndAsync(Bruinet.Bdd.Runner.BddRunnerStart! start) -> System.Threading.Tasks.Task!
+Bruinet.Bdd.Runner.BddWarmRunners.IsWarm(Bruinet.Bdd.Runner.BddRunnerStart! start) -> bool
+Bruinet.Bdd.Runner.BddWarmRunners.Return(Bruinet.Bdd.Runner.BddRunnerClient! runner, System.Func<Bruinet.Bdd.Runner.BddRunnerClient!, System.Threading.Tasks.Task!>? prepare = null) -> void
+Bruinet.Bdd.Runner.BddWarmRunners.TakeAsync(Bruinet.Bdd.Runner.BddRunnerStart! start, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerClient!>!
+Bruinet.Bdd.Runner.BddWarmRunners.WarmAsync(Bruinet.Bdd.Runner.BddRunnerStart! start, System.Func<Bruinet.Bdd.Runner.BddRunnerClient!, System.Threading.Tasks.Task!>? prepare = null) -> System.Threading.Tasks.Task!
+const Bruinet.Bdd.BddConfigFields.AppPath = "AppPath" -> string!
+const Bruinet.Bdd.BddConfigFields.AppsFile = "AppsFile" -> string!
+const Bruinet.Bdd.BddConfigFields.DefaultTestData = "DefaultTestData" -> string!
+const Bruinet.Bdd.BddConfigFields.Fixture = "Fixture" -> string!
+const Bruinet.Bdd.BddConfigFields.Head = "Head" -> string!
+const Bruinet.Bdd.BddConfigFields.Project = "Project" -> string!
+const Bruinet.Bdd.BddConfigFields.Target = "Target" -> string!
+const Bruinet.Bdd.BddConfigFields.TestDataAssemblyKind = "TestData" -> string!
+const Bruinet.Bdd.BddConfigFields.WorkingDirectory = "WorkingDirectory" -> string!
+const Bruinet.Bdd.BddFileFormat.FeatureExtension = ".feature.md" -> string!
+const Bruinet.Bdd.BddFileFormat.FeatureFilePattern = "*.feature.md" -> string!
+const Bruinet.Bdd.BddFileFormat.FeatureFolder = "Features" -> string!
+const Bruinet.Bdd.BddFileFormat.FenceHint = "Steps go in a ```gherkin block; run 'bruinet data validate --fix' to wrap them." -> string!
+const Bruinet.Bdd.BddFileFormat.OldFeatureFolder = "Scenarios" -> string!
+const Bruinet.Bdd.BddFileFormat.OldFormCode = "UAT029" -> string!
+const Bruinet.Bdd.BddFileFormat.ServiceConfigFileName = "bdd.config.md" -> string!
+const Bruinet.Bdd.BddFileFormat.StepFilePattern = "*.steps.md" -> string!
+const Bruinet.Bdd.BddFileFormat.StepsExtension = ".steps.md" -> string!
+const Bruinet.Bdd.BddFileFormat.UiConfigFileName = "uat.config.md" -> string!
+const Bruinet.Bdd.BddMetadataFields.App = "App" -> string!
+const Bruinet.Bdd.BddMetadataFields.Area = "Area" -> string!
+const Bruinet.Bdd.BddMetadataFields.Evidence = "Evidence" -> string!
+const Bruinet.Bdd.BddMetadataFields.Mode = "Mode" -> string!
+const Bruinet.Bdd.BddMetadataFields.Owner = "Owner" -> string!
+const Bruinet.Bdd.BddMetadataFields.Priority = "Priority" -> string!
+const Bruinet.Bdd.BddMetadataFields.Requires = "Requires" -> string!
+const Bruinet.Bdd.BddMetadataFields.Tags = "Tags" -> string!
+const Bruinet.Bdd.BddMetadataFields.Target = "Target" -> string!
+const Bruinet.Bdd.BddMetadataFields.TestData = "TestData" -> string!
+const Bruinet.Bdd.BddMetadataFields.Using = "Using" -> string!
+const Bruinet.Bdd.BddScenarioAddress.Trait = "BddScenario" -> string!
+const Bruinet.Bdd.BddScenarioFiles.PhraseFilePattern = "*.steps.md" -> string!
+const Bruinet.Bdd.BddScenarioSource.SourceDirectoryEnvironmentVariable = "BRUINET_SUITE_SOURCE" -> string!
+const Bruinet.Bdd.BddTagConventions.Android = "android" -> string!
+const Bruinet.Bdd.BddTagConventions.Automated = "automated" -> string!
+const Bruinet.Bdd.BddTagConventions.Browser = "browser" -> string!
+const Bruinet.Bdd.BddTagConventions.Deterministic = "deterministic" -> string!
+const Bruinet.Bdd.BddTagConventions.Device = "device" -> string!
+const Bruinet.Bdd.BddTagConventions.Hardware = "hardware" -> string!
+const Bruinet.Bdd.BddTagConventions.Ios = "ios" -> string!
+const Bruinet.Bdd.BddTagConventions.LiveApi = "live-api" -> string!
+const Bruinet.Bdd.BddTagConventions.Manual = "manual" -> string!
+const Bruinet.Bdd.BddTagConventions.Maui = "maui" -> string!
+const Bruinet.Bdd.BddTagConventions.Mixed = "mixed" -> string!
+const Bruinet.Bdd.BddTagConventions.OpenAiLive = "openai-live" -> string!
+const Bruinet.Bdd.BddTagConventions.Regression = "regression" -> string!
+const Bruinet.Bdd.BddTagConventions.SemiAutomated = "semi-automated" -> string!
+const Bruinet.Bdd.BddTagConventions.Service = "service" -> string!
+const Bruinet.Bdd.BddTagConventions.Smoke = "smoke" -> string!
+const Bruinet.Bdd.BddTagConventions.Web = "web" -> string!
+const Bruinet.Bdd.BddTagConventions.Windows = "windows" -> string!
+const Bruinet.Bdd.Runner.BddRunnerProtocol.PipeArgument = "--pipe" -> string!
+const Bruinet.Bdd.Runner.BddRunnerProtocol.Version = 2 -> int
+const Bruinet.Bdd.Runner.BddRunnerStart.RunnerAssembly = "Bruinet.Uat.dll" -> string!
+override Bruinet.Bdd.BddCallable.ToString() -> string!
+override Bruinet.Bdd.BddPhraseParameter.ToString() -> string!
+override Bruinet.Bdd.BddPreparedCallable.ToString() -> string!
+override Bruinet.Bdd.BddSourceLocation.ToString() -> string!
+override Bruinet.Bdd.BddUserRole.ToString() -> string!
+static Bruinet.Bdd.BddArgumentTypes.Discover(System.Collections.Generic.IEnumerable<System.Type!>! types) -> Bruinet.Bdd.BddArgumentTypes!
+static Bruinet.Bdd.BddArgumentTypes.Empty.get -> Bruinet.Bdd.BddArgumentTypes!
+static Bruinet.Bdd.BddArguments.Check(Bruinet.Bdd.BddCommandPattern! pattern, Bruinet.Bdd.BddStep! step, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! arguments, Bruinet.Bdd.BddValueContext! context) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+static Bruinet.Bdd.BddArguments.Read(Bruinet.Bdd.BddPhraseParameter! parameter, Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddValueContext! context) -> object?
+static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddBindResult!
+static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs, Bruinet.Bdd.BddCallableSet! callables, string? only = null) -> Bruinet.Bdd.BddBindResult!
+static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCommandCatalog! catalog) -> Bruinet.Bdd.BddBindResult!
+static Bruinet.Bdd.BddBreakpoints.DefaultPath.get -> string!
+static Bruinet.Bdd.BddBreakpoints.Describe(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context, Bruinet.Bdd.BddStepResult? result = null) -> Bruinet.Bdd.BddStepBreak!
+static Bruinet.Bdd.BddBreakpoints.ForDebugger(System.Func<bool>? attached = null, string? path = null) -> Bruinet.Bdd.IBddBreakHook?
+static Bruinet.Bdd.BddBreakpoints.Lists(string? file, int line, string? path = null) -> bool
+static Bruinet.Bdd.BddCallableSet.Empty.get -> Bruinet.Bdd.BddCallableSet!
+static Bruinet.Bdd.BddCommandCatalog.Select(System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>! matches) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
+static Bruinet.Bdd.BddCommandPattern.LeadingWords(string! text) -> (string? One, string? Two)
+static Bruinet.Bdd.BddCommandPattern.ParameterNames(string! phrase) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddConfigEdit.Empty.get -> Bruinet.Bdd.BddConfigEdit!
+static Bruinet.Bdd.BddConfigParser.IsEnabled(string? value) -> bool
+static Bruinet.Bdd.BddConfigParser.Parse(string! markdown, string? suiteName = null) -> Bruinet.Bdd.BddConfig!
+static Bruinet.Bdd.BddConfigParser.ParseFile(string! filePath, string? suiteName = null) -> Bruinet.Bdd.BddConfig!
+static Bruinet.Bdd.BddConfigWriter.Apply(string! markdown, Bruinet.Bdd.BddConfigEdit! edit) -> string!
+static Bruinet.Bdd.BddConfigWriter.ApplyToFile(string! filePath, Bruinet.Bdd.BddConfigEdit! edit) -> bool
+static Bruinet.Bdd.BddConfigWriter.Create(Bruinet.Bdd.BddConfigTemplate! template) -> string!
+static Bruinet.Bdd.BddConfigWriter.CreateFile(string! filePath, Bruinet.Bdd.BddConfigTemplate! template) -> void
+static Bruinet.Bdd.BddDiagnosticsFormatter.FormatBindFailure(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddDiagnostic!>! diagnostics, string! discoveryReport, Bruinet.Bdd.BddCommandCatalog! catalog) -> string!
+static Bruinet.Bdd.BddDiagnosticsFormatter.FormatCatalog(Bruinet.Bdd.BddCommandCatalog! catalog) -> string!
+static Bruinet.Bdd.BddDiagnosticsFormatter.FormatDiagnostics(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddDiagnostic!>! diagnostics) -> string!
+static Bruinet.Bdd.BddDiagnosticsFormatter.FormatResults(Bruinet.Bdd.BddScenarioRunResult! result, Bruinet.Bdd.BddExecutionContext! context, string! discoveryReport, Bruinet.Bdd.BddCommandCatalog! catalog, string? evidencePath = null) -> string!
+static Bruinet.Bdd.BddDiagnosticsFormatter.FormatSteps(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddStepResult!>! steps) -> System.Collections.Generic.IEnumerable<string!>!
+static Bruinet.Bdd.BddExecutionContextSettingsExtensions.GetSettings(this Bruinet.Bdd.BddExecutionContext! context) -> Bruinet.Core.Settings.TestSettings!
+static Bruinet.Bdd.BddExecutionContextSettingsExtensions.GetSettings(this Bruinet.Bdd.BddExecutionContext! context, System.Type! settingsType) -> object!
+static Bruinet.Bdd.BddExecutionContextSettingsExtensions.SetSettings(this Bruinet.Bdd.BddExecutionContext! context, Bruinet.Core.Settings.TestSettings! settings) -> void
+static Bruinet.Bdd.BddFileFormat.FenceSteps(string! text) -> (string! Text, int Count)
+static Bruinet.Bdd.BddFileFormat.FindConfig(string! directory) -> string!
+static Bruinet.Bdd.BddFileFormat.IsConfigFileName(string! fileName) -> bool
+static Bruinet.Bdd.BddFileFormat.NewFileName(string! path) -> string?
+static Bruinet.Bdd.BddFileFormat.NewHeading(string! trimmedLine) -> string?
+static Bruinet.Bdd.BddFileFormat.OldFilePatterns.get -> System.Collections.Generic.IEnumerable<string!>!
+static Bruinet.Bdd.BddFileFormat.RewriteHeadings(string! text) -> (string! Text, int Count)
+static Bruinet.Bdd.BddMarkdownParser.Parse(string! markdown, string? filePath = null) -> Bruinet.Bdd.BddParseResult!
+static Bruinet.Bdd.BddMarkdownParser.ParseFile(string! filePath) -> Bruinet.Bdd.BddParseResult!
+static Bruinet.Bdd.BddMarkdownParser.ParsePhrases(string! markdown, string? filePath = null) -> Bruinet.Bdd.BddPhrasesParseResult!
+static Bruinet.Bdd.BddNamespaces.Describe(string? name) -> string!
+static Bruinet.Bdd.BddNamespaces.IsVisible(string? owner, string? from) -> bool
+static Bruinet.Bdd.BddNamespaces.Normalize(string? name) -> string!
+static Bruinet.Bdd.BddNamespaces.Of(string? filePath) -> string!
+static Bruinet.Bdd.BddNamespaces.PageKey(string? name, string! page) -> string!
+static Bruinet.Bdd.BddNamespaces.ParseList(string? value) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddReportingSettings.CreateDefault(string? suiteName = null) -> Bruinet.Bdd.BddReportingSettings!
+static Bruinet.Bdd.BddScenarioAddress.Of(string! fileRelativeToConfig, string! scenarioName) -> string!
+static Bruinet.Bdd.BddScenarioAddress.Slug(string! scenarioName) -> string!
+static Bruinet.Bdd.BddScenarioExecutor.RunAsync(Bruinet.Bdd.BddBoundScenario! scenario, Bruinet.Bdd.BddConfig? config = null, System.Action<Bruinet.Bdd.BddBoundScenario!>? beforeScenario = null, System.Action<Bruinet.Bdd.BddExecutionContext!>? configureContext = null, System.Func<Bruinet.Bdd.BddBoundScenario!, string?>? captureEvidenceOnFailure = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.BddScenarioExecutionResult!>!
+static Bruinet.Bdd.BddScenarioFiles.CheckPhrases(Bruinet.Bdd.BddPhrasesParseResult! parse, Bruinet.Bdd.BddCatalogSet! catalogs) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+static Bruinet.Bdd.BddScenarioFiles.Load(string! filePath) -> Bruinet.Bdd.BddLoadedScenarioFile!
+static Bruinet.Bdd.BddScenarioFiles.Load(string! filePath, string! text) -> Bruinet.Bdd.BddLoadedScenarioFile!
+static Bruinet.Bdd.BddScenarioFiles.ParsePhraseFile(string! filePath) -> Bruinet.Bdd.BddPhrasesParseResult!
+static Bruinet.Bdd.BddScenarioFiles.ParsePhrases(string! filePath, string! text) -> Bruinet.Bdd.BddPhrasesParseResult!
+static Bruinet.Bdd.BddScenarioFiles.PhraseFilesFor(string! filePath) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddScenarioFiles.ScenarioRoot(string! filePath) -> string!
+static Bruinet.Bdd.BddScenarioSource.ApplyFilter(System.Collections.Generic.IEnumerable<string!>! filePaths, string? filter) -> System.Collections.Generic.IEnumerable<string!>!
+static Bruinet.Bdd.BddScenarioSource.EnumerateScenarioFiles(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IEnumerable<string!>!
+static Bruinet.Bdd.BddScenarioSource.EnumerateScenarios(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddScenarioReference!>!
+static Bruinet.Bdd.BddScenarioSource.GetConfigFilePath(string? baseDirectory = null, string? configFileName = null) -> string!
+static Bruinet.Bdd.BddScenarioSource.GetOrderKey(string! filePath, string! scenarioName) -> string!
+static Bruinet.Bdd.BddScenarioSource.GetScenarioFileTheoryData(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IEnumerable<object![]!>!
+static Bruinet.Bdd.BddScenarioSource.GetScenarioTheoryData(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IEnumerable<object![]!>!
+static Bruinet.Bdd.BddScenarioSource.SourceDirectory.get -> string?
+static Bruinet.Bdd.BddScenarioSource.SuiteDirectory(string! output) -> string!
+static Bruinet.Bdd.BddScope.Of(Bruinet.Bdd.BddCallable! callable, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddScope!
+static Bruinet.Bdd.BddScope.Of(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddScope!
+static Bruinet.Bdd.BddScope.OwnerOf(Bruinet.Bdd.BddCommandPattern! pattern) -> string?
+static Bruinet.Bdd.BddSets.AssertSet<T>(System.Collections.Generic.IEnumerable<T>! expected, System.Collections.Generic.IEnumerable<T>! actual, bool ordered = false, string? what = null) -> void
+static Bruinet.Bdd.BddSettingsConfig.Default.get -> Bruinet.Bdd.BddSettingsConfig!
+static Bruinet.Bdd.BddSkipDecision.Run.get -> Bruinet.Bdd.BddSkipDecision!
+static Bruinet.Bdd.BddStepDefinitionRuntime.FromTypes(object! root, params System.Type![]! stepDefinitionTypes) -> Bruinet.Bdd.BddStepDefinitionRuntime!
+static Bruinet.Bdd.BddStepDefinitionRuntime.SetServiceProvider(Bruinet.Bdd.BddExecutionContext! context, System.IServiceProvider! serviceProvider) -> void
+static Bruinet.Bdd.BddStepResult.Canceled(Bruinet.Bdd.BddStepInvocation! invocation, string? message = null) -> Bruinet.Bdd.BddStepResult!
+static Bruinet.Bdd.BddStepResult.Failed(Bruinet.Bdd.BddStepInvocation! invocation, string! message, System.Exception? exception = null) -> Bruinet.Bdd.BddStepResult!
+static Bruinet.Bdd.BddStepResult.Passed(Bruinet.Bdd.BddStepInvocation! invocation, string? message = null) -> Bruinet.Bdd.BddStepResult!
+static Bruinet.Bdd.BddTableBinding.AssertContains<T>(this Bruinet.Bdd.BddTable! table, System.Collections.Generic.IEnumerable<T>! actual, System.DateTimeOffset? now = null) -> void
+static Bruinet.Bdd.BddTableBinding.AssertDoesNotContain<T>(this Bruinet.Bdd.BddTable! table, System.Collections.Generic.IEnumerable<T>! actual, System.DateTimeOffset? now = null) -> void
+static Bruinet.Bdd.BddTableBinding.AssertExactly<T>(this Bruinet.Bdd.BddTable! table, System.Collections.Generic.IEnumerable<T>! actual, System.DateTimeOffset? now = null) -> void
+static Bruinet.Bdd.BddTableBinding.Bind(this Bruinet.Bdd.BddTable! table, System.Type! type, Bruinet.Bdd.BddValueContext! context) -> object!
+static Bruinet.Bdd.BddTableBinding.Bind<T>(this Bruinet.Bdd.BddTable! table, System.DateTimeOffset? now = null) -> System.Collections.Generic.IReadOnlyList<T>!
+static Bruinet.Bdd.BddTableBinding.Check(Bruinet.Bdd.BddTable! table, System.Type! type, Bruinet.Bdd.BddValueContext! context) -> System.Collections.Generic.IReadOnlyList<(Bruinet.Bdd.BddValueProblem! Problem, Bruinet.Bdd.BddSourceLocation! Location)>!
+static Bruinet.Bdd.BddTagConventions.Heads.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddTagConventions.IsService(string? head) -> bool
+static Bruinet.Bdd.BddTagConventions.NormalizeTag(string! tag) -> string!
+static Bruinet.Bdd.BddTagConventions.OptInHeads.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddTagConventions.WhyNotOnHead(System.Collections.Generic.IReadOnlySet<string!>! normalizedTags, string! suiteHead) -> string?
+static Bruinet.Bdd.BddUserRole.Of(string! name, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAppConfig!>! apps) -> Bruinet.Bdd.BddUserRole!
+static Bruinet.Bdd.BddValueContext.Default.get -> Bruinet.Bdd.BddValueContext!
+static Bruinet.Bdd.BddValues.Describe(System.Type! type) -> string!
+static Bruinet.Bdd.BddValues.ElementType(System.Type! type) -> System.Type?
+static Bruinet.Bdd.BddValues.IsInline(System.Type! type, Bruinet.Bdd.BddArgumentTypes? types = null) -> bool
+static Bruinet.Bdd.BddValues.IsRelativeDate(string! text) -> bool
+static Bruinet.Bdd.BddValues.Read(string! text, System.Type! type, Bruinet.Bdd.BddValueContext! context, bool allowNull = false) -> object?
+static Bruinet.Bdd.BddValues.SplitList(string! text) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddValues.TryRead(string! text, System.Type! type, Bruinet.Bdd.BddValueContext! context, out object? value, out Bruinet.Bdd.BddValueProblem? problem, bool allowNull = false) -> bool
+static Bruinet.Bdd.BddValues.Unquote(string! text) -> string!
+static Bruinet.Bdd.BddValues.Write(object? value) -> string!
+static Bruinet.Bdd.BddWrittenStep.Line(Bruinet.Bdd.BddStepInvocation! invocation) -> int
+static Bruinet.Bdd.Runner.BddRunnerChannel.Read(string! line) -> Bruinet.Bdd.Runner.BddRunnerMessage!
+static Bruinet.Bdd.Runner.BddRunnerChannel.Write(Bruinet.Bdd.Runner.BddRunnerMessage! message) -> string!
+static Bruinet.Bdd.Runner.BddRunnerClient.StartAsync(Bruinet.Bdd.Runner.BddRunnerStart! start, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerClient!>!
+static Bruinet.Bdd.Runner.BddRunnerProtocol.Mismatch(int runner) -> string?
+static Bruinet.Bdd.Runner.BddShadowCopy.Clean(string! output, System.Collections.Generic.IEnumerable<string!>! inUse, string? root = null, string? owner = null) -> void
+static Bruinet.Bdd.Runner.BddShadowCopy.DefaultRoot.get -> string!
+static Bruinet.Bdd.Runner.BddShadowCopy.Fingerprint(string! output) -> string!
+static Bruinet.Bdd.Runner.BddShadowCopy.Into(Bruinet.Bdd.Runner.BddRunnerStart! start, string! copy) -> Bruinet.Bdd.Runner.BddRunnerStart!
+static Bruinet.Bdd.Runner.BddShadowCopy.Make(string! output, string! copy) -> string!
+static Bruinet.Bdd.Runner.BddShadowCopy.NewFolder(string! output, string? root = null, string? owner = null) -> string!
+static Bruinet.Bdd.Runner.BddShadowCopy.ProcessOwner.get -> string!
+static readonly Bruinet.Bdd.Runner.BddRunnerClient.CancelGrace -> System.TimeSpan
+static readonly Bruinet.Bdd.Runner.BddRunnerClient.ConnectTimeout -> System.TimeSpan

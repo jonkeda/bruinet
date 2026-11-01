@@ -1,0 +1,240 @@
+#nullable enable
+Bruinet.Blazor.BlazorOptions
+Bruinet.Blazor.BlazorOptions.AppPath.get -> string?
+Bruinet.Blazor.BlazorOptions.AppPath.set -> void
+Bruinet.Blazor.BlazorOptions.AppUrl.get -> string!
+Bruinet.Blazor.BlazorOptions.AppUrl.set -> void
+Bruinet.Blazor.BlazorOptions.BlazorOptions() -> void
+Bruinet.Blazor.BlazorOptions.ReadyTimeoutSeconds.get -> int
+Bruinet.Blazor.BlazorOptions.ReadyTimeoutSeconds.set -> void
+Bruinet.Blazor.BruinetBlazorConfiguration
+Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.get -> Bruinet.Blazor.BlazorOptions!
+Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.set -> void
+Bruinet.Blazor.BruinetBlazorConfiguration.Browser.get -> Bruinet.Core.Configuration.BrowserOptions!
+Bruinet.Blazor.BruinetBlazorConfiguration.Browser.set -> void
+Bruinet.Blazor.BruinetBlazorConfiguration.BruinetBlazorConfiguration() -> void
+Bruinet.Blazor.Context.BlazorTestContext
+Bruinet.Blazor.Context.BlazorTestContext.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
+Bruinet.Blazor.Context.BlazorTestContext.CurrentUrl.get -> string!
+Bruinet.Blazor.Context.BlazorTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Blazor.Context.BlazorTestContext.Dispose() -> void
+Bruinet.Blazor.Context.BlazorTestContext.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Blazor.Context.BlazorTestContext.Driver.get -> Bruinet.Html.Interfaces.IHtmlDriver!
+Bruinet.Blazor.Context.BlazorTestContext.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
+Bruinet.Blazor.Context.BlazorTestContext.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
+Bruinet.Blazor.Context.BlazorTestContext.GoForward() -> void
+Bruinet.Blazor.Context.BlazorTestContext.IsIdle() -> bool
+Bruinet.Blazor.Context.BlazorTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.Blazor.Context.BlazorTestContext.Name.get -> string?
+Bruinet.Blazor.Context.BlazorTestContext.NavigateBack() -> void
+Bruinet.Blazor.Context.BlazorTestContext.NavigateTo(string! destination) -> void
+Bruinet.Blazor.Context.BlazorTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.Blazor.Context.BlazorTestContext.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
+Bruinet.Blazor.Context.BlazorTestContext.PageTitle.get -> string!
+Bruinet.Blazor.Context.BlazorTestContext.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
+Bruinet.Blazor.Context.BlazorTestContext.ProbePageWhenReady(string! busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs) -> Bruinet.Html.Interfaces.PageProbe!
+Bruinet.Blazor.Context.BlazorTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Blazor.Context.BlazorTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.Blazor.Context.BlazorTestContext.Refresh() -> void
+Bruinet.Blazor.Context.BlazorTestContext.ResetAppState() -> void
+Bruinet.Blazor.Context.BlazorTestContext.SaveScreenshot(string! path) -> void
+Bruinet.Blazor.Context.BlazorTestContext.TakeScreenshot() -> byte[]!
+Bruinet.Blazor.Context.BlazorTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Blazor.Context.BlazorTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Blazor.Context.BlazorTestContext.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.AudioControl<TScope>
+Bruinet.Blazor.Controls.AudioControl<TScope>.AudioControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.AudioControl<TScope>.AudioControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.ButtonControl<TScope>
+Bruinet.Blazor.Controls.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.CheckBoxControl<TScope>
+Bruinet.Blazor.Controls.CheckBoxControl<TScope>.CheckBoxControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.CheckBoxControl<TScope>.CheckBoxControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.DateInputControl<TScope>
+Bruinet.Blazor.Controls.DateInputControl<TScope>.DateInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.DateInputControl<TScope>.DateInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.IFrameControl<TScope>
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertElementInside(string! selector, bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertName(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertSource(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertTextInside(string! selector, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.ClickInside(string! selector, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.FillInside(string! selector, string? text, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.IFrameControl<TScope>.GetName(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.GetSource(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTextInside(string! selector, int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTitle(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.IFrameControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.IFrameControl<TScope>.IFrameControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.IFrameControl<TScope>.IsElementInside(string! selector) -> bool?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitElementInside(string! selector, bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitName(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitSource(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitSourceContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitTextInside(string! selector, string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertAltText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertNaturalHeight(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertNaturalWidth(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertSource(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.ImageControl<TScope>.GetAltText(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.ImageControl<TScope>.GetNaturalHeight(int? timeoutMs = null) -> int?
+Bruinet.Blazor.Controls.ImageControl<TScope>.GetNaturalWidth(int? timeoutMs = null) -> int?
+Bruinet.Blazor.Controls.ImageControl<TScope>.GetSource(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.ImageControl<TScope>.ImageControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.ImageControl<TScope>.ImageControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.ImageControl<TScope>.IsLoaded() -> bool?
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitAltText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitNaturalHeight(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitNaturalWidth(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitSource(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ImageControl<TScope>.WaitSourceContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.LinkControl<TScope>
+Bruinet.Blazor.Controls.LinkControl<TScope>.LinkControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.LinkControl<TScope>.LinkControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.ListControl<TScope>
+Bruinet.Blazor.Controls.ListControl<TScope>.ListControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.ListControl<TScope>.ListControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.MediaControlBase<TScope>
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertCurrentTime(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertCurrentTimeAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertCurrentTimeGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertDuration(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertEnded(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertMuted(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertPaused(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertPlaying(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertSource(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.AssertVolume(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetCurrentTime(int? timeoutMs = null) -> double?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetDuration(int? timeoutMs = null) -> double?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetSource(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetVolume(int? timeoutMs = null) -> double?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsEnded() -> bool?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsMuted() -> bool?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPaused() -> bool?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPlaying() -> bool?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.MediaControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.MediaControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.Mute(int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.Pause(int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.Play(int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.Seek(double seconds, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.SetVolume(double? volume, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.Unmute(int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitCurrentTime(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitCurrentTimeAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitCurrentTimeGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitDuration(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitEnded(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitMuted(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitPaused(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitPlaying(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitSource(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitSourceContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.WaitVolume(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertActiveItem(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertItemCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertItemHref(string! itemText, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertItems(System.Collections.Generic.IReadOnlyList<string!>? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertItemsCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.AssertItemsHasItem(string! item, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetActiveItem(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItemCount(int? timeoutMs = null) -> int?
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItemHref(string! itemText, int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItems(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavMenuControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, string! itemSelector = "a, .nav-link, [role='menuitem']") -> void
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavMenuControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId, string! itemSelector = "a, .nav-link, [role='menuitem']") -> void
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavigateTo(string! itemText, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavigateToIndex(int index, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitActiveItem(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitItemCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitItemHref(string! itemText, string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitItems(System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitItemsCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.NavMenuControl<TScope>.WaitItemsHasItem(string! item, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Controls.ProgressControl<TScope>
+Bruinet.Blazor.Controls.ProgressControl<TScope>.ProgressControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.ProgressControl<TScope>.ProgressControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.RadioButtonControl<TScope>
+Bruinet.Blazor.Controls.RadioButtonControl<TScope>.RadioButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.RadioButtonControl<TScope>.RadioButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.RangeInputControl<TScope>
+Bruinet.Blazor.Controls.RangeInputControl<TScope>.RangeInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.RangeInputControl<TScope>.RangeInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.SelectControl<TScope>
+Bruinet.Blazor.Controls.SelectControl<TScope>.SelectControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.SelectControl<TScope>.SelectControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.TabContainerControl<TParent, TScope>
+Bruinet.Blazor.Controls.TabContainerControl<TParent, TScope>.TabContainerControl(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator, string! tabSelector = "[role='tab']") -> void
+Bruinet.Blazor.Controls.TableControl<TScope>
+Bruinet.Blazor.Controls.TableControl<TScope>.TableControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.TableControl<TScope>.TableControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.TextAreaControl<TScope>
+Bruinet.Blazor.Controls.TextAreaControl<TScope>.TextAreaControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.TextAreaControl<TScope>.TextAreaControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.TextInputControl<TScope>
+Bruinet.Blazor.Controls.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.TimeInputControl<TScope>
+Bruinet.Blazor.Controls.TimeInputControl<TScope>.TimeInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.TimeInputControl<TScope>.TimeInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.VideoControl<TScope>
+Bruinet.Blazor.Controls.VideoControl<TScope>.AssertPoster(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Blazor.Controls.VideoControl<TScope>.GetPoster(int? timeoutMs = null) -> string?
+Bruinet.Blazor.Controls.VideoControl<TScope>.VideoControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Blazor.Controls.VideoControl<TScope>.VideoControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Blazor.Controls.VideoControl<TScope>.WaitPoster(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Blazor.Pages.BlazorPageObjectBase<TSelf>
+Bruinet.Blazor.Pages.BlazorPageObjectBase<TSelf>.BlazorPageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
+Bruinet.Blazor.Pages.BlazorPageObjectBase<TSelf>.BlazorPageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context, string! url) -> void
+Bruinet.Blazor.Testing.BlazorTestFixtureBase
+Bruinet.Blazor.Testing.BlazorTestFixtureBase.BlazorContext.get -> Bruinet.Blazor.Context.BlazorTestContext!
+Bruinet.Blazor.Testing.BlazorTestFixtureBase.BlazorTestFixtureBase() -> void
+override Bruinet.Blazor.Pages.BlazorPageObjectBase<TSelf>.BusySignal.get -> Bruinet.Html.Scopes.BusySignal
+override Bruinet.Blazor.Testing.BlazorTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
+static Bruinet.Blazor.BruinetBlazorConfiguration.Load(string? configPath = null) -> Bruinet.Blazor.BruinetBlazorConfiguration!
+static Bruinet.Blazor.Context.BlazorTestContext.CreateAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Blazor.Context.BlazorTestContext!>!
+static Bruinet.Blazor.Context.BlazorTestContext.ForPage(Microsoft.Playwright.IPage! page, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Blazor.Context.BlazorTestContext!
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.ClickInsideCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! selector, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.FillInsideCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! selector, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.GetNameCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.GetSourceCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTextInsideCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! selector) -> string?
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTitleCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.IsElementInsideCore(Bruinet.Html.Interfaces.IHtmlElement? element, string! selector) -> bool?
+virtual Bruinet.Blazor.Controls.ImageControl<TScope>.GetAltTextCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.ImageControl<TScope>.GetNaturalHeightCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> int?
+virtual Bruinet.Blazor.Controls.ImageControl<TScope>.GetNaturalWidthCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> int?
+virtual Bruinet.Blazor.Controls.ImageControl<TScope>.GetSourceCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.ImageControl<TScope>.IsLoadedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetCurrentTimeCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetDurationCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetSourceCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetVolumeCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsEndedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsMutedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPausedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPlayingCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.MuteCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.PauseCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.PlayCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.SeekCore(Bruinet.Html.Interfaces.IHtmlElement! element, double seconds, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.SetVolumeCore(Bruinet.Html.Interfaces.IHtmlElement! element, double? volume, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.MediaControlBase<TScope>.UnmuteCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetActiveItemCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItemCountCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> int?
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItemHrefCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! itemText) -> string?
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.GetItemsCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.Collections.Generic.IReadOnlyList<string!>?
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavigateToCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! itemText, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.NavMenuControl<TScope>.NavigateToIndexCore(Bruinet.Html.Interfaces.IHtmlElement! element, int index, int? timeoutMs = null) -> void
+virtual Bruinet.Blazor.Controls.VideoControl<TScope>.GetPosterCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?

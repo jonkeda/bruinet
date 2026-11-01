@@ -1,0 +1,194 @@
+#nullable enable
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent, TSelf>
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent, TSelf>.DockLayout(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent, TSelf>.DockLayout(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent>
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent>.DockLayout(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.DockLayout<TParent>.DockLayout(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.AssertShowing(string! viewAutomationId, bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.AssertShowsState(string! state, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.IsShowing(string! viewAutomationId) -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.StateContainer(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.StateContainer(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.WaitShowing(string! viewAutomationId, bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent>
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent>.StateContainer(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent>.StateContainer(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertElapsed(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertElapsedAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertElapsedAtMost(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertElapsedGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertElapsedLessThan(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertPlaying(bool? expected = true, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertProgressAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertProgressGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertRemaining(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertRemainingAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertRemainingAtMost(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertRemainingGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.AssertRemainingLessThan(double? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.FastForwardButton.get -> Bruinet.Maui.Controls.Buttons.Button<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetDuration() -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetElapsed(int? timeoutMs = null) -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetElapsedShortcut() -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetProgress(int? timeoutMs = null) -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetProgressShortcut() -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetRemaining(int? timeoutMs = null) -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.GetRemainingShortcut() -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.IsPlaying() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.IsPlayingShortcut() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.MediaElement(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.MediaElement(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.Pause(int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.PauseShortcut(int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.Play(int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.PlayPauseButton.get -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.ProgressSlider.get -> Bruinet.Maui.Controls.Range.Slider<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.RepeatButton.get -> Bruinet.Maui.Controls.Buttons.Button<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.RewindButton.get -> Bruinet.Maui.Controls.Buttons.Button<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.SetPlaying(bool? playing, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.Stop(int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.TimeElapsedLabel.get -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.TimeRemainingLabel.get -> Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.VolumeMuteButton.get -> Bruinet.Maui.Controls.Buttons.Button<Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitElapsed(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitElapsedAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitElapsedAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitElapsedGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitElapsedLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitOpened(int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitPlaying(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitProgressAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitProgressGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitRemaining(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitRemainingAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitRemainingAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitRemainingGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.WaitRemainingLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.AssertPlaying(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.IsPlaying() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.MediaPlayPauseButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.MediaPlayPauseButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.Pause(int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.Play(int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.SetPlaying(bool? playing, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.WaitPlaying(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.AssertSeconds(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.AssertSecondsAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.AssertSecondsAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.AssertSecondsGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.AssertSecondsLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.GetSeconds(int? timeoutMs = null) -> double?
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.MediaTimeLabel(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.MediaTimeLabel(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.WaitSeconds(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.WaitSecondsAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.WaitSecondsAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.WaitSecondsGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.WaitSecondsLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.AssertShown(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.AvatarImage(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.AvatarImage(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.IsShown() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.WaitShown(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.AssertInitials(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.AssertInitialsEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.AvatarInitials(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.AvatarInitials(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.GetInitials(int? timeoutMs = null) -> string?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.WaitInitials(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.WaitInitialsEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.AssertInitials(string? expected, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.AssertInitialsEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.AssertShowingImage(bool? expected = true, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>!
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.AvatarView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.AvatarView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.GetInitials(int? timeoutMs = null) -> string?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.GetInitialsShortcut() -> string?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.Image.get -> Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.Initials.get -> Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>!>!
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.IsShowingImage() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.IsShowingImageShortcut() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.WaitInitials(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.WaitInitialsEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarView<TScope>.WaitShowingImage(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.AssertLineCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.DrawLine(int deltaX, int deltaY, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.DrawingView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.DrawingView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.GetLineCount(int? timeoutMs = null) -> int?
+Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.WaitLineCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.AssertExpanded(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.Collapse(int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.Expand(int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.Expander(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.Expander(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.IsExpanded() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.SetExpanded(bool? expanded, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.Toggle(int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.WaitExpanded(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.CloseWith(string! buttonAutomationId, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.IsOpen() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.Popup(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.Popup(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.WaitOpen(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent>
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent>.Popup(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent>.Popup(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.IsReadOnly() -> bool?
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.RatingView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.RatingView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.TapStar(int? star, int? timeoutMs = null) -> TScope
+Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
+override Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.CacheContainerRoot.get -> bool
+override Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
+override Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement!
+override Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+override Bruinet.Maui.CommunityToolkit.Controls.Media.MediaElement<TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.IsEnabledCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.IsVisibleCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+override Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.TryFindElement() -> Bruinet.Maui.Interfaces.IMauiElement?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.AsksParent.get -> bool
+override Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.CacheContainerRoot.get -> bool
+override Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.EnsureSettableCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.GetMaximumCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.GetMinimumCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.GetStepCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.GetValueCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+override Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.SetValueCore(Bruinet.Maui.Interfaces.IMauiElement! element, double? value, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.IsShowingCore(Bruinet.Maui.Interfaces.IMauiElement? element, string! viewAutomationId) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Layouts.StateContainer<TParent, TSelf>.StateViewId(string! state) -> string!
+virtual Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.IsPlayingCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.PauseCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.PlayCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Media.MediaPlayPauseButton<TScope>.SetPlayingCore(Bruinet.Maui.Interfaces.IMauiElement! element, bool? playing, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Media.MediaTimeLabel<TScope>.GetSecondsCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarImage<TScope>.IsShownCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.AvatarInitials<TScope>.GetInitialsCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> string?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.DrawLineCore(Bruinet.Maui.Interfaces.IMauiElement! element, int deltaX, int deltaY, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.DrawingView<TScope>.GetLineCountCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> int?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.CollapseCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.ExpandCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.IsExpandedCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.SetExpandedCore(Bruinet.Maui.Interfaces.IMauiElement! element, bool? expanded, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.ToggleCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.IsOpenCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.IsReadOnlyCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+virtual Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.TapStarCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? star, int? timeoutMs = null) -> void

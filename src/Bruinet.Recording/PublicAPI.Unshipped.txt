@@ -1,0 +1,95 @@
+#nullable enable
+Bruinet.Recording.Ffmpeg
+Bruinet.Recording.FfmpegException
+Bruinet.Recording.FfmpegException.FfmpegException(string! message) -> void
+Bruinet.Recording.FfmpegFrameSink
+Bruinet.Recording.FfmpegFrameSink.CompleteAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Recording.FfmpegFrameSink.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.FfmpegFrameSink.FfmpegFrameSink(string! path, System.Drawing.Size size, int framesPerSecond) -> void
+Bruinet.Recording.FfmpegFrameSink.WriteAsync(System.ReadOnlyMemory<byte> bgra, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.FfmpegImageSink
+Bruinet.Recording.FfmpegImageSink.CompleteAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Recording.FfmpegImageSink.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.FfmpegImageSink.FfmpegImageSink(string! path, System.Drawing.Size size, int framesPerSecond) -> void
+Bruinet.Recording.FfmpegImageSink.WriteAsync(System.ReadOnlyMemory<byte> bgra, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.FfmpegNotFoundException
+Bruinet.Recording.FfmpegNotFoundException.FfmpegNotFoundException() -> void
+Bruinet.Recording.FfmpegRegionRecorder
+Bruinet.Recording.FfmpegRegionRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
+Bruinet.Recording.FfmpegRegionRecorder.FfmpegRegionRecorder() -> void
+Bruinet.Recording.FfmpegRegionRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
+Bruinet.Recording.FrameVideo
+Bruinet.Recording.FrameVideo.FrameVideo(System.Drawing.Size size, int framesPerSecond, Bruinet.Recording.IFrameSink! sink) -> void
+Bruinet.Recording.FrameVideo.Offer(long time, System.ReadOnlySpan<byte> bgra, System.Drawing.Size size, int stride) -> void
+Bruinet.Recording.IFrameSink
+Bruinet.Recording.IFrameSink.CompleteAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Recording.IFrameSink.WriteAsync(System.ReadOnlyMemory<byte> bgra, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.IRecording
+Bruinet.Recording.IRecording.StartedAt.get -> long
+Bruinet.Recording.IRecording.StopAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.RecordingResult!>!
+Bruinet.Recording.IScreenRecorder
+Bruinet.Recording.IScreenRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
+Bruinet.Recording.IScreenRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
+Bruinet.Recording.ImageVideo
+Bruinet.Recording.ImageVideo.ImageVideo(System.Drawing.Size size, int framesPerSecond, Bruinet.Recording.IFrameSink! sink) -> void
+Bruinet.Recording.ImageVideo.Offer(long time, byte[]! image) -> void
+Bruinet.Recording.PacedVideo
+Bruinet.Recording.PacedVideo.Arrived(long time) -> void
+Bruinet.Recording.PacedVideo.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Recording.PacedVideo.FirstFrame.get -> System.Threading.Tasks.Task<long>!
+Bruinet.Recording.PacedVideo.Gate.get -> object!
+Bruinet.Recording.PacedVideo.PacedVideo(int framesPerSecond, Bruinet.Recording.IFrameSink! sink) -> void
+Bruinet.Recording.PacedVideo.StopAsync(string! path, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Bruinet.Recording.RecordingResult!>!
+Bruinet.Recording.PacedVideo.Warn(string! warning) -> void
+Bruinet.Recording.PacedVideo.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Recording.RecordingClock
+Bruinet.Recording.RecordingOptions
+Bruinet.Recording.RecordingOptions.Cursor.get -> bool
+Bruinet.Recording.RecordingOptions.Cursor.init -> void
+Bruinet.Recording.RecordingOptions.FramesPerSecond.get -> int
+Bruinet.Recording.RecordingOptions.FramesPerSecond.init -> void
+Bruinet.Recording.RecordingOptions.OutputPath.get -> string!
+Bruinet.Recording.RecordingOptions.OutputPath.init -> void
+Bruinet.Recording.RecordingOptions.RecordingOptions(string! OutputPath, int FramesPerSecond = 30, bool Cursor = false) -> void
+Bruinet.Recording.RecordingPackages
+Bruinet.Recording.RecordingResult
+Bruinet.Recording.RecordingResult.Duration.get -> System.TimeSpan
+Bruinet.Recording.RecordingResult.Duration.init -> void
+Bruinet.Recording.RecordingResult.Path.get -> string!
+Bruinet.Recording.RecordingResult.Path.init -> void
+Bruinet.Recording.RecordingResult.RecordingResult(string! Path, System.TimeSpan Duration, System.Drawing.Size Size, long StartedAt, System.Collections.Generic.IReadOnlyList<string!>! Warnings) -> void
+Bruinet.Recording.RecordingResult.Size.get -> System.Drawing.Size
+Bruinet.Recording.RecordingResult.Size.init -> void
+Bruinet.Recording.RecordingResult.Source.get -> System.Drawing.Rectangle?
+Bruinet.Recording.RecordingResult.Source.init -> void
+Bruinet.Recording.RecordingResult.StartedAt.get -> long
+Bruinet.Recording.RecordingResult.StartedAt.init -> void
+Bruinet.Recording.RecordingResult.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Recording.RecordingResult.Warnings.init -> void
+Bruinet.Recording.ScreenRecorderAttribute
+Bruinet.Recording.ScreenRecorderAttribute.Order.get -> int
+Bruinet.Recording.ScreenRecorderAttribute.Order.init -> void
+Bruinet.Recording.ScreenRecorderAttribute.RecorderType.get -> System.Type!
+Bruinet.Recording.ScreenRecorderAttribute.ScreenRecorderAttribute(System.Type! recorderType) -> void
+Bruinet.Recording.ScreenRecorders
+Bruinet.Recording.ScreenRecorders.Find(Bruinet.Core.Recording.RecordingTarget! target) -> Bruinet.Recording.IScreenRecorder?
+Bruinet.Recording.ScreenRecorders.Recorders.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Recording.IScreenRecorder!>!
+Bruinet.Recording.ScreenRecorders.ScreenRecorders(System.Collections.Generic.IEnumerable<Bruinet.Recording.IScreenRecorder!>! recorders) -> void
+abstract Bruinet.Recording.PacedVideo.Size.get -> System.Drawing.Size
+abstract Bruinet.Recording.PacedVideo.TakeLatest() -> System.ReadOnlyMemory<byte>
+const Bruinet.Recording.Ffmpeg.HowToGet = "Recording needs ffmpeg. Install it (Windows: winget install Gyan.FFmpeg.Essentials; macOS: brew install ffmpeg; Linux: your package manager), then open a new terminal so it is on PATH, or set BRUINET_FFMPEG to ffmpeg's executable." -> string!
+const Bruinet.Recording.Ffmpeg.Variable = "BRUINET_FFMPEG" -> string!
+const Bruinet.Recording.RecordingPackages.Variable = "BRUINET_RECORDERS" -> string!
+override Bruinet.Recording.FrameVideo.Size.get -> System.Drawing.Size
+override Bruinet.Recording.ImageVideo.Size.get -> System.Drawing.Size
+static Bruinet.Recording.Ffmpeg.Find(System.Func<string!, string?>? read = null) -> string?
+static Bruinet.Recording.Ffmpeg.HasFilter(string! name) -> bool
+static Bruinet.Recording.Ffmpeg.Require() -> string!
+static Bruinet.Recording.Ffmpeg.RunAsync(System.Collections.Generic.IEnumerable<string!>! arguments, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+static Bruinet.Recording.RecordingClock.Add(long start, System.TimeSpan offset) -> long
+static Bruinet.Recording.RecordingClock.Between(long start, long time) -> System.TimeSpan
+static Bruinet.Recording.RecordingClock.FromSystemRelativeTime(System.TimeSpan systemRelativeTime) -> long
+static Bruinet.Recording.RecordingClock.Now.get -> long
+static Bruinet.Recording.RecordingPackages.Load(System.Collections.Generic.IEnumerable<string!>! names, System.Func<string!, string?>? read = null) -> System.Collections.Generic.IReadOnlyList<System.Reflection.Assembly!>!
+static Bruinet.Recording.ScreenRecorders.Discover() -> Bruinet.Recording.ScreenRecorders!
+virtual Bruinet.Recording.PacedVideo.NoFrame.get -> string!

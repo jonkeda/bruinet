@@ -1,0 +1,111 @@
+#nullable enable
+Bruinet.Maui.Headless.DeviceOnlyException
+Bruinet.Maui.Headless.DeviceOnlyException.DeviceOnlyException(string! member) -> void
+Bruinet.Maui.Headless.DeviceOnlyException.Member.get -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver
+Bruinet.Maui.Headless.MauiHeadlessDriver.AppElement.get -> Bruinet.Maui.Interfaces.IMauiElement!
+Bruinet.Maui.Headless.MauiHeadlessDriver.Close() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.Context.get -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver.Context.set -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.Contexts.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.Headless.MauiHeadlessDriver.CurrentRoute() -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver.CurrentWindowHandle.get -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver.Dispose() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.ExecuteScript(string! script, params object![]! args) -> object?
+Bruinet.Maui.Headless.MauiHeadlessDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+Bruinet.Maui.Headless.MauiHeadlessDriver.GetAutomationTree() -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver.GetPageSource() -> string!
+Bruinet.Maui.Headless.MauiHeadlessDriver.GetScreenshot() -> byte[]!
+Bruinet.Maui.Headless.MauiHeadlessDriver.InvokeMenuItem(string! automationId) -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.IsIdle(int timeoutMs = 2000) -> bool
+Bruinet.Maui.Headless.MauiHeadlessDriver.MauiHeadlessDriver(MauiHeadless.Rendering.IRenderedElement<Microsoft.Maui.Controls.Element!>! rendered, bool ownsContext = false) -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.NavigateBack() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.NavigateTo(string! destination) -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.NavigationDepth() -> int
+Bruinet.Maui.Headless.MauiHeadlessDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture, int arg1, int arg2) -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
+Bruinet.Maui.Headless.MauiHeadlessDriver.Quit() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.Refresh() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.ResetAppState() -> void
+Bruinet.Maui.Headless.MauiHeadlessDriver.ShellChrome.get -> Bruinet.Maui.Interfaces.ShellChromeLocators!
+Bruinet.Maui.Headless.MauiHeadlessDriver.SupportsGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> bool
+Bruinet.Maui.Headless.MauiHeadlessDriver.TakeScreenshot() -> byte[]!
+Bruinet.Maui.Headless.MauiHeadlessDriver.TestContext.get -> MauiHeadless.MauiTestContext!
+Bruinet.Maui.Headless.MauiHeadlessDriver.Window.get -> Microsoft.Maui.Controls.Window!
+Bruinet.Maui.Headless.MauiHeadlessDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.Headless.MauiHeadlessElement
+Bruinet.Maui.Headless.MauiHeadlessElement.AppendText(string! text) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.AutomationId.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Checked.get -> bool?
+Bruinet.Maui.Headless.MauiHeadlessElement.Clear() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.ClearFocus() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Click() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.CloseDropdown() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.CloseFlyout() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.DoubleClick() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Element.get -> Microsoft.Maui.Controls.Element!
+Bruinet.Maui.Headless.MauiHeadlessElement.Enabled.get -> bool
+Bruinet.Maui.Headless.MauiHeadlessElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+Bruinet.Maui.Headless.MauiHeadlessElement.Focus() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Focused.get -> bool
+Bruinet.Maui.Headless.MauiHeadlessElement.GetAttribute(string! name) -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.GetCssValue(string! propertyName) -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.GetDomAttribute(string! attributeName) -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.GetDomProperty(string! propertyName) -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Hint.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Hover() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.InstanceKey.get -> string!
+Bruinet.Maui.Headless.MauiHeadlessElement.Invoke() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.InvokeToolbarItem(string! automationId) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.IsDropdownOpen.get -> bool?
+Bruinet.Maui.Headless.MauiHeadlessElement.IsFlyoutOpen.get -> bool?
+Bruinet.Maui.Headless.MauiHeadlessElement.IsReadOnly.get -> bool?
+Bruinet.Maui.Headless.MauiHeadlessElement.Location.get -> System.Drawing.Point
+Bruinet.Maui.Headless.MauiHeadlessElement.LongPress(int durationMs = 1000) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Name.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.OpenDropdown() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.OpenFlyout() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.PerformGesture(Bruinet.Maui.Interfaces.MauiGesture gesture) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.RangeMaximum.get -> double?
+Bruinet.Maui.Headless.MauiHeadlessElement.RangeMinimum.get -> double?
+Bruinet.Maui.Headless.MauiHeadlessElement.RangeSmallChange.get -> double?
+Bruinet.Maui.Headless.MauiHeadlessElement.RangeValue.get -> double?
+Bruinet.Maui.Headless.MauiHeadlessElement.ReadAlert() -> Bruinet.Maui.Interfaces.AlertContents?
+Bruinet.Maui.Headless.MauiHeadlessElement.ReadDropdownItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Maui.Headless.MauiHeadlessElement.ReadItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Maui.Headless.MauiHeadlessElement.ReadScrollPosition() -> Bruinet.Maui.Interfaces.ScrollPosition
+Bruinet.Maui.Headless.MauiHeadlessElement.ReadState(string! property) -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.Maui.Headless.MauiHeadlessElement.RightClick() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.ScrollContent(int verticalSteps, int horizontalSteps = 0) -> Bruinet.Maui.Interfaces.ScrollStep
+Bruinet.Maui.Headless.MauiHeadlessElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.ScrollTo(string! automationId) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.ScrollToIndex(int index) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.ScrollTowards(int index) -> Bruinet.Maui.Interfaces.ScrollStep
+Bruinet.Maui.Headless.MauiHeadlessElement.Select() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SelectByText(string! text) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SelectIndex(int index) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Selected.get -> bool
+Bruinet.Maui.Headless.MauiHeadlessElement.SelectedItemText.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SetChecked(bool isChecked) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SetDate(System.DateTime date) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SetRangeValue(double value) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.SetTime(System.TimeSpan time) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Size.get -> System.Drawing.Size
+Bruinet.Maui.Headless.MauiHeadlessElement.Submit() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.TagName.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Text.get -> string?
+Bruinet.Maui.Headless.MauiHeadlessElement.Toggle() -> void
+Bruinet.Maui.Headless.MauiHeadlessElement.TryFindActiveDialog() -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Headless.MauiHeadlessElement.TryFindByScrolling(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Headless.MauiHeadlessElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Headless.MauiHeadlessElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Headless.MauiHeadlessElement.Visible.get -> bool
+Bruinet.Maui.Headless.MauiHeadlessHead
+override Bruinet.Maui.Headless.MauiHeadlessDriver.ToString() -> string!
+override Bruinet.Maui.Headless.MauiHeadlessElement.ToString() -> string!
+static Bruinet.Maui.Headless.MauiHeadlessHead.AsBruinetContext(this MauiHeadless.Rendering.IRenderedElement<Microsoft.Maui.Controls.Element!>! rendered, Bruinet.Core.Configuration.TimeoutSettings? timeouts = null) -> Bruinet.Maui.Interfaces.IMauiTestContext!
+static Bruinet.Maui.Headless.MauiHeadlessHead.Options(System.Func<System.IServiceProvider!, Microsoft.Maui.Controls.Page!>! root, System.Action<MauiHeadless.MauiTestContextOptions!>? configure = null, System.Action<MauiHeadless.MauiTestContext!>? arrange = null, Bruinet.Core.Configuration.TimeoutSettings? timeouts = null) -> Bruinet.Maui.Context.MauiTestContextOptions!
+static Bruinet.Maui.Headless.MauiHeadlessHead.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!

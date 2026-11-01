@@ -1,0 +1,13 @@
+#nullable enable
+Bruinet.Narrator.Windows.WindowsSpeech
+Bruinet.Narrator.Windows.WindowsSpeech.IsAvailable.get -> bool
+Bruinet.Narrator.Windows.WindowsSpeech.SupportedElements.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Narrator.Windows.WindowsSpeech.SynthesizeAsync(string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.Windows.WindowsSpeech.SynthesizeLineAsync(Bruinet.Narrator.SpokenLine! line, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.Windows.WindowsSpeech.WindowsSpeech() -> void
+Bruinet.Recording.Windows.WindowsCaptureRecorder
+Bruinet.Recording.Windows.WindowsCaptureRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
+Bruinet.Recording.Windows.WindowsCaptureRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
+Bruinet.Recording.Windows.WindowsCaptureRecorder.WindowsCaptureRecorder() -> void
+static Bruinet.Narrator.Windows.WindowsSpeech.PlayAsync(Bruinet.Narrator.SpeechClip! clip, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+static Bruinet.Narrator.Windows.WindowsSpeech.Voices.get -> System.Collections.Generic.IReadOnlyList<string!>!

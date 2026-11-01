@@ -1,0 +1,273 @@
+#nullable enable
+MauiHeadless.Assertions.ElementAssertions<T>
+MauiHeadless.Assertions.ElementAssertions<T>.And.get -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.BeBoundTo(Microsoft.Maui.Controls.BindableProperty! property, string! path) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.BeDisabled() -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.BeEnabled() -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.BeVisible() -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.ContainText(string! expected) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.HaveAutomationId(string! expected) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.HaveBindingContext<TContext>(System.Func<TContext, bool>? predicate = null) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.HaveText(string? expected) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.NotBeVisible() -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.Satisfy(System.Func<T!, bool>! predicate, string! description) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+MauiHeadless.Assertions.ElementAssertions<T>.Subject.get -> T!
+MauiHeadless.Assertions.MauiHeadlessAssertionException
+MauiHeadless.Assertions.MauiHeadlessAssertionException.MauiHeadlessAssertionException(string! message) -> void
+MauiHeadless.Assertions.ShouldExtensions
+MauiHeadless.Dialogs.DialogKind
+MauiHeadless.Dialogs.DialogKind.ActionSheet = 2 -> MauiHeadless.Dialogs.DialogKind
+MauiHeadless.Dialogs.DialogKind.Alert = 0 -> MauiHeadless.Dialogs.DialogKind
+MauiHeadless.Dialogs.DialogKind.Prompt = 1 -> MauiHeadless.Dialogs.DialogKind
+MauiHeadless.Dialogs.DialogRequests
+MauiHeadless.Dialogs.TestDialog
+MauiHeadless.Dialogs.TestDialog.Accept.get -> string!
+MauiHeadless.Dialogs.TestDialog.Cancel.get -> string!
+MauiHeadless.Dialogs.TestDialog.Choices.get -> System.Collections.Generic.IReadOnlyList<string!>!
+MauiHeadless.Dialogs.TestDialog.Choose(string! text) -> MauiHeadless.Dialogs.TestDialog!
+MauiHeadless.Dialogs.TestDialog.IsAnswered.get -> bool
+MauiHeadless.Dialogs.TestDialog.Kind.get -> MauiHeadless.Dialogs.DialogKind
+MauiHeadless.Dialogs.TestDialog.Message.get -> string!
+MauiHeadless.Dialogs.TestDialog.Owner.get -> Microsoft.Maui.Controls.Page!
+MauiHeadless.Dialogs.TestDialog.Title.get -> string!
+MauiHeadless.Dialogs.TestDialog.Type(string! text) -> MauiHeadless.Dialogs.TestDialog!
+MauiHeadless.Hosting.HeadlessBehaviors
+MauiHeadless.Hosting.HeadlessEssentials
+MauiHeadless.Hosting.HeadlessEssentials.Unavailable
+MauiHeadless.Hosting.HeadlessEssentials.Unavailable.Unavailable() -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppDataDirectory.get -> string!
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppDataDirectory.set -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppName.get -> string!
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppName.set -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppVersion.get -> System.Version!
+MauiHeadless.Hosting.HeadlessEssentialsOptions.AppVersion.set -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.HeadlessEssentialsOptions() -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.Idiom.get -> Microsoft.Maui.Devices.DeviceIdiom
+MauiHeadless.Hosting.HeadlessEssentialsOptions.Idiom.set -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.PackageName.get -> string!
+MauiHeadless.Hosting.HeadlessEssentialsOptions.PackageName.set -> void
+MauiHeadless.Hosting.HeadlessPreferences
+MauiHeadless.Hosting.HeadlessPreferences.Clear(string? sharedName = null) -> void
+MauiHeadless.Hosting.HeadlessPreferences.ContainsKey(string! key, string? sharedName = null) -> bool
+MauiHeadless.Hosting.HeadlessPreferences.Get<T>(string! key, T defaultValue, string? sharedName = null) -> T
+MauiHeadless.Hosting.HeadlessPreferences.HeadlessPreferences() -> void
+MauiHeadless.Hosting.HeadlessPreferences.Remove(string! key, string? sharedName = null) -> void
+MauiHeadless.Hosting.HeadlessPreferences.Set<T>(string! key, T value, string? sharedName = null) -> void
+MauiHeadless.Hosting.HeadlessSecureStorage
+MauiHeadless.Hosting.HeadlessSecureStorage.GetAsync(string! key) -> System.Threading.Tasks.Task<string?>!
+MauiHeadless.Hosting.HeadlessSecureStorage.HeadlessSecureStorage() -> void
+MauiHeadless.Hosting.HeadlessSecureStorage.Remove(string! key) -> bool
+MauiHeadless.Hosting.HeadlessSecureStorage.RemoveAll() -> void
+MauiHeadless.Hosting.HeadlessSecureStorage.SetAsync(string! key, string! value) -> System.Threading.Tasks.Task!
+MauiHeadless.Hosting.TestDispatcher
+MauiHeadless.Hosting.TestDispatcher.AdvanceTime(System.TimeSpan by) -> void
+MauiHeadless.Hosting.TestDispatcher.CreateTimer() -> Microsoft.Maui.Dispatching.IDispatcherTimer!
+MauiHeadless.Hosting.TestDispatcher.Dispatch(System.Action! action) -> bool
+MauiHeadless.Hosting.TestDispatcher.DispatchDelayed(System.TimeSpan delay, System.Action! action) -> bool
+MauiHeadless.Hosting.TestDispatcher.HasPendingWork.get -> bool
+MauiHeadless.Hosting.TestDispatcher.IsDispatchRequired.get -> bool
+MauiHeadless.Hosting.TestDispatcher.Now.get -> System.TimeSpan
+MauiHeadless.Hosting.TestDispatcher.Run(System.Action! action) -> void
+MauiHeadless.Hosting.TestDispatcher.Run<T>(System.Func<T>! function) -> T
+MauiHeadless.Hosting.TestDispatcher.RunPending() -> void
+MauiHeadless.Hosting.TestDispatcher.TestDispatcher() -> void
+MauiHeadless.Hosting.TestDispatcher.WaitFor(System.Func<bool>! condition, System.TimeSpan timeout) -> bool
+MauiHeadless.Hosting.TestDispatcher.WaitForQuiet(System.TimeSpan quiet, System.TimeSpan timeout) -> bool
+MauiHeadless.Hosting.TestServiceProvider
+MauiHeadless.Hosting.TestServiceProvider.Add(Microsoft.Extensions.DependencyInjection.ServiceDescriptor! item) -> void
+MauiHeadless.Hosting.TestServiceProvider.Clear() -> void
+MauiHeadless.Hosting.TestServiceProvider.Contains(Microsoft.Extensions.DependencyInjection.ServiceDescriptor! item) -> bool
+MauiHeadless.Hosting.TestServiceProvider.CopyTo(Microsoft.Extensions.DependencyInjection.ServiceDescriptor![]! array, int arrayIndex) -> void
+MauiHeadless.Hosting.TestServiceProvider.Count.get -> int
+MauiHeadless.Hosting.TestServiceProvider.Dispose() -> void
+MauiHeadless.Hosting.TestServiceProvider.GetEnumerator() -> System.Collections.Generic.IEnumerator<Microsoft.Extensions.DependencyInjection.ServiceDescriptor!>!
+MauiHeadless.Hosting.TestServiceProvider.GetService(System.Type! serviceType) -> object?
+MauiHeadless.Hosting.TestServiceProvider.IndexOf(Microsoft.Extensions.DependencyInjection.ServiceDescriptor! item) -> int
+MauiHeadless.Hosting.TestServiceProvider.Insert(int index, Microsoft.Extensions.DependencyInjection.ServiceDescriptor! item) -> void
+MauiHeadless.Hosting.TestServiceProvider.IsProviderBuilt.get -> bool
+MauiHeadless.Hosting.TestServiceProvider.IsReadOnly.get -> bool
+MauiHeadless.Hosting.TestServiceProvider.Remove(Microsoft.Extensions.DependencyInjection.ServiceDescriptor! item) -> bool
+MauiHeadless.Hosting.TestServiceProvider.RemoveAt(int index) -> void
+MauiHeadless.Hosting.TestServiceProvider.Replace<TService>(TService! instance) -> MauiHeadless.Hosting.TestServiceProvider!
+MauiHeadless.Hosting.TestServiceProvider.TestServiceProvider() -> void
+MauiHeadless.Hosting.TestServiceProvider.this[int index].get -> Microsoft.Extensions.DependencyInjection.ServiceDescriptor!
+MauiHeadless.Hosting.TestServiceProvider.this[int index].set -> void
+MauiHeadless.Inspection.DefaultElementAdapter
+MauiHeadless.Inspection.DefaultElementAdapter.CanAdapt(Microsoft.Maui.Controls.Element! element) -> bool
+MauiHeadless.Inspection.DefaultElementAdapter.DefaultElementAdapter() -> void
+MauiHeadless.Inspection.DefaultElementAdapter.GetChildren(Microsoft.Maui.Controls.Element! element) -> System.Collections.Generic.IEnumerable<Microsoft.Maui.Controls.Element!>!
+MauiHeadless.Inspection.DefaultElementAdapter.GetText(Microsoft.Maui.Controls.Element! element) -> string?
+MauiHeadless.Inspection.ElementNotFoundException
+MauiHeadless.Inspection.ElementNotFoundException.ElementNotFoundException(string! message, MauiHeadless.Inspection.VisualNode! searched) -> void
+MauiHeadless.Inspection.ElementNotFoundException.Searched.get -> MauiHeadless.Inspection.VisualNode!
+MauiHeadless.Inspection.ElementQueries
+MauiHeadless.Inspection.IElementAdapter
+MauiHeadless.Inspection.IElementAdapter.CanAdapt(Microsoft.Maui.Controls.Element! element) -> bool
+MauiHeadless.Inspection.IElementAdapter.GetChildren(Microsoft.Maui.Controls.Element! element) -> System.Collections.Generic.IEnumerable<Microsoft.Maui.Controls.Element!>!
+MauiHeadless.Inspection.IElementAdapter.GetText(Microsoft.Maui.Controls.Element! element) -> string?
+MauiHeadless.Inspection.NavigationBackButton
+MauiHeadless.Inspection.NavigationBackButton.CanGoBack.get -> bool
+MauiHeadless.Inspection.NavigationBackButton.Window.get -> Microsoft.Maui.Controls.Window!
+MauiHeadless.Inspection.NavigationTitle
+MauiHeadless.Inspection.NavigationTitle.Text.get -> string?
+MauiHeadless.Inspection.NavigationTitle.Window.get -> Microsoft.Maui.Controls.Window!
+MauiHeadless.Inspection.Screen
+MauiHeadless.Inspection.ShellFlyoutList
+MauiHeadless.Inspection.ShellFlyoutList.Items.get -> System.Collections.Generic.IEnumerable<Microsoft.Maui.Controls.ShellItem!>!
+MauiHeadless.Inspection.ShellFlyoutList.Shell.get -> Microsoft.Maui.Controls.Shell!
+MauiHeadless.Inspection.ShellTabBar
+MauiHeadless.Inspection.ShellTabBar.Shell.get -> Microsoft.Maui.Controls.Shell!
+MauiHeadless.Inspection.ShellTabBar.Tabs.get -> System.Collections.Generic.IEnumerable<Microsoft.Maui.Controls.ShellSection!>!
+MauiHeadless.Inspection.VisualNode
+MauiHeadless.Inspection.VisualNode.AutomationId.get -> string?
+MauiHeadless.Inspection.VisualNode.BindingContext.get -> object?
+MauiHeadless.Inspection.VisualNode.Children.get -> System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.VisualNode!>!
+MauiHeadless.Inspection.VisualNode.Depth.get -> int
+MauiHeadless.Inspection.VisualNode.DescendantsAndSelf() -> System.Collections.Generic.IEnumerable<MauiHeadless.Inspection.VisualNode!>!
+MauiHeadless.Inspection.VisualNode.Element.get -> Microsoft.Maui.Controls.Element!
+MauiHeadless.Inspection.VisualNode.IsEnabled.get -> bool
+MauiHeadless.Inspection.VisualNode.IsVisible.get -> bool
+MauiHeadless.Inspection.VisualNode.Parent.get -> MauiHeadless.Inspection.VisualNode?
+MauiHeadless.Inspection.VisualNode.Text.get -> string?
+MauiHeadless.Inspection.VisualNode.Type.get -> System.Type!
+MauiHeadless.Inspection.VisualTree
+MauiHeadless.Interaction.ElementNotInteractableException
+MauiHeadless.Interaction.ElementNotInteractableException.ElementNotInteractableException(string! message, MauiHeadless.Interaction.InteractionRefusal reason = MauiHeadless.Interaction.InteractionRefusal.NotOffered) -> void
+MauiHeadless.Interaction.ElementNotInteractableException.Reason.get -> MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.InteractionRefusal.Disabled = 1 -> MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.InteractionRefusal.Hidden = 0 -> MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.InteractionRefusal.NotOffered = 3 -> MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.InteractionRefusal.ReadOnly = 2 -> MauiHeadless.Interaction.InteractionRefusal
+MauiHeadless.Interaction.Interactions
+MauiHeadless.MauiTestContext
+MauiHeadless.MauiTestContext.Adapters.get -> System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>!
+MauiHeadless.MauiTestContext.AdvanceTime(System.TimeSpan by) -> void
+MauiHeadless.MauiTestContext.Application.get -> Microsoft.Maui.Controls.Application!
+MauiHeadless.MauiTestContext.Dispatcher.get -> MauiHeadless.Hosting.TestDispatcher!
+MauiHeadless.MauiTestContext.Dispose() -> void
+MauiHeadless.MauiTestContext.MauiTestContext() -> void
+MauiHeadless.MauiTestContext.MauiTestContext(MauiHeadless.MauiTestContextOptions! options) -> void
+MauiHeadless.MauiTestContext.Options.get -> MauiHeadless.MauiTestContextOptions!
+MauiHeadless.MauiTestContext.Preferences.get -> MauiHeadless.Hosting.HeadlessPreferences!
+MauiHeadless.MauiTestContext.Render<T>(System.Action<MauiHeadless.Rendering.RenderOptions!>? configure = null) -> MauiHeadless.Rendering.IRenderedElement<T!>!
+MauiHeadless.MauiTestContext.Render<T>(System.Func<System.IServiceProvider!, T!>! factory, System.Action<MauiHeadless.Rendering.RenderOptions!>? configure = null) -> MauiHeadless.Rendering.IRenderedElement<T!>!
+MauiHeadless.MauiTestContext.Render<T>(T! element, System.Action<MauiHeadless.Rendering.RenderOptions!>? configure = null) -> MauiHeadless.Rendering.IRenderedElement<T!>!
+MauiHeadless.MauiTestContext.SecureStorage.get -> MauiHeadless.Hosting.HeadlessSecureStorage!
+MauiHeadless.MauiTestContext.Services.get -> MauiHeadless.Hosting.TestServiceProvider!
+MauiHeadless.MauiTestContextOptions
+MauiHeadless.MauiTestContextOptions.Adapters.get -> System.Collections.Generic.IList<MauiHeadless.Inspection.IElementAdapter!>!
+MauiHeadless.MauiTestContextOptions.Application.get -> System.Func<System.IServiceProvider!, Microsoft.Maui.Controls.Application!>?
+MauiHeadless.MauiTestContextOptions.Application.set -> void
+MauiHeadless.MauiTestContextOptions.BehaviorHosts.get -> System.Collections.Generic.IList<System.Type!>!
+MauiHeadless.MauiTestContextOptions.MauiTestContextOptions() -> void
+MauiHeadless.MauiTestContextOptions.SetApplicationCurrent.get -> bool
+MauiHeadless.MauiTestContextOptions.SetApplicationCurrent.set -> void
+MauiHeadless.MauiTestContextOptions.WaitTimeout.get -> System.TimeSpan
+MauiHeadless.MauiTestContextOptions.WaitTimeout.set -> void
+MauiHeadless.Rendering.IRenderedElement<T>
+MauiHeadless.Rendering.IRenderedElement<T>.Context.get -> MauiHeadless.MauiTestContext!
+MauiHeadless.Rendering.IRenderedElement<T>.CurrentPage.get -> Microsoft.Maui.Controls.Page!
+MauiHeadless.Rendering.IRenderedElement<T>.Find<TElement>(string? automationId = null) -> TElement!
+MauiHeadless.Rendering.IRenderedElement<T>.FindAll<TElement>(string? automationId = null) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+MauiHeadless.Rendering.IRenderedElement<T>.FindByAutomationId(string! automationId) -> Microsoft.Maui.Controls.Element!
+MauiHeadless.Rendering.IRenderedElement<T>.FindByText<TElement>(string! text) -> TElement!
+MauiHeadless.Rendering.IRenderedElement<T>.Instance.get -> T!
+MauiHeadless.Rendering.IRenderedElement<T>.Navigation.get -> MauiHeadless.Rendering.TestNavigator!
+MauiHeadless.Rendering.IRenderedElement<T>.ToSnapshot(MauiHeadless.Snapshots.SnapshotOptions? options = null) -> string!
+MauiHeadless.Rendering.IRenderedElement<T>.Tree.get -> MauiHeadless.Inspection.VisualNode!
+MauiHeadless.Rendering.IRenderedElement<T>.WaitForAssertion(System.Action! assertion, System.TimeSpan? timeout = null) -> void
+MauiHeadless.Rendering.IRenderedElement<T>.WaitForState(System.Func<bool>! predicate, System.TimeSpan? timeout = null) -> void
+MauiHeadless.Rendering.IRenderedElement<T>.Window.get -> Microsoft.Maui.Controls.Window!
+MauiHeadless.Rendering.RenderOptions
+MauiHeadless.Rendering.RenderOptions.Appear.get -> bool
+MauiHeadless.Rendering.RenderOptions.Appear.set -> void
+MauiHeadless.Rendering.RenderOptions.BindingContext.get -> object?
+MauiHeadless.Rendering.RenderOptions.BindingContext.set -> void
+MauiHeadless.Rendering.RenderOptions.InNavigationPage.get -> bool
+MauiHeadless.Rendering.RenderOptions.InNavigationPage.set -> void
+MauiHeadless.Rendering.RenderOptions.RenderOptions() -> void
+MauiHeadless.Rendering.RenderOptions.WithBindingContext(object! bindingContext) -> MauiHeadless.Rendering.RenderOptions!
+MauiHeadless.Rendering.RenderOptions.WithNavigation() -> MauiHeadless.Rendering.RenderOptions!
+MauiHeadless.Rendering.RenderOptions.WithoutAppearing() -> MauiHeadless.Rendering.RenderOptions!
+MauiHeadless.Rendering.TestNavigator
+MauiHeadless.Rendering.TestNavigator.CurrentPage.get -> Microsoft.Maui.Controls.Page!
+MauiHeadless.Rendering.TestNavigator.GoBack() -> void
+MauiHeadless.Rendering.TestNavigator.GoTo(string! route) -> void
+MauiHeadless.Rendering.TestNavigator.Location.get -> string?
+MauiHeadless.Rendering.TestNavigator.ModalStack.get -> System.Collections.Generic.IReadOnlyList<Microsoft.Maui.Controls.Page!>!
+MauiHeadless.Rendering.TestNavigator.ShouldBeOn<TPage>() -> TPage!
+MauiHeadless.Rendering.TestNavigator.Stack.get -> System.Collections.Generic.IReadOnlyList<Microsoft.Maui.Controls.Page!>!
+MauiHeadless.Snapshots.SnapshotOptions
+MauiHeadless.Snapshots.SnapshotOptions.IncludeBindingContext.get -> bool
+MauiHeadless.Snapshots.SnapshotOptions.IncludeBindingContext.init -> void
+MauiHeadless.Snapshots.SnapshotOptions.IncludeHidden.get -> bool
+MauiHeadless.Snapshots.SnapshotOptions.IncludeHidden.init -> void
+MauiHeadless.Snapshots.SnapshotOptions.MaxLines.get -> int
+MauiHeadless.Snapshots.SnapshotOptions.MaxLines.init -> void
+MauiHeadless.Snapshots.SnapshotOptions.SnapshotOptions(bool IncludeHidden = true, bool IncludeBindingContext = false, int MaxLines = 2147483647) -> void
+MauiHeadless.Snapshots.TreeSnapshot
+override MauiHeadless.Hosting.HeadlessEssentials.Unavailable.Invoke(System.Reflection.MethodInfo? targetMethod, object?[]? args) -> object?
+override MauiHeadless.Inspection.VisualNode.ToString() -> string!
+static MauiHeadless.Assertions.ShouldExtensions.BeChecked(this MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.CheckBox!>! assertions) -> MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.CheckBox!>!
+static MauiHeadless.Assertions.ShouldExtensions.BeOff(this MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.Switch!>! assertions) -> MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.Switch!>!
+static MauiHeadless.Assertions.ShouldExtensions.BeOn(this MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.Switch!>! assertions) -> MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.Switch!>!
+static MauiHeadless.Assertions.ShouldExtensions.HaveItemCount<TView>(this MauiHeadless.Assertions.ElementAssertions<TView!>! assertions, int expected) -> MauiHeadless.Assertions.ElementAssertions<TView!>!
+static MauiHeadless.Assertions.ShouldExtensions.NotBeChecked(this MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.CheckBox!>! assertions) -> MauiHeadless.Assertions.ElementAssertions<Microsoft.Maui.Controls.CheckBox!>!
+static MauiHeadless.Assertions.ShouldExtensions.Should<T>(this T! element) -> MauiHeadless.Assertions.ElementAssertions<T!>!
+static MauiHeadless.Dialogs.DialogRequests.Of(Microsoft.Maui.Controls.Window! window) -> System.Collections.Generic.IReadOnlyList<MauiHeadless.Dialogs.TestDialog!>!
+static MauiHeadless.Dialogs.DialogRequests.Top(Microsoft.Maui.Controls.Window! window) -> MauiHeadless.Dialogs.TestDialog?
+static MauiHeadless.Hosting.HeadlessBehaviors.DefaultHosts.get -> System.Collections.Generic.IReadOnlyList<System.Type!>!
+static MauiHeadless.Hosting.HeadlessBehaviors.Install(Microsoft.Maui.Controls.Application! application, System.Collections.Generic.IEnumerable<System.Type!>? extraHosts = null) -> void
+static MauiHeadless.Hosting.HeadlessBehaviors.Strip(Microsoft.Maui.Controls.Element! element) -> void
+static MauiHeadless.Hosting.HeadlessEssentials.Install(MauiHeadless.Hosting.HeadlessEssentialsOptions? options = null) -> void
+static MauiHeadless.Hosting.HeadlessEssentials.Unavailable.Create<T>() -> T!
+static MauiHeadless.Inspection.ElementQueries.Find<T>(this Microsoft.Maui.Controls.Element! root, string? automationId = null) -> T!
+static MauiHeadless.Inspection.ElementQueries.FindAll<T>(this Microsoft.Maui.Controls.Element! root, string? automationId = null) -> System.Collections.Generic.IReadOnlyList<T!>!
+static MauiHeadless.Inspection.ElementQueries.FindByAutomationId(this Microsoft.Maui.Controls.Element! root, string! automationId) -> Microsoft.Maui.Controls.Element!
+static MauiHeadless.Inspection.ElementQueries.FindByText<T>(this Microsoft.Maui.Controls.Element! root, string! text) -> T!
+static MauiHeadless.Inspection.ElementQueries.Read(Microsoft.Maui.Controls.Element! root) -> MauiHeadless.Inspection.VisualNode!
+static MauiHeadless.Inspection.Screen.CurrentPage(Microsoft.Maui.Controls.Shell! shell) -> Microsoft.Maui.Controls.Page?
+static MauiHeadless.Inspection.Screen.CurrentPage(Microsoft.Maui.Controls.Window! window) -> Microsoft.Maui.Controls.Page?
+static MauiHeadless.Inspection.VisualTree.AdapterFor(Microsoft.Maui.Controls.Element! element, System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>! adapters) -> MauiHeadless.Inspection.IElementAdapter!
+static MauiHeadless.Inspection.VisualTree.IsEffectivelyEnabled(Microsoft.Maui.Controls.Element! element) -> bool
+static MauiHeadless.Inspection.VisualTree.IsEffectivelyVisible(Microsoft.Maui.Controls.Element! element) -> bool
+static MauiHeadless.Inspection.VisualTree.Read(Microsoft.Maui.Controls.Element! root, System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>? adapters = null) -> MauiHeadless.Inspection.VisualNode!
+static MauiHeadless.Interaction.Interactions.Act(Microsoft.Maui.Controls.Element! element, string! verb, System.Action! action) -> void
+static MauiHeadless.Interaction.Interactions.Check(this Microsoft.Maui.Controls.CheckBox! box) -> Microsoft.Maui.Controls.CheckBox!
+static MauiHeadless.Interaction.Interactions.ClearFocus<TElement>(this TElement! element) -> TElement!
+static MauiHeadless.Interaction.Interactions.ClearText<TInput>(this TInput! input) -> TInput!
+static MauiHeadless.Interaction.Interactions.Click(this MauiHeadless.Inspection.NavigationBackButton! back) -> MauiHeadless.Inspection.NavigationBackButton!
+static MauiHeadless.Interaction.Interactions.Click(this Microsoft.Maui.Controls.Button! button) -> Microsoft.Maui.Controls.Button!
+static MauiHeadless.Interaction.Interactions.Click(this Microsoft.Maui.Controls.ImageButton! button) -> Microsoft.Maui.Controls.ImageButton!
+static MauiHeadless.Interaction.Interactions.Click(this Microsoft.Maui.Controls.MenuItem! item) -> Microsoft.Maui.Controls.MenuItem!
+static MauiHeadless.Interaction.Interactions.Complete(this Microsoft.Maui.Controls.Entry! entry) -> Microsoft.Maui.Controls.Entry!
+static MauiHeadless.Interaction.Interactions.Deselect<TView>(this TView! view, object! item) -> TView!
+static MauiHeadless.Interaction.Interactions.Refresh(this Microsoft.Maui.Controls.RefreshView! view) -> Microsoft.Maui.Controls.RefreshView!
+static MauiHeadless.Interaction.Interactions.Search(this Microsoft.Maui.Controls.SearchBar! searchBar) -> Microsoft.Maui.Controls.SearchBar!
+static MauiHeadless.Interaction.Interactions.Select(this Microsoft.Maui.Controls.Picker! picker, object! item) -> Microsoft.Maui.Controls.Picker!
+static MauiHeadless.Interaction.Interactions.Select(this Microsoft.Maui.Controls.RadioButton! radio) -> Microsoft.Maui.Controls.RadioButton!
+static MauiHeadless.Interaction.Interactions.Select(this Microsoft.Maui.Controls.ShellItem! item) -> Microsoft.Maui.Controls.ShellItem!
+static MauiHeadless.Interaction.Interactions.Select(this Microsoft.Maui.Controls.ShellSection! tab) -> Microsoft.Maui.Controls.ShellSection!
+static MauiHeadless.Interaction.Interactions.Select<TView>(this TView! view, object! item) -> TView!
+static MauiHeadless.Interaction.Interactions.SelectIndex(this Microsoft.Maui.Controls.Picker! picker, int index) -> Microsoft.Maui.Controls.Picker!
+static MauiHeadless.Interaction.Interactions.SetChecked(this Microsoft.Maui.Controls.CheckBox! box, bool isChecked) -> Microsoft.Maui.Controls.CheckBox!
+static MauiHeadless.Interaction.Interactions.SetDate(this Microsoft.Maui.Controls.DatePicker! picker, System.DateTime date) -> Microsoft.Maui.Controls.DatePicker!
+static MauiHeadless.Interaction.Interactions.SetFocus<TElement>(this TElement! element) -> TElement!
+static MauiHeadless.Interaction.Interactions.SetText<TInput>(this TInput! input, string? text) -> TInput!
+static MauiHeadless.Interaction.Interactions.SetTime(this Microsoft.Maui.Controls.TimePicker! picker, System.TimeSpan time) -> Microsoft.Maui.Controls.TimePicker!
+static MauiHeadless.Interaction.Interactions.SetToggled(this Microsoft.Maui.Controls.Switch! toggle, bool on) -> Microsoft.Maui.Controls.Switch!
+static MauiHeadless.Interaction.Interactions.SlideTo(this Microsoft.Maui.Controls.Slider! slider, double value) -> Microsoft.Maui.Controls.Slider!
+static MauiHeadless.Interaction.Interactions.StepTo(this Microsoft.Maui.Controls.Stepper! stepper, double value) -> Microsoft.Maui.Controls.Stepper!
+static MauiHeadless.Interaction.Interactions.Swipe<TView>(this TView! view, Microsoft.Maui.SwipeDirection direction) -> TView!
+static MauiHeadless.Interaction.Interactions.Tap<TView>(this TView! view, int taps = 1) -> TView!
+static MauiHeadless.Interaction.Interactions.Toggle(this Microsoft.Maui.Controls.CheckBox! box) -> Microsoft.Maui.Controls.CheckBox!
+static MauiHeadless.Interaction.Interactions.Toggle(this Microsoft.Maui.Controls.Switch! toggle) -> Microsoft.Maui.Controls.Switch!
+static MauiHeadless.Interaction.Interactions.Uncheck(this Microsoft.Maui.Controls.CheckBox! box) -> Microsoft.Maui.Controls.CheckBox!
+static MauiHeadless.MauiTestContext.Of(Microsoft.Maui.Controls.Element! element) -> MauiHeadless.MauiTestContext?
+static MauiHeadless.Snapshots.TreeSnapshot.Describe(MauiHeadless.Inspection.VisualNode! node) -> string!
+static MauiHeadless.Snapshots.TreeSnapshot.Format(MauiHeadless.Inspection.VisualNode! root, MauiHeadless.Snapshots.SnapshotOptions? options = null) -> string!
+static readonly MauiHeadless.Hosting.HeadlessBehaviors.StripProperty -> Microsoft.Maui.Controls.BindableProperty!
+static readonly MauiHeadless.Inspection.DefaultElementAdapter.Instance -> MauiHeadless.Inspection.DefaultElementAdapter!
+static readonly MauiHeadless.Snapshots.TreeSnapshot.ForMessages -> MauiHeadless.Snapshots.SnapshotOptions!

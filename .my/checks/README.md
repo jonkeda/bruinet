@@ -52,6 +52,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 4 | Supply chain | built 2026-11-01 (AD-033): audit of every package at level low; two blanket suppressions replaced (Mocking's was stale, Stride's now four advisories by URL); source mapping to nuget.org; Dependabot weekly; no lock files (why in AD-033) |
 | 5 | Security scanning | built 2026-11-01 (AD-033): gitleaks on every push (history clean; two doc placeholders ignored by fingerprint), CodeQL weekly; needs code scanning on in GitHub, not tried on a runner |
 | 6 | Guard on tests | built 2026-11-01 (AD-033): check-test-guard.ps1, tried on deleted, skipped and weakened tests and on today's commits; CI on pull requests |
+| 7 | Public API | built 2026-11-01 (AD-033): 31 libraries declared (about 9,600 lines, all unshipped until the first release); package validation on pack; update-public-api.ps1 for the loop |
 
 ## How teams arrange them
 

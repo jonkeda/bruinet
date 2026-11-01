@@ -62,3 +62,5 @@ dotnet_diagnostic.MA0074.severity = none   # same as CA1310, kept once
 dotnet_diagnostic.MA0015.severity = none   # ThrowIfNull(options.Part) names the part; the rule wants a parameter
 dotnet_diagnostic.MA0147.severity = none   # MAUI's Command and dispatchers take Action; async lambdas there are the platform's pattern
 dotnet_diagnostic.CA1001.severity = none   # the fields it finds are semaphores, scene recordings and token sources whose owner ends them at a step's end, not at Dispose
+dotnet_diagnostic.RS0026.severity = none   # overloads with optional parameters are the controls' API; changing them breaks callers
+dotnet_diagnostic.RS0027.severity = none   # the same, for an overload with fewer parameters

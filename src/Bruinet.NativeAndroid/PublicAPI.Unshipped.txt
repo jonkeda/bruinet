@@ -1,0 +1,681 @@
+#nullable enable
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.ActivateApp() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.AppPackage.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.AppiumNativeAndroidDriver(OpenQA.Selenium.Appium.Android.AndroidDriver! driver, Bruinet.NativeAndroid.NativeAndroidDriverOptions? options = null) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Back() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.CurrentActivity.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.CurrentPackage.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Dispose() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.GetAutomationTree() -> string!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.GetPageSource() -> string!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.HideKeyboard() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsAppInForeground() -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsAppRunning() -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsKeyboardShown.get -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.OpenDeepLink(string! uri) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.PressKeyCode(int keyCode) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.ResetAppState() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.SaveScreenshot(string! path) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TakeScreenshot() -> byte[]!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TerminateApp() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator) -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator! scrollable) -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.AppiumNativeAndroidElement(OpenQA.Selenium.Appium.AppiumElement! element, Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver! driver) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Checked.get -> bool?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ClassName.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Clear() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Click() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ContentDescription.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.DoubleTap() -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Enabled.get -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Focused.get -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.GetAttribute(string! name) -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Hint.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.InstanceKey.get -> string!
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.LongPress(int durationMs = 1000) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ResourceId.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Scroll(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Selected.get -> bool
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Swipe(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.TapAt(double x, double y) -> void
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Text.get -> string?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Visible.get -> bool
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Dispose() -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Driver.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Name.get -> string?
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NativeAndroidTestContext(Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver! driver, Bruinet.NativeAndroid.NativeAndroidDriverOptions? options = null) -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NavigateBack() -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NavigateTo(string! destination) -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Refresh() -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.ResetAppState() -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.SaveScreenshot(string! path) -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.TakeScreenshot() -> byte[]!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, string! resourceId, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.GetItemCount() -> int
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int index, int? timeoutMs = null) -> TItem!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! row, int position) -> Bruinet.NativeAndroid.Collections.ItemKey
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.NativeAndroid.Collections.ItemKey key) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Collections.INativeAndroidCollection
+Bruinet.NativeAndroid.Collections.INativeAndroidCollection.TryGetItemRoot(Bruinet.NativeAndroid.Collections.ItemKey key) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Collections.ItemKey
+Bruinet.NativeAndroid.Collections.ItemKey.ItemKey() -> void
+Bruinet.NativeAndroid.Collections.ItemKey.ItemKey(Bruinet.NativeAndroid.Collections.ItemKeyKind Kind, string! Value) -> void
+Bruinet.NativeAndroid.Collections.ItemKey.Kind.get -> Bruinet.NativeAndroid.Collections.ItemKeyKind
+Bruinet.NativeAndroid.Collections.ItemKey.Kind.init -> void
+Bruinet.NativeAndroid.Collections.ItemKey.Value.get -> string!
+Bruinet.NativeAndroid.Collections.ItemKey.Value.init -> void
+Bruinet.NativeAndroid.Collections.ItemKeyKind
+Bruinet.NativeAndroid.Collections.ItemKeyKind.Logical = 0 -> Bruinet.NativeAndroid.Collections.ItemKeyKind
+Bruinet.NativeAndroid.Collections.ItemKeyKind.Position = 1 -> Bruinet.NativeAndroid.Collections.ItemKeyKind
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.NativeAndroid.Collections.INativeAndroidCollection! collection, Bruinet.NativeAndroid.Collections.ItemKey key, int position) -> void
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.NativeAndroid.Collections.ItemKey
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Position.get -> int
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parentScope, string! resourceId) -> void
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsExists() -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Buttons.Button<TScope>
+Bruinet.NativeAndroid.Controls.Buttons.Button<TScope>.Button(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Buttons.Button<TScope>.Button(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Buttons.FloatingActionButton<TScope>
+Bruinet.NativeAndroid.Controls.Buttons.FloatingActionButton<TScope>.FloatingActionButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Buttons.FloatingActionButton<TScope>.FloatingActionButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Buttons.ImageButton<TScope>
+Bruinet.NativeAndroid.Controls.Buttons.ImageButton<TScope>.ImageButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Buttons.ImageButton<TScope>.ImageButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Collection.ListItem
+Bruinet.NativeAndroid.Controls.Collection.ListItem.Button(string! resourceId) -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Collection.ListItem!>!
+Bruinet.NativeAndroid.Controls.Collection.ListItem.CheckBox(string! resourceId) -> Bruinet.NativeAndroid.Controls.Toggle.CheckBox<Bruinet.NativeAndroid.Controls.Collection.ListItem!>!
+Bruinet.NativeAndroid.Controls.Collection.ListItem.ListItem(Bruinet.NativeAndroid.Collections.INativeAndroidCollection! collection, Bruinet.NativeAndroid.Collections.ItemKey key, int position) -> void
+Bruinet.NativeAndroid.Controls.Collection.ListItem.Row.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Collection.ListItem!>!
+Bruinet.NativeAndroid.Controls.Collection.ListItem.Text(string! resourceId) -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Collection.ListItem!>!
+Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>
+Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>.ListView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemKey = null) -> void
+Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>.ListView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, string! resourceId, string? itemKeyId = null) -> void
+Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>
+Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>.RecyclerView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemKey = null) -> void
+Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>.RecyclerView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, string! resourceId, string? itemKeyId = null) -> void
+Bruinet.NativeAndroid.Controls.Container.ScrollView<TScope>
+Bruinet.NativeAndroid.Controls.Container.ScrollView<TScope>.ScrollView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Container.ScrollView<TScope>.ScrollView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Container.SwipeRefreshLayout<TScope>
+Bruinet.NativeAndroid.Controls.Container.SwipeRefreshLayout<TScope>.PullToRefresh(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Container.SwipeRefreshLayout<TScope>.SwipeRefreshLayout(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Container.SwipeRefreshLayout<TScope>.SwipeRefreshLayout(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.AlertDialog(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent) -> void
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.Message.get -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.NegativeButton.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.NeutralButton.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.PositiveButton.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.Title.get -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.Allow.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.AllowOnce.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.Deny.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.Message.get -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.PermissionDialog(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent) -> void
+Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>
+Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>.Action.get -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>.Snackbar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent) -> void
+Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>.Text.get -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Display.ImageView<TScope>
+Bruinet.NativeAndroid.Controls.Display.ImageView<TScope>.ImageView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Display.ImageView<TScope>.ImageView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.Blur(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.IsFocused() -> bool?
+Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.Action(string! title) -> Bruinet.NativeAndroid.Controls.Buttons.Button<Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.MoreOptions.get -> Bruinet.NativeAndroid.Controls.Display.ImageView<Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.NavigationButton.get -> Bruinet.NativeAndroid.Controls.Buttons.ImageButton<Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.Title.get -> Bruinet.NativeAndroid.Controls.Text.TextView<Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>!>!
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.Toolbar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.Toolbar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, string! resourceId) -> void
+Bruinet.NativeAndroid.Controls.Range.ProgressBar<TScope>
+Bruinet.NativeAndroid.Controls.Range.ProgressBar<TScope>.ProgressBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.Range.ProgressBar<TScope>.ProgressBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.Range.RatingBar<TScope>
+Bruinet.NativeAndroid.Controls.Range.RatingBar<TScope>.RatingBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = 5, double step = 0.5) -> void
+Bruinet.NativeAndroid.Controls.Range.RatingBar<TScope>.RatingBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath, double minimum = 0, double? maximum = 5, double step = 0.5) -> void
+Bruinet.NativeAndroid.Controls.Range.SeekBar<TScope>
+Bruinet.NativeAndroid.Controls.Range.SeekBar<TScope>.SeekBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.Range.SeekBar<TScope>.SeekBar(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertMaximum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertMinimum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertStep(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValue(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValueGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.AssertValueWithin(double? expected, double tolerance, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.Decrement(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetMaximum(int? timeoutMs = null) -> double?
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetMinimum(int? timeoutMs = null) -> double?
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetStep(int? timeoutMs = null) -> double?
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetValue(int? timeoutMs = null) -> double?
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.Increment(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.SetValue(double? value, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitMaximum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitMinimum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitStep(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValue(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValueAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValueAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValueGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValueLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.Scroll(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollToEnd(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollToStart(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Selection.BottomNavigationView<TScope>
+Bruinet.NativeAndroid.Controls.Selection.BottomNavigationView<TScope>.BottomNavigationView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Selection.BottomNavigationView<TScope>.BottomNavigationView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>
+Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Selection.RadioGroup<TScope>
+Bruinet.NativeAndroid.Controls.Selection.RadioGroup<TScope>.RadioGroup(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Selection.RadioGroup<TScope>.RadioGroup(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Selection.Spinner<TScope>
+Bruinet.NativeAndroid.Controls.Selection.Spinner<TScope>.Spinner(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Selection.Spinner<TScope>.Spinner(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Selection.TabLayout<TScope>
+Bruinet.NativeAndroid.Controls.Selection.TabLayout<TScope>.TabLayout(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Selection.TabLayout<TScope>.TabLayout(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertItemCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertItemTextsCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertItemTextsHasItem(string! item, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.AssertSelectedValue(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetItemCount(int? timeoutMs = null) -> int?
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedIndex(int? timeoutMs = null) -> int?
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedText(int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedValue(int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByIndex(int? index, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByValue(string? value, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitItemCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitItemTextsCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitItemTextsHasItem(string! item, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitSelectedIndex(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitSelectedText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.WaitSelectedValue(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>
+Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.AutoCompleteTextView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.AutoCompleteTextView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.ChooseSuggestion(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.Append(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.Clear(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EditText(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EditText(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.IsReadOnly() -> bool?
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.Submit(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.Text.TextView<TScope>
+Bruinet.NativeAndroid.Controls.Text.TextView<TScope>.TextView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Text.TextView<TScope>.TextView(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Toggle.CheckBox<TScope>
+Bruinet.NativeAndroid.Controls.Toggle.CheckBox<TScope>.CheckBox(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Toggle.CheckBox<TScope>.CheckBox(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Toggle.Chip<TScope>
+Bruinet.NativeAndroid.Controls.Toggle.Chip<TScope>.Chip(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Toggle.Chip<TScope>.Chip(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Toggle.RadioButton<TScope>
+Bruinet.NativeAndroid.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Toggle.Switch<TScope>
+Bruinet.NativeAndroid.Controls.Toggle.Switch<TScope>.Switch(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Toggle.Switch<TScope>.Switch(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.Toggle.ToggleButton<TScope>
+Bruinet.NativeAndroid.Controls.Toggle.ToggleButton<TScope>.ToggleButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.Toggle.ToggleButton<TScope>.ToggleButton(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.Uncheck(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.WaitChecked(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ActAndConfirm<T>(string! action, System.Action! act, System.Func<T?>! read, System.Func<T?, bool>! done, string! expected, int? timeoutMs) -> void
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertAttribute(string? name, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertContentDescription(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertContentDescriptionContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.FindElement() -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetContentDescription(int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsEnabled() -> bool?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsExists() -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunAssertWithOptionalElement<T>(T? expected, System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunDo(System.Action! operation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunDoWithElement(System.Action<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunGetWithElement<T>(System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunGetWithOptionalElement<T>(System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunSetWithElement<T>(T? value, System.Action<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunWait(System.Func<bool>! operation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunWaitForValue(System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunWaitWithElement<T>(T? expected, System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.TryGetText() -> string?
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>! scope, string! resourceIdOrXPath) -> void
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitAttribute(string! name, System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitAttribute(string? name, string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitContentDescription(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitContentDescriptionContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitText(System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Interfaces.GestureDirection
+Bruinet.NativeAndroid.Interfaces.GestureDirection.Down = 1 -> Bruinet.NativeAndroid.Interfaces.GestureDirection
+Bruinet.NativeAndroid.Interfaces.GestureDirection.Left = 2 -> Bruinet.NativeAndroid.Interfaces.GestureDirection
+Bruinet.NativeAndroid.Interfaces.GestureDirection.Right = 3 -> Bruinet.NativeAndroid.Interfaces.GestureDirection
+Bruinet.NativeAndroid.Interfaces.GestureDirection.Up = 0 -> Bruinet.NativeAndroid.Interfaces.GestureDirection
+Bruinet.NativeAndroid.Interfaces.INativeAndroidContainer<TParent, TSelf>
+Bruinet.NativeAndroid.Interfaces.INativeAndroidContainer<TParent, TSelf>.Parent.get -> TParent
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.ActivateApp() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.AppPackage.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.Back() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.CurrentActivity.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.CurrentPackage.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.HideKeyboard() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.IsAppInForeground() -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.IsKeyboardShown.get -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.OpenDeepLink(string! uri) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.PressKeyCode(int keyCode) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.ResetAppState() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.SaveScreenshot(string! path) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.TakeScreenshot() -> byte[]!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.TerminateApp() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator! scrollable) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Checked.get -> bool?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.ClassName.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Clear() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Click() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.ContentDescription.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.DoubleTap() -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Enabled.get -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Focused.get -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.GetAttribute(string! name) -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Hint.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.InstanceKey.get -> string!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.LongPress(int durationMs = 1000) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.ResourceId.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Scroll(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Selected.get -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Swipe(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.TapAt(double x, double y) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Text.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Visible.get -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.IsReady() -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.Activity.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertIdle(string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.GetTitle() -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.IsBusy() -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.IsLoaded() -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.Name.get -> string!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.TakeScreenshot(string? filename = null) -> void
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Interfaces.INativeAndroidPage<TSelf>
+Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>
+Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>.Self.get -> TScope
+Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext
+Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Driver.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver!
+Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Name.get -> string?
+Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions
+Bruinet.NativeAndroid.NativeAndroidDriverOptions
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppActivity.get -> string?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppActivity.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPackage.get -> string?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPackage.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPath.get -> string?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPath.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppiumServerUri.get -> System.Uri!
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppiumServerUri.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutoGrantPermissions.get -> bool
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutoGrantPermissions.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutomationName.get -> string!
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutomationName.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.DeviceName.get -> string!
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.DeviceName.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.FullReset.get -> bool
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.FullReset.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Logger.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Name.get -> string?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Name.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.NativeAndroidDriverOptions() -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.NearMiss.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.NoReset.get -> bool
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.NoReset.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.PlatformVersion.get -> string?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.PlatformVersion.set -> void
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
+Bruinet.NativeAndroid.NativeAndroidDriverOptions.Timeouts.set -> void
+Bruinet.NativeAndroid.NativeAndroidEvidenceCapture
+Bruinet.NativeAndroid.NativeAndroidEvidenceCapture.Capture(string! directory, string! name) -> string!
+Bruinet.NativeAndroid.NativeAndroidEvidenceCapture.NativeAndroidEvidenceCapture(Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver! driver) -> void
+Bruinet.NativeAndroid.NativeAndroidLocator
+Bruinet.NativeAndroid.ObjectBase
+Bruinet.NativeAndroid.ObjectBase.DefaultTimeoutMs.get -> int
+Bruinet.NativeAndroid.ObjectBase.ObjectBase() -> void
+Bruinet.NativeAndroid.ObjectBase.PollingIntervalMs.get -> int
+Bruinet.NativeAndroid.Pages.AppRoot
+Bruinet.NativeAndroid.Pages.AppRoot.AppRoot(Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext! context) -> void
+Bruinet.NativeAndroid.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Pages.AppRoot.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Pages.AppRoot.IsReady() -> bool
+Bruinet.NativeAndroid.Pages.AppRoot.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeAndroid.Pages.AppRoot.Self.get -> Bruinet.NativeAndroid.Pages.AppRoot!
+Bruinet.NativeAndroid.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.IsReady() -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext! context) -> void
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase
+Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.NativeAndroidTestFixtureBase() -> void
+abstract Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.NativeAndroid.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
+abstract Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
+abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
+abstract Bruinet.NativeAndroid.ObjectBase.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+const Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EnterKeyCode = 66 -> int
+const Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.BusyViewName = "bruinet_busy" -> string!
+override Bruinet.NativeAndroid.Collections.ItemKey.ToString() -> string!
+override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
+override Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ScopeName.get -> string!
+override Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> void
+override Bruinet.NativeAndroid.Controls.Collection.ListItem.Self.get -> Bruinet.NativeAndroid.Controls.Collection.ListItem!
+override Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>.CreateItem(Bruinet.NativeAndroid.Collections.ItemKey key, int position) -> Bruinet.NativeAndroid.Controls.Collection.ListItem!
+override Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+override Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Collection.ListView<TParent>!
+override Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>.CreateItem(Bruinet.NativeAndroid.Collections.ItemKey key, int position) -> Bruinet.NativeAndroid.Controls.Collection.ListItem!
+override Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+override Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Collection.RecyclerView<TParent>!
+override Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.AsksParent.get -> bool
+override Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Dialogs.AlertDialog<TParent>!
+override Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.AsksParent.get -> bool
+override Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Dialogs.PermissionDialog<TParent>!
+override Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>.AsksParent.get -> bool
+override Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Dialogs.Snackbar<TParent>!
+override Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>.Self.get -> Bruinet.NativeAndroid.Controls.Navigation.Toolbar<TParent>!
+override Bruinet.NativeAndroid.Controls.Range.RatingBar<TScope>.GetValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> double?
+override Bruinet.NativeAndroid.Controls.Range.RatingBar<TScope>.SetValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, double? value, int? timeoutMs = null) -> void
+override Bruinet.NativeAndroid.Controls.Selection.BottomNavigationView<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+override Bruinet.NativeAndroid.Controls.Selection.BottomNavigationView<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
+override Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.GetItemTextsCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
+override Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.GetSelectedTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> string?
+override Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.SelectByIndexCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? index, int? timeoutMs = null) -> void
+override Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.SelectByTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.NativeAndroid.Controls.Selection.RadioGroup<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+override Bruinet.NativeAndroid.Controls.Selection.RadioGroup<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
+override Bruinet.NativeAndroid.Controls.Selection.TabLayout<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+override Bruinet.NativeAndroid.Controls.Selection.TabLayout<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
+override Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.AppendCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.SetTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Pages.AppRoot.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
+static Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Create(Bruinet.NativeAndroid.NativeAndroidDriverOptions! options) -> Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver!
+static Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Create(Bruinet.NativeAndroid.NativeAndroidDriverOptions! options) -> Bruinet.NativeAndroid.Appium.NativeAndroidTestContext!
+static Bruinet.NativeAndroid.Collections.ItemKey.Of(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! row, int position, Bruinet.Core.Locators.Locator? keyView = null) -> Bruinet.NativeAndroid.Collections.ItemKey
+static Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ResolveLocator(string! resourceIdOrXPath) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions.FindElement(this Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
+static Bruinet.NativeAndroid.NativeAndroidDriverOptions.FromEnvironment() -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
+static Bruinet.NativeAndroid.NativeAndroidDriverOptions.FromEnvironment(System.Func<string!, string?>! read) -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByAndroidXPath(string! xpath) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByClass(string! className) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByContentDescription(string! contentDescription) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByResourceId(string! resourceId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByResourceIdEndsWith(string! resourceIdSuffix) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByText(string! text) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByTextContains(string! text) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidLocator.ByTextOrDescription(string! value) -> Bruinet.Core.Locators.Locator!
+static readonly Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DirectChildren -> Bruinet.Core.Locators.Locator!
+virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
+virtual Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.AsksParent.get -> bool
+virtual Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ProbeContentReadiness(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.TryFindRootElement() -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.IsClickableCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.LongPressCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? durationMs = null, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.RightClickCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Container.SwipeRefreshLayout<TScope>.PullToRefreshCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.BlurCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.FocusCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.FocusableControlBase<TScope>.IsFocusedCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.DecrementCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetMaximumCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> double?
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetMinimumCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> double?
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetStepCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> double?
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.GetValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> double?
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.IncrementCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.RangeControlBase<TScope>.SetValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, double? value, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, Bruinet.NativeAndroid.Interfaces.GestureDirection direction, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollToEndCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ScrollableControlBase<TScope>.ScrollToStartCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.Label(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> string?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetItemCountCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> int?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetItemTextsCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedIndexCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> int?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> string?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.GetSelectedValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> string?
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.OptionsLocator.get -> Bruinet.Core.Locators.Locator!
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByIndexCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? index, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.SelectorControlBase<TScope>.SelectByValueCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? value, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.AutoCompleteTextView<TScope>.ChooseSuggestionCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.AppendCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.ClearCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EnterCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.GetPlaceholderCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> string?
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.IsReadOnlyCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.SetTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.SubmitCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.SetCheckedCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, bool? checked, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ToggleControlBase<TScope>.ToggleCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.EnsureEnabledCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> void
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.EnsureReadyForActionCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> void
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetAttributeCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string? name) -> string?
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetContentDescriptionCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> string?
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetTextCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> string?
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsEnabledCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsVisibleCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement? element) -> bool?
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> void
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ScrollsToFind.get -> bool
+virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string! keys, int? timeoutMs = null) -> void
+virtual Bruinet.NativeAndroid.ObjectBase.ScopeName.get -> string!
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Activity.get -> string?
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Name.get -> string!
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TitleLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.CreateOptions() -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
+virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
+virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!

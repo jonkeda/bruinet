@@ -1,0 +1,1108 @@
+#nullable enable
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.AttachmentsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.CoverageDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.DownloadsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.EnsureDirectories() -> void
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.LogsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.RootDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.RunDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.RunId.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.RunnerDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.ScreenshotsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.SnapshotsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.SuiteDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.SuiteName.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.TracesDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.UatDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.VideosDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.AttachmentsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.CoverageDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.DownloadsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.EnsureDirectories() -> void
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.LogsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.RootDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.RunDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.RunId.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.RunnerDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.ScreenshotsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.SnapshotsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.SuiteDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.SuiteName.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.TracesDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.UatDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.VideosDirectory.get -> string!
+Bruinet.Core.Artifacts.TestArtifactManifest
+Bruinet.Core.Artifacts.TestArtifactManifest.RootDirectory.get -> string!
+Bruinet.Core.Artifacts.TestArtifactManifest.RootDirectory.set -> void
+Bruinet.Core.Artifacts.TestArtifactManifest.RunId.get -> string!
+Bruinet.Core.Artifacts.TestArtifactManifest.RunId.set -> void
+Bruinet.Core.Artifacts.TestArtifactManifest.StartedAtUtc.get -> System.DateTimeOffset
+Bruinet.Core.Artifacts.TestArtifactManifest.StartedAtUtc.set -> void
+Bruinet.Core.Artifacts.TestArtifactManifest.Suites.get -> System.Collections.Generic.List<Bruinet.Core.Artifacts.TestArtifactSuite!>!
+Bruinet.Core.Artifacts.TestArtifactManifest.Suites.set -> void
+Bruinet.Core.Artifacts.TestArtifactManifest.TestArtifactManifest() -> void
+Bruinet.Core.Artifacts.TestArtifactManifest.UpdatedAtUtc.get -> System.DateTimeOffset
+Bruinet.Core.Artifacts.TestArtifactManifest.UpdatedAtUtc.set -> void
+Bruinet.Core.Artifacts.TestArtifactManifestWriter
+Bruinet.Core.Artifacts.TestArtifactOptions
+Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectory.get -> string!
+Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectory.init -> void
+Bruinet.Core.Artifacts.TestArtifactOptions.RunId.get -> string!
+Bruinet.Core.Artifacts.TestArtifactOptions.RunId.init -> void
+Bruinet.Core.Artifacts.TestArtifactOptions.SuiteName.get -> string?
+Bruinet.Core.Artifacts.TestArtifactOptions.SuiteName.init -> void
+Bruinet.Core.Artifacts.TestArtifactOptions.TestArtifactOptions(string! RootDirectory, string! RunId, string? SuiteName) -> void
+Bruinet.Core.Artifacts.TestArtifactRecord
+Bruinet.Core.Artifacts.TestArtifactRecord.CreatedAtUtc.get -> System.DateTimeOffset
+Bruinet.Core.Artifacts.TestArtifactRecord.CreatedAtUtc.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Kind.get -> string!
+Bruinet.Core.Artifacts.TestArtifactRecord.Kind.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Metadata.get -> System.Collections.Generic.Dictionary<string!, string?>!
+Bruinet.Core.Artifacts.TestArtifactRecord.Metadata.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Name.get -> string!
+Bruinet.Core.Artifacts.TestArtifactRecord.Name.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Path.get -> string!
+Bruinet.Core.Artifacts.TestArtifactRecord.Path.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Reason.get -> string!
+Bruinet.Core.Artifacts.TestArtifactRecord.Reason.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.Status.get -> string!
+Bruinet.Core.Artifacts.TestArtifactRecord.Status.set -> void
+Bruinet.Core.Artifacts.TestArtifactRecord.TestArtifactRecord() -> void
+Bruinet.Core.Artifacts.TestArtifactSuite
+Bruinet.Core.Artifacts.TestArtifactSuite.Artifacts.get -> System.Collections.Generic.List<Bruinet.Core.Artifacts.TestArtifactRecord!>!
+Bruinet.Core.Artifacts.TestArtifactSuite.Artifacts.set -> void
+Bruinet.Core.Artifacts.TestArtifactSuite.Name.get -> string!
+Bruinet.Core.Artifacts.TestArtifactSuite.Name.set -> void
+Bruinet.Core.Artifacts.TestArtifactSuite.Target.get -> string?
+Bruinet.Core.Artifacts.TestArtifactSuite.Target.set -> void
+Bruinet.Core.Artifacts.TestArtifactSuite.TestArtifactSuite() -> void
+Bruinet.Core.Attributes.Placeholder
+Bruinet.Core.Calls.AttemptMemo
+Bruinet.Core.Calls.CallBudget
+Bruinet.Core.Calls.Confirmation<T>
+Bruinet.Core.Calls.Confirmation<T>.Confirmation() -> void
+Bruinet.Core.Calls.Confirmation<T>.Confirmation(Bruinet.Core.Calls.ConfirmationResult Result, T? LastValue, System.Exception? LastError) -> void
+Bruinet.Core.Calls.Confirmation<T>.Failure(Bruinet.Core.Locators.Locator! locator, string! action, System.Func<System.Exception?, System.Exception!>! notConfirmed) -> System.Exception!
+Bruinet.Core.Calls.Confirmation<T>.IsConfirmed.get -> bool
+Bruinet.Core.Calls.Confirmation<T>.LastError.get -> System.Exception?
+Bruinet.Core.Calls.Confirmation<T>.LastError.init -> void
+Bruinet.Core.Calls.Confirmation<T>.LastValue.get -> T?
+Bruinet.Core.Calls.Confirmation<T>.LastValue.init -> void
+Bruinet.Core.Calls.Confirmation<T>.Result.get -> Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.Confirmation<T>.Result.init -> void
+Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.ConfirmationResult.Confirmed = 0 -> Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.ConfirmationResult.NotConfirmed = 1 -> Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.ConfirmationResult.Replaced = 2 -> Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.NearMissSettings
+Bruinet.Core.Calls.NearMissSettings.BudgetShare.get -> double
+Bruinet.Core.Calls.NearMissSettings.BudgetShare.init -> void
+Bruinet.Core.Calls.NearMissSettings.NearMissSettings(int Replacements = 3, double BudgetShare = 0.5) -> void
+Bruinet.Core.Calls.NearMissSettings.Replacements.get -> int
+Bruinet.Core.Calls.NearMissSettings.Replacements.init -> void
+Bruinet.Core.Calls.NearMisses
+Bruinet.Core.Calls.NearMisses.NearMiss
+Bruinet.Core.Calls.NearMisses.NearMiss.BudgetMs.get -> int
+Bruinet.Core.Calls.NearMisses.NearMiss.BudgetMs.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.Call.get -> string!
+Bruinet.Core.Calls.NearMisses.NearMiss.Call.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.Control.get -> string!
+Bruinet.Core.Calls.NearMisses.NearMiss.Control.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.Detail.get -> string!
+Bruinet.Core.Calls.NearMisses.NearMiss.Detail.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.ElapsedMs.get -> int
+Bruinet.Core.Calls.NearMisses.NearMiss.ElapsedMs.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.NearMiss(string! Test, string! Page, string! Control, string! Call, int ElapsedMs, int BudgetMs, string! Detail) -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.Page.get -> string!
+Bruinet.Core.Calls.NearMisses.NearMiss.Page.init -> void
+Bruinet.Core.Calls.NearMisses.NearMiss.Share.get -> double
+Bruinet.Core.Calls.NearMisses.NearMiss.Test.get -> string!
+Bruinet.Core.Calls.NearMisses.NearMiss.Test.init -> void
+Bruinet.Core.Calls.Settle
+Bruinet.Core.Composition.AssemblyFile
+Bruinet.Core.Composition.TestComposition
+Bruinet.Core.Composition.TestComposition.Catalog.get -> Bruinet.Core.Composition.TestCompositionCatalog!
+Bruinet.Core.Composition.TestComposition.CreateScope() -> Microsoft.Extensions.DependencyInjection.IServiceScope!
+Bruinet.Core.Composition.TestCompositionCatalog
+Bruinet.Core.Composition.TestCompositionCatalog.AddDiscoveredServices(Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> void
+Bruinet.Core.Composition.TestCompositionCatalog.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Composition.TestCompositionCatalog.Pages.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Composition.TestPageDescriptor!>!
+Bruinet.Core.Composition.TestCompositionCatalog.ScannedTypes.get -> System.Collections.Generic.IReadOnlyList<System.Type!>!
+Bruinet.Core.Composition.TestCompositionCatalog.Services.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Composition.TestServiceDescriptor!>!
+Bruinet.Core.Composition.TestCompositionDiscoveryOptions
+Bruinet.Core.Composition.TestCompositionDiscoveryOptions.Assemblies.get -> System.Collections.Generic.IReadOnlyList<System.Reflection.Assembly!>!
+Bruinet.Core.Composition.TestCompositionDiscoveryOptions.NamespacePrefixes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Composition.TestCompositionDiscoveryOptions.TestCompositionDiscoveryOptions(System.Collections.Generic.IReadOnlyList<System.Reflection.Assembly!>! assemblies, System.Collections.Generic.IReadOnlyList<string!>! namespacePrefixes) -> void
+Bruinet.Core.Composition.TestCompositionIgnoreAttribute
+Bruinet.Core.Composition.TestCompositionIgnoreAttribute.TestCompositionIgnoreAttribute() -> void
+Bruinet.Core.Composition.TestModuleScanAttribute
+Bruinet.Core.Composition.TestModuleScanAttribute.AssemblyMarkerType.get -> System.Type!
+Bruinet.Core.Composition.TestModuleScanAttribute.NamespacePrefix.get -> string?
+Bruinet.Core.Composition.TestModuleScanAttribute.NamespacePrefix.init -> void
+Bruinet.Core.Composition.TestModuleScanAttribute.TestModuleScanAttribute(System.Type! assemblyMarkerType) -> void
+Bruinet.Core.Composition.TestPageAttribute
+Bruinet.Core.Composition.TestPageAttribute.Lifetime.get -> Microsoft.Extensions.DependencyInjection.ServiceLifetime
+Bruinet.Core.Composition.TestPageAttribute.Lifetime.init -> void
+Bruinet.Core.Composition.TestPageAttribute.Name.get -> string?
+Bruinet.Core.Composition.TestPageAttribute.TestPageAttribute(string? name = null) -> void
+Bruinet.Core.Composition.TestPageDescriptor
+Bruinet.Core.Composition.TestPageDescriptor.Lifetime.get -> Microsoft.Extensions.DependencyInjection.ServiceLifetime
+Bruinet.Core.Composition.TestPageDescriptor.Lifetime.init -> void
+Bruinet.Core.Composition.TestPageDescriptor.Name.get -> string!
+Bruinet.Core.Composition.TestPageDescriptor.Name.init -> void
+Bruinet.Core.Composition.TestPageDescriptor.Namespace.get -> string?
+Bruinet.Core.Composition.TestPageDescriptor.Namespace.init -> void
+Bruinet.Core.Composition.TestPageDescriptor.PageType.get -> System.Type!
+Bruinet.Core.Composition.TestPageDescriptor.PageType.init -> void
+Bruinet.Core.Composition.TestPageDescriptor.SourcePath.get -> string!
+Bruinet.Core.Composition.TestPageDescriptor.SourcePath.init -> void
+Bruinet.Core.Composition.TestPageDescriptor.TestPageDescriptor(string! Name, System.Type! PageType, Microsoft.Extensions.DependencyInjection.ServiceLifetime Lifetime, string! SourcePath) -> void
+Bruinet.Core.Composition.TestPages
+Bruinet.Core.Composition.TestScenarioServiceAttribute
+Bruinet.Core.Composition.TestScenarioServiceAttribute.Lifetime.get -> Microsoft.Extensions.DependencyInjection.ServiceLifetime
+Bruinet.Core.Composition.TestScenarioServiceAttribute.Lifetime.init -> void
+Bruinet.Core.Composition.TestScenarioServiceAttribute.TestScenarioServiceAttribute() -> void
+Bruinet.Core.Composition.TestScenarioServiceBase
+Bruinet.Core.Composition.TestScenarioServiceBase.TestScenarioServiceBase() -> void
+Bruinet.Core.Composition.TestServiceDescriptor
+Bruinet.Core.Composition.TestServiceDescriptor.Lifetime.get -> Microsoft.Extensions.DependencyInjection.ServiceLifetime
+Bruinet.Core.Composition.TestServiceDescriptor.Lifetime.init -> void
+Bruinet.Core.Composition.TestServiceDescriptor.SourcePath.get -> string!
+Bruinet.Core.Composition.TestServiceDescriptor.SourcePath.init -> void
+Bruinet.Core.Composition.TestServiceDescriptor.TestServiceDescriptor(System.Type! Type, Microsoft.Extensions.DependencyInjection.ServiceLifetime Lifetime, string! SourcePath) -> void
+Bruinet.Core.Composition.TestServiceDescriptor.Type.get -> System.Type!
+Bruinet.Core.Composition.TestServiceDescriptor.Type.init -> void
+Bruinet.Core.Configuration.ArtifactsOptions
+Bruinet.Core.Configuration.ArtifactsOptions.ArtifactsOptions() -> void
+Bruinet.Core.Configuration.ArtifactsOptions.RootDirectory.get -> string!
+Bruinet.Core.Configuration.ArtifactsOptions.RootDirectory.set -> void
+Bruinet.Core.Configuration.ArtifactsOptions.RunId.get -> string?
+Bruinet.Core.Configuration.ArtifactsOptions.RunId.set -> void
+Bruinet.Core.Configuration.ArtifactsOptions.Suite.get -> string?
+Bruinet.Core.Configuration.ArtifactsOptions.Suite.set -> void
+Bruinet.Core.Configuration.AutomationOptions
+Bruinet.Core.Configuration.AutomationOptions.AutomationOptions() -> void
+Bruinet.Core.Configuration.AutomationOptions.Enabled.get -> bool
+Bruinet.Core.Configuration.AutomationOptions.Enabled.set -> void
+Bruinet.Core.Configuration.BrowserOptions
+Bruinet.Core.Configuration.BrowserOptions.BrowserOptions() -> void
+Bruinet.Core.Configuration.BrowserOptions.BrowserType.get -> string!
+Bruinet.Core.Configuration.BrowserOptions.BrowserType.set -> void
+Bruinet.Core.Configuration.BrowserOptions.Headless.get -> bool
+Bruinet.Core.Configuration.BrowserOptions.Headless.set -> void
+Bruinet.Core.Configuration.BruinetConfigurationBase
+Bruinet.Core.Configuration.BruinetConfigurationBase.Artifacts.get -> Bruinet.Core.Configuration.ArtifactsOptions!
+Bruinet.Core.Configuration.BruinetConfigurationBase.Artifacts.set -> void
+Bruinet.Core.Configuration.BruinetConfigurationBase.BruinetConfigurationBase() -> void
+Bruinet.Core.Configuration.FrameworkOptions
+Bruinet.Core.Configuration.FrameworkOptions.Automation.get -> Bruinet.Core.Configuration.AutomationOptions!
+Bruinet.Core.Configuration.FrameworkOptions.Automation.set -> void
+Bruinet.Core.Configuration.FrameworkOptions.FrameworkOptions() -> void
+Bruinet.Core.Configuration.ScreenshotFormat
+Bruinet.Core.Configuration.ScreenshotFormat.Jpeg = 1 -> Bruinet.Core.Configuration.ScreenshotFormat
+Bruinet.Core.Configuration.ScreenshotFormat.Png = 0 -> Bruinet.Core.Configuration.ScreenshotFormat
+Bruinet.Core.Configuration.ScreenshotSettings
+Bruinet.Core.Configuration.ScreenshotSettings.CaptureOnFailure.get -> bool
+Bruinet.Core.Configuration.ScreenshotSettings.CaptureOnFailure.set -> void
+Bruinet.Core.Configuration.ScreenshotSettings.Format.get -> Bruinet.Core.Configuration.ScreenshotFormat
+Bruinet.Core.Configuration.ScreenshotSettings.Format.set -> void
+Bruinet.Core.Configuration.ScreenshotSettings.IncludeTimestamp.get -> bool
+Bruinet.Core.Configuration.ScreenshotSettings.IncludeTimestamp.set -> void
+Bruinet.Core.Configuration.ScreenshotSettings.JpegQuality.get -> int
+Bruinet.Core.Configuration.ScreenshotSettings.JpegQuality.set -> void
+Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.get -> string!
+Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.set -> void
+Bruinet.Core.Configuration.ScreenshotSettings.ScreenshotSettings() -> void
+Bruinet.Core.Configuration.ScreenshotSettings.With(string? outputDirectory = null, Bruinet.Core.Configuration.ScreenshotFormat? format = null, int? jpegQuality = null, bool? captureOnFailure = null, bool? includeTimestamp = null) -> Bruinet.Core.Configuration.ScreenshotSettings!
+Bruinet.Core.Configuration.TimeoutDefaults
+Bruinet.Core.Configuration.TimeoutSettings
+Bruinet.Core.Configuration.TimeoutSettings.Animation.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.Animation.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.ElementFind.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.ElementFind.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.ElementState.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.ElementState.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.PageLoad.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.PageLoad.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.set -> void
+Bruinet.Core.Configuration.TimeoutSettings.TimeoutSettings() -> void
+Bruinet.Core.Configuration.TimeoutSettings.With(int? defaultWait = null, int? pageLoad = null, int? elementFind = null, int? elementState = null, int? animation = null, int? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Diagnostics.AutWindow
+Bruinet.Core.Diagnostics.DebuggedApps
+Bruinet.Core.Diagnostics.PhysicalInput
+Bruinet.Core.Diagnostics.PhysicalInputPolicy
+Bruinet.Core.Diagnostics.PhysicalInputPolicy.Allowed = 0 -> Bruinet.Core.Diagnostics.PhysicalInputPolicy
+Bruinet.Core.Diagnostics.PhysicalInputPolicy.Audited = 1 -> Bruinet.Core.Diagnostics.PhysicalInputPolicy
+Bruinet.Core.Diagnostics.PhysicalInputPolicy.Refused = 2 -> Bruinet.Core.Diagnostics.PhysicalInputPolicy
+Bruinet.Core.Diagnostics.PhysicalInputUse
+Bruinet.Core.Diagnostics.PhysicalInputUse.CallSite.get -> string!
+Bruinet.Core.Diagnostics.PhysicalInputUse.CallSite.init -> void
+Bruinet.Core.Diagnostics.PhysicalInputUse.Count.get -> int
+Bruinet.Core.Diagnostics.PhysicalInputUse.Count.init -> void
+Bruinet.Core.Diagnostics.PhysicalInputUse.PhysicalInputUse(string! CallSite, string! Replacement, int Count) -> void
+Bruinet.Core.Diagnostics.PhysicalInputUse.Replacement.get -> string!
+Bruinet.Core.Diagnostics.PhysicalInputUse.Replacement.init -> void
+Bruinet.Core.Exceptions.AppUnavailableException
+Bruinet.Core.Exceptions.AppUnavailableException.AppUnavailableException(string! detail, System.Exception? platformError = null) -> void
+Bruinet.Core.Exceptions.AssertionException
+Bruinet.Core.Exceptions.AssertionException.Actual.get -> object?
+Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message) -> void
+Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, object? expected, object? actual) -> void
+Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, object? expected, object? actual, string! controlLocator) -> void
+Bruinet.Core.Exceptions.AssertionException.ControlLocator.get -> string?
+Bruinet.Core.Exceptions.AssertionException.Expected.get -> object?
+Bruinet.Core.Exceptions.BruinetException
+Bruinet.Core.Exceptions.BruinetException.BruinetException(string! message) -> void
+Bruinet.Core.Exceptions.BruinetException.BruinetException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, int timeoutMs) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message, string! locator) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.LocatorInfo.get -> Bruinet.Core.Locators.Locator?
+Bruinet.Core.Exceptions.ElementNotFoundException.LocatorString.get -> string?
+Bruinet.Core.Exceptions.ElementNotReadyException
+Bruinet.Core.Exceptions.ElementNotReadyException.Detail.get -> string?
+Bruinet.Core.Exceptions.ElementNotReadyException.ElementNotReadyException(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Exceptions.NotReadyReason reason, string? detail = null) -> void
+Bruinet.Core.Exceptions.ElementNotReadyException.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Exceptions.ElementNotReadyException.Reason.get -> Bruinet.Core.Exceptions.NotReadyReason
+Bruinet.Core.Exceptions.IEndsCall
+Bruinet.Core.Exceptions.LocatorNotSupportedException
+Bruinet.Core.Exceptions.LocatorNotSupportedException.DriverName.get -> string!
+Bruinet.Core.Exceptions.LocatorNotSupportedException.LocatorNotSupportedException(Bruinet.Core.Locators.LocatorStrategy strategy, string! driverName, string? suggestion = null) -> void
+Bruinet.Core.Exceptions.LocatorNotSupportedException.Strategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Exceptions.NotReadyReason
+Bruinet.Core.Exceptions.NotReadyReason.Disabled = 1 -> Bruinet.Core.Exceptions.NotReadyReason
+Bruinet.Core.Exceptions.NotReadyReason.NotVisible = 0 -> Bruinet.Core.Exceptions.NotReadyReason
+Bruinet.Core.Exceptions.NotReadyReason.Other = 2 -> Bruinet.Core.Exceptions.NotReadyReason
+Bruinet.Core.Exceptions.PageLoadException
+Bruinet.Core.Exceptions.PageLoadException.PageLoadException(string! message) -> void
+Bruinet.Core.Exceptions.PageLoadException.PageLoadException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Exceptions.PhysicalInputRefusedException
+Bruinet.Core.Exceptions.PhysicalInputRefusedException.CallSite.get -> string!
+Bruinet.Core.Exceptions.PhysicalInputRefusedException.PhysicalInputRefusedException(string! callSite, string! replacement) -> void
+Bruinet.Core.Exceptions.PhysicalInputRefusedException.Replacement.get -> string!
+Bruinet.Core.Exceptions.RouteUnavailableException
+Bruinet.Core.Exceptions.RouteUnavailableException.RouteUnavailableException(string! message) -> void
+Bruinet.Core.Exceptions.ScopeNotReadyException
+Bruinet.Core.Exceptions.ScopeNotReadyException.Readiness.get -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Exceptions.ScopeNotReadyException.ScopeNotReadyException(Bruinet.Core.Scopes.ScopeReadiness readiness, string! message) -> void
+Bruinet.Core.Exceptions.StaleElementException
+Bruinet.Core.Exceptions.StaleElementException.Locator.get -> Bruinet.Core.Locators.Locator?
+Bruinet.Core.Exceptions.StaleElementException.StaleElementException(Bruinet.Core.Locators.Locator? locator = null, System.Exception? platformError = null, string? detail = null) -> void
+Bruinet.Core.Exceptions.WaitTimeoutException
+Bruinet.Core.Exceptions.WaitTimeoutException.Condition.get -> string?
+Bruinet.Core.Exceptions.WaitTimeoutException.TimeoutMs.get -> int
+Bruinet.Core.Exceptions.WaitTimeoutException.WaitTimeoutException(string! message) -> void
+Bruinet.Core.Exceptions.WaitTimeoutException.WaitTimeoutException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Exceptions.WaitTimeoutException.WaitTimeoutException(string! message, int timeoutMs) -> void
+Bruinet.Core.Exceptions.WaitTimeoutException.WaitTimeoutException(string! message, int timeoutMs, string! condition) -> void
+Bruinet.Core.Interfaces.AbsenceTolerantAttribute
+Bruinet.Core.Interfaces.AbsenceTolerantAttribute.AbsenceTolerantAttribute() -> void
+Bruinet.Core.Interfaces.BusySignalPolicy
+Bruinet.Core.Interfaces.BusySignalPolicy.Disabled = 0 -> Bruinet.Core.Interfaces.BusySignalPolicy
+Bruinet.Core.Interfaces.BusySignalPolicy.Required = 1 -> Bruinet.Core.Interfaces.BusySignalPolicy
+Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.AtLeast = 512 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.AtMost = 2048 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.Contains = 2 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.Count = 128 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.Empty = 16 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.EndsWith = 8 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.Equals = 1 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.GreaterThan = 256 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.HasItem = 64 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.LessThan = 1024 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.SequenceEquals = 32 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.Comparison.StartsWith = 4 -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.ElementGeometryExtensions
+Bruinet.Core.Interfaces.FluentReturnAttribute
+Bruinet.Core.Interfaces.FluentReturnAttribute.FluentReturnAttribute(string! typeParameterName) -> void
+Bruinet.Core.Interfaces.FluentReturnAttribute.TypeParameterName.get -> string!
+Bruinet.Core.Interfaces.GenerateComparisonsAttribute
+Bruinet.Core.Interfaces.GenerateComparisonsAttribute.Comparisons.get -> Bruinet.Core.Interfaces.Comparison
+Bruinet.Core.Interfaces.GenerateComparisonsAttribute.GenerateComparisonsAttribute(Bruinet.Core.Interfaces.Comparison comparisons) -> void
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.AssertClickable(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.Click(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.Hover(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.IsClickable() -> bool?
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.RightClick(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.WaitClickable(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IControlObject<TScope>
+Bruinet.Core.Interfaces.IControlObject<TScope>.GetAttribute(string! name, int? timeoutMs) -> string?
+Bruinet.Core.Interfaces.IDateControlObject<TScope>
+Bruinet.Core.Interfaces.IDateControlObject<TScope>.AssertDate(System.DateTime? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IDateControlObject<TScope>.GetDate() -> System.DateTime?
+Bruinet.Core.Interfaces.IDateControlObject<TScope>.SetDate(System.DateTime? date, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IDateControlObject<TScope>.WaitDate(System.DateTime? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IDiagnosticDriver
+Bruinet.Core.Interfaces.IDiagnosticDriver.GetAutomationTree() -> string!
+Bruinet.Core.Interfaces.IDiagnosticDriver.GetPageSource() -> string!
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.Append(string? text, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.AssertReadOnly(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.Clear(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.IsReadOnly() -> bool?
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.WaitReadOnly(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IElementObject<TScope>
+Bruinet.Core.Interfaces.IElementObject<TScope>.AssertEnabled(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IElementObject<TScope>.AssertExists(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IElementObject<TScope>.AssertVisible(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IElementObject<TScope>.IsEnabled() -> bool?
+Bruinet.Core.Interfaces.IElementObject<TScope>.IsExists() -> bool
+Bruinet.Core.Interfaces.IElementObject<TScope>.IsVisible() -> bool?
+Bruinet.Core.Interfaces.IElementObject<TScope>.WaitEnabled(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IElementObject<TScope>.WaitExists(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IElementObject<TScope>.WaitVisible(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.AssertExpanded(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.Collapse(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.Expand(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.IsExpanded() -> bool?
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.ToggleExpanded(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.WaitExpanded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.AssertFocused(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Blur(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Focus(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.IsFocused() -> bool?
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.WaitFocused(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IPressableControl<TScope>
+Bruinet.Core.Interfaces.IPressableControl<TScope>.Press(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.GetProgress() -> double?
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.IsIndeterminate() -> bool?
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.AssertValue(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.AssertValueWithin(double? expected, double tolerance, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.Decrement(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.GetMaximum(int? timeoutMs = null) -> double?
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.GetMinimum(int? timeoutMs = null) -> double?
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.GetStep(int? timeoutMs = null) -> double?
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.GetValue(int? timeoutMs = null) -> double?
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.Increment(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.SetValue(double? value, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.WaitValue(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IRangeControlObject<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.AssertRefreshing(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.IsRefreshing() -> bool?
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.PullToRefresh(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.WaitRefreshing(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IScreenshotService
+Bruinet.Core.Interfaces.IScreenshotService.Capture(string! testClass, string! testMethod, string! description) -> string!
+Bruinet.Core.Interfaces.IScreenshotService.Capture(string? description = null) -> string!
+Bruinet.Core.Interfaces.IScreenshotService.CaptureOnFailure(string! testClass, string! testMethod, System.Exception! exception) -> string!
+Bruinet.Core.Interfaces.IScreenshotService.Settings.get -> Bruinet.Core.Configuration.ScreenshotSettings!
+Bruinet.Core.Interfaces.IScreenshotSource
+Bruinet.Core.Interfaces.IScreenshotSource.Screenshots.get -> Bruinet.Core.Interfaces.IScreenshotService!
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.AssertScrollPosition(double? expected, double tolerance = 1, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.CanScrollDown(int? timeoutMs = null) -> bool?
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.CanScrollUp(int? timeoutMs = null) -> bool?
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.GetScrollPosition(int? timeoutMs = null) -> double?
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.ScrollBy(int deltaX, int deltaY, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.ScrollTo(Bruinet.Core.Locators.Locator! locator, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.ScrollToEnd(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.ScrollToTop(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.SetScrollPosition(double percent, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IScrollableControlObject<TScope>.WaitScrollPosition(double? expected, double tolerance = 1, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.AssertItemCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.GetItemCount(int? timeoutMs = null) -> int?
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.GetItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.GetSelectedIndex(int? timeoutMs = null) -> int?
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.GetSelectedText(int? timeoutMs = null) -> string?
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.SelectByIndex(int? index, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.SelectByText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.SelectByValue(string? value, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.WaitItemCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.WaitSelectedIndex(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ISelectorControlObject<TScope>.WaitSelectedText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.Swipe(int startX, int startY, int endX, int endY, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeDown(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeLeft(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeRight(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeUp(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITabControlObject<TScope>
+Bruinet.Core.Interfaces.ITabControlObject<TScope>.AssertSelected(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITabControlObject<TScope>.IsSelected() -> bool?
+Bruinet.Core.Interfaces.ITabControlObject<TScope>.Title.get -> string!
+Bruinet.Core.Interfaces.ITabControlObject<TScope>.WaitSelected(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ITestContext
+Bruinet.Core.Interfaces.ITestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.Core.Interfaces.ITestContext.NavigateBack() -> void
+Bruinet.Core.Interfaces.ITestContext.NavigateTo(string! destination) -> void
+Bruinet.Core.Interfaces.ITestContext.Refresh() -> void
+Bruinet.Core.Interfaces.ITestContext.ResetAppState() -> void
+Bruinet.Core.Interfaces.ITestContext.SaveScreenshot(string! path) -> void
+Bruinet.Core.Interfaces.ITestContext.TakeScreenshot() -> byte[]!
+Bruinet.Core.Interfaces.ITestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Interfaces.ITextControlObject<TScope>
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEmpty(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>.AssertTime(System.TimeSpan? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>.GetTime() -> System.TimeSpan?
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>.SetTime(System.TimeSpan? time, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>.WaitTime(System.TimeSpan? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.AssertChecked(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Check(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.IsChecked() -> bool?
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Toggle(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Uncheck(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.WaitChecked(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.SkipGenerationAttribute
+Bruinet.Core.Interfaces.SkipGenerationAttribute.Reason.get -> string!
+Bruinet.Core.Interfaces.SkipGenerationAttribute.SkipGenerationAttribute(string! reason) -> void
+Bruinet.Core.Locators.Locator
+Bruinet.Core.Locators.Locator.Locator(Bruinet.Core.Locators.LocatorStrategy strategy, string! value, Bruinet.Core.Locators.Locator? parent = null) -> void
+Bruinet.Core.Locators.Locator.Locator(string! typeName, string! value, Bruinet.Core.Locators.Locator? parent = null) -> void
+Bruinet.Core.Locators.Locator.Parent.get -> Bruinet.Core.Locators.Locator?
+Bruinet.Core.Locators.Locator.ScopedTo(Bruinet.Core.Locators.Locator! parent) -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Locators.Locator.Strategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.Locator.TypeName.get -> string?
+Bruinet.Core.Locators.Locator.Value.get -> string!
+Bruinet.Core.Locators.Locator.WithStrategy(Bruinet.Core.Locators.LocatorStrategy strategy) -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.AccessibilityId = 12 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.AutomationId = 0 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.ClassName = 3 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.ControlType = 13 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.ControlTypeAndName = 14 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.Css = 4 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.DataAutomationId = 11 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.DataTestId = 10 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.Id = 1 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.LinkText = 7 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.Name = 2 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.PartialLinkText = 8 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.TagName = 9 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.Text = 6 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.LocatorStrategy.XPath = 5 -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Locators.Placeholder
+Bruinet.Core.Logging.ConsoleTestLogger
+Bruinet.Core.Logging.ConsoleTestLogger.ConsoleTestLogger() -> void
+Bruinet.Core.Logging.ConsoleTestLogger.Dispose() -> void
+Bruinet.Core.Logging.ConsoleTestLogger.Flush() -> void
+Bruinet.Core.Logging.ConsoleTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.CsvTestLogger
+Bruinet.Core.Logging.CsvTestLogger.CsvTestLogger(string! filePath) -> void
+Bruinet.Core.Logging.CsvTestLogger.Dispose() -> void
+Bruinet.Core.Logging.CsvTestLogger.Flush() -> void
+Bruinet.Core.Logging.CsvTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
+Bruinet.Core.Logging.CsvTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.ITestLogger
+Bruinet.Core.Logging.ITestLogger.Flush() -> void
+Bruinet.Core.Logging.ITestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
+Bruinet.Core.Logging.ITestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
+Bruinet.Core.Logging.ITestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.ITestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
+Bruinet.Core.Logging.ITestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
+Bruinet.Core.Logging.ITestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
+Bruinet.Core.Logging.ITestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
+Bruinet.Core.Logging.ITestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.ITestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
+Bruinet.Core.Logging.ITestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
+Bruinet.Core.Logging.ITestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
+Bruinet.Core.Logging.ITestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.LogResult.Error = 2 -> Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.LogResult.Fail = 1 -> Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.LogResult.Info = 3 -> Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.LogResult.Success = 0 -> Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.LogResult.Warning = 4 -> Bruinet.Core.Logging.LogResult
+Bruinet.Core.Logging.NullTestLogger
+Bruinet.Core.Logging.NullTestLogger.Dispose() -> void
+Bruinet.Core.Logging.NullTestLogger.Flush() -> void
+Bruinet.Core.Logging.NullTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
+Bruinet.Core.Logging.NullTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
+Bruinet.Core.Logging.NullTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.NullTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
+Bruinet.Core.Logging.NullTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
+Bruinet.Core.Logging.NullTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
+Bruinet.Core.Logging.NullTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
+Bruinet.Core.Logging.NullTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
+Bruinet.Core.Logging.NullTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
+Bruinet.Core.Logging.NullTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
+Bruinet.Core.Logging.NullTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
+Bruinet.Core.Logging.NullTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.NullTestLogger.NullTestLogger() -> void
+Bruinet.Core.Logging.Placeholder
+Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.ScreenshotReason.AssertionFailure = 1 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.ScreenshotReason.ElementNotFound = 4 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.ScreenshotReason.Exception = 2 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.ScreenshotReason.Manual = 0 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.ScreenshotReason.Timeout = 3 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.Timing
+Bruinet.Core.Models.ScreenshotInfo
+Bruinet.Core.Models.ScreenshotInfo.ExceptionMessage.get -> string?
+Bruinet.Core.Models.ScreenshotInfo.ExceptionMessage.init -> void
+Bruinet.Core.Models.ScreenshotInfo.FilePath.get -> string!
+Bruinet.Core.Models.ScreenshotInfo.FilePath.init -> void
+Bruinet.Core.Models.ScreenshotInfo.Reason.get -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Models.ScreenshotInfo.Reason.init -> void
+Bruinet.Core.Models.ScreenshotInfo.TestClass.get -> string!
+Bruinet.Core.Models.ScreenshotInfo.TestClass.init -> void
+Bruinet.Core.Models.ScreenshotInfo.TestMethod.get -> string!
+Bruinet.Core.Models.ScreenshotInfo.TestMethod.init -> void
+Bruinet.Core.Models.ScreenshotInfo.Timestamp.get -> System.DateTime
+Bruinet.Core.Models.ScreenshotInfo.Timestamp.init -> void
+Bruinet.Core.Recording.ActionPacing
+Bruinet.Core.Recording.IInteractionLog
+Bruinet.Core.Recording.IInteractionLog.Add(Bruinet.Core.Recording.Interaction! interaction) -> void
+Bruinet.Core.Recording.IRecordable
+Bruinet.Core.Recording.IRecordable.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.Core.Recording.Interaction
+Bruinet.Core.Recording.Interaction.At.get -> long
+Bruinet.Core.Recording.Interaction.At.init -> void
+Bruinet.Core.Recording.Interaction.Bounds.get -> System.Drawing.Rectangle
+Bruinet.Core.Recording.Interaction.Bounds.init -> void
+Bruinet.Core.Recording.Interaction.Duration.get -> System.TimeSpan
+Bruinet.Core.Recording.Interaction.Duration.init -> void
+Bruinet.Core.Recording.Interaction.From.get -> System.Drawing.Point?
+Bruinet.Core.Recording.Interaction.From.init -> void
+Bruinet.Core.Recording.Interaction.Interaction(Bruinet.Core.Recording.InteractionKind Kind, long At, System.Drawing.Rectangle Bounds) -> void
+Bruinet.Core.Recording.Interaction.Key.get -> string?
+Bruinet.Core.Recording.Interaction.Key.init -> void
+Bruinet.Core.Recording.Interaction.Kind.get -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.Interaction.Kind.init -> void
+Bruinet.Core.Recording.Interaction.Label.get -> string?
+Bruinet.Core.Recording.Interaction.Label.init -> void
+Bruinet.Core.Recording.Interaction.To.get -> System.Drawing.Point?
+Bruinet.Core.Recording.Interaction.To.init -> void
+Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Clear = 7 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.DoubleTap = 1 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Hover = 4 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Key = 8 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.LongPress = 2 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.RightClick = 3 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Swipe = 5 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Tap = 0 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.InteractionKind.Type = 6 -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Core.Recording.Interactions
+Bruinet.Core.Recording.Interactions.Scope
+Bruinet.Core.Recording.Interactions.Scope.Dispose() -> void
+Bruinet.Core.Recording.Interactions.Scope.Scope() -> void
+Bruinet.Core.Recording.RecordingTarget
+Bruinet.Core.Recording.RecordingTarget.AndroidDevice
+Bruinet.Core.Recording.RecordingTarget.AndroidDevice.AndroidDevice(string! Serial) -> void
+Bruinet.Core.Recording.RecordingTarget.AndroidDevice.Serial.get -> string!
+Bruinet.Core.Recording.RecordingTarget.AndroidDevice.Serial.init -> void
+Bruinet.Core.Recording.RecordingTarget.BrowserPage
+Bruinet.Core.Recording.RecordingTarget.BrowserPage.BrowserPage(object! Page) -> void
+Bruinet.Core.Recording.RecordingTarget.BrowserPage.Page.get -> object!
+Bruinet.Core.Recording.RecordingTarget.BrowserPage.Page.init -> void
+Bruinet.Core.Recording.RecordingTarget.IosSimulator
+Bruinet.Core.Recording.RecordingTarget.IosSimulator.IosSimulator(string! Udid) -> void
+Bruinet.Core.Recording.RecordingTarget.IosSimulator.Udid.get -> string!
+Bruinet.Core.Recording.RecordingTarget.IosSimulator.Udid.init -> void
+Bruinet.Core.Recording.RecordingTarget.Monitor
+Bruinet.Core.Recording.RecordingTarget.Monitor.Crop.get -> System.Drawing.Rectangle?
+Bruinet.Core.Recording.RecordingTarget.Monitor.Crop.init -> void
+Bruinet.Core.Recording.RecordingTarget.Monitor.Handle.get -> nint
+Bruinet.Core.Recording.RecordingTarget.Monitor.Handle.init -> void
+Bruinet.Core.Recording.RecordingTarget.Monitor.Monitor(nint Handle, System.Drawing.Rectangle? Crop) -> void
+Bruinet.Core.Recording.RecordingTarget.Window
+Bruinet.Core.Recording.RecordingTarget.Window.Handle.get -> nint
+Bruinet.Core.Recording.RecordingTarget.Window.Handle.init -> void
+Bruinet.Core.Recording.RecordingTarget.Window.Window(nint Handle) -> void
+Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.ScopeReadiness.Detail.get -> string?
+Bruinet.Core.Scopes.ScopeReadiness.Detail.init -> void
+Bruinet.Core.Scopes.ScopeReadiness.IsBusy.get -> bool
+Bruinet.Core.Scopes.ScopeReadiness.IsConfigurationError.get -> bool
+Bruinet.Core.Scopes.ScopeReadiness.IsLoaded.get -> bool
+Bruinet.Core.Scopes.ScopeReadiness.IsReady.get -> bool
+Bruinet.Core.Scopes.ScopeReadiness.RootReacquired.get -> bool
+Bruinet.Core.Scopes.ScopeReadiness.RootReacquired.init -> void
+Bruinet.Core.Scopes.ScopeReadiness.ScopeName.get -> string!
+Bruinet.Core.Scopes.ScopeReadiness.ScopeName.init -> void
+Bruinet.Core.Scopes.ScopeReadiness.ScopeReadiness() -> void
+Bruinet.Core.Scopes.ScopeReadiness.ScopeReadiness(string! ScopeName, Bruinet.Core.Scopes.ScopeReadinessState State, string? Detail = null, bool RootReacquired = false) -> void
+Bruinet.Core.Scopes.ScopeReadiness.State.get -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadiness.State.init -> void
+Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.Busy = 4 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.ContentNotReady = 5 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.InvalidBusySignal = 8 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.ItemChanged = 6 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.MissingBusySignal = 7 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.MissingRoot = 1 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.NotLoaded = 3 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.Ready = 0 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scopes.ScopeReadinessState.StaleRoot = 2 -> Bruinet.Core.Scopes.ScopeReadinessState
+Bruinet.Core.Scraping.IScrapeSource
+Bruinet.Core.Scraping.IScrapeSource.Acted -> System.EventHandler<Bruinet.Core.Scraping.ScrapeAction!>?
+Bruinet.Core.Scraping.IScrapeSource.CaptureAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Core.Scraping.ScrapeSnapshot!>!
+Bruinet.Core.Scraping.IScrapeSource.Commanded -> System.EventHandler<string!>?
+Bruinet.Core.Scraping.IScrapeSource.HighlightAsync(int? number, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Core.Scraping.IScrapeSource.PickAssertAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Core.Scraping.ScrapeAssert?>!
+Bruinet.Core.Scraping.IScrapeSource.PickAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<int?>!
+Bruinet.Core.Scraping.IScrapeSource.Platform.get -> string!
+Bruinet.Core.Scraping.IScrapeSource.ScreenshotAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<byte[]?>!
+Bruinet.Core.Scraping.IScrapeSource.ShowCountAsync(int actions, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Core.Scraping.IScrapeSource.StartActionsAsync(Bruinet.Core.Scraping.ScrapeActionOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Core.Scraping.IScrapeSource.StartAsync(Bruinet.Core.Scraping.ScrapeStart! start, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Core.Scraping.IScrapeSource.StopActions() -> void
+Bruinet.Core.Scraping.IScrapeSource.Transitioned -> System.EventHandler<Bruinet.Core.Scraping.ScrapeTransition!>?
+Bruinet.Core.Scraping.ScrapeAction
+Bruinet.Core.Scraping.ScrapeAction.Accepted.get -> bool?
+Bruinet.Core.Scraping.ScrapeAction.Accepted.init -> void
+Bruinet.Core.Scraping.ScrapeAction.At.get -> System.DateTimeOffset
+Bruinet.Core.Scraping.ScrapeAction.At.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Capture.get -> Bruinet.Core.Scraping.ScrapeSnapshot?
+Bruinet.Core.Scraping.ScrapeAction.Capture.init -> void
+Bruinet.Core.Scraping.ScrapeAction.CapturedAt.get -> System.DateTimeOffset?
+Bruinet.Core.Scraping.ScrapeAction.CapturedAt.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Checked.get -> bool?
+Bruinet.Core.Scraping.ScrapeAction.Checked.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Kind.get -> string!
+Bruinet.Core.Scraping.ScrapeAction.Kind.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Location.get -> string!
+Bruinet.Core.Scraping.ScrapeAction.Location.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Node.get -> int?
+Bruinet.Core.Scraping.ScrapeAction.Node.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Path.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Scraping.ScrapePathStep!>?
+Bruinet.Core.Scraping.ScrapeAction.Path.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Secret.get -> string?
+Bruinet.Core.Scraping.ScrapeAction.Secret.init -> void
+Bruinet.Core.Scraping.ScrapeAction.Value.get -> string?
+Bruinet.Core.Scraping.ScrapeAction.Value.init -> void
+Bruinet.Core.Scraping.ScrapeActionKind
+Bruinet.Core.Scraping.ScrapeActionOptions
+Bruinet.Core.Scraping.ScrapeActionOptions.ScrapeActionOptions(System.Collections.Generic.IReadOnlyList<string!>! TestIds, System.Collections.Generic.IReadOnlyList<Bruinet.Core.Scraping.ScrapeSecret!>! Secrets) -> void
+Bruinet.Core.Scraping.ScrapeActionOptions.Secrets.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Scraping.ScrapeSecret!>!
+Bruinet.Core.Scraping.ScrapeActionOptions.Secrets.init -> void
+Bruinet.Core.Scraping.ScrapeActionOptions.TestIds.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Scraping.ScrapeActionOptions.TestIds.init -> void
+Bruinet.Core.Scraping.ScrapeAssert
+Bruinet.Core.Scraping.ScrapeAssert.Check.get -> string!
+Bruinet.Core.Scraping.ScrapeAssert.Check.init -> void
+Bruinet.Core.Scraping.ScrapeAssert.Checked.get -> bool?
+Bruinet.Core.Scraping.ScrapeAssert.Checked.init -> void
+Bruinet.Core.Scraping.ScrapeAssert.Location.get -> string!
+Bruinet.Core.Scraping.ScrapeAssert.Location.init -> void
+Bruinet.Core.Scraping.ScrapeAssert.Node.get -> int?
+Bruinet.Core.Scraping.ScrapeAssert.Node.init -> void
+Bruinet.Core.Scraping.ScrapeAssert.ScrapeAssert(string! Location, int? Node, string! Check, string? Value, bool? Checked) -> void
+Bruinet.Core.Scraping.ScrapeAssert.Value.get -> string?
+Bruinet.Core.Scraping.ScrapeAssert.Value.init -> void
+Bruinet.Core.Scraping.ScrapeBounds
+Bruinet.Core.Scraping.ScrapeBounds.Height.get -> int
+Bruinet.Core.Scraping.ScrapeBounds.Height.init -> void
+Bruinet.Core.Scraping.ScrapeBounds.ScrapeBounds() -> void
+Bruinet.Core.Scraping.ScrapeBounds.ScrapeBounds(int X, int Y, int Width, int Height) -> void
+Bruinet.Core.Scraping.ScrapeBounds.Width.get -> int
+Bruinet.Core.Scraping.ScrapeBounds.Width.init -> void
+Bruinet.Core.Scraping.ScrapeBounds.X.get -> int
+Bruinet.Core.Scraping.ScrapeBounds.X.init -> void
+Bruinet.Core.Scraping.ScrapeBounds.Y.get -> int
+Bruinet.Core.Scraping.ScrapeBounds.Y.init -> void
+Bruinet.Core.Scraping.ScrapeCheck
+Bruinet.Core.Scraping.ScrapeNode
+Bruinet.Core.Scraping.ScrapeNode.Attribute(string! name) -> string?
+Bruinet.Core.Scraping.ScrapeNode.Attributes.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Core.Scraping.ScrapeNode.Attributes.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Bounds.get -> Bruinet.Core.Scraping.ScrapeBounds?
+Bruinet.Core.Scraping.ScrapeNode.Bounds.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Frame.get -> string?
+Bruinet.Core.Scraping.ScrapeNode.Frame.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Kind.get -> Bruinet.Core.Scraping.ScrapeNodeKind
+Bruinet.Core.Scraping.ScrapeNode.Kind.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Name.get -> string?
+Bruinet.Core.Scraping.ScrapeNode.Name.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Number.get -> int
+Bruinet.Core.Scraping.ScrapeNode.Number.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Parent.get -> int
+Bruinet.Core.Scraping.ScrapeNode.Parent.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Role.get -> string?
+Bruinet.Core.Scraping.ScrapeNode.Role.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Text.get -> string?
+Bruinet.Core.Scraping.ScrapeNode.Text.init -> void
+Bruinet.Core.Scraping.ScrapeNode.Type.get -> string!
+Bruinet.Core.Scraping.ScrapeNode.Type.init -> void
+Bruinet.Core.Scraping.ScrapeNodeKind
+Bruinet.Core.Scraping.ScrapeNodeKind.Element = 0 -> Bruinet.Core.Scraping.ScrapeNodeKind
+Bruinet.Core.Scraping.ScrapeNodeKind.ShadowRoot = 1 -> Bruinet.Core.Scraping.ScrapeNodeKind
+Bruinet.Core.Scraping.ScrapePathStep
+Bruinet.Core.Scraping.ScrapePathStep.Classes.get -> string?
+Bruinet.Core.Scraping.ScrapePathStep.Classes.init -> void
+Bruinet.Core.Scraping.ScrapePathStep.Name.get -> string?
+Bruinet.Core.Scraping.ScrapePathStep.Name.init -> void
+Bruinet.Core.Scraping.ScrapePathStep.Role.get -> string?
+Bruinet.Core.Scraping.ScrapePathStep.Role.init -> void
+Bruinet.Core.Scraping.ScrapePathStep.TestId.get -> string?
+Bruinet.Core.Scraping.ScrapePathStep.TestId.init -> void
+Bruinet.Core.Scraping.ScrapePathStep.Type.get -> string!
+Bruinet.Core.Scraping.ScrapePathStep.Type.init -> void
+Bruinet.Core.Scraping.ScrapeSecret
+Bruinet.Core.Scraping.ScrapeSecret.Field.get -> string!
+Bruinet.Core.Scraping.ScrapeSecret.Field.init -> void
+Bruinet.Core.Scraping.ScrapeSecret.Placeholder.get -> string!
+Bruinet.Core.Scraping.ScrapeSecret.Placeholder.init -> void
+Bruinet.Core.Scraping.ScrapeSecret.ScrapeSecret(string! Field, string! Placeholder) -> void
+Bruinet.Core.Scraping.ScrapeSnapshot
+Bruinet.Core.Scraping.ScrapeSnapshot.CapturedAt.get -> System.DateTimeOffset
+Bruinet.Core.Scraping.ScrapeSnapshot.CapturedAt.init -> void
+Bruinet.Core.Scraping.ScrapeSnapshot.ChildrenOf(int number) -> System.Collections.Generic.IEnumerable<Bruinet.Core.Scraping.ScrapeNode!>!
+Bruinet.Core.Scraping.ScrapeSnapshot.Location.get -> string!
+Bruinet.Core.Scraping.ScrapeSnapshot.Location.init -> void
+Bruinet.Core.Scraping.ScrapeSnapshot.Nodes.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Scraping.ScrapeNode!>!
+Bruinet.Core.Scraping.ScrapeSnapshot.Nodes.init -> void
+Bruinet.Core.Scraping.ScrapeSnapshot.Platform.get -> string!
+Bruinet.Core.Scraping.ScrapeSnapshot.Platform.init -> void
+Bruinet.Core.Scraping.ScrapeSnapshot.Title.get -> string!
+Bruinet.Core.Scraping.ScrapeSnapshot.Title.init -> void
+Bruinet.Core.Scraping.ScrapeSnapshot.this[int number].get -> Bruinet.Core.Scraping.ScrapeNode!
+Bruinet.Core.Scraping.ScrapeStart
+Bruinet.Core.Scraping.ScrapeStart.Location.get -> string!
+Bruinet.Core.Scraping.ScrapeStart.Location.init -> void
+Bruinet.Core.Scraping.ScrapeStart.ProfileFolder.get -> string!
+Bruinet.Core.Scraping.ScrapeStart.ProfileFolder.init -> void
+Bruinet.Core.Scraping.ScrapeStart.ScrapeStart(string! Location, string! ProfileFolder, bool Visible = true) -> void
+Bruinet.Core.Scraping.ScrapeStart.Visible.get -> bool
+Bruinet.Core.Scraping.ScrapeStart.Visible.init -> void
+Bruinet.Core.Scraping.ScrapeTransition
+Bruinet.Core.Scraping.ScrapeTransition.Location.get -> string!
+Bruinet.Core.Scraping.ScrapeTransition.Location.init -> void
+Bruinet.Core.Scraping.ScrapeTransition.ScrapeTransition(string! Location) -> void
+Bruinet.Core.Services.ScreenshotService
+Bruinet.Core.Services.ScreenshotService.Capture(string! testClass, string! testMethod, string! description) -> string!
+Bruinet.Core.Services.ScreenshotService.Capture(string? description = null) -> string!
+Bruinet.Core.Services.ScreenshotService.CaptureOnFailure(string! testClass, string! testMethod, System.Exception! exception) -> string!
+Bruinet.Core.Services.ScreenshotService.ScreenshotService(Bruinet.Core.Interfaces.ITestContext! context, Bruinet.Core.Logging.ITestLogger! logger, Bruinet.Core.Configuration.ScreenshotSettings? settings = null) -> void
+Bruinet.Core.Services.ScreenshotService.ScreenshotService(System.Action<string!>! saveScreenshot, Bruinet.Core.Logging.ITestLogger! logger, Bruinet.Core.Configuration.ScreenshotSettings? settings = null) -> void
+Bruinet.Core.Services.ScreenshotService.Settings.get -> Bruinet.Core.Configuration.ScreenshotSettings!
+Bruinet.Core.Settings.ITestSettingsProvider
+Bruinet.Core.Settings.ITestSettingsProvider.Resolve(Bruinet.Core.Settings.TestSettingsRequest! request) -> Bruinet.Core.Settings.TestSettings!
+Bruinet.Core.Settings.JsonTestSettingsProvider
+Bruinet.Core.Settings.JsonTestSettingsProvider.JsonTestSettingsProvider() -> void
+Bruinet.Core.Settings.JsonTestSettingsProvider.Resolve(Bruinet.Core.Settings.TestSettingsRequest! request) -> Bruinet.Core.Settings.TestSettings!
+Bruinet.Core.Settings.TestSettings
+Bruinet.Core.Settings.TestSettings.Bind(System.Type! settingsType) -> object!
+Bruinet.Core.Settings.TestSettings.Bind<T>() -> T!
+Bruinet.Core.Settings.TestSettings.Contains(string! path) -> bool
+Bruinet.Core.Settings.TestSettings.GetRequired<T>(string! path) -> T
+Bruinet.Core.Settings.TestSettings.GetSection(string! path) -> Bruinet.Core.Settings.TestSettings!
+Bruinet.Core.Settings.TestSettings.Sources.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Settings.TestSettings.TestSettings(System.Text.Json.Nodes.JsonObject? values = null, System.Collections.Generic.IReadOnlyList<string!>? sources = null) -> void
+Bruinet.Core.Settings.TestSettings.ToJsonString(bool indented = false) -> string!
+Bruinet.Core.Settings.TestSettings.TryGetValue<T>(string! path, out T? value) -> bool
+Bruinet.Core.Settings.TestSettingsRequest
+Bruinet.Core.Settings.TestSettingsRequest.DefaultFile.get -> string!
+Bruinet.Core.Settings.TestSettingsRequest.DefaultFile.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.ExplicitFiles.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Core.Settings.TestSettingsRequest.ExplicitFiles.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.LocalFile.get -> string?
+Bruinet.Core.Settings.TestSettingsRequest.LocalFile.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.ProjectDirectory.get -> string!
+Bruinet.Core.Settings.TestSettingsRequest.ProjectDirectory.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.ScenarioConvention.get -> string?
+Bruinet.Core.Settings.TestSettingsRequest.ScenarioConvention.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.ScenarioId.get -> string?
+Bruinet.Core.Settings.TestSettingsRequest.ScenarioId.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.SettingsRoot.get -> string!
+Bruinet.Core.Settings.TestSettingsRequest.SettingsRoot.init -> void
+Bruinet.Core.Settings.TestSettingsRequest.TestSettingsRequest(string! ProjectDirectory, string! SettingsRoot = "TestSettings", string! DefaultFile = "testsettings.json", string? LocalFile = "testsettings.local.json", string? ScenarioId = null, string? ScenarioConvention = "scenarios/{ScenarioId}.json", System.Collections.Generic.IReadOnlyList<string!>? ExplicitFiles = null) -> void
+Bruinet.Core.Settings.TestSettingsRootAttribute
+Bruinet.Core.Settings.TestSettingsRootAttribute.TestSettingsRootAttribute() -> void
+Bruinet.Core.Settings.TestSettingsSectionAttribute
+Bruinet.Core.Settings.TestSettingsSectionAttribute.Path.get -> string!
+Bruinet.Core.Settings.TestSettingsSectionAttribute.TestSettingsSectionAttribute(string! path) -> void
+Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Core.Testing.BddEffectiveStepKeyword.Given = 0 -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Core.Testing.BddEffectiveStepKeyword.Then = 2 -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Core.Testing.BddEffectiveStepKeyword.When = 1 -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Core.Testing.BddGivenAttribute
+Bruinet.Core.Testing.BddGivenAttribute.BddGivenAttribute() -> void
+Bruinet.Core.Testing.BddGivenAttribute.BddGivenAttribute(string! phrase) -> void
+Bruinet.Core.Testing.BddNamespaceAttribute
+Bruinet.Core.Testing.BddNamespaceAttribute.BddNamespaceAttribute(string! name) -> void
+Bruinet.Core.Testing.BddNamespaceAttribute.Name.get -> string!
+Bruinet.Core.Testing.BddStepAttribute
+Bruinet.Core.Testing.BddStepAttribute.BddStepAttribute(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase) -> void
+Bruinet.Core.Testing.BddStepAttribute.CommandId.get -> string?
+Bruinet.Core.Testing.BddStepAttribute.CommandId.init -> void
+Bruinet.Core.Testing.BddStepAttribute.HasLiteral.get -> bool
+Bruinet.Core.Testing.BddStepAttribute.HasLiteral.init -> void
+Bruinet.Core.Testing.BddStepAttribute.IsInferred.get -> bool
+Bruinet.Core.Testing.BddStepAttribute.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Core.Testing.BddStepAttribute.Literal.get -> bool
+Bruinet.Core.Testing.BddStepAttribute.Literal.init -> void
+Bruinet.Core.Testing.BddStepAttribute.Navigates.get -> bool
+Bruinet.Core.Testing.BddStepAttribute.Navigates.init -> void
+Bruinet.Core.Testing.BddStepAttribute.Phrase.get -> string!
+Bruinet.Core.Testing.BddThenAttribute
+Bruinet.Core.Testing.BddThenAttribute.BddThenAttribute() -> void
+Bruinet.Core.Testing.BddThenAttribute.BddThenAttribute(string! phrase) -> void
+Bruinet.Core.Testing.BddWhenAttribute
+Bruinet.Core.Testing.BddWhenAttribute.BddWhenAttribute() -> void
+Bruinet.Core.Testing.BddWhenAttribute.BddWhenAttribute(string! phrase) -> void
+Bruinet.Core.Testing.BrowserFactAttribute
+Bruinet.Core.Testing.BrowserFactAttribute.BrowserFactAttribute(string! reason = "it needs a browser") -> void
+Bruinet.Core.Testing.DeviceFactAttribute
+Bruinet.Core.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void
+Bruinet.Core.Testing.ITestApp
+Bruinet.Core.Testing.ITestApp.Definition.get -> Bruinet.Core.Testing.TestAppDefinition!
+Bruinet.Core.Testing.ITestApp.ResetAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Bruinet.Core.Testing.ITestApp.Screenshots.get -> Bruinet.Core.Interfaces.IScreenshotService!
+Bruinet.Core.Testing.MauiHead
+Bruinet.Core.Testing.MauiHead.Device = 0 -> Bruinet.Core.Testing.MauiHead
+Bruinet.Core.Testing.MauiHead.Headless = 1 -> Bruinet.Core.Testing.MauiHead
+Bruinet.Core.Testing.MauiHeads
+Bruinet.Core.Testing.ScreenshotTestAttribute
+Bruinet.Core.Testing.ScreenshotTestAttribute.ScreenshotTestAttribute() -> void
+Bruinet.Core.Testing.StepNames
+Bruinet.Core.Testing.TestAppCapture
+Bruinet.Core.Testing.TestAppCapture.App.get -> string!
+Bruinet.Core.Testing.TestAppCapture.App.init -> void
+Bruinet.Core.Testing.TestAppCapture.Error.get -> string?
+Bruinet.Core.Testing.TestAppCapture.Error.init -> void
+Bruinet.Core.Testing.TestAppCapture.Path.get -> string?
+Bruinet.Core.Testing.TestAppCapture.Path.init -> void
+Bruinet.Core.Testing.TestAppCapture.TestAppCapture(string! App, string? Path, string? Error) -> void
+Bruinet.Core.Testing.TestAppDefinition
+Bruinet.Core.Testing.TestAppDefinition.Head.get -> string?
+Bruinet.Core.Testing.TestAppDefinition.Head.init -> void
+Bruinet.Core.Testing.TestAppDefinition.Name.get -> string!
+Bruinet.Core.Testing.TestAppDefinition.Name.init -> void
+Bruinet.Core.Testing.TestAppDefinition.TestAppDefinition(string! Name, string! User, string? Head, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Values) -> void
+Bruinet.Core.Testing.TestAppDefinition.User.get -> string!
+Bruinet.Core.Testing.TestAppDefinition.User.init -> void
+Bruinet.Core.Testing.TestAppDefinition.Values.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Core.Testing.TestAppDefinition.Values.init -> void
+Bruinet.Core.Testing.TestAppDefinition.this[string! column].get -> string?
+Bruinet.Core.Testing.TestAppSet
+Bruinet.Core.Testing.TestAppSet.CaptureAll(string! testClass, string! testName, string! description) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppCapture!>!
+Bruinet.Core.Testing.TestAppSet.Definitions.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
+Bruinet.Core.Testing.TestAppSet.Describe() -> string!
+Bruinet.Core.Testing.TestAppSet.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Core.Testing.TestAppSet.Get(string! nameOrUser) -> Bruinet.Core.Testing.ITestApp!
+Bruinet.Core.Testing.TestAppSet.Get<TApp>(string! nameOrUser) -> TApp
+Bruinet.Core.Testing.TestAppSet.GetAsync(string! nameOrUser, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Core.Testing.ITestApp!>!
+Bruinet.Core.Testing.TestAppSet.ResetStartedAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Core.Testing.TestAppSet.Resolve(string! nameOrUser, System.Collections.Generic.IEnumerable<string!>? lastUsed = null) -> Bruinet.Core.Testing.TestAppDefinition!
+Bruinet.Core.Testing.TestAppSet.Started.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.ITestApp!>!
+Bruinet.Core.Testing.TestAppSet.StopAllAsync() -> System.Threading.Tasks.Task!
+Bruinet.Core.Testing.TestAppSet.TestAppSet(System.Collections.Generic.IEnumerable<Bruinet.Core.Testing.TestAppDefinition!>! definitions, System.Func<Bruinet.Core.Testing.TestAppDefinition!, System.Threading.CancellationToken, System.Threading.Tasks.Task<Bruinet.Core.Testing.ITestApp!>!>! start) -> void
+Bruinet.Core.Testing.TestScope
+Bruinet.Core.Testing.TestScope.Scenario.get -> string?
+Bruinet.Core.Testing.TestScope.Scenario.init -> void
+Bruinet.Core.Testing.TestScope.Step.get -> string?
+Bruinet.Core.Testing.TestScope.Step.init -> void
+Bruinet.Core.Testing.TestScope.Test.get -> string?
+Bruinet.Core.Testing.TestScope.Test.init -> void
+Bruinet.Core.Testing.TestScope.TestScope(string? Test, string? Scenario, string? Step) -> void
+Bruinet.Core.Testing.WebHead
+Bruinet.Core.Testing.WebHead.Browser = 0 -> Bruinet.Core.Testing.WebHead
+Bruinet.Core.Testing.WebHead.Bunit = 1 -> Bruinet.Core.Testing.WebHead
+Bruinet.Core.Testing.WebHeads
+Bruinet.Core.TextInputMethod
+Bruinet.Core.TextInputMethod.Keys = 0 -> Bruinet.Core.TextInputMethod
+Bruinet.Core.TextInputMethod.Paste = 1 -> Bruinet.Core.TextInputMethod
+Bruinet.Core.TextInputMethod.SetValue = 2 -> Bruinet.Core.TextInputMethod
+Bruinet.Core.Utilities.MarkdownTable
+Bruinet.Core.Utilities.MarkdownTable.Columns.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Utilities.MarkdownTable.Columns.init -> void
+Bruinet.Core.Utilities.MarkdownTable.EndLineNumber.get -> int
+Bruinet.Core.Utilities.MarkdownTable.EndLineNumber.init -> void
+Bruinet.Core.Utilities.MarkdownTable.MarkdownTable(System.Collections.Generic.IReadOnlyList<string!>! Columns, System.Collections.Generic.IReadOnlyList<Bruinet.Core.Utilities.MarkdownTableRow!>! Rows, int EndLineNumber) -> void
+Bruinet.Core.Utilities.MarkdownTable.Rows.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Utilities.MarkdownTableRow!>!
+Bruinet.Core.Utilities.MarkdownTable.Rows.init -> void
+Bruinet.Core.Utilities.MarkdownTableRow
+Bruinet.Core.Utilities.MarkdownTableRow.Cells.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Core.Utilities.MarkdownTableRow.Cells.init -> void
+Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.get -> int
+Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.init -> void
+Bruinet.Core.Utilities.MarkdownTableRow.MarkdownTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, int LineNumber) -> void
+Bruinet.Core.Utilities.MarkdownTables
+Bruinet.Core.Utilities.WaitHelper
+const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
+const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
+const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRUINET_TEST_SUITE" -> string!
+const Bruinet.Core.Calls.NearMisses.FileName = "near-misses.md" -> string!
+const Bruinet.Core.Composition.AssemblyFile.BuiltOutputEnvironmentVariable = "BRUINET_BUILT_OUTPUT" -> string!
+const Bruinet.Core.Composition.TestPages.FirstModelPageInterface = "Bruinet.Core.Interfaces.IPageObject" -> string!
+const Bruinet.Core.Configuration.TimeoutSettings.ScaleEnvironmentVariable = "BRUINET_TIMEOUT_SCALE" -> string!
+const Bruinet.Core.Diagnostics.AutWindow.BoundsVariable = "BRUINET_AUT_BOUNDS" -> string!
+const Bruinet.Core.Diagnostics.AutWindow.Variable = "BRUINET_AUT_WINDOW" -> string!
+const Bruinet.Core.Logging.Timing.Variable = "BRUINET_TIMINGS" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Assert = "assert" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Check = "check" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Click = "click" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Dialog = "dialog" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Input = "input" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Key = "key" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Navigate = "navigate" -> string!
+const Bruinet.Core.Scraping.ScrapeActionKind.Select = "select" -> string!
+const Bruinet.Core.Scraping.ScrapeCheck.Checked = "checked" -> string!
+const Bruinet.Core.Scraping.ScrapeCheck.Page = "page" -> string!
+const Bruinet.Core.Scraping.ScrapeCheck.Text = "text" -> string!
+const Bruinet.Core.Scraping.ScrapeCheck.Value = "value" -> string!
+const Bruinet.Core.Scraping.ScrapeCheck.Visible = "visible" -> string!
+const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
+const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
+override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
+override Bruinet.Core.Locators.Locator.GetHashCode() -> int
+override Bruinet.Core.Locators.Locator.ToString() -> string!
+override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
+override Bruinet.Core.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
+override Bruinet.Core.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
+static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(Bruinet.Core.Configuration.ArtifactsOptions! artifacts, string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
+static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
+static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Read(string! runDirectory) -> Bruinet.Core.Artifacts.TestArtifactManifest?
+static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(Bruinet.Core.Artifacts.ITestArtifactPathProvider! provider, string! path, string! kind, string! name, string! reason, System.Collections.Generic.Dictionary<string!, string?>? metadata = null) -> void
+static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(string! path, string! kind, string! name, string! reason) -> void
+static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(string! path, string! kind, string! name, string! reason, System.Collections.Generic.Dictionary<string!, string?>? metadata = null) -> void
+static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Save(string! runDirectory, Bruinet.Core.Artifacts.TestArtifactManifest! manifest) -> void
+static Bruinet.Core.Artifacts.TestArtifactOptions.RootFor(string! directory) -> string!
+static Bruinet.Core.Calls.AttemptMemo.Knows(object! subject, string! question) -> bool
+static Bruinet.Core.Calls.AttemptMemo.Remember<T>(object! subject, string! question, System.Func<T>! read) -> T
+static Bruinet.Core.Calls.CallBudget.RemainingOr(int outsideACallMs) -> int
+static Bruinet.Core.Calls.CallBudget.Within(int windowMs) -> int
+static Bruinet.Core.Calls.NearMissSettings.Default.get -> Bruinet.Core.Calls.NearMissSettings!
+static Bruinet.Core.Calls.NearMisses.Add(Bruinet.Core.Calls.NearMisses.NearMiss! miss) -> void
+static Bruinet.Core.Calls.NearMisses.All.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Calls.NearMisses.NearMiss!>!
+static Bruinet.Core.Calls.NearMisses.Path.get -> string!
+static Bruinet.Core.Calls.NearMisses.Path.set -> void
+static Bruinet.Core.Calls.Settle.Until(System.Func<bool>! condition, int windowMs, int pollingIntervalMs = 50) -> bool
+static Bruinet.Core.Composition.AssemblyFile.FolderOf(System.Reflection.Assembly! assembly) -> string!
+static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, Bruinet.Core.Composition.TestCompositionDiscoveryOptions! options, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>? configureServices = null) -> Bruinet.Core.Composition.TestComposition!
+static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>? configureServices = null) -> Bruinet.Core.Composition.TestComposition!
+static Bruinet.Core.Composition.TestCompositionCatalog.Discover(Bruinet.Core.Composition.TestCompositionDiscoveryOptions! options) -> Bruinet.Core.Composition.TestCompositionCatalog!
+static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromFixture(System.Type! fixtureType) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
+static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromScans(System.Collections.Generic.IEnumerable<Bruinet.Core.Composition.TestModuleScanAttribute!>! scans) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
+static Bruinet.Core.Composition.TestPages.IsFirstModelPage(System.Type! type) -> bool
+static Bruinet.Core.Configuration.BruinetConfigurationBase.LoadFromJson<T>(string! configFileName) -> T
+static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!
+static Bruinet.Core.Configuration.TimeoutDefaults.Animation.get -> int
+static Bruinet.Core.Configuration.TimeoutDefaults.DefaultWait.get -> int
+static Bruinet.Core.Configuration.TimeoutDefaults.ElementFind.get -> int
+static Bruinet.Core.Configuration.TimeoutDefaults.ElementState.get -> int
+static Bruinet.Core.Configuration.TimeoutDefaults.PageLoad.get -> int
+static Bruinet.Core.Configuration.TimeoutDefaults.PollingInterval.get -> int
+static Bruinet.Core.Configuration.TimeoutSettings.Default.get -> Bruinet.Core.Configuration.TimeoutSettings!
+static Bruinet.Core.Configuration.TimeoutSettings.Fast.get -> Bruinet.Core.Configuration.TimeoutSettings!
+static Bruinet.Core.Configuration.TimeoutSettings.Scale.get -> double
+static Bruinet.Core.Configuration.TimeoutSettings.Slow.get -> Bruinet.Core.Configuration.TimeoutSettings!
+static Bruinet.Core.Diagnostics.AutWindow.Bounds(System.Func<string!, string?>? read = null) -> (int X, int Y, int Width, int Height)?
+static Bruinet.Core.Diagnostics.AutWindow.IsShown(System.Collections.Generic.IReadOnlyDictionary<string!, string!>? launchEnvironment = null, System.Func<string!, string?>? read = null) -> bool
+static Bruinet.Core.Diagnostics.DebuggedApps.Announce(System.Diagnostics.Process! app, string! name, System.Func<bool>? attached = null, string? folder = null) -> string?
+static Bruinet.Core.Diagnostics.DebuggedApps.Folder.get -> string!
+static Bruinet.Core.Diagnostics.PhysicalInput.OverridePolicy(Bruinet.Core.Diagnostics.PhysicalInputPolicy policy) -> System.IDisposable!
+static Bruinet.Core.Diagnostics.PhysicalInput.Policy.get -> Bruinet.Core.Diagnostics.PhysicalInputPolicy
+static Bruinet.Core.Diagnostics.PhysicalInput.ResetRecorded() -> void
+static Bruinet.Core.Diagnostics.PhysicalInput.Used(string! callSite, string! replacement) -> void
+static Bruinet.Core.Diagnostics.PhysicalInput.Uses.get -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Diagnostics.PhysicalInputUse!>!
+static Bruinet.Core.Interfaces.ElementGeometryExtensions.CenterOf(System.Drawing.Rectangle rectangle) -> System.Drawing.Point
+static Bruinet.Core.Locators.Locator.ByAccessibilityId(string! accessibilityId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByAutomationId(string! automationId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByClassName(string! className) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByControlType(string! controlType) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByCss(string! cssSelector) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByDataTestId(string! testId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ById(string! id) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByLinkText(string! linkText) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByName(string! name) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByPartialLinkText(string! partialLinkText) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByTagName(string! tagName) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByText(string! text) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByXPath(string! xpath) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.operator !=(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
+static Bruinet.Core.Locators.Locator.operator ==(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
+static Bruinet.Core.Logging.NullTestLogger.Instance.get -> Bruinet.Core.Logging.NullTestLogger!
+static Bruinet.Core.Logging.Timing.Call(string! page, string! control, string! action, long startMs, int durationMs, int attempts, string! result) -> void
+static Bruinet.Core.Logging.Timing.Enabled.get -> bool
+static Bruinet.Core.Logging.Timing.NowMs.get -> long
+static Bruinet.Core.Logging.Timing.Query(string! page, string! control, string! name) -> void
+static Bruinet.Core.Logging.Timing.Span(string! kind, string! name) -> System.IDisposable!
+static Bruinet.Core.Logging.Timing.ZeroUtc.get -> System.DateTime
+static Bruinet.Core.Recording.ActionPacing.Begin(System.TimeSpan pause) -> System.IDisposable!
+static Bruinet.Core.Recording.ActionPacing.Pause.get -> System.TimeSpan?
+static Bruinet.Core.Recording.Interactions.Begin(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Core.Recording.IInteractionLog! log) -> System.IDisposable!
+static Bruinet.Core.Recording.Interactions.Log.get -> Bruinet.Core.Recording.IInteractionLog?
+static Bruinet.Core.Recording.Interactions.Report(Bruinet.Core.Recording.InteractionKind kind, System.Func<System.Drawing.Rectangle>! bounds, System.Func<string?>? label = null, System.Drawing.Point? from = null, System.Drawing.Point? to = null, System.TimeSpan duration = default(System.TimeSpan), string? key = null, System.Func<Bruinet.Core.Recording.RecordingTarget?>? target = null) -> Bruinet.Core.Recording.Interactions.Scope
+static Bruinet.Core.Recording.Interactions.ReportSwipe(System.Func<System.Drawing.Rectangle>! bounds, int dx, int dy, System.Func<string?>? label = null, System.Func<Bruinet.Core.Recording.RecordingTarget?>? target = null) -> Bruinet.Core.Recording.Interactions.Scope
+static Bruinet.Core.Recording.RecordingTarget.ForWindow(string? handle) -> Bruinet.Core.Recording.RecordingTarget?
+static Bruinet.Core.Scopes.ScopeReadiness.Ready(string! scopeName) -> Bruinet.Core.Scopes.ScopeReadiness
+static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.TestSettings!
+static Bruinet.Core.Testing.BddNamespaceAttribute.Of(System.Type! type) -> string?
+static Bruinet.Core.Testing.MauiHeads.Current.get -> Bruinet.Core.Testing.MauiHead
+static Bruinet.Core.Testing.MauiHeads.IsHeadless.get -> bool
+static Bruinet.Core.Testing.MauiHeads.Parse(string? value) -> Bruinet.Core.Testing.MauiHead
+static Bruinet.Core.Testing.ScreenshotTestAttribute.CaptureIfFailed(System.Exception? exception) -> string!
+static Bruinet.Core.Testing.ScreenshotTestAttribute.CaptureManual(string? description = null) -> string!
+static Bruinet.Core.Testing.ScreenshotTestAttribute.CurrentService.get -> Bruinet.Core.Interfaces.IScreenshotService?
+static Bruinet.Core.Testing.ScreenshotTestAttribute.SetApps(Bruinet.Core.Testing.TestAppSet? apps) -> void
+static Bruinet.Core.Testing.ScreenshotTestAttribute.SetService(Bruinet.Core.Interfaces.IScreenshotService? service) -> void
+static Bruinet.Core.Testing.StepNames.FromIdentifier(string! identifier) -> string!
+static Bruinet.Core.Testing.StepNames.HasKnownSuffix(string! identifier) -> bool
+static Bruinet.Core.Testing.TestAppDefinition.FromCells(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! cells) -> Bruinet.Core.Testing.TestAppDefinition!
+static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdown(string! markdown) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
+static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdownFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
+static Bruinet.Core.Testing.TestScope.Current.get -> Bruinet.Core.Testing.TestScope!
+static Bruinet.Core.Testing.TestScope.Empty.get -> Bruinet.Core.Testing.TestScope!
+static Bruinet.Core.Testing.TestScope.EnterScenario(string! scenario) -> System.IDisposable!
+static Bruinet.Core.Testing.TestScope.EnterStep(string! step) -> System.IDisposable!
+static Bruinet.Core.Testing.TestScope.EnterTest(string! test) -> System.IDisposable!
+static Bruinet.Core.Testing.WebHeads.Current.get -> Bruinet.Core.Testing.WebHead
+static Bruinet.Core.Testing.WebHeads.IsBunit.get -> bool
+static Bruinet.Core.Testing.WebHeads.Parse(string? value) -> Bruinet.Core.Testing.WebHead
+static Bruinet.Core.Utilities.MarkdownTables.IsSeparatorRow(string! line) -> bool
+static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
+static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
+static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Core.Utilities.WaitHelper.Pause(int milliseconds) -> void

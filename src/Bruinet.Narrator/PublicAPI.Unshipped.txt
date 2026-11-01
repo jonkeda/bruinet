@@ -1,0 +1,596 @@
+#nullable enable
+Bruinet.Narrator.AzureOpenAiSpeech
+Bruinet.Narrator.AzureOpenAiSpeech.AzureOpenAiSpeech(Bruinet.Narrator.VoiceSecrets! secrets, System.Net.Http.HttpMessageHandler? handler = null, string? cacheFolder = null) -> void
+Bruinet.Narrator.AzureOpenAiSpeech.Instructions.get -> string?
+Bruinet.Narrator.AzureOpenAiSpeech.Instructions.init -> void
+Bruinet.Narrator.AzureOpenAiSpeech.IsAvailable.get -> bool
+Bruinet.Narrator.AzureOpenAiSpeech.SynthesizeAsync(string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.AzureSpeech
+Bruinet.Narrator.AzureSpeech.AzureSpeech(Bruinet.Narrator.SpeechSecrets! secrets, System.Net.Http.HttpMessageHandler? handler = null, string? cacheFolder = null) -> void
+Bruinet.Narrator.AzureSpeech.Instructions.get -> string?
+Bruinet.Narrator.AzureSpeech.Instructions.init -> void
+Bruinet.Narrator.AzureSpeech.IsAvailable.get -> bool
+Bruinet.Narrator.AzureSpeech.SupportedElements.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Narrator.AzureSpeech.SynthesizeAsync(string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.AzureSpeech.SynthesizeLineAsync(Bruinet.Narrator.SpokenLine! line, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.AzureSpeechVoices
+Bruinet.Narrator.AzureSpeechVoices.AzureSpeechVoices(Bruinet.Narrator.SpeechSecrets! secrets, System.Net.Http.HttpMessageHandler? handler = null, string? cacheFolder = null) -> void
+Bruinet.Narrator.AzureSpeechVoices.ListAsync(string? locale, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>!>!
+Bruinet.Narrator.AzureSpeechVoices.RefreshAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>!>!
+Bruinet.Narrator.BddBox
+Bruinet.Narrator.BddBox.BddBox(int X, int Y, int Width, int Height) -> void
+Bruinet.Narrator.BddBox.Height.get -> int
+Bruinet.Narrator.BddBox.Height.init -> void
+Bruinet.Narrator.BddBox.IsEmpty.get -> bool
+Bruinet.Narrator.BddBox.Width.get -> int
+Bruinet.Narrator.BddBox.Width.init -> void
+Bruinet.Narrator.BddBox.X.get -> int
+Bruinet.Narrator.BddBox.X.init -> void
+Bruinet.Narrator.BddBox.Y.get -> int
+Bruinet.Narrator.BddBox.Y.init -> void
+Bruinet.Narrator.BddComposedVideo
+Bruinet.Narrator.BddComposedVideo.BddComposedVideo(string! Video, string! Captions, string! Timeline, System.Collections.Generic.IReadOnlyList<string!>! Warnings) -> void
+Bruinet.Narrator.BddComposedVideo.Captions.get -> string!
+Bruinet.Narrator.BddComposedVideo.Captions.init -> void
+Bruinet.Narrator.BddComposedVideo.Timeline.get -> string!
+Bruinet.Narrator.BddComposedVideo.Timeline.init -> void
+Bruinet.Narrator.BddComposedVideo.Video.get -> string!
+Bruinet.Narrator.BddComposedVideo.Video.init -> void
+Bruinet.Narrator.BddComposedVideo.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.BddComposedVideo.Warnings.init -> void
+Bruinet.Narrator.BddKeptScenes
+Bruinet.Narrator.BddNarrationPacer
+Bruinet.Narrator.BddNarrationPacer.AfterAsync(Bruinet.Bdd.BddStepResult! result, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.BddNarrationPacer.BddNarrationPacer(Bruinet.Narrator.BddSceneClips! clips, System.TimeSpan beat, System.Func<Bruinet.Narrator.SpeechClip!, System.Threading.CancellationToken, System.Threading.Tasks.Task!>? play = null, Bruinet.Narrator.BddSayMode say = Bruinet.Narrator.BddSayMode.While) -> void
+Bruinet.Narrator.BddNarrationPacer.BeforeAsync(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.BddNarrationPacer.FinishAsync(System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.BddNarrationPacer.Timeline(int number, string! name, string? scenario, string? video, long videoStart, long videoEnd, System.Collections.Generic.IReadOnlyList<string!>! warnings) -> Bruinet.Narrator.BddSceneTimeline!
+Bruinet.Narrator.BddRecordingSession
+Bruinet.Narrator.BddRecordingSession.BddRecordingSession(string! configDirectory, Bruinet.Narrator.BddVideoScriptCheck? script, string! scenesFolder, Bruinet.Narrator.ISpeechSynthesizer? synthesizer, string? voice, System.TimeSpan beat, string? instructions = null) -> void
+Bruinet.Narrator.BddRecordingSession.Beat.get -> System.TimeSpan
+Bruinet.Narrator.BddRecordingSession.FinishAsync(Bruinet.Narrator.BddSceneRecording! recording, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddComposedVideo?>!
+Bruinet.Narrator.BddRecordingSession.Instructions.get -> string?
+Bruinet.Narrator.BddRecordingSession.KeepScenes.get -> bool
+Bruinet.Narrator.BddRecordingSession.KeepScenes.init -> void
+Bruinet.Narrator.BddRecordingSession.Pacing.get -> Bruinet.Narrator.BddScenePacing!
+Bruinet.Narrator.BddRecordingSession.Pacing.init -> void
+Bruinet.Narrator.BddRecordingSession.SceneForAsync(string! featureFile, string! scenarioName, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddSceneRequest?>!
+Bruinet.Narrator.BddRecordingSession.ScenesFolder.get -> string!
+Bruinet.Narrator.BddRecordingSession.Script.get -> Bruinet.Narrator.BddVideoScriptCheck?
+Bruinet.Narrator.BddRecordingSession.Touches.get -> Bruinet.Narrator.BddTouchMarks!
+Bruinet.Narrator.BddRecordingSession.Touches.init -> void
+Bruinet.Narrator.BddRecordingSession.Voice.get -> string?
+Bruinet.Narrator.BddRecordings
+Bruinet.Narrator.BddReviewPage
+Bruinet.Narrator.BddSayMode
+Bruinet.Narrator.BddSayMode.Before = 1 -> Bruinet.Narrator.BddSayMode
+Bruinet.Narrator.BddSayMode.While = 0 -> Bruinet.Narrator.BddSayMode
+Bruinet.Narrator.BddSceneClips
+Bruinet.Narrator.BddSceneClips.BddSceneClips(Bruinet.Narrator.SpeechClip? Intro, System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Narrator.SpeechClip!>! Says, Bruinet.Narrator.SpeechClip? Outro) -> void
+Bruinet.Narrator.BddSceneClips.Intro.get -> Bruinet.Narrator.SpeechClip?
+Bruinet.Narrator.BddSceneClips.Intro.init -> void
+Bruinet.Narrator.BddSceneClips.Outro.get -> Bruinet.Narrator.SpeechClip?
+Bruinet.Narrator.BddSceneClips.Outro.init -> void
+Bruinet.Narrator.BddSceneClips.Says.get -> System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Narrator.SpeechClip!>!
+Bruinet.Narrator.BddSceneClips.Says.init -> void
+Bruinet.Narrator.BddScenePacing
+Bruinet.Narrator.BddScenePacing.BddScenePacing(System.TimeSpan Pause, Bruinet.Narrator.BddSayMode Say) -> void
+Bruinet.Narrator.BddScenePacing.Pause.get -> System.TimeSpan
+Bruinet.Narrator.BddScenePacing.Pause.init -> void
+Bruinet.Narrator.BddScenePacing.Say.get -> Bruinet.Narrator.BddSayMode
+Bruinet.Narrator.BddScenePacing.Say.init -> void
+Bruinet.Narrator.BddSceneRecording
+Bruinet.Narrator.BddSceneRecording.AfterAsync(Bruinet.Bdd.BddStepResult! result, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.BddSceneRecording.BddSceneRecording(Bruinet.Narrator.BddSceneRequest! request, System.Func<Bruinet.Core.Recording.RecordingTarget?>! target, Bruinet.Recording.ScreenRecorders! recorders, System.Func<Bruinet.Narrator.SpeechClip!, System.Threading.CancellationToken, System.Threading.Tasks.Task!>? play = null) -> void
+Bruinet.Narrator.BddSceneRecording.BeforeAsync(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.BddSceneRecording.DisposeAsync() -> System.Threading.Tasks.ValueTask
+Bruinet.Narrator.BddSceneRecording.FinishAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddSceneTimeline!>!
+Bruinet.Narrator.BddSceneRecording.Request.get -> Bruinet.Narrator.BddSceneRequest!
+Bruinet.Narrator.BddSceneRecording.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.BddSceneRequest
+Bruinet.Narrator.BddSceneRequest.BddSceneRequest(int Number, string! Name, string! Scenario, string! Folder, Bruinet.Narrator.BddSceneClips! Clips, System.TimeSpan Beat) -> void
+Bruinet.Narrator.BddSceneRequest.Beat.get -> System.TimeSpan
+Bruinet.Narrator.BddSceneRequest.Beat.init -> void
+Bruinet.Narrator.BddSceneRequest.Clips.get -> Bruinet.Narrator.BddSceneClips!
+Bruinet.Narrator.BddSceneRequest.Clips.init -> void
+Bruinet.Narrator.BddSceneRequest.Folder.get -> string!
+Bruinet.Narrator.BddSceneRequest.Folder.init -> void
+Bruinet.Narrator.BddSceneRequest.Hash.get -> string?
+Bruinet.Narrator.BddSceneRequest.Hash.init -> void
+Bruinet.Narrator.BddSceneRequest.Name.get -> string!
+Bruinet.Narrator.BddSceneRequest.Name.init -> void
+Bruinet.Narrator.BddSceneRequest.Number.get -> int
+Bruinet.Narrator.BddSceneRequest.Number.init -> void
+Bruinet.Narrator.BddSceneRequest.Pacing.get -> Bruinet.Narrator.BddScenePacing!
+Bruinet.Narrator.BddSceneRequest.Pacing.init -> void
+Bruinet.Narrator.BddSceneRequest.Scenario.get -> string!
+Bruinet.Narrator.BddSceneRequest.Scenario.init -> void
+Bruinet.Narrator.BddSceneRequest.TimelinePath.get -> string!
+Bruinet.Narrator.BddSceneRequest.VideoPath.get -> string!
+Bruinet.Narrator.BddSceneState
+Bruinet.Narrator.BddSceneState.Failed = 1 -> Bruinet.Narrator.BddSceneState
+Bruinet.Narrator.BddSceneState.NotRecorded = 0 -> Bruinet.Narrator.BddSceneState
+Bruinet.Narrator.BddSceneState.OutOfDate = 2 -> Bruinet.Narrator.BddSceneState
+Bruinet.Narrator.BddSceneState.Recorded = 3 -> Bruinet.Narrator.BddSceneState
+Bruinet.Narrator.BddSceneTimeline
+Bruinet.Narrator.BddSceneTimeline.BddSceneTimeline(int Number, string! Name, string? Scenario, string? Video, double Duration, Bruinet.Bdd.BddStepResultStatus Status, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedStep!>! Steps, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedClip!>! Clips, System.Collections.Generic.IReadOnlyList<string!>! Warnings, int Width = 0, int Height = 0, string? Hash = null, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedInteraction!>? Interactions = null, Bruinet.Narrator.BddBox? Source = null) -> void
+Bruinet.Narrator.BddSceneTimeline.Clips.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedClip!>!
+Bruinet.Narrator.BddSceneTimeline.Clips.init -> void
+Bruinet.Narrator.BddSceneTimeline.Duration.get -> double
+Bruinet.Narrator.BddSceneTimeline.Duration.init -> void
+Bruinet.Narrator.BddSceneTimeline.Hash.get -> string?
+Bruinet.Narrator.BddSceneTimeline.Hash.init -> void
+Bruinet.Narrator.BddSceneTimeline.Height.get -> int
+Bruinet.Narrator.BddSceneTimeline.Height.init -> void
+Bruinet.Narrator.BddSceneTimeline.Interactions.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedInteraction!>?
+Bruinet.Narrator.BddSceneTimeline.Interactions.init -> void
+Bruinet.Narrator.BddSceneTimeline.Name.get -> string!
+Bruinet.Narrator.BddSceneTimeline.Name.init -> void
+Bruinet.Narrator.BddSceneTimeline.Number.get -> int
+Bruinet.Narrator.BddSceneTimeline.Number.init -> void
+Bruinet.Narrator.BddSceneTimeline.Save(string! path) -> void
+Bruinet.Narrator.BddSceneTimeline.Scenario.get -> string?
+Bruinet.Narrator.BddSceneTimeline.Scenario.init -> void
+Bruinet.Narrator.BddSceneTimeline.Source.get -> Bruinet.Narrator.BddBox?
+Bruinet.Narrator.BddSceneTimeline.Source.init -> void
+Bruinet.Narrator.BddSceneTimeline.Status.get -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Narrator.BddSceneTimeline.Status.init -> void
+Bruinet.Narrator.BddSceneTimeline.Steps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddTimedStep!>!
+Bruinet.Narrator.BddSceneTimeline.Steps.init -> void
+Bruinet.Narrator.BddSceneTimeline.Video.get -> string?
+Bruinet.Narrator.BddSceneTimeline.Video.init -> void
+Bruinet.Narrator.BddSceneTimeline.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.BddSceneTimeline.Warnings.init -> void
+Bruinet.Narrator.BddSceneTimeline.Width.get -> int
+Bruinet.Narrator.BddSceneTimeline.Width.init -> void
+Bruinet.Narrator.BddSpot
+Bruinet.Narrator.BddSpot.BddSpot(int X, int Y) -> void
+Bruinet.Narrator.BddSpot.X.get -> int
+Bruinet.Narrator.BddSpot.X.init -> void
+Bruinet.Narrator.BddSpot.Y.get -> int
+Bruinet.Narrator.BddSpot.Y.init -> void
+Bruinet.Narrator.BddTimedClip
+Bruinet.Narrator.BddTimedClip.BddTimedClip(string! Text, string? Wav, double Start, double End) -> void
+Bruinet.Narrator.BddTimedClip.End.get -> double
+Bruinet.Narrator.BddTimedClip.End.init -> void
+Bruinet.Narrator.BddTimedClip.Start.get -> double
+Bruinet.Narrator.BddTimedClip.Start.init -> void
+Bruinet.Narrator.BddTimedClip.Text.get -> string!
+Bruinet.Narrator.BddTimedClip.Text.init -> void
+Bruinet.Narrator.BddTimedClip.Wav.get -> string?
+Bruinet.Narrator.BddTimedClip.Wav.init -> void
+Bruinet.Narrator.BddTimedInteraction
+Bruinet.Narrator.BddTimedInteraction.At.get -> double
+Bruinet.Narrator.BddTimedInteraction.At.init -> void
+Bruinet.Narrator.BddTimedInteraction.BddTimedInteraction(Bruinet.Core.Recording.InteractionKind Kind, double At, Bruinet.Narrator.BddBox! Bounds) -> void
+Bruinet.Narrator.BddTimedInteraction.Bounds.get -> Bruinet.Narrator.BddBox!
+Bruinet.Narrator.BddTimedInteraction.Bounds.init -> void
+Bruinet.Narrator.BddTimedInteraction.Duration.get -> double
+Bruinet.Narrator.BddTimedInteraction.Duration.init -> void
+Bruinet.Narrator.BddTimedInteraction.From.get -> Bruinet.Narrator.BddSpot?
+Bruinet.Narrator.BddTimedInteraction.From.init -> void
+Bruinet.Narrator.BddTimedInteraction.Key.get -> string?
+Bruinet.Narrator.BddTimedInteraction.Key.init -> void
+Bruinet.Narrator.BddTimedInteraction.Kind.get -> Bruinet.Core.Recording.InteractionKind
+Bruinet.Narrator.BddTimedInteraction.Kind.init -> void
+Bruinet.Narrator.BddTimedInteraction.Label.get -> string?
+Bruinet.Narrator.BddTimedInteraction.Label.init -> void
+Bruinet.Narrator.BddTimedInteraction.To.get -> Bruinet.Narrator.BddSpot?
+Bruinet.Narrator.BddTimedInteraction.To.init -> void
+Bruinet.Narrator.BddTimedStep
+Bruinet.Narrator.BddTimedStep.BddTimedStep(int Line, string! Text, double Start, double End, Bruinet.Bdd.BddStepResultStatus Status, string? Message = null) -> void
+Bruinet.Narrator.BddTimedStep.End.get -> double
+Bruinet.Narrator.BddTimedStep.End.init -> void
+Bruinet.Narrator.BddTimedStep.Line.get -> int
+Bruinet.Narrator.BddTimedStep.Line.init -> void
+Bruinet.Narrator.BddTimedStep.Message.get -> string?
+Bruinet.Narrator.BddTimedStep.Message.init -> void
+Bruinet.Narrator.BddTimedStep.Start.get -> double
+Bruinet.Narrator.BddTimedStep.Start.init -> void
+Bruinet.Narrator.BddTimedStep.Status.get -> Bruinet.Bdd.BddStepResultStatus
+Bruinet.Narrator.BddTimedStep.Status.init -> void
+Bruinet.Narrator.BddTimedStep.Text.get -> string!
+Bruinet.Narrator.BddTimedStep.Text.init -> void
+Bruinet.Narrator.BddTouchMarks
+Bruinet.Narrator.BddTouchMarks.BddTouchMarks(Bruinet.Narrator.BddTouchMode Mode, string! Color) -> void
+Bruinet.Narrator.BddTouchMarks.Color.get -> string!
+Bruinet.Narrator.BddTouchMarks.Color.init -> void
+Bruinet.Narrator.BddTouchMarks.Mode.get -> Bruinet.Narrator.BddTouchMode
+Bruinet.Narrator.BddTouchMarks.Mode.init -> void
+Bruinet.Narrator.BddTouchMode
+Bruinet.Narrator.BddTouchMode.Off = 1 -> Bruinet.Narrator.BddTouchMode
+Bruinet.Narrator.BddTouchMode.On = 0 -> Bruinet.Narrator.BddTouchMode
+Bruinet.Narrator.BddTouchMode.OutlineOnly = 2 -> Bruinet.Narrator.BddTouchMode
+Bruinet.Narrator.BddTouchOverlay
+Bruinet.Narrator.BddVideoComposer
+Bruinet.Narrator.BddVideoComposition
+Bruinet.Narrator.BddVideoComposition.Arguments.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.BddVideoComposition.Arguments.init -> void
+Bruinet.Narrator.BddVideoComposition.BddVideoComposition(Bruinet.Narrator.BddVideoTimeline! Timeline, string! Captions, string! Chapters, System.Collections.Generic.IReadOnlyList<string!>! Arguments, System.Collections.Generic.IReadOnlyList<string!>! Warnings) -> void
+Bruinet.Narrator.BddVideoComposition.Captions.get -> string!
+Bruinet.Narrator.BddVideoComposition.Captions.init -> void
+Bruinet.Narrator.BddVideoComposition.Chapters.get -> string!
+Bruinet.Narrator.BddVideoComposition.Chapters.init -> void
+Bruinet.Narrator.BddVideoComposition.Timeline.get -> Bruinet.Narrator.BddVideoTimeline!
+Bruinet.Narrator.BddVideoComposition.Timeline.init -> void
+Bruinet.Narrator.BddVideoComposition.Touches.get -> string?
+Bruinet.Narrator.BddVideoComposition.Touches.init -> void
+Bruinet.Narrator.BddVideoComposition.Warnings.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.BddVideoComposition.Warnings.init -> void
+Bruinet.Narrator.BddVideoLine
+Bruinet.Narrator.BddVideoLine.BddVideoLine(string! Step, string! Say, int Line) -> void
+Bruinet.Narrator.BddVideoLine.Line.get -> int
+Bruinet.Narrator.BddVideoLine.Line.init -> void
+Bruinet.Narrator.BddVideoLine.Say.get -> string!
+Bruinet.Narrator.BddVideoLine.Say.init -> void
+Bruinet.Narrator.BddVideoLine.Step.get -> string!
+Bruinet.Narrator.BddVideoLine.Step.init -> void
+Bruinet.Narrator.BddVideoScene
+Bruinet.Narrator.BddVideoScene.BddVideoScene(string! Name, string? Scenario, string? Intro, string? Outro, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoLine!>! Lines, int Line, int ScenarioLine) -> void
+Bruinet.Narrator.BddVideoScene.Intro.get -> string?
+Bruinet.Narrator.BddVideoScene.Intro.init -> void
+Bruinet.Narrator.BddVideoScene.Line.get -> int
+Bruinet.Narrator.BddVideoScene.Line.init -> void
+Bruinet.Narrator.BddVideoScene.Lines.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoLine!>!
+Bruinet.Narrator.BddVideoScene.Lines.init -> void
+Bruinet.Narrator.BddVideoScene.Name.get -> string!
+Bruinet.Narrator.BddVideoScene.Name.init -> void
+Bruinet.Narrator.BddVideoScene.Outro.get -> string?
+Bruinet.Narrator.BddVideoScene.Outro.init -> void
+Bruinet.Narrator.BddVideoScene.Scenario.get -> string?
+Bruinet.Narrator.BddVideoScene.Scenario.init -> void
+Bruinet.Narrator.BddVideoScene.ScenarioLine.get -> int
+Bruinet.Narrator.BddVideoScene.ScenarioLine.init -> void
+Bruinet.Narrator.BddVideoScenePlan
+Bruinet.Narrator.BddVideoScenePlan.Address.get -> string!
+Bruinet.Narrator.BddVideoScenePlan.BddVideoScenePlan(Bruinet.Narrator.BddVideoScene! Scene, string! FeatureFile, Bruinet.Bdd.BddScenario! Scenario, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>! Steps, System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Narrator.BddVideoLine!>! Says) -> void
+Bruinet.Narrator.BddVideoScenePlan.FeatureFile.get -> string!
+Bruinet.Narrator.BddVideoScenePlan.FeatureFile.init -> void
+Bruinet.Narrator.BddVideoScenePlan.Pronunciations.get -> Bruinet.Narrator.Pronunciations?
+Bruinet.Narrator.BddVideoScenePlan.Pronunciations.init -> void
+Bruinet.Narrator.BddVideoScenePlan.Says.get -> System.Collections.Generic.IReadOnlyDictionary<int, Bruinet.Narrator.BddVideoLine!>!
+Bruinet.Narrator.BddVideoScenePlan.Says.init -> void
+Bruinet.Narrator.BddVideoScenePlan.Scenario.get -> Bruinet.Bdd.BddScenario!
+Bruinet.Narrator.BddVideoScenePlan.Scenario.init -> void
+Bruinet.Narrator.BddVideoScenePlan.Scene.get -> Bruinet.Narrator.BddVideoScene!
+Bruinet.Narrator.BddVideoScenePlan.Scene.init -> void
+Bruinet.Narrator.BddVideoScenePlan.Steps.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>!
+Bruinet.Narrator.BddVideoScenePlan.Steps.init -> void
+Bruinet.Narrator.BddVideoScript
+Bruinet.Narrator.BddVideoScript.BddVideoScript(string! FilePath, string! Title, string? Voice, System.TimeSpan? Beat, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoScene!>! Scenes) -> void
+Bruinet.Narrator.BddVideoScript.Beat.get -> System.TimeSpan?
+Bruinet.Narrator.BddVideoScript.Beat.init -> void
+Bruinet.Narrator.BddVideoScript.FilePath.get -> string!
+Bruinet.Narrator.BddVideoScript.FilePath.init -> void
+Bruinet.Narrator.BddVideoScript.Instructions.get -> string?
+Bruinet.Narrator.BddVideoScript.Instructions.init -> void
+Bruinet.Narrator.BddVideoScript.InstructionsLine.get -> int
+Bruinet.Narrator.BddVideoScript.InstructionsLine.init -> void
+Bruinet.Narrator.BddVideoScript.Pause.get -> System.TimeSpan?
+Bruinet.Narrator.BddVideoScript.Pause.init -> void
+Bruinet.Narrator.BddVideoScript.Say.get -> Bruinet.Narrator.BddSayMode?
+Bruinet.Narrator.BddVideoScript.Say.init -> void
+Bruinet.Narrator.BddVideoScript.Scenes.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoScene!>!
+Bruinet.Narrator.BddVideoScript.Scenes.init -> void
+Bruinet.Narrator.BddVideoScript.Title.get -> string!
+Bruinet.Narrator.BddVideoScript.Title.init -> void
+Bruinet.Narrator.BddVideoScript.TouchColor.get -> string?
+Bruinet.Narrator.BddVideoScript.TouchColor.init -> void
+Bruinet.Narrator.BddVideoScript.Touches.get -> Bruinet.Narrator.BddTouchMode?
+Bruinet.Narrator.BddVideoScript.Touches.init -> void
+Bruinet.Narrator.BddVideoScript.Voice.get -> string?
+Bruinet.Narrator.BddVideoScript.Voice.init -> void
+Bruinet.Narrator.BddVideoScriptCheck
+Bruinet.Narrator.BddVideoScriptCheck.BddVideoScriptCheck(Bruinet.Narrator.BddVideoScript? Script, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! Diagnostics, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoScenePlan!>! Scenes, string? ConfigDirectory) -> void
+Bruinet.Narrator.BddVideoScriptCheck.ConfigDirectory.get -> string?
+Bruinet.Narrator.BddVideoScriptCheck.ConfigDirectory.init -> void
+Bruinet.Narrator.BddVideoScriptCheck.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Narrator.BddVideoScriptCheck.Diagnostics.init -> void
+Bruinet.Narrator.BddVideoScriptCheck.Scenes.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddVideoScenePlan!>!
+Bruinet.Narrator.BddVideoScriptCheck.Scenes.init -> void
+Bruinet.Narrator.BddVideoScriptCheck.Script.get -> Bruinet.Narrator.BddVideoScript?
+Bruinet.Narrator.BddVideoScriptCheck.Script.init -> void
+Bruinet.Narrator.BddVideoScriptCheck.Success.get -> bool
+Bruinet.Narrator.BddVideoScriptParse
+Bruinet.Narrator.BddVideoScriptParse.BddVideoScriptParse(Bruinet.Narrator.BddVideoScript? Script, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>! Diagnostics) -> void
+Bruinet.Narrator.BddVideoScriptParse.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
+Bruinet.Narrator.BddVideoScriptParse.Diagnostics.init -> void
+Bruinet.Narrator.BddVideoScriptParse.Script.get -> Bruinet.Narrator.BddVideoScript?
+Bruinet.Narrator.BddVideoScriptParse.Script.init -> void
+Bruinet.Narrator.BddVideoScriptParser
+Bruinet.Narrator.BddVideoTimeline
+Bruinet.Narrator.BddVideoTimeline.BddVideoTimeline(string! Title, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddSceneTimeline!>! Scenes) -> void
+Bruinet.Narrator.BddVideoTimeline.Save(string! path) -> void
+Bruinet.Narrator.BddVideoTimeline.Scenes.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.BddSceneTimeline!>!
+Bruinet.Narrator.BddVideoTimeline.Scenes.init -> void
+Bruinet.Narrator.BddVideoTimeline.Title.get -> string!
+Bruinet.Narrator.BddVideoTimeline.Title.init -> void
+Bruinet.Narrator.ISpeechSynthesizer
+Bruinet.Narrator.ISpeechSynthesizer.IsAvailable.get -> bool
+Bruinet.Narrator.ISpeechSynthesizer.SynthesizeAsync(string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.ISsmlSynthesizer
+Bruinet.Narrator.ISsmlSynthesizer.SupportedElements.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Narrator.ISsmlSynthesizer.SynthesizeLineAsync(Bruinet.Narrator.SpokenLine! line, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.TimeSpan>!
+Bruinet.Narrator.Pronunciation
+Bruinet.Narrator.Pronunciation.Ipa.get -> string?
+Bruinet.Narrator.Pronunciation.Ipa.init -> void
+Bruinet.Narrator.Pronunciation.Line.get -> int
+Bruinet.Narrator.Pronunciation.Line.init -> void
+Bruinet.Narrator.Pronunciation.Pronunciation(string! Term, string? Say, string? Ipa, int Line) -> void
+Bruinet.Narrator.Pronunciation.Say.get -> string?
+Bruinet.Narrator.Pronunciation.Say.init -> void
+Bruinet.Narrator.Pronunciation.Term.get -> string!
+Bruinet.Narrator.Pronunciation.Term.init -> void
+Bruinet.Narrator.Pronunciations
+Bruinet.Narrator.Pronunciations.Apply(string! line) -> string!
+Bruinet.Narrator.Pronunciations.Entries.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.Pronunciation!>!
+Bruinet.Narrator.Pronunciations.Fingerprint.get -> string!
+Bruinet.Narrator.Pronunciations.Path.get -> string!
+Bruinet.Narrator.Pronunciations.Problems.get -> System.Collections.Generic.IReadOnlyList<(int Line, string! Message)>!
+Bruinet.Narrator.Speech
+Bruinet.Narrator.SpeechClip
+Bruinet.Narrator.SpeechClip.Duration.get -> System.TimeSpan
+Bruinet.Narrator.SpeechClip.Duration.init -> void
+Bruinet.Narrator.SpeechClip.SpeechClip(string! Text, string? WavPath, System.TimeSpan Duration) -> void
+Bruinet.Narrator.SpeechClip.Text.get -> string!
+Bruinet.Narrator.SpeechClip.Text.init -> void
+Bruinet.Narrator.SpeechClip.WavPath.get -> string?
+Bruinet.Narrator.SpeechClip.WavPath.init -> void
+Bruinet.Narrator.SpeechSecrets
+Bruinet.Narrator.SpeechSecrets.Endpoint.get -> string!
+Bruinet.Narrator.SpeechSecrets.Endpoint.init -> void
+Bruinet.Narrator.SpeechSecrets.Host.get -> string!
+Bruinet.Narrator.SpeechSecrets.Key.get -> string!
+Bruinet.Narrator.SpeechSecrets.Key.init -> void
+Bruinet.Narrator.SpeechSecrets.SampleRate.get -> int
+Bruinet.Narrator.SpeechSecrets.SampleRate.init -> void
+Bruinet.Narrator.SpeechSecrets.SpeechSecrets(string! Endpoint, string! Key) -> void
+Bruinet.Narrator.SpeechSecrets.SynthesisUrl.get -> string!
+Bruinet.Narrator.SpeechSecrets.Voice.get -> string?
+Bruinet.Narrator.SpeechSecrets.Voice.init -> void
+Bruinet.Narrator.SpeechSecrets.VoicesUrl.get -> string!
+Bruinet.Narrator.SpeechSecretsDescription
+Bruinet.Narrator.SpeechSecretsDescription.Endpoint.get -> string?
+Bruinet.Narrator.SpeechSecretsDescription.Endpoint.init -> void
+Bruinet.Narrator.SpeechSecretsDescription.File.get -> string?
+Bruinet.Narrator.SpeechSecretsDescription.File.init -> void
+Bruinet.Narrator.SpeechSecretsDescription.FromEnvironment.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.SpeechSecretsDescription.FromEnvironment.init -> void
+Bruinet.Narrator.SpeechSecretsDescription.HasKey.get -> bool
+Bruinet.Narrator.SpeechSecretsDescription.HasKey.init -> void
+Bruinet.Narrator.SpeechSecretsDescription.IsSetUp.get -> bool
+Bruinet.Narrator.SpeechSecretsDescription.SampleRate.get -> int
+Bruinet.Narrator.SpeechSecretsDescription.SampleRate.init -> void
+Bruinet.Narrator.SpeechSecretsDescription.SpeechSecretsDescription(string? Endpoint, string? Voice, int SampleRate, bool HasKey, string? File, System.Collections.Generic.IReadOnlyList<string!>! FromEnvironment) -> void
+Bruinet.Narrator.SpeechSecretsDescription.Voice.get -> string?
+Bruinet.Narrator.SpeechSecretsDescription.Voice.init -> void
+Bruinet.Narrator.SpeechSynthesizerAttribute
+Bruinet.Narrator.SpeechSynthesizerAttribute.SpeechSynthesizerAttribute(System.Type! synthesizerType) -> void
+Bruinet.Narrator.SpeechSynthesizerAttribute.SynthesizerType.get -> System.Type!
+Bruinet.Narrator.SpeechVoice
+Bruinet.Narrator.SpeechVoice.Gender.get -> string?
+Bruinet.Narrator.SpeechVoice.Gender.init -> void
+Bruinet.Narrator.SpeechVoice.Locale.get -> string!
+Bruinet.Narrator.SpeechVoice.Locale.init -> void
+Bruinet.Narrator.SpeechVoice.ShortName.get -> string!
+Bruinet.Narrator.SpeechVoice.ShortName.init -> void
+Bruinet.Narrator.SpeechVoice.SpeechVoice(string! ShortName, string! Locale, string? Gender, System.Collections.Generic.IReadOnlyList<string!>! Styles, string? VoiceType, string? Status) -> void
+Bruinet.Narrator.SpeechVoice.Status.get -> string?
+Bruinet.Narrator.SpeechVoice.Status.init -> void
+Bruinet.Narrator.SpeechVoice.Styles.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.SpeechVoice.Styles.init -> void
+Bruinet.Narrator.SpeechVoice.VoiceType.get -> string?
+Bruinet.Narrator.SpeechVoice.VoiceType.init -> void
+Bruinet.Narrator.SpokenLine
+Bruinet.Narrator.SpokenLine.ElementsUsed.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.SpokenLine.HasMarkup.get -> bool
+Bruinet.Narrator.SpokenLine.Nodes.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpokenNode!>!
+Bruinet.Narrator.SpokenLine.Plain.get -> string!
+Bruinet.Narrator.SpokenLine.Problems.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpokenProblem!>!
+Bruinet.Narrator.SpokenLine.Reduced.get -> string!
+Bruinet.Narrator.SpokenLine.Source.get -> string!
+Bruinet.Narrator.SpokenLine.ToSsml(System.Collections.Generic.IReadOnlySet<string!>! supported) -> string!
+Bruinet.Narrator.SpokenNode
+Bruinet.Narrator.SpokenNode.Attribute(string! name) -> string?
+Bruinet.Narrator.SpokenNode.Attributes.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!
+Bruinet.Narrator.SpokenNode.Attributes.init -> void
+Bruinet.Narrator.SpokenNode.Children.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpokenNode!>!
+Bruinet.Narrator.SpokenNode.Children.init -> void
+Bruinet.Narrator.SpokenNode.Name.get -> string?
+Bruinet.Narrator.SpokenNode.Name.init -> void
+Bruinet.Narrator.SpokenNode.Position.get -> int
+Bruinet.Narrator.SpokenNode.Position.init -> void
+Bruinet.Narrator.SpokenNode.SpokenNode(string? Name, string? Text, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>! Attributes, System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpokenNode!>! Children) -> void
+Bruinet.Narrator.SpokenNode.Text.get -> string?
+Bruinet.Narrator.SpokenNode.Text.init -> void
+Bruinet.Narrator.SpokenProblem
+Bruinet.Narrator.SpokenProblem.Code.get -> string!
+Bruinet.Narrator.SpokenProblem.Code.init -> void
+Bruinet.Narrator.SpokenProblem.Message.get -> string!
+Bruinet.Narrator.SpokenProblem.Message.init -> void
+Bruinet.Narrator.SpokenProblem.Position.get -> int
+Bruinet.Narrator.SpokenProblem.Position.init -> void
+Bruinet.Narrator.SpokenProblem.Severity.get -> Bruinet.Narrator.SpokenProblemSeverity
+Bruinet.Narrator.SpokenProblem.Severity.init -> void
+Bruinet.Narrator.SpokenProblem.SpokenProblem(Bruinet.Narrator.SpokenProblemSeverity Severity, string! Code, string! Message, int Position) -> void
+Bruinet.Narrator.SpokenProblemSeverity
+Bruinet.Narrator.SpokenProblemSeverity.Error = 1 -> Bruinet.Narrator.SpokenProblemSeverity
+Bruinet.Narrator.SpokenProblemSeverity.Warning = 0 -> Bruinet.Narrator.SpokenProblemSeverity
+Bruinet.Narrator.SsmlSupport
+Bruinet.Narrator.VoiceNotConfiguredException
+Bruinet.Narrator.VoiceNotConfiguredException.VoiceNotConfiguredException(string! voice, System.Collections.Generic.IReadOnlyList<string!>! places) -> void
+Bruinet.Narrator.VoiceSecrets
+Bruinet.Narrator.VoiceSecrets.ApiVersion.get -> string!
+Bruinet.Narrator.VoiceSecrets.ApiVersion.init -> void
+Bruinet.Narrator.VoiceSecrets.Deployment.get -> string!
+Bruinet.Narrator.VoiceSecrets.Deployment.init -> void
+Bruinet.Narrator.VoiceSecrets.Endpoint.get -> string!
+Bruinet.Narrator.VoiceSecrets.Endpoint.init -> void
+Bruinet.Narrator.VoiceSecrets.IsChatAudio.get -> bool
+Bruinet.Narrator.VoiceSecrets.Key.get -> string!
+Bruinet.Narrator.VoiceSecrets.Key.init -> void
+Bruinet.Narrator.VoiceSecrets.Resource.get -> string!
+Bruinet.Narrator.VoiceSecrets.Voice.get -> string?
+Bruinet.Narrator.VoiceSecrets.Voice.init -> void
+Bruinet.Narrator.VoiceSecrets.VoiceSecrets(string! Endpoint, string! Deployment, string! ApiVersion, string! Key) -> void
+Bruinet.Narrator.VoiceSecretsDescription
+Bruinet.Narrator.VoiceSecretsDescription.ApiVersion.get -> string?
+Bruinet.Narrator.VoiceSecretsDescription.ApiVersion.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.Deployment.get -> string?
+Bruinet.Narrator.VoiceSecretsDescription.Deployment.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.Endpoint.get -> string?
+Bruinet.Narrator.VoiceSecretsDescription.Endpoint.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.File.get -> string?
+Bruinet.Narrator.VoiceSecretsDescription.File.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.FromEnvironment.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.VoiceSecretsDescription.FromEnvironment.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.HasKey.get -> bool
+Bruinet.Narrator.VoiceSecretsDescription.HasKey.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.IsSetUp.get -> bool
+Bruinet.Narrator.VoiceSecretsDescription.Voice.get -> string?
+Bruinet.Narrator.VoiceSecretsDescription.Voice.init -> void
+Bruinet.Narrator.VoiceSecretsDescription.VoiceSecretsDescription(string? Endpoint, string? Deployment, string? ApiVersion, string? Voice, bool HasKey, string? File, System.Collections.Generic.IReadOnlyList<string!>! FromEnvironment) -> void
+Bruinet.Narrator.VoiceSecretsIgnore
+Bruinet.Narrator.VoiceSecretsIgnore.Ignored = 0 -> Bruinet.Narrator.VoiceSecretsIgnore
+Bruinet.Narrator.VoiceSecretsIgnore.NoRepository = 2 -> Bruinet.Narrator.VoiceSecretsIgnore
+Bruinet.Narrator.VoiceSecretsIgnore.NotIgnored = 1 -> Bruinet.Narrator.VoiceSecretsIgnore
+Bruinet.Narrator.VoiceSecretsPlaces
+Bruinet.Narrator.VoiceServiceException
+Bruinet.Narrator.VoiceServiceException.VoiceServiceException(string! message) -> void
+const Bruinet.Narrator.AzureOpenAiSpeech.DefaultVoice = "alloy" -> string!
+const Bruinet.Narrator.AzureOpenAiSpeech.Prefix = "azure:" -> string!
+const Bruinet.Narrator.AzureSpeech.Prefix = "azure-speech-service:" -> string!
+const Bruinet.Narrator.BddRecordingSession.BeatVariable = "BRUINET_BEAT" -> string!
+const Bruinet.Narrator.BddRecordingSession.FolderVariable = "BRUINET_RECORD_DIR" -> string!
+const Bruinet.Narrator.BddRecordingSession.InstructionsVariable = "BRUINET_VOICE_INSTRUCTIONS" -> string!
+const Bruinet.Narrator.BddRecordingSession.KeepVariable = "BRUINET_RECORD_KEEP" -> string!
+const Bruinet.Narrator.BddRecordingSession.OutputVariable = "BRUINET_RECORD_OUT" -> string!
+const Bruinet.Narrator.BddRecordingSession.PauseVariable = "BRUINET_PAUSE" -> string!
+const Bruinet.Narrator.BddRecordingSession.Variable = "BRUINET_RECORD" -> string!
+const Bruinet.Narrator.BddRecordingSession.VoiceVariable = "BRUINET_VOICE" -> string!
+const Bruinet.Narrator.BddScenePacing.MaxPauseMs = 5000 -> int
+const Bruinet.Narrator.BddSceneTimeline.FileName = "timeline.json" -> string!
+const Bruinet.Narrator.BddTouchMarks.ColorVariable = "BRUINET_TOUCH_COLOR" -> string!
+const Bruinet.Narrator.BddTouchMarks.DefaultColor = "#E8111E" -> string!
+const Bruinet.Narrator.BddTouchOverlay.PreRoll = 0.25 -> double
+const Bruinet.Narrator.BddVideoComposer.RunFolderExtension = ".run" -> string!
+const Bruinet.Narrator.BddVideoScript.Extension = ".video.md" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.BadAttributeCode = "VID022" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.MarkupCode = "VID020" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.MisplacedElementCode = "VID024" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.NoConfigCode = "VID010" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.NoFileCode = "VID011" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.NoScenarioCode = "VID012" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.NoStepCode = "VID013" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.OrderCode = "VID014" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.PronunciationsCode = "VID025" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.UnknownStyleCode = "VID030" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.UnknownTagCode = "VID021" -> string!
+const Bruinet.Narrator.BddVideoScriptCheck.UnsupportedElementCode = "VID023" -> string!
+const Bruinet.Narrator.BddVideoScriptParser.BadTableCode = "VID005" -> string!
+const Bruinet.Narrator.BddVideoScriptParser.BadValueCode = "VID003" -> string!
+const Bruinet.Narrator.BddVideoScriptParser.NoScenarioCode = "VID004" -> string!
+const Bruinet.Narrator.BddVideoScriptParser.NoTitleCode = "VID001" -> string!
+const Bruinet.Narrator.BddVideoScriptParser.UnknownFieldCode = "VID002" -> string!
+const Bruinet.Narrator.Pronunciations.FileName = "pronunciations.md" -> string!
+const Bruinet.Narrator.Pronunciations.ProblemCode = "VID025" -> string!
+const Bruinet.Narrator.SpeechSecrets.DefaultSampleRate = 24000 -> int
+const Bruinet.Narrator.SpeechSecrets.DefaultVoice = "en-GB-Emily:MAI-Voice-2.1" -> string!
+const Bruinet.Narrator.SpeechSecrets.EndpointVariable = "BRUINET_SPEECH_ENDPOINT" -> string!
+const Bruinet.Narrator.SpeechSecrets.HighSampleRate = 48000 -> int
+const Bruinet.Narrator.SpeechSecrets.KeyVariable = "BRUINET_SPEECH_KEY" -> string!
+const Bruinet.Narrator.SpeechSecrets.SampleRateVariable = "BRUINET_SPEECH_SAMPLE_RATE" -> string!
+const Bruinet.Narrator.SpeechSecrets.VoiceVariable = "BRUINET_SPEECH_VOICE" -> string!
+const Bruinet.Narrator.VoiceSecrets.ApiVersionVariable = "BRUINET_VOICE_API_VERSION" -> string!
+const Bruinet.Narrator.VoiceSecrets.DefaultApiVersion = "2025-03-01-preview" -> string!
+const Bruinet.Narrator.VoiceSecrets.DefaultDeployment = "gpt-4o-mini-tts" -> string!
+const Bruinet.Narrator.VoiceSecrets.DeploymentVariable = "BRUINET_VOICE_DEPLOYMENT" -> string!
+const Bruinet.Narrator.VoiceSecrets.EndpointVariable = "BRUINET_VOICE_ENDPOINT" -> string!
+const Bruinet.Narrator.VoiceSecrets.FileName = "voice.secrets.json" -> string!
+const Bruinet.Narrator.VoiceSecrets.KeyVariable = "BRUINET_VOICE_KEY" -> string!
+const Bruinet.Narrator.VoiceSecretsPlaces.IgnoreRule = "**/voice.secrets.json" -> string!
+override Bruinet.Narrator.SpeechSecrets.ToString() -> string!
+override Bruinet.Narrator.VoiceSecrets.ToString() -> string!
+static Bruinet.Narrator.AzureOpenAiSpeech.FixHeader(byte[]! wav) -> byte[]!
+static Bruinet.Narrator.AzureOpenAiSpeech.Owns(string? voice) -> bool
+static Bruinet.Narrator.AzureOpenAiSpeech.SaidTheLine(string! line, string! transcript) -> bool
+static Bruinet.Narrator.AzureSpeech.LanguageOf(string! voice) -> string!
+static Bruinet.Narrator.AzureSpeech.OutputFormat(int sampleRate) -> string!
+static Bruinet.Narrator.AzureSpeech.Owns(string? voice) -> bool
+static Bruinet.Narrator.AzureSpeech.Ssml(string! text, string! voice, string? style) -> string!
+static Bruinet.Narrator.AzureSpeech.SsmlOf(string! inner, string! voice, string? style, bool ownStyle = false) -> string!
+static Bruinet.Narrator.AzureSpeech.VoiceOf(string! voice) -> string!
+static Bruinet.Narrator.AzureSpeechVoices.Find(System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>! voices, string! name) -> Bruinet.Narrator.SpeechVoice?
+static Bruinet.Narrator.AzureSpeechVoices.Kept(Bruinet.Narrator.SpeechSecrets! secrets, string? cacheFolder = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>?
+static Bruinet.Narrator.AzureSpeechVoices.Of(System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>! voices, string? locale) -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.SpeechVoice!>!
+static Bruinet.Narrator.BddBox.Of(System.Drawing.Rectangle rectangle) -> Bruinet.Narrator.BddBox!
+static Bruinet.Narrator.BddKeptScenes.Folder(string! recordingsFolder, string! scriptPath) -> string!
+static Bruinet.Narrator.BddKeptScenes.Hash(Bruinet.Narrator.BddVideoScenePlan! plan, string? voice, System.TimeSpan beat, string? instructions = null, Bruinet.Narrator.BddScenePacing? pacing = null) -> string!
+static Bruinet.Narrator.BddKeptScenes.NameOf(string! scriptPath) -> string!
+static Bruinet.Narrator.BddKeptScenes.Recorded(string! scenesFolder, int number) -> Bruinet.Narrator.BddSceneTimeline?
+static Bruinet.Narrator.BddKeptScenes.SceneFolder(string! scenesFolder, int number) -> string!
+static Bruinet.Narrator.BddKeptScenes.State(string! scenesFolder, int number, string! hash) -> Bruinet.Narrator.BddSceneState
+static Bruinet.Narrator.BddRecordingSession.FromEnvironment(string! configDirectory, System.Func<string!, string?>? read = null) -> Bruinet.Narrator.BddRecordingSession?
+static Bruinet.Narrator.BddRecordings.DefaultFolder(string! projectDirectory) -> string!
+static Bruinet.Narrator.BddRecordings.FindScene(string! configDirectory, string! featureFile, string! scenarioName) -> (Bruinet.Narrator.BddVideoScript! Script, Bruinet.Narrator.BddVideoScenePlan! Scene)?
+static Bruinet.Narrator.BddReviewPage.ToWebVtt(string! srt) -> string!
+static Bruinet.Narrator.BddReviewPage.Write(string! path, string! title, string? summary, System.Collections.Generic.IReadOnlyList<string!>! changes, System.Collections.Generic.IReadOnlyList<string!>! videos) -> void
+static Bruinet.Narrator.BddSceneClips.Silent.get -> Bruinet.Narrator.BddSceneClips!
+static Bruinet.Narrator.BddSceneClips.SpeakAsync(Bruinet.Narrator.BddVideoScenePlan! plan, Bruinet.Narrator.ISpeechSynthesizer? synthesizer, string? voice, string! folder, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddSceneClips!>!
+static Bruinet.Narrator.BddScenePacing.Default.get -> Bruinet.Narrator.BddScenePacing!
+static Bruinet.Narrator.BddScenePacing.Of(Bruinet.Narrator.BddVideoScript? script) -> Bruinet.Narrator.BddScenePacing!
+static Bruinet.Narrator.BddSceneTimeline.Load(string! path) -> Bruinet.Narrator.BddSceneTimeline!
+static Bruinet.Narrator.BddTimedInteraction.Of(Bruinet.Core.Recording.Interaction! interaction, long videoStart) -> Bruinet.Narrator.BddTimedInteraction!
+static Bruinet.Narrator.BddTouchMarks.Default.get -> Bruinet.Narrator.BddTouchMarks!
+static Bruinet.Narrator.BddTouchMarks.For(Bruinet.Narrator.BddVideoScript? script, System.Func<string!, string?>? read = null, string? setting = null) -> Bruinet.Narrator.BddTouchMarks!
+static Bruinet.Narrator.BddTouchMarks.IsColor(string? value) -> bool
+static Bruinet.Narrator.BddTouchMarks.ParseMode(string? value) -> Bruinet.Narrator.BddTouchMode?
+static Bruinet.Narrator.BddTouchOverlay.Ass(Bruinet.Narrator.BddVideoTimeline! timeline, int width, int height, Bruinet.Narrator.BddTouchMarks! marks) -> string?
+static Bruinet.Narrator.BddTouchOverlay.AssColor(string! color) -> string!
+static Bruinet.Narrator.BddVideoComposer.Captions(Bruinet.Narrator.BddVideoTimeline! timeline) -> string!
+static Bruinet.Narrator.BddVideoComposer.ComposeAsync(string! title, string! scenesFolder, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), Bruinet.Narrator.BddTouchMarks? touches = null) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddComposedVideo!>!
+static Bruinet.Narrator.BddVideoComposer.IsComplete(string! scenesFolder, int sceneCount) -> bool
+static Bruinet.Narrator.BddVideoComposer.Plan(string! title, System.Collections.Generic.IReadOnlyList<(string! Folder, Bruinet.Narrator.BddSceneTimeline! Scene)>! scenes, string! outputVideo, Bruinet.Narrator.BddTouchMarks? touches = null) -> Bruinet.Narrator.BddVideoComposition!
+static Bruinet.Narrator.BddVideoComposer.ReadScenes(string! scenesFolder) -> System.Collections.Generic.IReadOnlyList<(string! Folder, Bruinet.Narrator.BddSceneTimeline! Scene)>!
+static Bruinet.Narrator.BddVideoComposer.StitchAsync(string! title, string! scenesFolder, string! video, int? sceneCount, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), Bruinet.Narrator.BddTouchMarks? touches = null) -> System.Threading.Tasks.Task<Bruinet.Narrator.BddComposedVideo!>!
+static Bruinet.Narrator.BddVideoScript.IsVideoScript(string! path) -> bool
+static Bruinet.Narrator.BddVideoScriptCheck.Check(string! text, string! filePath, string? configDirectory = null, System.Func<string!, string?>? read = null, string? home = null, string? speechCache = null) -> Bruinet.Narrator.BddVideoScriptCheck!
+static Bruinet.Narrator.BddVideoScriptCheck.FindConfigDirectory(string? directory) -> string?
+static Bruinet.Narrator.BddVideoScriptCheck.Written(Bruinet.Bdd.BddStep! step) -> string!
+static Bruinet.Narrator.BddVideoScriptParser.Parse(string! text, string! filePath) -> Bruinet.Narrator.BddVideoScriptParse!
+static Bruinet.Narrator.BddVideoTimeline.Load(string! path) -> Bruinet.Narrator.BddVideoTimeline!
+static Bruinet.Narrator.Pronunciations.Load(string? configDirectory) -> Bruinet.Narrator.Pronunciations?
+static Bruinet.Narrator.Pronunciations.Parse(string! text, string! path) -> Bruinet.Narrator.Pronunciations!
+static Bruinet.Narrator.Speech.ClipAsync(Bruinet.Narrator.ISpeechSynthesizer? synthesizer, string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Bruinet.Narrator.SpeechClip!>!
+static Bruinet.Narrator.Speech.Discover() -> Bruinet.Narrator.ISpeechSynthesizer?
+static Bruinet.Narrator.Speech.Estimate(string! text) -> System.TimeSpan
+static Bruinet.Narrator.Speech.Find(string? voice, string? instructions = null, string? folder = null, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.ISpeechSynthesizer?
+static Bruinet.Narrator.Speech.WavDuration(string! path) -> System.TimeSpan
+static Bruinet.Narrator.SpeechSecrets.Delete(string! path) -> void
+static Bruinet.Narrator.SpeechSecrets.Describe(string? folder, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.SpeechSecretsDescription!
+static Bruinet.Narrator.SpeechSecrets.EndpointProblem(string? endpoint) -> string?
+static Bruinet.Narrator.SpeechSecrets.Find(string? folder, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.SpeechSecrets?
+static Bruinet.Narrator.SpeechSecrets.HostOf(string! endpoint) -> string!
+static Bruinet.Narrator.SpeechSecrets.SampleRateProblem(int sampleRate) -> string?
+static Bruinet.Narrator.SpeechSecrets.Save(string! path, string! endpoint, string? key, string? voice, int sampleRate = 24000) -> void
+static Bruinet.Narrator.SpokenLine.Parse(string! text) -> Bruinet.Narrator.SpokenLine!
+static Bruinet.Narrator.SsmlSupport.Of(string? voice) -> System.Collections.Generic.IReadOnlySet<string!>?
+static Bruinet.Narrator.VoiceNotConfiguredException.ForSpeech(string! voice, System.Collections.Generic.IReadOnlyList<string!>! places) -> Bruinet.Narrator.VoiceNotConfiguredException!
+static Bruinet.Narrator.VoiceSecrets.Delete(string! path) -> void
+static Bruinet.Narrator.VoiceSecrets.Describe(string? folder, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.VoiceSecretsDescription!
+static Bruinet.Narrator.VoiceSecrets.EndpointProblem(string? endpoint) -> string?
+static Bruinet.Narrator.VoiceSecrets.Find(string? folder, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.VoiceSecrets?
+static Bruinet.Narrator.VoiceSecrets.Places(string? folder, string? home = null) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Narrator.VoiceSecrets.ResourceOf(string! endpoint) -> string!
+static Bruinet.Narrator.VoiceSecrets.Save(string! path, string! endpoint, string? deployment, string? apiVersion, string? key, string? voice) -> void
+static Bruinet.Narrator.VoiceSecretsPlaces.AddIgnoreRule(string! folder) -> string!
+static Bruinet.Narrator.VoiceSecretsPlaces.IsIgnored(string! folder) -> Bruinet.Narrator.VoiceSecretsIgnore
+static readonly Bruinet.Narrator.AzureSpeechVoices.Fresh -> System.TimeSpan
+static readonly Bruinet.Narrator.BddRecordingSession.DefaultBeat -> System.TimeSpan
+static readonly Bruinet.Narrator.BddScenePacing.DefaultPause -> System.TimeSpan
+static readonly Bruinet.Narrator.BddVideoComposer.FailureCaption -> System.TimeSpan
+static readonly Bruinet.Narrator.SpokenLine.Elements -> System.Collections.Generic.IReadOnlySet<string!>!
+static readonly Bruinet.Narrator.SsmlSupport.AzureSpeech -> System.Collections.Generic.IReadOnlySet<string!>!
+static readonly Bruinet.Narrator.SsmlSupport.AzureSpeechMai -> System.Collections.Generic.IReadOnlySet<string!>!
+static readonly Bruinet.Narrator.SsmlSupport.None -> System.Collections.Generic.IReadOnlySet<string!>!
+static readonly Bruinet.Narrator.SsmlSupport.Windows -> System.Collections.Generic.IReadOnlySet<string!>!

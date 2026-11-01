@@ -1,0 +1,495 @@
+#nullable enable
+Bruinet.Stride.BruinetStrideConfiguration
+Bruinet.Stride.BruinetStrideConfiguration.BruinetStrideConfiguration() -> void
+Bruinet.Stride.BruinetStrideConfiguration.Stride.get -> Bruinet.Stride.StrideOptions!
+Bruinet.Stride.BruinetStrideConfiguration.Stride.set -> void
+Bruinet.Stride.Communication.AutomationCommand
+Bruinet.Stride.Communication.AutomationCommand.Args.get -> object![]?
+Bruinet.Stride.Communication.AutomationCommand.Args.set -> void
+Bruinet.Stride.Communication.AutomationCommand.AutomationCommand() -> void
+Bruinet.Stride.Communication.AutomationCommand.Method.get -> string!
+Bruinet.Stride.Communication.AutomationCommand.Method.set -> void
+Bruinet.Stride.Communication.AutomationCommand.Target.get -> string?
+Bruinet.Stride.Communication.AutomationCommand.Target.set -> void
+Bruinet.Stride.Communication.AutomationCommand.TimeoutMs.get -> int
+Bruinet.Stride.Communication.AutomationCommand.TimeoutMs.set -> void
+Bruinet.Stride.Communication.AutomationCommand.Type.get -> string!
+Bruinet.Stride.Communication.AutomationCommand.Type.set -> void
+Bruinet.Stride.Communication.AutomationResponse
+Bruinet.Stride.Communication.AutomationResponse.AutomationResponse() -> void
+Bruinet.Stride.Communication.AutomationResponse.Error.get -> string?
+Bruinet.Stride.Communication.AutomationResponse.Error.set -> void
+Bruinet.Stride.Communication.AutomationResponse.Result.get -> object?
+Bruinet.Stride.Communication.AutomationResponse.Result.set -> void
+Bruinet.Stride.Communication.AutomationResponse.StackTrace.get -> string?
+Bruinet.Stride.Communication.AutomationResponse.StackTrace.set -> void
+Bruinet.Stride.Communication.AutomationResponse.Success.get -> bool
+Bruinet.Stride.Communication.AutomationResponse.Success.set -> void
+Bruinet.Stride.Communication.ElementBounds
+Bruinet.Stride.Communication.ElementBounds.CenterX.get -> int
+Bruinet.Stride.Communication.ElementBounds.CenterY.get -> int
+Bruinet.Stride.Communication.ElementBounds.Contains(int x, int y) -> bool
+Bruinet.Stride.Communication.ElementBounds.ElementBounds() -> void
+Bruinet.Stride.Communication.ElementBounds.Height.get -> int
+Bruinet.Stride.Communication.ElementBounds.Height.set -> void
+Bruinet.Stride.Communication.ElementBounds.IsEmpty.get -> bool
+Bruinet.Stride.Communication.ElementBounds.Width.get -> int
+Bruinet.Stride.Communication.ElementBounds.Width.set -> void
+Bruinet.Stride.Communication.ElementBounds.X.get -> int
+Bruinet.Stride.Communication.ElementBounds.X.set -> void
+Bruinet.Stride.Communication.ElementBounds.Y.get -> int
+Bruinet.Stride.Communication.ElementBounds.Y.set -> void
+Bruinet.Stride.Communication.ElementState
+Bruinet.Stride.Communication.ElementState.AutomationId.get -> string?
+Bruinet.Stride.Communication.ElementState.AutomationId.set -> void
+Bruinet.Stride.Communication.ElementState.Bounds.get -> Bruinet.Stride.Communication.ElementBounds!
+Bruinet.Stride.Communication.ElementState.Bounds.set -> void
+Bruinet.Stride.Communication.ElementState.ControlType.get -> string?
+Bruinet.Stride.Communication.ElementState.ControlType.set -> void
+Bruinet.Stride.Communication.ElementState.ElementState() -> void
+Bruinet.Stride.Communication.ElementState.Exists.get -> bool
+Bruinet.Stride.Communication.ElementState.Exists.set -> void
+Bruinet.Stride.Communication.ElementState.IsChecked.get -> bool?
+Bruinet.Stride.Communication.ElementState.IsChecked.set -> void
+Bruinet.Stride.Communication.ElementState.IsEnabled.get -> bool
+Bruinet.Stride.Communication.ElementState.IsEnabled.set -> void
+Bruinet.Stride.Communication.ElementState.IsFocused.get -> bool
+Bruinet.Stride.Communication.ElementState.IsFocused.set -> void
+Bruinet.Stride.Communication.ElementState.IsHitTestVisible.get -> bool
+Bruinet.Stride.Communication.ElementState.IsHitTestVisible.set -> void
+Bruinet.Stride.Communication.ElementState.IsOpen.get -> bool?
+Bruinet.Stride.Communication.ElementState.IsOpen.set -> void
+Bruinet.Stride.Communication.ElementState.IsVisible.get -> bool
+Bruinet.Stride.Communication.ElementState.IsVisible.set -> void
+Bruinet.Stride.Communication.ElementState.Items.get -> System.Collections.Generic.List<string!>?
+Bruinet.Stride.Communication.ElementState.Items.set -> void
+Bruinet.Stride.Communication.ElementState.Maximum.get -> double?
+Bruinet.Stride.Communication.ElementState.Maximum.set -> void
+Bruinet.Stride.Communication.ElementState.Minimum.get -> double?
+Bruinet.Stride.Communication.ElementState.Minimum.set -> void
+Bruinet.Stride.Communication.ElementState.Name.get -> string?
+Bruinet.Stride.Communication.ElementState.Name.set -> void
+Bruinet.Stride.Communication.ElementState.Opacity.get -> float
+Bruinet.Stride.Communication.ElementState.Opacity.set -> void
+Bruinet.Stride.Communication.ElementState.SelectedIndex.get -> int
+Bruinet.Stride.Communication.ElementState.SelectedIndex.set -> void
+Bruinet.Stride.Communication.ElementState.SelectedText.get -> string?
+Bruinet.Stride.Communication.ElementState.SelectedText.set -> void
+Bruinet.Stride.Communication.ElementState.Text.get -> string?
+Bruinet.Stride.Communication.ElementState.Text.set -> void
+Bruinet.Stride.Communication.ElementState.Value.get -> double?
+Bruinet.Stride.Communication.ElementState.Value.set -> void
+Bruinet.Stride.Communication.IAutomationChannel
+Bruinet.Stride.Communication.IAutomationChannel.ConnectAsync(System.TimeSpan timeout, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Stride.Communication.IAutomationChannel.DisconnectAsync() -> System.Threading.Tasks.Task!
+Bruinet.Stride.Communication.IAutomationChannel.IsConnected.get -> bool
+Bruinet.Stride.Communication.IAutomationChannel.SendCommandAsync(Bruinet.Stride.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Communication.AutomationResponse!>!
+Bruinet.Stride.Communication.NamedPipeChannel
+Bruinet.Stride.Communication.NamedPipeChannel.ConnectAsync(System.TimeSpan timeout, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Stride.Communication.NamedPipeChannel.DisconnectAsync() -> System.Threading.Tasks.Task!
+Bruinet.Stride.Communication.NamedPipeChannel.Dispose() -> void
+Bruinet.Stride.Communication.NamedPipeChannel.IsConnected.get -> bool
+Bruinet.Stride.Communication.NamedPipeChannel.NamedPipeChannel(string? pipeName = null) -> void
+Bruinet.Stride.Communication.NamedPipeChannel.SendCommandAsync(Bruinet.Stride.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Communication.AutomationResponse!>!
+Bruinet.Stride.Communication.WindowInfo
+Bruinet.Stride.Communication.WindowInfo.UiResolutionX.get -> int
+Bruinet.Stride.Communication.WindowInfo.UiResolutionX.set -> void
+Bruinet.Stride.Communication.WindowInfo.UiResolutionY.get -> int
+Bruinet.Stride.Communication.WindowInfo.UiResolutionY.set -> void
+Bruinet.Stride.Communication.WindowInfo.WindowHeight.get -> int
+Bruinet.Stride.Communication.WindowInfo.WindowHeight.set -> void
+Bruinet.Stride.Communication.WindowInfo.WindowInfo() -> void
+Bruinet.Stride.Communication.WindowInfo.WindowWidth.get -> int
+Bruinet.Stride.Communication.WindowInfo.WindowWidth.set -> void
+Bruinet.Stride.Communication.WindowInfo.WindowX.get -> int
+Bruinet.Stride.Communication.WindowInfo.WindowX.set -> void
+Bruinet.Stride.Communication.WindowInfo.WindowY.get -> int
+Bruinet.Stride.Communication.WindowInfo.WindowY.set -> void
+Bruinet.Stride.Context.StrideTestContext
+Bruinet.Stride.Context.StrideTestContext.ClickElement(string! automationId) -> void
+Bruinet.Stride.Context.StrideTestContext.Dispose() -> void
+Bruinet.Stride.Context.StrideTestContext.ElementExists(string! automationId) -> bool
+Bruinet.Stride.Context.StrideTestContext.ElementIsVisible(string! automationId) -> bool
+Bruinet.Stride.Context.StrideTestContext.GetElementState(string! automationId) -> Bruinet.Stride.Communication.ElementState!
+Bruinet.Stride.Context.StrideTestContext.HoldKey(Bruinet.Stride.Infrastructure.VirtualKey key, int durationMs) -> void
+Bruinet.Stride.Context.StrideTestContext.IsGameBusy() -> bool
+Bruinet.Stride.Context.StrideTestContext.IsGameReady.get -> bool
+Bruinet.Stride.Context.StrideTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.Stride.Context.StrideTestContext.NavigateBack() -> void
+Bruinet.Stride.Context.StrideTestContext.NavigateTo(string! destination) -> void
+Bruinet.Stride.Context.StrideTestContext.PressKey(Bruinet.Stride.Infrastructure.VirtualKey key) -> void
+Bruinet.Stride.Context.StrideTestContext.Refresh() -> void
+Bruinet.Stride.Context.StrideTestContext.ResetAppState() -> void
+Bruinet.Stride.Context.StrideTestContext.SaveScreenshot(string! path) -> void
+Bruinet.Stride.Context.StrideTestContext.SendCommand(Bruinet.Stride.Communication.AutomationCommand! command) -> Bruinet.Stride.Communication.AutomationResponse!
+Bruinet.Stride.Context.StrideTestContext.SetElementText(string! automationId, string! text) -> bool
+Bruinet.Stride.Context.StrideTestContext.SetSliderValue(string! automationId, double value) -> bool
+Bruinet.Stride.Context.StrideTestContext.SetToggleValue(string! automationId, bool value) -> bool
+Bruinet.Stride.Context.StrideTestContext.StrideTestContext(Bruinet.Stride.Communication.IAutomationChannel! channel, Bruinet.Core.Logging.ITestLogger! logger, Bruinet.Stride.Context.StrideTestContextOptions? options = null) -> void
+Bruinet.Stride.Context.StrideTestContext.StrideTestContext(Bruinet.Stride.Communication.IAutomationChannel! channel, Bruinet.Stride.Context.StrideTestContextOptions? options = null) -> void
+Bruinet.Stride.Context.StrideTestContext.TakeScreenshot() -> byte[]!
+Bruinet.Stride.Context.StrideTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Stride.Context.StrideTestContext.WaitFor(System.Func<bool>! condition, int? timeoutMs = null, string! description = "condition") -> bool
+Bruinet.Stride.Context.StrideTestContext.WaitForGameReady(int? timeoutMs = null) -> bool
+Bruinet.Stride.Context.StrideTestContextOptions
+Bruinet.Stride.Context.StrideTestContextOptions.AttachToExisting.get -> bool
+Bruinet.Stride.Context.StrideTestContextOptions.AttachToExisting.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.CaptureScreenshotOnFailure.get -> bool
+Bruinet.Stride.Context.StrideTestContextOptions.CaptureScreenshotOnFailure.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ClickDelayMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.ClickDelayMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeoutMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeoutMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.EnableCsvLogging.get -> bool
+Bruinet.Stride.Context.StrideTestContextOptions.EnableCsvLogging.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.GameArguments.get -> string![]!
+Bruinet.Stride.Context.StrideTestContextOptions.GameArguments.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.GameExecutablePath.get -> string?
+Bruinet.Stride.Context.StrideTestContextOptions.GameExecutablePath.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.KeyPressDelayMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.KeyPressDelayMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.LogDirectory.get -> string!
+Bruinet.Stride.Context.StrideTestContextOptions.LogDirectory.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.PipeName.get -> string!
+Bruinet.Stride.Context.StrideTestContextOptions.PipeName.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.PollingIntervalMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.PollingIntervalMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.PostClickDelayMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.PostClickDelayMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ScreenshotDirectory.get -> string!
+Bruinet.Stride.Context.StrideTestContextOptions.ScreenshotDirectory.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeoutMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeoutMs.get -> int
+Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.StrideTestContextOptions() -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ToTimeoutSettings() -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Stride.Controls.Button<TScope>
+Bruinet.Stride.Controls.Button<TScope>.Button(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.CheckBox<TScope>
+Bruinet.Stride.Controls.CheckBox<TScope>.CheckBox(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ClickableControlBase<TScope>
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.AssertClickable(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.ComboBox<TScope>
+Bruinet.Stride.Controls.ComboBox<TScope>.Close() -> TScope
+Bruinet.Stride.Controls.ComboBox<TScope>.ComboBox(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ComboBox<TScope>.IsOpen() -> bool
+Bruinet.Stride.Controls.ComboBox<TScope>.Open() -> TScope
+Bruinet.Stride.Controls.ContentControlBase<TScope>
+Bruinet.Stride.Controls.ContentControlBase<TScope>.ContentControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ContentControlBase<TScope>.GetContent() -> string!
+Bruinet.Stride.Controls.ControlBase<TScope>
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertClickable(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertEnabled(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertExists(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AssertVisible(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.AutomationId.get -> string!
+Bruinet.Stride.Controls.ControlBase<TScope>.ContainingScope.get -> TScope
+Bruinet.Stride.Controls.ControlBase<TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
+Bruinet.Stride.Controls.ControlBase<TScope>.ControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ControlBase<TScope>.GetAttribute(string! name, int? timeoutMs) -> string?
+Bruinet.Stride.Controls.ControlBase<TScope>.GetBounds() -> Bruinet.Stride.Communication.ElementBounds!
+Bruinet.Stride.Controls.ControlBase<TScope>.GetState() -> Bruinet.Stride.Communication.ElementState!
+Bruinet.Stride.Controls.ControlBase<TScope>.GetText(int? timeoutMs = null) -> string?
+Bruinet.Stride.Controls.ControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Stride.Controls.ControlBase<TScope>.IsEnabled() -> bool?
+Bruinet.Stride.Controls.ControlBase<TScope>.IsExists() -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.IsVisible() -> bool?
+Bruinet.Stride.Controls.ControlBase<TScope>.LogAction(string! action, string? value = null) -> void
+Bruinet.Stride.Controls.ControlBase<TScope>.PageName.get -> string!
+Bruinet.Stride.Controls.ControlBase<TScope>.Poll(System.Func<bool>! condition, int timeoutMs) -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.TestName.get -> string!
+Bruinet.Stride.Controls.ControlBase<TScope>.WaitClickable(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.WaitEnabled(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.WaitExists(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.ControlBase<TScope>.WaitVisible(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.EditText<TScope>
+Bruinet.Stride.Controls.EditText<TScope>.Copy() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.Cut() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.EditText(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.EditText<TScope>.Focus() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.Paste() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.Redo() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.SelectAll() -> TScope
+Bruinet.Stride.Controls.EditText<TScope>.Undo() -> TScope
+Bruinet.Stride.Controls.Image<TScope>
+Bruinet.Stride.Controls.Image<TScope>.GetSource() -> string!
+Bruinet.Stride.Controls.Image<TScope>.Image(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ListBox<TScope>
+Bruinet.Stride.Controls.ListBox<TScope>.DoubleClickItem(int index) -> TScope
+Bruinet.Stride.Controls.ListBox<TScope>.ListBox(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ListBox<TScope>.ScrollToItem(int index) -> TScope
+Bruinet.Stride.Controls.Panel<TScope>
+Bruinet.Stride.Controls.Panel<TScope>.ClickAt(int offsetX, int offsetY) -> TScope
+Bruinet.Stride.Controls.Panel<TScope>.GetChildCount() -> int
+Bruinet.Stride.Controls.Panel<TScope>.Panel(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ProgressBar<TScope>
+Bruinet.Stride.Controls.ProgressBar<TScope>.AssertComplete(string? message = null) -> TScope
+Bruinet.Stride.Controls.ProgressBar<TScope>.GetPercentage() -> double
+Bruinet.Stride.Controls.ProgressBar<TScope>.IsComplete() -> bool
+Bruinet.Stride.Controls.ProgressBar<TScope>.ProgressBar(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ProgressBar<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.RangeControlBase<TScope>
+Bruinet.Stride.Controls.RangeControlBase<TScope>.AssertValue(double expected, double tolerance = 0.001, string? message = null) -> TScope
+Bruinet.Stride.Controls.RangeControlBase<TScope>.AssertValueGreaterThan(double expected, string? message = null) -> TScope
+Bruinet.Stride.Controls.RangeControlBase<TScope>.AssertValueLessThan(double expected, string? message = null) -> TScope
+Bruinet.Stride.Controls.RangeControlBase<TScope>.GetMaximum() -> double
+Bruinet.Stride.Controls.RangeControlBase<TScope>.GetMinimum() -> double
+Bruinet.Stride.Controls.RangeControlBase<TScope>.GetValue() -> double
+Bruinet.Stride.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.RangeControlBase<TScope>.WaitValue(double expected, double tolerance = 0.01, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.SelectorControlBase<TScope>
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.AssertItemCount(int? expected, string? message = null) -> TScope
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.AssertItemExists(string! text, string? message = null) -> TScope
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.AssertSelectedText(string? expected, string? message = null) -> TScope
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.GetItemCount() -> int
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.GetItemText(int index) -> string!
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.GetItems() -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.GetSelectedIndex() -> int
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.GetSelectedText() -> string?
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.HasItem(string! text) -> bool
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.SelectorControlBase<TScope>.WaitSelectedText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Controls.Slider<TScope>
+Bruinet.Stride.Controls.Slider<TScope>.Focus() -> TScope
+Bruinet.Stride.Controls.Slider<TScope>.Slider(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.TextBlock<TScope>
+Bruinet.Stride.Controls.TextBlock<TScope>.TextBlock(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.TextControlBase<TScope>
+Bruinet.Stride.Controls.TextControlBase<TScope>.Append(string! text) -> TScope
+Bruinet.Stride.Controls.TextControlBase<TScope>.AssertTextEmpty(string? message = null) -> TScope
+Bruinet.Stride.Controls.TextControlBase<TScope>.AssertTextNotEmpty(string? message = null) -> TScope
+Bruinet.Stride.Controls.TextControlBase<TScope>.ClearAndEnter(string! text) -> TScope
+Bruinet.Stride.Controls.TextControlBase<TScope>.Enter(string! text) -> TScope
+Bruinet.Stride.Controls.TextControlBase<TScope>.GetTextLength() -> int
+Bruinet.Stride.Controls.TextControlBase<TScope>.IsReadOnly() -> bool
+Bruinet.Stride.Controls.TextControlBase<TScope>.TextControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ToggleButton<TScope>
+Bruinet.Stride.Controls.ToggleButton<TScope>.ToggleButton(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ToggleControlBase<TScope>
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.AssertChecked(string? message = null) -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.AssertUnchecked(string? message = null) -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.Check() -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.IsChecked() -> bool
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.SetChecked(bool value) -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.Toggle() -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.Uncheck() -> TScope
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.WaitChecked(bool expected = true, int? timeoutMs = null) -> bool
+Bruinet.Stride.Infrastructure.StrideGameDriver
+Bruinet.Stride.Infrastructure.StrideGameDriver.Channel.get -> Bruinet.Stride.Communication.IAutomationChannel?
+Bruinet.Stride.Infrastructure.StrideGameDriver.Dispose() -> void
+Bruinet.Stride.Infrastructure.StrideGameDriver.GameWindowHandle.get -> nint
+Bruinet.Stride.Infrastructure.StrideGameDriver.IsRunning.get -> bool
+Bruinet.Stride.Infrastructure.StrideGameDriver.StartAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+Bruinet.Stride.Infrastructure.StrideGameDriver.StopAsync() -> System.Threading.Tasks.Task!
+Bruinet.Stride.Infrastructure.StrideGameDriver.StrideGameDriver(Bruinet.Stride.Context.StrideTestContextOptions? options = null) -> void
+Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.A = 65 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Add = 107 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Alt = 18 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.B = 66 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Backspace = 8 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.C = 67 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.CapsLock = 20 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Control = 17 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D = 68 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D0 = 48 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D1 = 49 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D2 = 50 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D3 = 51 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D4 = 52 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D5 = 53 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D6 = 54 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D7 = 55 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D8 = 56 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.D9 = 57 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Decimal = 110 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Delete = 46 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Divide = 111 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Down = 40 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.E = 69 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.End = 35 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Enter = 13 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Escape = 27 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F = 70 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F1 = 112 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F10 = 121 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F11 = 122 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F12 = 123 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F2 = 113 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F3 = 114 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F4 = 115 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F5 = 116 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F6 = 117 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F7 = 118 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F8 = 119 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.F9 = 120 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.G = 71 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.H = 72 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Home = 36 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.I = 73 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Insert = 45 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.J = 74 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.K = 75 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.L = 76 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Left = 37 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.LeftAlt = 164 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.LeftControl = 162 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.LeftShift = 160 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.LeftWindows = 91 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.M = 77 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Multiply = 106 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.N = 78 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad0 = 96 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad1 = 97 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad2 = 98 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad3 = 99 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad4 = 100 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad5 = 101 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad6 = 102 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad7 = 103 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad8 = 104 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.NumPad9 = 105 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.O = 79 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.OemMinus = 189 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.OemPlus = 187 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.P = 80 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.PageDown = 34 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.PageUp = 33 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Q = 81 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.R = 82 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Right = 39 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.RightAlt = 165 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.RightControl = 163 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.RightShift = 161 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.RightWindows = 92 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.S = 83 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Shift = 16 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Space = 32 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Subtract = 109 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.T = 84 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Tab = 9 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.U = 85 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Up = 38 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.V = 86 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.W = 87 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.X = 88 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Y = 89 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Infrastructure.VirtualKey.Z = 90 -> Bruinet.Stride.Infrastructure.VirtualKey
+Bruinet.Stride.Interfaces.IStrideScope<TScope>
+Bruinet.Stride.Interfaces.IStrideScope<TScope>.Self.get -> TScope
+Bruinet.Stride.Interfaces.IStrideScope<TScope>.StrideContext.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
+Bruinet.Stride.Interfaces.IStrideTestContext
+Bruinet.Stride.Interfaces.IStrideTestContext.ClickElement(string! automationId) -> void
+Bruinet.Stride.Interfaces.IStrideTestContext.ElementExists(string! automationId) -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.ElementIsVisible(string! automationId) -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.GetElementState(string! automationId) -> Bruinet.Stride.Communication.ElementState!
+Bruinet.Stride.Interfaces.IStrideTestContext.HoldKey(Bruinet.Stride.Infrastructure.VirtualKey key, int durationMs) -> void
+Bruinet.Stride.Interfaces.IStrideTestContext.IsGameBusy() -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.IsGameReady.get -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.PressKey(Bruinet.Stride.Infrastructure.VirtualKey key) -> void
+Bruinet.Stride.Interfaces.IStrideTestContext.SendCommand(Bruinet.Stride.Communication.AutomationCommand! command) -> Bruinet.Stride.Communication.AutomationResponse!
+Bruinet.Stride.Interfaces.IStrideTestContext.SetElementText(string! automationId, string! text) -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.SetSliderValue(string! automationId, double value) -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.SetToggleValue(string! automationId, bool value) -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.WaitFor(System.Func<bool>! condition, int? timeoutMs = null, string! description = "condition") -> bool
+Bruinet.Stride.Interfaces.IStrideTestContext.WaitForGameReady(int? timeoutMs = null) -> bool
+Bruinet.Stride.Pages.PageObjectBase<TSelf>
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Button(string! automationId) -> Bruinet.Stride.Controls.Button<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.CheckBox(string! automationId) -> Bruinet.Stride.Controls.CheckBox<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.ComboBox(string! automationId) -> Bruinet.Stride.Controls.ComboBox<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.EditText(string! automationId) -> Bruinet.Stride.Controls.EditText<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.HoldKey(Bruinet.Stride.Infrastructure.VirtualKey key, int durationMs) -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Image(string! automationId) -> Bruinet.Stride.Controls.Image<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.ListBox(string! automationId) -> Bruinet.Stride.Controls.ListBox<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.Core.Interfaces.IPageObject?
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Stride.Interfaces.IStrideTestContext! context) -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Panel(string! automationId) -> Bruinet.Stride.Controls.Panel<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.PressEnter() -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.PressEscape() -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.PressKey(Bruinet.Stride.Infrastructure.VirtualKey key) -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.PressTab() -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.ProgressBar(string! automationId) -> Bruinet.Stride.Controls.ProgressBar<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.Slider(string! automationId) -> Bruinet.Stride.Controls.Slider<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.StrideContext.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.TextBlock(string! automationId) -> Bruinet.Stride.Controls.TextBlock<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.ToggleButton(string! automationId) -> Bruinet.Stride.Controls.ToggleButton<TSelf!>!
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitFor(System.Func<bool>! condition, int? timeoutMs = null) -> bool
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.StrideOptions
+Bruinet.Stride.StrideOptions.AppPath.get -> string?
+Bruinet.Stride.StrideOptions.AppPath.set -> void
+Bruinet.Stride.StrideOptions.AttachToRunning.get -> bool
+Bruinet.Stride.StrideOptions.AttachToRunning.set -> void
+Bruinet.Stride.StrideOptions.AutomationEnabled.get -> bool
+Bruinet.Stride.StrideOptions.AutomationEnabled.set -> void
+Bruinet.Stride.StrideOptions.ProcessName.get -> string?
+Bruinet.Stride.StrideOptions.ProcessName.set -> void
+Bruinet.Stride.StrideOptions.StrideOptions() -> void
+Bruinet.Stride.Testing.StrideTestFixtureBase
+Bruinet.Stride.Testing.StrideTestFixtureBase.Configuration.get -> Bruinet.Stride.BruinetStrideConfiguration!
+Bruinet.Stride.Testing.StrideTestFixtureBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
+Bruinet.Stride.Testing.StrideTestFixtureBase.Dispose() -> void
+Bruinet.Stride.Testing.StrideTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
+Bruinet.Stride.Testing.StrideTestFixtureBase.Driver.get -> Bruinet.Stride.Infrastructure.StrideGameDriver!
+Bruinet.Stride.Testing.StrideTestFixtureBase.GameWindowHandle.get -> nint
+Bruinet.Stride.Testing.StrideTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
+Bruinet.Stride.Testing.StrideTestFixtureBase.SetupWith(System.Action<Bruinet.Stride.BruinetStrideConfiguration!>! configureAction) -> void
+Bruinet.Stride.Testing.StrideTestFixtureBase.StrideTestFixtureBase() -> void
+abstract Bruinet.Stride.Controls.TextControlBase<TScope>.IsEditable.get -> bool
+abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> string!
+const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
+override Bruinet.Stride.Controls.ComboBox<TScope>.SelectByIndex(int index) -> TScope
+override Bruinet.Stride.Controls.ComboBox<TScope>.SelectByText(string! text) -> TScope
+override Bruinet.Stride.Controls.EditText<TScope>.Clear() -> TScope
+override Bruinet.Stride.Controls.EditText<TScope>.IsEditable.get -> bool
+override Bruinet.Stride.Controls.EditText<TScope>.SetText(string! text) -> TScope
+override Bruinet.Stride.Controls.Slider<TScope>.Decrement() -> TScope
+override Bruinet.Stride.Controls.Slider<TScope>.Increment() -> TScope
+override Bruinet.Stride.Controls.Slider<TScope>.SetValue(double value) -> TScope
+override Bruinet.Stride.Controls.TextBlock<TScope>.IsEditable.get -> bool
+static Bruinet.Stride.BruinetStrideConfiguration.Load(string? configPath = null) -> Bruinet.Stride.BruinetStrideConfiguration!
+static Bruinet.Stride.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
+static Bruinet.Stride.Communication.AutomationCommand.GameQuery(string! method, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
+static Bruinet.Stride.Communication.AutomationCommand.Query(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
+static Bruinet.Stride.Communication.AutomationCommand.Wait(string! method, string? target = null, int timeoutMs = 10000, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
+static Bruinet.Stride.Communication.AutomationResponse.Fail(string! error, string? stackTrace = null) -> Bruinet.Stride.Communication.AutomationResponse!
+static Bruinet.Stride.Communication.AutomationResponse.Ok(object? result = null) -> Bruinet.Stride.Communication.AutomationResponse!
+static Bruinet.Stride.Testing.StrideTestFixtureBase.FindSolutionDirectory() -> string!
+virtual Bruinet.Stride.Controls.RangeControlBase<TScope>.Decrement() -> TScope
+virtual Bruinet.Stride.Controls.RangeControlBase<TScope>.Increment() -> TScope
+virtual Bruinet.Stride.Controls.RangeControlBase<TScope>.SetValue(double value) -> TScope
+virtual Bruinet.Stride.Controls.SelectorControlBase<TScope>.SelectByIndex(int index) -> TScope
+virtual Bruinet.Stride.Controls.SelectorControlBase<TScope>.SelectByText(string! text) -> TScope
+virtual Bruinet.Stride.Controls.TextControlBase<TScope>.Clear() -> TScope
+virtual Bruinet.Stride.Controls.TextControlBase<TScope>.SetText(string! text) -> TScope
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.AutomationId.get -> string!
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.GetTitle(int? timeoutMs = null) -> string?
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.IsLoaded(int? timeoutMs = null) -> bool
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.IsReady(int? timeoutMs = null) -> bool
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.Name.get -> string!
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null, int? timeoutMs = null) -> void
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+virtual Bruinet.Stride.Testing.StrideTestFixtureBase.CreateOptions() -> Bruinet.Stride.Context.StrideTestContextOptions!
+virtual Bruinet.Stride.Testing.StrideTestFixtureBase.Dispose(bool disposing) -> void
+virtual Bruinet.Stride.Testing.StrideTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
+virtual Bruinet.Stride.Testing.StrideTestFixtureBase.GetScreenshotDirectory() -> string!

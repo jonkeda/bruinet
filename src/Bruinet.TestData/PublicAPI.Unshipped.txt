@@ -1,0 +1,89 @@
+#nullable enable
+Bruinet.TestData.ITestDataDefinition
+Bruinet.TestData.ITestDataDefinition.FileOf(string! name) -> string!
+Bruinet.TestData.ITestDataDefinition.Folder.get -> string!
+Bruinet.TestData.ITestDataDefinition.JsonOptions.get -> System.Text.Json.JsonSerializerOptions!
+Bruinet.TestData.ITestDataDefinition.Name.get -> string!
+Bruinet.TestData.ITestDataDefinition.ProjectDirectory.get -> string?
+Bruinet.TestData.ITestDataDefinition.SetType.get -> System.Type!
+Bruinet.TestData.ITestDataDefinition.TableTypes.get -> System.Collections.Generic.IReadOnlyList<System.Type!>!
+Bruinet.TestData.ITestDataDefinition.TestSetNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.TestData.ITestDataDefinition.ValidateFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.TestData.TestDataDiagnostic!>!
+Bruinet.TestData.TestDataCodes
+Bruinet.TestData.TestDataDefinition<TSet>
+Bruinet.TestData.TestDataDefinition<TSet>.FileOf(string! name) -> string!
+Bruinet.TestData.TestDataDefinition<TSet>.Folder.get -> string!
+Bruinet.TestData.TestDataDefinition<TSet>.ProjectDirectory.get -> string?
+Bruinet.TestData.TestDataDefinition<TSet>.SetType.get -> System.Type!
+Bruinet.TestData.TestDataDefinition<TSet>.TestDataDefinition(string! sourceFile = "") -> void
+Bruinet.TestData.TestDataDefinition<TSet>.TestSetNames.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.TestData.TestDataDefinition<TSet>.ValidateFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.TestData.TestDataDiagnostic!>!
+Bruinet.TestData.TestDataDiagnostic
+Bruinet.TestData.TestDataDiagnostic.Code.get -> string!
+Bruinet.TestData.TestDataDiagnostic.Code.init -> void
+Bruinet.TestData.TestDataDiagnostic.File.get -> string!
+Bruinet.TestData.TestDataDiagnostic.File.init -> void
+Bruinet.TestData.TestDataDiagnostic.Line.get -> int?
+Bruinet.TestData.TestDataDiagnostic.Line.init -> void
+Bruinet.TestData.TestDataDiagnostic.Message.get -> string!
+Bruinet.TestData.TestDataDiagnostic.Message.init -> void
+Bruinet.TestData.TestDataDiagnostic.Path.get -> string?
+Bruinet.TestData.TestDataDiagnostic.Path.init -> void
+Bruinet.TestData.TestDataDiagnostic.TestDataDiagnostic(string! File, int? Line, string! Code, string? Path, string! Message) -> void
+Bruinet.TestData.TestDataField
+Bruinet.TestData.TestDataField.JsonName.get -> string!
+Bruinet.TestData.TestDataField.JsonName.init -> void
+Bruinet.TestData.TestDataField.Nullable.get -> bool
+Bruinet.TestData.TestDataField.Nullable.init -> void
+Bruinet.TestData.TestDataField.Required.get -> bool
+Bruinet.TestData.TestDataField.Required.init -> void
+Bruinet.TestData.TestDataField.TestDataField(string! JsonName, string! TypeName, bool Required, bool Nullable, System.Collections.Generic.IReadOnlyList<string!>! Values) -> void
+Bruinet.TestData.TestDataField.TypeName.get -> string!
+Bruinet.TestData.TestDataField.TypeName.init -> void
+Bruinet.TestData.TestDataField.Values.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.TestData.TestDataField.Values.init -> void
+Bruinet.TestData.TestDataJson
+Bruinet.TestData.TestDataReport
+Bruinet.TestData.TestDataReport.Diagnostics.get -> System.Collections.Generic.IReadOnlyList<Bruinet.TestData.TestDataDiagnostic!>!
+Bruinet.TestData.TestDataReport.Diagnostics.init -> void
+Bruinet.TestData.TestDataReport.Format() -> string!
+Bruinet.TestData.TestDataReport.IsValid.get -> bool
+Bruinet.TestData.TestDataReport.TestDataReport(System.Collections.Generic.IReadOnlyList<Bruinet.TestData.TestDataDiagnostic!>! Diagnostics) -> void
+Bruinet.TestData.TestDataRuleContext
+Bruinet.TestData.TestDataRuleContext.Error(string! path, string! message, string! code = "DATA010") -> void
+Bruinet.TestData.TestDataRules<TSet>
+Bruinet.TestData.TestDataRules<TSet>.Check(System.Action<TSet, Bruinet.TestData.TestDataRuleContext!>! rule) -> Bruinet.TestData.TestDataRules<TSet>!
+Bruinet.TestData.TestDataRules<TSet>.ForEach<TItem>(string! path, System.Func<TSet, System.Collections.Generic.IEnumerable<TItem>!>! items, System.Func<TItem, string?>! problem) -> Bruinet.TestData.TestDataRules<TSet>!
+Bruinet.TestData.TestDataRules<TSet>.ForEach<TItem>(string! path, System.Func<TSet, System.Collections.Generic.IEnumerable<TItem>!>! items, System.Func<TSet, TItem, string?>! problem) -> Bruinet.TestData.TestDataRules<TSet>!
+Bruinet.TestData.TestDataRules<TSet>.Require<TItem>(string! path, System.Func<TSet, System.Collections.Generic.IEnumerable<TItem>!>! items, System.Func<TItem, bool>! predicate, string! message) -> Bruinet.TestData.TestDataRules<TSet>!
+Bruinet.TestData.TestDataRules<TSet>.TestDataRules() -> void
+Bruinet.TestData.TestDataRules<TSet>.UniqueIds<TItem, TKey>(string! path, System.Func<TSet, System.Collections.Generic.IEnumerable<TItem>!>! items, System.Func<TItem, TKey>! key) -> Bruinet.TestData.TestDataRules<TSet>!
+Bruinet.TestData.TestDataSchema
+Bruinet.TestData.TestDataTypes
+Bruinet.TestData.TestDataValidator
+abstract Bruinet.TestData.TestDataDefinition<TSet>.DefineRules(Bruinet.TestData.TestDataRules<TSet!>! rules) -> void
+abstract Bruinet.TestData.TestDataDefinition<TSet>.RelativeFolder.get -> string!
+const Bruinet.TestData.TestDataCodes.DuplicateId = "DATA011" -> string!
+const Bruinet.TestData.TestDataCodes.Empty = "DATA005" -> string!
+const Bruinet.TestData.TestDataCodes.MissingField = "DATA002" -> string!
+const Bruinet.TestData.TestDataCodes.Rule = "DATA010" -> string!
+const Bruinet.TestData.TestDataCodes.RuleCrashed = "DATA019" -> string!
+const Bruinet.TestData.TestDataCodes.Syntax = "DATA004" -> string!
+const Bruinet.TestData.TestDataCodes.UnknownField = "DATA001" -> string!
+const Bruinet.TestData.TestDataCodes.UnknownTestSet = "DATA020" -> string!
+const Bruinet.TestData.TestDataCodes.WrongValue = "DATA003" -> string!
+const Bruinet.TestData.TestDataSchema.FileName = "testdata.schema.json" -> string!
+override Bruinet.TestData.TestDataDiagnostic.ToString() -> string!
+static Bruinet.TestData.TestDataJson.Strict(System.Text.Json.JsonSerializerOptions! baseOptions) -> System.Text.Json.JsonSerializerOptions!
+static Bruinet.TestData.TestDataJson.StrictOptions.get -> System.Text.Json.JsonSerializerOptions!
+static Bruinet.TestData.TestDataSchema.Export(Bruinet.TestData.ITestDataDefinition! definition) -> string!
+static Bruinet.TestData.TestDataSchema.PathOf(Bruinet.TestData.ITestDataDefinition! definition) -> string!
+static Bruinet.TestData.TestDataTypes.FieldsOf(System.Text.Json.JsonSerializerOptions! options, System.Type! type) -> System.Collections.Generic.IReadOnlyList<Bruinet.TestData.TestDataField!>!
+static Bruinet.TestData.TestDataTypes.JsonNamesOf(System.Text.Json.JsonSerializerOptions! options, System.Collections.Generic.IEnumerable<System.Type!>! types, string! typeFullName) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.TestData.TestDataTypes.Reachable(System.Text.Json.JsonSerializerOptions! options, System.Type! root, System.Collections.Generic.IEnumerable<System.Type!>! extra) -> System.Collections.Generic.IReadOnlyList<System.Type!>!
+static Bruinet.TestData.TestDataTypes.Suggest(string! wrong, System.Collections.Generic.IEnumerable<string!>! candidates) -> string?
+static Bruinet.TestData.TestDataValidator.Validate(Bruinet.TestData.ITestDataDefinition! definition) -> Bruinet.TestData.TestDataReport!
+static Bruinet.TestData.TestDataValidator.Validate(Bruinet.TestData.ITestDataDefinition! definition, string! path) -> Bruinet.TestData.TestDataReport!
+virtual Bruinet.TestData.TestDataDefinition<TSet>.JsonOptions.get -> System.Text.Json.JsonSerializerOptions!
+virtual Bruinet.TestData.TestDataDefinition<TSet>.Name.get -> string!
+virtual Bruinet.TestData.TestDataDefinition<TSet>.TableTypes.get -> System.Collections.Generic.IReadOnlyList<System.Type!>!

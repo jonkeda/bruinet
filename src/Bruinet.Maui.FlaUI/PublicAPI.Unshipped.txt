@@ -1,0 +1,162 @@
+#nullable enable
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAudit
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport.Backlog.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding!>!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport.Findings.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding!>!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport.Merge(Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport! other) -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport.ToMarkdown() -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AcceleratorKey.get -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AcceleratorKey.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AccessKey.get -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AccessKey.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AccessibilityFinding(string! AutomationId, string! Page, System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>! Verbs, System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>! ActionVerbs, string! ControlType, bool InTree, bool KeyboardFocusable, bool SupportsInvoke, string! AcceleratorKey, string! AccessKey) -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.ActionVerbs.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.ActionVerbs.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AutomationId.get -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.AutomationId.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.ControlType.get -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.ControlType.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.DeclaresAGesture.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.HasAlternativeRoute.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.InTree.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.InTree.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.IsAnAddressOnly.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.KeyboardFocusable.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.KeyboardFocusable.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.Page.get -> string!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.Page.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.SupportsInvoke.get -> bool
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.SupportsInvoke.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.Verbs.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>!
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.Verbs.init -> void
+Bruinet.Maui.FlaUI.Bridge.AccessibilityFinding.Verdict.get -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict.AddressedToTheApp = 1 -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict.HasAnotherRoute = 2 -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict.NotAnAffordance = 0 -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict.PointerOnly = 3 -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict.Unreachable = 4 -> Bruinet.Maui.FlaUI.Bridge.AccessibilityVerdict
+Bruinet.Maui.FlaUI.Bridge.BruinetGestureExtensions
+Bruinet.Maui.FlaUI.Bridge.GestureUnavailableException
+Bruinet.Maui.FlaUI.Bridge.GestureUnavailableException.AutomationId.get -> string!
+Bruinet.Maui.FlaUI.Bridge.GestureUnavailableException.Gesture.get -> Bruinet.Maui.Interfaces.MauiGesture
+Bruinet.Maui.FlaUI.Bridge.GestureUnavailableException.GestureUnavailableException(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture, string! reason) -> void
+Bruinet.Maui.FlaUI.Bridge.GestureUnavailableException.Reason.get -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.ActivatesRowsThroughContainers.get -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.AppElement.get -> Bruinet.Maui.Interfaces.IMauiElement!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.AuditGestureAccessibility(string! page = "") -> Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Close() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Context.get -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Context.set -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Contexts.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.CurrentRoute() -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.CurrentWindowHandle.get -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.DescribeGestureBridge(int maxDepth = 3) -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Dispose() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.ExecuteScript(string! script, params object![]! args) -> object?
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.FlaUIMauiDriver(System.Diagnostics.Process! process) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.FlaUIMauiDriver(nint windowHandle) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.FlaUIMauiDriver(string! executablePath, string? arguments = null) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.FlaUIMauiDriver(string! executablePath, string? arguments, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.ForegroundGrabs.get -> int
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.GetAutomationTree() -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.GetPageSource() -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.GetScreenshot() -> byte[]!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.HasGestureBridge() -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.InvokeMenuItem(string! automationId) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.IsAtNavigationRoot() -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.IsIdle(int timeoutMs = 2000) -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.NavigateBack() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.NavigateTo(string! destination) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.NavigationDepth() -> int
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture, int arg1, int arg2) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Quit() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.Refresh() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.ResetAppState() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.RootReattachments.get -> int
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.ShellChrome.get -> Bruinet.Maui.Interfaces.ShellChromeLocators!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.SupportsGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.TakeScreenshot() -> byte[]!
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.FlaUI.FlaUIMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.FlaUI.FlaUIMauiElement
+Bruinet.Maui.FlaUI.FlaUIMauiElement.AppendText(string! text) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.AutomationId.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Checked.get -> bool?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Clear() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ClearFocus() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Click() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.CloseDropdown() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.CloseFlyout() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.DoubleClick() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Enabled.get -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+Bruinet.Maui.FlaUI.FlaUIMauiElement.FlaUIMauiElement(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.Maui.FlaUI.FlaUIMauiDriver! driver) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Focus() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Focused.get -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiElement.GetAttribute(string! attributeName) -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.GetCssValue(string! propertyName) -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.GetDomAttribute(string! attributeName) -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.GetDomProperty(string! propertyName) -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Hint.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Hover() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.InstanceKey.get -> string!
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Invoke() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.InvokeToolbarItem(string! automationId) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.IsAttached.get -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiElement.IsDropdownOpen.get -> bool?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.IsFlyoutOpen.get -> bool?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.IsReadOnly.get -> bool?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Location.get -> System.Drawing.Point
+Bruinet.Maui.FlaUI.FlaUIMauiElement.LongPress(int durationMs = 1000) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Name.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.OpenDropdown() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.OpenFlyout() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.PerformGesture(Bruinet.Maui.Interfaces.MauiGesture gesture) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.PositionInSet.get -> int?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.RangeMaximum.get -> double?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.RangeMinimum.get -> double?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.RangeSmallChange.get -> double?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.RangeValue.get -> double?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ReadAlert() -> Bruinet.Maui.Interfaces.AlertContents?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ReadDropdownItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ReadItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ReadScrollPosition() -> Bruinet.Maui.Interfaces.ScrollPosition
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ReadState(string! property) -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.Maui.FlaUI.FlaUIMauiElement.RightClick() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ScrollContent(int verticalSteps, int horizontalSteps = 0) -> Bruinet.Maui.Interfaces.ScrollStep
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ScrollTo(string! automationId) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ScrollToIndex(int index) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.ScrollTowards(int index) -> Bruinet.Maui.Interfaces.ScrollStep
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Select() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SelectByText(string! text) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SelectIndex(int index) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Selected.get -> bool
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SelectedItemText.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SetChecked(bool isChecked) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SetDate(System.DateTime date) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SetRangeValue(double value) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SetTime(System.TimeSpan time) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Size.get -> System.Drawing.Size
+Bruinet.Maui.FlaUI.FlaUIMauiElement.SizeOfSet.get -> int?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Submit() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.TagName.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Text.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Toggle() -> void
+Bruinet.Maui.FlaUI.FlaUIMauiElement.TryFindActiveDialog() -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Value.get -> string?
+Bruinet.Maui.FlaUI.FlaUIMauiElement.Visible.get -> bool
+Bruinet.Maui.FlaUI.LocatorExtensions
+static Bruinet.Maui.FlaUI.Bridge.AccessibilityAudit.Run(FlaUI.Core.AutomationElements.AutomationElement! root, FlaUI.UIA3.UIA3Automation! automation, string! page) -> Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport!
+static Bruinet.Maui.FlaUI.LocatorExtensions.ToCondition(this Bruinet.Core.Locators.Locator! locator, FlaUI.Core.Conditions.ConditionFactory! conditionFactory) -> FlaUI.Core.Conditions.ConditionBase!

@@ -13,6 +13,10 @@
          partials legitimately carry the same <typeparam>; the doc is authored once in .tpl.cs. -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591;CS1710</NoWarn>
+
+    <!-- On pack, the package's target frameworks agree with each other (AD-033); a baseline version
+         is added with the first release. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
     
     <!-- Versioning -->
     <Version>0.1.0</Version>
@@ -41,6 +45,15 @@
   </PropertyGroup>
   
   <Import Project="$(MSBuildThisFileDirectory)../Quality.props" />
+
+  <!-- A shipped package's public API is declared in PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt
+       beside its project (AD-033); a change to it that the files do not show stops the build (RS0016, RS0017). -->
+  <ItemGroup Condition="'$(IsPackable)' != 'false' and '$(OutputType)' != 'Exe' and '$(OutputType)' != 'WinExe'">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/PublicAPI.Shipped.txt;$(MSBuildProjectDirectory)/PublicAPI.Unshipped.txt" />
+    <!-- API only the .NET targets have, beside netstandard2.0 or .NET Framework. -->
+    <AdditionalFiles Include="$(MSBuildProjectDirectory)/PublicAPI/net/PublicAPI.Shipped.txt;$(MSBuildProjectDirectory)/PublicAPI/net/PublicAPI.Unshipped.txt" Condition="Exists('$(MSBuildProjectDirectory)/PublicAPI/net') and $(TargetFramework.StartsWith('net')) and !$(TargetFramework.StartsWith('netstandard')) and !$(TargetFramework.StartsWith('net4'))" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />

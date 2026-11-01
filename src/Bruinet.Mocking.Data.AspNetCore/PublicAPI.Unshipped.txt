@@ -1,0 +1,3 @@
+#nullable enable
+Bruinet.Mocking.Data.AspNetCore.SqlReplayHook
+static Bruinet.Mocking.Data.AspNetCore.SqlReplayHook.UseSqlReplayHook(this Microsoft.AspNetCore.Builder.IApplicationBuilder! app, Bruinet.Mocking.Data.Replay.ReplayRegistry? registry = null) -> Microsoft.AspNetCore.Builder.IApplicationBuilder!

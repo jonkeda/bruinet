@@ -1,0 +1,19 @@
+#nullable enable
+Bruinet.Appium.AndroidHost
+Bruinet.Appium.AndroidRecorder
+Bruinet.Appium.AndroidRecorder.AndroidRecorder() -> void
+Bruinet.Appium.AndroidRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
+Bruinet.Appium.AndroidRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
+Bruinet.Appium.AppiumErrors
+const Bruinet.Appium.AndroidHost.EmulatorHostAddress = "10.0.2.2" -> string!
+static Bruinet.Appium.AndroidHost.EmulatorUrl(string! hostUrl) -> string!
+static Bruinet.Appium.AndroidHost.Reverse(int port, string? deviceSerial = null) -> void
+static Bruinet.Appium.AndroidRecorder.Adb() -> string?
+static Bruinet.Appium.AppiumErrors.IsElementGone(System.Exception! error) -> bool
+static Bruinet.Appium.AppiumErrors.IsGone(System.Exception! error) -> bool
+static Bruinet.Appium.AppiumErrors.IsNoAnswer(System.Exception! error) -> bool
+static Bruinet.Appium.AppiumErrors.IsSessionGone(System.Exception! error) -> bool
+static Bruinet.Appium.AppiumErrors.IsUnknownCommand(System.Exception! error) -> bool
+static Bruinet.Appium.AppiumErrors.Live(System.Action! touch) -> void
+static Bruinet.Appium.AppiumErrors.Live<T>(System.Func<T>! touch) -> T
+static readonly Bruinet.Appium.AndroidRecorder.SegmentLimit -> System.TimeSpan

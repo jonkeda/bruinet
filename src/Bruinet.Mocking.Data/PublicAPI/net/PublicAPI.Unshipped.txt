@@ -1,0 +1,7 @@
+#nullable enable
+override Bruinet.Mocking.Data.LoggingDbConnection.CloseAsync() -> System.Threading.Tasks.Task!
+override Bruinet.Mocking.Data.LoggingDbConnection.DisposeAsync() -> System.Threading.Tasks.ValueTask
+override Bruinet.Mocking.Data.LoggingDbDataReader.DisposeAsync() -> System.Threading.Tasks.ValueTask
+override Bruinet.Mocking.Data.LoggingDbTransaction.CommitAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
+override Bruinet.Mocking.Data.LoggingDbTransaction.DisposeAsync() -> System.Threading.Tasks.ValueTask
+override Bruinet.Mocking.Data.LoggingDbTransaction.RollbackAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task!
