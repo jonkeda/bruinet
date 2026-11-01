@@ -454,7 +454,12 @@ object and supports an `include` array for required included files.
 Each scenario writes `<feature file>__<scenario>__result.json` to the configured reporting
 directory. It always names the feature file (relative to the config) and the scenario's line, the
 status and duration, and each step's line, status and message; a step of a callable also has the
-call's line (`callLine`). That is what the IDE preview shows at the lines that ran. If
+call's line (`callLine`), and each step that ran its time (`durationMs`). A failed step has a
+`failure`: its `kind` (`assertion`, `locator-not-found`, `timeout`, `app-unavailable`, `bind`,
+`app-exception`, `error`), the `exception`'s type, `expected` and `actual` for an assertion, the
+control's `locator`, the step's `binding`, and the first five `frames` of the suite's and the app's
+code it came through (`TodoList.AssertRowStatus (TodoList.cs:83)`). That is what the IDE preview
+shows at the lines that ran, and what the MCP server's `get_failure` gives an agent. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
 discovery data, and command catalog data. Scenario result files are also registered in the
 shared artifact manifest as `uat-scenario` artifacts, with the suite, file and line in their

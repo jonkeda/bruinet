@@ -83,6 +83,22 @@ public sealed class BddPreviewRunTests : IDisposable
         Assert.Equal(42, run.DurationMs);
         Assert.Equal([6, 7], run.Steps.Select(step => step.WrittenLine));
         Assert.Equal("no room", run.Steps[1].Message);
+        Assert.Equal((null, null), (run.Steps[1].DurationMs, run.Steps[1].Failure));
+    }
+
+    [Fact]
+    public void AReport_ReadsEachStepsTime_AndTheFailedStepsFailure()
+    {
+        var run = BddScenarioRun.Parse("""
+            { "scenario": "Shelve", "status": "failed", "durationMs": 42, "evidencePath": null,
+              "steps": [ { "line": 6, "status": "Passed", "durationMs": 3 },
+                         { "line": 7, "status": "Failed", "message": "no room", "durationMs": 9,
+                           "failure": { "kind": "assertion", "expected": "2", "actual": "1" } } ] }
+            """, DateTimeOffset.Now);
+
+        Assert.Equal([3L, 9L], run!.Steps.Select(step => step.DurationMs));
+        Assert.Null(run.Steps[0].Failure);
+        Assert.Contains("\"kind\": \"assertion\"", run.Steps[1].Failure);
     }
 
     private string Render(BddScenarioRun run)

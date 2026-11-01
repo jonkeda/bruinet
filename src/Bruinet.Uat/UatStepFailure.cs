@@ -1,30 +1,27 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
 using Bruinet.Core.Exceptions;
 
 namespace Bruinet.Uat;
 
 /// <summary>
 /// A failed step in a scenario's report, for an agent or a tool to act on: what kind of failure it was,
-/// what was expected and found, which locator, which binding, and the user-code frames it came through
-/// (.my/aiimprovements/AI2-design.md). From the step's exception, so the gate, the runner and the
-/// IDE all write the same.
+/// what was expected and found, which locator, which binding, and the suite's and the app's frames it
+/// came through. From the step's exception, so the gate, the runner and the IDE all write the same.
 /// </summary>
 internal static partial class UatStepFailure
 {
-    // Assemblies whose frames are the framework's, not the suite's or the app's: by name, so a suite's own
-    // Bruinet.Uat.Tests is not taken for Bruinet.Uat.
-    private static readonly string[] FrameworkPrefixes = ["System", "Microsoft.", "netstandard", "mscorlib", "xunit", "Castle.", "Nerdbank.", "StreamJsonRpc"];
+    // Assembly names whose frames are the framework's or a test stack's, not the suite's or the app's.
+    private static readonly string[] FrameworkPrefixes = ["System.", "Microsoft.", "xunit", "nunit", "MSTest", "Castle.", "Nerdbank.", "StreamJsonRpc", "Bunit", "AngleSharp", "FlaUI.", "WebDriver", "Appium", "MauiHeadless"];
 
-    private static readonly HashSet<string> FrameworkAssemblies = new(StringComparer.Ordinal)
-    {
-        "Bruinet.Core", "Bruinet.Bdd", "Bruinet.Uat", "Bruinet.Html", "Bruinet.Html.Bunit", "Bruinet.Html.Playwright",
-        "Bruinet.Blazor", "Bruinet.Maui", "Bruinet.Maui.Headless", "Bruinet.Maui.FlaUI", "Bruinet.Maui.Appium",
-        "Bruinet.Appium", "Bruinet.NativeAndroid", "Bruinet.Wpf", "Bruinet.WinForms", "Bruinet.Stride", "Bruinet.Narrator",
-    };
+    private static readonly HashSet<string> FrameworkNames = new(StringComparer.OrdinalIgnoreCase) { "System", "netstandard", "mscorlib" };
 
     private const int FramesKept = 5;
+
+    private const int ValueKept = 500;
 
     /// <summary>The failure's JSON; null for a step that did not fail.</summary>
     /// <param name="step">The step's result.</param>
@@ -36,25 +33,38 @@ internal static partial class UatStepFailure
             return null;
         }
 
+        // Whatever goes wrong describing it, the report is still written: the failure says so.
+        try
+        {
+            return Describe(step);
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            return new JsonObject { ["kind"] = "error", ["binding"] = step.Invocation.CommandId, ["unreadable"] = exception.Message };
+        }
+    }
+
+    private static JsonObject Describe(BddStepResult step)
+    {
         var exceptions = Chain(step.Exception).ToList();
         var node = new JsonObject
         {
             ["kind"] = Kind(exceptions, bound: step.Invocation.Command.Handler is not null),
-            ["exception"] = exceptions.LastOrDefault(exception => exception is not System.Reflection.TargetInvocationException)?.GetType().Name,
+            ["exception"] = exceptions.LastOrDefault(exception => exception is not TargetInvocationException)?.GetType().Name,
             ["binding"] = step.Invocation.CommandId,
         };
 
         if (exceptions.OfType<AssertionException>().FirstOrDefault() is { } assertion)
         {
-            node["expected"] = Text(assertion.Expected);
-            node["actual"] = Text(assertion.Actual);
+            node["expected"] = Kept(Text(assertion.Expected));
+            node["actual"] = Kept(Text(assertion.Actual));
         }
 
         node["locator"] = Locate(exceptions);
         if (exceptions.OfType<WaitTimeoutException>().FirstOrDefault() is { } wait)
         {
             node["waitedMs"] = wait.TimeoutMs;
-            node["condition"] = wait.Condition;
+            node["condition"] = Kept(wait.Condition);
         }
 
         if (exceptions.OfType<ElementNotReadyException>().FirstOrDefault() is { } notReady)
@@ -72,8 +82,6 @@ internal static partial class UatStepFailure
     }
 
     /// <summary>assertion, locator-not-found, timeout, app-unavailable, bind, app-exception or error.</summary>
-    /// <param name="exceptions">The failure's exception and its inner ones, outermost first.</param>
-    /// <param name="bound">Whether the step had a definition to run.</param>
     internal static string Kind(IReadOnlyList<Exception> exceptions, bool bound)
     {
         if (exceptions.Count == 0)
@@ -101,7 +109,8 @@ internal static partial class UatStepFailure
             return "app-unavailable";
         }
 
-        // Thrown in the suite's or the app's own code, not in Bruinet's.
+        // Thrown from the suite's or the app's code, a runtime call there included (int.Parse, First()): the first
+        // frame outside the runtime is theirs, not Bruinet's.
         return Thrower(exceptions[^1]) is { } thrower && !IsFramework(thrower) ? "app-exception" : "error";
     }
 
@@ -114,7 +123,6 @@ internal static partial class UatStepFailure
     }
 
     /// <summary>The control's locator: an exception's own, else the <c>Locator: ...</c> a control's message names it by.</summary>
-    /// <param name="exceptions">The failure's exception and its inner ones.</param>
     internal static string? Locate(IReadOnlyList<Exception> exceptions)
         => exceptions.Select(Locator).FirstOrDefault(locator => locator is not null)
             ?? exceptions.Select(exception => LocatorInMessage().Match(exception.Message)).FirstOrDefault(match => match.Success)?.Groups[1].Value;
@@ -137,22 +145,50 @@ internal static partial class UatStepFailure
             .Distinct(StringComparer.Ordinal)
             .Take(FramesKept);
 
+    // An async method's or a lambda's frame by the method it was written in, not the compiler's class.
     private static string Describe(StackFrame frame)
     {
         var method = frame.GetMethod()!;
+        var type = method.DeclaringType!;
+        var name = method.Name;
+        if (type.Name.StartsWith('<') && type.DeclaringType is { } outer)
+        {
+            name = CompilerName().Match(type.Name) is { Success: true } stateMachine ? stateMachine.Groups[1].Value
+                : CompilerName().Match(name) is { Success: true } lambda ? lambda.Groups[1].Value + " (lambda)"
+                : name;
+            type = outer;
+        }
+
         var where = frame.GetFileName() is { } file
             ? string.Create(CultureInfo.InvariantCulture, $" ({Path.GetFileName(file)}:{frame.GetFileLineNumber()})")
             : string.Empty;
-        return $"{method.DeclaringType!.Name}.{method.Name}{where}";
+        return $"{Plain(type.Name)}.{name}{where}";
     }
 
     private static Type? Thrower(Exception exception)
-        => new StackTrace(exception, fNeedFileInfo: false).GetFrame(0)?.GetMethod()?.DeclaringType;
+        => new StackTrace(exception, fNeedFileInfo: false).GetFrames()
+            .Select(frame => frame.GetMethod()?.DeclaringType)
+            .FirstOrDefault(type => type is not null && !IsRuntime(type));
 
+    // Bruinet's own assemblies are framework; a suite's and a sample app's are not.
     private static bool IsFramework(Type type)
         => type.Assembly.GetName().Name is not { } name
-            || FrameworkAssemblies.Contains(name)
-            || FrameworkPrefixes.Any(prefix => name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+            || IsRuntime(type)
+            || FrameworkPrefixes.Any(prefix => name.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            || (name.StartsWith("Bruinet.", StringComparison.Ordinal)
+                && !name.Contains(".Samples.", StringComparison.Ordinal)
+                && !name.EndsWith("Tests", StringComparison.Ordinal)
+                && !name.EndsWith(".Uat", StringComparison.Ordinal));
+
+    private static bool IsRuntime(Type type)
+        => type.Assembly.GetName().Name is not { } name
+            || FrameworkNames.Contains(name)
+            || name.StartsWith("System.", StringComparison.OrdinalIgnoreCase)
+            || name.StartsWith("Microsoft.", StringComparison.OrdinalIgnoreCase);
+
+    private static string Plain(string typeName) => typeName.IndexOf('`', StringComparison.Ordinal) is var tick and > 0 ? typeName[..tick] : typeName;
+
+    private static string? Kept(string? value) => value is { Length: > ValueKept } ? $"{value[..ValueKept]}… ({value.Length - ValueKept} more)" : value;
 
     private static string? Text(object? value) => value switch
     {
@@ -161,6 +197,10 @@ internal static partial class UatStepFailure
         _ => value.ToString(),
     };
 
-    [System.Text.RegularExpressions.GeneratedRegex(@"Locator: (\S+)")]
-    private static partial System.Text.RegularExpressions.Regex LocatorInMessage();
+    [GeneratedRegex(@"Locator: (\S+)")]
+    private static partial Regex LocatorInMessage();
+
+    // <Method>d__3 (a state machine) or <Method>b__0_0 (a lambda): the method's own name.
+    [GeneratedRegex(@"^<([^>]+)>")]
+    private static partial Regex CompilerName();
 }

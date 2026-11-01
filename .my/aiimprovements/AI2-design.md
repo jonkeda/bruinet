@@ -1,6 +1,6 @@
 # AI2 design: failures as structured data
 
-Status: **design**, 2026-11-01. No open question needs the owner (decisions below, recorded per the run's rules).
+Status: **built**, 2026-11-01 (2f0b6db7, review fixes after). No open question needs the owner (decisions below, recorded per the run's rules).
 
 ## Where the data comes from
 
@@ -58,5 +58,10 @@ Status: **design**, 2026-11-01. No open question needs the owner (decisions belo
 | an old result without them parses | `Bruinet.Bdd.Workspace.Tests` |
 | `get_failure` after a failed run; under 500 tokens; error when no failed run | `Bruinet.Cli.Tests` (`McpRunTests`) |
 
-Done when: the counter suite's failure gives kind `assertion` with expected 5 and actual 1; the Todo seeded bug gives
-expected "Done", actual "Overdue" and the locator through `run_scenario` on MauiHeadless.
+Done when (as built; the first wording asked for what the counter suite cannot give): the counter suite's failure is
+kind `assertion` with its binding and the fixture's frame (`BddRunnerProcessTests`, `McpRunTests`), and the Todo seeded
+bug through `run_scenario` on MauiHeadless gives expected "Done", actual "Overdue" and the page object's frame
+(`TodoList.AssertRowStatus (TodoList.cs:83)`): run by hand on 2026-11-01, see AI2-review.md. The counter step uses
+xUnit's `Assert.True`, which carries no expected or actual; xUnit's own exceptions are not read for them.
+
+Narrowed: `binding` is the command id; its file and line come through `frames` when the step's code is on the stack.

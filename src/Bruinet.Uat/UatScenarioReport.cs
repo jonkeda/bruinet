@@ -86,8 +86,12 @@ internal static class UatScenarioReport
             ["status"] = step.Status.ToString(),
             ["message"] = step.Message,
             ["durationMs"] = step.Duration is { } duration ? (long)duration.TotalMilliseconds : null,
-            ["failure"] = UatStepFailure.Of(step),
         };
+
+        if (UatStepFailure.Of(step) is { } failure)
+        {
+            node["failure"] = failure;
+        }
 
         if (trace)
         {

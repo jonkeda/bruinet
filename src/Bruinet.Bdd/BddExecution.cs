@@ -238,7 +238,8 @@ public sealed class BddStepExecutionSession
             return missingHandler;
         }
 
-        var clock = System.Diagnostics.Stopwatch.StartNew();
+        // The step's own time: started at its handler, so a breakpoint or the pacing before it is not counted.
+        var clock = new System.Diagnostics.Stopwatch();
         try
         {
             if (invocation.App is { } app)
@@ -259,6 +260,7 @@ public sealed class BddStepExecutionSession
             }
 
             BddStepResult result;
+            clock.Start();
             using (Bruinet.Core.Testing.TestScope.EnterStep($"{invocation.Step.Source.LineNumber}: {invocation.Step.Text}"))
             using (Bruinet.Core.Logging.Timing.Span("step", invocation.Step.Text))
             {

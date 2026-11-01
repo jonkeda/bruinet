@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bruinet.Core.Exceptions;
 using Xunit;
 
@@ -13,6 +14,11 @@ public sealed class UatStepFailureTests
         { new ElementNotFoundException("Not found: #save."), "locator-not-found" },
         { new WaitTimeoutException("Waited for Save.", 5000, "Save shown"), "timeout" },
         { new TimeoutException("Too slow."), "timeout" },
+        { new ScopeNotReadyException(new Bruinet.Core.Scopes.ScopeReadiness("TodoPage", Bruinet.Core.Scopes.ScopeReadinessState.NotLoaded), "Not ready."), "timeout" },
+        { new StaleElementException(detail: "Gone."), "locator-not-found" },
+        { new AppUnavailableException("The app is not running."), "app-unavailable" },
+        { Thrown(() => _ = int.Parse("seven", CultureInfo.InvariantCulture)), "app-exception" },
+        { new InvalidOperationException("Something inside."), "error" },
         { new InvalidOperationException("Failed to run 'Click' on control 'Save'.", new AssertionException("Expected it enabled.")), "assertion" },
         { Thrown(() => throw new FormatException("Not a date.")), "app-exception" },
     };
@@ -38,8 +44,26 @@ public sealed class UatStepFailureTests
     }
 
     [Fact]
+    public async Task AnAsyncMethodsFrame_IsNamedAsWritten()
+    {
+        var exception = await Assert.ThrowsAsync<FormatException>(SaveAsync);
+
+        Assert.Contains(UatStepFailure.Frames([exception]), frame => frame.StartsWith("UatStepFailureTests.SaveAsync (", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ALocatorNotFound_GivesItsLocator()
+        => Assert.Equal("#save", UatStepFailure.Locate([new ElementNotFoundException("Not found.", "#save")]));
+
+    [Fact]
     public void AStepWithNoDefinition_IsABindFailure()
         => Assert.Equal("bind", UatStepFailure.Kind([], bound: false));
+
+    private static async Task SaveAsync()
+    {
+        await Task.Yield();
+        throw new FormatException("Not a date.");
+    }
 
     // Thrown here, in this test's own code: a frame that is not Bruinet's or the runtime's.
     private static Exception Thrown(Action act)

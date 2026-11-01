@@ -381,12 +381,17 @@ public sealed class BddMcpServer : IDisposable
         }
 
         var step = failed.Steps.FirstOrDefault(candidate => candidate.Status == "Failed");
+
+        // The report's file is relative to the suite's config: relative to the solution here, as run_scenario's, with the step's text.
+        var config = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } configPath ? Path.GetDirectoryName(configPath)! : _solutionDir;
+        var file = step?.File is { } written ? Path.GetFullPath(written, config) : new Uri(uri).LocalPath;
+        var text = step is not null && File.Exists(file) && File.ReadLines(file).Skip(step.Line - 1).FirstOrDefault() is { } line ? line.Trim() : null;
         return new
         {
             failed.Scenario,
             failed.Status,
             At = failed.At.ToString("u", CultureInfo.InvariantCulture),
-            FailedStep = step is null ? null : new { step.File, step.Line, step.CallLine, step.DurationMs },
+            FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
             Failure = Failure(failed),
             Screenshot = failed.EvidencePath,
             Message = Cap(step?.Message, 2000),
