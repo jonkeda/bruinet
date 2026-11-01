@@ -492,7 +492,14 @@ public sealed record RunEndedParams(string Uri, string Status, string? Message, 
 /// <param name="Scenario">Its name.</param>
 /// <param name="Status"><c>passed</c>, <c>failed</c> or <c>error</c>.</param>
 /// <param name="Message">The failure's or the error's message.</param>
-public sealed record RunScenarioResult(string Scenario, string Status, string? Message);
+/// <param name="FailedStep">The step that failed, when the runner said which.</param>
+public sealed record RunScenarioResult(string Scenario, string Status, string? Message, RunFailedStep? FailedStep = null);
+
+/// <summary>The step a scenario of a Run on the runner failed at.</summary>
+/// <param name="File">Its file: the feature file, or the step file of a call's body.</param>
+/// <param name="Line">Its line.</param>
+/// <param name="Text">Its text, with a call's values filled in.</param>
+public sealed record RunFailedStep(string? File, int Line, string Text);
 
 /// <summary>
 /// The answer to <c>bruinet/step/debug</c> (Debug from here, AD-022): the runner

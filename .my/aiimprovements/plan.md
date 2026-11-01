@@ -38,6 +38,54 @@ failed. Wave 1 closes that loop, mostly by wrapping what exists.
 | AI19 | Agent-run exploratory testing | P10 | L | AI4, AI2, AI18, `explore_app` |
 | AI20 | Mutation testing for scenarios | P9 | L | bUnit, MauiHeadless, touch map |
 
+## Scope: Html and MAUI first
+
+The owner, 2026-11-01: build and fix mainly for Html (with Blazor, which stands on it: bUnit and Chromium heads) and MAUI
+(MauiHeadless and Windows). Every other stack (Wpf, WinForms, native Android, Appium devices, iOS, Stride) goes to the end
+of the queue.
+
+- An item's tools work on every head they reach through the shared runner; tests and fixes are written for Html and MAUI.
+- Parts of an item that only another stack needs (AI7's WinForms designer map, AI18's Android checks, Windows UI
+  Automation for Wpf) are split off as `<id>-other` rows at the end of the run order.
+- C8 (Wpf and WinForms) stays last.
+
+## Coverage steps
+
+The control libraries' coverage plan, [coverage/plan.md](../coverage/plan.md), runs in the same queue. C1-C3 are built;
+the rest are taken from there as they stand (its "Done when" column is the check, its progress table gets the numbers).
+
+| # | Step | Size | Builds on |
+| --- | --- | --- | --- |
+| C4 | Blazor's controls (media, nav menu, iframe, image) bound to the contract kit | M | C3 |
+| C5 | Maui on MauiHeadless: a page per control kind in the test app, the kit bound to it | M | C1 |
+| C6 | Mutation testing on the controls: `mutate.ps1` gains Html and Maui, in process | M | C2, C5 |
+| C7 | By hand what the kit does not reach: Core's loggers and `Timing`, Maui's `MauiDriverFactory`, `NavigationRecovery`, `WebView`, `TitleBar`, `Image` | M | C5 |
+| C8 | Wpf and WinForms bound to the kit, run locally with `-Desktop` | L | C1 |
+
+C5 also feeds [headless-parity](../headless-parity/design.md) (a page per control kind on MauiHeadless) and C6 its
+mutation runner (Q4 there).
+
+## Run order
+
+The queue `/ai-item next` takes, mixing both: small AI tools first (each unblocks agents at once), the coverage steps
+between the larger AI items.
+
+| # | Item | Why here |
+| --- | --- | --- |
+| 1 | AI1 | the loop's base: run any scenario from MCP |
+| 2 | AI3 | small; the change's tests for every later check |
+| 3 | AI5 | small; wraps existing renames |
+| 4 | C4 | continues C3's pattern while it is fresh |
+| 5 | AI2 | the failure an agent reads |
+| 6 | C5 | MauiHeadless contracts; parity's pages |
+| 7 | AI2b | coverage per scenario, on `coverage.ps1`'s collection |
+| 8 | AI4 | step session and page state |
+| 9 | C6 | mutation runner, shared with parity and AI20 |
+| 10 | C7 | the hand-written rest |
+| 11 | AI6 onward | in the order table's order |
+| 12 | `<id>-other` rows | the parts for Wpf, WinForms, native Android, devices and Stride |
+| 13 | C8 | last: needs a desktop session |
+
 Waves: AI1-AI5 (with AI2b) close the loop (run, read, see which code ran, step, rename). AI6-AI9 let the agent see inside. AI10-AI14 make each loop cheaper or
 safer. AI15-AI20 package it into workflows.
 
@@ -187,5 +235,10 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI18 | open | | |
 | AI19 | open | | |
 | AI20 | open | | |
+| C4 | open | | |
+| C5 | open | | |
+| C6 | open | | |
+| C7 | open | | |
+| C8 | open | | |
 
 Status: `open`, `design`, `gate` (waiting on the owner), `build`, `check`, `review`, `done`.

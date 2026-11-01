@@ -430,9 +430,11 @@ public sealed class BddRunnerHost
         List<string> messages = [];
         for (var current = exception; current is not null; current = current.InnerException)
         {
-            if (current is not TargetInvocationException && !messages.Contains(current.Message, StringComparer.Ordinal))
+            // The type too: a message alone can be a bare name (a KeyNotFoundException's key, an assembly).
+            var message = $"{current.GetType().Name}: {current.Message}";
+            if (current is not TargetInvocationException && !messages.Contains(message, StringComparer.Ordinal))
             {
-                messages.Add(current.Message);
+                messages.Add(message);
             }
         }
 
@@ -482,17 +484,18 @@ public sealed class BddRunnerHost
 
         public string Catalog { get; }
 
-        // Once its last step has run, the scenario's result is written as the gate writes it, so a
-        // run from a host shows in the IDEs' preview and the BDD Explorer (AD-022).
+        // Once its last step has run, or a step failed (where the gate stops too), the scenario's
+        // result is written as the gate writes it, so a run from a host shows in the IDEs' preview,
+        // the BDD Explorer (AD-022) and the MCP server's last_runs.
         public void RecordIfFinished()
         {
-            if (_recorded || Session.HasNext)
+            var result = Session.ToResult();
+            if (_recorded || (Session.HasNext && result.Steps is not [.., { Status: BddStepResultStatus.Failed }]))
             {
                 return;
             }
 
             _recorded = true;
-            var result = Session.ToResult();
             var evidence = !result.Passed && !result.Skipped && _runtime.Config.Reporting.ScreenshotOnFailure
                 ? UatScenarioResults.ScreenshotServiceOf(Fixture)?.Capture("BddRunner", UatScenarioResults.EvidenceName(Scenario), "failure")
                 : null;

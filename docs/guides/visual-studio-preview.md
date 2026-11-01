@@ -258,6 +258,10 @@ The same server is an MCP server for GitHub Copilot's agent mode (Visual Studio 
 VS Code) and any other MCP client:
 - `list_suites`, `list_steps`, `list_pages` and `list_test_sets` give what a scenario can say;
 - `validate_scenario` checks a draft as the gate does;
+- `run_scenario` runs a scenario, or every scenario of a file, on the suite's runner as the preview's
+  Run does, and waits: each scenario's status and, for a failed one, the step (file, line, text) and
+  the message; `build: true` builds the suite first, after a change to C#;
+- `last_runs` gives each scenario's newest result, from any run;
 - `find_step_usages` finds where a C# member is used.
 
 It calls no model: it holds the catalog and runs the checks, and Copilot does the writing.

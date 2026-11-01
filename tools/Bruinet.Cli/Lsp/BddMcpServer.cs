@@ -70,6 +70,8 @@ public sealed class BddMcpServer : IDisposable
         ("verify_page_objects", "Opens each recorded page in the running app (a browser of its own, under the Explore guards) and looks up every member of the project's page objects as Bruinet would: found once, found several times, or not found. Stop a recording first.", Schema(("project", "string", "The project; the only one when left out."), ("headless", "boolean", "No browser window; true when left out."))),
         ("update_scraper_config", "Makes one change to a scraped project's scraper.config.md, keeping the rest of the file: 'set' a field (values: field, value; in 'Danger words': category, true or false), 'add' a row (values: its cells: Explore hosts [Host], Never click and Always click [Match: 'text: ...' or 'selector: ...'], Never visit [Url], Allow requests [Method, Url], Aliases [Url]) or 'remove' one (values: its first cell). Asks first: without 'confirm' it says what it would write; call again with confirm: true once the person agrees.", Schema(("project", "string", "The project; the only one when left out."), ("action", "string", "set, add or remove; required."), ("section", "string", "The section without ##, e.g. Explore, Never click; required."), ("values", "array", "The values, as strings; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
+        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."))),
+        ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("delete_results", "Deletes old scenario results from every run, for good: of a scenario (the heading at 'line' of 'path'), a feature file ('path') or a suite ('suite'). Only scenario reports and their screenshots; a run left empty goes. Counts only (dryRun) unless 'dryRun' is false.", Schema(("scope", "string", "scenario, file or suite; required."), ("path", "string", "The feature file, for a scenario or a file."), ("line", "integer", "The scenario heading's line, for a scenario."), ("suite", "string", "The suite, for a suite (or the one a linked file is picked in)."), ("dryRun", "boolean", "Only count; true when left out."))),
     ];
 
@@ -120,7 +122,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. To check a scenario works, run it with run_scenario (build: true after changing C#); last_runs gives the newest results. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -159,6 +161,8 @@ public sealed class BddMcpServer : IDisposable
                 "list_test_sets" => Suite(arguments).TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Distinct().ToList(),
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
+                "run_scenario" => RunScenario(arguments),
+                "last_runs" => _server.LastRuns(new PreviewParams(FileUri(Required(arguments, "path")), (string?)arguments["suite"])),
                 "delete_results" => DeleteResults(arguments),
                 "record_video" => RecordVideo(arguments),
                 "review_page" => ReviewPage(arguments),
@@ -293,6 +297,49 @@ public sealed class BddMcpServer : IDisposable
             ? result
             : throw new ToolProblem(result.Reason + string.Concat(result.Problems.Select(problem => $"{Environment.NewLine}line {problem.Line}, column {problem.Column}: {problem.Code} {problem.Message}")));
     }
+
+    // The preview's Run, waited for: the suite built first when asked, then how each scenario went.
+    private object RunScenario(JsonObject arguments)
+    {
+        var uri = FileUri(Required(arguments, "path"));
+        var suite = (string?)arguments["suite"];
+        if ((bool?)arguments["build"] == true)
+        {
+            var project = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ProjectFile ?? throw new ToolProblem("No suite with a project file holds or links this feature file.");
+            var build = Run("dotnet", ["build", project, "-v:minimal", "-nologo"], new Dictionary<string, string>());
+            if (build.Code != 0)
+            {
+                throw new ToolProblem($"The build failed, so nothing ran:{Environment.NewLine}{build.Tail}");
+            }
+
+            _server.BuildDone();
+        }
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes((int?)arguments["timeoutMinutes"] ?? 10));
+        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, (int?)arguments["line"], suite), timeout.Token).GetAwaiter().GetResult();
+        if (ended is null)
+        {
+            throw new ToolProblem(started.Reason ?? "The run did not start.");
+        }
+
+        return new
+        {
+            started.Suite,
+            Status = timeout.IsCancellationRequested ? "timed out" : ended.Status,
+            ended.Message,
+            Scenarios = ended.Results.Select(result => new
+            {
+                result.Scenario,
+                result.Status,
+                FailedStep = result.FailedStep is { } step ? new { File = step.File is null ? null : Path.GetRelativePath(_solutionDir, step.File), step.Line, step.Text } : null,
+                Message = Cap(result.Message, 2000),
+            }),
+        };
+    }
+
+    private string FileUri(string path) => new Uri(Path.GetFullPath(path, _solutionDir)).AbsoluteUri;
+
+    private static string? Cap(string? text, int length) => text is null || text.Length <= length ? text : $"{text[..length]}… ({text.Length - length} more characters)";
 
     // An agent is not asked first, so it only counts unless it says dryRun: false.
     private DeleteResultsResult DeleteResults(JsonObject arguments)

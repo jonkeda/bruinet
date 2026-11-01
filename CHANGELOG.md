@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiUnit is renamed MauiHeadless (`src/MauiHeadless`, package `MauiHeadless`), and Bruinet's head `Bruinet.Maui.MauiUnit` is `Bruinet.Maui.Headless`: `BRUINET_HEAD=headless`, `MauiPlatform.Headless`, `MauiHeads.IsHeadless`, `CreateHeadlessOptions`, `HeadlessPreferences` and `HeadlessSecureStorage`. No release shipped the old names.
 
 ### Added
+- The MCP server's `run_scenario` and `last_runs`: an agent runs a scenario (or a file's) on the suite's
+  runner and reads how it went, the failed step's file, line and text included, and each scenario's
+  newest result. A Run on the runner now keeps a failed scenario's result, as the gate does; it kept
+  only the passed ones.
 - A scenario outline can have several Examples sections: `### Examples: <name>`, each with a tag
   line of its own that joins the outline's tags for its rows (a head tag picks rows for a head).
   Rows are numbered across the sections, so names, filters and timings stay put. `UAT015` names

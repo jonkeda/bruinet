@@ -12,7 +12,11 @@ unattended except at the gates named below; at a gate, stop and ask the owner, w
 ## Arguments
 
 - `/ai-item <id>`: that item, from the phase its status shows.
-- `/ai-item next`: the first item in the order table whose status is not `done` and whose "Builds on" items are `done`.
+- `/ai-item next`: the first item in the plan's "Run order" table whose status is not `done` and whose "Builds on" items
+  are `done` (C1-C3 count as done).
+- A coverage step (`C4`-`C8`): the same phases, from [.my/coverage/plan.md](../../../.my/coverage/plan.md). No design
+  note and no agent check: its check is `./tools/Scripts/coverage.ps1` with the step's heads, against the step's "Done
+  when"; the numbers go in that plan's progress table, and its open questions are decided there.
 - `/ai-item status`: the status table and the next item, nothing else.
 
 ## Before starting

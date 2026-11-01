@@ -1,0 +1,11 @@
+--- a/samples/Todo/src/Bruinet.Samples.Todo.Core/Rules/TodoStatusRules.cs
++++ b/samples/Todo/src/Bruinet.Samples.Todo.Core/Rules/TodoStatusRules.cs
+@@ -30,7 +30,7 @@ public static class TodoStatusRules
+     /// </summary>
+     public static DisplayStatus Display(TodoStatus status, bool isPastDue)
+     {
+-        if (isPastDue && status != TodoStatus.Done)
++        if (isPastDue)
+         {
+             return DisplayStatus.Overdue;
+         }

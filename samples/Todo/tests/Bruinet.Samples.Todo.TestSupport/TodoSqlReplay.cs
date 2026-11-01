@@ -128,7 +128,8 @@ public sealed class TodoSqlReplay
     public static string RecordingsOf(string project)
     {
         // Above the test's output (the suite's own project), or beside it: another suite's fixture (the UAT project's) reads this project's recordings.
-        for (var folder = new DirectoryInfo(AppContext.BaseDirectory); folder is not null; folder = folder.Parent)
+        // From where this assembly was built, not the process's folder: a host's runner runs from a copy (AD-025).
+        for (var folder = new DirectoryInfo(Bruinet.Core.Composition.AssemblyFile.FolderOf(typeof(TodoSqlReplay).Assembly)); folder is not null; folder = folder.Parent)
         {
             if (File.Exists(Path.Combine(folder.FullName, project + ".csproj")))
             {

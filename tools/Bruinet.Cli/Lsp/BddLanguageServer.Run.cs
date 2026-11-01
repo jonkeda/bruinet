@@ -21,22 +21,42 @@ public sealed partial class BddLanguageServer
     /// </summary>
     [JsonRpcMethod("bruinet/run/start")]
     public async Task<RunStartResult> RunStartAsync(RunStartParams request)
+        => (await StartRunAsync(request).ConfigureAwait(false)).Result;
+
+    /// <summary>
+    /// A Run on the runner to its end, for a host that waits instead of listening for
+    /// <c>bruinet/run/ended</c> (the MCP server's <c>run_scenario</c>): the run's end, or null with
+    /// why it did not start. <paramref name="cancellationToken"/> cancels it as <c>bruinet/run/cancel</c> does.
+    /// </summary>
+    public async Task<(RunStartResult Started, RunEndedParams? Ended)> RunToEndAsync(RunStartParams request, CancellationToken cancellationToken = default)
+    {
+        var (started, run) = await StartRunAsync(request).ConfigureAwait(false);
+        if (run is null)
+        {
+            return (started, null);
+        }
+
+        using var cancel = cancellationToken.Register(run.Cancel.Cancel);
+        return (started, await run.Ended.Task.ConfigureAwait(false));
+    }
+
+    private async Task<(RunStartResult Result, RunnerRun? Run)> StartRunAsync(RunStartParams request)
     {
         var path = Key(request.Uri);
         var file = Context(path, request.Suite);
         if (file.Suite is not { } suite || !path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
         {
-            return RunStartResult.Not("No suite holds or links this feature file.");
+            return (RunStartResult.Not("No suite holds or links this feature file."), null);
         }
 
         if (file.Catalogs is null)
         {
-            return RunStartResult.Not(file.Reason ?? $"{suite.Name} is not built yet.");
+            return (RunStartResult.Not(file.Reason ?? $"{suite.Name} is not built yet."), null);
         }
 
         if (suite.RunnerAssemblies is not { } assemblies)
         {
-            return RunStartResult.Not($"{suite.Name} has no built test project to run in. Build it first.");
+            return (RunStartResult.Not($"{suite.Name} has no built test project to run in. Build it first."), null);
         }
 
         var names = BddMarkdownParser.Parse(file.Text, path).Document?.Scenarios
@@ -45,7 +65,7 @@ public sealed partial class BddLanguageServer
             .ToList() ?? [];
         if (names.Count == 0)
         {
-            return RunStartResult.Not(request.Line is { } at ? $"There is no scenario heading at line {at}." : "The file has no scenarios.");
+            return (RunStartResult.Not(request.Line is { } at ? $"There is no scenario heading at line {at}." : "The file has no scenarios."), null);
         }
 
         var run = new RunnerRun(request.Uri, names) { Keep = _warmRunner };
@@ -53,7 +73,7 @@ public sealed partial class BddLanguageServer
         {
             if (_step is not null || _run is not null)
             {
-                return RunStartResult.Not("A run on the suite's runner is going: wait for it, or stop it first.");
+                return (RunStartResult.Not("A run on the suite's runner is going: wait for it, or stop it first."), null);
             }
 
             _run = run;
@@ -68,11 +88,11 @@ public sealed partial class BddLanguageServer
         catch (Exception exception) when (exception is not OutOfMemoryException)
         {
             await EndRunAsync(run).ConfigureAwait(false);
-            return RunStartResult.Not(exception.Message);
+            return (RunStartResult.Not(exception.Message), null);
         }
 
         _ = Task.Run(() => RunAllAsync(run, suite.ConfigPath, assemblies.Pages, path));
-        return new RunStartResult(true, null, names, suite.Name);
+        return (new RunStartResult(true, null, names, suite.Name), run);
     }
 
     /// <summary><c>bruinet/run/cancel</c>: cancels the step that runs and ends the run, <c>canceled</c>.</summary>
@@ -128,7 +148,9 @@ public sealed partial class BddLanguageServer
         var status = run.Cancel.IsCancellationRequested ? "canceled"
             : error is not null ? "error"
             : run.Results.All(result => result.Status == "passed") ? "passed" : "failed";
-        _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/run/ended", new RunEndedParams(run.Uri, status, error, run.Results));
+        var ended = new RunEndedParams(run.Uri, status, error, run.Results);
+        run.Ended.TrySetResult(ended);
+        _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/run/ended", ended);
     }
 
     private static async Task<RunScenarioResult> RunOneAsync(RunnerRun run, string config, string pages, string feature, string name)
@@ -153,7 +175,7 @@ public sealed partial class BddLanguageServer
                 switch (step.Status)
                 {
                     case BddStepResultStatus.Failed:
-                        return new RunScenarioResult(name, "failed", step.Message);
+                        return new RunScenarioResult(name, "failed", step.Message, step.Ran is { } ran ? new RunFailedStep(ran.File, ran.Line, ran.Text) : null);
                     case BddStepResultStatus.Canceled:
                         throw new OperationCanceledException(run.Cancel.Token);
                 }
@@ -227,6 +249,9 @@ public sealed partial class BddLanguageServer
         public IReadOnlyList<string> Scenarios { get; } = scenarios;
 
         public List<RunScenarioResult> Results { get; } = [];
+
+        // The run's end, for a host that waits for it (RunToEndAsync).
+        public TaskCompletionSource<RunEndedParams> Ended { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public CancellationTokenSource Cancel { get; } = new();
 
