@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Bruinet.Core.Scraping;
 
@@ -102,6 +103,7 @@ public static partial class ControlAdvisor
 
     private const int MaxLabel = 50;
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private static (string Locator, bool Stable, string Why) LocatorOf(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<string> testIds, int[] documents)
     {
         var document = documents[node.Number];

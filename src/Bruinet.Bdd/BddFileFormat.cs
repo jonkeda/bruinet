@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 namespace Bruinet.Bdd;
 
 /// <summary>
@@ -136,6 +137,7 @@ public static class BddFileFormat
     /// </summary>
     /// <param name="text">A feature or step file's text.</param>
     /// <returns>The text, and how many sections changed.</returns>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static (string Text, int Count) FenceSteps(string text)
     {
         var lines = text.Split('\n').ToList();

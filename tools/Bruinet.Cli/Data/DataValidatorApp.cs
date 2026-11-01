@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Bruinet.Core.Testing;
 using Bruinet.TestData;
@@ -37,6 +38,7 @@ public static class DataValidatorApp
         }
     }
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private static int Validate(ToolOptions options, TextWriter output, TextWriter errors)
     {
         List<TestDataDiagnostic> diagnostics = [];

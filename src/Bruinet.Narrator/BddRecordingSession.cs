@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Bruinet.Core.Artifacts;
 using Bruinet.Recording;
@@ -103,6 +104,7 @@ public sealed class BddRecordingSession
     /// </summary>
     /// <param name="configDirectory">The suite's folder.</param>
     /// <param name="read">Reads a process variable; <see cref="Environment.GetEnvironmentVariable(string)"/> by default.</param>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static BddRecordingSession? FromEnvironment(string configDirectory, Func<string, string?>? read = null)
     {
         read ??= Environment.GetEnvironmentVariable;

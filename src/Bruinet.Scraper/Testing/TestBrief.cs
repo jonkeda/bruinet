@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Html;
@@ -20,6 +21,7 @@ public static class TestBrief
 
     /// <summary>The brief of the gap at an event.</summary>
     /// <exception cref="ArgumentException">The event is no gap of the test.</exception>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static string Write(ScrapeProject project, RecordingSession session, ResolvedTest test, int @event)
     {
         var step = test.Steps.FirstOrDefault(s => s.Event == @event && s.Gap is not null)

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 namespace Bruinet.Bdd;
 
 /// <summary>The callable phrases a scenario file can see: its own and the global phrase files'.</summary>
@@ -153,6 +154,7 @@ public sealed class BddPreparedCallables
         }
     }
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private BddPreparedCallable Prepare(BddCallable callable)
     {
         var declaration = callable.Source.ToString();

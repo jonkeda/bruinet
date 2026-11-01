@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Bruinet.Core.Scraping;
 
@@ -141,6 +142,7 @@ public sealed class SnapshotSelector
         public bool Matches(ScrapeSnapshot snapshot, ScrapeNode node) =>
             (Type is null || string.Equals(node.Type, Type, StringComparison.OrdinalIgnoreCase)) && Tests.All(t => t(snapshot, node));
 
+        [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
         public static Compound? Parse(string text, char combinator)
         {
             var i = 0;

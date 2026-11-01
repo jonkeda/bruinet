@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace Bruinet.Bdd;
@@ -244,6 +245,7 @@ public static class BddBinder
             ? catalogs.All.Select(catalog => catalog.Scope).FirstOrDefault(model => model is not null)?.StartWalk(catalogs, used)
             : null;
 
+        [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
         public void Step(BddStep step, bool fromBackground, BddCallFrame? frame, List<BddDiagnostic> diagnostics)
         {
             var app = _apps.Current;

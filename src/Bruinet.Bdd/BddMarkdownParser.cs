@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Markdig;
 using Markdig.Syntax;
@@ -67,6 +68,7 @@ public static partial class BddMarkdownParser
             _lines = ReadBlocks(markdown);
         }
 
+        [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
         public BddParseResult Parse()
         {
             string? title = null;

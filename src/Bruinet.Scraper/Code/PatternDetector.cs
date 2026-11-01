@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Bruinet.Core.Scraping;
 using Bruinet.Scraper.Html;
@@ -34,6 +35,7 @@ public static class PatternDetector
     /// <param name="max">The most patterns given.</param>
     /// <param name="testIds">The attributes that are test ids, preferred first, to name a pattern by.</param>
     /// <param name="components">The config's <c>## Components</c>: elements the person names, which win over the rules.</param>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static IReadOnlyList<Pattern> Detect(IReadOnlyList<(string Page, ScrapeSnapshot Snapshot)> pages, IReadOnlyList<CodeClass> controls, int max = 30, IReadOnlyList<string>? testIds = null, IReadOnlyList<ComponentRule>? components = null)
     {
         var signatures = new Dictionary<string, string?[]>(StringComparer.Ordinal);

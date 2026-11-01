@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Bruinet.Uia;
 using Microsoft.Maui.Controls;
@@ -168,6 +169,7 @@ internal static class MauiVerbDispatcher
         return HResults.UIA_E_NOTSUPPORTED;
     }
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private static int PerformExchange(
         VisualElement element,
         VerbPlan plan,

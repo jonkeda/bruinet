@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Bruinet.TestData;
 using Bruinet.Bdd.Workspace;
 
@@ -97,6 +98,7 @@ public sealed partial class BddLanguageServer
         return trimmed.Split('|').Select(cell => cell.Trim()).ToList();
     }
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     internal IReadOnlyList<Diagnostic> ConfigDiagnostics(BddServerFile file)
     {
         List<Diagnostic> diagnostics = [];

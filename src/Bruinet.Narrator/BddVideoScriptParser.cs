@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Bruinet.Narrator;
@@ -36,6 +37,7 @@ public static class BddVideoScriptParser
     /// <summary>Parses <paramref name="text"/>, the content of <paramref name="filePath"/>.</summary>
     /// <param name="text">The script's text, which may be unsaved.</param>
     /// <param name="filePath">The script's path, for the diagnostics.</param>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static BddVideoScriptParse Parse(string text, string filePath)
     {
         ArgumentNullException.ThrowIfNull(text);

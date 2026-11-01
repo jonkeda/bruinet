@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -331,6 +332,7 @@ public sealed class SpokenLine
         private static readonly Regex Pitch = new(@"^(?:x-low|low|medium|high|x-high|default|[+-]?\d+(?:\.\d+)?(?:%|Hz|st))$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private static readonly Regex Volume = new(@"^(?:silent|x-soft|soft|medium|loud|x-loud|default|[+-]?\d+(?:\.\d+)?(?:dB|%)?)$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
+        [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
         public static string? Problem(SpokenNode node)
         {
             switch (node.Name)

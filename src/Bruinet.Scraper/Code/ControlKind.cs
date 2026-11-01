@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Bruinet.Core.Scraping;
 
 namespace Bruinet.Scraper.Code;
@@ -43,6 +44,7 @@ public static class ControlKind
     private static readonly HashSet<string> Headings = new(StringComparer.Ordinal) { "h1", "h2", "h3", "h4", "h5", "h6", "label", "legend", "caption", "th", "dt" };
 
     /// <summary>The element's core, or null when a test has nothing to do with it (a wrapper, a hidden input).</summary>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static CoreReading? Of(ScrapeSnapshot snapshot, ScrapeNode node)
     {
         if (node.Kind != ScrapeNodeKind.Element)

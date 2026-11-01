@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Bruinet.Scraper.Projects;
 
 namespace Bruinet.Scraper.Code;
@@ -25,6 +26,7 @@ public static class DraftRun
     /// <param name="keys">The pages' keys; every page when null.</param>
     /// <param name="templates">Generates the project's control templates before each build; null to build only.</param>
     /// <param name="cancellationToken">Ends the builds.</param>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public static async Task<DraftResult> RunAsync(ScrapeProject project, IReadOnlyCollection<string>? keys, ITemplateGenerator? templates, CancellationToken cancellationToken = default)
     {
         var index = project.Index();

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Bruinet.Samples.Shared.Commands;
@@ -304,6 +305,7 @@ public sealed class UserEditViewModel : ParentViewModel
     public IAsyncRelayCommand CancelCommand { get; }
 
     /// <summary>Loads a user to edit, or resets to a new one when <paramref name="id"/> is <c>null</c>.</summary>
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     public async Task LoadAsync(Guid? id)
     {
         var user = id is { } existing ? await _users.GetAsync(existing) : null;
