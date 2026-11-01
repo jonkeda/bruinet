@@ -10,6 +10,7 @@ and `src/`'s `Directory.Build.props` import it. Frainet stands alone and is left
 | **Off with a reason, in one place** | `Quality.globalconfig` lists every rule turned off, each with its why on its line. `Quality.Tests.globalconfig` adds the few for test projects, `Quality.Legacy.globalconfig` the newer-API rules for projects that also target netstandard2.0 or .NET Framework. |
 | **What stays on finds defects** | Culture (CA1305, CA1310), lost inner exceptions (MA0054), ignored results (CA1806, MA0134), wrong docs, platform reach (CA1416), token forwarding (CA2016) and the rest of the recommended set. Naming the code base chose, style, and performance hints with no measured cost are off. |
 | **Machine output is invariant** | What Bruinet writes, compares or types uses `CultureInfo.InvariantCulture` and ordinal comparison; only text a person reads in a sample app uses the current culture. |
+| **The UI suites' forbidden APIs are banned** | Projects named `*UITests*` or `*.Uat` get `BannedSymbols.UiTests.txt` (RS0030): sleeps and delays, the contexts' `Driver`, `AppElement`, `Find*`, `ContainerRoot` and `TryGetItemRoot`, each with what to use instead. `.editorconfig` exempts by path only what forbidden-apis.md already exempts: library code, the driver and bridge framework tests, fixtures and their host loops, row plumbing, and the named known debt. |
 | **A one-off exception is a pragma with its reason** | `#pragma warning disable` around the line, with a comment saying why: an ADO.NET contract, a secret kept out of a message, a fixture's extension point. |
 
 **Why:** with coding agents writing much of the code, the cheapest check is the one that runs on
@@ -26,4 +27,5 @@ fixed, so the build starts clean. Evidence: [.my/checks](../../.my/checks/README
 **Broken when:**
 - a project sets `TreatWarningsAsErrors` to false, or adds an analyzer rule to `NoWarn` instead of the globalconfig;
 - a rule is turned off without a reason on its line;
+- a UI test file is added to the RS0030 exemptions to make it build, rather than given the control member it lacks;
 - generated code (`.gen.cs`) is fixed by hand instead of in the generator.

@@ -1,0 +1,31 @@
+M:System.Threading.Thread.Sleep(System.Int32);Wait for the state with a control's Wait* or Assert* member, never a sleep (AD-033, the call model)
+M:System.Threading.Thread.Sleep(System.TimeSpan);Wait for the state with a control's Wait* or Assert* member, never a sleep (AD-033, the call model)
+M:System.Threading.Tasks.Task.Delay(System.Int32);Wait for the state with a control's Wait* or Assert* member, never a delay
+M:System.Threading.Tasks.Task.Delay(System.Int32,System.Threading.CancellationToken);Wait for the state with a control's Wait* or Assert* member, never a delay
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan);Wait for the state with a control's Wait* or Assert* member, never a delay
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan,System.Threading.CancellationToken);Wait for the state with a control's Wait* or Assert* member, never a delay
+P:Bruinet.Maui.Interfaces.IMauiTestContext.Driver;Use a page-object or control member (forbidden-apis.md)
+P:Bruinet.Maui.Context.MauiTestContext.Driver;Use a page-object or control member (forbidden-apis.md)
+P:Bruinet.Maui.Context.MauiTestContext.AppElement;Use an AppRoot-scoped control (forbidden-apis.md)
+M:Bruinet.Maui.Context.MauiTestContext.FindElement(Bruinet.Core.Locators.Locator);Use a named control property (forbidden-apis.md)
+M:Bruinet.Maui.Context.MauiTestContext.TryFindElement(Bruinet.Core.Locators.Locator);Use a named control property (forbidden-apis.md)
+M:Bruinet.Maui.Context.MauiTestContext.FindElements(Bruinet.Core.Locators.Locator);Use a collection's Items (forbidden-apis.md)
+M:Bruinet.Maui.Pages.AppRoot.FindElement(Bruinet.Core.Locators.Locator);Use a named control property (forbidden-apis.md)
+M:Bruinet.Maui.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator);Use a named control property (forbidden-apis.md)
+M:Bruinet.Maui.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator);Use a collection's Items (forbidden-apis.md)
+P:Bruinet.Maui.Containers.RootedScopeBase`2.ContainerRoot;Use a container or collection member (forbidden-apis.md)
+M:Bruinet.Maui.Containers.RootedScopeBase`2.FindElement(Bruinet.Core.Locators.Locator);Use a named control property or Child<T>(id) (forbidden-apis.md)
+M:Bruinet.Maui.Containers.RootedScopeBase`2.TryFindElement(Bruinet.Core.Locators.Locator);Use a named control property or Child<T>(id) (forbidden-apis.md)
+M:Bruinet.Maui.Containers.RootedScopeBase`2.FindElements(Bruinet.Core.Locators.Locator);Use a collection's Items (forbidden-apis.md)
+M:Bruinet.Maui.Containers.CollectionObjectBase`3.TryGetItemRoot(System.Int32);Use Item, Items or ItemWhere (forbidden-apis.md)
+P:Bruinet.Html.Interfaces.IHtmlTestContext.Driver;Use a page-object or control member (Html forbidden-apis.md)
+P:Bruinet.Blazor.Context.BlazorTestContext.Driver;Use a page-object or control member (Html forbidden-apis.md)
+P:Bruinet.Html.Bunit.BunitTestContext.Driver;Use a page-object or control member (Html forbidden-apis.md)
+P:Bruinet.Html.Playwright.PlaywrightTestContext.Driver;Use a page-object or control member (Html forbidden-apis.md)
+P:Bruinet.Html.Controls.ContainerBase`2.ContainerRoot;Use a control member (Html forbidden-apis.md)
+P:Bruinet.Wpf.Interfaces.IWpfTestContext.Driver;Use a page-object or control member
+P:Bruinet.Wpf.Context.WpfTestContext.Driver;Use a page-object or control member
+P:Bruinet.WinForms.Interfaces.IWinFormsTestContext.Driver;Use a page-object or control member
+P:Bruinet.WinForms.Context.WinFormsTestContext.Driver;Use a page-object or control member
+P:Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Driver;Use a page-object or control member
+P:Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Driver;Use a page-object or control member

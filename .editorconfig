@@ -56,3 +56,22 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
+
+# RS0030, the UI suites' banned APIs (BannedSymbols.UiTests.txt, AD-033), is off where reaching past
+# the controls is the point or the known debt (forbidden-apis.md, "The one exception"):
+# library code compiled into a suite; the driver and bridge framework tests;
+[src/**.cs]
+dotnet_diagnostic.RS0030.severity = none
+[tests/Bruinet.Maui.UITests/Tests/{Background,Diagnostics,Gestures}/**.cs]
+dotnet_diagnostic.RS0030.severity = none
+[tests/Bruinet.Maui.UITests/Tests/{Navigation,Shell}/*VerbTests.cs]
+dotnet_diagnostic.RS0030.severity = none
+# fixtures and the hosts they start (startup loops wait on a process, not on the UI);
+[{tests/Bruinet.Maui.UITests/{MauiFixture,ShellFixture}.cs,tests/Bruinet.Bdd.VisualStudio.UITests/TestBase/**.cs,samples/Todo/tests/Bruinet.Samples.Todo.UITests/{TodoAppFixtureBase,TodoResetFile}.cs,samples/Todo/tests/Bruinet.Samples.Todo.UITests/Live/LiveTodoApi.cs}]
+dotnet_diagnostic.RS0030.severity = none
+# an app collection's row plumbing;
+[tests/Bruinet.Maui.UITests/Containers/ProductCollection.cs]
+dotnet_diagnostic.RS0030.severity = none
+# known debt, not precedent: to move onto controls.
+[tests/Bruinet.Maui.UITests/Tests/{Range/StepperTests,Dialogs/AlertReadTests,Collection/CollectionIndexProbeTests}.cs]
+dotnet_diagnostic.RS0030.severity = none

@@ -17,6 +17,12 @@
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Tests.globalconfig" />
   </ItemGroup>
+  <!-- The UI suites (and their UAT suites) reach the app only through page objects and controls:
+       BannedSymbols.UiTests.txt names what they may not call, RS0030 stops the build. -->
+  <ItemGroup Condition="$(MSBuildProjectName.Contains('UITests')) or $(MSBuildProjectName.EndsWith('.Uat'))">
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.UiTests.txt" />
+  </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworks.Contains('netstandard')) or $(TargetFrameworks.Contains('net4')) or $(TargetFramework.StartsWith('net4'))">
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Legacy.globalconfig" />
   </ItemGroup>
