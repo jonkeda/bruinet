@@ -753,6 +753,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on Windows ran in under 2 minutes instead of 3.
 
 ### Fixed
+- The MAUI sample's slider started at 1, not its view model's 50: it set `Value` before `Minimum` and
+  `Maximum`, and MAUI clamps a value to the bounds it has then (1 by default). Found by C5's control
+  contracts on MauiHeadless; the sample sets the bounds first now.
 - A step definition's exception kept only Bruinet's frames: `BddInvoker` threw the inner exception again,
   which starts its stack anew, so the step's own code and the app's were lost to the IDE, logs and reports.
   It is rethrown with its stack now.

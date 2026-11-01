@@ -116,7 +116,8 @@ public class SliderTests
     {
         var page = GetPage();
         // Act
-        page.TestSlider.SetValue(50)
+        // Not 50: the slider starts there, and a value that does not change sends no status.
+        page.TestSlider.SetValue(75)
             .StatusLabel.AssertTextContains("Slider value");
 
         return Task.CompletedTask;

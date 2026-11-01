@@ -239,7 +239,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI19 | open | | |
 | AI20 | open | | |
 | C4 | done | (this commit) | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
-| C5 | open | | |
+| C5 | done | (this commit) | Maui 49 to 50.9%; the rest is platform code a device head runs; the sample slider started at 1 |
 | C6 | open | | |
 | C7 | open | | |
 | C8 | open | | |

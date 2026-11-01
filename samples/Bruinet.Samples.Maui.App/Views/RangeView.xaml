@@ -43,10 +43,11 @@
                        TextColor="{AppThemeBinding Light=Black, Dark=White}" />
             </HorizontalStackLayout>
 
+            <!-- The bounds before the value: MAUI clamps a value to the bounds it has when the value is set. -->
             <Slider 
-                Value="{Binding SliderValue}"
                 Minimum="{Binding SliderMinimum}"
                 Maximum="{Binding SliderMaximum}"
+                Value="{Binding SliderValue}"
                 AutomationId="TestSlider"
                 BackgroundColor="{AppThemeBinding Light=LightGray, Dark=Gray}" />
 
@@ -73,10 +74,11 @@
                        TextColor="{AppThemeBinding Light=Black, Dark=White}" />
             </HorizontalStackLayout>
 
+            <!-- The bounds before the value: MAUI clamps a value to the bounds it has when the value is set. -->
             <Stepper 
-                Value="{Binding StepperValue}"
                 Minimum="{Binding StepperMinimum}"
                 Maximum="{Binding StepperMaximum}"
+                Value="{Binding StepperValue}"
                 Increment="{Binding StepperIncrement}"
                 AutomationId="TestStepper"
                 uia:GestureAutomation.Verbs="GetState" />

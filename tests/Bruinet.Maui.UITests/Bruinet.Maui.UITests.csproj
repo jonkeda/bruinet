@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Core\Bruinet.Core.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Maui.CommunityToolkit\Bruinet.Maui.CommunityToolkit.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Maui\Bruinet.Maui.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Maui.FlaUI\Bruinet.Maui.FlaUI.csproj" Condition="'$(BruinetWindowsHead)' == 'true'" />
