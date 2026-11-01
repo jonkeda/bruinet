@@ -73,9 +73,31 @@ public sealed class McpStepTests : IDisposable
 
         Assert.Equal((true, 6, "the counter counts"), ((bool)first["paused"]!, (int)first["line"]!, (string?)first["text"]));
         Assert.Equal(7, (int)second["line"]!);
-        Assert.Equal((8, false), ((int)third["line"]!, (bool)third["lastStepFailed"]!));
+        Assert.Equal((8, null), ((int)third["line"]!, third["lastStepFailed"]));
         Assert.Equal((true, "failed"), ((bool)ended["ended"]!, (string?)ended["status"]));
         Assert.Contains("counted 2 times, not 3", (string?)ended["message"]);
+    }
+
+    [Fact]
+    public void APausedStepThrough_TakesAScreenshot_AndAStopEndsIt()
+    {
+        Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        var shot = Answer(Call("step_screenshot", new JsonObject()));
+        var stopped = Answer(Call("step_move", new JsonObject { ["move"] = "stop" }));
+
+        Assert.True(File.Exists((string?)shot["screenshot"]));
+        Assert.Equal((true, "stopped"), ((bool)stopped["ended"]!, (string?)stopped["status"]));
+        Assert.Contains("No Step-through run is going", Text(Call("step_move", new JsonObject { ["move"] = "over" })));
+    }
+
+    [Fact]
+    public void AStart_AtALineWithNoHeading_IsAToolError()
+    {
+        var result = Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 6 });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("no scenario heading at line 6", Text(result));
     }
 
     [Fact]

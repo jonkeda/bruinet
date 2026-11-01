@@ -23,7 +23,31 @@ public sealed partial class BddLanguageServer
 
     private static TaskCompletionSource<object> NewStepEvent() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-    private void RaiseStepEvent(object stepEvent) => Interlocked.Exchange(ref _stepEvent, NewStepEvent()).TrySetResult(stepEvent);
+    private object? _lastStepEvent;
+    private long _stepEvents;
+
+    /// <summary>How many pauses and ends were raised, and the last: for a host that stopped waiting before one came.</summary>
+    internal (long Count, object? Last) LastStepEvent
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return (_stepEvents, _lastStepEvent);
+            }
+        }
+    }
+
+    private void RaiseStepEvent(object stepEvent)
+    {
+        lock (_gate)
+        {
+            _lastStepEvent = stepEvent;
+            _stepEvents++;
+        }
+
+        Interlocked.Exchange(ref _stepEvent, NewStepEvent()).TrySetResult(stepEvent);
+    }
 
     /// <summary>The breakpoints file read between steps; the per-user one by default.</summary>
     public string BreakpointsPath { get; init; } = BddBreakpoints.DefaultPath;
@@ -269,6 +293,13 @@ public sealed partial class BddLanguageServer
             stop.Arguments,
             stop.App,
             stop.Page);
+
+        // A stop since the check above ends the run: no pause to report.
+        if (run.Cancel.IsCancellationRequested)
+        {
+            return;
+        }
+
         RaiseStepEvent(paused);
         _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/step/paused", paused);
     }
@@ -337,6 +368,9 @@ public sealed partial class BddLanguageServer
         {
             run.Cancel.Cancel();
             run.Runner?.DisposeAsync().AsTask().Wait(BddRunnerClient.CancelGrace);
+
+            // A host waiting for the next pause hears the run ended with the server.
+            RaiseStepEvent(new StepEndedParams(run.Uri, run.Scenario, "stopped", "The server ended."));
         }
 
         // Ends whatever is left: the runner, and the app it started.

@@ -221,7 +221,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI2b | partly | c25cc7ee + review fixes | a `coverage` tool through the gate with .NET's own collector (nothing to install), proved on MauiHeadless by hand; not built: `run_scenario {coverage: true}`, a stored `__coverage.json`, the Done-when on bUnit and Chromium (open, see AI2b-review.md) |
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
-| AI4 | partly | (this commit) | step_start, step_move, step_screenshot built; step_state (the page's controls and values) is AI4b: it needs a runner message that reads the current page object |
+| AI4 | partly | dfeaef23 + review fixes | step_start, step_move (over, into, out, continue, wait, stop), step_screenshot built. Not as planned: a second step_start is refused (not a stop of the first), no `to-line` move and no `--break-at` on run_scenario, `continue` stops at the IDE's breakpoints file; step_state is AI4b |
 | AI4b | open | | |
 | AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
 | AI6 | open | | |

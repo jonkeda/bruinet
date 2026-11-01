@@ -22,6 +22,9 @@ public sealed class BddMcpServer : IDisposable
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
     private readonly BddLanguageServer _server = new();
+
+    // The Step-through events this server has answered with: one raised since is a pause a wait gives.
+    private long _stepEventsSeen;
     private readonly string _solutionDir;
 
     /// <summary>A server for the suites under <paramref name="solutionDir"/>.</summary>
@@ -73,7 +76,7 @@ public sealed class BddMcpServer : IDisposable
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint), 'stop' ends it. Answers where it paused next, or how it ended.", Schema(("move", "string", "over, into, out, continue or stop; required."), ("timeoutMinutes", "integer", "Stop waiting after this long; 5 when left out."))),
+        ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -174,7 +177,7 @@ public sealed class BddMcpServer : IDisposable
                 "coverage" => Coverage(arguments),
                 "step_start" => StepStart(arguments),
                 "step_move" => StepMove(arguments),
-                "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is { Path: { } shot } ? new { Screenshot = shot } : throw new ToolProblem("No screenshot: no Step-through is paused, or the suite's fixture takes none."),
+                "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? new { Screenshot = taken } : throw new ToolProblem($"No screenshot: {shot.Reason}"),
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
                 "failing" => Failing(arguments),
@@ -370,46 +373,92 @@ public sealed class BddMcpServer : IDisposable
     {
         var uri = FileUri(Required(arguments, "path"));
         var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
-        var upcoming = _server.UpcomingStepEvent;
+        var upcoming = TakeStepEvent();
         var started = _server.StepStartAsync(new StepStartParams(uri, line, (string?)arguments["suite"], null)).GetAwaiter().GetResult();
-        return started.Started ? StepEvent(upcoming, TimeSpan.FromMinutes(5)) : throw new ToolProblem(started.Reason ?? "The Step-through did not start.");
+        return started.Started ? StepEvent(upcoming, TimeSpan.FromMinutes(2), untilEnded: false) : throw new ToolProblem(started.Reason ?? "The Step-through did not start.");
     }
 
     private object StepMove(JsonObject arguments)
     {
-        var upcoming = _server.UpcomingStepEvent;
-        var moved = _server.StepMove(new StepMoveParams(Required(arguments, "move")));
+        var move = Required(arguments, "move");
+        var wait = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 10) ?? 2);
+
+        // A pause that came after a Waiting answer is given now; otherwise the next one is waited for.
+        if (move == "wait")
+        {
+            var (count, last) = _server.LastStepEvent;
+            if (count > Interlocked.Read(ref _stepEventsSeen) && last is not null)
+            {
+                Interlocked.Exchange(ref _stepEventsSeen, count);
+                return Describe(last);
+            }
+
+            return StepEvent(TakeStepEvent(), wait, untilEnded: false);
+        }
+
+        var upcoming = TakeStepEvent();
+        var moved = _server.StepMove(new StepMoveParams(move));
         return moved.Taken
-            ? StepEvent(upcoming, TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 5))
+            ? StepEvent(upcoming, wait, untilEnded: move == "stop")
             : throw new ToolProblem(moved.Reason ?? "The move was not taken.");
     }
 
-    private object StepEvent(Task<object> upcoming, TimeSpan wait)
+    private Task<object> TakeStepEvent()
     {
-        if (!upcoming.Wait(wait))
+        Interlocked.Exchange(ref _stepEventsSeen, _server.LastStepEvent.Count);
+        return _server.UpcomingStepEvent;
+    }
+
+    // The next event; for a stop, the end (a pause raised as the stop came is passed over).
+    private object StepEvent(Task<object> upcoming, TimeSpan wait, bool untilEnded)
+    {
+        var deadline = DateTime.UtcNow + wait;
+        while (true)
         {
-            return new { Waiting = true, Next = "The step is still running: call step_move with 'stop' to end it, or wait and look again with step_screenshot." };
+            var left = deadline - DateTime.UtcNow;
+            if (left <= TimeSpan.Zero || !upcoming.Wait(left))
+            {
+                return new { Waiting = true, Next = "The step is still running: step_move 'wait' waits again, 'stop' ends it." };
+            }
+
+            Interlocked.Exchange(ref _stepEventsSeen, _server.LastStepEvent.Count);
+            if (!untilEnded || upcoming.Result is StepEndedParams)
+            {
+                return Describe(upcoming.Result);
+            }
+
+            upcoming = _server.UpcomingStepEvent;
+        }
+    }
+
+    // Only what is there: an agent reads every field.
+    private JsonObject Describe(object stepEvent)
+    {
+        JsonObject answer = stepEvent switch
+        {
+            StepPausedParams paused => new()
+            {
+                ["paused"] = true,
+                ["file"] = paused.At is { } at ? Path.GetRelativePath(_solutionDir, new Uri(at).LocalPath) : null,
+                ["line"] = paused.Line,
+                ["text"] = paused.Text,
+                ["depth"] = paused.Depth,
+                ["page"] = paused.Page,
+                ["app"] = paused.App,
+                ["arguments"] = paused.Arguments is { Count: > 0 } values ? new JsonObject([.. values.Select(pair => new KeyValuePair<string, JsonNode?>(pair.Key, Cap(pair.Value, 300)))]) : null,
+                ["lastStepFailed"] = paused.Failed ? true : null,
+                ["message"] = Cap(paused.Message, 2000),
+            },
+            StepEndedParams ended => new() { ["ended"] = true, ["scenario"] = ended.Scenario, ["status"] = ended.Status, ["message"] = Cap(ended.Message, 2000) },
+            var other => new() { ["event"] = other.GetType().Name },
+        };
+
+        foreach (var empty in answer.Where(pair => pair.Value is null).Select(pair => pair.Key).ToList())
+        {
+            answer.Remove(empty);
         }
 
-        return upcoming.Result switch
-        {
-            StepPausedParams paused => new
-            {
-                Paused = true,
-                paused.Scenario,
-                File = paused.At is { } at ? Path.GetRelativePath(_solutionDir, new Uri(at).LocalPath) : null,
-                paused.Line,
-                paused.Text,
-                paused.IsCall,
-                paused.Page,
-                paused.App,
-                paused.Arguments,
-                LastStepFailed = paused.Failed,
-                Message = Cap(paused.Message, 2000),
-            },
-            StepEndedParams ended => (object)new { Ended = true, ended.Scenario, ended.Status, Message = Cap(ended.Message, 2000) },
-            var other => new { Event = other.GetType().Name },
-        };
+        return answer;
     }
 
     // One scenario through the gate with .NET's code coverage (Microsoft.NET.Test.Sdk brings it): the lines it ran.

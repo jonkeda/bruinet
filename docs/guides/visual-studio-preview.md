@@ -263,7 +263,8 @@ VS Code) and any other MCP client:
   the message; `build: true` builds the suite first, after a change to C#;
 - `last_runs` gives each scenario's newest result, from any run;
 - `step_start`, `step_move` and `step_screenshot` are the preview's Step through for an agent: each answers
-  where the run paused (file, line, step, page, arguments), whether the step just run failed, or how it ended;
+  where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it
+  ended; a step still running after the wait (2 minutes) answers Waiting, and `wait` waits again;
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
   it ran and missed (for the given files, or the working tree's changed ones);
 - `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;
