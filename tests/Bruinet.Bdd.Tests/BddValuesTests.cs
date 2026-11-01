@@ -241,6 +241,7 @@ public sealed class BddValuesTests
         true,
         "  spaced  ",
         string.Empty,
+        "\"quoted\"",
     };
 
     [Fact]

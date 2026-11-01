@@ -194,7 +194,9 @@ public static partial class BddValues
     {
         null => "null",
         "" => "\"\"",
-        string text when string.IsNullOrWhiteSpace(text) || text != text.Trim() => $"\"{text.Replace("\"", "\\\"", StringComparison.Ordinal)}\"",
+        // Quoted too when it is in quotes itself: Read would take them for the scenario's.
+        string text when string.IsNullOrWhiteSpace(text) || text != text.Trim() || (text.Length >= 2 && text[0] == '"' && text[^1] == '"')
+            => $"\"{text.Replace("\"", "\\\"", StringComparison.Ordinal)}\"",
         string text => text,
         bool boolean => boolean ? "true" : "false",
         DateOnly date => WriteDate(date),
