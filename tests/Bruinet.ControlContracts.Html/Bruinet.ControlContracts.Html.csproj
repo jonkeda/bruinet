@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    The control contracts bound to Bruinet.Html's controls (.my/coverage/plan.md, C2 and C3): a page per
+    control kind (Pages/), and a binding per contract over any head. The heads' test projects
+    (Bruinet.Html.Bunit.Tests, Bruinet.Html.UITests) derive a class per binding with their head;
+    Bruinet.ControlContracts.Html.Site serves the pages to a browser.
+  -->
+  <PropertyGroup>
+    <RootNamespace>Bruinet.ControlContracts.Html</RootNamespace>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)../../Quality.Tests.globalconfig" />
+  </ItemGroup>
+
+  <!-- xUnit's attributes and asserts only, as Bruinet.ControlContracts. -->
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.NET.Test.Sdk" />
+    <PackageReference Remove="xunit.runner.visualstudio" />
+    <PackageReference Remove="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Blazor\Bruinet.Blazor.csproj" />
+  </ItemGroup>
+
+</Project>

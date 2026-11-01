@@ -16,6 +16,13 @@
     <ProjectReference Include="..\..\samples\Bruinet.Samples.Blazor.App\Bruinet.Samples.Blazor.App.csproj" />
   </ItemGroup>
 
+  <!-- The control contracts in Chromium (.my/coverage/plan.md, C3): their bindings, and the site that serves
+       their pages, built with the tests and started by them (TestBase/ContractSite). -->
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.ControlContracts.Html\Bruinet.ControlContracts.Html.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts.Html.Site\Bruinet.ControlContracts.Html.Site.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Update="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>

@@ -7,8 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Html.Bunit\Bruinet.Html.Bunit.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Blazor\Bruinet.Blazor.csproj" />
-    <!-- The control contracts, bound to Bruinet.Html's controls here (.my/coverage/plan.md, C2). -->
-    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
+    <!-- The control contracts on the bUnit head (.my/coverage/plan.md, C2). -->
+    <ProjectReference Include="..\Bruinet.ControlContracts.Html\Bruinet.ControlContracts.Html.csproj" />
     <!-- The spike renders the sample's own pages (AD-030). -->
     <ProjectReference Include="..\..\samples\Bruinet.Samples.Blazor.App\Bruinet.Samples.Blazor.App.csproj" />
   </ItemGroup>

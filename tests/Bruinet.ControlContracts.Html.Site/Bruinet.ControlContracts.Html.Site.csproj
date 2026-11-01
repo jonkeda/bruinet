@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- Serves the Html control contracts' pages (Bruinet.ControlContracts.Html) to a browser, for the
+       Chromium head in Bruinet.Html.UITests (.my/coverage/plan.md, C3). -->
+  <PropertyGroup>
+    <RootNamespace>Bruinet.ControlContracts.Html.Site</RootNamespace>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)../../Quality.Tests.globalconfig" />
+  </ItemGroup>
+
+  <!-- An app, not a test project: none of the test packages tests/Directory.Build.props brings. -->
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.NET.Test.Sdk" />
+    <PackageReference Remove="xunit" />
+    <PackageReference Remove="xunit.runner.visualstudio" />
+    <PackageReference Remove="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.ControlContracts.Html\Bruinet.ControlContracts.Html.csproj" />
+  </ItemGroup>
+
+</Project>

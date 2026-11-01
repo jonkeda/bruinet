@@ -1,0 +1,23 @@
+@page "/click"
+@* The clickable contract's controls: a button that shows what happened to it last, and a disabled one.
+   A long press is a click held down: told from a click by how long the button was down. *@
+<button data-testid="button"
+        @onmousedown="() => pressedAt = DateTime.UtcNow"
+        @onclick="Clicked"
+        @ondblclick='() => last = "double-click"'
+        @oncontextmenu='() => last = "right-click"'
+        @onmouseover='() => last = "hover"'>Button</button>
+<button data-testid="disabled" disabled>Disabled</button>
+<span data-testid="last">@last</span>
+
+@code {
+    private static readonly TimeSpan LongPress = TimeSpan.FromMilliseconds(500);
+    private string? last;
+    private DateTime? pressedAt;
+
+    private void Clicked()
+    {
+        last = pressedAt is { } at && DateTime.UtcNow - at >= LongPress ? "long-press" : "click";
+        pressedAt = null;
+    }
+}

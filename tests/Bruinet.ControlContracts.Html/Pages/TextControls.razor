@@ -1,6 +1,8 @@
+@page "/text"
 @* The text contracts' controls: labels; fields and areas, editable and read-only. *@
 <span data-testid="label">Apple pie</span>
-<span data-testid="empty"></span>
+@* Sized: a browser counts an empty span with no size as not visible. *@
+<span data-testid="empty" style="display:inline-block; min-width:4em; min-height:1em"></span>
 <input data-testid="field" placeholder="Your name" @bind="field" @bind:event="oninput" />
 <input data-testid="readonly" readonly value="Fixed" />
 <textarea data-testid="area" placeholder="Your notes" @bind="area" @bind:event="oninput"></textarea>
