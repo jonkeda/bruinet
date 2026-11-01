@@ -8,7 +8,7 @@
         <Configuration>
           <Format>cobertura</Format>
           <Include>[Bruinet.*]*</Include>
-          <Exclude>[*.Tests]*,[*.TestHost]*,[*.TestSite]*</Exclude>
+          <Exclude>[Bruinet.Samples.*]*,[*.Tests]*,[*.TestHost]*,[*.TestSite]*</Exclude>
           <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
           <SkipAutoProps>true</SkipAutoProps>
         </Configuration>

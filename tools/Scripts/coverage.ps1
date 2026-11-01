@@ -14,7 +14,10 @@
     after the report is written.
 
 .PARAMETER Projects
-    The test projects under tests/. Default: the unit test projects CI runs.
+    The test projects under tests/. Default: every unit test project, the list CI runs. Left out:
+    the *.UITests suites (local, or test-maui-headless.ps1), Presenter.Bdd.Tests (drives the
+    Presenter app; its cloud voice scenario reads this machine's voice.secrets.json) and
+    Sql.Spike.Tests (a spike, its UI tests need a database).
 
 .PARAMETER Results
     Where the .trx files, the coverage files and the report go. Default: TestResults/coverage.
@@ -40,7 +43,18 @@ param(
         'Bruinet.TestData.Tests',
         'Bruinet.Appium.Tests',
         'Bruinet.NativeAndroid.Tests',
-        'Bruinet.Cli.Tests'
+        'Bruinet.Cli.Tests',
+        'Bruinet.Bdd.Tests',
+        'Bruinet.Bdd.Workspace.Tests',
+        'Bruinet.Html.Bunit.Tests',
+        'Bruinet.Maui.Headless.Tests',
+        'Bruinet.Mocking.Data.Tests',
+        'Bruinet.Mocking.Data.Hook.Tests',
+        'Bruinet.Mocking.Data.Net48.Tests',
+        'Bruinet.Narrator.Tests',
+        'Bruinet.Recording.Tests',
+        'Bruinet.Scraper.Tests',
+        'Bruinet.Uia.Tests'
     ),
     [string] $Results = 'TestResults/coverage',
     [switch] $NoBuild
