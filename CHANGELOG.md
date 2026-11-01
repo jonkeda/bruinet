@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   expected and actual, the locator, the binding, and the first five frames of the suite's and the app's
   code. `BddStepResult.Duration` gives a step's time. The MCP server's `get_failure` reads it, and
   `run_scenario` gives it for each failed scenario.
+- The MCP server's `coverage`: one scenario run through the gate with .NET's code coverage (what
+  `Microsoft.NET.Test.Sdk` brings; nothing to install), and per file the lines it ran and missed, as ranges.
 - The MCP server's `failing`: every scenario whose newest run failed, in one suite or all, with the kind of
   failure.
 - The MCP server's `tests_affected`: `bruinet tests affected` for an agent, the picked tests with why and

@@ -218,7 +218,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | --- | --- | --- | --- |
 | AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
 | AI2 | done | (this commit) | BddInvoker lost every step's own frames (`throw ex.InnerException`); the locator is often only in the message |
-| AI2b | open | | |
+| AI2b | done | (this commit) | the gate with .NET's own collector, a process per scenario: no tool to install; dotnet-coverage snapshots (faster, a runner per suite) left for later |
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
 | AI4 | open | | |

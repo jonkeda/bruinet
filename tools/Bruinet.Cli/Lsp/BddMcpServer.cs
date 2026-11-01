@@ -72,6 +72,7 @@ public sealed class BddMcpServer : IDisposable
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows the branch a passing one never took. Slower than run_scenario: a build check and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
         ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
@@ -127,7 +128,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -167,6 +168,7 @@ public sealed class BddMcpServer : IDisposable
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
+                "coverage" => Coverage(arguments),
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
                 "failing" => Failing(arguments),
@@ -354,6 +356,71 @@ public sealed class BddMcpServer : IDisposable
                 Failure = runs?.GetValueOrDefault(result.Scenario) is { } run ? Failure(run) : null,
                 Message = Cap(result.Message, 2000),
             }),
+        };
+    }
+
+    // One scenario through the gate with .NET's code coverage (Microsoft.NET.Test.Sdk brings it): the lines it ran.
+    private object Coverage(JsonObject arguments)
+    {
+        var uri = FileUri(Required(arguments, "path"));
+        var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
+        var suiteName = (string?)arguments["suite"];
+        var path = new Uri(uri).LocalPath;
+        var suite = _server.Context(path, suiteName).Suite ?? throw new ToolProblem("No suite holds or links this feature file.");
+        var project = suite.ProjectFile ?? throw new ToolProblem($"{suite.Name} has no project file to run with dotnet test.");
+        var names = _server.ScenarioNames(uri, line);
+        if (names.Count == 0)
+        {
+            throw new ToolProblem($"There is no scenario heading at line {line}.");
+        }
+
+        var relative = suite.RelativeToConfig(path);
+        var filter = string.Join('|', names.Select(name => $"{BddScenarioAddress.Trait}={BddScenarioAddress.Of(relative, name)}"));
+        var results = Path.Combine(Path.GetTempPath(), "Bruinet", "coverage", Guid.NewGuid().ToString("N"));
+        List<string> test = ["test", project, "--filter", filter, "--collect", "Code Coverage;Format=cobertura", "--results-directory", results, "--logger", "console;verbosity=minimal"];
+        if ((bool?)arguments["build"] == false)
+        {
+            test.Add("--no-build");
+        }
+
+        var run = Run("dotnet", test, new Dictionary<string, string>());
+        var report = Directory.Exists(results) ? Directory.EnumerateFiles(results, "*.cobertura.xml", SearchOption.AllDirectories).FirstOrDefault() : null;
+        if (report is null)
+        {
+            throw new ToolProblem($"No coverage was written (exit code {run.Code}):{Environment.NewLine}{run.Tail}");
+        }
+
+        List<string> wanted;
+        try
+        {
+            wanted = (arguments["files"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(file => Path.GetFullPath(file, _solutionDir)).ToList() is { Count: > 0 } given
+                ? given
+                : [.. Bruinet.Cli.Selection.SelectionCommands.Changed(_solutionDir, "HEAD").Where(file => CoverageReport.IsSource(file))];
+        }
+        catch (InvalidOperationException exception)
+        {
+            throw new ToolProblem(exception.Message);
+        }
+
+        var lines = CoverageReport.Read(report);
+        try
+        {
+            Directory.Delete(results, recursive: true);
+        }
+        catch (IOException)
+        {
+            // A collector still closing the file: the temp folder is cleaned by the OS.
+        }
+
+        return new
+        {
+            Scenarios = names,
+            Passed = run.Code == 0,
+            Files = wanted.Select(file => lines.TryGetValue(file, out var hits)
+                ? new { File = Path.GetRelativePath(_solutionDir, file), Hit = CoverageReport.Ranges(hits.Where(pair => pair.Value).Select(pair => pair.Key)), Missed = CoverageReport.Ranges(hits.Where(pair => !pair.Value).Select(pair => pair.Key)), Note = (string?)null }
+                : new { File = Path.GetRelativePath(_solutionDir, file), Hit = (string?)null, Missed = (string?)null, Note = (string?)"not loaded by the run: none of its lines ran" })
+                .ToList(),
+            Output = run.Code == 0 ? null : Cap(run.Tail, 2000),
         };
     }
 

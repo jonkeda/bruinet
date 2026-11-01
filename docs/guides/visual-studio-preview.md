@@ -262,6 +262,8 @@ VS Code) and any other MCP client:
   Run does, and waits: each scenario's status and, for a failed one, the step (file, line, text) and
   the message; `build: true` builds the suite first, after a change to C#;
 - `last_runs` gives each scenario's newest result, from any run;
+- `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
+  it ran and missed (for the given files, or the working tree's changed ones);
 - `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;
 - `get_failure` says why a scenario failed in its newest run: the step, the kind of failure
   (assertion, locator-not-found, timeout, ...), expected and actual, the locator, the binding, and
