@@ -83,7 +83,22 @@ public sealed class McpRunTests : IDisposable
         Assert.Equal("passed", (string?)run["status"]);
         var scenario = Assert.Single(run["scenarios"]!.AsArray())!;
         Assert.Equal(("Counts", "passed"), ((string?)scenario["scenario"], (string?)scenario["status"]));
+        Assert.Equal("Features/counter.feature.md#Counts", (string?)scenario["address"]);
+        Assert.True((long?)scenario["durationMs"] >= 0);
         Assert.Null(scenario["failedStep"]);
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("-3")]
+    [InlineData("\"ten\"")]
+    public void RunScenario_WithATimeoutThatIsNoWholeNumberOfMinutes_IsAToolError_AndTheServerGoesOn(string timeout)
+    {
+        var result = Call("run_scenario", JsonNode.Parse($$"""{"path":{{JsonValue.Create(Feature).ToJsonString()}},"timeoutMinutes":{{timeout}}}""")!.AsObject());
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("'timeoutMinutes' must be a whole number from 1 to 120", Text(result));
+        Assert.False((bool)Call("last_runs", new JsonObject { ["path"] = Feature })["isError"]!);
     }
 
     [Fact]

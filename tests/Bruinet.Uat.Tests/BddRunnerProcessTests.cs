@@ -349,6 +349,25 @@ public sealed class BddRunnerProcessTests : IDisposable
     }
 
     [Fact]
+    public async Task AScenarioLeftAtAFailedStep_WritesItsResult_AsTheGateDoes_AndGoingOnWritesNoOther()
+    {
+        var results = Path.Combine(_root, "TestResults");
+        await using var runner = await StartAsync(new Dictionary<string, string> { [Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable] = results });
+        await runner.RequestAsync(Open("Counts wrong"));
+        await runner.RequestAsync(new BddRunnerNext());
+        await runner.RequestAsync(new BddRunnerNext());
+        var written = Directory.EnumerateFiles(results, "*__result.json", SearchOption.AllDirectories).ToList();
+
+        await runner.RequestAsync(new BddRunnerNext());
+        await runner.RequestAsync(new BddRunnerClose());
+
+        var result = File.ReadAllText(Assert.Single(written));
+        Assert.Matches("\"status\":\\s*\"failed\"", result);
+        Assert.Equal(written, Directory.EnumerateFiles(results, "*__result.json", SearchOption.AllDirectories));
+        Assert.DoesNotContain("\"line\": 55", result);
+    }
+
+    [Fact]
     public async Task AScenarioLeftBeforeItsEnd_WritesNoResult()
     {
         var results = Path.Combine(_root, "TestResults");

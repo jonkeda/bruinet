@@ -214,12 +214,12 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 
 | Item | Status | Commit | Learned |
 | --- | --- | --- | --- |
-| AI1 | open | | |
+| AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
 | AI2 | open | | |
 | AI2b | open | | |
-| AI3 | open | | |
+| AI3 | done | 2348bab4 | |
 | AI4 | open | | |
-| AI5 | open | | |
+| AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
 | AI6 | open | | |
 | AI7 | open | | |
 | AI8 | open | | |

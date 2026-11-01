@@ -21,7 +21,7 @@ public sealed partial class BddLanguageServer
     /// </summary>
     [JsonRpcMethod("bruinet/run/start")]
     public async Task<RunStartResult> RunStartAsync(RunStartParams request)
-        => (await StartRunAsync(request).ConfigureAwait(false)).Result;
+        => (await StartRunAsync(request, CancellationToken.None).ConfigureAwait(false)).Result;
 
     /// <summary>
     /// A Run on the runner to its end, for a host that waits instead of listening for
@@ -30,17 +30,24 @@ public sealed partial class BddLanguageServer
     /// </summary>
     public async Task<(RunStartResult Started, RunEndedParams? Ended)> RunToEndAsync(RunStartParams request, CancellationToken cancellationToken = default)
     {
-        var (started, run) = await StartRunAsync(request).ConfigureAwait(false);
+        var (started, run) = await StartRunAsync(request, cancellationToken).ConfigureAwait(false);
         if (run is null)
         {
             return (started, null);
         }
 
         using var cancel = cancellationToken.Register(run.Cancel.Cancel);
-        return (started, await run.Ended.Task.ConfigureAwait(false));
+        try
+        {
+            return (started, await run.Ended.Task.ConfigureAwait(false));
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            return (started, new RunEndedParams(run.Uri, "error", exception.Message, run.Results));
+        }
     }
 
-    private async Task<(RunStartResult Result, RunnerRun? Run)> StartRunAsync(RunStartParams request)
+    private async Task<(RunStartResult Result, RunnerRun? Run)> StartRunAsync(RunStartParams request, CancellationToken cancellationToken)
     {
         var path = Key(request.Uri);
         var file = Context(path, request.Suite);
@@ -83,15 +90,17 @@ public sealed partial class BddLanguageServer
         {
             // The suite's warm runner, or a new one from a copy of its output (AD-025).
             run.Start = new BddRunnerStart(assemblies.Start, Environment: RunnerEnvironment(suite));
-            run.Runner = await Warm.TakeAsync(run.Start).ConfigureAwait(false);
+            run.Runner = await Warm.TakeAsync(run.Start, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)
         {
             await EndRunAsync(run).ConfigureAwait(false);
-            return (RunStartResult.Not(exception.Message), null);
+            return (RunStartResult.Not(exception is OperationCanceledException ? "Canceled while the suite's runner started." : exception.Message), null);
         }
 
-        _ = Task.Run(() => RunAllAsync(run, suite.ConfigPath, assemblies.Pages, path));
+        var relative = suite.RelativeToConfig(path);
+        // Not the caller's token: the run ends by its own cancel (run.Cancel), which RunToEndAsync ties to it.
+        _ = Task.Run(() => RunAllAsync(run, suite.ConfigPath, assemblies.Pages, path, relative), CancellationToken.None);
         return (new RunStartResult(true, null, names, suite.Name), run);
     }
 
@@ -124,7 +133,7 @@ public sealed partial class BddLanguageServer
         };
 
     // Each scenario in turn, a step at a time to its end or its first failure; the runner records it.
-    private async Task RunAllAsync(RunnerRun run, string config, string pages, string feature)
+    private async Task RunAllAsync(RunnerRun run, string config, string pages, string feature, string relative)
     {
         string? error = null;
         try
@@ -132,7 +141,9 @@ public sealed partial class BddLanguageServer
             foreach (var name in run.Scenarios)
             {
                 run.Cancel.Token.ThrowIfCancellationRequested();
-                run.Results.Add(await RunOneAsync(run, config, pages, feature, name).ConfigureAwait(false));
+                var clock = System.Diagnostics.Stopwatch.StartNew();
+                var result = await RunOneAsync(run, config, pages, feature, name).ConfigureAwait(false);
+                run.Results.Add(result with { Address = BddScenarioAddress.Of(relative, name), DurationMs = clock.ElapsedMilliseconds });
             }
         }
         catch (OperationCanceledException) when (run.Cancel.IsCancellationRequested)
@@ -144,13 +155,24 @@ public sealed partial class BddLanguageServer
             error = exception.Message;
         }
 
-        await EndRunAsync(run).ConfigureAwait(false);
-        var status = run.Cancel.IsCancellationRequested ? "canceled"
-            : error is not null ? "error"
-            : run.Results.All(result => result.Status == "passed") ? "passed" : "failed";
-        var ended = new RunEndedParams(run.Uri, status, error, run.Results);
-        run.Ended.TrySetResult(ended);
-        _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/run/ended", ended);
+        try
+        {
+            await EndRunAsync(run).ConfigureAwait(false);
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            error ??= exception.Message;
+        }
+        finally
+        {
+            // Always ended: a host waiting for it (RunToEndAsync) never hangs on a runner that would not close.
+            var status = run.Cancel.IsCancellationRequested ? "canceled"
+                : error is not null ? "error"
+                : run.Results.All(result => result.Status == "passed") ? "passed" : "failed";
+            var ended = new RunEndedParams(run.Uri, status, error, run.Results);
+            run.Ended.TrySetResult(ended);
+            _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/run/ended", ended);
+        }
     }
 
     private static async Task<RunScenarioResult> RunOneAsync(RunnerRun run, string config, string pages, string feature, string name)

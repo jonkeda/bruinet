@@ -493,7 +493,9 @@ public sealed record RunEndedParams(string Uri, string Status, string? Message, 
 /// <param name="Status"><c>passed</c>, <c>failed</c> or <c>error</c>.</param>
 /// <param name="Message">The failure's or the error's message.</param>
 /// <param name="FailedStep">The step that failed, when the runner said which.</param>
-public sealed record RunScenarioResult(string Scenario, string Status, string? Message, RunFailedStep? FailedStep = null);
+/// <param name="Address">The address it runs by alone (the gate's <c>BddScenario</c> trait).</param>
+/// <param name="DurationMs">How long it took, opening and closing included.</param>
+public sealed record RunScenarioResult(string Scenario, string Status, string? Message, RunFailedStep? FailedStep = null, string? Address = null, long? DurationMs = null);
 
 /// <summary>The step a scenario of a Run on the runner failed at.</summary>
 /// <param name="File">Its file: the feature file, or the step file of a call's body.</param>

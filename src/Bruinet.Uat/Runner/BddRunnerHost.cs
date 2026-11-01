@@ -430,8 +430,8 @@ public sealed class BddRunnerHost
         List<string> messages = [];
         for (var current = exception; current is not null; current = current.InnerException)
         {
-            // The type too: a message alone can be a bare name (a KeyNotFoundException's key, an assembly).
-            var message = $"{current.GetType().Name}: {current.Message}";
+            // A message of one word is a bare name (a key, a folder, an assembly): its type says what of.
+            var message = current.Message.Contains(' ', StringComparison.Ordinal) ? current.Message : $"{current.GetType().Name}: {current.Message}";
             if (current is not TargetInvocationException && !messages.Contains(message, StringComparer.Ordinal))
             {
                 messages.Add(message);
@@ -489,8 +489,13 @@ public sealed class BddRunnerHost
         // the BDD Explorer (AD-022) and the MCP server's last_runs.
         public void RecordIfFinished()
         {
+            if (_recorded)
+            {
+                return;
+            }
+
             var result = Session.ToResult();
-            if (_recorded || (Session.HasNext && result.Steps is not [.., { Status: BddStepResultStatus.Failed }]))
+            if (Session.HasNext && result.Steps is not [.., { Status: BddStepResultStatus.Failed }])
             {
                 return;
             }

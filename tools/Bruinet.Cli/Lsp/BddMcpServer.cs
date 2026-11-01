@@ -165,7 +165,7 @@ public sealed class BddMcpServer : IDisposable
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
-                "last_runs" => _server.LastRuns(new PreviewParams(FileUri(Required(arguments, "path")), (string?)arguments["suite"])),
+                "last_runs" => LastRuns(arguments),
                 "tests_affected" => TestsAffected(arguments),
                 "rename_step" => RenameStep(arguments),
                 "rename_page_object" => Scraper(() => RenamePageObject(arguments)),
@@ -208,6 +208,11 @@ public sealed class BddMcpServer : IDisposable
         catch (ToolProblem problem)
         {
             return Text(problem.Message, error: true);
+        }
+        catch (Exception exception) when (exception is not (OutOfMemoryException or McpException))
+        {
+            // Never the server's end: an argument of the wrong kind, or a fault, is the tool's answer.
+            return Text($"{name} failed: {exception.GetType().Name}: {exception.Message}", error: true);
         }
     }
 
@@ -321,8 +326,8 @@ public sealed class BddMcpServer : IDisposable
             _server.BuildDone();
         }
 
-        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes((int?)arguments["timeoutMinutes"] ?? 10));
-        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, (int?)arguments["line"], suite), timeout.Token).GetAwaiter().GetResult();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10));
+        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, Whole(arguments, "line", 1, int.MaxValue), suite), timeout.Token).GetAwaiter().GetResult();
         if (ended is null)
         {
             throw new ToolProblem(started.Reason ?? "The run did not start.");
@@ -331,16 +336,36 @@ public sealed class BddMcpServer : IDisposable
         return new
         {
             started.Suite,
-            Status = timeout.IsCancellationRequested ? "timed out" : ended.Status,
-            ended.Message,
+            Status = ended.Status == "canceled" && timeout.IsCancellationRequested ? "timed out" : ended.Status,
+            Message = Cap(ended.Message, 2000),
             Scenarios = ended.Results.Select(result => new
             {
                 result.Scenario,
+                result.Address,
                 result.Status,
+                result.DurationMs,
                 FailedStep = result.FailedStep is { } step ? new { File = step.File is null ? null : Path.GetRelativePath(_solutionDir, step.File), step.Line, step.Text } : null,
                 Message = Cap(result.Message, 2000),
             }),
         };
+    }
+
+    private object LastRuns(JsonObject arguments)
+        => _server.LastRuns(new PreviewParams(FileUri(Required(arguments, "path")), (string?)arguments["suite"]))
+            .Select(run => run with { Message = Cap(run.Message, 2000) })
+            .ToList();
+
+    // A whole-number argument in its range, or a tool error saying what it must be; null when left out.
+    private static int? Whole(JsonObject arguments, string name, int least, int most)
+    {
+        if (arguments[name] is not { } node)
+        {
+            return null;
+        }
+
+        return node is JsonValue value && value.TryGetValue<int>(out var number) && number >= least && number <= most
+            ? number
+            : throw new ToolProblem($"'{name}' must be a whole number from {least} to {most}.");
     }
 
     // bruinet tests affected for a suite, in process: what an agent runs after a change, with why.

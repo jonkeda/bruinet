@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
+  gate does; it kept one only when every step had run, so a Run that failed early left none.
+- The runner's error names an exception's type when its message is a bare name
+  (`DirectoryNotFoundException: Bruinet.Samples.Todo.UITests`, not `Bruinet.Samples.Todo.UITests`).
 - **Breaking:** `srcnew/` and `testsnew/` are now `src/` and `tests/`: a project that references
   Bruinet's sources by path changes `srcnew` to `src`. `start-appium.ps1` and `run-android-tests.ps1`
   moved to `tools/Scripts`; the Stride pipe probes at the root (`test-key*.ps1`, `test-pipe.ps1`) are gone.
@@ -23,9 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - The MCP server's `run_scenario` and `last_runs`: an agent runs a scenario (or a file's) on the suite's
-  runner and reads how it went, the failed step's file, line and text included, and each scenario's
-  newest result. A Run on the runner now keeps a failed scenario's result, as the gate does; it kept
-  only the passed ones.
+  runner and reads how it went (its address, duration, and the failed step's file, line and text),
+  and each scenario's newest result.
 - The MCP server's `tests_affected`: `bruinet tests affected` for an agent, the picked tests with why and
   the filter, from git's changes or the given files.
 - The MCP server's `rename_step` (the editor's Rename of a callable step: the edits, then applied and
