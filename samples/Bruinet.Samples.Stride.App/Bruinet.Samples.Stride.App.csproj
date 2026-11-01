@@ -38,4 +38,11 @@
     <ProjectReference Include="..\..\src\Bruinet.Stride.Automation\Bruinet.Stride.Automation.csproj" />
   </ItemGroup>
 
+  <!-- Stride's asset compiler reads Bruinet.Stride at its first target framework (net8.0), which this
+       app's own build does not need: built here first, or the solution's parallel build races it (CI
+       failed on "Unable to build assembly reference ...\net8.0\Bruinet.Stride.dll", 2026-11-01). -->
+  <Target Name="BuildBruinetStrideForAssetCompiler" BeforeTargets="StrideCompileAsset">
+    <MSBuild Projects="..\..\src\Bruinet.Stride\Bruinet.Stride.csproj" Targets="Build" Properties="TargetFramework=net8.0" />
+  </Target>
+
 </Project>
