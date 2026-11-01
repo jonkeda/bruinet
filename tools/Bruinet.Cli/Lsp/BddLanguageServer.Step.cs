@@ -13,6 +13,17 @@ public sealed partial class BddLanguageServer
 {
     private StepRun? _step;
     private BddRunnerJob? _runnerJob;
+    private TaskCompletionSource<object> _stepEvent = NewStepEvent();
+
+    /// <summary>
+    /// The Step-through's next pause (<see cref="StepPausedParams"/>) or end (<see cref="StepEndedParams"/>), for a host
+    /// that waits instead of listening (the MCP server): take it before a start or a move, then await it.
+    /// </summary>
+    internal Task<object> UpcomingStepEvent => Volatile.Read(ref _stepEvent).Task;
+
+    private static TaskCompletionSource<object> NewStepEvent() => new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    private void RaiseStepEvent(object stepEvent) => Interlocked.Exchange(ref _stepEvent, NewStepEvent()).TrySetResult(stepEvent);
 
     /// <summary>The breakpoints file read between steps; the per-user one by default.</summary>
     public string BreakpointsPath { get; init; } = BddBreakpoints.DefaultPath;
@@ -244,7 +255,7 @@ public sealed partial class BddLanguageServer
             return;
         }
 
-        _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/step/paused", new StepPausedParams(
+        var paused = new StepPausedParams(
             run.Uri,
             run.Scenario,
             stop.File is { } at ? new Uri(at).AbsoluteUri : null,
@@ -257,7 +268,9 @@ public sealed partial class BddLanguageServer
             stop.Failed?.Message,
             stop.Arguments,
             stop.App,
-            stop.Page));
+            stop.Page);
+        RaiseStepEvent(paused);
+        _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/step/paused", paused);
     }
 
     // Closes the scenario, so a finished one keeps its result and the app ends, then ends the runner.
@@ -302,7 +315,9 @@ public sealed partial class BddLanguageServer
 
         if (status is not null)
         {
-            _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/step/ended", new StepEndedParams(run.Uri, run.Scenario, status, message));
+            var ended = new StepEndedParams(run.Uri, run.Scenario, status, message);
+            RaiseStepEvent(ended);
+            _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/step/ended", ended);
         }
     }
 

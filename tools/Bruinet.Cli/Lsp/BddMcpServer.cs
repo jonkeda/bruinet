@@ -72,6 +72,9 @@ public sealed class BddMcpServer : IDisposable
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint), 'stop' ends it. Answers where it paused next, or how it ended.", Schema(("move", "string", "over, into, out, continue or stop; required."), ("timeoutMinutes", "integer", "Stop waiting after this long; 5 when left out."))),
+        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows the branch a passing one never took. Slower than run_scenario: a build check and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
@@ -128,7 +131,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -169,6 +172,9 @@ public sealed class BddMcpServer : IDisposable
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
                 "coverage" => Coverage(arguments),
+                "step_start" => StepStart(arguments),
+                "step_move" => StepMove(arguments),
+                "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is { Path: { } shot } ? new { Screenshot = shot } : throw new ToolProblem("No screenshot: no Step-through is paused, or the suite's fixture takes none."),
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
                 "failing" => Failing(arguments),
@@ -356,6 +362,53 @@ public sealed class BddMcpServer : IDisposable
                 Failure = runs?.GetValueOrDefault(result.Scenario) is { } run ? Failure(run) : null,
                 Message = Cap(result.Message, 2000),
             }),
+        };
+    }
+
+    // A Step-through, waited for: where it paused, or how it ended.
+    private object StepStart(JsonObject arguments)
+    {
+        var uri = FileUri(Required(arguments, "path"));
+        var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
+        var upcoming = _server.UpcomingStepEvent;
+        var started = _server.StepStartAsync(new StepStartParams(uri, line, (string?)arguments["suite"], null)).GetAwaiter().GetResult();
+        return started.Started ? StepEvent(upcoming, TimeSpan.FromMinutes(5)) : throw new ToolProblem(started.Reason ?? "The Step-through did not start.");
+    }
+
+    private object StepMove(JsonObject arguments)
+    {
+        var upcoming = _server.UpcomingStepEvent;
+        var moved = _server.StepMove(new StepMoveParams(Required(arguments, "move")));
+        return moved.Taken
+            ? StepEvent(upcoming, TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 5))
+            : throw new ToolProblem(moved.Reason ?? "The move was not taken.");
+    }
+
+    private object StepEvent(Task<object> upcoming, TimeSpan wait)
+    {
+        if (!upcoming.Wait(wait))
+        {
+            return new { Waiting = true, Next = "The step is still running: call step_move with 'stop' to end it, or wait and look again with step_screenshot." };
+        }
+
+        return upcoming.Result switch
+        {
+            StepPausedParams paused => new
+            {
+                Paused = true,
+                paused.Scenario,
+                File = paused.At is { } at ? Path.GetRelativePath(_solutionDir, new Uri(at).LocalPath) : null,
+                paused.Line,
+                paused.Text,
+                paused.IsCall,
+                paused.Page,
+                paused.App,
+                paused.Arguments,
+                LastStepFailed = paused.Failed,
+                Message = Cap(paused.Message, 2000),
+            },
+            StepEndedParams ended => (object)new { Ended = true, ended.Scenario, ended.Status, Message = Cap(ended.Message, 2000) },
+            var other => new { Event = other.GetType().Name },
         };
     }
 

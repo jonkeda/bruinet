@@ -221,7 +221,8 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI2b | done | (this commit) | the gate with .NET's own collector, a process per scenario: no tool to install; dotnet-coverage snapshots (faster, a runner per suite) left for later |
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
-| AI4 | open | | |
+| AI4 | partly | (this commit) | step_start, step_move, step_screenshot built; step_state (the page's controls and values) is AI4b: it needs a runner message that reads the current page object |
+| AI4b | open | | |
 | AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
 | AI6 | open | | |
 | AI7 | open | | |
