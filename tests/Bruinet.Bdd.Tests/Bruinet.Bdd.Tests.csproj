@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Bdd\Bruinet.Bdd.csproj" />
+    <!-- Property-based tests (AD-033). -->
+    <PackageReference Include="CsCheck" />
   </ItemGroup>
 
   <ItemGroup>

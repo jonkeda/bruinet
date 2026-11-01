@@ -57,6 +57,8 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 9 | Mutation testing | built 2026-11-01 (AD-033): mutate.ps1, Stryker on changed files of five libraries; a report until the scores rise (Core 24% whole; today's touched files 14-41%) |
 | 10 | Approval tests | built 2026-11-01 (AD-033): every .gen.cs against its .tpl.cs; found five stale (two from today's generator change, three missing the IControlHost the templates declare), regenerated |
 | 11 | Complexity | built 2026-11-01 (AD-033): CA1502 at 25 and CA1505 as errors; 17 existing methods (26 to 58) marked known debt; duplication not checked |
+| 12 | Property-based tests | built 2026-11-01 (AD-033): CsCheck in Bruinet.Bdd.Tests, the step-value reader and writer round trip under nl-NL; a culture bug planted in the writer fails it |
+| 13 | Independent review | dropped 2026-11-01 |
 
 ## How teams arrange them
 
