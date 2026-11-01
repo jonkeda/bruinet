@@ -47,4 +47,10 @@
     <Compile Remove="Provider\**" />
   </ItemGroup>
 
+  <!-- The provider's public API is declared only in builds that have it (AD-033): in one list, a
+       Release build fails on RS0017 for every provider member it rightly lacks. -->
+  <ItemGroup Condition="'$(BruinetUiaBridge)' == 'true'">
+    <AdditionalFiles Include="PublicAPI/bridge/PublicAPI.Shipped.txt;PublicAPI/bridge/PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
 </Project>

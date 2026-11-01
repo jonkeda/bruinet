@@ -78,31 +78,6 @@ Bruinet.Uia.IBruinetAutomationPattern.Invoke(int verb, int arg1, int arg2) -> in
 Bruinet.Uia.IBruinetAutomationProvider
 Bruinet.Uia.IBruinetAutomationProvider.Exchange(int verb, string! argument, out string! result) -> int
 Bruinet.Uia.IBruinetAutomationProvider.Invoke(int verb, int arg1, int arg2) -> int
-Bruinet.Uia.Provider.BruinetBounds
-Bruinet.Uia.Provider.BruinetBounds.BruinetBounds() -> void
-Bruinet.Uia.Provider.BruinetBounds.BruinetBounds(double Left, double Top, double Width, double Height) -> void
-Bruinet.Uia.Provider.BruinetBounds.Height.get -> double
-Bruinet.Uia.Provider.BruinetBounds.Height.init -> void
-Bruinet.Uia.Provider.BruinetBounds.Left.get -> double
-Bruinet.Uia.Provider.BruinetBounds.Left.init -> void
-Bruinet.Uia.Provider.BruinetBounds.Top.get -> double
-Bruinet.Uia.Provider.BruinetBounds.Top.init -> void
-Bruinet.Uia.Provider.BruinetBounds.Width.get -> double
-Bruinet.Uia.Provider.BruinetBounds.Width.init -> void
-Bruinet.Uia.Provider.BruinetUiaBridge
-Bruinet.Uia.Provider.BruinetUiaBridge.Dispose() -> void
-Bruinet.Uia.Provider.BruinetUiaBridge.Handle.get -> nint
-Bruinet.Uia.Provider.BruinetUiaBridge.Register(Bruinet.Uia.Provider.IBruinetVerbTarget! target) -> void
-Bruinet.Uia.Provider.BruinetUiaBridge.RegisteredTargets.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-Bruinet.Uia.Provider.BruinetUiaBridge.Unregister(string! automationId) -> bool
-Bruinet.Uia.Provider.BruinetUiaBridge.Unregister(string! automationId, System.Func<Bruinet.Uia.Provider.IBruinetVerbTarget!, bool>! stillTheSameTarget) -> bool
-Bruinet.Uia.Provider.IBruinetVerbTarget
-Bruinet.Uia.Provider.IBruinetVerbTarget.AutomationId.get -> string!
-Bruinet.Uia.Provider.IBruinetVerbTarget.Capabilities.get -> System.Collections.Generic.IReadOnlyCollection<Bruinet.Uia.BruinetVerb>!
-Bruinet.Uia.Provider.IBruinetVerbTarget.Exchange(Bruinet.Uia.BruinetVerb verb, string! argument, out string! result) -> int
-Bruinet.Uia.Provider.IBruinetVerbTarget.Invoke(Bruinet.Uia.BruinetVerb verb, int arg1, int arg2) -> int
-Bruinet.Uia.Provider.IBruinetVerbTarget.IsAvailable.get -> bool
-Bruinet.Uia.Provider.IBruinetVerbTarget.TryGetScreenBounds(out Bruinet.Uia.Provider.BruinetBounds bounds) -> bool
 const Bruinet.Uia.AlertPayload.None = "" -> string!
 const Bruinet.Uia.BruinetBridgeGate.EnableVariable = "BRUINET_UIA_BRIDGE" -> string!
 const Bruinet.Uia.BruinetUiaIds.BridgeAutomationId = "BruinetUiaBridge.Root" -> string!
@@ -141,9 +116,4 @@ static Bruinet.Uia.BruinetVerbs.KindOf(Bruinet.Uia.BruinetVerb verb) -> Bruinet.
 static Bruinet.Uia.BruinetVerbs.ParseCapabilities(string? capabilities) -> System.Collections.Generic.IReadOnlyList<Bruinet.Uia.BruinetVerb>!
 static Bruinet.Uia.BruinetVerbs.RangeOf(int verb) -> Bruinet.Uia.BruinetVerbRange
 static Bruinet.Uia.BruinetVerbs.TransportFor(Bruinet.Uia.BruinetVerb verb) -> Bruinet.Uia.BruinetVerbTransport
-static Bruinet.Uia.Provider.BruinetBounds.Empty.get -> Bruinet.Uia.Provider.BruinetBounds
-static Bruinet.Uia.Provider.BruinetUiaBridge.ActiveCount.get -> int
-static Bruinet.Uia.Provider.BruinetUiaBridge.Attach(nint parentHwnd) -> Bruinet.Uia.Provider.BruinetUiaBridge!
-static Bruinet.Uia.Provider.BruinetUiaBridge.DisconnectFailures.get -> int
-static Bruinet.Uia.Provider.BruinetUiaBridge.LastDisconnectHResult.get -> int
 static readonly Bruinet.Uia.BruinetUiaIds.PatternGuid -> System.Guid
