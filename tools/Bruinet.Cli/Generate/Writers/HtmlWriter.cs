@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Bruinet.Generator.Writers;
 
 public class HtmlWriter : CodeWriter
@@ -153,7 +155,7 @@ public class HtmlWriter : CodeWriter
 		if (value != 0
 		    || showZeros)
 		{
-			Attribute(name, value.ToString());
+			Attribute(name, value.ToString(CultureInfo.InvariantCulture));
 		}
 	}
 }

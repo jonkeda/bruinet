@@ -68,7 +68,7 @@ public sealed record BddRunnerStart(string PagesAssembly, string? WorkingDirecto
     // The dotnet this process runs on (three folders above its runtime), or the one on the PATH.
     private static string DotnetHost()
     {
-        var name = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "dotnet.exe" : "dotnet";
+        var name = OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet";
         var root = Path.GetFullPath(Path.Combine(RuntimeEnvironment.GetRuntimeDirectory(), "..", "..", ".."));
         var host = Path.Combine(root, name);
         return File.Exists(host) ? host : name;
@@ -198,10 +198,10 @@ public sealed class BddRunnerClient : IAsyncDisposable
                 {
                     answer = await _channel.ReceiveAsync(grace.Token).ConfigureAwait(false);
                 }
-                catch (OperationCanceledException)
+                catch (OperationCanceledException exception)
                 {
                     Kill();
-                    throw new OperationCanceledException("The step did not stop when asked; its runner was ended.", cancellationToken);
+                    throw new OperationCanceledException("The step did not stop when asked; its runner was ended.", exception, cancellationToken);
                 }
 
                 switch (answer)

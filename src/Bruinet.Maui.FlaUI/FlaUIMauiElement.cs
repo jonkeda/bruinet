@@ -346,7 +346,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 // Try RangeValue pattern for sliders and other range controls
                 if (_element.Patterns.RangeValue.IsSupported)
                 {
-                    return _element.Patterns.RangeValue.Pattern.Value.Value.ToString();
+                    return _element.Patterns.RangeValue.Pattern.Value.Value.ToString(CultureInfo.InvariantCulture);
                 }
 
                 // MAUI wraps text controls on WinUI: the AutomationId sits on a wrapper whose

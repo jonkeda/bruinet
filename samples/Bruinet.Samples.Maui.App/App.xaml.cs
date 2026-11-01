@@ -8,13 +8,6 @@ public partial class App
     public App()
     {
         InitializeComponent();
-
-        // A flat hub, not Shell. Shell's tab bar did not survive going cross-platform:
-        // Android's BottomNavigationView hides tabs past the fifth behind an overflow menu,
-        // and Windows only ever exposed nine, which is why four pages had to become routes.
-        // The hub reaches every page with one identical click everywhere, and its flat stack
-        // leaves no pushed route to leak between tests.
-        MainPage = new NavigationPage(new HubPage());
     }
 
     /// <summary>
@@ -29,9 +22,12 @@ public partial class App
     /// </remarks>
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = base.CreateWindow(activationState);
-        window.Title = WindowTitle;
-        return window;
+        // A flat hub, not Shell. Shell's tab bar did not survive going cross-platform:
+        // Android's BottomNavigationView hides tabs past the fifth behind an overflow menu,
+        // and Windows only ever exposed nine, which is why four pages had to become routes.
+        // The hub reaches every page with one identical click everywhere, and its flat stack
+        // leaves no pushed route to leak between tests.
+        return new Window(new NavigationPage(new HubPage())) { Title = WindowTitle };
     }
 
     /// <summary>

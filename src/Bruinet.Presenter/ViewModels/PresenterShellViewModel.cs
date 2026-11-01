@@ -1876,9 +1876,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
             return BddWorkspaceNodeKind.WorkflowConfig;
         }
 
-        return fileName.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase)
-            ? BddWorkspaceNodeKind.MarkdownFile
-            : BddWorkspaceNodeKind.MarkdownFile;
+        return BddWorkspaceNodeKind.MarkdownFile;
     }
 
     private BddWorkspaceNodeViewModel EnsureFolderNode(
@@ -2074,7 +2072,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
         var duration = Math.Max(0, (int)Math.Round((timing.CompletedAt - timing.StartedAt).TotalMilliseconds));
         var waitText = timing.WaitStartedAt is null
             ? $"delay after {timing.DelayAfterMilliseconds} ms"
-            : $"wait {timing.WaitStartedAt:HH:mm:ss.fff} -> {timing.WaitCompletedAt?.ToString("HH:mm:ss.fff") ?? "pending"} ({timing.DelayAfterMilliseconds} ms)";
+            : $"wait {timing.WaitStartedAt:HH:mm:ss.fff} -> {timing.WaitCompletedAt?.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture) ?? "pending"} ({timing.DelayAfterMilliseconds} ms)";
         return $"- Step {timing.StepNumber}: {timing.StartedAt:HH:mm:ss.fff} -> {timing.CompletedAt:HH:mm:ss.fff} ({duration} ms), {waitText}: {timing.StepText}";
     }
 

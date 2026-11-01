@@ -329,7 +329,7 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
 
     #region IControlObject<TScope> - Text
 
-    /// <inheritdoc />
+    /// <summary>The control's text, or null when it cannot be read.</summary>
     public virtual string? GetText(int? timeoutMs = null)
     {
         try
@@ -343,7 +343,7 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
         }
     }
 
-    /// <inheritdoc />
+    /// <summary>Waits until the text equals <paramref name="expected"/>; false when it did not in time.</summary>
     public bool WaitText(string? expected, int? timeoutMs = null)
     {
         if (expected == null) return true;
@@ -351,7 +351,7 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
         return Poll(() => GetText() == expected, timeout);
     }
 
-    /// <inheritdoc />
+    /// <summary>Asserts the text equals <paramref name="expected"/> within the timeout.</summary>
     public TScope AssertText(string? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null) return ContainingScope;
@@ -365,7 +365,7 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
         return ContainingScope;
     }
 
-    /// <inheritdoc />
+    /// <summary>Asserts the text contains <paramref name="expected"/> within the timeout.</summary>
     public TScope AssertTextContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null) return ContainingScope;

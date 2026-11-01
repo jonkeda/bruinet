@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Generator.Writers;
 
@@ -24,7 +25,7 @@ public class VbImportsDictionary
 
 		foreach (string key in VbImports.Keys)
 		{
-			sb.AppendFormat("Imports {0}\n", key);
+			sb.AppendFormat(CultureInfo.InvariantCulture, "Imports {0}\n", key);
 		}
 
 		return sb.ToString();
@@ -54,7 +55,7 @@ public class UsingDictionary
 
 		foreach (string key in Usings.Keys)
 		{
-			sb.AppendFormat("using {0};\n", key);
+			sb.AppendFormat(CultureInfo.InvariantCulture, "using {0};\n", key);
 		}
 
 		return sb.ToString();

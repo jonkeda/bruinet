@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Generator.Writers;
 
@@ -105,7 +106,7 @@ public class MarkdownWriter
 			return;
 		}
 
-		_sb.Append($"- {text}");
+		_sb.Append(CultureInfo.InvariantCulture, $"- {text}");
 		_sb.AppendLine("  ");
 	}
 
@@ -116,7 +117,7 @@ public class MarkdownWriter
 			return;
 		}
 
-		_sb.Append($"- {text}");
+		_sb.Append(CultureInfo.InvariantCulture, $"- {text}");
 		_sb.AppendLine("  ");
 	}
 
@@ -145,7 +146,7 @@ public class MarkdownWriter
 			return;
 		}
 
-		_sb.Append($"| {text} ");
+		_sb.Append(CultureInfo.InvariantCulture, $"| {text} ");
 	}
 
 	public void RowEnd()
@@ -216,7 +217,7 @@ public class MarkdownWriter
 		{
 			return;
 		}
-		_sb.Append($"**{name}** : ");
+		_sb.Append(CultureInfo.InvariantCulture, $"**{name}** : ");
 		_sb.Append(value);
 		_sb.AppendLine("  ");
 	}
@@ -233,12 +234,12 @@ public class MarkdownWriter
 
 	public void Item(string name, double? value)
 	{
-		Item(name, value?.ToString());
+		Item(name, value?.ToString(CultureInfo.InvariantCulture));
 	}
 
 	public void Item(string name, int? value)
 	{
-		Item(name, value?.ToString());
+		Item(name, value?.ToString(CultureInfo.InvariantCulture));
 	}
 
 	public void Item(string name, bool? value)

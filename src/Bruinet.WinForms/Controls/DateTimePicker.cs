@@ -3,6 +3,7 @@ using Bruinet.Core.Utilities;
 using Bruinet.WinForms.FlaUI;
 using FlaUI.Core.Input;
 using FlaUI.Core.WindowsAPI;
+using System.Globalization;
 
 namespace Bruinet.WinForms.Controls;
 
@@ -59,15 +60,15 @@ public sealed class DateTimePicker<TScope> : ControlBase<TScope>
             Keyboard.Type(VirtualKeyShort.RIGHT);
 
             // Type year digits
-            Keyboard.Type(date.Year.ToString());
+            Keyboard.Type(date.Year.ToString(CultureInfo.InvariantCulture));
 
             // Navigate to month (Home)
             Keyboard.Type(VirtualKeyShort.HOME);
-            Keyboard.Type(date.Month.ToString());
+            Keyboard.Type(date.Month.ToString(CultureInfo.InvariantCulture));
 
             // Navigate to day (Right from month)
             Keyboard.Type(VirtualKeyShort.RIGHT);
-            Keyboard.Type(date.Day.ToString());
+            Keyboard.Type(date.Day.ToString(CultureInfo.InvariantCulture));
 
             Keyboard.Type(VirtualKeyShort.ENTER);
         }, timeoutMs);

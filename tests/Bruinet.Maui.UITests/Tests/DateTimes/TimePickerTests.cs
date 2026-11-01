@@ -1,5 +1,6 @@
 using Bruinet.Maui.UITests.Pages;
 using DateTimeType = System.DateTime;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.DateTimes;
 
@@ -100,7 +101,7 @@ public class TimePickerTests
 
         // Act & Assert
         page.TestTimePicker.SetTime(testTime)
-            .TimeStatusLabel.AssertTextContains(testTime.ToString(@"hh\:mm\:ss"));
+            .TimeStatusLabel.AssertTextContains(testTime.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture));
 
         return Task.CompletedTask;
     }

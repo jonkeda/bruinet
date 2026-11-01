@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Generator.Writers;
 
@@ -19,22 +20,22 @@ public class ImportDictionary
 		var sb = new StringBuilder();
 
 		foreach (string key in Imports.Keys.Where(i =>
-				         !i.StartsWith("java.") &&
-				         !i.StartsWith("javax.") &&
-				         !i.StartsWith(aPackage))
+				         !i.StartsWith("java.", StringComparison.Ordinal) &&
+				         !i.StartsWith("javax.", StringComparison.Ordinal) &&
+				         !i.StartsWith(aPackage, StringComparison.Ordinal))
 			         .OrderBy(i => i).ToList())
 		{
-			sb.AppendFormat("using {0};\n", key);
+			sb.AppendFormat(CultureInfo.InvariantCulture, "using {0};\n", key);
 		}
 
-		foreach (string key in Imports.Keys.Where(i => i.StartsWith("javax.")).OrderBy(i => i).ToList())
+		foreach (string key in Imports.Keys.Where(i => i.StartsWith("javax.", StringComparison.Ordinal)).OrderBy(i => i).ToList())
 		{
-			sb.AppendFormat("using {0};\n", key);
+			sb.AppendFormat(CultureInfo.InvariantCulture, "using {0};\n", key);
 		}
 
-		foreach (string key in Imports.Keys.Where(i => i.StartsWith("java.")).OrderBy(i => i).ToList())
+		foreach (string key in Imports.Keys.Where(i => i.StartsWith("java.", StringComparison.Ordinal)).OrderBy(i => i).ToList())
 		{
-			sb.AppendFormat("using {0};\n", key);
+			sb.AppendFormat(CultureInfo.InvariantCulture, "using {0};\n", key);
 		}
 
 		return sb.ToString();

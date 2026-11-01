@@ -193,7 +193,7 @@ internal sealed class SqlReport
         var suite = Suite();
         var text = new StringBuilder();
         text.AppendLine("# SQL log report").AppendLine();
-        text.AppendLine($"{Tests.Count} tests, {Entries} commands, {Objects.Count} objects touched. {Unattributed} commands ({UnattributedMs:0} ms) fell outside every test.").AppendLine();
+        text.AppendLine(CultureInfo.InvariantCulture, $"{Tests.Count} tests, {Entries} commands, {Objects.Count} objects touched. {Unattributed} commands ({UnattributedMs:0} ms) fell outside every test.").AppendLine();
         text.AppendLine("## The database's share").AppendLine();
         if (suite.TestsWithTime == 0)
         {
@@ -202,19 +202,19 @@ internal sealed class SqlReport
         else
         {
             text.AppendLine("| Share | Median | p90 |").AppendLine("| --- | --- | --- |");
-            text.AppendLine($"| The test's own steps | {suite.Median:P1} | {suite.P90:P1} |");
-            text.AppendLine($"| With its arrange (reset, seed) | {suite.MedianWithArrange:P1} | {suite.P90WithArrange:P1} |").AppendLine();
-            text.AppendLine($"The database took {suite.DatabaseMs:0} ms of the tests' {suite.TestMs:0} ms, and {suite.ArrangeDatabaseMs:0} ms of their arrange's {suite.ArrangeMs:0} ms.").AppendLine();
+            text.AppendLine(CultureInfo.InvariantCulture, $"| The test's own steps | {suite.Median:P1} | {suite.P90:P1} |");
+            text.AppendLine(CultureInfo.InvariantCulture, $"| With its arrange (reset, seed) | {suite.MedianWithArrange:P1} | {suite.P90WithArrange:P1} |").AppendLine();
+            text.AppendLine(CultureInfo.InvariantCulture, $"The database took {suite.DatabaseMs:0} ms of the tests' {suite.TestMs:0} ms, and {suite.ArrangeDatabaseMs:0} ms of their arrange's {suite.ArrangeMs:0} ms.").AppendLine();
         }
 
         text.AppendLine("## How far each object reaches").AppendLine();
         if (Objects.Count > 0)
         {
-            text.AppendLine($"An object reaches a median {Percentile(Objects.Select(item => item.Share), 0.5):P1} of the tests, p90 {Percentile(Objects.Select(item => item.Share), 0.9):P1}.").AppendLine();
+            text.AppendLine(CultureInfo.InvariantCulture, $"An object reaches a median {Percentile(Objects.Select(item => item.Share), 0.5):P1} of the tests, p90 {Percentile(Objects.Select(item => item.Share), 0.9):P1}.").AppendLine();
             text.AppendLine("| Object | Tests | Share |").AppendLine("| --- | --- | --- |");
             foreach (var item in Objects.Take(20))
             {
-                text.AppendLine($"| `{item.Object}` | {item.Tests} | {item.Share:P0} |");
+                text.AppendLine(CultureInfo.InvariantCulture, $"| `{item.Object}` | {item.Tests} | {item.Share:P0} |");
             }
 
             text.AppendLine();
@@ -223,11 +223,11 @@ internal sealed class SqlReport
         var repeats = Tests.SelectMany(test => test.Repeats.Select(repeat => (test.Test, repeat))).ToList();
         if (repeats.Count > 0)
         {
-            text.AppendLine($"## Commands sent more than {RepeatThreshold} times in one test").AppendLine();
+            text.AppendLine(CultureInfo.InvariantCulture, $"## Commands sent more than {RepeatThreshold} times in one test").AppendLine();
             text.AppendLine("| Test | Times | Command |").AppendLine("| --- | --- | --- |");
             foreach (var (test, repeat) in repeats.OrderByDescending(pair => pair.repeat.Count).Take(20))
             {
-                text.AppendLine($"| {test} | {repeat.Count} | `{Short(repeat.Text)}` |");
+                text.AppendLine(CultureInfo.InvariantCulture, $"| {test} | {repeat.Count} | `{Short(repeat.Text)}` |");
             }
 
             text.AppendLine();
@@ -237,7 +237,7 @@ internal sealed class SqlReport
         text.AppendLine("| Test | Test ms | Database ms | Share | Arrange ms | Its database ms | Commands | Objects |").AppendLine("| --- | --- | --- | --- | --- | --- | --- | --- |");
         foreach (var test in Tests)
         {
-            text.AppendLine($"| {test.Test} | {test.TestMs:0} | {test.DatabaseMs:0.0} | {Percent(test.Share)} | {test.ArrangeMs:0} | {test.ArrangeDatabaseMs:0.0} | {test.Commands} | {test.Objects.Count} |");
+            text.AppendLine(CultureInfo.InvariantCulture, $"| {test.Test} | {test.TestMs:0} | {test.DatabaseMs:0.0} | {Percent(test.Share)} | {test.ArrangeMs:0} | {test.ArrangeDatabaseMs:0.0} | {test.Commands} | {test.Objects.Count} |");
         }
 
         return text.ToString();

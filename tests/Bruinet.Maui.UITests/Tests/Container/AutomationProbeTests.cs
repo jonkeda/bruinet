@@ -1,5 +1,6 @@
 using Bruinet.Maui.UITests.Pages;
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.Container;
 
@@ -116,7 +117,7 @@ public class AutomationProbeTests
             var childFound = rootFound
                 && Page.TryFindChildThroughContainer($"Probe{subject}", $"Probe{subject}Child") != null;
 
-            report.AppendLine($"| {subject} | {(rootFound ? "yes" : "NO")} | {(childFound ? "yes" : "NO")} |");
+            report.AppendLine(CultureInfo.InvariantCulture, $"| {subject} | {(rootFound ? "yes" : "NO")} | {(childFound ? "yes" : "NO")} |");
 
             if (childFound) scopable.Add(subject);
             else if (rootFound) rootOnly.Add(subject);
@@ -124,9 +125,9 @@ public class AutomationProbeTests
         }
 
         report.AppendLine();
-        report.AppendLine($"Usable as scope ({scopable.Count}): {Join(scopable)}");
-        report.AppendLine($"Root only, NOT scopable ({rootOnly.Count}): {Join(rootOnly)}");
-        report.AppendLine($"Not addressable ({unaddressable.Count}): {Join(unaddressable)}");
+        report.AppendLine(CultureInfo.InvariantCulture, $"Usable as scope ({scopable.Count}): {Join(scopable)}");
+        report.AppendLine(CultureInfo.InvariantCulture, $"Root only, NOT scopable ({rootOnly.Count}): {Join(rootOnly)}");
+        report.AppendLine(CultureInfo.InvariantCulture, $"Not addressable ({unaddressable.Count}): {Join(unaddressable)}");
 
         _output.WriteLine(report.ToString());
 

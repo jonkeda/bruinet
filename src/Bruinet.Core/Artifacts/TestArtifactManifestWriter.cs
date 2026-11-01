@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Globalization;
 
 namespace Bruinet.Core.Artifacts;
 
@@ -160,17 +161,17 @@ public static class TestArtifactManifestWriter
     private static string BuildSummary(TestArtifactManifest manifest)
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"# Test Artifacts: {manifest.RunId}");
+        builder.AppendLine(CultureInfo.InvariantCulture, $"# Test Artifacts: {manifest.RunId}");
         builder.AppendLine();
 
         foreach (var suite in manifest.Suites.OrderBy(x => x.Name, StringComparer.OrdinalIgnoreCase))
         {
-            builder.AppendLine($"## {suite.Name}");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"## {suite.Name}");
             builder.AppendLine();
 
             foreach (var artifact in suite.Artifacts)
             {
-                builder.AppendLine($"- {artifact.Kind}: {artifact.Name} ({artifact.Reason}) - {artifact.Path}");
+                builder.AppendLine(CultureInfo.InvariantCulture, $"- {artifact.Kind}: {artifact.Name} ({artifact.Reason}) - {artifact.Path}");
             }
 
             builder.AppendLine();

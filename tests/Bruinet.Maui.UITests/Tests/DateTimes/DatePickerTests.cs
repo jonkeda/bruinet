@@ -2,6 +2,7 @@ using Bruinet.Core.Exceptions;
 using System;
 using Bruinet.Maui.UITests.Pages;
 using DateTimeType = System.DateTime;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.DateTimes;
 
@@ -108,7 +109,7 @@ public class DatePickerTests
         // Asserted on the two facts rather than on the wording. This used to look for the phrase
         // "Could not set date", which broke in step 20 when the route changed and the behaviour
         // did not - the refusal is still a refusal, and it now also says what the control holds.
-        Assert.Contains(pastDate.ToString("yyyy-MM-dd"), error.Message);
+        Assert.Contains(pastDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), error.Message);
         Assert.Contains("MinimumDate", error.Message);
 
         return Task.CompletedTask;
@@ -130,7 +131,7 @@ public class DatePickerTests
         // Asserted on the two facts rather than on the wording. This used to look for the phrase
         // "Could not set date", which broke in step 20 when the route changed and the behaviour
         // did not - the refusal is still a refusal, and it now also says what the control holds.
-        Assert.Contains(futureDate.ToString("yyyy-MM-dd"), error.Message);
+        Assert.Contains(futureDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), error.Message);
         Assert.Contains("MinimumDate", error.Message);
 
         return Task.CompletedTask;
@@ -165,7 +166,7 @@ public class DatePickerTests
 
         // Act & Assert
         page.TestDatePicker.SetDate(testDate)
-            .DateStatusLabel.AssertTextContains(testDate.ToString("dddd, MMMM d, yyyy"));
+            .DateStatusLabel.AssertTextContains(testDate.ToString("dddd, MMMM d, yyyy", CultureInfo.CurrentCulture));
 
         return Task.CompletedTask;
     }

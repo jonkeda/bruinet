@@ -18,6 +18,7 @@ namespace Bruinet.Samples.Todo.TestSupport;
 public sealed class TodoSqlReplay
 {
     private static readonly Regex Unsafe = new("[^A-Za-z0-9._-]+", RegexOptions.Compiled);
+    private static readonly object Gate = new();
     private readonly string _folder;
     private readonly string _head;
     private readonly string? _device;
@@ -156,7 +157,7 @@ public sealed class TodoSqlReplay
                 using var connection = new SqliteConnection($"Data Source={database.Path};Pooling=False");
                 connection.Open();
                 var snapshot = SchemaSnapshot.ReadAsync(connection).GetAwaiter().GetResult();
-                lock (typeof(TodoSqlReplay))
+                lock (Gate)
                 {
                     snapshot.Save(path);
                 }

@@ -130,8 +130,11 @@ public sealed class UatRuntime
 
         var properties = root.GetType()
             .GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        // The names of the app's own property, found by reflection.
+#pragma warning disable CA1507
         var property = FindCompositionProperty(properties, "Composition") ??
                        FindCompositionProperty(properties, "TestComposition");
+#pragma warning restore CA1507
 
         return property?.GetValue(root) as TestComposition;
     }

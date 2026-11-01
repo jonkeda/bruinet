@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Samples.Todo.JourneyCoverage;
 
@@ -66,7 +67,7 @@ public sealed class CoverageReport
         text.AppendLine("| --- | ---: | ---: |");
         foreach (var pyramid in new[] { "Unit", "Integration", "Contract", "UiHermetic", "UiLive" })
         {
-            text.AppendLine($"| {pyramid} | {Tests.Count(t => t.Pyramid == pyramid)} | {CasesIn(pyramid)} |");
+            text.AppendLine(CultureInfo.InvariantCulture, $"| {pyramid} | {Tests.Count(t => t.Pyramid == pyramid)} | {CasesIn(pyramid)} |");
         }
 
         text.AppendLine();
@@ -77,7 +78,7 @@ public sealed class CoverageReport
         foreach (var assignment in Assignments)
         {
             var coveredBy = assignment.IsCovered ? string.Join("<br>", assignment.CoveredBy) : "**MISSING**";
-            text.AppendLine($"| {assignment.Subtask.Id} | {assignment.Subtask.Text} | {assignment.Tier} | {coveredBy} |");
+            text.AppendLine(CultureInfo.InvariantCulture, $"| {assignment.Subtask.Id} | {assignment.Subtask.Text} | {assignment.Tier} | {coveredBy} |");
         }
 
         return text.ToString();

@@ -10,6 +10,7 @@ using FlaUI.Core.Conditions;
 using FlaUI.Core.Input;
 using FlaUI.Core.WindowsAPI;
 using FlaUI.UIA3;
+using System.Globalization;
 
 namespace Bruinet.Wpf.FlaUI;
 
@@ -84,7 +85,7 @@ public sealed class FlaUIWpfElement : IWpfElement, IRangePatternElement, IExpand
                 if (_element.Patterns.Value.IsSupported)
                     return _element.Patterns.Value.Pattern.Value.Value;
                 if (_element.Patterns.RangeValue.IsSupported)
-                    return _element.Patterns.RangeValue.Pattern.Value.Value.ToString();
+                    return _element.Patterns.RangeValue.Pattern.Value.Value.ToString(CultureInfo.InvariantCulture);
                 return _element.Properties.Name.ValueOrDefault;
             }
             catch

@@ -11,15 +11,11 @@ public partial class App
     public App()
     {
         InitializeComponent();
-
-        MainPage = new AppShell();
     }
 
     /// <inheritdoc />
     protected override Window CreateWindow(IActivationState? activationState)
     {
-        var window = base.CreateWindow(activationState);
-        window.Title = WindowTitle;
-        return window;
+        return new Window(new AppShell()) { Title = WindowTitle };
     }
 }

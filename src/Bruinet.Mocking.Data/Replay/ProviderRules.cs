@@ -3,6 +3,7 @@ using System.Data.Common;
 using System.Data.SqlTypes;
 using System.Reflection;
 using System.Text.Json.Nodes;
+using System.Globalization;
 
 namespace Bruinet.Mocking.Data.Replay;
 
@@ -119,8 +120,8 @@ public static class ProviderRules
         return new RecordedError(
             type.FullName!,
             LoggingDbCommand.ErrorNumber(error),
-            Convert.ToByte(type.GetProperty("State")?.GetValue(error) ?? (byte)0),
-            Convert.ToByte(type.GetProperty("Class")?.GetValue(error) ?? (byte)0),
+            Convert.ToByte(type.GetProperty("State")?.GetValue(error) ?? (byte)0, CultureInfo.InvariantCulture),
+            Convert.ToByte(type.GetProperty("Class")?.GetValue(error) ?? (byte)0, CultureInfo.InvariantCulture),
             error.Message,
             type.GetProperty("Server")?.GetValue(error) as string);
     }

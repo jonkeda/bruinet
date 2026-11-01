@@ -1,4 +1,5 @@
 using Bruinet.Maui.UITests.Pages;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.Text;
 
@@ -77,7 +78,7 @@ public class EditorTests
         page.TestEditor.SetText(testText);
 
         // Assert - verify the text is set by checking the status label
-        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString());
+        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString(CultureInfo.InvariantCulture));
         return Task.CompletedTask;
     }
 
@@ -129,7 +130,7 @@ public class EditorTests
 
         // Arrange
         page.TestEditor.SetText(testText);
-        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString());
+        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString(CultureInfo.InvariantCulture));
 
         // Act - clear using the button
         page.ClearEditorButton.Click();
@@ -186,12 +187,12 @@ public class EditorTests
 
         // Act
         page.TestEditor.SetText(firstText);
-        page.EditorStatusLabel.AssertTextContains(firstText.Length.ToString());
+        page.EditorStatusLabel.AssertTextContains(firstText.Length.ToString(CultureInfo.InvariantCulture));
 
         page.TestEditor.SetText(secondText);
 
         // Assert - latest text length should be displayed
-        page.EditorStatusLabel.AssertTextContains(secondText.Length.ToString());
+        page.EditorStatusLabel.AssertTextContains(secondText.Length.ToString(CultureInfo.InvariantCulture));
         return Task.CompletedTask;
     }
 
@@ -207,7 +208,7 @@ public class EditorTests
 
         // Arrange
         page.TestEditor.SetText(testText);
-        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString());
+        page.EditorStatusLabel.AssertTextContains(testText.Length.ToString(CultureInfo.InvariantCulture));
 
         // Act
         page.ResetAllButton.Click();

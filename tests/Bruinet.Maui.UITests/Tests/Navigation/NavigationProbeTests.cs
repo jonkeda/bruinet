@@ -1,5 +1,6 @@
 using Bruinet.Maui.UITests.Pages;
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.Navigation;
 
@@ -104,7 +105,7 @@ public class NavigationProbeTests
         {
             var byId = Page.TryFindByAutomationId(id) != null;
             var byName = Page.TryFindByName(name) != null;
-            report.AppendLine($"| {id} | {(byId ? "yes" : "NO")} | {(byName ? "yes" : "NO")} |");
+            report.AppendLine(CultureInfo.InvariantCulture, $"| {id} | {(byId ? "yes" : "NO")} | {(byName ? "yes" : "NO")} |");
         }
 
         _output.WriteLine(report.ToString());

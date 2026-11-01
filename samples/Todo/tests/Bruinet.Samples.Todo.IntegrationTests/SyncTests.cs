@@ -37,7 +37,7 @@ public sealed class SyncTests
 
         Assert.Equal(SyncError.ServerError, result.Error);
         Assert.Equal(5, (await host.Get<IUserRepository>().GetAllAsync()).Count);
-        Assert.DoesNotContain(host.Mock.Requests(), request => request.Path.StartsWith(TodoApi.TodosPath));
+        Assert.DoesNotContain(host.Mock.Requests(), request => request.Path.StartsWith(TodoApi.TodosPath, StringComparison.Ordinal));
     }
 
     [Fact]

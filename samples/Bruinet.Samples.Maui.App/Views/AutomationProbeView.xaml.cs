@@ -50,5 +50,5 @@ public partial class AutomationProbeView : ContentView
     /// Navigates by Shell route. These pages have no tab of their own - see the module
     /// navigation comment in the XAML.
     /// </summary>
-    private static void Go(string route) => Shell.Current?.GoToAsync(route);
+    private static void Go(string route) => _ = Shell.Current?.GoToAsync(route);
 }

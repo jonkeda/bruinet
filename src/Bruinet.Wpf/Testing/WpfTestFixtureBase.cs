@@ -35,7 +35,10 @@ public abstract class WpfTestFixtureBase : IDisposable
 
         Configuration = BruinetWpfConfiguration.Load();
 
+        // The fixture's one extension point: a derived suite's options, read before its constructor runs.
+#pragma warning disable MA0056
         var options = CreateTestContextOptions();
+#pragma warning restore MA0056
         _context = new WpfTestContext(options);
 
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATED - Driver session started");

@@ -141,11 +141,11 @@ public static class MauiDriverFactory
                 ?? throw new InvalidOperationException("FlaUIMauiDriver type not found in Bruinet.Maui.FlaUI assembly");
             return _flaUIDriverType;
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException exception)
         {
             throw new InvalidOperationException(
                 "Bruinet.Maui.FlaUI assembly not found. " +
-                "Ensure the Bruinet.Maui.FlaUI package is referenced in your project.");
+                "Ensure the Bruinet.Maui.FlaUI package is referenced in your project.", exception);
         }
     }
     
@@ -160,11 +160,11 @@ public static class MauiDriverFactory
                 ?? throw new InvalidOperationException("AppiumMauiDriver type not found in Bruinet.Maui.Appium assembly");
             return _appiumDriverType;
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException exception)
         {
             throw new InvalidOperationException(
                 "Bruinet.Maui.Appium assembly not found. " +
-                "Ensure the Bruinet.Maui.Appium package is referenced in your project.");
+                "Ensure the Bruinet.Maui.Appium package is referenced in your project.", exception);
         }
     }
     
@@ -176,11 +176,11 @@ public static class MauiDriverFactory
             return assembly.GetType("OpenQA.Selenium.Appium.AppiumOptions")
                 ?? throw new InvalidOperationException("AppiumOptions type not found");
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException exception)
         {
             throw new InvalidOperationException(
                 $"{AppiumAssemblyName} assembly not found. " +
-                "Ensure the Appium.WebDriver package is referenced by the test project.");
+                "Ensure the Appium.WebDriver package is referenced by the test project.", exception);
         }
     }
     
@@ -364,11 +364,11 @@ public static class MauiDriverFactory
             
             return ctor.Invoke([serverUri, appiumOptions]);
         }
-        catch (FileNotFoundException)
+        catch (FileNotFoundException exception)
         {
             throw new InvalidOperationException(
                 $"{AppiumAssemblyName} assembly not found. " +
-                "Ensure the Appium.WebDriver package is referenced by the test project.");
+                "Ensure the Appium.WebDriver package is referenced by the test project.", exception);
         }
     }
 }

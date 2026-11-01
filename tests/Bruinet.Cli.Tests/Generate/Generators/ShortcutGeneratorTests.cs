@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Bruinet.Generator.Models;
 
@@ -18,7 +19,7 @@ public partial class Player<TScope> : ComponentObjectBase<TScope, Player<TScope>
 
     private static string Generate(string members)
         => ControlObjectGenerator.CreateDefault()
-            .Generate(string.Format(Component, members), new GeneratorOptions { IncludeGeneratedHeader = false });
+            .Generate(string.Format(CultureInfo.InvariantCulture, Component, members), new GeneratorOptions { IncludeGeneratedHeader = false });
 
     /// <summary>Collapses whitespace so assertions do not depend on the formatter's line breaks.</summary>
     private static string Flat(string code) => Regex.Replace(code, @"\s+", " ");

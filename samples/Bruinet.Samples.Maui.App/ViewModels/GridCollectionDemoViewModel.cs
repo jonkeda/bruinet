@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Globalization;
 
 namespace Bruinet.Samples.Maui.App.ViewModels;
 
@@ -192,7 +193,7 @@ public class ProductItem : INotifyPropertyChanged
         set { _isSelected = value; OnPropertyChanged(); }
     }
 
-    public string PriceText => Price.ToString("C");
+    public string PriceText => Price.ToString("C", CultureInfo.CurrentCulture);
 
     public string StockText => InStock ? "In stock" : "Out of stock";
 

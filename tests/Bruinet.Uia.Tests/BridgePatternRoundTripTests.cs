@@ -1,6 +1,7 @@
 using Bruinet.Uia.TestHost;
 using FlaUI.Core.AutomationElements;
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace Bruinet.Uia.Tests;
 
@@ -176,7 +177,7 @@ public class BridgePatternRoundTripTests
         Assert.Equal(
             HResults.S_OK,
             pattern!.Exchange((int)BruinetVerb.GetProtocolVersion, string.Empty, out var version));
-        Assert.Equal(BruinetUiaIds.ProtocolVersion.ToString(), version);
+        Assert.Equal(BruinetUiaIds.ProtocolVersion.ToString(CultureInfo.InvariantCulture), version);
 
         Assert.Equal(
             HResults.S_OK,

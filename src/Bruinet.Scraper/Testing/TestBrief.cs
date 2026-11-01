@@ -3,6 +3,7 @@ using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Service;
+using System.Globalization;
 
 namespace Bruinet.Scraper.Testing;
 
@@ -61,7 +62,7 @@ public static class TestBrief
                 var suggestion = ControlAdvisor.Suggest(snapshot, snapshot[e.Node!.Value], project.Config.TestIds, project.Config.Platform == "blazor");
                 var file = PersonsPart(project, page);
                 md.Append("Add a member for the element to `").Append(page.Name).Append("`, in ").Append(file).Append(". The rules would write:\n\n```csharp\n")
-                    .Append($"public {suggestion.Control}<{page.Name}> {suggestion.Name} => new({suggestion.Scope ?? "this"}, {suggestion.Locator});")
+                    .Append(CultureInfo.InvariantCulture, $"public {suggestion.Control}<{page.Name}> {suggestion.Name} => new({suggestion.Scope ?? "this"}, {suggestion.Locator});")
                     .Append("\n```\n\n").Append(suggestion.Stable ? "The locator is stable: " : "The locator is not stable: ").Append(suggestion.Why)
                     .Append(". Name it as the app does; use a control that has the verb the step needs (")
                     .Append(Needs(e)).Append(").\n");

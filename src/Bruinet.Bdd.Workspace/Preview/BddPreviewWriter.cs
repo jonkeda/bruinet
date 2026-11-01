@@ -6,6 +6,7 @@ using Markdig.Extensions.Tables;
 using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Markdig.Syntax;
+using System.Globalization;
 
 namespace Bruinet.Bdd.Preview;
 
@@ -44,10 +45,10 @@ internal sealed partial class BddPreviewWriter
     {
         Parse();
         var name = Path.GetFileName(_filePath);
-        _html.Append($"<article class=\"uat-doc\" data-kind=\"{(_isSteps ? "steps" : "feature")}\" data-file=\"{Encode(name)}\">\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<article class=\"uat-doc\" data-kind=\"{(_isSteps ? "steps" : "feature")}\" data-file=\"{Encode(name)}\">\n");
         if (_options.ParseOnlyReason is { } reason)
         {
-            _html.Append($"<p class=\"uat-banner\" data-mode=\"parse-only\">Parsed only, not bound: {Encode(reason)}</p>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-banner\" data-mode=\"parse-only\">Parsed only, not bound: {Encode(reason)}</p>\n");
         }
 
         var document = Markdown.Parse(_text, Pipeline);
@@ -95,7 +96,7 @@ internal sealed partial class BddPreviewWriter
                 WriteSteps(fence);
                 break;
             case ParagraphBlock paragraph when TagsOf(paragraph) is { } tags:
-                _html.Append($"<p class=\"uat-tags\" data-line=\"{paragraph.Line + 1}\">");
+                _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-tags\" data-line=\"{paragraph.Line + 1}\">");
                 _html.AppendJoin(' ', tags.Select(tag => $"<span class=\"uat-tag\">{Encode(tag)}</span>"));
                 _html.Append("</p>\n");
                 break;
@@ -130,32 +131,32 @@ internal sealed partial class BddPreviewWriter
         {
             case 1 when TrySplit(text, "Feature:", out var title) || TrySplit(text, "Steps:", out title):
                 var keyword = text[..text.IndexOf(':', StringComparison.Ordinal)];
-                _html.Append($"<h1 class=\"uat-title\" data-line=\"{line}\"><span class=\"uat-kw\">{keyword}</span> {Encode(title)}{(_isSteps ? string.Empty : RunButtons("data-run-file", "Run file", "Run every scenario of the file"))}</h1>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h1 class=\"uat-title\" data-line=\"{line}\"><span class=\"uat-kw\">{keyword}</span> {Encode(title)}{(_isSteps ? string.Empty : RunButtons("data-run-file", "Run file", "Run every scenario of the file"))}</h1>\n");
                 _html.Append(BddPreviewRecord.List(_options.Recordings));
                 return;
             case 2 when TrySplit(text, "Scenario Outline:", out var outline):
                 _binding.Enter(line);
                 _run = _options.Runs.GetValueOrDefault($"{outline} [1]");
-                _html.Append($"<h2 class=\"uat-scenario\" data-line=\"{line}\" data-scenario=\"{Encode(outline)}\"><span class=\"uat-kw\">Scenario Outline</span> {Encode(outline)}{RunBadge(_run, line)}{RunButtons($"data-run=\"{line}\"", "Run", "Run every row")}</h2>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-scenario\" data-line=\"{line}\" data-scenario=\"{Encode(outline)}\"><span class=\"uat-kw\">Scenario Outline</span> {Encode(outline)}{RunBadge(_run, line)}{RunButtons($"data-run=\"{line}\"", "Run", "Run every row")}</h2>\n");
                 WriteNotOnHead(line);
                 return;
             case 2 when TrySplit(text, "Scenario:", out var scenario):
                 _binding.Enter(line);
                 _run = _options.Runs.GetValueOrDefault(scenario);
-                _html.Append($"<h2 class=\"uat-scenario\" data-line=\"{line}\" data-scenario=\"{Encode(scenario)}\"><span class=\"uat-kw\">Scenario</span> {Encode(scenario)}{RunBadge(_run, line)}{RunButtons($"data-run=\"{line}\"", "Run", "Run this scenario")}</h2>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-scenario\" data-line=\"{line}\" data-scenario=\"{Encode(scenario)}\"><span class=\"uat-kw\">Scenario</span> {Encode(scenario)}{RunBadge(_run, line)}{RunButtons($"data-run=\"{line}\"", "Run", "Run this scenario")}</h2>\n");
                 WriteNotOnHead(line);
                 return;
             case 2 when text == "Background":
                 _binding.EnterBackground();
                 _run = _options.Runs.Values.OrderBy(run => run.Scenario, StringComparer.Ordinal).FirstOrDefault();
-                _html.Append($"<h2 class=\"uat-background\" data-line=\"{line}\"><span class=\"uat-kw\">Background</span></h2>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-background\" data-line=\"{line}\"><span class=\"uat-kw\">Background</span></h2>\n");
                 return;
             case 2 when TrySplit(text, "Step for each row:", out var eachRow):
-                _html.Append($"<h2 class=\"uat-callable\" data-line=\"{line}\" data-kind=\"each-row\"><span class=\"uat-kw\">Step for each row</span> {Mark(eachRow)}</h2>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-callable\" data-line=\"{line}\" data-kind=\"each-row\"><span class=\"uat-kw\">Step for each row</span> {Mark(eachRow)}</h2>\n");
                 _nextTableClass = "uat-parameters";
                 return;
             case 2 when TrySplit(text, "Step:", out var step):
-                _html.Append($"<h2 class=\"uat-callable\" data-line=\"{line}\"><span class=\"uat-kw\">Step</span> {Mark(step)}</h2>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-callable\" data-line=\"{line}\"><span class=\"uat-kw\">Step</span> {Mark(step)}</h2>\n");
                 _nextTableClass = "uat-parameters";
                 return;
             case 2 when text == "Metadata":
@@ -173,7 +174,7 @@ internal sealed partial class BddPreviewWriter
     // under it. Lines that are not steps are shown as they are; the parser's diagnostic says why.
     private void WriteSteps(FencedCodeBlock fence)
     {
-        _html.Append($"<ol class=\"uat-steps\" data-line=\"{fence.Line + 1}\">\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<ol class=\"uat-steps\" data-line=\"{fence.Line + 1}\">\n");
         var lines = fence.Lines.Lines.Take(fence.Lines.Count).Select(line => (Number: line.Line + 1, Text: line.Slice.ToString())).ToList();
         var open = false;
         BddPreviewCall? call = null;
@@ -207,13 +208,13 @@ internal sealed partial class BddPreviewWriter
                     body.Add(lines[i].Text);
                 }
 
-                _html.Append($"<pre class=\"uat-docstring\" data-line=\"{number}\">{Encode(string.Join('\n', Dedent(body)))}</pre>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<pre class=\"uat-docstring\" data-line=\"{number}\">{Encode(string.Join('\n', Dedent(body)))}</pre>\n");
                 continue;
             }
 
             if (trimmed is "<table>" or "<doc string>")
             {
-                _html.Append($"<p class=\"uat-passes\" data-line=\"{number}\">passes the call's {(trimmed == "<table>" ? "table" : "doc string")}</p>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-passes\" data-line=\"{number}\">passes the call's {(trimmed == "<table>" ? "table" : "doc string")}</p>\n");
                 continue;
             }
 
@@ -273,10 +274,10 @@ internal sealed partial class BddPreviewWriter
             return;
         }
 
-        _html.Append($"<div class=\"uat-failure\" data-line=\"{line}\">{Encode(failed.Message ?? "The step failed.")}");
+        _html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-failure\" data-line=\"{line}\">{Encode(failed.Message ?? "The step failed.")}");
         if (_run.EvidencePath is { } evidence && File.Exists(evidence) && _options.ImageUrl(evidence) is { } url)
         {
-            _html.Append($"<a class=\"uat-shot\" href=\"#\" data-open=\"{Encode(evidence)}\" title=\"Open the screenshot\"><img src=\"{Encode(url)}\" alt=\"The screen when the step failed\"></a>");
+            _html.Append(CultureInfo.InvariantCulture, $"<a class=\"uat-shot\" href=\"#\" data-open=\"{Encode(evidence)}\" title=\"Open the screenshot\"><img src=\"{Encode(url)}\" alt=\"The screen when the step failed\"></a>");
         }
 
         _html.Append("</div>\n");
@@ -344,10 +345,10 @@ internal sealed partial class BddPreviewWriter
     // A call to a callable, unfolded: its body's steps with the values filled in, bound where the call is.
     private void WriteCall(BddPreviewCall call)
     {
-        _html.Append($"<details class=\"uat-call\"><summary>{Encode(call.Heading)} ({call.Steps.Count} step{(call.Steps.Count == 1 ? string.Empty : "s")})</summary>\n<ol class=\"uat-call-steps\">\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<details class=\"uat-call\"><summary>{Encode(call.Heading)} ({call.Steps.Count} step{(call.Steps.Count == 1 ? string.Empty : "s")})</summary>\n<ol class=\"uat-call-steps\">\n");
         foreach (var step in call.Steps)
         {
-            _html.Append($"<li class=\"uat-step uat-bound\" data-source=\"{Encode(step.Source)}\" data-depth=\"{step.Depth}\" title=\"{Encode(step.Binds)}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{(step.Row is { } row ? $"<span class=\"uat-row\">row {row}</span> " : string.Empty)}{Mark(step.Text)}</span></li>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<li class=\"uat-step uat-bound\" data-source=\"{Encode(step.Source)}\" data-depth=\"{step.Depth}\" title=\"{Encode(step.Binds)}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{(step.Row is { } row ? $"<span class=\"uat-row\">row {row}</span> " : string.Empty)}{Mark(step.Text)}</span></li>\n");
         }
 
         _html.Append("</ol>\n</details>\n");
@@ -364,10 +365,10 @@ internal sealed partial class BddPreviewWriter
 
         foreach (var row in rows)
         {
-            _html.Append($"<details class=\"uat-outline-row\" data-row=\"{row.Index}\"><summary>{Encode(row.Name)}{RunBadge(_options.Runs.GetValueOrDefault(row.Name))}</summary>\n<ol class=\"uat-call-steps\">\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<details class=\"uat-outline-row\" data-row=\"{row.Index}\"><summary>{Encode(row.Name)}{RunBadge(_options.Runs.GetValueOrDefault(row.Name))}</summary>\n<ol class=\"uat-call-steps\">\n");
             foreach (var step in row.Steps)
             {
-                _html.Append($"<li class=\"uat-step uat-bound\" data-source=\"{Encode(step.Source)}\" title=\"{Encode(step.Binds)}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{Mark(step.Text)}</span></li>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<li class=\"uat-step uat-bound\" data-source=\"{Encode(step.Source)}\" title=\"{Encode(step.Binds)}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{Mark(step.Text)}</span></li>\n");
             }
 
             _html.Append("</ol>\n</details>\n");
@@ -378,7 +379,7 @@ internal sealed partial class BddPreviewWriter
     {
         if (_binding.WhyNotOnHead(line) is { } reason)
         {
-            _html.Append($"<p class=\"uat-not-on-head\" data-line=\"{line}\">Not run on this suite: {Encode(reason)}</p>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-not-on-head\" data-line=\"{line}\">Not run on this suite: {Encode(reason)}</p>\n");
         }
     }
 
@@ -390,12 +391,12 @@ internal sealed partial class BddPreviewWriter
             return;
         }
 
-        _html.Append($"<table class=\"uat-table\" data-line=\"{cells[0].Number}\">\n<thead><tr>");
+        _html.Append(CultureInfo.InvariantCulture, $"<table class=\"uat-table\" data-line=\"{cells[0].Number}\">\n<thead><tr>");
         _html.AppendJoin(string.Empty, cells[0].Cells.Select(cell => $"<th>{Mark(cell)}</th>"));
         _html.Append("</tr></thead>\n<tbody>\n");
         foreach (var (number, row) in cells.Skip(1))
         {
-            _html.Append($"<tr data-line=\"{number}\">");
+            _html.Append(CultureInfo.InvariantCulture, $"<tr data-line=\"{number}\">");
             _html.AppendJoin(string.Empty, row.Select(cell => $"<td>{Mark(cell)}</td>"));
             _html.Append("</tr>\n");
         }
@@ -429,8 +430,8 @@ internal sealed partial class BddPreviewWriter
             var within = diagnostic.Within.Count == 0
                 ? string.Empty
                 : $" <span class=\"uat-diag-where\">in {Encode(string.Join(" → ", diagnostic.Within.Select(Where)))}</span>";
-            _html.Append($"<div class=\"uat-diag\" data-severity=\"{severity}\" data-code=\"{Encode(diagnostic.Code)}\"{line}>");
-            _html.Append($"<span class=\"uat-diag-code\">{Encode(diagnostic.Code)}</span> {Encode(diagnostic.Message)}{within}{elsewhere}</div>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-diag\" data-severity=\"{severity}\" data-code=\"{Encode(diagnostic.Code)}\"{line}>");
+            _html.Append(CultureInfo.InvariantCulture, $"<span class=\"uat-diag-code\">{Encode(diagnostic.Code)}</span> {Encode(diagnostic.Message)}{within}{elsewhere}</div>\n");
         }
     }
 
@@ -470,7 +471,7 @@ internal sealed partial class BddPreviewWriter
         {
             builder.Append(Encode(text[at..match.Index]));
             var kind = match.Groups["quoted"].Success ? "uat-value" : match.Groups["argument"].Success ? "uat-argument" : "uat-placeholder";
-            builder.Append($"<span class=\"{kind}\">{Encode(match.Value)}</span>");
+            builder.Append(CultureInfo.InvariantCulture, $"<span class=\"{kind}\">{Encode(match.Value)}</span>");
             at = match.Index + match.Length;
         }
 

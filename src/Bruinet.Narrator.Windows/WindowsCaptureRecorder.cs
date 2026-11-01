@@ -54,10 +54,10 @@ public sealed class WindowsCaptureRecorder : IScreenRecorder
             await recording.FirstFrame.WaitAsync(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false);
             return recording;
         }
-        catch (TimeoutException)
+        catch (TimeoutException exception)
         {
             await recording.DisposeAsync().ConfigureAwait(false);
-            throw new InvalidOperationException($"No frame came from {target} in 10 seconds: is the window minimized?");
+            throw new InvalidOperationException($"No frame came from {target} in 10 seconds: is the window minimized?", exception);
         }
         catch
         {

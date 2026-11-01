@@ -2,6 +2,7 @@ using System.Data;
 using System.Data.SqlTypes;
 using Bruinet.Mocking.Data.Replay;
 using Microsoft.Data.SqlClient;
+using System.Globalization;
 
 namespace Bruinet.Mocking.Data.Tests;
 
@@ -92,7 +93,7 @@ public sealed class SqlServerReplayTests : IAsyncLifetime
                 var locations = new List<string>();
                 while (await reader.ReadAsync())
                 {
-                    locations.Add($"{reader.GetInt32(0)}:{(reader.IsDBNull(1) ? "null" : reader.GetFieldValue<SqlBytes>(1).Length.ToString())}");
+                    locations.Add($"{reader.GetInt32(0)}:{(reader.IsDBNull(1) ? "null" : reader.GetFieldValue<SqlBytes>(1).Length.ToString(CultureInfo.InvariantCulture))}");
                 }
 
                 parts.Add(string.Join(",", locations));

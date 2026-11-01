@@ -270,7 +270,9 @@ internal static class MauiCapabilities
                 itemsView.ScrollTo(index, position: ScrollToPosition.MakeVisible, animate: false);
                 return true;
 
+#pragma warning disable CS0618 // ListView is deprecated, and apps under test still use it
             case ListView listView:
+#pragma warning restore CS0618
                 var item = listView.ItemsSource?.Cast<object>().ElementAtOrDefault(index);
                 if (item is null)
                 {
@@ -621,6 +623,18 @@ internal static class MauiCapabilities
     // stage B exists to stop.
 
     /// <summary>
+    /// What <see cref="InvokeMenuItem"/> answers with when it declined to raise the item.
+    /// </summary>
+    /// <remarks>
+    /// <b>A value rather than <c>S_FALSE</c>, because <c>S_FALSE</c> does not survive the
+    /// bridge.</b> UI Automation reports every success HRESULT from a custom pattern as
+    /// <c>S_OK</c>, measured from both ends: the app returns 1, the client reads 0. Anything a
+    /// caller has to tell apart from plain success must therefore travel as a value or as a
+    /// failure HRESULT.
+    /// </remarks>
+    internal const string MenuItemDisabled = "disabled";
+
+    /// <summary>
     /// Raises a menu item by its <c>AutomationId</c>, without opening any menu.
     /// </summary>
     /// <remarks>
@@ -640,19 +654,8 @@ internal static class MauiCapabilities
     /// </remarks>
     /// <param name="element">The element the verb arrived on; its page is searched.</param>
     /// <param name="automationId">The menu item's id.</param>
+    /// <param name="outcome">Empty when the item was raised, <see cref="MenuItemDisabled"/> when it was declined.</param>
     /// <returns>The HRESULT to answer with.</returns>
-    /// <summary>
-    /// What <see cref="InvokeMenuItem"/> answers with when it declined to raise the item.
-    /// </summary>
-    /// <remarks>
-    /// <b>A value rather than <c>S_FALSE</c>, because <c>S_FALSE</c> does not survive the
-    /// bridge.</b> UI Automation reports every success HRESULT from a custom pattern as
-    /// <c>S_OK</c>, measured from both ends: the app returns 1, the client reads 0. Anything a
-    /// caller has to tell apart from plain success must therefore travel as a value or as a
-    /// failure HRESULT.
-    /// </remarks>
-    internal const string MenuItemDisabled = "disabled";
-
     internal static int InvokeMenuItem(
         VisualElement element, string automationId, out string outcome)
     {

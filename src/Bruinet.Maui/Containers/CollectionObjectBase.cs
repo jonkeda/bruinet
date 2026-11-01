@@ -1,6 +1,7 @@
 using Bruinet.Core.Calls;
 using Bruinet.Maui.Configuration;
 using Bruinet.Maui.Controls;
+using System.Globalization;
 
 namespace Bruinet.Maui.Containers;
 
@@ -262,7 +263,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     {
         var roots = TryGetItemRoots();
         NoticeRepeatedPositions(roots);
-        return string.Join(",", roots.Select(root => LogicalIndexOf(root)?.ToString() ?? "-"));
+        return string.Join(",", roots.Select(root => LogicalIndexOf(root)?.ToString(CultureInfo.InvariantCulture) ?? "-"));
     }
 
     /// <summary>

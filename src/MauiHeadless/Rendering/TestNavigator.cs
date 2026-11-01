@@ -98,7 +98,7 @@ public sealed class TestNavigator
     private void Await(Func<Task> navigate, string what)
     {
         Task? task = null;
-        _context.Dispatcher.Run(() => task = navigate());
+        _context.Dispatcher.Run(() => { task = navigate(); });
         if (!_context.Dispatcher.WaitFor(() => task!.IsCompleted, _context.Options.WaitTimeout))
             throw new TimeoutException($"Could not {what} within {_context.Options.WaitTimeout.TotalMilliseconds:0} ms.");
         task!.GetAwaiter().GetResult();

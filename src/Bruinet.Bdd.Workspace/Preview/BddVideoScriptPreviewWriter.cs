@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using Bruinet.Narrator;
+using System.Globalization;
 
 namespace Bruinet.Bdd.Preview;
 
@@ -15,7 +16,7 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
     public BddPreviewResult Write()
     {
         _check = BddVideoScriptCheck.Check(text, filePath);
-        _html.Append($"<article class=\"uat-doc\" data-kind=\"video\" data-file=\"{Encode(Path.GetFileName(filePath))}\">\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<article class=\"uat-doc\" data-kind=\"video\" data-file=\"{Encode(Path.GetFileName(filePath))}\">\n");
         if (_check.Script is not { } script)
         {
             Diagnostics(_ => true, all: true);
@@ -23,7 +24,7 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
             return new BddPreviewResult(_html.ToString(), _check.Diagnostics);
         }
 
-        _html.Append($"<h1 class=\"uat-title\" data-line=\"1\"><span class=\"uat-kw\">Video</span> {Encode(script.Title)}{BddPreviewRecord.Button(options.Record, "data-record-file", "Record", "Record the video: run its scenes, with the voice")}</h1>\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<h1 class=\"uat-title\" data-line=\"1\"><span class=\"uat-kw\">Video</span> {Encode(script.Title)}{BddPreviewRecord.Button(options.Record, "data-record-file", "Record", "Record the video: run its scenes, with the voice")}</h1>\n");
         var fields = new List<(string Field, string Value)>();
         if (script.Voice is { } voice)
         {
@@ -60,21 +61,21 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
 
     private void WriteScene(BddVideoScene scene, int number, BddVideoScenePlan? plan)
     {
-        _html.Append($"<h2 class=\"uat-scenario\" data-line=\"{scene.Line}\"><span class=\"uat-kw\">Scene {number}</span> {Encode(scene.Name)}</h2>\n");
+        _html.Append(CultureInfo.InvariantCulture, $"<h2 class=\"uat-scenario\" data-line=\"{scene.Line}\"><span class=\"uat-kw\">Scene {number}</span> {Encode(scene.Name)}</h2>\n");
         if (scene.Scenario is { } address)
         {
             var name = plan is null ? address : $"{plan.Scenario.Name} ({Path.GetFileName(plan.FeatureFile)})";
-            _html.Append($"<p class=\"uat-video-scenario\" data-line=\"{scene.ScenarioLine}\" title=\"{Encode(address)}\"><span class=\"uat-kw\">Scenario</span> {Encode(name)}</p>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-video-scenario\" data-line=\"{scene.ScenarioLine}\" title=\"{Encode(address)}\"><span class=\"uat-kw\">Scenario</span> {Encode(name)}</p>\n");
         }
 
         if (scene.Intro is { } intro)
         {
-            _html.Append($"<p class=\"uat-video-say\" data-line=\"{scene.ScenarioLine}\">{Said(intro)}</p>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-video-say\" data-line=\"{scene.ScenarioLine}\">{Said(intro)}</p>\n");
         }
 
         if (plan is not null)
         {
-            _html.Append($"<ol class=\"uat-steps\" data-line=\"{scene.ScenarioLine}\">\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<ol class=\"uat-steps\" data-line=\"{scene.ScenarioLine}\">\n");
             foreach (var step in plan.Steps)
             {
                 var say = plan.Says.GetValueOrDefault(step.Source.LineNumber);
@@ -82,7 +83,7 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
                 var spoken = say is null
                     ? "<span class=\"uat-video-silent\">silent</span>"
                     : $"<span class=\"uat-video-say\">{Said(say.Say)}</span>";
-                _html.Append($"<li class=\"uat-step\" data-line=\"{line}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{Encode(step.Text)}{spoken}</span></li>\n");
+                _html.Append(CultureInfo.InvariantCulture, $"<li class=\"uat-step\" data-line=\"{line}\"><span class=\"uat-kw\">{step.Keyword}</span><span class=\"uat-text\">{Encode(step.Text)}{spoken}</span></li>\n");
             }
 
             _html.Append("</ol>\n");
@@ -90,7 +91,7 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
 
         if (scene.Outro is { } outro)
         {
-            _html.Append($"<p class=\"uat-video-say\" data-line=\"{scene.Line}\">{Said(outro)}</p>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-video-say\" data-line=\"{scene.Line}\">{Said(outro)}</p>\n");
         }
     }
 
@@ -100,8 +101,8 @@ internal sealed class BddVideoScriptPreviewWriter(string text, string filePath, 
         {
             _shown.Add(diagnostic);
             var severity = diagnostic.Severity == BddDiagnosticSeverity.Error ? "error" : "warning";
-            _html.Append($"<div class=\"uat-diag\" data-severity=\"{severity}\" data-code=\"{Encode(diagnostic.Code)}\" data-line=\"{diagnostic.Location.LineNumber}\">");
-            _html.Append($"<span class=\"uat-diag-code\">{Encode(diagnostic.Code)}</span> {Encode(diagnostic.Message)}</div>\n");
+            _html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-diag\" data-severity=\"{severity}\" data-code=\"{Encode(diagnostic.Code)}\" data-line=\"{diagnostic.Location.LineNumber}\">");
+            _html.Append(CultureInfo.InvariantCulture, $"<span class=\"uat-diag-code\">{Encode(diagnostic.Code)}</span> {Encode(diagnostic.Message)}</div>\n");
         }
     }
 

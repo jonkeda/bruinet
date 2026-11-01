@@ -1,0 +1,23 @@
+<Project>
+  <!-- The checks every build runs (.my/checks): the SDK's analyzers at their recommended level,
+       code style from .editorconfig, and Meziantou's analyzers, less the
+       rules Quality.globalconfig turns off with why. Imported by the root and src's
+       Directory.Build.props; Frainet stands alone and keeps its own. -->
+  <PropertyGroup>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Meziantou.Analyzer" PrivateAssets="all" />
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.globalconfig" />
+  </ItemGroup>
+
+  <!-- Items are evaluated after every property, so IsTestProject and TargetFrameworks set later count. -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Tests.globalconfig" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFrameworks.Contains('netstandard')) or $(TargetFrameworks.Contains('net4')) or $(TargetFramework.StartsWith('net4'))">
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Legacy.globalconfig" />
+  </ItemGroup>
+</Project>

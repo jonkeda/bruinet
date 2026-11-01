@@ -9,6 +9,7 @@ using Stride.UI.Panels;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text.Json;
+using System.Globalization;
 
 namespace Bruinet.Stride.Automation;
 
@@ -141,7 +142,7 @@ public class StrideUIHandler : IAutomationHandler
             if (je.TryGetInt32(out var i)) return i;
             return 0;
         }
-        return Convert.ToDouble(arg);
+        return Convert.ToDouble(arg, CultureInfo.InvariantCulture);
     }
 
     private static int GetArgInt(object[]? args, int index)
@@ -154,7 +155,7 @@ public class StrideUIHandler : IAutomationHandler
             if (je.TryGetDouble(out var d)) return (int)d;
             return 0;
         }
-        return Convert.ToInt32(arg);
+        return Convert.ToInt32(arg, CultureInfo.InvariantCulture);
     }
 
     #endregion
@@ -525,7 +526,7 @@ public class StrideUIHandler : IAutomationHandler
         }
         finally
         {
-            ReleaseDC(IntPtr.Zero, hdcScreen);
+            _ = ReleaseDC(IntPtr.Zero, hdcScreen);
             SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
         }
     }

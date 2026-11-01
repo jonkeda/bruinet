@@ -7,6 +7,7 @@ using Bruinet.Samples.Todo.TestSupport;
 using Bruinet.Samples.Todo.UITests;
 using Bruinet.Samples.Todo.Web.UITests;
 using Xunit;
+using System.Globalization;
 
 namespace Bruinet.Samples.Todo.TestSupport.Apps;
 
@@ -148,7 +149,7 @@ public class TodoAppsFixture : IAsyncLifetime
     {
         LaunchSettings Adjust(LaunchSettings settings)
             => app["ClockOffsetMinutes"] is { } minutes
-                ? settings with { FixedNow = settings.FixedNow?.AddMinutes(int.Parse(minutes)) }
+                ? settings with { FixedNow = settings.FixedNow?.AddMinutes(int.Parse(minutes, CultureInfo.InvariantCulture)) }
                 : settings;
 
         switch (app.Head)

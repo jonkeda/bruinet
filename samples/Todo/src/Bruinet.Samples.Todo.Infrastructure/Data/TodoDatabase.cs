@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
+using System.Globalization;
 
 namespace Bruinet.Samples.Todo.Infrastructure.Data;
 
@@ -158,7 +159,7 @@ public sealed class TodoDatabase(string path)
     {
         await using var command = connection.CreateCommand();
         command.CommandText = "PRAGMA user_version;";
-        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false));
+        return Convert.ToInt32(await command.ExecuteScalarAsync(cancellationToken).ConfigureAwait(false), CultureInfo.InvariantCulture);
     }
 
     private static async Task ExecuteAsync(

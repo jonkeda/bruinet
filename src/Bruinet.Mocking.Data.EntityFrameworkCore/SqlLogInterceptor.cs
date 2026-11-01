@@ -21,7 +21,7 @@ public sealed class SqlLogInterceptor(SqlLog log) : DbCommandInterceptor
 
     public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult<DbDataReader> result)
     {
-        _started.AddOrUpdate(command, new Started(DateTime.UtcNow, System.Diagnostics.Stopwatch.GetTimestamp()));
+        _started.AddOrUpdate(command, new Started(DateTimeOffset.UtcNow, System.Diagnostics.Stopwatch.GetTimestamp()));
         return result;
     }
 
@@ -82,7 +82,7 @@ public sealed class SqlLogInterceptor(SqlLog log) : DbCommandInterceptor
             start.UtcDateTime,
             duration);
 
-    private sealed record Started(DateTime At, long Timestamp);
+    private sealed record Started(DateTimeOffset At, long Timestamp);
 
     private sealed class ConnectionLog(SqlLog log) : DbConnectionInterceptor
     {

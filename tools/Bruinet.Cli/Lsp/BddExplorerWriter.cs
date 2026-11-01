@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using Bruinet.Bdd.Preview;
 using Bruinet.Bdd.Workspace;
+using System.Globalization;
 
 namespace Bruinet.Bdd.LanguageServer;
 
@@ -93,7 +94,7 @@ internal static class BddExplorerWriter
     {
         StringBuilder html = new();
         var patterns = catalogs.Default.Patterns.Where(pattern => pattern.Callable is null).ToList();
-        html.Append($"<p class=\"uat-count\">{patterns.Count} steps, {callables.Count} callable steps, {catalogs.Default.Hooks.Count} hooks in {Encode(suite.Name)}</p>\n");
+        html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-count\">{patterns.Count} steps, {callables.Count} callable steps, {catalogs.Default.Hooks.Count} hooks in {Encode(suite.Name)}</p>\n");
 
         // C# steps by their class; page phrases by page; control verbs and built-ins by themselves.
         foreach (var group in patterns
@@ -104,11 +105,11 @@ internal static class BddExplorerWriter
             .OrderBy(group => group.Key.StartsWith("Built in", StringComparison.Ordinal) ? 2 : group.Key.StartsWith("Control", StringComparison.Ordinal) ? 1 : 0)
             .ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
         {
-            html.Append($"<section class=\"uat-group\"><h3>{Encode(group.Key)} <span class=\"uat-count\">{group.Count()}</span></h3>\n");
+            html.Append(CultureInfo.InvariantCulture, $"<section class=\"uat-group\"><h3>{Encode(group.Key)} <span class=\"uat-count\">{group.Count()}</span></h3>\n");
             foreach (var pattern in group.OrderBy(pattern => pattern.Keyword).ThenBy(pattern => pattern.Phrase, StringComparer.OrdinalIgnoreCase))
             {
                 var at = pattern.ControlVerb is null && pattern.Page is null ? Method(suite, pattern.CommandId) : null;
-                html.Append($"<div class=\"uat-entry\"{Open(at)}><span class=\"uat-kind\">{pattern.Keyword}</span>{Encode(pattern.Phrase)}{Parameters(pattern)}<span class=\"uat-id\">{Encode(pattern.CommandId)}</span></div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(at)}><span class=\"uat-kind\">{pattern.Keyword}</span>{Encode(pattern.Phrase)}{Parameters(pattern)}<span class=\"uat-id\">{Encode(pattern.CommandId)}</span></div>\n");
             }
 
             html.Append("</section>\n");
@@ -116,10 +117,10 @@ internal static class BddExplorerWriter
 
         foreach (var file in callables.GroupBy(callable => callable.Source.FilePath ?? string.Empty).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
         {
-            html.Append($"<section class=\"uat-group\"><h3>{Encode(Path.GetFileName(file.Key))} <span class=\"uat-count\">{file.Count()}</span></h3>\n");
+            html.Append(CultureInfo.InvariantCulture, $"<section class=\"uat-group\"><h3>{Encode(Path.GetFileName(file.Key))} <span class=\"uat-count\">{file.Count()}</span></h3>\n");
             foreach (var callable in file)
             {
-                html.Append($"<div class=\"uat-entry\"{Open(callable.Source)}><span class=\"uat-kind\">{(callable.Kind == BddCallableKind.EachRow ? "Each row" : "Step")}</span>{Encode(callable.Phrase)}</div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(callable.Source)}><span class=\"uat-kind\">{(callable.Kind == BddCallableKind.EachRow ? "Each row" : "Step")}</span>{Encode(callable.Phrase)}</div>\n");
             }
 
             html.Append("</section>\n");
@@ -128,11 +129,11 @@ internal static class BddExplorerWriter
         // The hooks, with the step-definition class that declares each.
         foreach (var group in catalogs.Default.Hooks.GroupBy(hook => TypeName(hook.Name)).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
         {
-            html.Append($"<section class=\"uat-group\"><h3>Hooks of {Encode(group.Key)}</h3>\n");
+            html.Append(CultureInfo.InvariantCulture, $"<section class=\"uat-group\"><h3>Hooks of {Encode(group.Key)}</h3>\n");
             foreach (var hook in group)
             {
                 var tags = hook.Tags.Count == 0 ? string.Empty : $" <span class=\"uat-id\">{Encode(string.Join(' ', hook.Tags.Select(tag => "@" + tag)))}</span>";
-                html.Append($"<div class=\"uat-entry\"{Open(Method(suite, hook.Name))}><span class=\"uat-kind\">{hook.Kind}</span>{Encode(hook.Name[(hook.Name.LastIndexOf('.') + 1)..])}{tags}</div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(Method(suite, hook.Name))}><span class=\"uat-kind\">{hook.Kind}</span>{Encode(hook.Name[(hook.Name.LastIndexOf('.') + 1)..])}{tags}</div>\n");
             }
 
             html.Append("</section>\n");
@@ -145,19 +146,19 @@ internal static class BddExplorerWriter
     {
         StringBuilder html = new();
         var pages = UatPageSet.Of(catalogs.Default).Values.OrderBy(page => page.Key, StringComparer.OrdinalIgnoreCase).ToList();
-        html.Append($"<p class=\"uat-count\">{pages.Count} pages in {Encode(suite.Name)}</p>\n");
+        html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-count\">{pages.Count} pages in {Encode(suite.Name)}</p>\n");
         foreach (var page in pages)
         {
-            html.Append($"<section class=\"uat-group\"><h3 class=\"uat-entry\"{Open(BddSourceLocator.Of(page.PageType))}>{Encode(page.Key)} <span class=\"uat-id\">{Encode(page.PageType.Name)}</span></h3>\n");
+            html.Append(CultureInfo.InvariantCulture, $"<section class=\"uat-group\"><h3 class=\"uat-entry\"{Open(BddSourceLocator.Of(page.PageType))}>{Encode(page.Key)} <span class=\"uat-id\">{Encode(page.PageType.Name)}</span></h3>\n");
             foreach (var control in page.Controls.OrderBy(control => control.Name, StringComparer.OrdinalIgnoreCase))
             {
                 var navigates = control.NavigatesTo is { } to ? $" <span class=\"uat-id\">→ {Encode(to)}</span>" : string.Empty;
-                html.Append($"<div class=\"uat-entry\"{Open(BddSourceLocator.Of(page.PageType, control.Name))}><span class=\"uat-kind\">control</span>{Encode(control.Name)}<span class=\"uat-id\">{Encode(control.ControlType.Name)}</span>{navigates}</div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(BddSourceLocator.Of(page.PageType, control.Name))}><span class=\"uat-kind\">control</span>{Encode(control.Name)}<span class=\"uat-id\">{Encode(control.ControlType.Name)}</span>{navigates}</div>\n");
             }
 
             foreach (var phrase in catalogs.Default.Patterns.Where(pattern => pattern.Page == page.Key || pattern.Page == page.Name))
             {
-                html.Append($"<div class=\"uat-entry\"{Open(Method(suite, phrase.CommandId))}><span class=\"uat-kind\">{phrase.Keyword}</span>{Encode(phrase.Phrase)}</div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(Method(suite, phrase.CommandId))}><span class=\"uat-kind\">{phrase.Keyword}</span>{Encode(phrase.Phrase)}</div>\n");
             }
 
             html.Append("</section>\n");
@@ -171,14 +172,14 @@ internal static class BddExplorerWriter
         StringBuilder html = new();
         var failed = runs.Count(run => run.Run.Status == "failed");
         var deleteAll = runs.Count == 0 ? string.Empty : " <button type=\"button\" class=\"uat-delete\" data-delete-suite title=\"Delete every scenario result of this suite, in every run\">Delete all results</button>";
-        html.Append($"<p class=\"uat-count\">{runs.Count} scenarios with a run in {Encode(suite.Name)}, {failed} failed{deleteAll}</p>\n");
+        html.Append(CultureInfo.InvariantCulture, $"<p class=\"uat-count\">{runs.Count} scenarios with a run in {Encode(suite.Name)}, {failed} failed{deleteAll}</p>\n");
         foreach (var file in runs.GroupBy(run => run.File).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
         {
             var uri = new Uri(file.Key).AbsoluteUri;
-            html.Append($"<section class=\"uat-group\"><h3>{Encode(Path.GetFileName(file.Key))} <button type=\"button\" class=\"uat-delete\" data-delete-file=\"{Encode(uri)}\" title=\"Delete this file's results, in every run\">Delete</button></h3>\n");
+            html.Append(CultureInfo.InvariantCulture, $"<section class=\"uat-group\"><h3>{Encode(Path.GetFileName(file.Key))} <button type=\"button\" class=\"uat-delete\" data-delete-file=\"{Encode(uri)}\" title=\"Delete this file's results, in every run\">Delete</button></h3>\n");
             foreach (var (path, run, line) in file.OrderBy(run => run.Line))
             {
-                html.Append($"<div class=\"uat-entry\"{Open(new BddSourceLocation(path, line))}><span class=\"uat-result\" data-status=\"{Encode(run.Status)}\" title=\"{Encode(run.Status)}\"></span> {Encode(run.Scenario)}<span class=\"uat-id\">{run.DurationMs} ms · {run.At.LocalDateTime:g}</span></div>\n");
+                html.Append(CultureInfo.InvariantCulture, $"<div class=\"uat-entry\"{Open(new BddSourceLocation(path, line))}><span class=\"uat-result\" data-status=\"{Encode(run.Status)}\" title=\"{Encode(run.Status)}\"></span> {Encode(run.Scenario)}<span class=\"uat-id\">{run.DurationMs} ms · {run.At.LocalDateTime:g}</span></div>\n");
             }
 
             html.Append("</section>\n");

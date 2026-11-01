@@ -322,6 +322,7 @@ public sealed class AccessibilityAuditReport
             foreach (var finding in Backlog)
             {
                 text.AppendLine(
+                    CultureInfo.InvariantCulture,
                     $"| `{finding.AutomationId}` | {finding.Page} | {Describe(finding.Verdict)} "
                     + $"| {(finding.DeclaresAGesture ? "yes" : "no")} "
                     + $"| {string.Join(", ", finding.ActionVerbs)} | {finding.ControlType} |");
@@ -337,6 +338,7 @@ public sealed class AccessibilityAuditReport
         foreach (var finding in _findings.OrderBy(f => f.AutomationId, StringComparer.Ordinal))
         {
             text.AppendLine(
+                CultureInfo.InvariantCulture,
                 $"| `{finding.AutomationId}` | {finding.Page} | {Describe(finding.Verdict)} "
                 + $"| {(finding.KeyboardFocusable ? "focusable" : "no")} "
                 + $"| {(finding.SupportsInvoke ? "yes" : "no")} "

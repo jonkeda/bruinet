@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Bdd;
 
@@ -73,7 +74,7 @@ public static class BddSets
         var name = what ?? typeof(T).Name;
         var headers = columns.Select(column => column.Name).ToList();
         var message = new StringBuilder()
-            .AppendLine($"The {name} differ{(ordered ? " (in order)" : string.Empty)}: {missing.Count} missing, {extra.Count} extra.")
+            .AppendLine(CultureInfo.InvariantCulture, $"The {name} differ{(ordered ? " (in order)" : string.Empty)}: {missing.Count} missing, {extra.Count} extra.")
             .AppendLine(BddTableBinding.Format("expected", headers, wanted.Select(item => Cells(item, columns)), i => missing.Contains(i) ? "<- missing" + Closest(wanted[i], found, columns, ordered ? i : null) : null))
             .Append(BddTableBinding.Format("actual", headers, found.Select(item => Cells(item, columns)), i => extra.Contains(i) ? "<- extra" : null));
         throw new InvalidOperationException(message.ToString());

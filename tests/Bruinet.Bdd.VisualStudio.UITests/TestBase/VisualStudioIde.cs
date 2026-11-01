@@ -423,10 +423,10 @@ public sealed class VisualStudioIde : IAsyncLifetime
         {
             await process.WaitForExitAsync(limit.Token);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException exception)
         {
             process.Kill(entireProcessTree: true);
-            throw new TimeoutException($"{Path.GetFileName(file)} {arguments} did not end within {SetupTimeout.TotalMinutes:N0} minutes.");
+            throw new TimeoutException($"{Path.GetFileName(file)} {arguments} did not end within {SetupTimeout.TotalMinutes:N0} minutes.", exception);
         }
 
         Log($"{Path.GetFileName(file)} ended with {process.ExitCode}");

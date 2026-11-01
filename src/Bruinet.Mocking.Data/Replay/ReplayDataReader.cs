@@ -55,7 +55,10 @@ public sealed class ReplayDataReader(IReadOnlyList<RecordedResult> results, int 
             }
         }
 
+        // DbDataReader.GetOrdinal's contract: an unknown name throws IndexOutOfRangeException.
+#pragma warning disable CA2201, MA0012
         throw new IndexOutOfRangeException(name);
+#pragma warning restore CA2201, MA0012
     }
 
     public override string GetDataTypeName(int ordinal) => Current.Columns[ordinal].DataTypeName;

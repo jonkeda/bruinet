@@ -149,7 +149,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             foreach (var frame in page.Frames)
                 await TryEvaluateAsync<bool>(frame, RecorderScript, argument).ConfigureAwait(false);
             // The toolbar's buttons: on a thread of their own, so Stop can close the browser that raised it.
-            await _context.ExposeBindingAsync<string>("__bruinetCommand", (_, command) => Task.Run(() => Commanded?.Invoke(this, command))).ConfigureAwait(false);
+            await _context.ExposeBindingAsync<string>("__bruinetCommand", (source, command) => { _ = Task.Run(() => Commanded?.Invoke(this, command)); }).ConfigureAwait(false);
             await _context.AddInitScriptAsync($"({ToolbarScript})();").ConfigureAwait(false);
             await TryEvaluateAsync<bool>(page.MainFrame, ToolbarScript, null).ConfigureAwait(false);
         }

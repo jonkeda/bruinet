@@ -203,7 +203,7 @@ public sealed class TodoFormattingTests
     [Fact]
     [Trait("Journey", "TOD.07.2")]
     public void SyncLine_BeforeAnySync_SaysNotSyncedYet()
-        => Assert.Equal("Not synced yet", TodoFormatting.SyncLine(true, null));
+        => Assert.Equal("Not synced yet", TodoFormatting.SyncLine(true, null, culture: CultureInfo.InvariantCulture));
 
     private static CultureInfo WithPatterns(string name, string date, string time)
     {

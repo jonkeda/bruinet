@@ -351,7 +351,7 @@ public sealed class BruinetUiaBridge : IDisposable
 
         try
         {
-            UiaNativeMethods.UiaRaiseStructureChangedEvent(
+            _ = UiaNativeMethods.UiaRaiseStructureChangedEvent(
                 _root, StructureChangeType.ChildrenInvalidated, null, 0);
         }
         catch (COMException)
@@ -405,7 +405,7 @@ public sealed class BruinetUiaBridge : IDisposable
     private static IntPtr WindowProcedure(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam)
     {
         if (message == Win32.WM_GETOBJECT
-            && (int)lParam == Win32.UiaRootObjectId
+            && (int)(long)lParam == Win32.UiaRootObjectId
             && Registry.TryGet(hwnd, out var bridge))
         {
             return UiaNativeMethods.UiaReturnRawElementProvider(hwnd, wParam, lParam, bridge!._root);

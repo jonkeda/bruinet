@@ -6,6 +6,7 @@ using Stride.Input;
 using Stride.UI;
 using System.Collections.Concurrent;
 using System.Text.Json;
+using System.Globalization;
 
 namespace Bruinet.Stride.Automation;
 
@@ -211,7 +212,7 @@ public class AutomationGameSystem : GameSystemBase
             if (je.TryGetDouble(out var d)) return (int)d;
             return 0;
         }
-        return Convert.ToInt32(arg);
+        return Convert.ToInt32(arg, CultureInfo.InvariantCulture);
     }
 
     protected override void Destroy()

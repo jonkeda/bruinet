@@ -142,7 +142,7 @@ public sealed class MauiHeadlessDriver : IMauiDriver
         }
         catch (InvalidOperationException nothingBehind)
         {
-            throw new BruinetException(nothingBehind.Message);
+            throw new BruinetException(nothingBehind.Message, nothingBehind);
         }
     }
 

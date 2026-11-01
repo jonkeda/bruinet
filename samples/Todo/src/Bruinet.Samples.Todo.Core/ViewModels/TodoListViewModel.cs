@@ -4,6 +4,7 @@ using Bruinet.Samples.Shared.ViewModels;
 using Bruinet.Samples.Todo.Core.Rules;
 using Bruinet.Samples.Todo.Core.Services;
 using Bruinet.Samples.Todo.Core.Sync;
+using System.Globalization;
 
 namespace Bruinet.Samples.Todo.Core.ViewModels;
 
@@ -255,7 +256,7 @@ public sealed class TodoListViewModel : ParentViewModel
         UpdateSyncLine();
     }
 
-    private void UpdateSyncLine() => SyncLine = TodoFormatting.SyncLine(IsOnline, _sync.LastResult);
+    private void UpdateSyncLine() => SyncLine = TodoFormatting.SyncLine(IsOnline, _sync.LastResult, culture: CultureInfo.CurrentCulture);
 
     private void UpdateState() => State = TodoListRules.StateFor(_isLoading, Items.Count, _lastSyncError);
 }

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Bruinet.Core.Logging;
 
 /// <summary>
@@ -48,7 +50,7 @@ public class ConsoleTestLogger : ITestLogger
 
     public void LogWait(string testName, string pageName, string controlId, string waitType,
         bool success, int elapsedMs)
-        => Log(testName, pageName, controlId, waitType, elapsedMs.ToString(), null,
+        => Log(testName, pageName, controlId, waitType, elapsedMs.ToString(CultureInfo.InvariantCulture), null,
             success ? LogResult.Success : LogResult.Fail, null);
 
     public void LogNavigation(string testName, string sourcePage, string targetPage)

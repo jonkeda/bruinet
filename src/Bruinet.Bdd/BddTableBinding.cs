@@ -293,7 +293,7 @@ public static partial class BddTableBinding
         }
 
         var message = new StringBuilder()
-            .AppendLine($"{table.Source}: {typeof(T).Name} rows do not match - {string.Join(", ", summary)}.")
+            .AppendLine(CultureInfo.InvariantCulture, $"{table.Source}: {typeof(T).Name} rows do not match - {string.Join(", ", summary)}.")
             .AppendLine(Format("expected", table.Columns, table.Rows.Select(r => table.Columns.Select(c => r.Cells[c]).ToList()), i => missing.Contains(i) ? "<- missing" + Closest(expected[i], items, columns) : null))
             .Append(Format("actual", table.Columns, items.Select(item => Cells(item, columns)), i => extra.Contains(items[i]) ? "<- extra" : null));
 
@@ -346,7 +346,7 @@ public static partial class BddTableBinding
         var widths = columns.Select((c, i) => Math.Max(c.Length, all.Count == 0 ? 0 : all.Max(r => r[i].Length))).ToList();
         string Line(IReadOnlyList<string> cells) => "    | " + string.Join(" | ", cells.Select((cell, i) => cell.PadRight(widths[i]))) + " |";
 
-        var builder = new StringBuilder().AppendLine($"  {label}:").AppendLine(Line(columns));
+        var builder = new StringBuilder().AppendLine(CultureInfo.InvariantCulture, $"  {label}:").AppendLine(Line(columns));
         for (var i = 0; i < all.Count; i++)
         {
             var suffix = note(i) is { } text ? "   " + text : string.Empty;

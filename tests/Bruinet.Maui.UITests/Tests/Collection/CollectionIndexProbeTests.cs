@@ -1,4 +1,5 @@
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.Collection;
 
@@ -67,8 +68,8 @@ public class CollectionIndexProbeTests
 
     private void ReportRow(string label, IMauiElement row)
         => _output.WriteLine(
-            $"{label}: name='{ReadName(row)}', position={row.PositionInSet?.ToString() ?? "(none)"}, "
-            + $"size={row.SizeOfSet?.ToString() ?? "(none)"}");
+            $"{label}: name='{ReadName(row)}', position={row.PositionInSet?.ToString(CultureInfo.InvariantCulture) ?? "(none)"}, "
+            + $"size={row.SizeOfSet?.ToString(CultureInfo.InvariantCulture) ?? "(none)"}");
 
     private static string ReadName(IMauiElement row)
         => row.FindElement(Locator.ByAutomationId("ProductNameLabel")).Text ?? "(no text)";

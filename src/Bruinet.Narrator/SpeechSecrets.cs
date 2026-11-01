@@ -247,8 +247,11 @@ internal static class VoiceFile
         }
         catch (JsonException exception)
         {
-            // The message names the file and the position only: the parser does not quote the text.
+            // The message names the file and the position only: the parser does not quote the text,
+            // and the parser's exception is left out because its message may.
+#pragma warning disable MA0054
             throw new InvalidDataException($"{path} is not valid JSON (line {exception.LineNumber + 1}): see voice.secrets.example.json for its shape.");
+#pragma warning restore MA0054
         }
     }
 

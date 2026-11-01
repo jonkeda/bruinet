@@ -244,12 +244,12 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         {
             item = _driver.FindChrome(Locator.ByAccessibilityId(automationId), ChromeFindTimeoutMs);
         }
-        catch (ElementNotFoundException)
+        catch (ElementNotFoundException exception)
         {
             throw new BruinetException(
                 $"Could not invoke toolbar item '{automationId}': no toolbar item on the page on screen "
                 + "carries that AutomationId. Toolbar items are matched by the id in the app's markup, "
-                + "not by their text.");
+                + "not by their text.", exception);
         }
 
         if (!item.Enabled)

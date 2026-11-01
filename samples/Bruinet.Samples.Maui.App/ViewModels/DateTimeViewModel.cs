@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Bruinet.Samples.Maui.App.ViewModels;
 
 /// <summary>
@@ -64,12 +66,12 @@ public class DateTimeViewModel : ParentViewModel
     /// <summary>
     /// Gets the formatted date string for display.
     /// </summary>
-    public string FormattedDate => selectedDate.ToString("dddd, MMMM d, yyyy");
+    public string FormattedDate => selectedDate.ToString("dddd, MMMM d, yyyy", CultureInfo.CurrentCulture);
 
     /// <summary>
     /// Gets the formatted time string for display.
     /// </summary>
-    public string FormattedTime => selectedTime.ToString(@"hh\:mm\:ss");
+    public string FormattedTime => selectedTime.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture);
 
     /// <summary>
     /// Gets or sets the status message displayed to the user.

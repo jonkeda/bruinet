@@ -19,10 +19,7 @@ public class TabContainerControl<TParent, TScope> : ContainerBase<TParent, TScop
 
     public TScope SelectTab(int index)
     {
-        if (index < 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(index));
-        }
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
 
         var tabs = ContainerRoot.FindElements(Locator.ByCss(_tabSelector));
         if (index >= tabs.Count)

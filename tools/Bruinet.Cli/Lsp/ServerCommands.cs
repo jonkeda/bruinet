@@ -11,13 +11,13 @@ internal static class ServerCommands
     {
         var solution = new Option<string?>("--solution") { Description = "The solution's folder. Default: this folder." };
         var command = new Command("mcp", "For tools: the MCP server for agents, over stdio.") { solution };
-        command.Action(io, async (parsed, _) =>
+        command.Action(io, async (parsed, cancellationToken) =>
         {
             // The protocol owns stdout: anything else written to the console goes to stderr.
             var protocol = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
             Console.SetOut(Console.Error);
             using var mcp = new BddMcpServer(Path.GetFullPath(parsed.GetValue(solution) ?? io.CurrentDirectory, io.CurrentDirectory));
-            await mcp.RunAsync(Console.In, protocol).ConfigureAwait(false);
+            await mcp.RunAsync(Console.In, protocol, cancellationToken).ConfigureAwait(false);
             return 0;
         });
         return command;

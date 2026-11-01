@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using Bruinet.Bdd.Workspace;
 using StreamJsonRpc;
+using System.Globalization;
 
 namespace Bruinet.Bdd.LanguageServer;
 
@@ -32,29 +33,29 @@ public sealed partial class BddLanguageServer
         if (first.Call is { } call)
         {
             var callable = Outermost(call).Callable;
-            text.Append($"**calls** `{callable}` ({Where(callable.Source)})");
+            text.Append(CultureInfo.InvariantCulture, $"**calls** `{callable}` ({Where(callable.Source)})");
             text.Append("\n\n");
             foreach (var step in invocations)
             {
-                text.Append($"- {new string(' ', (step.Call!.Depth - 1) * 2)}{step.Step.Keyword} {step.Step.Text} · `{step.CommandId}`\n");
+                text.Append(CultureInfo.InvariantCulture, $"- {new string(' ', (step.Call!.Depth - 1) * 2)}{step.Step.Keyword} {step.Step.Text} · `{step.CommandId}`\n");
             }
         }
         else
         {
             var page = first.Command.ControlVerb is not null ? PageAt(file, line) : null;
-            text.Append($"**binds to** `{first.CommandId}`");
+            text.Append(CultureInfo.InvariantCulture, $"**binds to** `{first.CommandId}`");
             if (first.Scope.Length > 0)
             {
-                text.Append($" · {first.Scope}");
+                text.Append(CultureInfo.InvariantCulture, $" · {first.Scope}");
             }
             else if (page is not null)
             {
-                text.Append($" · page {PageName(page)}");
+                text.Append(CultureInfo.InvariantCulture, $" · page {PageName(page)}");
             }
 
             if (first.App is { } app)
             {
-                text.Append($" · on {app}");
+                text.Append(CultureInfo.InvariantCulture, $" · on {app}");
             }
 
             if (Method(file, first.CommandId) is { } method && BddSourceLocator.Summary(method) is { Length: > 0 } summary)
@@ -236,7 +237,7 @@ public sealed partial class BddLanguageServer
                 asRead = BddValues.Write(value);
             }
 
-            text.Append($"| `{name}` | {Cell(written)} | {Cell(asRead)} |\n");
+            text.Append(CultureInfo.InvariantCulture, $"| `{name}` | {Cell(written)} | {Cell(asRead)} |\n");
         }
 
         static string Cell(string value) => value.Replace("|", "\\|", StringComparison.Ordinal);

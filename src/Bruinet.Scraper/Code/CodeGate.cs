@@ -88,10 +88,10 @@ public static partial class CodeGate
         {
             await process.WaitForExitAsync(limit.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException exception)
         {
             process.Kill(entireProcessTree: true);
-            throw new TimeoutException($"The build of {project.Name} took longer than {BuildLimit.TotalMinutes} minutes and was ended.");
+            throw new TimeoutException($"The build of {project.Name} took longer than {BuildLimit.TotalMinutes} minutes and was ended.", exception);
         }
 
         List<string> output;

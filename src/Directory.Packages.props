@@ -6,6 +6,8 @@
   <ItemGroup>
     <!-- Testing -->
     <PackageVersion Include="xunit" Version="2.9.3" />
+    <!-- The build's analyzers (Quality.props) -->
+    <PackageVersion Include="Meziantou.Analyzer" Version="3.0.316" />
     <PackageVersion Include="xunit.extensibility.core" Version="2.9.3" />
     <PackageVersion Include="xunit.extensibility.execution" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />

@@ -35,7 +35,10 @@ public abstract class WinFormsTestFixtureBase : IDisposable
 
         Configuration = BruinetWinFormsConfiguration.Load();
 
+        // The fixture's one extension point: a derived suite's options, read before its constructor runs.
+#pragma warning disable MA0056
         var options = CreateTestContextOptions();
+#pragma warning restore MA0056
         _context = new WinFormsTestContext(options);
 
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATED - Driver session started");

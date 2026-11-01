@@ -38,6 +38,8 @@
     <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true' and !$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)tests')) and !$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)samples'))">true</ContinuousIntegrationBuild>
   </PropertyGroup>
   
+  <Import Project="$(MSBuildThisFileDirectory)Quality.props" />
+
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>

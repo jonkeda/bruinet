@@ -1,3 +1,4 @@
+using System.Globalization;
 using Bruinet.Generator.Models;
 
 namespace Bruinet.Generator.Tests.Generators;
@@ -21,7 +22,7 @@ public partial class Player<TScope> : ComponentObjectBase<TScope, Player<TScope>
     {
         var generator = ControlObjectGenerator.CreateDefault();
         var code = generator.Generate(
-            string.Format(Component, members), new GeneratorOptions { IncludeGeneratedHeader = false });
+            string.Format(CultureInfo.InvariantCulture, Component, members), new GeneratorOptions { IncludeGeneratedHeader = false });
         return (code, generator.Warnings);
     }
 
@@ -89,11 +90,11 @@ public partial class Player<TScope> : ComponentObjectBase<TScope, Player<TScope>
         var generator = ControlObjectGenerator.CreateDefault();
         var options = new GeneratorOptions { IncludeGeneratedHeader = false };
 
-        generator.Generate(string.Format(Component,
+        generator.Generate(string.Format(CultureInfo.InvariantCulture, Component,
             "protected virtual bool? IsBusyCore(IMauiElement? element) => Status.GetText() == \"busy\";"), options);
         Assert.NotEmpty(generator.Warnings);
 
-        generator.Generate(string.Format(Component, ""), options);
+        generator.Generate(string.Format(CultureInfo.InvariantCulture, Component, ""), options);
         Assert.Empty(generator.Warnings);
     }
 }

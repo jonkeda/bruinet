@@ -65,7 +65,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
 
     #region Container root
 
-    /// <inheritdoc />
+    /// <summary>The container's root element, found on first use and kept until <see cref="InvalidateCache"/>.</summary>
     public IMauiElement ContainerRoot
     {
         get
@@ -103,7 +103,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     /// <exception cref="ElementNotFoundException">Thrown when the root is not found.</exception>
     protected abstract IMauiElement FindContainerRootElement();
 
-    /// <inheritdoc />
+    /// <summary>Forgets the root element, so the next use finds it again.</summary>
     public void InvalidateCache()
     {
         _rootCacheValid = false;

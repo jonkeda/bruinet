@@ -36,9 +36,9 @@ public class SetGenerator : IMemberGenerator
     {
         var methodName = method.Identifier.Text;
 
-        if (!methodName.EndsWith(methodSuffix))
+        if (!methodName.EndsWith(methodSuffix, StringComparison.Ordinal))
             return false;
-        if (!methodName.StartsWith(SetterPrefix))
+        if (!methodName.StartsWith(SetterPrefix, StringComparison.Ordinal))
             return false;
 
         // A setter takes the element plus at least one value to write. `timeoutMs` is

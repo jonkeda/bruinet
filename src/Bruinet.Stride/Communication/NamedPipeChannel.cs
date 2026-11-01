@@ -49,9 +49,9 @@ public class NamedPipeChannel : IAutomationChannel
             _reader = new StreamReader(_pipeClient, Encoding.UTF8, leaveOpen: true);
             _writer = new StreamWriter(_pipeClient, Encoding.UTF8, leaveOpen: true) { AutoFlush = true };
         }
-        catch (OperationCanceledException) when (timeoutCts.IsCancellationRequested)
+        catch (OperationCanceledException exception) when (timeoutCts.IsCancellationRequested)
         {
-            throw new TimeoutException($"Failed to connect to pipe '{_pipeName}' within {timeout.TotalMilliseconds}ms");
+            throw new TimeoutException($"Failed to connect to pipe '{_pipeName}' within {timeout.TotalMilliseconds}ms", exception);
         }
     }
 

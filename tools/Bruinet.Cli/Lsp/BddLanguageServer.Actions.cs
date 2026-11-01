@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Bruinet.Bdd.Workspace;
 using StreamJsonRpc;
+using System.Globalization;
 
 namespace Bruinet.Bdd.LanguageServer;
 
@@ -206,11 +207,11 @@ public sealed partial class BddLanguageServer
         var indent = new string(' ', LeadingSpaces(File.ReadAllLines(source)[closing - 1]) + 4);
         var method = new StringBuilder()
             .Append('\n')
-            .Append($"{indent}[Bdd{step.Effective}(\"{phrase.Replace("\"", "\\\"", StringComparison.Ordinal)}\")]\n")
-            .Append($"{indent}public void {name}({string.Join(", ", parameters)})\n")
-            .Append($"{indent}{{\n")
-            .Append($"{indent}    throw new NotImplementedException();\n")
-            .Append($"{indent}}}\n")
+            .Append(CultureInfo.InvariantCulture, $"{indent}[Bdd{step.Effective}(\"{phrase.Replace("\"", "\\\"", StringComparison.Ordinal)}\")]\n")
+            .Append(CultureInfo.InvariantCulture, $"{indent}public void {name}({string.Join(", ", parameters)})\n")
+            .Append(CultureInfo.InvariantCulture, $"{indent}{{\n")
+            .Append(CultureInfo.InvariantCulture, $"{indent}    throw new NotImplementedException();\n")
+            .Append(CultureInfo.InvariantCulture, $"{indent}}}\n")
             .ToString();
         var at = new Position(closing - 1, 0);
         return new CodeAction($"Create step definition in {target.Type.Name}", "quickfix", Edit(new Uri(source).AbsoluteUri, new TextEdit(new Range(at, at), method)));
@@ -349,7 +350,7 @@ public sealed partial class BddLanguageServer
         StringBuilder text = new();
         foreach (var step in body)
         {
-            text.Append(text.Length == 0 ? string.Empty : "\n").Append($"{indent}{step.Keyword} {step.Text}");
+            text.Append(text.Length == 0 ? string.Empty : "\n").Append(CultureInfo.InvariantCulture, $"{indent}{step.Keyword} {step.Text}");
             if (step.Table is { } table)
             {
                 text.Append('\n').Append(TableText(table, indent + "  "));
@@ -420,7 +421,7 @@ public sealed partial class BddLanguageServer
         var last = 0;
         foreach (Match placeholder in Regex.Matches(phrase, @"\{([A-Za-z][A-Za-z0-9_-]*)\}"))
         {
-            pattern.Append(Literal(phrase[last..placeholder.Index])).Append($"(?<{placeholder.Groups[1].Value.Replace('-', '_')}>.+?)");
+            pattern.Append(Literal(phrase[last..placeholder.Index])).Append(CultureInfo.InvariantCulture, $"(?<{placeholder.Groups[1].Value.Replace('-', '_')}>.+?)");
             last = placeholder.Index + placeholder.Length;
         }
 

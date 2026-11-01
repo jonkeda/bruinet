@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Nodes;
+using System.Globalization;
 
 namespace Bruinet.Mocking.Data.Replay;
 
@@ -340,7 +341,7 @@ public sealed class ReplaySession
 
         var recordedKey = Statements.Key(nearest.Text);
         var at = Common(recordedKey, key);
-        return text.Append($"\nNearest, #{nearest.Index}, parts at character {at}:\n  recorded ...{Around(recordedKey, at)}...\n  now      ...{Around(key, at)}...").ToString();
+        return text.Append(FormattableString.Invariant($"\nNearest, #{nearest.Index}, parts at character {at}:\n  recorded ...{Around(recordedKey, at)}...\n  now      ...{Around(key, at)}...")).ToString();
     }
 
     private static int Common(string left, string right)

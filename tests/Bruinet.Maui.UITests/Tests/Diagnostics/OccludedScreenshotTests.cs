@@ -417,11 +417,11 @@ public class OccludedScreenshotTests
                     Bottom = GetSystemMetrics(SmCyScreen),
                 };
 
-                FillRect(deviceContext, ref area, GetStockObject(BlackBrush));
+                _ = FillRect(deviceContext, ref area, GetStockObject(BlackBrush));
             }
             finally
             {
-                ReleaseDC(handle, deviceContext);
+                _ = ReleaseDC(handle, deviceContext);
             }
         }
 

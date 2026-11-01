@@ -34,7 +34,7 @@ internal static class BddPreviewRecord
             .Append(")</summary><ul>");
         foreach (var recording in recordings)
         {
-            html.Append($"<li><a href=\"#\" data-watch=\"{Encode(recording.Path)}\" title=\"Watch {Encode(recording.Path)}\">{Encode(recording.Name)}</a> <span class=\"uat-diag-where\">{recording.Written.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}</span></li>");
+            html.Append(CultureInfo.InvariantCulture, $"<li><a href=\"#\" data-watch=\"{Encode(recording.Path)}\" title=\"Watch {Encode(recording.Path)}\">{Encode(recording.Name)}</a> <span class=\"uat-diag-where\">{recording.Written.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}</span></li>");
         }
 
         return html.Append("</ul></details>\n").ToString();

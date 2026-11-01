@@ -38,15 +38,15 @@ public class ActionGenerator : IMemberGenerator
         var methodName = method.Identifier.Text;
 
         // Check if name ends with suffix
-        if (!methodName.EndsWith(_options.MethodSuffix))
+        if (!methodName.EndsWith(_options.MethodSuffix, StringComparison.Ordinal))
             return false;
 
         // Exclude Is*Core state queries — those belong to IsWaitAssertGenerator.
-        if (methodName.StartsWith("Is") && method.ReturnType.ToString() == "bool?")
+        if (methodName.StartsWith("Is", StringComparison.Ordinal) && method.ReturnType.ToString() == "bool?")
             return false;
 
         // Exclude Get*Core value queries — those belong to IsWaitAssertGenerator.
-        if (methodName.StartsWith("Get"))
+        if (methodName.StartsWith("Get", StringComparison.Ordinal))
             return false;
 
         // Exclude Set*Core value writers — those belong to SetGenerator.
@@ -54,7 +54,7 @@ public class ActionGenerator : IMemberGenerator
             return false;
 
         // Exclude Ensure* guards — internal checks, not actions.
-        if (methodName.StartsWith(GuardPrefix))
+        if (methodName.StartsWith(GuardPrefix, StringComparison.Ordinal))
             return false;
 
         // Exclude anything that returns a value. The wrapper is RunDoWithElement, which has

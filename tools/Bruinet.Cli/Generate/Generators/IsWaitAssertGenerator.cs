@@ -35,11 +35,11 @@ public class IsWaitAssertGenerator : IMemberGenerator
         var methodName = method.Identifier.Text;
 
         // Must end with the Core suffix.
-        if (!methodName.EndsWith(_options.MethodSuffix))
+        if (!methodName.EndsWith(_options.MethodSuffix, StringComparison.Ordinal))
             return false;
 
-        var isState = methodName.StartsWith(_methodPrefix);   // Is*Core
-        var isGetter = methodName.StartsWith(_getterPrefix);  // Get*Core
+        var isState = methodName.StartsWith(_methodPrefix, StringComparison.Ordinal);   // Is*Core
+        var isGetter = methodName.StartsWith(_getterPrefix, StringComparison.Ordinal);  // Get*Core
         if (!isState && !isGetter)
             return false;
 
@@ -82,7 +82,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
     public MethodInfo Extract(MethodDeclarationSyntax method)
     {
         var methodName = method.Identifier.Text;
-        var isGetter = methodName.StartsWith(_getterPrefix);
+        var isGetter = methodName.StartsWith(_getterPrefix, StringComparison.Ordinal);
         var prefix = isGetter ? _getterPrefix : _methodPrefix;
 
         // Extract property name: "IsExistsCore" → "Exists", "GetTextCore" → "Text"
@@ -215,7 +215,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
     public IReadOnlyList<string> EmittedMemberNames(MethodInfo coreMethod)
     {
         var propertyName = coreMethod.PublicMethodName;
-        var queryPrefix = coreMethod.MethodName.StartsWith(_getterPrefix) ? _getterPrefix : _methodPrefix;
+        var queryPrefix = coreMethod.MethodName.StartsWith(_getterPrefix, StringComparison.Ordinal) ? _getterPrefix : _methodPrefix;
 
         // The comparison variants (Wait{P}Contains, Assert{P}Empty, ...) all carry the same
         // stem, so anything that would clash with one already clashes with these three.
@@ -231,7 +231,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         // that is depends on the class: TScope for a control, TSelf for a container.
         var fluentReturnType = context.FluentReturnType;
 
-        return coreMethod.MethodName.StartsWith(_getterPrefix)
+        return coreMethod.MethodName.StartsWith(_getterPrefix, StringComparison.Ordinal)
             ? GenerateGetter(coreMethod, fluentReturnType)
             : GenerateState(coreMethod, fluentReturnType);
     }
@@ -270,7 +270,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
     {
         var propertyName = coreMethod.PublicMethodName;
         var returnType = coreMethod.ReturnType;
-        var nullableReturnType = returnType.EndsWith("?") ? returnType : returnType + "?";
+        var nullableReturnType = returnType.EndsWith("?", StringComparison.Ordinal) ? returnType : returnType + "?";
         var paramPrefix = BuildParameterListPrefix(coreMethod);
         var lambdaArgs = BuildLambdaArguments(coreMethod);
         var writer = new CsWriter(0);
@@ -395,13 +395,15 @@ public class IsWaitAssertGenerator : IMemberGenerator
             return;
         }
 
-        var predicate = $"actual?.{comparison}(expected1!) == true";
+        // StartsWith and EndsWith compare ordinally, as Contains and == do.
+        var ordinal = comparison is "StartsWith" or "EndsWith" ? ", StringComparison.Ordinal" : string.Empty;
+        var predicate = $"actual?.{comparison}(expected1!{ordinal}) == true";
 
         writer.WriteLine($"public bool Wait{memberName}({paramPrefix}{nullableReturnType} expected, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
         writer.IncreaseSpace(1);
-        writer.WriteLine($"element => {coreMethod.MethodName}(element{lambdaArgs})?.{comparison}(expected!) == true,");
+        writer.WriteLine($"element => {coreMethod.MethodName}(element{lambdaArgs})?.{comparison}(expected!{ordinal}) == true,");
         writer.WriteLine("timeoutMs);");
         writer.DecreaseSpace(1);
         writer.Close();

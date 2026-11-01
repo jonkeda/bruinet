@@ -1,0 +1,64 @@
+is_global = true
+
+# The analyzer rules turned off for all of Bruinet, each with why (.my/checks). Everything else from
+# AnalysisLevel latest-recommended and Meziantou stays on, an error under TreatWarningsAsErrors.
+
+# Naming and layout the code base chose on purpose
+dotnet_diagnostic.CA1707.severity = none   # test names use underscores (Method_State_Result)
+dotnet_diagnostic.MA0048.severity = none   # .tpl.cs/.gen.cs partials and small related types share a file
+dotnet_diagnostic.MA0049.severity = none   # a type may share its namespace's last name
+dotnet_diagnostic.CA1716.severity = none   # names such as Shared, Select and Step are the domain's words
+dotnet_diagnostic.CA1711.severity = none   # AppDelegate, *Collection and *Stream are platform names
+dotnet_diagnostic.CA1710.severity = none   # result types are not exceptions
+dotnet_diagnostic.CA1720.severity = none   # Short, Long, Int are values of the domain's enums
+dotnet_diagnostic.CA1725.severity = none   # parameter names follow the platform drivers we wrap
+dotnet_diagnostic.MA0099.severity = none   # flags enums start at None = 0
+
+# Style with no defect behind it
+dotnet_diagnostic.MA0006.severity = none   # == on strings is ordinal already
+dotnet_diagnostic.MA0002.severity = none   # string keys are ordinal by default; CA1309/CA1310 cover culture
+dotnet_diagnostic.MA0016.severity = none   # concrete collections in signatures are the API's choice
+dotnet_diagnostic.MA0061.severity = none   # overrides may add defaults
+dotnet_diagnostic.MA0046.severity = none   # events use Action<T> where that is clearer
+dotnet_diagnostic.MA0023.severity = none   # unnamed regex groups are fine
+dotnet_diagnostic.MA0008.severity = none   # StructLayout is for interop structs only
+dotnet_diagnostic.MA0017.severity = none   # abstract types with protected-by-intent constructors
+dotnet_diagnostic.CA1822.severity = none   # making public members static breaks the API
+dotnet_diagnostic.CA1852.severity = none   # sealing is a design choice, not a defect
+dotnet_diagnostic.CA1805.severity = none   # explicit defaults may document intent
+dotnet_diagnostic.CA1000.severity = none   # static factories on generic controls are the pattern
+dotnet_diagnostic.CA1010.severity = none   # ADO.NET base types are non-generic
+dotnet_diagnostic.CA1051.severity = none   # visible fields in test fixtures
+dotnet_diagnostic.CA1068.severity = none   # moving CancellationToken last breaks the API
+dotnet_diagnostic.CA1816.severity = none   # no finalizers in Bruinet
+dotnet_diagnostic.MA0025.severity = none   # NotImplementedException marks stubs in samples and tests
+
+# Performance hints with no measured cost: Bruinet waits on UI, not on these
+dotnet_diagnostic.CA1826.severity = none
+dotnet_diagnostic.CA1829.severity = none
+dotnet_diagnostic.CA1834.severity = none
+dotnet_diagnostic.CA1837.severity = none
+dotnet_diagnostic.CA1841.severity = none
+dotnet_diagnostic.CA1845.severity = none
+dotnet_diagnostic.CA1847.severity = none
+dotnet_diagnostic.CA1850.severity = none
+dotnet_diagnostic.CA1859.severity = none
+dotnet_diagnostic.CA1860.severity = none
+dotnet_diagnostic.CA1861.severity = none
+dotnet_diagnostic.CA1863.severity = none
+dotnet_diagnostic.CA1864.severity = none
+dotnet_diagnostic.CA1865.severity = none
+dotnet_diagnostic.CA1866.severity = none
+dotnet_diagnostic.CA1869.severity = none
+dotnet_diagnostic.CA1872.severity = none
+
+# Covered elsewhere or not possible here
+dotnet_diagnostic.MA0004.severity = none   # ConfigureAwait: UI drivers need their context; tests have none
+dotnet_diagnostic.MA0009.severity = none   # regex input is the test author's, not an attacker's
+dotnet_diagnostic.MA0051.severity = none   # method length is the complexity check's job (.my/checks, order 11)
+dotnet_diagnostic.MA0158.severity = none   # System.Threading.Lock needs net9; src targets net8 too
+dotnet_diagnostic.MA0011.severity = none   # same as CA1305, kept once
+dotnet_diagnostic.MA0074.severity = none   # same as CA1310, kept once
+dotnet_diagnostic.MA0015.severity = none   # ThrowIfNull(options.Part) names the part; the rule wants a parameter
+dotnet_diagnostic.MA0147.severity = none   # MAUI's Command and dispatchers take Action; async lambdas there are the platform's pattern
+dotnet_diagnostic.CA1001.severity = none   # the fields it finds are semaphores, scene recordings and token sources whose owner ends them at a step's end, not at Dispose

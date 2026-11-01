@@ -1,6 +1,7 @@
 namespace Bruinet.Maui.Controls.Range;
 
 using Bruinet.Core.Utilities;
+using System.Globalization;
 
 /// <summary>
 /// MAUI Slider control for continuous value selection.
@@ -74,7 +75,7 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
         }
     }
 
-    private static string Describe(double? value) => value?.ToString() ?? "no value";
+    private static string Describe(double? value) => value?.ToString(CultureInfo.InvariantCulture) ?? "no value";
 
     /// <summary>
     /// Gets the current value as a percentage of the range from a pre-found element.

@@ -1,10 +1,12 @@
+using System.Globalization;
+
 namespace Bruinet.Bdd;
 
 public sealed record BddSourceLocation(string? FilePath, int LineNumber)
 {
     public override string ToString()
     {
-        return FilePath is null ? LineNumber.ToString() : $"{FilePath}:{LineNumber}";
+        return FilePath is null ? LineNumber.ToString(CultureInfo.InvariantCulture) : $"{FilePath}:{LineNumber}";
     }
 }
 

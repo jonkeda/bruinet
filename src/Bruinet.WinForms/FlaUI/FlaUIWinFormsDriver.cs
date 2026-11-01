@@ -11,6 +11,7 @@ using FlaUI.Core.Definitions;
 using FlaUI.Core.Input;
 using FlaUI.Core.WindowsAPI;
 using FlaUI.UIA3;
+using System.Globalization;
 
 namespace Bruinet.WinForms.FlaUI;
 
@@ -133,7 +134,7 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
 
     #region Window Management
 
-    public string CurrentWindowHandle => _rootElement.Properties.NativeWindowHandle.Value.ToString();
+    public string CurrentWindowHandle => _rootElement.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture);
 
     public IReadOnlyCollection<string> WindowHandles
     {
@@ -141,7 +142,7 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
         {
             if (_application != null)
                 return _application.GetAllTopLevelWindows(_automation)
-                    .Select(w => w.Properties.NativeWindowHandle.Value.ToString()).ToList();
+                    .Select(w => w.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture)).ToList();
             return new[] { CurrentWindowHandle };
         }
     }
@@ -266,7 +267,7 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
         try { className = element.Properties.ClassName.ValueOrDefault ?? ""; } catch { }
         try { controlType = element.ControlType.ToString(); } catch { }
 
-        sb.AppendLine($"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
 
         try
         {
@@ -275,7 +276,7 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
         }
         catch { }
 
-        sb.AppendLine($"{indent}</{controlType}>");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}</{controlType}>");
         return sb.ToString();
     }
 

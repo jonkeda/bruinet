@@ -194,7 +194,7 @@ public sealed partial class ScraperService : IAsyncDisposable
         finally
         {
             _exploring = null;
-            _signIn?.TrySetCanceled();
+            _signIn?.TrySetCanceled(cancellationToken);
             _signIn = null;
         }
         var report = Path.Combine(recording.Session.Folder, ExploreReport.FileName);

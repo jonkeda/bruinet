@@ -123,6 +123,11 @@ public sealed record BddFileLoadResult(
     bool BindSucceeded,
     IReadOnlyList<string> Diagnostics);
 
+/// <param name="Name">The scenario's name.</param>
+/// <param name="SuiteName">The suite it belongs to.</param>
+/// <param name="FilePath">The feature file it is in.</param>
+/// <param name="Tags">Its tags.</param>
+/// <param name="Steps">Its steps.</param>
 /// <param name="LineNumber">The scenario's heading line in its file; 0 when not known.</param>
 public sealed record BddScenarioLoadResult(
     string Name,

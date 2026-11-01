@@ -383,11 +383,11 @@ internal static class ScrapeCommands
         var (getSolution, getProject) = (Solution(), Project());
         get.Add(getProject);
         get.Add(getSolution);
-        get.Action(io, async (parsed, _) =>
+        get.Action(io, async (parsed, cancellationToken) =>
         {
             await using var service = Service(io, parsed.GetValue(getSolution));
             var project = service.Project(ProjectName(service, parsed.GetValue(getProject), io));
-            await io.Out.WriteAsync(await File.ReadAllTextAsync(Path.Combine(project.Folder, ScraperConfig.FileName)).ConfigureAwait(false)).ConfigureAwait(false);
+            await io.Out.WriteAsync(await File.ReadAllTextAsync(Path.Combine(project.Folder, ScraperConfig.FileName), cancellationToken).ConfigureAwait(false)).ConfigureAwait(false);
             return 0;
         });
 

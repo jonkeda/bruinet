@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 
 namespace Bruinet.Core.Logging;
 
@@ -133,7 +134,7 @@ public class CsvTestLogger : ITestLogger
             EscapeCsvValue(value),
             EscapeCsvValue(expected),
             EscapeCsvValue(result),
-            durationMs?.ToString() ?? "",
+            durationMs?.ToString(CultureInfo.InvariantCulture) ?? "",
             EscapeCsvValue(message));
     }
 

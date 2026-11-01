@@ -1,0 +1,10 @@
+is_global = true
+
+# Projects that also target netstandard2.0 or .NET Framework, on top of Quality.globalconfig: the rules
+# that ask for an API those targets lack (the performance ones are off everywhere), so the fix would not build there.
+dotnet_diagnostic.CA1510.severity = none
+dotnet_diagnostic.CA1511.severity = none
+dotnet_diagnostic.CA1512.severity = none
+dotnet_diagnostic.CA1513.severity = none
+dotnet_diagnostic.CA2249.severity = none
+dotnet_diagnostic.CA2263.severity = none

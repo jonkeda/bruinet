@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Bruinet.Core.Composition;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Bruinet.Uat;
 
@@ -254,13 +255,13 @@ public static partial class UatScenarioCheck
         var builder = new StringBuilder();
         if (encodable)
         {
-            builder.AppendLine($"[{attribute}]");
-            builder.AppendLine($"public void {step.EffectiveKeyword}_{string.Join('_', words)}({signature})");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"[{attribute}]");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"public void {step.EffectiveKeyword}_{string.Join('_', words)}({signature})");
         }
         else
         {
-            builder.AppendLine($"[{attribute}(\"{string.Join(' ', phrase).Replace("\"", "\\\"", StringComparison.Ordinal)}\")]");
-            builder.AppendLine($"public void {string.Concat(words.Where(word => !word.StartsWith('P') || !word.Skip(1).All(char.IsDigit)).Select(Pascal))}({signature})");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"[{attribute}(\"{string.Join(' ', phrase).Replace("\"", "\\\"", StringComparison.Ordinal)}\")]");
+            builder.AppendLine(CultureInfo.InvariantCulture, $"public void {string.Concat(words.Where(word => !word.StartsWith('P') || !word.Skip(1).All(char.IsDigit)).Select(Pascal))}({signature})");
         }
 
         builder.AppendLine("{");

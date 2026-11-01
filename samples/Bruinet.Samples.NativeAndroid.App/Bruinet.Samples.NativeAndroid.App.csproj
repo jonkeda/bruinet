@@ -18,7 +18,7 @@
          Fast Deployment leaves the assemblies out of it and the app exits at start. -->
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <!-- Android bindings carry obsolete members the platform still uses. -->
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CS0618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

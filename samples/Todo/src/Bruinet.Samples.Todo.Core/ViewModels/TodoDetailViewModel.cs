@@ -3,6 +3,7 @@ using Bruinet.Samples.Shared.ViewModels;
 using Bruinet.Samples.Todo.Core.Models;
 using Bruinet.Samples.Todo.Core.Rules;
 using Bruinet.Samples.Todo.Core.Services;
+using System.Globalization;
 
 namespace Bruinet.Samples.Todo.Core.ViewModels;
 
@@ -52,13 +53,13 @@ public sealed class TodoDetailViewModel : ParentViewModel
     public bool HasNotes => !string.IsNullOrEmpty(_item?.Notes);
 
     /// <summary>The due date, or "No due date". The card already labels it "Due".</summary>
-    public string DueText => TodoFormatting.Date(_item?.DueDate, "No due date");
+    public string DueText => TodoFormatting.Date(_item?.DueDate, "No due date", CultureInfo.CurrentCulture);
 
     /// <summary>When it was created, local time.</summary>
-    public string CreatedText => _item is null ? string.Empty : TodoFormatting.Timestamp(_item.CreatedAt);
+    public string CreatedText => _item is null ? string.Empty : TodoFormatting.Timestamp(_item.CreatedAt, culture: CultureInfo.CurrentCulture);
 
     /// <summary>When it last changed, local time.</summary>
-    public string UpdatedText => _item is null ? string.Empty : TodoFormatting.Timestamp(_item.UpdatedAt);
+    public string UpdatedText => _item is null ? string.Empty : TodoFormatting.Timestamp(_item.UpdatedAt, culture: CultureInfo.CurrentCulture);
 
     /// <summary>"Synced", "Waiting to sync" or "Local only".</summary>
     public string SyncText => _item is null ? string.Empty : TodoFormatting.SyncState(_item.SyncState);

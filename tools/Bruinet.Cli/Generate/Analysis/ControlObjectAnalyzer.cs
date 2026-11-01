@@ -337,7 +337,7 @@ public class ControlObjectAnalyzer
     {
         foreach (var method in classDecl.Members.OfType<MethodDeclarationSyntax>())
         {
-            if (!method.Identifier.Text.EndsWith("Core"))
+            if (!method.Identifier.Text.EndsWith("Core", StringComparison.Ordinal))
                 continue;
             if (method.ParameterList.Parameters.Count == 0)
                 continue;

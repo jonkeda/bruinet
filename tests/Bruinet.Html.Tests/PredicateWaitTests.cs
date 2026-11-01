@@ -1,5 +1,6 @@
 using Bruinet.Html.Context;
 using Bruinet.Html.Controls.Display;
+using System.Globalization;
 
 namespace Bruinet.Html.Tests;
 
@@ -60,7 +61,7 @@ public class PredicateWaitTests
         var reads = 0;
         GivenTarget().Setup(e => e.GetAttribute("data-count")).Returns(() => ++reads < 4 ? "0" : "5");
 
-        Assert.True(Status().WaitAttribute("data-count", count => int.Parse(count!) > 0, timeoutMs: 1000));
+        Assert.True(Status().WaitAttribute("data-count", count => int.Parse(count!, CultureInfo.InvariantCulture) > 0, timeoutMs: 1000));
         Assert.True(reads >= 4);
     }
 

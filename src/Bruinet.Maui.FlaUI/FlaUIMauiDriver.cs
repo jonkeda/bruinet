@@ -10,6 +10,7 @@ using Bruinet.Uia;
 using Bruinet.Maui.Enums;
 using FlaUI.Core.Capturing;
 using FlaUI.Core.Definitions;
+using System.Globalization;
 
 namespace Bruinet.Maui.FlaUI;
 
@@ -276,7 +277,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     #region Window Management
     
     /// <inheritdoc />
-    public string CurrentWindowHandle => RootElement.Properties.NativeWindowHandle.Value.ToString();
+    public string CurrentWindowHandle => RootElement.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture);
     
     /// <inheritdoc />
     public IReadOnlyCollection<string> WindowHandles
@@ -286,7 +287,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             if (_application != null)
             {
                 return _application.GetAllTopLevelWindows(_automation)
-                    .Select(w => w.Properties.NativeWindowHandle.Value.ToString())
+                    .Select(w => w.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture))
                     .ToList();
             }
             return new[] { CurrentWindowHandle };
@@ -412,7 +413,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         try { className = element.Properties.ClassName.ValueOrDefault ?? ""; } catch { }
         try { controlType = element.ControlType.ToString(); } catch { }
         
-        sb.AppendLine($"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
         
         try
         {
@@ -426,7 +427,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             // Ignore errors traversing children
         }
         
-        sb.AppendLine($"{indent}</{controlType}>");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}</{controlType}>");
         return sb.ToString();
     }
 
@@ -753,7 +754,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         throw new BruinetException($"Could not invoke menu item '{automationId}': {reason}.");
     }
 
-    /// <inheritdoc />
+    /// <summary>Invokes the toolbar item that carries this AutomationId.</summary>
     internal void InvokeToolbarItem(string automationId)
     {
         var answer = Exchange(BruinetVerb.InvokeToolbarItem, automationId);

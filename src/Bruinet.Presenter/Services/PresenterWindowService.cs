@@ -224,14 +224,14 @@ public sealed class PresenterWindowService(Func<Window?> window) : IPresenterWin
     private static List<(IntPtr Handle, int ProcessId, Rectangle Bounds, string Title)> TopLevelWindows()
     {
         List<(IntPtr, int, Rectangle, string)> windows = [];
-        EnumWindows((handle, _) =>
+        EnumWindows((handle, lParam) =>
         {
             var length = GetWindowTextLength(handle);
             if (IsWindowVisible(handle) && GetWindow(handle, GwOwner) == IntPtr.Zero && length > 0 && GetWindowRect(handle, out var rect))
             {
                 var title = new char[length + 1];
                 var read = GetWindowText(handle, title, title.Length);
-                GetWindowThreadProcessId(handle, out var processId);
+                _ = GetWindowThreadProcessId(handle, out var processId);
                 windows.Add((handle, (int)processId, Rectangle.FromLTRB(rect.Left, rect.Top, rect.Right, rect.Bottom), new string(title, 0, read)));
             }
 

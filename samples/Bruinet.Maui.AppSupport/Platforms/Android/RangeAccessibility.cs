@@ -113,9 +113,11 @@ internal static class RangeAccessibility
             _settable = settable;
         }
 
-        public override void OnInitializeAccessibilityNodeInfo(AView host, AccessibilityNodeInfoCompat info)
+        public override void OnInitializeAccessibilityNodeInfo(AView? host, AccessibilityNodeInfoCompat? info)
         {
             base.OnInitializeAccessibilityNodeInfo(host, info);
+            if (info is null)
+                return;
 
             info.RangeInfo = AccessibilityNodeInfoCompat.RangeInfoCompat.Obtain(
                 AccessibilityNodeInfoCompat.RangeInfoCompat.RangeTypeFloat,
@@ -123,14 +125,14 @@ internal static class RangeAccessibility
                 (float)_range.Maximum,
                 (float)_range.Value);
             info.StateDescription = Format(_range.Value);
-            info.Extras.PutString(MinimumKey, Format(_range.Minimum));
-            info.Extras.PutString(MaximumKey, Format(_range.Maximum));
+            info.Extras?.PutString(MinimumKey, Format(_range.Minimum));
+            info.Extras?.PutString(MaximumKey, Format(_range.Maximum));
         }
 
-        public override bool PerformAccessibilityAction(AView host, int action, Bundle? args)
+        public override bool PerformAccessibilityAction(AView? host, int action, Bundle? args)
         {
             if (_settable
-                && action == AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetProgress.Id
+                && action == AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetProgress?.Id
                 && args is not null
                 && args.ContainsKey(AccessibilityNodeInfoCompat.ActionArgumentProgressValue))
             {
@@ -153,7 +155,7 @@ internal static class RangeAccessibility
 
         protected ForwardingAccessibilityDelegate(AccessibilityDelegateCompat? inner) => _inner = inner;
 
-        public override void OnInitializeAccessibilityNodeInfo(AView host, AccessibilityNodeInfoCompat info)
+        public override void OnInitializeAccessibilityNodeInfo(AView? host, AccessibilityNodeInfoCompat? info)
         {
             if (_inner is null)
                 base.OnInitializeAccessibilityNodeInfo(host, info);
@@ -161,11 +163,11 @@ internal static class RangeAccessibility
                 _inner.OnInitializeAccessibilityNodeInfo(host, info);
         }
 
-        public override bool PerformAccessibilityAction(AView host, int action, Bundle? args)
+        public override bool PerformAccessibilityAction(AView? host, int action, Bundle? args)
             => _inner?.PerformAccessibilityAction(host, action, args)
                ?? base.PerformAccessibilityAction(host, action, args);
 
-        public override void SendAccessibilityEvent(AView host, int eventType)
+        public override void SendAccessibilityEvent(AView? host, int eventType)
         {
             if (_inner is null)
                 base.SendAccessibilityEvent(host, eventType);
@@ -173,11 +175,11 @@ internal static class RangeAccessibility
                 _inner.SendAccessibilityEvent(host, eventType);
         }
 
-        public override bool DispatchPopulateAccessibilityEvent(AView host, Android.Views.Accessibility.AccessibilityEvent e)
+        public override bool DispatchPopulateAccessibilityEvent(AView? host, Android.Views.Accessibility.AccessibilityEvent? e)
             => _inner?.DispatchPopulateAccessibilityEvent(host, e)
                ?? base.DispatchPopulateAccessibilityEvent(host, e);
 
-        public override void OnInitializeAccessibilityEvent(AView host, Android.Views.Accessibility.AccessibilityEvent e)
+        public override void OnInitializeAccessibilityEvent(AView? host, Android.Views.Accessibility.AccessibilityEvent? e)
         {
             if (_inner is null)
                 base.OnInitializeAccessibilityEvent(host, e);
@@ -185,7 +187,7 @@ internal static class RangeAccessibility
                 _inner.OnInitializeAccessibilityEvent(host, e);
         }
 
-        public override void OnPopulateAccessibilityEvent(AView host, Android.Views.Accessibility.AccessibilityEvent e)
+        public override void OnPopulateAccessibilityEvent(AView? host, Android.Views.Accessibility.AccessibilityEvent? e)
         {
             if (_inner is null)
                 base.OnPopulateAccessibilityEvent(host, e);
@@ -193,7 +195,7 @@ internal static class RangeAccessibility
                 _inner.OnPopulateAccessibilityEvent(host, e);
         }
 
-        public override AccessibilityNodeProviderCompat? GetAccessibilityNodeProvider(AView host)
+        public override AccessibilityNodeProviderCompat? GetAccessibilityNodeProvider(AView? host)
             => _inner is null ? base.GetAccessibilityNodeProvider(host) : _inner.GetAccessibilityNodeProvider(host);
     }
 }

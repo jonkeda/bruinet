@@ -237,7 +237,7 @@ public class Test {
         Assert.Contains(
             "return IsVisibleCore(TryFindElement()) == true;",
             generated);
-        Assert.DoesNotContain("RunWait", generated[..generated.IndexOf("public bool WaitVisible")]);
+        Assert.DoesNotContain("RunWait", generated[..generated.IndexOf("public bool WaitVisible", StringComparison.Ordinal)]);
     }
 
     [Fact]

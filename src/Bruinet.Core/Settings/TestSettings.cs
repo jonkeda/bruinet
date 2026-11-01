@@ -176,8 +176,8 @@ internal sealed class CaseInsensitiveEnumConverter<TEnum> : JsonConverter<TEnum>
                     throw new JsonException($"Null value cannot be converted to enum type {typeof(TEnum).Name}.");
                 }
 
-                var values = Enum.GetValues(typeof(TEnum));
-                foreach (TEnum value in values)
+                var values = Enum.GetValues<TEnum>();
+                foreach (var value in values)
                 {
                     if (value.ToString().Equals(stringValue, StringComparison.OrdinalIgnoreCase))
                     {
@@ -188,7 +188,7 @@ internal sealed class CaseInsensitiveEnumConverter<TEnum> : JsonConverter<TEnum>
                 // If no case-insensitive match found, try exact match (for backwards compatibility)
                 try
                 {
-                    return (TEnum)Enum.Parse(typeof(TEnum), stringValue, ignoreCase: false);
+                    return Enum.Parse<TEnum>(stringValue, ignoreCase: false);
                 }
                 catch (ArgumentException ex)
                 {

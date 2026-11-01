@@ -1,5 +1,6 @@
 using Bruinet.Maui.UITests.Pages;
 using Xunit.Abstractions;
+using System.Globalization;
 
 namespace Bruinet.Maui.UITests.Tests.Container;
 
@@ -249,7 +250,7 @@ public class ContainerModuleTests
 
         foreach (var id in expectedGood.Concat(expectedBad))
         {
-            report.AppendLine($"| {id} | {(Page.TryFindByAutomationId(id) != null ? "yes" : "NO")} |");
+            report.AppendLine(CultureInfo.InvariantCulture, $"| {id} | {(Page.TryFindByAutomationId(id) != null ? "yes" : "NO")} |");
         }
 
         _output.WriteLine(report.ToString());

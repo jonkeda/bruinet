@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Bruinet.Generator.Models;
 
@@ -17,7 +18,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
     private static string Generate(string members)
         => Regex.Replace(
             ControlObjectGenerator.CreateDefault().Generate(
-                string.Format(Control, members), new GeneratorOptions { IncludeGeneratedHeader = false }),
+                string.Format(CultureInfo.InvariantCulture, Control, members), new GeneratorOptions { IncludeGeneratedHeader = false }),
             @"\s+", " ");
 
     [Fact]

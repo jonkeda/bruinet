@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace Bruinet.Scraper.Projects;
 
@@ -84,13 +85,13 @@ public static partial class ProjectMaker
     {
         var md = new StringBuilder();
         md.Append("# Scraper Config\n\n## App\n\n| Field | Value |\n| --- | --- |\n");
-        md.Append($"| Platform | {request.Platform} |\n| StartUrl | {request.StartUrl} |\n| Namespace | {request.Name}.Pages |\n| Pages | Pages |\n");
+        md.Append(CultureInfo.InvariantCulture, $"| Platform | {request.Platform} |\n| StartUrl | {request.StartUrl} |\n| Namespace | {request.Name}.Pages |\n| Pages | Pages |\n");
         if (request.TestIds.Count > 0)
             md.Append("\n## Test ids\n\n| Attribute |\n| --- |\n").Append(string.Concat(request.TestIds.Select(t => $"| {t} |\n")));
         // Explore runs against localhost by default; any other host is named, so the start can be explored.
         var host = new Uri(request.StartUrl).Host;
         if (host is not ("localhost" or "127.0.0.1"))
-            md.Append($"\n## Explore hosts\n\n| Host |\n| --- |\n| localhost |\n| 127.0.0.1 |\n| {host} |\n");
+            md.Append(CultureInfo.InvariantCulture, $"\n## Explore hosts\n\n| Host |\n| --- |\n| localhost |\n| 127.0.0.1 |\n| {host} |\n");
         md.Append(ScraperConfigWriter.Tests(TestTarget.Xunit)); // a new project is no UAT suite
         return md.ToString();
     }
