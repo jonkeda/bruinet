@@ -48,9 +48,19 @@ Each step is one or more commits on `move`, the numbers after it written in the 
   it in its binding, and the kit asserts what the head states, so a difference is written down
   rather than skipped.
 
+- **A missing element** (found in C2). Core's docs say `IsVisible`, `IsEnabled` and `GetAttribute`
+  answer null; the generated Html and Maui controls answer false and throw `ElementNotFoundException`,
+  Wpf and WinForms answer null. Proposal: change the docs to what the generated controls do (false,
+  and a throw like every `Get*`), and Wpf and WinForms with C8; until then Html skips the three tests.
+- **Html's progress, date, time and scroll controls** (found in C2) have their own APIs (`DateOnly`,
+  percentages) and do not implement the Core interfaces, so no contract reaches them. Proposal: add
+  the Core interface beside their own members (`GetProgress` as a fraction, `GetDate` as `DateTime`),
+  then bind them; until then they wait for C7.
+
 ## Progress
 
 | Step | State | Numbers |
 | --- | --- | --- |
 | Baseline | 2026-11-01 | lines 53.8%; Core 78, Maui 49, Html 46, Blazor 45 |
 | C1 | built 2026-11-01: `tests/Bruinet.ControlContracts`, 16 contracts, 114 members each called; every test virtual, a head skips one with its reason; not yet bound to a head | 0 (C2 binds it) |
+| C2 | built 2026-11-01: 10 bindings in `Bruinet.Html.Bunit.Tests/Contracts` (element, clickable, focusable, text, text input, text area, check box, range input, select, radio group); 91 tests, 81 pass, 10 skipped with why (hover and long press, focus: no pointer or script on bUnit; a missing element: open question). Found: bUnit's Click on a radio or check box sent no change, so RadioGroupControl could not select (fixed in BunitHtmlElement) | Html 46.3 to 57.6%; RadioGroup 0 to 72, Selector 27 to 69, Range 26 to 48, Clickable 37 to 86, TextInput 51 to 76, Label, CheckBox, Toggle 100. Under 80% on range and selector: their generated members beyond the interface (`WaitValueGreaterThan`, ...) |

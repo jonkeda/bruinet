@@ -1,0 +1,12 @@
+@* The text contracts' controls: labels; fields and areas, editable and read-only. *@
+<span data-testid="label">Apple pie</span>
+<span data-testid="empty"></span>
+<input data-testid="field" placeholder="Your name" @bind="field" @bind:event="oninput" />
+<input data-testid="readonly" readonly value="Fixed" />
+<textarea data-testid="area" placeholder="Your notes" @bind="area" @bind:event="oninput"></textarea>
+<textarea data-testid="readonly-area" readonly>Fixed</textarea>
+
+@code {
+    private string field = string.Empty;
+    private string area = string.Empty;
+}

@@ -1,0 +1,18 @@
+@* The selector contract's controls: a drop-down and a radio group, each Apple, Banana, Cherry with Banana selected. *@
+<select data-testid="list" @bind="choice">
+    <option value="a">Apple</option>
+    <option value="b">Banana</option>
+    <option value="c">Cherry</option>
+</select>
+<div data-testid="radios">
+    @foreach (var (value, text) in Fruits)
+    {
+        <label><input type="radio" name="fruit" value="@value" checked="@(fruit == value)" @onchange="() => fruit = value" /> @text</label>
+    }
+</div>
+
+@code {
+    private static readonly (string Value, string Text)[] Fruits = [("a", "Apple"), ("b", "Banana"), ("c", "Cherry")];
+    private string choice = "b";
+    private string fruit = "b";
+}

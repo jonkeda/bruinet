@@ -1,0 +1,12 @@
+@* The clickable contract's controls: a button that shows what happened to it last, and a disabled one. *@
+<button data-testid="button"
+        @onclick='() => last = "click"'
+        @ondblclick='() => last = "double-click"'
+        @oncontextmenu='() => last = "right-click"'
+        @onmouseover='() => last = "hover"'>Button</button>
+<button data-testid="disabled" disabled>Disabled</button>
+<span data-testid="last">@last</span>
+
+@code {
+    private string? last;
+}
