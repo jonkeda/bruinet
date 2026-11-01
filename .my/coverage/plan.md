@@ -53,3 +53,4 @@ Each step is one or more commits on `move`, the numbers after it written in the 
 | Step | State | Numbers |
 | --- | --- | --- |
 | Baseline | 2026-11-01 | lines 53.8%; Core 78, Maui 49, Html 46, Blazor 45 |
+| C1 | built 2026-11-01: `tests/Bruinet.ControlContracts`, 16 contracts, 114 members each called; every test virtual, a head skips one with its reason; not yet bound to a head | 0 (C2 binds it) |

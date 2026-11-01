@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The control contracts (.my/coverage/plan.md): an abstract xUnit class per Core control interface,
+    one test per member. A head's test project derives from them and binds its own controls; xUnit
+    finds the inherited tests there. Not a test project itself, and not packed: it proves Bruinet's
+    own heads.
+  -->
+  <PropertyGroup>
+    <RootNamespace>Bruinet.ControlContracts</RootNamespace>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <!-- xUnit's attributes and asserts only: tests/Directory.Build.props's runner packages would make an
+       executable of it, and the head's test project runs the tests. -->
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.NET.Test.Sdk" />
+    <PackageReference Remove="xunit.runner.visualstudio" />
+    <PackageReference Remove="coverlet.collector" />
+  </ItemGroup>
+
+  <!-- Test code all the same: the test projects' analyzer settings. -->
+  <ItemGroup>
+    <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)../../Quality.Tests.globalconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Core\Bruinet.Core.csproj" />
+  </ItemGroup>
+
+</Project>
