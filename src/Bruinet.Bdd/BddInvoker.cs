@@ -87,7 +87,9 @@ internal static class BddInvoker
         }
         catch (TargetInvocationException ex) when (ex.InnerException is not null)
         {
-            throw ex.InnerException;
+            // Its own stack kept: the step definition's and the app's frames, where it was thrown.
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            throw;
         }
     }
 
@@ -101,7 +103,9 @@ internal static class BddInvoker
         }
         catch (TargetInvocationException ex) when (ex.InnerException is not null)
         {
-            throw ex.InnerException;
+            // Its own stack kept: the step definition's and the app's frames, where it was thrown.
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            throw;
         }
     }
 

@@ -51,6 +51,22 @@ public sealed partial class BddLanguageServer
         return result;
     }
 
+    /// <summary>The newest run of each of a feature file's scenarios, by name, as its report has it: for a host that reads the steps.</summary>
+    /// <param name="uri">The feature file.</param>
+    /// <param name="suite">The suite a linked file runs in; its own when null.</param>
+    internal IReadOnlyDictionary<string, Bruinet.Bdd.Preview.BddScenarioRun> NewestRuns(string uri, string? suite)
+        => RunsOf(Context(Key(uri), suite));
+
+    /// <summary>The scenarios whose heading is at <paramref name="line"/> (an outline's every row), or every one of the file.</summary>
+    internal IReadOnlyList<string> ScenarioNames(string uri, int? line)
+    {
+        var path = Key(uri);
+        return BddMarkdownParser.Parse(Context(path).Text, path).Document?.Scenarios
+            .Where(scenario => line is not { } at || scenario.Source.LineNumber == at)
+            .Select(scenario => scenario.Name)
+            .ToList() ?? [];
+    }
+
     /// <summary><c>bruinet/lastRuns</c>: the newest run of each of a feature file's scenarios, with its failed step.</summary>
     [JsonRpcMethod("bruinet/lastRuns")]
     public IReadOnlyList<ScenarioResult> LastRuns(PreviewParams request)

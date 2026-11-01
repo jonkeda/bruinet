@@ -215,7 +215,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | Item | Status | Commit | Learned |
 | --- | --- | --- | --- |
 | AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
-| AI2 | open | | |
+| AI2 | done | (this commit) | BddInvoker lost every step's own frames (`throw ex.InnerException`); the locator is often only in the message |
 | AI2b | open | | |
 | AI3 | done | 2348bab4 | |
 | AI4 | open | | |

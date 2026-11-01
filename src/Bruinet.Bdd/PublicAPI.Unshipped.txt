@@ -647,6 +647,8 @@ Bruinet.Bdd.BddStepResult
 Bruinet.Bdd.BddStepResult.BddStepResult(Bruinet.Bdd.BddStepResultStatus Status, Bruinet.Bdd.BddStepInvocation! Invocation, string? Message = null, System.Exception? Exception = null) -> void
 Bruinet.Bdd.BddStepResult.Exception.get -> System.Exception?
 Bruinet.Bdd.BddStepResult.Exception.init -> void
+Bruinet.Bdd.BddStepResult.Duration.get -> System.TimeSpan?
+Bruinet.Bdd.BddStepResult.Duration.init -> void
 Bruinet.Bdd.BddStepResult.Invocation.get -> Bruinet.Bdd.BddStepInvocation!
 Bruinet.Bdd.BddStepResult.Invocation.init -> void
 Bruinet.Bdd.BddStepResult.Message.get -> string?

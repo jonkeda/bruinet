@@ -262,6 +262,9 @@ VS Code) and any other MCP client:
   Run does, and waits: each scenario's status and, for a failed one, the step (file, line, text) and
   the message; `build: true` builds the suite first, after a change to C#;
 - `last_runs` gives each scenario's newest result, from any run;
+- `get_failure` says why a scenario failed in its newest run: the step, the kind of failure
+  (assertion, locator-not-found, timeout, ...), expected and actual, the locator, the binding, and
+  the suite's and the app's frames it came through; `run_scenario` gives it for each failed scenario;
 - `tests_affected` gives the tests and scenarios of a UI suite a change reaches, with why and one
   `--filter`, from the suite's touch map, as [`bruinet tests affected`](test-selection.md) does;
 - `rename_step` renames a callable step and every call of it, as the editor's Rename does: the edits

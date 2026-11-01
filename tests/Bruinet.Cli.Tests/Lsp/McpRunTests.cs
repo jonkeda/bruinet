@@ -126,6 +126,32 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
+    public void GetFailure_AfterAFailedRun_GivesTheKind_TheBinding_AndTheFrame_InFewWords()
+    {
+        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature }));
+        var text = Text(Call("get_failure", new JsonObject { ["path"] = Feature, ["line"] = 11 }));
+        var failure = JsonNode.Parse(text)!;
+
+        Assert.True(run["scenarios"]![1]!["failure"] is not null, run.ToJsonString());
+        Assert.Equal("assertion", (string?)run["scenarios"]![1]!["failure"]!["kind"]);
+        Assert.Equal(("Fails", 15), ((string?)failure["scenario"], (int?)failure["failedStep"]!["line"]));
+        Assert.Equal("assertion", (string?)failure["failure"]!["kind"]);
+        Assert.Contains(failure["failure"]!["frames"]!.AsArray(), frame => ((string?)frame)!.StartsWith("StepCounterFixture.HasCounted", StringComparison.Ordinal));
+        Assert.True(text.Length < 2000, $"{text.Length} characters: {text}");
+    }
+
+    [Fact]
+    public void GetFailure_OfAScenarioThatPassed_IsAToolError_SayingSo()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        var result = Call("get_failure", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("passed", Text(result));
+    }
+
+    [Fact]
     public void RunScenario_AtALineWithNoHeading_IsAToolError_SayingSo()
     {
         var result = Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 6 });

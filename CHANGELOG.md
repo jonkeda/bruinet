@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The MCP server's `run_scenario` and `last_runs`: an agent runs a scenario (or a file's) on the suite's
   runner and reads how it went (its address, duration, and the failed step's file, line and text),
   and each scenario's newest result.
+- A scenario's `__result.json` gives each step's `durationMs`, and the failed step's `failure`: its kind
+  (`assertion`, `locator-not-found`, `timeout`, `app-unavailable`, `bind`, `app-exception`, `error`),
+  expected and actual, the locator, the binding, and the first five frames of the suite's and the app's
+  code. `BddStepResult.Duration` gives a step's time. The MCP server's `get_failure` reads it, and
+  `run_scenario` gives it for each failed scenario.
 - The MCP server's `tests_affected`: `bruinet tests affected` for an agent, the picked tests with why and
   the filter, from git's changes or the given files.
 - The MCP server's `rename_step` (the editor's Rename of a callable step: the edits, then applied and
@@ -746,6 +751,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on Windows ran in under 2 minutes instead of 3.
 
 ### Fixed
+- A step definition's exception kept only Bruinet's frames: `BddInvoker` threw the inner exception again,
+  which starts its stack anew, so the step's own code and the app's were lost to the IDE, logs and reports.
+  It is rethrown with its stack now.
 - Bruinet.Blazor's `NavMenuControl` named the first item as the active one whatever was active: with its
   default item selector (a list, `a, .nav-link, [role='menuitem']`) the active state joined only the last
   part, so every link matched. Found by C4's tests of Blazor's own controls on bUnit and in Chromium.

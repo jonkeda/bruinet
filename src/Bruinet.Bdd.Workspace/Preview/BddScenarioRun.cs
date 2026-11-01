@@ -32,7 +32,11 @@ public sealed record BddScenarioRun(string Scenario, string Status, long Duratio
                     Text(step, "file"),
                     step.TryGetProperty("callLine", out var call) && call.ValueKind == JsonValueKind.Number ? call.GetInt32() : null,
                     Text(step, "status") ?? "Passed",
-                    Text(step, "message")))
+                    Text(step, "message"))
+                {
+                    DurationMs = step.TryGetProperty("durationMs", out var ms) && ms.ValueKind == JsonValueKind.Number ? ms.GetInt64() : null,
+                    Failure = step.TryGetProperty("failure", out var failure) && failure.ValueKind == JsonValueKind.Object ? failure.GetRawText() : null,
+                })
                 .ToList();
             return new BddScenarioRun(
                 scenario.GetString() ?? string.Empty,
@@ -62,4 +66,10 @@ public sealed record BddStepRun(int Line, string? File, int? CallLine, string St
 {
     /// <summary>The line the step is written on in the feature file: the call's, for a callable's step.</summary>
     public int WrittenLine => CallLine ?? Line;
+
+    /// <summary>How long it ran; null in a report written before steps were timed.</summary>
+    public long? DurationMs { get; init; }
+
+    /// <summary>A failed step's failure as the report gives it (kind, expected, actual, locator, binding, frames), as JSON; null otherwise.</summary>
+    public string? Failure { get; init; }
 }

@@ -90,6 +90,9 @@ public sealed record BddStepResult(
     string? Message = null,
     Exception? Exception = null)
 {
+    /// <summary>How long the step ran; null for a step that did not run (skipped, canceled before it began).</summary>
+    public TimeSpan? Duration { get; init; }
+
     public static BddStepResult Passed(BddStepInvocation invocation, string? message = null)
     {
         return new BddStepResult(BddStepResultStatus.Passed, invocation, message);
@@ -235,6 +238,7 @@ public sealed class BddStepExecutionSession
             return missingHandler;
         }
 
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         try
         {
             if (invocation.App is { } app)
@@ -258,7 +262,7 @@ public sealed class BddStepExecutionSession
             using (Bruinet.Core.Testing.TestScope.EnterStep($"{invocation.Step.Source.LineNumber}: {invocation.Step.Text}"))
             using (Bruinet.Core.Logging.Timing.Span("step", invocation.Step.Text))
             {
-                result = NameTheSession(await handler(_context, invocation, cancellationToken).ConfigureAwait(false));
+                result = NameTheSession(await handler(_context, invocation, cancellationToken).ConfigureAwait(false)) with { Duration = clock.Elapsed };
             }
 
             BreakOnFailure(invocation, result);
@@ -274,7 +278,7 @@ public sealed class BddStepExecutionSession
         }
         catch (Exception ex)
         {
-            var failed = NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex));
+            var failed = NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex)) with { Duration = clock.Elapsed };
             BreakOnFailure(invocation, failed);
             _results.Add(failed);
             await PaceAfterAsync(failed, cancellationToken).ConfigureAwait(false);

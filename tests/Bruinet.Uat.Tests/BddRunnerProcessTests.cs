@@ -365,6 +365,13 @@ public sealed class BddRunnerProcessTests : IDisposable
         Assert.Matches("\"status\":\\s*\"failed\"", result);
         Assert.Equal(written, Directory.EnumerateFiles(results, "*__result.json", SearchOption.AllDirectories));
         Assert.DoesNotContain("\"line\": 55", result);
+
+        // The failed step says what kind of failure, its binding and the suite's frame it came through (AI2).
+        var failed = System.Text.Json.Nodes.JsonNode.Parse(result)!["steps"]![1]!;
+        Assert.Equal("assertion", (string?)failed["failure"]!["kind"]);
+        Assert.Contains("HasCounted", (string?)failed["failure"]!["binding"]);
+        Assert.Contains(failed["failure"]!["frames"]!.AsArray(), frame => ((string?)frame)!.StartsWith("RunnerProcessFixture.HasCounted (BddRunnerProcessTests.cs:", StringComparison.Ordinal));
+        Assert.True((long?)failed["durationMs"] >= 0);
     }
 
     [Fact]

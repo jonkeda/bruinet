@@ -21,6 +21,7 @@
     <!-- [UatScenarioTheory]: a suite runs under xUnit, which brings both. -->
     <PackageReference Include="xunit.extensibility.core" PrivateAssets="all" />
     <PackageReference Include="xunit.extensibility.execution" PrivateAssets="all" />
+    <InternalsVisibleTo Include="Bruinet.Uat.Tests" />
   </ItemGroup>
 
 </Project>
