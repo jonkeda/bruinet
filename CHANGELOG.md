@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   runner and reads how it went, the failed step's file, line and text included, and each scenario's
   newest result. A Run on the runner now keeps a failed scenario's result, as the gate does; it kept
   only the passed ones.
+- The MCP server's `tests_affected`: `bruinet tests affected` for an agent, the picked tests with why and
+  the filter, from git's changes or the given files.
+- The MCP server's `rename_step` (the editor's Rename of a callable step: the edits, then applied and
+  checked, put back when a file no longer binds) and `rename_page_object` (the Scraper's rename).
 - A scenario outline can have several Examples sections: `### Examples: <name>`, each with a tag
   line of its own that joins the outline's tags for its rows (a head tag picks rows for a head).
   Rows are numbered across the sections, so names, filters and timings stay put. `UAT015` names

@@ -76,7 +76,10 @@ The item helps an AI only if an agent uses it to do better. Per item, `.my/aiimp
 | Result | the same with the item |
 
 Run it with a fresh general-purpose agent in a worktree with the patch applied and only the Bruinet MCP server, file
-reading and editing, and `dotnet` allowed. Give it the task only, never the expected fix. Passes when it succeeds and needs
+reading and editing, and `dotnet` allowed. Give it the task and the server's `instructions` text (as an MCP client
+would), never the expected fix. The fixture must not be solvable by reading alone: no comment or name that states the
+broken rule, a task that names a symptom; otherwise the check proves nothing (AI1's first check: both agents fixed it
+by reading). Passes when it succeeds and needs
 no more calls than the baseline (or succeeds where the baseline failed). A fail goes back to phase 2: usually a tool's
 description or result shape, not the code.
 

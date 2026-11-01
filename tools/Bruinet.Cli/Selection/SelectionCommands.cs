@@ -85,7 +85,7 @@ internal static class SelectionCommands
         new("--suite") { Description = "The suite's project folder. Default: this one." };
 
     // The files changed since the commit, the working tree's included, and the new files git does not ignore.
-    private static List<string> Changed(string currentDirectory, string since)
+    internal static List<string> Changed(string currentDirectory, string since)
     {
         var root = Git(currentDirectory, "rev-parse", "--show-toplevel").Single();
         return Git(currentDirectory, "diff", "--name-only", since)

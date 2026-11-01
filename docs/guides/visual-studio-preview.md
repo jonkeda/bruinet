@@ -262,6 +262,11 @@ VS Code) and any other MCP client:
   Run does, and waits: each scenario's status and, for a failed one, the step (file, line, text) and
   the message; `build: true` builds the suite first, after a change to C#;
 - `last_runs` gives each scenario's newest result, from any run;
+- `tests_affected` gives the tests and scenarios of a UI suite a change reaches, with why and one
+  `--filter`, from the suite's touch map, as [`bruinet tests affected`](test-selection.md) does;
+- `rename_step` renames a callable step and every call of it, as the editor's Rename does: the edits
+  first, then with `apply: true` written and checked, all put back when a file no longer binds;
+- `rename_page_object` renames a scraped page object, after the person agrees;
 - `find_step_usages` finds where a C# member is used.
 
 It calls no model: it holds the catalog and runs the checks, and Copilot does the writing.

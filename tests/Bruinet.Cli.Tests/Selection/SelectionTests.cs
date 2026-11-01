@@ -124,6 +124,42 @@ public sealed class SelectionTests : IDisposable
     }
 
     [Fact]
+    public void TheMcpServersTestsAffected_GivesThePickedTests_WithWhy_AndTheFilter()
+    {
+        Map().Save(At("Shop.UITests/" + TouchMap.FileName));
+        using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
+
+        var text = Tool(server, "tests_affected", new System.Text.Json.Nodes.JsonObject
+        {
+            ["suite"] = "Shop.UITests",
+            ["files"] = new System.Text.Json.Nodes.JsonArray("Shop.App/Components/Pages/Counter.razor"),
+        });
+
+        var answer = System.Text.Json.Nodes.JsonNode.Parse(text)!;
+        Assert.Equal(1, (int?)answer["changed"]);
+        Assert.Equal(3, answer["picked"]!.AsArray().Count);
+        Assert.Contains("counter-title of Components/Pages/Counter.razor", (string?)answer["picked"]![1]!["why"]);
+        Assert.StartsWith("BddScenario=Features/counter.feature.md#Counting-up|", (string?)answer["filter"]);
+    }
+
+    [Fact]
+    public void TheMcpServersTestsAffected_WithoutATouchMap_SaysHowToMakeOne()
+    {
+        using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
+
+        Assert.Contains("BRUINET_TIMINGS=1", Tool(server, "tests_affected", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["files"] = new System.Text.Json.Nodes.JsonArray("Lib/Control.cs") }));
+    }
+
+    private static string Tool(Bruinet.Bdd.LanguageServer.BddMcpServer server, string name, System.Text.Json.Nodes.JsonObject arguments)
+        => (string)server.Handle(new System.Text.Json.Nodes.JsonObject
+        {
+            ["jsonrpc"] = "2.0",
+            ["id"] = 1,
+            ["method"] = "tools/call",
+            ["params"] = new System.Text.Json.Nodes.JsonObject { ["name"] = name, ["arguments"] = arguments },
+        }.ToJsonString())!["result"]!["content"]![0]!["text"]!;
+
+    [Fact]
     public void APagesCode_ReachesWhatItsMarkupDoes()
         => Assert.Equal(3, Changed("Shop.App/Components/Pages/Counter.razor.cs").Picked.Count);
 

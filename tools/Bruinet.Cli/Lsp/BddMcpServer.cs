@@ -72,6 +72,9 @@ public sealed class BddMcpServer : IDisposable
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
+        ("rename_step", "Renames a callable step (a '## Step:' heading in a steps file) and every call of it across the suites, each call keeping its values. Give the heading's or a call's line. Without apply: true it only gives the edits (file, line, before, after); with it, it writes them, then checks every changed file as validate_scenario does and puts all back when one fails.", Schema(("path", "string", "The steps file or a feature file with a call; required."), ("line", "integer", "The heading's or the call's line; required."), ("newPhrase", "string", "The new phrase, with the same {placeholders}; required."), ("apply", "boolean", "Write the edits; false when left out."))),
+        ("rename_page_object", "Renames a scraped project's page object for a recorded page: its class, its draft and the person's part, in the files that declare it. Files that only use it are listed, not changed: fix them, then check_code. Asks first: without 'confirm' it only says what it would do.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("newName", "string", "The new class name; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("delete_results", "Deletes old scenario results from every run, for good: of a scenario (the heading at 'line' of 'path'), a feature file ('path') or a suite ('suite'). Only scenario reports and their screenshots; a run left empty goes. Counts only (dryRun) unless 'dryRun' is false.", Schema(("scope", "string", "scenario, file or suite; required."), ("path", "string", "The feature file, for a scenario or a file."), ("line", "integer", "The scenario heading's line, for a scenario."), ("suite", "string", "The suite, for a suite (or the one a linked file is picked in)."), ("dryRun", "boolean", "Only count; true when left out."))),
     ];
 
@@ -122,7 +125,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. To check a scenario works, run it with run_scenario (build: true after changing C#); last_runs gives the newest results. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. To check a scenario works, run it with run_scenario (build: true after changing C#); last_runs gives the newest results; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -163,6 +166,9 @@ public sealed class BddMcpServer : IDisposable
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
                 "last_runs" => _server.LastRuns(new PreviewParams(FileUri(Required(arguments, "path")), (string?)arguments["suite"])),
+                "tests_affected" => TestsAffected(arguments),
+                "rename_step" => RenameStep(arguments),
+                "rename_page_object" => Scraper(() => RenamePageObject(arguments)),
                 "delete_results" => DeleteResults(arguments),
                 "record_video" => RecordVideo(arguments),
                 "review_page" => ReviewPage(arguments),
@@ -335,6 +341,129 @@ public sealed class BddMcpServer : IDisposable
                 Message = Cap(result.Message, 2000),
             }),
         };
+    }
+
+    // bruinet tests affected for a suite, in process: what an agent runs after a change, with why.
+    private object TestsAffected(JsonObject arguments)
+    {
+        var named = Required(arguments, "suite");
+        var folder = Path.GetFullPath(named, _solutionDir) is var path && Directory.Exists(path)
+            ? path
+            : Suite(arguments).ProjectDirectory;
+        var map = Path.Combine(folder, Bruinet.Cli.Selection.TouchMap.FileName);
+        if (!File.Exists(map))
+        {
+            throw new ToolProblem($"No touch map at {map}: run the suite whole once with BRUINET_TIMINGS=1, then 'bruinet tests touch-map <timings> --suite {folder}'.");
+        }
+
+        List<string> changed;
+        try
+        {
+            changed = (arguments["files"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(file => Path.GetFullPath(file, _solutionDir)).ToList() is { Count: > 0 } given
+                ? given
+                : Bruinet.Cli.Selection.SelectionCommands.Changed(_solutionDir, (string?)arguments["base"] ?? "HEAD");
+        }
+        catch (InvalidOperationException exception)
+        {
+            throw new ToolProblem(exception.Message);
+        }
+
+        var always = (arguments["always"] as JsonArray)?.Select(node => (string?)node).OfType<string>().ToList();
+        var affected = Bruinet.Cli.Selection.Affected.Of(folder, null, changed, Bruinet.Cli.Selection.TouchMap.Load(map), always);
+        const int Shown = 50;
+        return new
+        {
+            Changed = changed.Count,
+            affected.Whole,
+            affected.Filter,
+            Picked = affected.Picked.Take(Shown).Select(test => new { test.Name, test.Why }),
+            More = affected.Picked.Count > Shown ? affected.Picked.Count - Shown : (int?)null,
+            affected.Notes,
+            Next = affected.Whole is not null ? "Run the suite whole." : affected.Filter is null ? "Nothing to run." : "Run them with dotnet test <suite project> --filter \"<filter>\", or a scenario with run_scenario.",
+        };
+    }
+
+    // The language server's rename, as edits an agent reads first; applied, every changed file must still bind.
+    private object RenameStep(JsonObject arguments)
+    {
+        var uri = FileUri(Required(arguments, "path"));
+        var line = (int?)arguments["line"] ?? throw new ToolProblem("'line' is required.");
+        WorkspaceEdit? edit;
+        try
+        {
+            edit = _server.Rename(new RenameParams(new TextDocumentIdentifier(uri), new Position(line - 1, 0), Required(arguments, "newPhrase")));
+        }
+        catch (StreamJsonRpc.LocalRpcException exception)
+        {
+            throw new ToolProblem(exception.Message);
+        }
+
+        if (edit?.Changes is not { Count: > 0 } changes)
+        {
+            throw new ToolProblem($"Line {line} is not a '## Step:' heading or a call of one.");
+        }
+
+        // Each file's text after its edits, its lines' before and after; edits applied from the last.
+        var files = changes.Select(pair =>
+        {
+            var path = new Uri(pair.Key).LocalPath;
+            var before = File.ReadAllText(path);
+            var lines = before.Split('\n');
+            var after = lines.ToArray();
+            foreach (var change in pair.Value.OrderByDescending(change => change.Range.Start.Line).ThenByDescending(change => change.Range.Start.Character))
+            {
+                var at = change.Range.Start.Line;
+                var text = after[at];
+                after[at] = text[..change.Range.Start.Character] + change.NewText + text[change.Range.End.Character..];
+            }
+
+            var edits = pair.Value.Select(change => change.Range.Start.Line).Distinct().Order()
+                .Select(at => new { Line = at + 1, Before = lines[at].Trim(), After = after[at].Trim() })
+                .ToList();
+            return (Path: path, Before: before, After: string.Join('\n', after), Edits: edits);
+        }).ToList();
+
+        var shown = files.Select(file => new { File = Path.GetRelativePath(_solutionDir, file.Path), file.Edits }).ToList();
+        if ((bool?)arguments["apply"] != true)
+        {
+            return new { Applied = false, Files = shown, Next = "Call again with apply: true to write these edits." };
+        }
+
+        foreach (var file in files)
+        {
+            File.WriteAllText(file.Path, file.After);
+        }
+
+        var problems = files
+            .Select(file => Validate(file.Path, null))
+            .Where(check => !check.Valid)
+            .Select(check => new { File = Path.GetRelativePath(_solutionDir, check.File), check.Reason, check.Problems })
+            .ToList();
+        if (problems.Count > 0)
+        {
+            foreach (var file in files)
+            {
+                File.WriteAllText(file.Path, file.Before);
+            }
+
+            return new { Applied = false, Files = shown, PutBack = true, Problems = problems };
+        }
+
+        return new { Applied = true, Files = shown };
+    }
+
+    private object RenamePageObject(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var page = Required(arguments, "page");
+        var name = Required(arguments, "newName");
+        if ((bool?)arguments["confirm"] != true)
+        {
+            return new { Renamed = false, Would = $"Rename the page object of '{page}' to {name}, in the files that declare it; the files that only use it are listed for you to fix.", Next = "Tell the person. Call again with confirm: true once they agree." };
+        }
+
+        var result = _server.Scraper.RenamePageObject(project, page, name);
+        return new { Renamed = true, result.From, result.To, result.Files, result.UsedElsewhere, Next = result.UsedElsewhere.Count > 0 ? "Change the files that use it, then check_code." : "check_code." };
     }
 
     private string FileUri(string path) => new Uri(Path.GetFullPath(path, _solutionDir)).AbsoluteUri;
@@ -512,7 +641,7 @@ public sealed class BddMcpServer : IDisposable
             .ToList();
 
     // The draft checked in the suite that holds its path, as the editor checks unsaved text.
-    private object Validate(string path, string? text)
+    private Validation Validate(string path, string? text)
     {
         var full = Path.GetFullPath(Path.IsPathRooted(path) ? path : Path.Combine(_solutionDir, path));
         if (text is null && !File.Exists(full))
@@ -526,15 +655,13 @@ public sealed class BddMcpServer : IDisposable
         {
             var file = _server.Context(full);
             var diagnostics = _server.DiagnosticsOf(file);
-            return new
-            {
-                File = full,
-                Suite = file.Suite?.Name,
-                Bound = file.Catalogs is not null,
+            return new Validation(
+                full,
+                file.Suite?.Name,
+                file.Catalogs is not null,
                 file.Reason,
-                Valid = diagnostics.All(diagnostic => diagnostic.Severity != 1) && file.Catalogs is not null,
-                Problems = diagnostics.Select(diagnostic => new { Line = diagnostic.Range.Start.Line + 1, Severity = diagnostic.Severity == 1 ? "error" : "warning", diagnostic.Code, diagnostic.Message }).ToList(),
-            };
+                diagnostics.All(diagnostic => diagnostic.Severity != 1) && file.Catalogs is not null,
+                [.. diagnostics.Select(diagnostic => new ValidationProblem(diagnostic.Range.Start.Line + 1, diagnostic.Severity == 1 ? "error" : "warning", diagnostic.Code, diagnostic.Message))]);
         }
         finally
         {
@@ -594,6 +721,11 @@ public sealed class BddMcpServer : IDisposable
     {
         public int Code { get; } = code;
     }
+
+    // validate_scenario's answer: whether the file binds, and each problem by line.
+    private sealed record Validation(string File, string? Suite, bool Bound, string? Reason, bool Valid, IReadOnlyList<ValidationProblem> Problems);
+
+    private sealed record ValidationProblem(int Line, string Severity, string? Code, string Message);
 
     // A tool that cannot answer says why, as its result: the agent reads it and can act on it.
     private sealed class ToolProblem(string message) : Exception(message);
