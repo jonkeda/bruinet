@@ -390,15 +390,15 @@ public sealed class PresenterUserSettingsServiceTests
     {
         public string? Unavailable { get; } = unavailable;
 
-        public Task StartAsync(PresenterUatExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
+        public Task StartAsync(PresenterBddExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
         public Task<PresenterRecorded?> FinishAsync(CancellationToken cancellationToken) => Task.FromResult<PresenterRecorded?>(null);
 
-        public Task<bool> RehearseAsync(PresenterUatExecutionSession session, Bruinet.Narrator.BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
+        public Task<bool> RehearseAsync(PresenterBddExecutionSession session, Bruinet.Narrator.BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
             => Task.FromResult(false);
 
-        public Task StartSceneAsync(PresenterUatExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StartSceneAsync(PresenterBddExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken) => Task.CompletedTask;
 
         public Task<Bruinet.Narrator.BddSceneTimeline?> FinishSceneAsync(CancellationToken cancellationToken) => Task.FromResult<Bruinet.Narrator.BddSceneTimeline?>(null);
 
@@ -465,7 +465,7 @@ public sealed class PresenterUserSettingsServiceTests
 
     private sealed class FakeExecutionService : IBddExecutionService
     {
-        public Task<PresenterUatExecutionSession> CreateSessionAsync(
+        public Task<PresenterBddExecutionSession> CreateSessionAsync(
             string workspacePath,
             string scenarioFilePath,
             string scenarioName,

@@ -396,7 +396,7 @@ public sealed class NarratorRunTests : IDisposable
 
         public IReadOnlyDictionary<string, string> WindowEnvironment { get; set; } = new Dictionary<string, string>();
 
-        public Task<PresenterUatExecutionSession> CreateSessionAsync(string workspacePath, string scenarioFilePath, string scenarioName, CancellationToken cancellationToken)
+        public Task<PresenterBddExecutionSession> CreateSessionAsync(string workspacePath, string scenarioFilePath, string scenarioName, CancellationToken cancellationToken)
         {
             Started.Add(scenarioName);
             throw new InvalidOperationException("No app here.");
@@ -448,15 +448,15 @@ public sealed class NarratorRunTests : IDisposable
     {
         public string? Unavailable => "No ffmpeg in a unit test.";
 
-        public Task StartAsync(PresenterUatExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
+        public Task StartAsync(PresenterBddExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
             => Task.CompletedTask;
 
         public Task<PresenterRecorded?> FinishAsync(CancellationToken cancellationToken) => Task.FromResult<PresenterRecorded?>(null);
 
-        public Task<bool> RehearseAsync(PresenterUatExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
+        public Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
             => Task.FromResult(false);
 
-        public Task StartSceneAsync(PresenterUatExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken) => Task.CompletedTask;
+        public Task StartSceneAsync(PresenterBddExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken) => Task.CompletedTask;
 
         public Task<BddSceneTimeline?> FinishSceneAsync(CancellationToken cancellationToken) => Task.FromResult<BddSceneTimeline?>(null);
 

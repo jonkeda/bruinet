@@ -24,7 +24,7 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
     /// <inheritdoc />
     public IReadOnlyDictionary<string, string> WindowEnvironment { get; set; } = new Dictionary<string, string>();
 
-    public async Task<PresenterUatExecutionSession> CreateSessionAsync(
+    public async Task<PresenterBddExecutionSession> CreateSessionAsync(
         string workspacePath,
         string scenarioFilePath,
         string scenarioName,
@@ -43,7 +43,7 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
             var opened = await runner.RequestAsync(new BddRunnerOpen(configPath, pages, scenarioFilePath, scenarioName), cancellationToken).ConfigureAwait(false);
             return opened switch
             {
-                BddRunnerOpened ready => new PresenterUatExecutionSession(runner, ready, (ended, closing, debugged) => Release(ended, closing, debugged)),
+                BddRunnerOpened ready => new PresenterBddExecutionSession(runner, ready, (ended, closing, debugged) => Release(ended, closing, debugged)),
                 BddRunnerFailed failed => throw new InvalidOperationException(failed.Message),
                 _ => throw new BddRunnerException($"The runner answered '{opened.GetType().Name}' to an open request."),
             };

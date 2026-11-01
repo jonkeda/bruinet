@@ -39,7 +39,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | Supply chain | NuGetAudit, central versions, package source mapping, lock files, Dependabot or Renovate | vulnerable and invented packages | 4 |
 | Security scanning | CodeQL, gitleaks or GitHub secret scanning | injection patterns, keys in commits | 5 |
 | Complexity and duplication | CA1502/CA1505 thresholds, Sonar's duplication | the agent copying instead of reusing | 11 |
-| Independent review | a second agent with the diff and the brief only (Copilot review, CodeRabbit, a Claude review agent), a person at the gate | the wrong thing built well | 13 |
+| Independent review | a second agent with the diff and the brief only (Copilot review, CodeRabbit, a Claude review agent), a person at the gate | the wrong thing built well |  |
 | Guard on tests | flag diffs that change a test and its code together, or delete or skip tests | tests bent to fit | 6 |
 
 ## Progress
@@ -53,6 +53,7 @@ Order is when we would build it: 1 first and cheapest; empty means not at all.
 | 5 | Security scanning | built 2026-11-01 (AD-033): gitleaks on every push (history clean; two doc placeholders ignored by fingerprint), CodeQL weekly; needs code scanning on in GitHub, not tried on a runner |
 | 6 | Guard on tests | built 2026-11-01 (AD-033): check-test-guard.ps1, tried on deleted, skipped and weakened tests and on today's commits; CI on pull requests |
 | 7 | Public API | built 2026-11-01 (AD-033): 31 libraries declared (about 9,600 lines, all unshipped until the first release); package validation on pack; update-public-api.ps1 for the loop |
+| 8 | Architecture tests | built 2026-11-01 (AD-033): six invariants in Bruinet.Core.Tests; found the Presenter's Uat names (renamed to Bdd) |
 
 ## How teams arrange them
 
@@ -81,7 +82,7 @@ guard on test changes.
 3. A loop hook that runs build, format and the selected tests before the agent may finish, using `Select-Tests.ps1` and Bruinet's test selection.
 4. Stryker.NET on the changed files at the gate, starting with `Tomorrow.Game` and Bruinet.Core, where the logic is: the best answer to "the agent's tests prove nothing".
 5. A test-change guard.
-6. Last, an independent review agent that sees the brief and the diff, not the agent's reasoning: the largest recurring token cost (a review reads 30-150k tokens), so it waits until the cheap checks run.
+6. No independent review agent for now (decided 2026-11-01): the largest recurring token cost (a review reads 30-150k tokens).
 
 Diff coverage is left out: mutation testing says more about the same tests. Open: whether Sonar is worth a service (proposal: no, the analyzer packages cover most of
 it locally).

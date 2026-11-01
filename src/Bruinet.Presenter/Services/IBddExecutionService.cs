@@ -14,7 +14,7 @@ public interface IBddExecutionService
         set { }
     }
 
-    Task<PresenterUatExecutionSession> CreateSessionAsync(
+    Task<PresenterBddExecutionSession> CreateSessionAsync(
         string workspacePath,
         string scenarioFilePath,
         string scenarioName,
@@ -44,7 +44,7 @@ public interface IBddExecutionService
 /// One scenario, open in a runner process (AD-025): Presenter asks for a step at a time and holds
 /// only what the runner answers, as text.
 /// </summary>
-public sealed class PresenterUatExecutionSession : IDisposable
+public sealed class PresenterBddExecutionSession : IDisposable
 {
     private readonly BddRunnerClient _runner;
     private readonly Action<BddRunnerClient, Task, bool> _release;
@@ -55,7 +55,7 @@ public sealed class PresenterUatExecutionSession : IDisposable
     /// <param name="runner">The runner.</param>
     /// <param name="opened">Its answer to the open request.</param>
     /// <param name="release">Called once when the session ends, with the runner, its closing of the scenario, and whether a debugger was put on it.</param>
-    public PresenterUatExecutionSession(BddRunnerClient runner, BddRunnerOpened opened, Action<BddRunnerClient, Task, bool> release)
+    public PresenterBddExecutionSession(BddRunnerClient runner, BddRunnerOpened opened, Action<BddRunnerClient, Task, bool> release)
     {
         _runner = runner ?? throw new ArgumentNullException(nameof(runner));
         _release = release ?? throw new ArgumentNullException(nameof(release));

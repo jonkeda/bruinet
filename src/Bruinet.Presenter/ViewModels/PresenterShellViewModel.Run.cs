@@ -311,7 +311,7 @@ public sealed partial class PresenterShellViewModel
 
     // Runs steps until the plan's count, a breakpoint, a failure or the end; then pauses, or ends the run.
     private async Task<RunOutcome> AdvanceAsync(
-        PresenterUatExecutionSession session,
+        PresenterBddExecutionSession session,
         BddScenarioViewModel scenario,
         StepPlan plan,
         int fromRow,
@@ -543,7 +543,7 @@ public sealed partial class PresenterShellViewModel
     }
 
     private async Task<Bruinet.Bdd.Runner.BddRunnerStep> RunNextStepAsync(
-        PresenterUatExecutionSession session,
+        PresenterBddExecutionSession session,
         BddScenarioViewModel scenario)
     {
         var index = session.CompletedStepCount;
@@ -589,7 +589,7 @@ public sealed partial class PresenterShellViewModel
     }
 
     private async Task WaitBeforeNextStepAsync(
-        PresenterUatExecutionSession session,
+        PresenterBddExecutionSession session,
         BddScenarioViewModel scenario,
         PresenterRunExecutionOptions options)
     {

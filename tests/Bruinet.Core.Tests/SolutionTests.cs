@@ -100,7 +100,7 @@ public sealed class SolutionTests
         }
     }
 
-    private static string? FindRepositoryRoot()
+    internal static string? FindRepositoryRoot()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "Bruinet.sln")))

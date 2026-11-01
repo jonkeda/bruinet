@@ -271,7 +271,7 @@ public sealed partial class PresenterShellViewModel
 
     // Before a scene's first step: its recording starts, or a rehearsal with Speak aloud on gets
     // a pacer that plays each line before its step.
-    private async Task StartSceneAsync(PresenterUatExecutionSession session, BddScenarioViewModel scenario)
+    private async Task StartSceneAsync(PresenterBddExecutionSession session, BddScenarioViewModel scenario)
     {
         _sceneRehearsal = false;
         if (_recordingScenes)

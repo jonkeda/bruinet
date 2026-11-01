@@ -17,7 +17,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
     private readonly List<BddWorkspaceNodeViewModel> _allWorkspaceNodes = [];
     private readonly List<PresenterStepTiming> _stepTimings = [];
     private readonly IBddWorkspaceService _workspaceService;
-    private PresenterUatExecutionSession? _activeSession;
+    private PresenterBddExecutionSession? _activeSession;
     private BddScenarioViewModel? _activeScenario;
     private string _allWorkspaceTreeText = string.Empty;
     private string _autPlacementText = string.Empty;
@@ -70,7 +70,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
     private object? _placementSnapshot;
     private PresenterAppWindow _appWindow;
     private PresenterRunEnd _runEnd;
-    private PresenterUatExecutionSession? _endedSession;
+    private PresenterBddExecutionSession? _endedSession;
     private bool _placedThisRun;
 
     private const int MaxExecutionDelayMilliseconds = 99999;
@@ -1980,7 +1980,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
         };
     }
 
-    private string FormatExecutionDetails(PresenterUatExecutionSession session, string? message)
+    private string FormatExecutionDetails(PresenterBddExecutionSession session, string? message)
     {
         var options = _activeRunOptions;
         List<string> lines =

@@ -52,7 +52,7 @@ public interface IPresenterRecorder
     /// <param name="scenarioName">The scenario's name.</param>
     /// <param name="settings">The recording settings.</param>
     /// <param name="cancellationToken">Cancels the speech.</param>
-    Task StartAsync(PresenterUatExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken);
+    Task StartAsync(PresenterBddExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken);
 
     /// <summary>After the run: the outro, then the video is composed. Null when nothing was being recorded.</summary>
     /// <param name="cancellationToken">Cancels the outro and the compose.</param>
@@ -67,7 +67,7 @@ public interface IPresenterRecorder
     /// <param name="voice">The voice, by (part of) its name; null for the default.</param>
     /// <param name="beat">The wait after a step.</param>
     /// <param name="cancellationToken">Cancels the speech.</param>
-    Task<bool> RehearseAsync(PresenterUatExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken);
+    Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken);
 
     /// <summary>
     /// Starts recording one scene of a script into its kept folder: its lines are spoken, and the
@@ -76,7 +76,7 @@ public interface IPresenterRecorder
     /// <param name="session">The session, before its first step.</param>
     /// <param name="scene">The scene.</param>
     /// <param name="cancellationToken">Cancels the speech.</param>
-    Task StartSceneAsync(PresenterUatExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken);
+    Task StartSceneAsync(PresenterBddExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken);
 
     /// <summary>After the scene's last step: the outro, then its video and timeline are finished. Null for a rehearsal, or when no scene was being recorded.</summary>
     /// <param name="cancellationToken">Cancels the outro.</param>
@@ -127,9 +127,9 @@ public interface IPresenterRecorder
 /// <inheritdoc />
 public sealed class PresenterRecorder : IPresenterRecorder
 {
-    private PresenterUatExecutionSession? _recording;
+    private PresenterBddExecutionSession? _recording;
     private string? _recordingFolder;
-    private PresenterUatExecutionSession? _scene;
+    private PresenterBddExecutionSession? _scene;
     private string? _sceneFolder;
     private string? _title;
     private bool _narrated;
@@ -139,7 +139,7 @@ public sealed class PresenterRecorder : IPresenterRecorder
     public string? Unavailable => Ffmpeg.Find() is null ? Ffmpeg.HowToGet : null;
 
     /// <inheritdoc />
-    public async Task StartAsync(PresenterUatExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
+    public async Task StartAsync(PresenterBddExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(settings);
@@ -178,7 +178,7 @@ public sealed class PresenterRecorder : IPresenterRecorder
     }
 
     /// <inheritdoc />
-    public async Task<bool> RehearseAsync(PresenterUatExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
+    public async Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(session);
         if (Speech.Find(voice) is not { } speech)
@@ -196,7 +196,7 @@ public sealed class PresenterRecorder : IPresenterRecorder
     }
 
     /// <inheritdoc />
-    public async Task StartSceneAsync(PresenterUatExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken)
+    public async Task StartSceneAsync(PresenterBddExecutionSession session, PresenterSceneRequest scene, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(session);
         ArgumentNullException.ThrowIfNull(scene);
