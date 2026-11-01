@@ -56,13 +56,15 @@ public abstract class SelectorControlBase<TScope> : ControlBase<TScope>
 
     public bool WaitSelectedText(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         return Poll(() => GetSelectedText() == expected, timeoutMs ?? Context.Timeouts.DefaultWait);
     }
 
     public TScope AssertSelectedText(string? expected, string? message = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
 
         var actual = GetSelectedText();
         if (actual != expected)
@@ -75,7 +77,8 @@ public abstract class SelectorControlBase<TScope> : ControlBase<TScope>
 
     public TScope AssertItemCount(int? expected, string? message = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
 
         var actual = GetItemCount();
         if (actual != expected.Value)

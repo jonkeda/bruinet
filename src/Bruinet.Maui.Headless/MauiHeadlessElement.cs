@@ -221,19 +221,43 @@ public sealed class MauiHeadlessElement : IMauiElement
 
         switch (Element)
         {
-            case Microsoft.Maui.Controls.Button button: button.Click(); break;
-            case ImageButton button: button.Click(); break;
-            case MenuItem item: item.Click(); break;
-            case NavigationBackButton back: back.Click(); break;
-            case Switch toggle: toggle.Toggle(); break;
-            case CheckBox box: box.Toggle(); break;
-            case RadioButton radio: radio.Select(); break;
-            case ShellSection tab: tab.Select(); break;
-            case ShellItem flyoutItem: flyoutItem.Select(); break;
-            case MauiElement row when TrySelectRow(row): break;
-            case View view when MauiHeadlessAppBridge.Names(view, "Tap"): MauiHeadlessAppBridge.TryInvoke(view, "Tap", 0, 0); break;
-            case View view: view.Tap(); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no primary action.");
+            case Microsoft.Maui.Controls.Button button:
+                button.Click();
+                break;
+            case ImageButton button:
+                button.Click();
+                break;
+            case MenuItem item:
+                item.Click();
+                break;
+            case NavigationBackButton back:
+                back.Click();
+                break;
+            case Switch toggle:
+                toggle.Toggle();
+                break;
+            case CheckBox box:
+                box.Toggle();
+                break;
+            case RadioButton radio:
+                radio.Select();
+                break;
+            case ShellSection tab:
+                tab.Select();
+                break;
+            case ShellItem flyoutItem:
+                flyoutItem.Select();
+                break;
+            case MauiElement row when TrySelectRow(row):
+                break;
+            case View view when MauiHeadlessAppBridge.Names(view, "Tap"):
+                MauiHeadlessAppBridge.TryInvoke(view, "Tap", 0, 0);
+                break;
+            case View view:
+                view.Tap();
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no primary action.");
         }
     });
 
@@ -241,9 +265,14 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Switch toggle: toggle.Toggle(); break;
-            case CheckBox box: box.Toggle(); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} cannot be toggled.");
+            case Switch toggle:
+                toggle.Toggle();
+                break;
+            case CheckBox box:
+                box.Toggle();
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} cannot be toggled.");
         }
     });
 
@@ -271,12 +300,24 @@ public sealed class MauiHeadlessElement : IMauiElement
             ?? throw new ElementNotInteractableException($"{TagName} #{AutomationId} takes no gestures.");
         switch (gesture)
         {
-            case MauiGesture.Tap: view.Tap(); break;
-            case MauiGesture.DoubleTap: view.Tap(taps: 2); break;
-            case MauiGesture.SwipeLeft: view.Swipe(SwipeDirection.Left); break;
-            case MauiGesture.SwipeRight: view.Swipe(SwipeDirection.Right); break;
-            case MauiGesture.SwipeUp: view.Swipe(SwipeDirection.Up); break;
-            case MauiGesture.SwipeDown: view.Swipe(SwipeDirection.Down); break;
+            case MauiGesture.Tap:
+                view.Tap();
+                break;
+            case MauiGesture.DoubleTap:
+                view.Tap(taps: 2);
+                break;
+            case MauiGesture.SwipeLeft:
+                view.Swipe(SwipeDirection.Left);
+                break;
+            case MauiGesture.SwipeRight:
+                view.Swipe(SwipeDirection.Right);
+                break;
+            case MauiGesture.SwipeUp:
+                view.Swipe(SwipeDirection.Up);
+                break;
+            case MauiGesture.SwipeDown:
+                view.Swipe(SwipeDirection.Down);
+                break;
             case MauiGesture.LongPress:
                 throw new ElementNotInteractableException(
                     $"Cannot long-press {TagName} #{AutomationId}: MAUI has no long-press gesture recognizer; attach a sink that names LongPress.");
@@ -322,10 +363,17 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Switch toggle: toggle.SetToggled(isChecked); break;
-            case CheckBox box: box.SetChecked(isChecked); break;
-            case RadioButton radio when isChecked: radio.Select(); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no checked state to set.");
+            case Switch toggle:
+                toggle.SetToggled(isChecked);
+                break;
+            case CheckBox box:
+                box.SetChecked(isChecked);
+                break;
+            case RadioButton radio when isChecked:
+                radio.Select();
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no checked state to set.");
         }
     });
 
@@ -343,9 +391,14 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Slider slider: slider.SlideTo(value); break;
-            case Stepper stepper: stepper.StepTo(value); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no range to set.");
+            case Slider slider:
+                slider.SlideTo(value);
+                break;
+            case Stepper stepper:
+                stepper.StepTo(value);
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no range to set.");
         }
     });
 
@@ -364,9 +417,14 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Entry entry: entry.Complete(); break;
-            case SearchBar search: search.Search(); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} cannot be submitted.");
+            case Entry entry:
+                entry.Complete();
+                break;
+            case SearchBar search:
+                search.Search();
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} cannot be submitted.");
         }
     });
 
@@ -445,16 +503,23 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Picker picker: picker.SelectIndex(index); break;
+            case Picker picker:
+                picker.SelectIndex(index);
+                break;
             case SelectableItemsView view:
                 var items = view.ItemsSource?.Cast<object>().ToList() ?? [];
                 if (index < 0 || index >= items.Count)
                     throw new ArgumentOutOfRangeException(nameof(index), index, $"{TagName} #{AutomationId} has {items.Count} items.");
                 view.Select(items[index]);
                 break;
-            case CarouselView carousel: Interactions.Act(carousel, "swipe", () => carousel.Position = index); break;
-            case View view when MauiHeadlessAppBridge.Names(view, "SelectIndex"): MauiHeadlessAppBridge.TryInvoke(view, "SelectIndex", index, 0); break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no items to select.");
+            case CarouselView carousel:
+                Interactions.Act(carousel, "swipe", () => carousel.Position = index);
+                break;
+            case View view when MauiHeadlessAppBridge.Names(view, "SelectIndex"):
+                MauiHeadlessAppBridge.TryInvoke(view, "SelectIndex", index, 0);
+                break;
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no items to select.");
         }
     });
 
@@ -462,13 +527,16 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         switch (Element)
         {
-            case Picker picker: picker.Select(text); break;
+            case Picker picker:
+                picker.Select(text);
+                break;
             case SelectableItemsView view:
                 var row = _driver.Read(view).Children.FirstOrDefault(child => FirstText(child) == text)
                     ?? throw new ElementNotInteractableException($"{TagName} #{AutomationId} shows no row '{text}'.");
                 view.Select(row.BindingContext!);
                 break;
-            default: throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no items to select.");
+            default:
+                throw new ElementNotInteractableException($"{TagName} #{AutomationId} has no items to select.");
         }
     });
 
@@ -616,9 +684,14 @@ public sealed class MauiHeadlessElement : IMauiElement
 
         switch (_driver.Window.Page)
         {
-            case Shell shell: _driver.TestContext.Dispatcher.Run(() => shell.FlyoutIsPresented = open); break;
-            case FlyoutPage flyout: _driver.TestContext.Dispatcher.Run(() => flyout.IsPresented = open); break;
-            default: throw new BruinetException("The app has no flyout.");
+            case Shell shell:
+                _driver.TestContext.Dispatcher.Run(() => shell.FlyoutIsPresented = open);
+                break;
+            case FlyoutPage flyout:
+                _driver.TestContext.Dispatcher.Run(() => flyout.IsPresented = open);
+                break;
+            default:
+                throw new BruinetException("The app has no flyout.");
         }
     }
 

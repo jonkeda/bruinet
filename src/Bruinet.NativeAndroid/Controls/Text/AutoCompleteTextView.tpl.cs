@@ -51,7 +51,8 @@ public partial class AutoCompleteTextView<TScope> : EditText<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void ChooseSuggestionCore(INativeAndroidElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         // Not tapped yet: a list still filtering is "not ready", and the call asks again.
         var suggestion = Context.FindElements(Suggestions).FirstOrDefault(row => row.Text == text || row.FindElements(Locator.ByText(text)).Count > 0)

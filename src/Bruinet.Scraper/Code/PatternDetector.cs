@@ -44,9 +44,11 @@ public static class PatternDetector
             var all = signatures[page] = Signatures(snapshot);
             foreach (var node in snapshot.Nodes)
             {
-                if (node.Kind != ScrapeNodeKind.Element || Skipped.Contains(node.Type) || sizes[node.Number] < 3) continue;
+                if (node.Kind != ScrapeNodeKind.Element || Skipped.Contains(node.Type) || sizes[node.Number] < 3)
+                    continue;
                 var signature = all[node.Number]!;
-                if (!occurrences.TryGetValue(signature, out var list)) occurrences[signature] = list = [];
+                if (!occurrences.TryGetValue(signature, out var list))
+                    occurrences[signature] = list = [];
                 list.Add((page, snapshot, node));
             }
         }
@@ -67,10 +69,12 @@ public static class PatternDetector
                 var root = lift ? Root(snapshot, node, signature, signatures[page]) : node;
                 var claim = (signature, root.Number != node.Number);
                 var at = (page, root.Number);
-                if (!claims.TryGetValue(at, out var list)) claims[at] = list = [];
+                if (!claims.TryGetValue(at, out var list))
+                    claims[at] = list = [];
                 list.Add(claim);
                 roots[at] = (page, snapshot, root);
-                if (!sizes2.TryGetValue(claim, out var set)) sizes2[claim] = set = [];
+                if (!sizes2.TryGetValue(claim, out var set))
+                    sizes2[claim] = set = [];
                 set.Add(at);
             }
         }
@@ -78,7 +82,8 @@ public static class PatternDetector
         foreach (var (at, list) in claims)
         {
             var best = list.MaxBy(c => sizes2[c].Count);
-            if (!rooted.TryGetValue(best, out var group)) rooted[best] = group = [];
+            if (!rooted.TryGetValue(best, out var group))
+                rooted[best] = group = [];
             group.Add(roots[at]);
         }
 
@@ -100,7 +105,8 @@ public static class PatternDetector
             var kind = KindOf(first.Snapshot, first.Node);
             var pageCount = found.Select(f => f.Page).Distinct(StringComparer.Ordinal).Count();
             var repeats = pageCount >= 2 || found.Count >= 3;
-            if (!repeats && kind == PatternKind.Repeated) continue;
+            if (!repeats && kind == PatternKind.Repeated)
+                continue;
             var shared = SharedName(found.Select(f => f.Node).ToArray(), testIds ?? HtmlAttributes.TestIds);
             // A lifted pattern is named after its root, what the person sees.
             var parts = (lifted ? signatures[first.Page][first.Node.Number]! : signature).Split('|');
@@ -133,21 +139,25 @@ public static class PatternDetector
             // Only inside a repeated part: a form or a table that happens to hold one field per page is not that field.
             var inner = kept.Any(outer => outer.Pattern.Kind == PatternKind.Repeated && outer.Pattern.Occurrences == candidate.Pattern.Occurrences
                 && candidate.At.All(at => Ancestors(snapshots[at.Item1], at.Item2).Any(a => outer.At.Contains((at.Item1, a)))));
-            if (!inner) kept.Add(candidate);
-            if (kept.Count == max) break;
+            if (!inner)
+                kept.Add(candidate);
+            if (kept.Count == max)
+                break;
         }
         // Rows: a repeated part that is two or more children of one parent is a collection's row; the parent
         // is the collection (3.2), a pattern of its own when it was not one.
         foreach (var (rowPattern, at, _, _, _) in kept.ToArray())
         {
-            if (rowPattern.Kind != PatternKind.Repeated) continue;
+            if (rowPattern.Kind != PatternKind.Repeated)
+                continue;
             var parents = at.Select(a => (Page: a.Item1, Parent: snapshots[a.Item1][a.Item2].Parent))
                 .Where(p => p.Parent > 0 && !Skipped.Contains(snapshots[p.Page][p.Parent].Type))
                 .GroupBy(p => p)
                 .Where(g => g.Count() >= 2)
                 .Select(g => g.Key)
                 .ToArray();
-            if (parents.Length == 0) continue;
+            if (parents.Length == 0)
+                continue;
             var bySig = parents.GroupBy(p => signatures[p.Page][p.Parent]!, StringComparer.Ordinal).OrderByDescending(g => g.Count()).First();
             var hosts = bySig.ToArray();
             var existing = kept.FindIndex(k => k.Pattern.Signature == bySig.Key && !k.Pattern.Lifted);
@@ -201,7 +211,8 @@ public static class PatternDetector
         foreach (var rule in components ?? [])
         {
             var found = pages.SelectMany(p => Matches(p.Snapshot, rule.Match).Select(n => (p.Page, p.Snapshot, Node: n))).ToArray();
-            if (found.Length == 0) continue;
+            if (found.Length == 0)
+                continue;
             var first = found[0];
             var signature = signatures[first.Page][first.Node.Number]!;
             given.Add(new Pattern(
@@ -213,7 +224,8 @@ public static class PatternDetector
                 bySignature.GetValueOrDefault(signature),
                 rule.Name)
             { Given = rule.Kind });
-            foreach (var f in found) givenAt.Add((f.Page, f.Node.Number));
+            foreach (var f in found)
+                givenAt.Add((f.Page, f.Node.Number));
         }
         return given.Count == 0 ? named2 : [.. given, .. named2.Where((p, i) => !kept[i].At.Overlaps(givenAt))];
     }
@@ -272,13 +284,17 @@ public static class PatternDetector
             if (Landmarks.Contains(up.Type) || up.Role is "form" or "group" or "row" or "listitem" or "list" or "grid" or "navigation" or "dialog" or "main")
                 break;
             var added = ControlKind.Subtree(snapshot, up).Where(n => !inside.Contains(n.Number)).ToArray();
-            if (added.Any(n => n.Number != node.Number && signatures[n.Number] == signature)) break;
+            if (added.Any(n => n.Number != node.Number && signatures[n.Number] == signature))
+                break;
             var readings = added.Select(n => ControlKind.Of(snapshot, n)).OfType<CoreReading>().ToArray();
-            if (readings.Any(r => r.Core != PartCore.Readable)) break;
+            if (readings.Any(r => r.Core != PartCore.Readable))
+                break;
             var block = Classes(current).Any(c => c.IndexOf("__", StringComparison.Ordinal) is > 0 and var at && Classes(up).Contains(c[..at]));
-            foreach (var n in added) inside.Add(n.Number);
+            foreach (var n in added)
+                inside.Add(n.Number);
             current = up;
-            if (block || readings.Length > 0) best = up;
+            if (block || readings.Length > 0)
+                best = up;
         }
         return best;
     }
@@ -292,7 +308,8 @@ public static class PatternDetector
         foreach (var attribute in testIds.Append("id"))
         {
             var names = nodes.Select(n => Pascal(n.Attribute(attribute))).Distinct(StringComparer.Ordinal).ToArray();
-            if (names is [{ Length: > 0 } shared]) return shared;
+            if (names is [{ Length: > 0 } shared])
+                return shared;
         }
         return null;
     }
@@ -312,7 +329,8 @@ public static class PatternDetector
     private static string NameOf(string[] parts, string? named)
     {
         foreach (var source in new[] { parts[0].Contains('-') ? parts[0] : null, named, parts[1], parts[0] })
-            if (Pascal(source) is { Length: > 0 } name) return name;
+            if (Pascal(source) is { Length: > 0 } name)
+                return name;
         return "Part";
     }
 
@@ -337,7 +355,8 @@ public static class PatternDetector
         {
             var node = snapshot.Nodes[i];
             sizes[node.Number] += 1;
-            if (node.Parent > 0) sizes[node.Parent] += sizes[node.Number];
+            if (node.Parent > 0)
+                sizes[node.Parent] += sizes[node.Number];
         }
         return sizes;
     }

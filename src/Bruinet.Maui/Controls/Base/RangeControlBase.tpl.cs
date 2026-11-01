@@ -59,7 +59,8 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SetValueCore(IMauiElement element, double? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         EnsureSettableCore(element);
 
@@ -75,7 +76,8 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     /// <returns>The minimum value, or null if not available.</returns>
     protected virtual double? GetMinimumCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // No attribute fallback: a range's bounds are published by the range pattern, or on
         // Android by AppSupport, or not at all.
@@ -90,7 +92,8 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     /// <returns>The maximum value, or null if not available.</returns>
     protected virtual double? GetMaximumCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // Published by the range pattern or not at all - see GetMinimumCore.
         return element.RangeMaximum;
@@ -104,7 +107,8 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     /// <returns>The step value, or null if not available.</returns>
     protected virtual double? GetStepCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // Published by the range pattern or not at all - see GetMinimumCore.
         return element.RangeSmallChange ?? 1.0;

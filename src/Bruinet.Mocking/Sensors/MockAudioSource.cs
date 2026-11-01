@@ -36,7 +36,8 @@ public class MockAudioSource : IDisposable
 
     public Task StartAsync(CancellationToken ct = default)
     {
-        if (IsEmitting) return Task.CompletedTask;
+        if (IsEmitting)
+            return Task.CompletedTask;
         _cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         IsEmitting = true;
         ChunksEmitted = 0;
@@ -78,7 +79,8 @@ public class MockAudioSource : IDisposable
             ChunkEmitted?.Invoke(this, chunk);
             ChunksEmitted++;
             offset += size;
-            try { await Task.Delay(_chunkIntervalMs, ct).ConfigureAwait(false); }
+            try
+            { await Task.Delay(_chunkIntervalMs, ct).ConfigureAwait(false); }
             catch (OperationCanceledException) { break; }
         }
         FinishedPlaying = true;

@@ -10,7 +10,8 @@ public sealed class ControlTemplatesTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_folder)) Directory.Delete(_folder, recursive: true);
+        if (Directory.Exists(_folder))
+            Directory.Delete(_folder, recursive: true);
     }
 
     [Fact]

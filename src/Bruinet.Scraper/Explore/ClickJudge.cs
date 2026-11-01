@@ -40,13 +40,17 @@ public static class ClickJudge
                 ? link with { Verdict = Verdict.Safe, Reason = "always click (the config)" }
                 : link with { Label = label };
 
-        if (always) return Of(Verdict.Safe, JudgedAction.Click, "always click (the config)");
+        if (always)
+            return Of(Verdict.Safe, JudgedAction.Click, "always click (the config)");
 
-        if (Submits(snapshot, node)) return Of(Verdict.Unsafe, JudgedAction.Click, "submits a form");
+        if (Submits(snapshot, node))
+            return Of(Verdict.Unsafe, JudgedAction.Click, "submits a form");
 
-        if (Danger(snapshot, node, text, settings) is { } danger) return Of(Verdict.Unsafe, JudgedAction.Click, $"danger word '{danger.Word}' ({danger.Category})");
+        if (Danger(snapshot, node, text, settings) is { } danger)
+            return Of(Verdict.Unsafe, JudgedAction.Click, $"danger word '{danger.Word}' ({danger.Category})");
 
-        if (ShowsMore(snapshot, node) is { } more) return Of(Verdict.Safe, JudgedAction.Click, more);
+        if (ShowsMore(snapshot, node) is { } more)
+            return Of(Verdict.Safe, JudgedAction.Click, more);
 
         return Of(Verdict.Unknown, JudgedAction.Click, "not known to only show more");
     }
@@ -95,15 +99,21 @@ public static class ClickJudge
     private static bool Submits(ScrapeSnapshot snapshot, ScrapeNode node)
     {
         var type = node.Attribute("type")?.ToLowerInvariant();
-        if (node.Type == "input") return type is "submit" or "image";
-        if (node.Type != "button") return false;
-        if (type is "submit") return true;
-        if (type is "button" or "reset") return false;
+        if (node.Type == "input")
+            return type is "submit" or "image";
+        if (node.Type != "button")
+            return false;
+        if (type is "submit")
+            return true;
+        if (type is "button" or "reset")
+            return false;
         // A button without a type submits the form it is in.
         for (var p = node.Parent; p != 0; p = snapshot[p].Parent)
         {
-            if (snapshot[p].Type == "form") return true;
-            if (snapshot[p].Frame is not null) break;
+            if (snapshot[p].Type == "form")
+                return true;
+            if (snapshot[p].Frame is not null)
+                break;
         }
         return false;
     }
@@ -120,7 +130,8 @@ public static class ClickJudge
         foreach (var child in snapshot.ChildrenOf(node.Number))
         {
             yield return child.Attribute("alt");
-            foreach (var said in Says(child)) yield return said;
+            foreach (var said in Says(child))
+                yield return said;
             yield return child.Attribute("data-icon");
             foreach (var grandchild in snapshot.ChildrenOf(child.Number))
             {
@@ -134,13 +145,20 @@ public static class ClickJudge
 
     private static string? ShowsMore(ScrapeSnapshot snapshot, ScrapeNode node)
     {
-        if (node.Role is "tab") return "a tab";
-        if (node.Type == "summary") return "an expander";
-        if (node.Attribute("aria-haspopup") is { } popup && popup != "false") return popup == "dialog" ? "opens a dialog" : "opens a menu";
-        if (node.Attributes.ContainsKey("aria-expanded")) return "shows or hides a part";
-        if (node.Type == "th" || node.Attributes.ContainsKey("aria-sort")) return "sorts a table";
-        if (node.Attribute("aria-controls") is not null && node.Role is "button" or "tab") return "shows a part";
-        if (IsPager(snapshot, node)) return "a pager";
+        if (node.Role is "tab")
+            return "a tab";
+        if (node.Type == "summary")
+            return "an expander";
+        if (node.Attribute("aria-haspopup") is { } popup && popup != "false")
+            return popup == "dialog" ? "opens a dialog" : "opens a menu";
+        if (node.Attributes.ContainsKey("aria-expanded"))
+            return "shows or hides a part";
+        if (node.Type == "th" || node.Attributes.ContainsKey("aria-sort"))
+            return "sorts a table";
+        if (node.Attribute("aria-controls") is not null && node.Role is "button" or "tab")
+            return "shows a part";
+        if (IsPager(snapshot, node))
+            return "a pager";
         if (IsClose(node) || node.Attribute("data-dismiss") is not null || node.Attribute("data-bs-dismiss") is not null)
             return "closes";
         return null;
@@ -163,7 +181,8 @@ public static class ClickJudge
         for (var depth = 0; depth < 3 && parent != 0; depth++, parent = snapshot[parent].Parent)
         {
             var up = snapshot[parent];
-            if (DangerWords.Contains(string.Join(' ', up.Name, up.Attribute("class"), up.Attribute("data-testid")), "pagination")) return true;
+            if (DangerWords.Contains(string.Join(' ', up.Name, up.Attribute("class"), up.Attribute("data-testid")), "pagination"))
+                return true;
         }
         return false;
     }
@@ -189,12 +208,15 @@ public static class ClickJudge
     // An element's text, or a child's (a button whose label is in a span).
     private static string? TextOf(ScrapeSnapshot snapshot, ScrapeNode node)
     {
-        if (node.Text is { Length: > 0 }) return node.Text;
+        if (node.Text is { Length: > 0 })
+            return node.Text;
         foreach (var child in snapshot.ChildrenOf(node.Number))
         {
-            if (child.Text is { Length: > 0 } text) return text;
+            if (child.Text is { Length: > 0 } text)
+                return text;
             foreach (var grandchild in snapshot.ChildrenOf(child.Number))
-                if (grandchild.Text is { Length: > 0 } deeper) return deeper;
+                if (grandchild.Text is { Length: > 0 } deeper)
+                    return deeper;
         }
         return null;
     }

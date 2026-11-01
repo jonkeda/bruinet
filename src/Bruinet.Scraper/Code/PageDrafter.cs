@@ -35,15 +35,19 @@ public static class PageDrafter
         for (var i = 0; i < segments.Length; i++)
         {
             var segment = Path.GetFileNameWithoutExtension(segments[i]);
-            if (segment == "{id}" || Folders.Contains(segment)) continue;
+            if (segment == "{id}" || Folders.Contains(segment))
+                continue;
             // The collection a record is in names one record: invoices/{id} is an invoice.
-            if (i + 1 < segments.Length && segments[i + 1] == "{id}") segment = Singular(segment);
+            if (i + 1 < segments.Length && segments[i + 1] == "{id}")
+                segment = Singular(segment);
             foreach (var word in DangerWordsSplit(segment))
                 words.AddRange(Broken(word, titleWords));
         }
         var name = string.Concat(words.Select(w => char.ToUpperInvariant(w[0]) + w[1..]));
-        if (name.Length == 0) name = "Home";
-        if (char.IsDigit(name[0])) name = "Page" + name;
+        if (name.Length == 0)
+            name = "Home";
+        if (char.IsDigit(name[0]))
+            name = "Page" + name;
         return name.EndsWith("Page", StringComparison.Ordinal) ? name : name + "Page";
     }
 
@@ -85,7 +89,8 @@ public static class PageDrafter
     {
         var baseClass = blazor ? "BlazorPageObjectBase" : "HtmlPageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
-        foreach (var member in members) namespaces.Add(member.Namespace);
+        foreach (var member in members)
+            namespaces.Add(member.Namespace);
 
         // A member in a frame is on the frame's scope: FrameScope<Page>, FrameScope<FrameScope<Page>> for a frame in a frame.
         var byName = members.ToDictionary(m => m.Name, StringComparer.Ordinal);
@@ -94,7 +99,8 @@ public static class PageDrafter
 
         var code = new StringBuilder();
         code.AppendLine(header.ToString());
-        foreach (var ns in namespaces) code.AppendLine(CultureInfo.InvariantCulture, $"using {ns};");
+        foreach (var ns in namespaces)
+            code.AppendLine(CultureInfo.InvariantCulture, $"using {ns};");
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"namespace {project.Namespace};");
         code.AppendLine();
@@ -105,7 +111,8 @@ public static class PageDrafter
         {
             var m = members[i];
             var parent = m.Scope is { } scope && byName.ContainsKey(scope) ? scope : "this";
-            if (i > 0) code.AppendLine();
+            if (i > 0)
+                code.AppendLine();
             code.AppendLine(CultureInfo.InvariantCulture, $"    public {m.Control}<{ParentType(m)}> {m.Name} => new({parent}, {m.Locator});");
         }
         if (unstable.Count > 0)
@@ -151,7 +158,8 @@ public static class PageDrafter
         {
             var name = members[i].Name;
             var unique = name;
-            for (var n = 2; !used.Add(unique); n++) unique = name + n.ToString(CultureInfo.InvariantCulture);
+            for (var n = 2; !used.Add(unique); n++)
+                unique = name + n.ToString(CultureInfo.InvariantCulture);
             members[i] = members[i] with { Name = unique };
         }
         return members;
@@ -174,7 +182,8 @@ public static class PageDrafter
             for (var k = i + 1; k < titleWords.Length && joined.Length < word.Length; k++)
             {
                 joined += titleWords[k];
-                if (joined == word) return titleWords[i..(k + 1)];
+                if (joined == word)
+                    return titleWords[i..(k + 1)];
             }
         }
         return [word];

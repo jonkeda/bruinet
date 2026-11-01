@@ -12,37 +12,37 @@ public interface IElementObject<TScope>
     /// Check if the element exists in the UI tree.
     /// </summary>
     bool IsExists();
-    
+
     /// <summary>
     /// Check if the element is visible.
     /// Returns null if element doesn't exist.
     /// </summary>
     bool? IsVisible();
-    
+
     /// <summary>
     /// Check if the element is enabled.
     /// Returns null if element doesn't exist.
     /// </summary>
     bool? IsEnabled();
-    
+
     /// <summary>
     /// Wait until element existence matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitExists(bool? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Wait until element visibility matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitVisible(bool? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Wait until element enabled state matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitEnabled(bool? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert element existence matches expected value.
     /// If expected is null, returns immediately (skip).
@@ -51,7 +51,7 @@ public interface IElementObject<TScope>
     [BddThen("{control} should exist", HasLiteral = true, Literal = true, CommandId = "Control.AssertExists")]
     [BddThen("{control} should not exist", HasLiteral = true, Literal = false, CommandId = "Control.AssertExists.False")]
     TScope AssertExists(bool? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert element visibility matches expected value.
     /// If expected is null, returns immediately (skip).
@@ -60,7 +60,7 @@ public interface IElementObject<TScope>
     [BddThen("{control} should be visible", HasLiteral = true, Literal = true, CommandId = "Control.AssertVisible")]
     [BddThen("{control} should not be visible", HasLiteral = true, Literal = false, CommandId = "Control.AssertVisible.False")]
     TScope AssertVisible(bool? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert element enabled state matches expected value.
     /// If expected is null, returns immediately (skip).
@@ -69,5 +69,5 @@ public interface IElementObject<TScope>
     [BddThen("{control} should be enabled", HasLiteral = true, Literal = true, CommandId = "Control.AssertEnabled")]
     [BddThen("{control} should be disabled", HasLiteral = true, Literal = false, CommandId = "Control.AssertEnabled.False")]
     TScope AssertEnabled(bool? expected, string? message = null, int? timeoutMs = null);
-    
+
 }

@@ -36,7 +36,8 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SelectByTextCore(INativeAndroidElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null || GetSelectedTextCore(element) == text) return;
+        if (text == null || GetSelectedTextCore(element) == text)
+            return;
 
         ActAndConfirm(
             "SelectByText", () => ChooseInPopup(element, options => options.FirstOrDefault(option => option.Text == text), $"'{text}'"),
@@ -59,7 +60,8 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SelectByIndexCore(INativeAndroidElement element, int? index, int? timeoutMs = null)
     {
-        if (index is not { } position) return;
+        if (index is not { } position)
+            return;
 
         string? chosen = null;
         ActAndConfirm(
@@ -149,7 +151,8 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     /// <param name="element">The pre-found view.</param>
     protected virtual int? GetSelectedIndexCore(INativeAndroidElement? element)
     {
-        if (element == null || GetSelectedTextCore(element) is not { } selected) return null;
+        if (element == null || GetSelectedTextCore(element) is not { } selected)
+            return null;
 
         var index = GetItemTextsCore(element)?.ToList().IndexOf(selected) ?? -1;
         return index >= 0 ? index : null;
@@ -162,7 +165,8 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     [GenerateComparisons(Comparison.SequenceEquals | Comparison.HasItem | Comparison.Count)]
     protected virtual IReadOnlyList<string>? GetItemTextsCore(INativeAndroidElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         OpenPopup(element);
         var texts = new List<string>();

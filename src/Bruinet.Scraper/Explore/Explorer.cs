@@ -78,23 +78,28 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             var reached = await ReachAsync(item, cancellationToken).ConfigureAwait(false);
             if (reached.Stop is { } stop)
             {
-                if (stop.Kind != ExploreStop.SignIn || options.WaitForSignIn is null) return stop;
+                if (stop.Kind != ExploreStop.SignIn || options.WaitForSignIn is null)
+                    return stop;
                 Report($"Waiting at a sign-in page ({source.Location}) for the person to sign in and continue.");
                 await options.WaitForSignIn(cancellationToken).ConfigureAwait(false);
                 _startCookies = null;
                 reached = await ReachAsync(item, cancellationToken).ConfigureAwait(false);
-                if (reached.Stop is { } again) return again;
+                if (reached.Stop is { } again)
+                    return again;
             }
-            if (reached.Snapshot is not { } snapshot) continue;
+            if (reached.Snapshot is not { } snapshot)
+                continue;
 
             var key = PageKey.Of(snapshot.Location);
             if (reached.Navigated)
             {
                 // A click that went to another page: that page is explored as if a link led there.
-                if (queued.Add(key)) queue.Enqueue(item with { Url = snapshot.Location, Clicks = [], Known = new HashSet<string>() });
+                if (queued.Add(key))
+                    queue.Enqueue(item with { Url = snapshot.Location, Clicks = [], Known = new HashSet<string>() });
                 continue;
             }
-            if (!seen.Add(StateKey(snapshot))) continue;
+            if (!seen.Add(StateKey(snapshot)))
+                continue;
 
             WatchWebSockets();
             var saved = await io.Save(snapshot, item.Clicks.Count == 0 ? null : $"{Title(snapshot)}: {item.Clicks[^1].Label}", cancellationToken).ConfigureAwait(false);
@@ -125,14 +130,17 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
         foreach (var judgement in ClickJudge.Judge(snapshot, context))
         {
             var target = refs[judgement.Node];
-            if (item.Known.Contains(target.Key)) continue; // its parent state showed it: judged there
+            if (item.Known.Contains(target.Key))
+                continue; // its parent state showed it: judged there
 
             if (judgement.Action == JudgedAction.Visit)
             {
-                if (judgement.Verdict != Verdict.Safe) { Skip(key, judgement); continue; }
+                if (judgement.Verdict != Verdict.Safe)
+                { Skip(key, judgement); continue; }
                 if (!queued.Contains(PageKey.Of(judgement.Url!)))
                 {
-                    if (item.Depth + 1 > settings.MaxDepth) { _deeper++; continue; }
+                    if (item.Depth + 1 > settings.MaxDepth)
+                    { _deeper++; continue; }
                     queued.Add(PageKey.Of(judgement.Url!));
                     queue.Enqueue(new Item(judgement.Url!, [], item.Depth + 1, $"link '{judgement.Label}' on {key}", new HashSet<string>()));
                 }
@@ -140,16 +148,21 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             }
 
             var node = snapshot[judgement.Node];
-            if (node.Bounds is null) continue; // hidden: a person cannot click it here
-            if (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true") continue; // nor when it is off
+            if (node.Bounds is null)
+                continue; // hidden: a person cannot click it here
+            if (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true")
+                continue; // nor when it is off
             if (!ClickJudge.Allows(settings.ClickPolicy, judgement))
             {
                 Skip(key, judgement.Verdict == Verdict.Unsafe ? judgement : judgement with { Reason = $"{judgement.Reason}; ClickPolicy {Policy(settings.ClickPolicy)} does not click it" });
                 continue;
             }
-            if (options.DryRun) { _wouldClick.Add(new WouldClick(key, judgement.Label, judgement.Reason)); continue; }
-            if (_policy == ClickPolicy.Links) { Skip(key, judgement with { Reason = "the app talks over a websocket: links only (WebsocketApps)" }); continue; }
-            if (item.Depth + 1 > settings.MaxDepth) { _deeper++; continue; }
+            if (options.DryRun)
+            { _wouldClick.Add(new WouldClick(key, judgement.Label, judgement.Reason)); continue; }
+            if (_policy == ClickPolicy.Links)
+            { Skip(key, judgement with { Reason = "the app talks over a websocket: links only (WebsocketApps)" }); continue; }
+            if (item.Depth + 1 > settings.MaxDepth)
+            { _deeper++; continue; }
             queue.Enqueue(new Item(snapshot.Location, [.. item.Clicks, target with { Label = judgement.Label }], item.Depth + 1, $"click '{judgement.Label}' on {key}", known));
         }
     }
@@ -165,7 +178,8 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
         }
         await PauseAsync(cancellationToken).ConfigureAwait(false);
         var snapshot = await io.Capture(cancellationToken).ConfigureAwait(false);
-        if (await CheckAsync(snapshot, requested, "opening " + item.Url, cancellationToken).ConfigureAwait(false) is { } stop) return new Reached(null, false, stop);
+        if (await CheckAsync(snapshot, requested, "opening " + item.Url, cancellationToken).ConfigureAwait(false) is { } stop)
+            return new Reached(null, false, stop);
 
         foreach (var click in item.Clicks)
         {
@@ -179,8 +193,10 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             _clicks++;
             await PauseAsync(cancellationToken).ConfigureAwait(false);
             snapshot = await io.Capture(cancellationToken).ConfigureAwait(false);
-            if (await CheckAsync(snapshot, requested, $"clicking '{click.Label}' on {requested}", cancellationToken).ConfigureAwait(false) is { } after) return new Reached(null, false, after);
-            if (PageKey.Of(snapshot.Location) != requested) return new Reached(snapshot, true, null);
+            if (await CheckAsync(snapshot, requested, $"clicking '{click.Label}' on {requested}", cancellationToken).ConfigureAwait(false) is { } after)
+                return new Reached(null, false, after);
+            if (PageKey.Of(snapshot.Location) != requested)
+                return new Reached(snapshot, true, null);
         }
         return new Reached(snapshot, false, null);
     }
@@ -214,7 +230,8 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
 
     private bool IsLoginUrl(string location)
     {
-        if (settings.LoginUrl.Length == 0) return false;
+        if (settings.LoginUrl.Length == 0)
+            return false;
         var login = Uri.TryCreate(settings.LoginUrl, UriKind.Absolute, out var absolute) ? PageKey.Of(absolute.AbsoluteUri) : PageKey.Of("http://x" + (settings.LoginUrl.StartsWith('/') ? "" : "/") + settings.LoginUrl);
         return PageKey.Of(location) == login;
     }
@@ -222,7 +239,8 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
     // Guard 3: a websocket carries clicks the request guard cannot see.
     private void WatchWebSockets()
     {
-        if (_guard.WebSockets.Count == 0 || _websocketSeen) return;
+        if (_guard.WebSockets.Count == 0 || _websocketSeen)
+            return;
         _websocketSeen = true;
         if (settings.WebsocketApps == WebsocketApps.Links && _policy != ClickPolicy.Links)
         {

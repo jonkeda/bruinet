@@ -66,21 +66,27 @@ public class ControlObjectAnalyzer
         {
             var name = method.Identifier.Text;
 
-            if (!name.EndsWith("Core", StringComparison.Ordinal)) continue;
-            if (name.StartsWith("Ensure", StringComparison.Ordinal)) continue;
-            if (HasSkipGenerationAttribute(method)) continue;
+            if (!name.EndsWith("Core", StringComparison.Ordinal))
+                continue;
+            if (name.StartsWith("Ensure", StringComparison.Ordinal))
+                continue;
+            if (HasSkipGenerationAttribute(method))
+                continue;
 
             var modifiers = method.Modifiers;
-            if (modifiers.Any(m => m.IsKind(SyntaxKind.OverrideKeyword))) continue;
+            if (modifiers.Any(m => m.IsKind(SyntaxKind.OverrideKeyword)))
+                continue;
 
             // Only methods taking the platform element first are candidates at all; anything
             // else is a private helper that happens to end in "Core".
             var firstParam = method.ParameterList.Parameters.FirstOrDefault();
-            if (firstParam?.Type?.ToString().Contains("Element") != true) continue;
+            if (firstParam?.Type?.ToString().Contains("Element") != true)
+                continue;
 
             var isProtected = modifiers.Any(m => m.IsKind(SyntaxKind.ProtectedKeyword));
             var isVirtual = modifiers.Any(m => m.IsKind(SyntaxKind.VirtualKeyword));
-            if (isProtected && isVirtual) continue;
+            if (isProtected && isVirtual)
+                continue;
 
             var missing = (isProtected, isVirtual) switch
             {
@@ -141,10 +147,12 @@ public class ControlObjectAnalyzer
         foreach (var method in CoreMethods(classDecl))
         {
             var name = method.Identifier.Text;
-            if (!name.EndsWith("Core", StringComparison.Ordinal)) continue;
+            if (!name.EndsWith("Core", StringComparison.Ordinal))
+                continue;
 
             SyntaxNode? body = (SyntaxNode?)method.Body ?? method.ExpressionBody;
-            if (body == null) continue;
+            if (body == null)
+                continue;
 
             foreach (var invocation in body.DescendantNodes().OfType<InvocationExpressionSyntax>())
             {
@@ -249,7 +257,8 @@ public class ControlObjectAnalyzer
 
         foreach (var method in CoreMethods(classDecl))
         {
-            if (!ShortcutMethod.IsCandidate(method) || HasSkipGenerationAttribute(method)) continue;
+            if (!ShortcutMethod.IsCandidate(method) || HasSkipGenerationAttribute(method))
+                continue;
 
             if (!ShortcutMethod.TryParse(method, out _, out var error))
                 problems.Add(error!);

@@ -33,7 +33,8 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SetTextCore(INativeAndroidElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         ActAndConfirm(
             "SetText",
@@ -73,7 +74,8 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void AppendCore(INativeAndroidElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         var before = element.Text ?? string.Empty;
         ActAndConfirm(

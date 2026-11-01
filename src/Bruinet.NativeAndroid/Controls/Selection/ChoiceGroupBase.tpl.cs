@@ -39,7 +39,8 @@ public abstract partial class ChoiceGroupBase<TScope> : SelectorControlBase<TSco
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected override void SelectByTextCore(INativeAndroidElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         var choices = element.FindElements(ChoicesLocator);
         var choice = choices.FirstOrDefault(candidate => Label(candidate) == text)
@@ -53,7 +54,8 @@ public abstract partial class ChoiceGroupBase<TScope> : SelectorControlBase<TSco
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected override void SelectByIndexCore(INativeAndroidElement element, int? index, int? timeoutMs = null)
     {
-        if (index is not { } position) return;
+        if (index is not { } position)
+            return;
 
         var choices = element.FindElements(ChoicesLocator);
         var choice = choices.ElementAtOrDefault(position)

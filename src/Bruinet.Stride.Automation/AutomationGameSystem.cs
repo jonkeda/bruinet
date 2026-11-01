@@ -58,7 +58,8 @@ public class AutomationGameSystem : GameSystemBase
     public override void Initialize()
     {
         base.Initialize();
-        if (_initialized) return;
+        if (_initialized)
+            return;
         _initialized = true;
 
         Enabled = true;
@@ -120,7 +121,8 @@ public class AutomationGameSystem : GameSystemBase
 
     private bool TryHandleKeySimulation(AutomationCommand command, TaskCompletionSource<AutomationResponse> tcs)
     {
-        if (command.Type != "Action") return false;
+        if (command.Type != "Action")
+            return false;
 
         if (command.Method is not ("SimulateKeyPress" or "SimulateKeyDown" or "SimulateKeyUp" or "SimulateKeyHold" or "SimulateKeyCombination"))
             return false;
@@ -196,20 +198,25 @@ public class AutomationGameSystem : GameSystemBase
 
     private static string? GetArgString(object[]? args, int index)
     {
-        if (args == null || args.Length <= index) return null;
+        if (args == null || args.Length <= index)
+            return null;
         var arg = args[index];
-        if (arg is JsonElement je) return je.GetString() ?? je.GetRawText();
+        if (arg is JsonElement je)
+            return je.GetString() ?? je.GetRawText();
         return arg?.ToString();
     }
 
     private static int GetArgInt(object[]? args, int index)
     {
-        if (args == null || args.Length <= index) return 0;
+        if (args == null || args.Length <= index)
+            return 0;
         var arg = args[index];
         if (arg is JsonElement je)
         {
-            if (je.TryGetInt32(out var i)) return i;
-            if (je.TryGetDouble(out var d)) return (int)d;
+            if (je.TryGetInt32(out var i))
+                return i;
+            if (je.TryGetDouble(out var d))
+                return (int)d;
             return 0;
         }
         return Convert.ToInt32(arg, CultureInfo.InvariantCulture);

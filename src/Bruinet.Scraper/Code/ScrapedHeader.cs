@@ -32,12 +32,18 @@ public sealed partial record ScrapedHeader
     public override string ToString()
     {
         var parts = new List<string>();
-        if (Page is not null) parts.Add($"page=\"{Escape(Page)}\"");
-        if (Control is not null) parts.Add($"control=\"{Escape(Control)}\"");
-        if (Variant is not null) parts.Add($"variant=\"{Escape(Variant)}\"");
-        if (Lifted) parts.Add("root=\"lifted\"");
-        if (From is not null) parts.Add($"from=\"{Escape(From)}\"");
-        if (Hash is not null) parts.Add($"hash=\"{Escape(Hash)}\"");
+        if (Page is not null)
+            parts.Add($"page=\"{Escape(Page)}\"");
+        if (Control is not null)
+            parts.Add($"control=\"{Escape(Control)}\"");
+        if (Variant is not null)
+            parts.Add($"variant=\"{Escape(Variant)}\"");
+        if (Lifted)
+            parts.Add("root=\"lifted\"");
+        if (From is not null)
+            parts.Add($"from=\"{Escape(From)}\"");
+        if (Hash is not null)
+            parts.Add($"hash=\"{Escape(Hash)}\"");
         return $"// <scraped {string.Join(' ', parts)} />";
     }
 
@@ -48,7 +54,8 @@ public sealed partial record ScrapedHeader
         for (var i = 0; i < 10 && reader.ReadLine() is { } line; i++)
         {
             var match = Line().Match(line);
-            if (!match.Success) continue;
+            if (!match.Success)
+                continue;
             var attributes = Attribute().Matches(match.Groups[1].Value).ToDictionary(m => m.Groups[1].Value, m => Unescape(m.Groups[2].Value), StringComparer.Ordinal);
             return new ScrapedHeader
             {

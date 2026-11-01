@@ -22,7 +22,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
     private static readonly AsyncLocal<string?> _currentTestClass = new();
     private static readonly AsyncLocal<string?> _currentTestMethod = new();
     private static readonly AsyncLocal<bool> _testFailed = new();
-    
+
     /// <summary>
     /// Sets the screenshot service to use for capturing.
     /// Call this in your test fixture initialization.
@@ -31,7 +31,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
     {
         _screenshotService.Value = service;
     }
-    
+
     /// <summary>
     /// Registers the apps of a test that uses several: a failure then captures every started app,
     /// not only the one the screenshot service belongs to.
@@ -46,7 +46,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
     /// Gets the currently registered screenshot service.
     /// </summary>
     public static IScreenshotService? CurrentService => _screenshotService.Value;
-    
+
     /// <summary>
     /// Called before each test method runs.
     /// </summary>
@@ -56,7 +56,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
         _currentTestMethod.Value = methodUnderTest.Name;
         _testFailed.Value = false;
     }
-    
+
     /// <summary>
     /// Called after each test method completes.
     /// </summary>
@@ -66,7 +66,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
         _currentTestMethod.Value = null;
         _testFailed.Value = false;
     }
-    
+
     /// <summary>
     /// Captures a screenshot if the test failed.
     /// Call this from exception handling code or test cleanup.
@@ -77,7 +77,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
     {
         if (exception == null || (_screenshotService.Value == null && _apps.Value == null) || _testFailed.Value)
             return string.Empty;
-        
+
         _testFailed.Value = true; // Prevent duplicate captures
 
         if (_apps.Value is { Started.Count: > 0 } apps)
@@ -96,7 +96,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
             _currentTestMethod.Value ?? "Unknown",
             exception);
     }
-    
+
     /// <summary>
     /// Manually capture a screenshot with optional description.
     /// </summary>
@@ -106,7 +106,7 @@ public class ScreenshotTestAttribute : BeforeAfterTestAttribute
     {
         if (_screenshotService.Value == null)
             return string.Empty;
-        
+
         return _screenshotService.Value.Capture(
             _currentTestClass.Value ?? "Manual",
             _currentTestMethod.Value ?? "Capture",

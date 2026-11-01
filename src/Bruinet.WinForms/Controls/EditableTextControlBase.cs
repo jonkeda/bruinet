@@ -15,7 +15,8 @@ public abstract class EditableTextControlBase<TScope> : ControlBase<TScope>
 
     public virtual TScope Enter(string? text, int? timeoutMs = null)
     {
-        if (text == null) return ContainingScope;
+        if (text == null)
+            return ContainingScope;
         return Run("Enter", e =>
         {
             e.Clear();
@@ -30,7 +31,8 @@ public abstract class EditableTextControlBase<TScope> : ControlBase<TScope>
 
     public virtual TScope SetText(string? text, int? timeoutMs = null)
     {
-        if (text == null) return ContainingScope;
+        if (text == null)
+            return ContainingScope;
         return Run("SetText", e =>
         {
             e.SendKeys(text, TextInputMethod.SetValue);
@@ -39,7 +41,8 @@ public abstract class EditableTextControlBase<TScope> : ControlBase<TScope>
 
     public virtual TScope Append(string? text, int? timeoutMs = null)
     {
-        if (text == null) return ContainingScope;
+        if (text == null)
+            return ContainingScope;
         return Run("Append", e =>
         {
             e.SendKeys(text);

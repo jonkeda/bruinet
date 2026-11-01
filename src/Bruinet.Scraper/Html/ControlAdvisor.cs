@@ -34,7 +34,8 @@ public static partial class ControlAdvisor
         {
             var name = suggestions[i].Name;
             used[name] = used.TryGetValue(name, out var count) ? count + 1 : 1;
-            if (used[name] > 1) suggestions[i] = suggestions[i] with { Name = name + used[name] };
+            if (used[name] > 1)
+                suggestions[i] = suggestions[i] with { Name = name + used[name] };
         }
 
         // A node in a frame is declared on the frame's scope: its member names the frame's.
@@ -139,12 +140,15 @@ public static partial class ControlAdvisor
     // A button's or link's text is often in a child (a span in a UI library's button).
     private static string? TextOf(ScrapeSnapshot snapshot, ScrapeNode node)
     {
-        if (node.Text is { Length: > 0 } || node.Type is not ("button" or "a")) return node.Text;
+        if (node.Text is { Length: > 0 } || node.Type is not ("button" or "a"))
+            return node.Text;
         foreach (var child in snapshot.ChildrenOf(node.Number))
         {
-            if (child.Text is { Length: > 0 } text) return text;
+            if (child.Text is { Length: > 0 } text)
+                return text;
             foreach (var grandchild in snapshot.ChildrenOf(child.Number))
-                if (grandchild.Text is { Length: > 0 } deeper) return deeper;
+                if (grandchild.Text is { Length: > 0 } deeper)
+                    return deeper;
         }
         return null;
     }
@@ -159,10 +163,12 @@ public static partial class ControlAdvisor
             .Append(node.Type);
         foreach (var source in sources)
         {
-            if (string.IsNullOrEmpty(source)) continue;
+            if (string.IsNullOrEmpty(source))
+                continue;
             // Split at camelCase humps too: FirstNameInput stays FirstNameInput, not Firstnameinput.
             var name = string.Concat(Explore.DangerWords.Words(source).Select(w => char.ToUpperInvariant(w[0]) + w[1..]).Take(4));
-            if (name.Length > 0) return char.IsDigit(name[0]) ? "Element" + name : name;
+            if (name.Length > 0)
+                return char.IsDigit(name[0]) ? "Element" + name : name;
         }
         return "Element";
     }

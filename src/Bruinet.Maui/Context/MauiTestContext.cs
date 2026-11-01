@@ -19,7 +19,7 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
     private readonly MauiPlatform _platform;
     private readonly bool _ownsDriver;
     private bool _disposed;
-    
+
     /// <summary>
     /// Creates a new MAUI test context with the specified options.
     /// </summary>
@@ -27,13 +27,13 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
     public MauiTestContext(MauiTestContextOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        
+
         Name = options.Name;
         _timeouts = options.Timeouts ?? TimeoutSettings.Default;
         _nearMiss = options.NearMiss ?? NearMissSettings.Default;
         _callLog = options.Logger == null ? OpenCallLog() : null;
         _logger = options.Logger ?? _callLog ?? (ITestLogger)NullTestLogger.Instance;
-        
+
         if (options.Driver != null)
         {
             _driver = options.Driver;
@@ -43,26 +43,26 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
         else
         {
             ArgumentNullException.ThrowIfNull(options.DriverOptions, nameof(options.DriverOptions));
-            
+
             var driverOptions = options.DriverOptions;
             driverOptions.Timeouts ??= options.Timeouts;
             driverOptions.Logger ??= options.Logger;
-            
+
             _driver = MauiDriverFactory.Create(driverOptions);
             _platform = driverOptions.Platform;
             _ownsDriver = true; // We own factory-created driver
         }
     }
-    
+
     /// <inheritdoc />
     public string? Name { get; }
 
     /// <inheritdoc />
     public Interfaces.IMauiDriver Driver => _driver;
-    
+
     /// <inheritdoc />
     public IMauiTestContext Context => this;
-    
+
     /// <inheritdoc />
     public MauiPlatform Platform => _platform;
 
@@ -81,22 +81,22 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
 
     /// <inheritdoc />
     public TimeoutSettings Timeouts => _timeouts;
-    
+
     /// <inheritdoc />
     public ITestLogger Logger => _logger;
 
     /// <inheritdoc />
     public NearMissSettings NearMiss => _nearMiss;
-    
+
     /// <inheritdoc />
     public LocatorStrategy DefaultLocatorStrategy => LocatorStrategy.AutomationId;
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// Test context root scope has no associated page.
     /// </remarks>
     public IMauiPage? Page => null;
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// Ready while the session is open: the context is a lookup service, not a scope with content.
@@ -105,13 +105,13 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
         => _disposed
             ? new ScopeReadiness(nameof(MauiTestContext), ScopeReadinessState.MissingRoot, "the test context is disposed")
             : ScopeReadiness.Ready(nameof(MauiTestContext));
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// Test context root is always ready (driver is connected).
     /// </remarks>
     public bool WaitReady(int? timeoutMs = null) => !_disposed;
-    
+
     /// <inheritdoc />
     /// <remarks>Null means nothing matches now; a driver error propagates, never reads as absent.</remarks>
     public IMauiElement? TryFindElement(Locator locator)
@@ -120,7 +120,7 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
 
         return _driver.TryFindElement(locator);
     }
-    
+
     /// <inheritdoc />
     /// <remarks>One attempt, like every lookup (call model R2): waiting is the call's poll's job.</remarks>
     public IMauiElement FindElement(Locator locator)
@@ -129,57 +129,57 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
     /// <inheritdoc />
     public ElementNotFoundException DescribeMiss(Locator locator)
         => new($"Element not found with locator: {locator}");
-    
+
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator)
-    {        
+    {
         ArgumentNullException.ThrowIfNull(locator);
-        
+
         return _driver.FindElements(locator);
     }
-    
+
     /// <inheritdoc />
     public void NavigateTo(string destination)
-    {        
+    {
         ArgumentNullException.ThrowIfNull(destination);
-        
+
         _logger.LogNavigation("", "", destination);
         _driver.NavigateTo(destination);
     }
-    
+
     /// <inheritdoc />
     public void NavigateBack()
-    {        
+    {
         _driver.NavigateBack();
     }
-    
+
     /// <inheritdoc />
     public void Refresh()
-    {        
+    {
         _driver.Refresh();
     }
-    
+
     /// <inheritdoc />
     public byte[] TakeScreenshot()
-    {        
+    {
         return _driver.TakeScreenshot();
     }
-    
+
     /// <inheritdoc />
     public void SaveScreenshot(string path)
-    {        
+    {
         ArgumentNullException.ThrowIfNull(path);
-        
+
         var screenshot = _driver.TakeScreenshot();
         File.WriteAllBytes(path, screenshot);
     }
-    
+
     /// <inheritdoc />
     public void ResetAppState()
-    {      
+    {
         _driver.ResetAppState();
     }
-    
+
     /// <summary>
     /// A call log in the folder <c>BRUINET_CALL_LOG</c> names, when it is set: one CSV file per
     /// context, with every call's entry and exit, near-miss warnings included. Off unless asked
@@ -217,14 +217,15 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-    
+
     /// <summary>
     /// Disposes managed and unmanaged resources.
     /// </summary>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
-        
+        if (_disposed)
+            return;
+
         if (disposing)
         {
             _callLog?.Dispose();
@@ -241,7 +242,7 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
                 // Ignore errors during cleanup
             }
         }
-        
+
         _disposed = true;
     }
 }

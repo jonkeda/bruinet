@@ -66,7 +66,8 @@ public sealed class TestSiteServer : IDisposable
         while (_listener.IsListening)
         {
             var context = await TryNextAsync();
-            if (context is null) return;
+            if (context is null)
+                return;
             if (context.Request.Url!.AbsolutePath != "/_counters")
                 _requests.Enqueue((context.Request.HttpMethod, context.Request.Url!.PathAndQuery));
             if (context.Request.IsWebSocketRequest)
@@ -117,8 +118,10 @@ public sealed class TestSiteServer : IDisposable
             while (socket.State == WebSocketState.Open)
             {
                 var received = await socket.ReceiveAsync(buffer, CancellationToken.None);
-                if (received.MessageType == WebSocketMessageType.Close) return;
-                if (received.EndOfMessage) Interlocked.Increment(ref _socketMessages);
+                if (received.MessageType == WebSocketMessageType.Close)
+                    return;
+                if (received.EndOfMessage)
+                    Interlocked.Increment(ref _socketMessages);
             }
         }
         catch (Exception e) when (e is WebSocketException or HttpListenerException or ObjectDisposedException)

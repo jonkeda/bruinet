@@ -125,7 +125,7 @@ public class ActionGenerator : IMemberGenerator
     public IReadOnlyList<string> EmittedMemberNames(MethodInfo coreMethod)
         => [coreMethod.PublicMethodName];
 
-        public string Generate(MethodInfo coreMethod, ControlObjectContext context)
+    public string Generate(MethodInfo coreMethod, ControlObjectContext context)
     {
         var writer = new CsWriter(0); // Start with no indentation - let the file-level writer handle it
         var publicMethodName = coreMethod.PublicMethodName;

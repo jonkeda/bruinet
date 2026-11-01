@@ -112,11 +112,16 @@ internal static class WindowPlacement
         {
             switch (requested.Trim().ToLowerInvariant())
             {
-                case "right": return AutPlacement.Right;
-                case "offscreen": return AutPlacement.OffScreen;
-                case "secondary": return AutPlacement.Secondary;
-                case "left-half": return AutPlacement.LeftHalf;
-                case "right-half": return AutPlacement.RightHalf;
+                case "right":
+                    return AutPlacement.Right;
+                case "offscreen":
+                    return AutPlacement.OffScreen;
+                case "secondary":
+                    return AutPlacement.Secondary;
+                case "left-half":
+                    return AutPlacement.LeftHalf;
+                case "right-half":
+                    return AutPlacement.RightHalf;
                 default:
                     // A typo should not silently leave the window where it was, and should not
                     // end the run either. Record it and place nothing.

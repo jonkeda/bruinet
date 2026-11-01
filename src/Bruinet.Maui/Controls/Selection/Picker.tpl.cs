@@ -158,7 +158,8 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     /// <returns>The title text.</returns>
     protected virtual string? GetTitleCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // The accessible name, which is what a rendered picker's Title becomes.
         return element.Name;

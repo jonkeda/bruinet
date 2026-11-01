@@ -32,11 +32,13 @@ public static class NodeSignature
                 repeated = true;
                 continue;
             }
-            if (last is not null) yield return repeated ? last + "+" : last;
+            if (last is not null)
+                yield return repeated ? last + "+" : last;
             last = type;
             repeated = false;
         }
-        if (last is not null) yield return repeated ? last + "+" : last;
+        if (last is not null)
+            yield return repeated ? last + "+" : last;
     }
 
     // Generated class names (Emotion's css-1x2y3z, JSS's jss123, styled-components' sc-bdVaJa, CSS

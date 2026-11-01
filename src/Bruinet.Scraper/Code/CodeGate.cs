@@ -95,7 +95,8 @@ public static partial class CodeGate
         }
 
         List<string> output;
-        lock (lines) output = [.. lines];
+        lock (lines)
+            output = [.. lines];
         var problems = generated.Concat(output.Select(Parse).OfType<CodeProblem>().Distinct()).Take(MaxProblems).ToArray();
         var succeeded = process.ExitCode == 0;
         return new BuildResult(succeeded, problems, succeeded || problems.Length > 0 ? null : string.Join('\n', output.TakeLast(20)));

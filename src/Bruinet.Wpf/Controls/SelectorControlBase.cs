@@ -24,7 +24,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public virtual TScope SelectByText(string? text, int? timeoutMs = null)
     {
-        if (text == null) return ContainingScope;
+        if (text == null)
+            return ContainingScope;
         RunWithElement(e => SelectByTextCore(e, text), timeoutMs);
         return ContainingScope;
     }
@@ -43,7 +44,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public virtual TScope SelectByIndex(int? index, int? timeoutMs = null)
     {
-        if (index == null) return ContainingScope;
+        if (index == null)
+            return ContainingScope;
         RunWithElement(e => SelectByIndexCore(e, index.Value), timeoutMs);
         return ContainingScope;
     }
@@ -99,7 +101,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public bool WaitSelectedText(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetSelectedText() == expected, timeout);
     }
@@ -107,7 +110,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public TScope AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (WaitSelectedText(expected, timeoutMs) != true)
         {
             var actual = GetSelectedText();
@@ -142,7 +146,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public bool WaitSelectedIndex(int? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetSelectedIndex() == expected, timeout);
     }
@@ -150,7 +155,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public TScope AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (WaitSelectedIndex(expected, timeoutMs) != true)
         {
             var actual = GetSelectedIndex();
@@ -201,7 +207,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public bool WaitItemCount(int? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetItemCount() == expected, timeout);
     }
@@ -209,7 +216,8 @@ public abstract class SelectorControlBase<TScope> : ClickableControlBase<TScope>
     /// <inheritdoc />
     public TScope AssertItemCount(int? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (WaitItemCount(expected, timeoutMs) != true)
         {
             var actual = GetItemCount();

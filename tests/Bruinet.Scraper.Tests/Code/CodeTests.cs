@@ -12,7 +12,8 @@ public sealed class CodeTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private ScrapeProject MakeProject(string name, string csproj = "<Project Sdk=\"Microsoft.NET.Sdk\" />")

@@ -151,9 +151,12 @@ public sealed partial class AppiumMauiElement
         foreach (var wheel in wheels)
         {
             var digits = Digits(wheel.GetAttribute("value"));
-            if (digits.Length == 4) year = wheel;
-            else if (digits.Length > 0) day = wheel;
-            else month = wheel;
+            if (digits.Length == 4)
+                year = wheel;
+            else if (digits.Length > 0)
+                day = wheel;
+            else
+                month = wheel;
         }
 
         if (month is null || day is null || year is null)

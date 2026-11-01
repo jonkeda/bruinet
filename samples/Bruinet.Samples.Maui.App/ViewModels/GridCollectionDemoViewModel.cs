@@ -66,7 +66,8 @@ public class GridCollectionDemoViewModel : ParentViewModel
 
     private async Task AddProductAsync()
     {
-        if (string.IsNullOrWhiteSpace(NewProductName)) return;
+        if (string.IsNullOrWhiteSpace(NewProductName))
+            return;
 
         await Task.Delay(50);
 
@@ -113,7 +114,8 @@ public class GridCollectionDemoViewModel : ParentViewModel
 
     private void DeleteProduct(ProductItem? product)
     {
-        if (product == null) return;
+        if (product == null)
+            return;
 
         Products.Remove(product);
         // No reindexing: rows are scoped, not id-addressed.

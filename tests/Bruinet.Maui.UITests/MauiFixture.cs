@@ -395,11 +395,11 @@ public class MauiFixture : MauiTestFixtureBase
     protected override string GetDefaultAppPath(MauiPlatform platform)
     {
         var solutionDir = FindSolutionDirectory();
-        
+
         return platform switch
         {
-            MauiPlatform.Windows => Path.Combine(solutionDir, 
-                "samples", "Bruinet.Samples.Maui.App", "bin", "Debug", 
+            MauiPlatform.Windows => Path.Combine(solutionDir,
+                "samples", "Bruinet.Samples.Maui.App", "bin", "Debug",
                 "net10.0-windows10.0.19041.0", "win-x64", "Bruinet.Samples.Maui.App.exe"),
             MauiPlatform.Android => Path.Combine(solutionDir,
                 "samples", "Bruinet.Samples.Maui.App", "bin", "Debug",

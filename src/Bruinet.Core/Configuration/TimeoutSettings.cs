@@ -31,43 +31,43 @@ public class TimeoutSettings
     public int DefaultWait { get => Scaled(_defaultWait); set => _defaultWait = value; }
 
     private int _defaultWait = 5000;
-    
+
     /// <summary>
     /// Timeout for page load operations (milliseconds).
     /// </summary>
     public int PageLoad { get => Scaled(_pageLoad); set => _pageLoad = value; }
 
     private int _pageLoad = 10000;
-    
+
     /// <summary>
     /// Timeout for element finding (milliseconds).
     /// </summary>
     public int ElementFind { get => Scaled(_elementFind); set => _elementFind = value; }
 
     private int _elementFind = 3000;
-    
+
     /// <summary>
     /// Timeout for element state changes (milliseconds).
     /// </summary>
     public int ElementState { get => Scaled(_elementState); set => _elementState = value; }
 
     private int _elementState = 3000;
-    
+
     /// <summary>
     /// Delay for animation settling (milliseconds).
     /// </summary>
     public int Animation { get; set; } = 300;
-    
+
     /// <summary>
     /// Polling interval for wait operations (milliseconds).
     /// </summary>
     public int PollingInterval { get; set; } = 100;
-    
+
     /// <summary>
     /// Default timeout settings.
     /// </summary>
     public static TimeoutSettings Default => new();
-    
+
     /// <summary>
     /// Fast timeout settings for quick checks.
     /// </summary>
@@ -80,7 +80,7 @@ public class TimeoutSettings
         Animation = 150,
         PollingInterval = 50
     };
-    
+
     /// <summary>
     /// Slow timeout settings for flaky environments.
     /// </summary>
@@ -93,7 +93,7 @@ public class TimeoutSettings
         Animation = 500,
         PollingInterval = 200
     };
-    
+
     /// <summary>
     /// Create a copy with modified values.
     /// </summary>

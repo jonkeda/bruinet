@@ -40,7 +40,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout.</param>
     protected virtual void SelectByTextCore(IMauiElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         element.SelectByText(text);
     }
@@ -53,7 +54,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout.</param>
     protected virtual void SelectByIndexCore(IMauiElement element, int? index, int? timeoutMs = null)
     {
-        if (index == null) return;
+        if (index == null)
+            return;
 
         element.SelectIndex(index.Value);
     }
@@ -67,7 +69,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout.</param>
     protected virtual void SelectByValueCore(IMauiElement element, string? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         SelectByTextCore(element, value, timeoutMs);
     }
@@ -91,7 +94,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <returns>The selected index, or null if not available.</returns>
     protected virtual int? GetSelectedIndexCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // No platform publishes a selected index. It is derived: find the selected text, then
         // its position among the item texts. Both halves are read from real elements.
@@ -129,7 +133,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <returns>The item count, or null if not available.</returns>
     protected virtual int? GetItemCountCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // Counted, not asked: no platform publishes an item count, so the items are read.
         return element.ReadItemTexts()?.Count;

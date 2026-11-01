@@ -70,7 +70,8 @@ public class StrideGameDriver : IDisposable
             }
             catch (OperationCanceledException)
             {
-                try { _gameProcess.Kill(entireProcessTree: true); }
+                try
+                { _gameProcess.Kill(entireProcessTree: true); }
                 catch { /* Process may have exited */ }
             }
         }
@@ -123,7 +124,8 @@ public class StrideGameDriver : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
         _disposed = true;
 
         StopAsync().GetAwaiter().GetResult();

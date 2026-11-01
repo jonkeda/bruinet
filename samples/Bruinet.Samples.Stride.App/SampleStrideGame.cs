@@ -27,7 +27,7 @@ public class SampleStrideGame : Game
     private Vector3 _playerPosition = new Vector3(0, 0.5f, 0);
     private const float MoveSpeed = 5f;
     private const float GroundSize = 20f;
-    
+
     // UI
     private UIElement? _mainUI;
     private UIComponent? _uiComponent;
@@ -35,34 +35,34 @@ public class SampleStrideGame : Game
     private UIElement? _hudPanel;
     private UIElement? _settingsOverlay;
     private bool _settingsOpen = false;
-    
+
     // HUD controls
     private TextBlock? _positionDisplay;
     private TextBlock? _escHint;
-    
+
     // Settings controls - Audio
     private Slider? _masterVolumeSlider;
     private Slider? _musicVolumeSlider;
     private Slider? _sfxVolumeSlider;
     private ToggleButton? _muteAudioToggle;
-    
+
     // Settings controls - Graphics
     private ToggleButton? _fullscreenToggle;
     private ToggleButton? _vsyncToggle;
     private Slider? _brightnessSlider;
-    
+
     // Settings controls - Gameplay
     private EditText? _playerNameInput;
     private Slider? _moveSpeedSlider;
     private Slider? _sensitivitySlider;
     private ToggleButton? _invertYToggle;
     private ToggleButton? _showFpsToggle;
-    
+
     // Settings controls - Buttons
     private Button? _applyButton;
     private Button? _resetButton;
     private Button? _closeButton;
-    
+
     // Legacy counter for backward compatibility with existing tests
     private int _counter;
     private TextBlock? _counterDisplay;
@@ -117,13 +117,13 @@ public class SampleStrideGame : Game
     {
         // Use CommunityToolkit to set up scene with proper graphics compositor
         this.SetupBase3DScene();
-        
+
         // Load the default font for UI text rendering
         _font = Content.Load<SpriteFont>("StrideDefaultFont");
-        
+
         // Create ground plane (green)
         CreateGround();
-        
+
         // Add UI component to the scene
         var uiEntity = new Entity("UI");
         _uiComponent = new UIComponent
@@ -146,7 +146,7 @@ public class SampleStrideGame : Game
         {
             Transform = { Position = new Vector3(0, -0.5f, 0), Scale = new Vector3(GroundSize, 0.1f, GroundSize) }
         };
-        
+
         SceneSystem.SceneInstance.RootScene.Entities.Add(ground);
     }
 
@@ -155,7 +155,7 @@ public class SampleStrideGame : Game
         // Find and adjust the camera for top-down/isometric view
         var cameraEntity = SceneSystem.SceneInstance.RootScene.Entities
             .FirstOrDefault(e => e.Get<CameraComponent>() != null);
-        
+
         if (cameraEntity != null)
         {
             // Position above and looking down at an angle (isometric-like)
@@ -171,7 +171,7 @@ public class SampleStrideGame : Game
         {
             Transform = { Position = _playerPosition, Scale = new Vector3(0.5f, 1f, 0.5f) }
         };
-        
+
         SceneSystem.SceneInstance.RootScene.Entities.Add(_player);
     }
 
@@ -181,7 +181,8 @@ public class SampleStrideGame : Game
 
     private void HandlePlayerInput(float deltaTime)
     {
-        if (_player == null) return;
+        if (_player == null)
+            return;
 
         // CRITICAL FIX: Don't process game input if UI control has focus
         // This prevents WASD keys from moving the player while typing in EditText
@@ -230,7 +231,8 @@ public class SampleStrideGame : Game
     /// </summary>
     private bool IsUIControlFocused()
     {
-        if (_mainUI == null) return false;
+        if (_mainUI == null)
+            return false;
 
         // Check if any EditText control has focus
         return HasFocusedEditText(_mainUI);
@@ -273,16 +275,16 @@ public class SampleStrideGame : Game
 
         if (_settingsOverlay != null)
         {
-            _settingsOverlay.Visibility = _settingsOpen 
-                ? Visibility.Visible 
+            _settingsOverlay.Visibility = _settingsOpen
+                ? Visibility.Visible
                 : Visibility.Collapsed;
         }
 
         // Update HUD hint
         if (_escHint != null)
         {
-            _escHint.Text = _settingsOpen 
-                ? "Press ESC to close Settings" 
+            _escHint.Text = _settingsOpen
+                ? "Press ESC to close Settings"
                 : "Press ESC for Settings";
         }
     }
@@ -295,7 +297,7 @@ public class SampleStrideGame : Game
     {
         // Create combined UI with both HUD (for GamePage tests) and Legacy controls (for Counter/Greeting tests)
         // This allows ALL tests to pass by including both UI structures
-        
+
         // Create main root panel
         var mainPanel = new Grid
         {
@@ -660,12 +662,18 @@ public class SampleStrideGame : Game
         row.Children.Add(display);
 
         // Store references for settings panel sliders
-        if (name == "MasterVolume") _masterVolumeSlider = slider;
-        else if (name == "MusicVolume") _musicVolumeSlider = slider;
-        else if (name == "SFXVolume") _sfxVolumeSlider = slider;
-        else if (name == "Brightness") _brightnessSlider = slider;
-        else if (name == "MoveSpeed") _moveSpeedSlider = slider;
-        else if (name == "Sensitivity") _sensitivitySlider = slider;
+        if (name == "MasterVolume")
+            _masterVolumeSlider = slider;
+        else if (name == "MusicVolume")
+            _musicVolumeSlider = slider;
+        else if (name == "SFXVolume")
+            _sfxVolumeSlider = slider;
+        else if (name == "Brightness")
+            _brightnessSlider = slider;
+        else if (name == "MoveSpeed")
+            _moveSpeedSlider = slider;
+        else if (name == "Sensitivity")
+            _sensitivitySlider = slider;
 
         return row;
     }
@@ -759,19 +767,31 @@ public class SampleStrideGame : Game
     private void ResetSettings()
     {
         // Reset all controls to defaults
-        if (_masterVolumeSlider != null) _masterVolumeSlider.Value = 80;
-        if (_musicVolumeSlider != null) _musicVolumeSlider.Value = 60;
-        if (_sfxVolumeSlider != null) _sfxVolumeSlider.Value = 70;
-        if (_brightnessSlider != null) _brightnessSlider.Value = 50;
-        if (_moveSpeedSlider != null) _moveSpeedSlider.Value = 5;
-        if (_sensitivitySlider != null) _sensitivitySlider.Value = 5;
-        if (_playerNameInput != null) _playerNameInput.Text = "Player";
-        
-        if (_muteAudioToggle != null) _muteAudioToggle.State = ToggleState.UnChecked;
-        if (_fullscreenToggle != null) _fullscreenToggle.State = ToggleState.UnChecked;
-        if (_vsyncToggle != null) _vsyncToggle.State = ToggleState.UnChecked;
-        if (_invertYToggle != null) _invertYToggle.State = ToggleState.UnChecked;
-        if (_showFpsToggle != null) _showFpsToggle.State = ToggleState.UnChecked;
+        if (_masterVolumeSlider != null)
+            _masterVolumeSlider.Value = 80;
+        if (_musicVolumeSlider != null)
+            _musicVolumeSlider.Value = 60;
+        if (_sfxVolumeSlider != null)
+            _sfxVolumeSlider.Value = 70;
+        if (_brightnessSlider != null)
+            _brightnessSlider.Value = 50;
+        if (_moveSpeedSlider != null)
+            _moveSpeedSlider.Value = 5;
+        if (_sensitivitySlider != null)
+            _sensitivitySlider.Value = 5;
+        if (_playerNameInput != null)
+            _playerNameInput.Text = "Player";
+
+        if (_muteAudioToggle != null)
+            _muteAudioToggle.State = ToggleState.UnChecked;
+        if (_fullscreenToggle != null)
+            _fullscreenToggle.State = ToggleState.UnChecked;
+        if (_vsyncToggle != null)
+            _vsyncToggle.State = ToggleState.UnChecked;
+        if (_invertYToggle != null)
+            _invertYToggle.State = ToggleState.UnChecked;
+        if (_showFpsToggle != null)
+            _showFpsToggle.State = ToggleState.UnChecked;
     }
 
     #endregion

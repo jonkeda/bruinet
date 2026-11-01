@@ -34,7 +34,8 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
     [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
     protected virtual string? GetUrlCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         return element.Text;
     }
@@ -47,10 +48,12 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
     [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
     protected virtual string? GetPageTitleCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var title = element.Name;
-        if (!string.IsNullOrEmpty(title)) return title;
+        if (!string.IsNullOrEmpty(title))
+            return title;
 
         return element.Text;
     }

@@ -523,6 +523,7 @@ internal sealed record ToolOptions(
             File.Exists(path) ? path : null,
             json,
             check,
-            currentDirectory) { Fix = fix, Keyword = keyword };
+            currentDirectory)
+        { Fix = fix, Keyword = keyword };
     }
 }

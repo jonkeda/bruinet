@@ -68,7 +68,8 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     /// <param name="timeoutMs">Optional timeout for enabled check.</param>
     protected virtual void SetTextCore(IMauiElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         element.Clear();
         // SetValue writes through the platform's own value mechanism, which needs no commit
@@ -85,7 +86,8 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     /// <param name="timeoutMs">Optional timeout for enabled check.</param>
     protected virtual void AppendCore(IMauiElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         element.AppendText(text);
     }
@@ -112,7 +114,8 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     /// <returns>The placeholder text, or null if not found.</returns>
     protected virtual string? GetPlaceholderCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // The hint first; an empty Entry on Windows also reports its placeholder as its name.
         return element.Hint ?? element.Name;
@@ -130,7 +133,8 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     [SkipGeneration("Hand-written below: IsReadOnly keeps the null of a platform that publishes no editability.")]
     protected virtual bool? IsReadOnlyCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // Windows answers from the Value pattern; Android and iOS publish no editability and answer null.
         return element?.IsReadOnly;

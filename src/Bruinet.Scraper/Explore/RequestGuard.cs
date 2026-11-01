@@ -29,7 +29,8 @@ public sealed class RequestGuard(ExploreSettings settings)
     public string? Check(string method, string url, bool navigatesPage)
     {
         var reason = Why(method, url, navigatesPage);
-        if (reason is not null) _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), url, reason));
+        if (reason is not null)
+            _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), url, reason));
         return reason;
     }
 

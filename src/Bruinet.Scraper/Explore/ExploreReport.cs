@@ -40,7 +40,8 @@ public static class ExploreReport
             md.AppendLine();
             md.AppendLine("## Notes");
             md.AppendLine();
-            foreach (var note in result.Notes) md.AppendLine(CultureInfo.InvariantCulture, $"- {note}");
+            foreach (var note in result.Notes)
+                md.AppendLine(CultureInfo.InvariantCulture, $"- {note}");
         }
         return md.ToString();
     }
@@ -77,7 +78,8 @@ public static class ExploreReport
         }
         md.AppendLine("| " + string.Join(" | ", columns) + " |");
         md.AppendLine("|" + string.Concat(columns.Select(_ => " --- |")));
-        foreach (var row in list) md.AppendLine("| " + string.Join(" | ", row.Select(Cell)) + " |");
+        foreach (var row in list)
+            md.AppendLine("| " + string.Join(" | ", row.Select(Cell)) + " |");
     }
 
     private static string Cell(string text) => text.Replace("|", "\\|", StringComparison.Ordinal).ReplaceLineEndings(" ");

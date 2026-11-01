@@ -49,7 +49,8 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
     {
         await _service.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     private string Pages(string file) => Path.Combine(_folder, "Pages", file);

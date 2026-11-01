@@ -36,7 +36,8 @@ public sealed record WorkflowState
     public static WorkflowState Read(ScrapeProject project)
     {
         var path = Path.Combine(project.Folder, FileName);
-        if (!File.Exists(path)) return new WorkflowState();
+        if (!File.Exists(path))
+            return new WorkflowState();
         try
         {
             return JsonSerializer.Deserialize<WorkflowState>(File.ReadAllText(path), Json) ?? new WorkflowState();

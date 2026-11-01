@@ -181,8 +181,16 @@ internal sealed class SqlReport
         suite = Suite(),
         tests = Tests.Select(test => new
         {
-            test.Test, test.TestMs, test.ArrangeMs, test.DatabaseMs, test.ArrangeDatabaseMs, test.Commands,
-            share = test.Share, shareWithArrange = test.ShareWithArrange, test.Objects, test.Repeats,
+            test.Test,
+            test.TestMs,
+            test.ArrangeMs,
+            test.DatabaseMs,
+            test.ArrangeDatabaseMs,
+            test.Commands,
+            share = test.Share,
+            shareWithArrange = test.ShareWithArrange,
+            test.Objects,
+            test.Repeats,
         }),
         objects = Objects,
     }, new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });

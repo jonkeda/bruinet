@@ -28,7 +28,8 @@ internal static class DataCommands
         var assembly = new Option<string[]>("--assembly") { Description = "The assembly with the TestDataDefinition (repeatable).", AllowMultipleArgumentsPerToken = true };
         var config = new Option<string?>("--config") { Description = "The config to read. Default: ./uat.config.md or ./bdd.config.md." };
         var command = new Command(name, description) { assembly, config };
-        if (argument is not null) command.Add(argument);
+        if (argument is not null)
+            command.Add(argument);
         var jsonOption = json ? CommonOptions.Json() : null;
         // --format json: the name bruinet-data had for --json.
         var format = json ? new Option<string?>("--format") { Description = "json: the same as --json.", Hidden = true } : null;
@@ -37,7 +38,8 @@ internal static class DataCommands
         var checkOption = check ? new Option<bool>("--check") { Description = "Only check that the schema is up to date." } : null;
         foreach (var option in new Option?[] { jsonOption, format, fixOption, keywordOption, checkOption })
         {
-            if (option is not null) command.Add(option);
+            if (option is not null)
+                command.Add(option);
         }
 
         command.Action(io, parsed => DataValidatorApp.Run(

@@ -54,14 +54,16 @@ public static class ControlChecker
 
     private static ControlPart? Part(CodeMember member, string name, (string Page, ScrapeSnapshot Snapshot, ScrapeNode Root)[] occurrences, bool once)
     {
-        if (member.Locator is null) return null; // a collection or a part made in code: nothing to look up
+        if (member.Locator is null)
+            return null; // a collection or a part made in code: nothing to look up
         if (Css(member.Locator) is not { } css || SnapshotSelector.Parse(css) is not { } selector)
             return new ControlPart(name, member.Locator, Readable: false, Found: 0, Of: occurrences.Length, Misses: []);
         var misses = new List<ControlMiss>();
         foreach (var (page, snapshot, root) in occurrences)
         {
             var count = selector.Under(snapshot, root).Count;
-            if (once ? count != 1 : count == 0) misses.Add(new ControlMiss(page, root.Number, count));
+            if (once ? count != 1 : count == 0)
+                misses.Add(new ControlMiss(page, root.Number, count));
         }
         return new ControlPart(name, member.Locator, Readable: true, occurrences.Length - misses.Count, occurrences.Length, misses.Take(10).ToArray());
     }
@@ -70,7 +72,8 @@ public static class ControlChecker
     public static string? Css(string locator)
     {
         var expression = SyntaxFactory.ParseExpression(locator);
-        if (expression is LiteralExpressionSyntax { Token.Value: string literal }) return literal;
+        if (expression is LiteralExpressionSyntax { Token.Value: string literal })
+            return literal;
         if (expression is not InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } call
             || access.Expression.ToString() is not ("Locator" or "Bruinet.Core.Locators.Locator")
             || call.ArgumentList.Arguments.Count != 1

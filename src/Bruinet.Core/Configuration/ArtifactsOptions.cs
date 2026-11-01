@@ -10,7 +10,7 @@ public class ArtifactsOptions
     /// Default: {AppData}/bruinet-artifacts
     /// </summary>
     public string RootDirectory { get; set; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "bruinet-artifacts");
 
     /// <summary>

@@ -10,7 +10,8 @@ public sealed class PageDrafterTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     [Theory]
@@ -53,13 +54,19 @@ public sealed class PageDrafterTests : IDisposable
         var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
         session.AddPage(new ScrapeSnapshot
         {
-            Platform = "html", Location = "https://shop.example/orders/12", Title = "Order", CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(1),
+            Platform = "html",
+            Location = "https://shop.example/orders/12",
+            Title = "Order",
+            CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(1),
             Nodes = [N(1, 0, "body"), N(2, 1, "button", "Details", ("data-testid", "order-details"), ("type", "button")), N(3, 1, "div", null, ("class", "x")), N(4, 3, "button", null, ("type", "button"))],
         });
         // A state a click showed (Explore names it): a dialog with a close button.
         session.AddPage(new ScrapeSnapshot
         {
-            Platform = "html", Location = "https://shop.example/orders/12", Title = "Order", CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(2),
+            Platform = "html",
+            Location = "https://shop.example/orders/12",
+            Title = "Order",
+            CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(2),
             Nodes = [N(1, 0, "body"), N(2, 1, "button", "Details", ("data-testid", "order-details"), ("type", "button")), N(3, 1, "dialog"), N(4, 3, "button", "×", ("data-testid", "order-close"), ("type", "button"))],
         }, pageName: "Order: Details");
         var index = project.Index();
@@ -89,7 +96,9 @@ public sealed class PageDrafterTests : IDisposable
         var project = ScrapeProject.Open(folder);
         project.StartSession("s", DateTimeOffset.UnixEpoch).AddPage(new ScrapeSnapshot
         {
-            Platform = "html", Location = "https://shop.example/url", Title = "Url",
+            Platform = "html",
+            Location = "https://shop.example/url",
+            Title = "Url",
             Nodes = [N(1, 0, "body"), N(2, 1, "button", "x", ("data-testid", "url")), N(3, 1, "button", "y", ("data-testid", "url-page")), N(4, 1, "input", null, ("data-testid", "name"))],
         });
         var index = project.Index();
@@ -108,7 +117,9 @@ public sealed class PageDrafterTests : IDisposable
         var project = ScrapeProject.Open(folder);
         project.StartSession("s", DateTimeOffset.UnixEpoch).AddPage(new ScrapeSnapshot
         {
-            Platform = "html", Location = "https://shop.example/tabs", Title = "Tabs",
+            Platform = "html",
+            Location = "https://shop.example/tabs",
+            Title = "Tabs",
             Nodes = [N(1, 0, "body"), N(2, 1, "div", null, ("data-testid", "tabs")) with { Role = "tablist" }, N(3, 2, "button", "One", ("data-testid", "one"), ("type", "button"))],
         });
         var index = project.Index();

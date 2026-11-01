@@ -70,7 +70,8 @@ public sealed partial class ScraperService
         foreach (var (folder, pattern, target) in new[] { (TestDrafter.TestsFolder, "*" + TestDrafter.Extension, TestTarget.Xunit), (TestDrafter.FeaturesFolder, "*.feature.md", TestTarget.Scenario) })
         {
             var full = Path.Combine(project.Folder, folder.Replace('/', Path.DirectorySeparatorChar));
-            if (!Directory.Exists(full)) continue;
+            if (!Directory.Exists(full))
+                continue;
             foreach (var file in Directory.EnumerateFiles(full, pattern))
             {
                 var text = File.ReadAllText(file);
@@ -85,7 +86,8 @@ public sealed partial class ScraperService
     private static string? ClassOf(string code)
     {
         var type = CSharpSyntaxTree.ParseText(code).GetCompilationUnitRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().FirstOrDefault();
-        if (type is null) return null;
+        if (type is null)
+            return null;
         var ns = type.Ancestors().OfType<BaseNamespaceDeclarationSyntax>().FirstOrDefault()?.Name.ToString();
         return ns is null ? type.Identifier.Text : $"{ns}.{type.Identifier.Text}";
     }

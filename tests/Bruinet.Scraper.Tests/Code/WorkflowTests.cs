@@ -24,7 +24,8 @@ public sealed class WorkflowTests : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         await _service.DisposeAsync();
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     private static ScrapeNode N(int n, int p, string type, string? text = null, params (string Key, string Value)[] attributes) =>
@@ -33,7 +34,10 @@ public sealed class WorkflowTests : IAsyncDisposable
     // A menu of three groups, each a header and a list of links; the third group's header is a span.title, not a span.header.
     private static ScrapeSnapshot Menu() => new()
     {
-        Platform = "html", Location = "https://shop.example/menu", Title = "Menu", CapturedAt = DateTimeOffset.UnixEpoch,
+        Platform = "html",
+        Location = "https://shop.example/menu",
+        Title = "Menu",
+        CapturedAt = DateTimeOffset.UnixEpoch,
         Nodes =
         [
             N(1, 0, "body"),

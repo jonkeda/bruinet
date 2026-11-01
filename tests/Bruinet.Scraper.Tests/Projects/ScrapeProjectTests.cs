@@ -10,7 +10,8 @@ public sealed class ScrapeProjectTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private string MakeProject(string name, string config)
@@ -191,7 +192,10 @@ public sealed class ScrapeProjectTests : IDisposable
         var session = project.StartSession("Bank", DateTimeOffset.UnixEpoch);
         var node = new ScrapeNode
         {
-            Number = 1, Parent = 0, Type = "td", Text = "Pay to NL91ABNA0417164300 today",
+            Number = 1,
+            Parent = 0,
+            Type = "td",
+            Text = "Pay to NL91ABNA0417164300 today",
             Attributes = new Dictionary<string, string> { ["title"] = "NL91ABNA0417164300" },
         };
 
@@ -222,7 +226,8 @@ public sealed class ScrapeProjectTests : IDisposable
         first.AddPage(Page("https://app.example.nl/invoices/1", "Invoice") with { CapturedAt = DateTimeOffset.UnixEpoch });
         var second = project.StartSession("Two", DateTimeOffset.UnixEpoch.AddDays(1));
         second.AddPage(Page("https://app.example.nl/invoices/2", "Invoice",
-            new ScrapeNode { Number = 1, Parent = 0, Type = "button", Text = "Approve" }) with { CapturedAt = DateTimeOffset.UnixEpoch.AddDays(1) });
+            new ScrapeNode { Number = 1, Parent = 0, Type = "button", Text = "Approve" }) with
+        { CapturedAt = DateTimeOffset.UnixEpoch.AddDays(1) });
         second.AddPage(Page("https://app.example.nl/#/dashboard", "Dashboard"));
 
         var index = project.Index();

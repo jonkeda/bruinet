@@ -6,7 +6,7 @@ namespace Bruinet.Core.Exceptions;
 public class BruinetException : Exception
 {
     public BruinetException(string message) : base(message) { }
-    
-    public BruinetException(string message, Exception innerException) 
+
+    public BruinetException(string message, Exception innerException)
         : base(message, innerException) { }
 }

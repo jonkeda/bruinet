@@ -109,11 +109,20 @@ public sealed partial class BddLanguageServer
         BddStepMove? move;
         switch (request.Move)
         {
-            case "over": move = BddStepMove.Over; break;
-            case "into": move = BddStepMove.Into; break;
-            case "out": move = BddStepMove.Out; break;
-            case "continue": move = null; break;
-            default: return new StepMoveResult(false, $"'{request.Move}' is not a move: over, into, out, continue or stop.");
+            case "over":
+                move = BddStepMove.Over;
+                break;
+            case "into":
+                move = BddStepMove.Into;
+                break;
+            case "out":
+                move = BddStepMove.Out;
+                break;
+            case "continue":
+                move = null;
+                break;
+            default:
+                return new StepMoveResult(false, $"'{request.Move}' is not a move: over, into, out, continue or stop.");
         }
 
         if (Interlocked.Exchange(ref run.Moving, 1) == 1)

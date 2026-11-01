@@ -26,7 +26,8 @@ internal static class TabMenuMarkup
 
     private static IMauiElement? Within(IMauiElement tabRoot, string automationId)
     {
-        if (tabRoot == null) return null;
+        if (tabRoot == null)
+            return null;
 
         try
         {

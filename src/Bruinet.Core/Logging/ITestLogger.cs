@@ -6,7 +6,7 @@ namespace Bruinet.Core.Logging;
 public interface ITestLogger : IDisposable
 {
     #region Core Log Method
-    
+
     /// <summary>
     /// Core log method - all convenience methods delegate to this.
     /// </summary>
@@ -27,11 +27,11 @@ public interface ITestLogger : IDisposable
         string? expectedValue,
         LogResult result,
         string? message);
-    
+
     #endregion
-    
+
     #region Entry/Exit Pattern
-    
+
     /// <summary>
     /// Log entry point before an operation starts.
     /// </summary>
@@ -46,7 +46,7 @@ public interface ITestLogger : IDisposable
         string controlId,
         string action,
         string? value);
-    
+
     /// <summary>
     /// Log exit point after an operation completes.
     /// </summary>
@@ -65,7 +65,7 @@ public interface ITestLogger : IDisposable
         LogResult result,
         int durationMs,
         string? message = null);
-    
+
     /// <summary>
     /// Log exit point for assertion operations with expected/actual values.
     /// </summary>
@@ -88,11 +88,11 @@ public interface ITestLogger : IDisposable
         LogResult result,
         int durationMs,
         string? message = null);
-    
+
     #endregion
-    
+
     #region Convenience Methods
-    
+
     /// <summary>
     /// Log an action performed by a control.
     /// </summary>
@@ -102,7 +102,7 @@ public interface ITestLogger : IDisposable
         string controlId,
         string action,
         string? value = null);
-    
+
     /// <summary>
     /// Log a passed assertion.
     /// </summary>
@@ -113,7 +113,7 @@ public interface ITestLogger : IDisposable
         string assertType,
         string? actualValue,
         string? expectedValue);
-    
+
     /// <summary>
     /// Log a failed assertion.
     /// </summary>
@@ -125,7 +125,7 @@ public interface ITestLogger : IDisposable
         string? actualValue,
         string? expectedValue,
         string? message = null);
-    
+
     /// <summary>
     /// Log a wait operation result.
     /// </summary>
@@ -136,7 +136,7 @@ public interface ITestLogger : IDisposable
         string waitType,
         bool success,
         int elapsedMs);
-    
+
     /// <summary>
     /// Log a navigation event.
     /// </summary>
@@ -144,7 +144,7 @@ public interface ITestLogger : IDisposable
         string testName,
         string sourcePage,
         string targetPage);
-    
+
     /// <summary>
     /// Log an informational message.
     /// </summary>
@@ -152,7 +152,7 @@ public interface ITestLogger : IDisposable
         string testName,
         string pageName,
         string message);
-    
+
     /// <summary>
     /// Log an error with exception details.
     /// </summary>
@@ -162,7 +162,7 @@ public interface ITestLogger : IDisposable
         string controlId,
         string action,
         Exception ex);
-    
+
     /// <summary>
     /// Log a screenshot capture event.
     /// </summary>
@@ -175,15 +175,15 @@ public interface ITestLogger : IDisposable
         string pageName,
         string screenshotPath,
         ScreenshotReason reason);
-    
+
     #endregion
-    
+
     #region Lifecycle
-    
+
     /// <summary>
     /// Flush pending writes to storage.
     /// </summary>
     void Flush();
-    
+
     #endregion
 }

@@ -42,7 +42,8 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
     /// <returns>True if loaded, false otherwise, null if not found.</returns>
     protected virtual bool? IsLoadedCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // A null Source means the app does not answer here, so fall back to the size check.
         if (element.ReadState("Source") is { } source)

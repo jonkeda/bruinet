@@ -17,7 +17,8 @@ public static class ScrollHelper
     /// </remarks>
     public static bool ScrollIntoView(IMauiElement? element, int timeoutMs)
     {
-        if (element == null) return false;
+        if (element == null)
+            return false;
 
         try
         {
@@ -44,7 +45,8 @@ public static class ScrollHelper
 
     private static bool Step(IMauiElement? element, bool forward)
     {
-        if (element == null) return false;
+        if (element == null)
+            return false;
 
         return element.ScrollContent(forward ? 1 : -1) != ScrollStep.NotMoved;
     }

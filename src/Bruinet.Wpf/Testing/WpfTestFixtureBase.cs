@@ -174,7 +174,8 @@ public abstract class WpfTestFixtureBase : IDisposable
 
     private static IntPtr ParseWindowHandle(string? value)
     {
-        if (string.IsNullOrWhiteSpace(value)) return IntPtr.Zero;
+        if (string.IsNullOrWhiteSpace(value))
+            return IntPtr.Zero;
         if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
         {
             if (long.TryParse(value[2..], System.Globalization.NumberStyles.HexNumber, null, out var hex))
@@ -201,7 +202,8 @@ public abstract class WpfTestFixtureBase : IDisposable
     /// </summary>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} DISPOSING at {DateTime.Now:HH:mm:ss.fff}");
 

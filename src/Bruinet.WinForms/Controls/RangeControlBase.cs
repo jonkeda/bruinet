@@ -34,7 +34,8 @@ public abstract class RangeControlBase<TScope> : ControlBase<TScope>, IRangeCont
 
     public virtual TScope SetValue(double? value, int? timeoutMs = null)
     {
-        if (value == null) return ContainingScope;
+        if (value == null)
+            return ContainingScope;
         RunWithElement(e =>
         {
             if (e is IRangePatternElement range && range.SupportsRangeValue)
@@ -130,7 +131,8 @@ public abstract class RangeControlBase<TScope> : ControlBase<TScope>, IRangeCont
 
     public bool WaitValue(double? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true; // nullable-skip: nothing asked, nothing failed
+        if (expected == null)
+            return true; // nullable-skip: nothing asked, nothing failed
         return WaitValueWithin(expected, 0, timeoutMs);
     }
 
@@ -141,7 +143,8 @@ public abstract class RangeControlBase<TScope> : ControlBase<TScope>, IRangeCont
 
     public bool WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() =>
         {
@@ -152,7 +155,8 @@ public abstract class RangeControlBase<TScope> : ControlBase<TScope>, IRangeCont
 
     public TScope AssertValueWithin(double? expected, double tolerance, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitValueWithin(expected, tolerance, timeoutMs))
         {
             var actual = GetValue();

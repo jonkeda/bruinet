@@ -19,7 +19,8 @@ public sealed class BruinetCommandTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     private async Task<(int Exit, string Output, string Errors)> Run(string currentDirectory, params string[] args)

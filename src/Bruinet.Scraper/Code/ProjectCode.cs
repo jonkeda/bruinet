@@ -26,7 +26,8 @@ public static class ProjectCode
         while (pending.Count > 0)
         {
             var folder = pending.Dequeue();
-            if (!seen.Add(folder)) continue;
+            if (!seen.Add(folder))
+                continue;
             var name = ProjectName(folder);
             classes.AddRange(ReadFolder(folder, name));
             foreach (var referenced in References(folder))
@@ -44,7 +45,8 @@ public static class ProjectCode
         foreach (var type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
         {
             var baseName = type.BaseList?.Types.Select(t => BaseName(t.Type)).FirstOrDefault(n => n is not null);
-            if (Kind(baseName) is not { } kind) continue;
+            if (Kind(baseName) is not { } kind)
+                continue;
             var members = Members(type);
             yield return new CodeClass(
                 type.Identifier.Text + (type.TypeParameterList is { } tp ? tp.ToString() : ""),
@@ -67,7 +69,8 @@ public static class ProjectCode
         {
             var relative = Path.GetRelativePath(folder, file);
             var first = relative.Split(Path.DirectorySeparatorChar)[0];
-            if (first is "bin" or "obj" or ScrapeProject.RecordingsFolderName || file.EndsWith(".gen.cs", StringComparison.OrdinalIgnoreCase)) continue;
+            if (first is "bin" or "obj" or ScrapeProject.RecordingsFolderName || file.EndsWith(".gen.cs", StringComparison.OrdinalIgnoreCase))
+                continue;
             var text = File.ReadAllText(file);
             classes.AddRange(ReadText(text, file, project));
             parts.AddRange(Parts(text));
@@ -86,7 +89,8 @@ public static class ProjectCode
         var root = CSharpSyntaxTree.ParseText(text).GetCompilationUnitRoot();
         foreach (var type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
         {
-            if (!type.Modifiers.Any(SyntaxKind.PartialKeyword) || type.BaseList is not null) continue;
+            if (!type.Modifiers.Any(SyntaxKind.PartialKeyword) || type.BaseList is not null)
+                continue;
             yield return (Namespace(type), type.Identifier.Text + (type.TypeParameterList?.ToString() ?? ""), Members(type));
         }
     }

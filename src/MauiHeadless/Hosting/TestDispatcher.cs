@@ -291,7 +291,8 @@ public sealed class TestDispatcher : IDispatcher
             using var done = new ManualResetEventSlim();
             dispatcher.Enqueue(() =>
             {
-                try { d(state); }
+                try
+                { d(state); }
                 catch (Exception e) { failure = ExceptionDispatchInfo.Capture(e); }
                 finally { done.Set(); }
             });

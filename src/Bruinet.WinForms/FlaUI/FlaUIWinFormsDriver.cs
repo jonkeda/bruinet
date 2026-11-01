@@ -68,10 +68,13 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
         }
         catch { }
 
-        try { _rootElement.SetForeground(); }
+        try
+        { _rootElement.SetForeground(); }
         catch
         {
-            try { _rootElement.Focus(); } catch { }
+            try
+            { _rootElement.Focus(); }
+            catch { }
         }
     }
 
@@ -88,7 +91,8 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
             var found = _rootElement.FindFirstDescendant(condition);
             if (found != null)
                 return new FlaUIWinFormsElement(found, this);
-            if (timeoutMs <= 0) break;
+            if (timeoutMs <= 0)
+                break;
             WaitHelper.Pause(100);
         }
 
@@ -262,10 +266,18 @@ public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IDisposable
         var sb = new System.Text.StringBuilder();
 
         string automationId = "", name = "", className = "", controlType = "Unknown";
-        try { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; } catch { }
-        try { name = element.Properties.Name.ValueOrDefault ?? ""; } catch { }
-        try { className = element.Properties.ClassName.ValueOrDefault ?? ""; } catch { }
-        try { controlType = element.ControlType.ToString(); } catch { }
+        try
+        { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { name = element.Properties.Name.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { className = element.Properties.ClassName.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { controlType = element.ControlType.ToString(); }
+        catch { }
 
         sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
 

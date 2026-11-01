@@ -37,7 +37,8 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
     /// <returns>Progress value between 0 and 1, or null if not found.</returns>
     protected virtual double? GetProgressCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // The app's own number first, in MAUI's units.
         if (double.TryParse(
@@ -106,7 +107,8 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
     /// <returns>The containing scope for fluent chaining.</returns>
     public TScope AssertProgress(double? expected, double tolerance, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
 
         return RunAssertWithElement(expected,
             GetProgressCore,

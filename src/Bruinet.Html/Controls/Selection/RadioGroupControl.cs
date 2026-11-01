@@ -27,7 +27,8 @@ public class RadioGroupControl<TScope> : SelectorControlBase<TScope>
     /// <inheritdoc />
     protected override void SelectByValueCore(IHtmlElement element, string? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         var radio = element.FindElement(Locator.ByCss($"input[type='radio'][value='{EscapeCssValue(value)}']"));
         Select(radio, $"'{value}'", timeoutMs);
@@ -36,7 +37,8 @@ public class RadioGroupControl<TScope> : SelectorControlBase<TScope>
     /// <inheritdoc />
     protected override void SelectByTextCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         var radio = element.FindElements(Labels)
             .Where(label => string.Equals(label.Text?.Trim(), text.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -49,7 +51,8 @@ public class RadioGroupControl<TScope> : SelectorControlBase<TScope>
     /// <inheritdoc />
     protected override void SelectByIndexCore(IHtmlElement element, int? index, int? timeoutMs = null)
     {
-        if (index == null) return;
+        if (index == null)
+            return;
 
         var radios = element.FindElements(Radios);
         if (index < 0 || index >= radios.Count)
@@ -67,7 +70,8 @@ public class RadioGroupControl<TScope> : SelectorControlBase<TScope>
     /// <inheritdoc />
     protected override string? GetSelectedTextCore(IHtmlElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         return element.FindElements(Labels)
             .FirstOrDefault(label => RadioOf(element, label)?.IsChecked == true)

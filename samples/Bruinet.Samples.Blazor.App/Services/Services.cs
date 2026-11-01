@@ -48,7 +48,7 @@ public class DataService
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            query = query.Where(i => 
+            query = query.Where(i =>
                 i.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
                 i.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
         }
@@ -165,7 +165,7 @@ public class MediaService
 
     public Task<List<MediaItem>> GetMediaItemsAsync(MediaType? type = null)
     {
-        var items = type.HasValue 
+        var items = type.HasValue
             ? _items.Where(i => i.Type == type.Value).ToList()
             : _items.ToList();
         return Task.FromResult(items);

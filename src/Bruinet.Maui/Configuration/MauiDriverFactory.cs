@@ -23,7 +23,7 @@ public static class MauiDriverFactory
 
     private static Type? _appiumDriverType;
     private static Type? _flaUIDriverType;
-    
+
     /// <summary>
     /// Creates a driver based on the specified options.
     /// </summary>
@@ -35,7 +35,7 @@ public static class MauiDriverFactory
     public static IMauiDriver Create(MauiDriverOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
-        
+
         return options.Platform switch
         {
             MauiPlatform.Windows => CreateFlaUIDriver(options),
@@ -46,7 +46,7 @@ public static class MauiDriverFactory
             _ => throw new ArgumentException($"Unsupported platform: {options.Platform}")
         };
     }
-    
+
     private static IMauiDriver CreateFlaUIDriver(MauiDriverOptions options)
     {
         if (!OperatingSystem.IsWindows())
@@ -55,9 +55,9 @@ public static class MauiDriverFactory
                 "FlaUI driver is only available on Windows. " +
                 "Use APPIUM_PLATFORM=android or APPIUM_PLATFORM=ios for other platforms.");
         }
-        
+
         var driverType = GetFlaUIDriverType();
-        
+
         if (options.WindowHandle.HasValue)
         {
             var ctor = driverType.GetConstructor([typeof(IntPtr)])
@@ -71,7 +71,7 @@ public static class MauiDriverFactory
                           ?? throw new InvalidOperationException(
                               $"Process not found: {options.ProcessName}. " +
                               "Ensure the application is running or use AppPath to launch it.");
-            
+
             var ctor = driverType.GetConstructor([typeof(Process)])
                        ?? throw new InvalidOperationException("FlaUIMauiDriver(Process) constructor not found");
             return (IMauiDriver)ctor.Invoke([process]);
@@ -97,7 +97,7 @@ public static class MauiDriverFactory
             "Set APPIUM_APP_PATH environment variable or configure options.",
             nameof(options));
     }
-    
+
     private static IMauiDriver CreateAppiumDriver(MauiDriverOptions options)
     {
         ValidateAppiumOptions(options);
@@ -107,18 +107,18 @@ public static class MauiDriverFactory
 
         var appiumOptionsType = LoadAppiumOptionsType();
         var appiumDriverType = GetAppiumDriverType();
-        
+
         var appiumOptions = BuildAppiumOptionsReflection(options, appiumOptionsType);
-        
+
         var rawDriver = CreatePlatformDriverReflection(options.AppiumServerUri, appiumOptions, options.Platform);
-        
+
         var ctor = appiumDriverType.GetConstructor([rawDriver.GetType(), typeof(MauiPlatform)])
             ?? appiumDriverType.GetConstructors().First();
 
         build?.RememberInstalled();
         return (IMauiDriver)ctor.Invoke([rawDriver, options.Platform]);
     }
-    
+
     private static void ValidateAppiumOptions(MauiDriverOptions options)
     {
         if (string.IsNullOrEmpty(options.AppPath))
@@ -129,11 +129,12 @@ public static class MauiDriverFactory
                 nameof(options));
         }
     }
-    
+
     private static Type GetFlaUIDriverType()
     {
-        if (_flaUIDriverType != null) return _flaUIDriverType;
-        
+        if (_flaUIDriverType != null)
+            return _flaUIDriverType;
+
         try
         {
             var assembly = Assembly.Load("Bruinet.Maui.FlaUI");
@@ -148,11 +149,12 @@ public static class MauiDriverFactory
                 "Ensure the Bruinet.Maui.FlaUI package is referenced in your project.", exception);
         }
     }
-    
+
     private static Type GetAppiumDriverType()
     {
-        if (_appiumDriverType != null) return _appiumDriverType;
-        
+        if (_appiumDriverType != null)
+            return _appiumDriverType;
+
         try
         {
             var assembly = Assembly.Load("Bruinet.Maui.Appium");
@@ -167,7 +169,7 @@ public static class MauiDriverFactory
                 "Ensure the Bruinet.Maui.Appium package is referenced in your project.", exception);
         }
     }
-    
+
     private static Type LoadAppiumOptionsType()
     {
         try
@@ -183,7 +185,7 @@ public static class MauiDriverFactory
                 "Ensure the Appium.WebDriver package is referenced by the test project.", exception);
         }
     }
-    
+
     /// <summary>
     /// The session settings every MAUI suite on <paramref name="platform"/> starts with, in one
     /// place; a suite's own <see cref="MauiDriverOptions.AdditionalCapabilities"/> override them.
@@ -240,13 +242,13 @@ public static class MauiDriverFactory
     private static object BuildAppiumOptionsReflection(MauiDriverOptions options, Type appiumOptionsType)
     {
         var appiumOptions = Activator.CreateInstance(appiumOptionsType)!;
-        
+
         var platformNameProp = appiumOptionsType.GetProperty("PlatformName");
         var automationNameProp = appiumOptionsType.GetProperty("AutomationName");
         var deviceNameProp = appiumOptionsType.GetProperty("DeviceName");
         var platformVersionProp = appiumOptionsType.GetProperty("PlatformVersion");
         var appProp = appiumOptionsType.GetProperty("App");
-        
+
         switch (options.Platform)
         {
             case MauiPlatform.Android:
@@ -255,7 +257,7 @@ public static class MauiDriverFactory
                 deviceNameProp?.SetValue(appiumOptions, options.DeviceName ?? "emulator-5554");
                 appProp?.SetValue(appiumOptions, options.AppPath);
                 break;
-                
+
             case MauiPlatform.iOS:
                 platformNameProp?.SetValue(appiumOptions, "iOS");
                 automationNameProp?.SetValue(appiumOptions, "XCUITest");
@@ -265,7 +267,7 @@ public static class MauiDriverFactory
                 appProp?.SetValue(appiumOptions, options.AppPath);
                 break;
         }
-        
+
         var addCapMethod = appiumOptionsType.GetMethod("AddAdditionalAppiumOption");
         if (addCapMethod != null)
         {
@@ -286,10 +288,10 @@ public static class MauiDriverFactory
                 addCapMethod.Invoke(appiumOptions, ["optionalIntentArguments", intentArguments]);
             }
         }
-        
+
         return appiumOptions;
     }
-    
+
     /// <summary>
     /// <see cref="MauiDriverOptions.LaunchSettings"/> as launch-intent string extras, or null when
     /// there are none.
@@ -351,17 +353,17 @@ public static class MauiDriverFactory
         try
         {
             var assembly = Assembly.Load(AppiumAssemblyName);
-            
+
             Type driverType = platform switch
             {
                 MauiPlatform.Android => assembly.GetType("OpenQA.Selenium.Appium.Android.AndroidDriver")!,
                 MauiPlatform.iOS => assembly.GetType("OpenQA.Selenium.Appium.iOS.IOSDriver")!,
                 _ => throw new ArgumentException($"Appium not supported for platform: {platform}")
             };
-            
+
             var ctor = driverType.GetConstructor([typeof(Uri), appiumOptions.GetType()])
                 ?? driverType.GetConstructors().First();
-            
+
             return ctor.Invoke([serverUri, appiumOptions]);
         }
         catch (FileNotFoundException exception)

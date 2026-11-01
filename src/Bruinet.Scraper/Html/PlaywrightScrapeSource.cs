@@ -90,7 +90,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     /// <inheritdoc/>
     public async Task StartAsync(ScrapeStart start, CancellationToken cancellationToken = default)
     {
-        if (_page is not null) throw new InvalidOperationException("The source is started already.");
+        if (_page is not null)
+            throw new InvalidOperationException("The source is started already.");
         Directory.CreateDirectory(start.ProfileFolder);
         _playwright = await Playwright.CreateAsync().ConfigureAwait(false);
         try
@@ -163,11 +164,13 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     public async Task<ScrapeAssert?> PickAssertAsync(CancellationToken cancellationToken = default)
     {
         var page = Started();
-        if (await PickAsync(cancellationToken).ConfigureAwait(false) is not { } node) return null;
+        if (await PickAsync(cancellationToken).ConfigureAwait(false) is not { } node)
+            return null;
         var (frame, local) = _numbers[node - 1];
         var json = await TryEvaluateAsync<string?>(frame, FactsScript, local).ConfigureAwait(false);
         var facts = json is null ? null : JsonSerializer.Deserialize<Facts>(json, FrameCapture.Json);
-        if (facts is null) return null; // the element went away while it was picked
+        if (facts is null)
+            return null; // the element went away while it was picked
         string? check;
         using (cancellationToken.Register(() => _ = TryEvaluateAsync<bool>(page.MainFrame, "() => { if (window.__bruinetChooseCancel) window.__bruinetChooseCancel(); return true; }", null)))
             check = await TryEvaluateAsync<string?>(page.MainFrame, "f => window.__bruinetChooseCheck(f)", new { text = facts.Text, value = facts.Value, @checked = facts.Checked }).ConfigureAwait(false);
@@ -190,7 +193,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     private async Task<ScrapeSnapshot> CaptureLockedAsync(bool settle, CancellationToken cancellationToken)
     {
         var page = Started();
-        if (settle) await SettleAsync(page, cancellationToken).ConfigureAwait(false);
+        if (settle)
+            await SettleAsync(page, cancellationToken).ConfigureAwait(false);
         var generation = ++_generation;
 
         var frames = new Dictionary<IFrame, FrameCapture>();
@@ -229,7 +233,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
 
     private void Enqueue(IFrame frame, string json)
     {
-        if (_recordingActions) _acts.Writer.TryWrite(new Act(frame, json, _page?.Url ?? frame.Url, DateTimeOffset.UtcNow));
+        if (_recordingActions)
+            _acts.Writer.TryWrite(new Act(frame, json, _page?.Url ?? frame.Url, DateTimeOffset.UtcNow));
     }
 
     private async Task PumpAsync()
@@ -255,13 +260,21 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         {
             return null; // not the recorder's message
         }
-        if (raw?.Kind is null) return null;
+        if (raw?.Kind is null)
+            return null;
         var action = new ScrapeAction
         {
-            Kind = raw.Kind, At = act.At, Location = act.Location, Path = raw.Path, Value = raw.Secret is null ? raw.Value : null, Secret = raw.Secret,
-            Checked = raw.Checked, Accepted = raw.Accepted,
+            Kind = raw.Kind,
+            At = act.At,
+            Location = act.Location,
+            Path = raw.Path,
+            Value = raw.Secret is null ? raw.Value : null,
+            Secret = raw.Secret,
+            Checked = raw.Checked,
+            Accepted = raw.Accepted,
         };
-        if (raw.Id is not { } id) return action;
+        if (raw.Id is not { } id)
+            return action;
 
         await _captureLock.WaitAsync().ConfigureAwait(false);
         try
@@ -273,8 +286,10 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             {
                 // Not settled: the person acted on the page as it was. One that moved on since is not its page.
                 capture = await TryCaptureLockedAsync().ConfigureAwait(false);
-                if (capture is not null && Projects.PageKey.Of(capture.Location) != Projects.PageKey.Of(act.Location)) capture = null;
-                if (capture is not null) node = await TryPendingNodeAsync(act.Frame, id).ConfigureAwait(false);
+                if (capture is not null && Projects.PageKey.Of(capture.Location) != Projects.PageKey.Of(act.Location))
+                    capture = null;
+                if (capture is not null)
+                    node = await TryPendingNodeAsync(act.Frame, id).ConfigureAwait(false);
             }
             await TryEvaluateAsync<bool>(act.Frame, "id => { delete (window.__bruinetPending || {})[id]; return true; }", id).ConfigureAwait(false);
             return action with { Node = node, CapturedAt = node is null ? null : _capturedAt, Capture = capture };
@@ -302,7 +317,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
 
     private int? Global(IFrame frame, int local)
     {
-        if (local <= 0) return null;
+        if (local <= 0)
+            return null;
         var index = _numbers.FindIndex(n => n.Frame == frame && n.Local == local);
         return index >= 0 ? index + 1 : null;
     }
@@ -338,8 +354,10 @@ public sealed class PlaywrightScrapeSource : IExploreSource
                 var done = await Task.WhenAny(picks.Select(p => p.Task)).ConfigureAwait(false);
                 var pick = picks.First(p => p.Task == done);
                 picks.Remove(pick);
-                if (!done.IsCompletedSuccessfully) continue; // the frame went away while picking
-                if (done.Result == 0) return null;
+                if (!done.IsCompletedSuccessfully)
+                    continue; // the frame went away while picking
+                if (done.Result == 0)
+                    return null;
                 var index = _numbers.FindIndex(x => x.Frame == pick.Frame && x.Local == done.Result);
                 return index >= 0 ? index + 1 : null;
             }
@@ -359,7 +377,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     public async Task GuardAsync(RequestGuard guard)
     {
         var page = Started();
-        if (_guard is not null) throw new InvalidOperationException("The source is guarded already.");
+        if (_guard is not null)
+            throw new InvalidOperationException("The source is guarded already.");
         if (Uri.TryCreate(page.Url, UriKind.Absolute, out var location) && location.Scheme is "http" or "https" && RequestGuard.RefuseHost(location, guard.Settings) is { } refused)
             throw new InvalidOperationException(refused);
         _guard = guard;
@@ -370,10 +389,13 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     /// <summary>Takes the guards of <see cref="GuardAsync"/> off.</summary>
     public async Task UnguardAsync()
     {
-        if (_guard is null) return;
+        if (_guard is null)
+            return;
         _guard = null;
-        if (_page is not null) _page.WebSocket -= OnWebSocket;
-        if (_context is not null) await _context.UnrouteAsync("**/*", RouteAsync).ConfigureAwait(false);
+        if (_page is not null)
+            _page.WebSocket -= OnWebSocket;
+        if (_context is not null)
+            await _context.UnrouteAsync("**/*", RouteAsync).ConfigureAwait(false);
     }
 
     /// <inheritdoc/>
@@ -393,12 +415,14 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     /// <inheritdoc/>
     public async Task<string?> ClickAsync(int node, CancellationToken cancellationToken = default)
     {
-        if (node < 1 || node > _numbers.Count) return $"node {node} is not in the last capture";
+        if (node < 1 || node > _numbers.Count)
+            return $"node {node} is not in the last capture";
         var (frame, local) = _numbers[node - 1];
         try
         {
             var handle = await frame.EvaluateHandleAsync("n => window.__bruinetScrapeNodes[n - 1]", local).ConfigureAwait(false);
-            if (handle.AsElement() is not { } element) return "the element is gone";
+            if (handle.AsElement() is not { } element)
+                return "the element is gone";
             await element.ClickAsync(new() { Timeout = (float)ClickLimit.TotalMilliseconds }).ConfigureAwait(false);
             return null;
         }
@@ -420,7 +444,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             foreach (var local in locals)
             {
                 var index = _numbers.FindIndex(n => n.Frame == frame && n.Local == local);
-                if (index >= 0) matched.Add(index + 1);
+                if (index >= 0)
+                    matched.Add(index + 1);
             }
         }
         return matched;
@@ -465,8 +490,10 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     {
         _recordingActions = false;
         _acts.Writer.TryComplete();
-        if (_pump is not null) await _pump.ConfigureAwait(false);
-        if (_context is not null) await _context.CloseAsync().ConfigureAwait(false);
+        if (_pump is not null)
+            await _pump.ConfigureAwait(false);
+        if (_context is not null)
+            await _context.CloseAsync().ConfigureAwait(false);
         _playwright?.Dispose();
         _context = null;
         _page = null;
@@ -488,7 +515,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     private void OnFrameNavigated(object? sender, IFrame frame)
     {
         // Also raised for pushState and hash changes: a single-page app's page transitions.
-        if (frame != _page?.MainFrame || frame.Url == _lastLocation) return;
+        if (frame != _page?.MainFrame || frame.Url == _lastLocation)
+            return;
         _lastLocation = frame.Url;
         Enqueue(frame, JsonSerializer.Serialize(new { kind = ScrapeActionKind.Navigate }));
         Transitioned?.Invoke(this, new ScrapeTransition(frame.Url));
@@ -496,10 +524,12 @@ public sealed class PlaywrightScrapeSource : IExploreSource
 
     private async Task FollowInRecordedPageAsync(IPage opened)
     {
-        if (_page is null || opened == _page) return;
+        if (_page is null || opened == _page)
+            return;
         var url = await TryWaitForUrlAsync(opened).ConfigureAwait(false);
         await opened.CloseAsync().ConfigureAwait(false);
-        if (url is not null) await _page.GotoAsync(url, Opening).ConfigureAwait(false);
+        if (url is not null)
+            await _page.GotoAsync(url, Opening).ConfigureAwait(false);
     }
 
     private static async Task<string?> TryWaitForUrlAsync(IPage page)
@@ -538,7 +568,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         foreach (var state in new[] { LoadState.Load, LoadState.NetworkIdle })
         {
             var left = deadline - DateTime.UtcNow;
-            if (left <= TimeSpan.Zero) return;
+            if (left <= TimeSpan.Zero)
+                return;
             try
             {
                 await page.WaitForLoadStateAsync(state, new() { Timeout = (float)left.TotalMilliseconds }).ConfigureAwait(false);

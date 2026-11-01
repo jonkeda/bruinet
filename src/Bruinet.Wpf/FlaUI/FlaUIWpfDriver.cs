@@ -141,7 +141,8 @@ public sealed class FlaUIWpfDriver : IWpfDriver, IDisposable
             if (found != null)
                 return new FlaUIWpfElement(found, this);
 
-            if (timeoutMs <= 0) break;
+            if (timeoutMs <= 0)
+                break;
             WaitHelper.Pause(100);
         }
 
@@ -266,10 +267,18 @@ public sealed class FlaUIWpfDriver : IWpfDriver, IDisposable
         string className = "";
         string controlType = "Unknown";
 
-        try { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; } catch { }
-        try { name = element.Properties.Name.ValueOrDefault ?? ""; } catch { }
-        try { className = element.Properties.ClassName.ValueOrDefault ?? ""; } catch { }
-        try { controlType = element.ControlType.ToString(); } catch { }
+        try
+        { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { name = element.Properties.Name.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { className = element.Properties.ClassName.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { controlType = element.ControlType.ToString(); }
+        catch { }
 
         sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
 

@@ -27,12 +27,15 @@ public static class DangerWords
     {
         foreach (var text in texts)
         {
-            if (string.IsNullOrWhiteSpace(text)) continue;
+            if (string.IsNullOrWhiteSpace(text))
+                continue;
             var words = Words(text);
-            if (words.Count == 0) continue;
+            if (words.Count == 0)
+                continue;
             foreach (var (category, phrases) in ByCategory)
             {
-                if (!isOn(category)) continue;
+                if (!isOn(category))
+                    continue;
                 foreach (var phrase in phrases)
                     if (HasPhrase(words, Words(phrase)))
                         return (category, phrase);
@@ -47,12 +50,15 @@ public static class DangerWords
 
     private static bool HasPhrase(IReadOnlyList<string> words, IReadOnlyList<string> parts)
     {
-        if (parts.Count == 0) return false;
+        if (parts.Count == 0)
+            return false;
         for (var i = 0; i + parts.Count <= words.Count; i++)
         {
             var j = 0;
-            while (j < parts.Count && words[i + j] == parts[j]) j++;
-            if (j == parts.Count) return true;
+            while (j < parts.Count && words[i + j] == parts[j])
+                j++;
+            if (j == parts.Count)
+                return true;
         }
         return false;
     }
@@ -65,14 +71,16 @@ public static class DangerWords
         char previous = ' ';
         foreach (var c in text.Normalize(NormalizationForm.FormD))
         {
-            if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark) continue;
+            if (CharUnicodeInfo.GetUnicodeCategory(c) == UnicodeCategory.NonSpacingMark)
+                continue;
             if (!char.IsLetterOrDigit(c))
             {
                 Flush();
             }
             else
             {
-                if (char.IsUpper(c) && char.IsLower(previous)) Flush();
+                if (char.IsUpper(c) && char.IsLower(previous))
+                    Flush();
                 word.Append(char.ToLowerInvariant(c));
             }
             previous = c;
@@ -82,7 +90,8 @@ public static class DangerWords
 
         void Flush()
         {
-            if (word.Length > 0) words.Add(word.ToString());
+            if (word.Length > 0)
+                words.Add(word.ToString());
             word.Clear();
         }
     }

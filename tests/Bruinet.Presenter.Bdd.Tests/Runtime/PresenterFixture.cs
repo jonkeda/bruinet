@@ -53,15 +53,15 @@ public sealed class PresenterFixture : MauiTestFixtureBase
         var solutionDirectory = FindSolutionDirectory();
         return platform switch
         {
-             MauiPlatform.Windows => Path.Combine(
-                solutionDirectory,
-                "src",
-                "Bruinet.Presenter",
-                "bin",
-                "Debug",
-                "net10.0-windows10.0.19041.0",
-                "win-x64",
-                "Bruinet.Presenter.exe"),
+            MauiPlatform.Windows => Path.Combine(
+               solutionDirectory,
+               "src",
+               "Bruinet.Presenter",
+               "bin",
+               "Debug",
+               "net10.0-windows10.0.19041.0",
+               "win-x64",
+               "Bruinet.Presenter.exe"),
             _ => string.Empty
         };
     }

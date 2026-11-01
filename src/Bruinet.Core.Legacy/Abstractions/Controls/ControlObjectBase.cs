@@ -13,19 +13,19 @@ public abstract class ControlObjectBase<TScope>
     /// Protected - for framework internal use only.
     /// </summary>
     protected Locator Locator { get; }
-    
+
     /// <summary>
     /// The element scope (page or container) for this control.
     /// Protected - for framework internal use only.
     /// </summary>
     protected IElementScope Scope { get; }
-    
+
     /// <summary>
     /// The page containing this control.
     /// Accessed via Scope.Page - for framework internal use only.
     /// </summary>
     protected IPageObject? Page => Scope.Page;
-    
+
     /// <summary>
     /// Creates a new control object with the specified locator and scope.
     /// </summary>

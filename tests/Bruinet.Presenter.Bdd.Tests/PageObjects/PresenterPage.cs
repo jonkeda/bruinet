@@ -31,41 +31,41 @@ public sealed class PresenterPage : PageObjectBase<PresenterPage>
     public PresenterStatusLabel<PresenterPage> StatusSummary => new(this, "StatusSummaryLabel");
 
     [UatName("Workspace Summary")]
-    public Label<PresenterPage> WorkspaceSummary => new(this,"WorkspaceSummaryLabel");
+    public Label<PresenterPage> WorkspaceSummary => new(this, "WorkspaceSummaryLabel");
 
     [UatName("Workspace Tree")]
-    public Label<PresenterPage> WorkspaceTree => new(this,"WorkspaceTreeText");
+    public Label<PresenterPage> WorkspaceTree => new(this, "WorkspaceTreeText");
 
     [UatName("All Workspace Tree")]
-    public Label<PresenterPage> AllWorkspaceTree => new(this,"AllWorkspaceTreeText");
+    public Label<PresenterPage> AllWorkspaceTree => new(this, "AllWorkspaceTreeText");
 
     [UatName("Step List")]
-    public Label<PresenterPage> StepList => new(this,"StepListText");
+    public Label<PresenterPage> StepList => new(this, "StepListText");
 
     [UatName("Workspace Config")]
-    public Label<PresenterPage> WorkspaceConfig => new(this,"WorkspaceConfigText");
+    public Label<PresenterPage> WorkspaceConfig => new(this, "WorkspaceConfigText");
 
     [UatName("Execution Timing")]
-    public Label<PresenterPage> ExecutionTiming => new(this,"ExecutionTimingText");
+    public Label<PresenterPage> ExecutionTiming => new(this, "ExecutionTimingText");
 
     [UatName("Run Scope")]
-    public Label<PresenterPage> RunScope => new(this,"RunScopeText");
+    public Label<PresenterPage> RunScope => new(this, "RunScopeText");
 
     [UatName("Open Recent")]
-    public Button<PresenterPage> OpenRecentButton => new(this,"OpenRecentButton");
+    public Button<PresenterPage> OpenRecentButton => new(this, "OpenRecentButton");
 
     [UatName("Recent Folders")]
-    public Label<PresenterPage> RecentFolders => new(this,"RecentFoldersText");
+    public Label<PresenterPage> RecentFolders => new(this, "RecentFoldersText");
 
     [UatName("AUT Placement")]
-    public Label<PresenterPage> AutPlacement => new(this,"AutPlacementText");
+    public Label<PresenterPage> AutPlacement => new(this, "AutPlacementText");
 
     [UatName("Run")]
-    public Button<PresenterPage> RunButton => new(this,"RunButton");
+    public Button<PresenterPage> RunButton => new(this, "RunButton");
 
-    public Button<PresenterPage> StopButton => new(this,"StopButton");
+    public Button<PresenterPage> StopButton => new(this, "StopButton");
 
-    public Button<PresenterPage> ReloadButton => new(this,"ReloadButton");
+    public Button<PresenterPage> ReloadButton => new(this, "ReloadButton");
 
     /// <summary>Present mode: the scenarios, the steps and the moves.</summary>
     [UatName("Present Mode")]
@@ -124,7 +124,7 @@ public sealed class PresenterPage : PageObjectBase<PresenterPage>
     public Button<PresenterPage> Scene1Watch => new(this, "NarratorSceneWatch_1");
 
     [UatName("Next")]
-    public Button<PresenterPage> NextButton => new(this,"NextButton");
+    public Button<PresenterPage> NextButton => new(this, "NextButton");
 
     /// <summary>The run's speed: a click cycles Fast, Normal and Slow.</summary>
     [UatName("Speed")]

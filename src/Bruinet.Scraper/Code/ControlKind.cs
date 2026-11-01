@@ -45,7 +45,8 @@ public static class ControlKind
     /// <summary>The element's core, or null when a test has nothing to do with it (a wrapper, a hidden input).</summary>
     public static CoreReading? Of(ScrapeSnapshot snapshot, ScrapeNode node)
     {
-        if (node.Kind != ScrapeNodeKind.Element) return null;
+        if (node.Kind != ScrapeNodeKind.Element)
+            return null;
         var type = (node.Attribute("type") ?? "").ToLowerInvariant();
         var popup = node.Attribute("aria-haspopup");
         switch (node.Type)
@@ -61,9 +62,12 @@ public static class ControlKind
             case "input" when type is "button" or "submit" or "reset" or "image":
                 return new(PartCore.Clickable, $"input type={type}");
             case "input" when TextTypes.Contains(type):
-                if (popup is not null && popup != "false") return new(PartCore.Selector, $"input aria-haspopup={popup}");
-                if (node.Role is "combobox") return new(PartCore.Selector, "input role=combobox");
-                if (PopupAbove(snapshot, node) is { } above) return new(PartCore.Selector, $"input inside an element with {above}");
+                if (popup is not null && popup != "false")
+                    return new(PartCore.Selector, $"input aria-haspopup={popup}");
+                if (node.Role is "combobox")
+                    return new(PartCore.Selector, "input role=combobox");
+                if (PopupAbove(snapshot, node) is { } above)
+                    return new(PartCore.Selector, $"input inside an element with {above}");
                 return node.Attribute("readonly") is not null
                     ? new(PartCore.Readable, "readonly input")
                     : new(PartCore.Text, $"input type={(type.Length > 0 ? type : "text")}");
@@ -76,7 +80,8 @@ public static class ControlKind
         }
 
         // A button that pops a list up is a selector: the popup says more than the role.
-        if (popup is not null && popup != "false" && popup != "dialog") return new(PartCore.Selector, $"aria-haspopup={popup}" + (node.Role is { } r ? $" on role={r}" : ""));
+        if (popup is not null && popup != "false" && popup != "dialog")
+            return new(PartCore.Selector, $"aria-haspopup={popup}" + (node.Role is { } r ? $" on role={r}" : ""));
 
         switch (node.Role)
         {
@@ -94,15 +99,24 @@ public static class ControlKind
                 return new(PartCore.Readable, $"role={node.Role}");
         }
 
-        if (node.Attribute("aria-checked") is { } checkedState) return new(PartCore.Toggle, $"aria-checked={checkedState}");
-        if (node.Attribute("aria-pressed") is { } pressed) return new(PartCore.Toggle, $"aria-pressed={pressed}");
-        if (node.Attribute("contenteditable") is "" or "true") return new(PartCore.Text, "contenteditable");
-        if (node.Type is "button" or "summary") return new(PartCore.Clickable, node.Type);
-        if (node.Type == "a" && node.Attribute("href") is not null) return new(PartCore.Clickable, "a href");
-        if (node.Attribute("tabindex") is { } tab && int.TryParse(tab, out var index) && index >= 0) return new(PartCore.Clickable, $"tabindex={tab}");
-        if (Headings.Contains(node.Type)) return new(PartCore.Readable, node.Type);
-        if (node.Attribute("aria-live") is { } live && live != "off") return new(PartCore.Readable, $"aria-live={live}");
-        if (node.Text is { Length: > 0 } text && text.Trim('​', ' ').Length > 0) return new(PartCore.Readable, "text");
+        if (node.Attribute("aria-checked") is { } checkedState)
+            return new(PartCore.Toggle, $"aria-checked={checkedState}");
+        if (node.Attribute("aria-pressed") is { } pressed)
+            return new(PartCore.Toggle, $"aria-pressed={pressed}");
+        if (node.Attribute("contenteditable") is "" or "true")
+            return new(PartCore.Text, "contenteditable");
+        if (node.Type is "button" or "summary")
+            return new(PartCore.Clickable, node.Type);
+        if (node.Type == "a" && node.Attribute("href") is not null)
+            return new(PartCore.Clickable, "a href");
+        if (node.Attribute("tabindex") is { } tab && int.TryParse(tab, out var index) && index >= 0)
+            return new(PartCore.Clickable, $"tabindex={tab}");
+        if (Headings.Contains(node.Type))
+            return new(PartCore.Readable, node.Type);
+        if (node.Attribute("aria-live") is { } live && live != "off")
+            return new(PartCore.Readable, $"aria-live={live}");
+        if (node.Text is { Length: > 0 } text && text.Trim('​', ' ').Length > 0)
+            return new(PartCore.Readable, "text");
         return null;
     }
 
@@ -125,7 +139,8 @@ public static class ControlKind
     {
         var cores = Below(snapshot, root).Select(b => b.Reading.Core).Where(c => c != PartCore.Readable).Distinct().Order().ToArray();
         // A selector's list items are part of it, not a second thing to do.
-        if (cores.Contains(PartCore.Selector)) cores = cores.Where(c => c != PartCore.Clickable).ToArray();
+        if (cores.Contains(PartCore.Selector))
+            cores = cores.Where(c => c != PartCore.Clickable).ToArray();
         return cores.Length == 0 ? "readable" : string.Join('+', cores.Select(c => c.ToString().ToLowerInvariant()));
     }
 
@@ -136,7 +151,8 @@ public static class ControlKind
         yield return root;
         foreach (var node in snapshot.Nodes)
         {
-            if (node.Number <= root.Number || !below.Contains(node.Parent)) continue;
+            if (node.Number <= root.Number || !below.Contains(node.Parent))
+                continue;
             below.Add(node.Number);
             yield return node;
         }
@@ -149,8 +165,10 @@ public static class ControlKind
         for (var level = 0; level < 4 && parent > 0; level++)
         {
             var ancestor = snapshot[parent];
-            if (ancestor.Attribute("aria-haspopup") is { } popup && popup != "false") return $"aria-haspopup={popup}";
-            if (ancestor.Role is "combobox") return "role=combobox";
+            if (ancestor.Attribute("aria-haspopup") is { } popup && popup != "false")
+                return $"aria-haspopup={popup}";
+            if (ancestor.Role is "combobox")
+                return "role=combobox";
             parent = ancestor.Parent;
         }
         return null;

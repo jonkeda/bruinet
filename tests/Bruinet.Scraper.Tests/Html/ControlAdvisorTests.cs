@@ -80,7 +80,7 @@ public sealed class ControlAdvisorTests
         Assert.Equal("Locator.ByCss(\"button:has-text('Login')\")", suggestion.Locator);
     }
 
-        [Fact]
+    [Fact]
     public void With_nothing_stable_the_position_is_given_and_said_to_be_unstable()
     {
         var page = Page(N(1, 0, "body"), N(2, 1, "div"), N(3, 2, "button", "Go"), N(4, 2, "button", "Go"));
@@ -103,7 +103,7 @@ public sealed class ControlAdvisorTests
         Assert.False(Of(page, 9).Stable); // a UI library's numbered id is not an id to find it by
     }
 
-        [Fact]
+    [Fact]
     public void Names_are_unique_on_a_page_and_a_symbol_s_button_is_named_by_its_data_attribute()
     {
         var page = Page(N(1, 0, "body"),
@@ -161,7 +161,7 @@ public sealed class ControlAdvisorTests
         Assert.Equal((2, "ProfileFrame"), (input.Frame, input.Scope));
     }
 
-        [Fact]
+    [Fact]
     public void Uniqueness_is_counted_per_frame_document()
     {
         var page = Page(N(1, 0, "body"),

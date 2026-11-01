@@ -102,7 +102,8 @@ public sealed class TabControl<TScope> : ControlBase<TScope>
     /// <summary>Waits for the selected tab to match the expected text.</summary>
     public bool WaitSelectedTab(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetSelectedTabText() == expected, timeout);
     }
@@ -110,7 +111,8 @@ public sealed class TabControl<TScope> : ControlBase<TScope>
     /// <summary>Asserts the selected tab matches the expected text.</summary>
     public TScope AssertSelectedTab(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitSelectedTab(expected, timeoutMs))
         {
             var actual = GetSelectedTabText();

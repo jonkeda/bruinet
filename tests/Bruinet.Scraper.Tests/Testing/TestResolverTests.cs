@@ -15,7 +15,8 @@ public sealed class TestResolverTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private RecordingEvent Act(string kind, int? node = null) => _session.AddAction(new RecordingEvent
@@ -92,7 +93,9 @@ public sealed class TestResolverTests : IDisposable
         Act(RecordingEvent.ClickKind, 15);
         _session.AddAction(new RecordingEvent
         {
-            Kind = RecordingEvent.ClickKind, Location = "http://localhost:5180/userform", Page = "/userform",
+            Kind = RecordingEvent.ClickKind,
+            Location = "http://localhost:5180/userform",
+            Page = "/userform",
             Path = [new ScrapePathStep { Type = "html" }, new ScrapePathStep { Type = "button", TestId = "toast" }],
         });
         _session.AddAction(new RecordingEvent { Kind = RecordingEvent.KeyKind, Location = "http://localhost:5180/userform", Page = "/userform", Value = "Enter" });

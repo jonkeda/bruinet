@@ -183,7 +183,8 @@ public sealed record ElementMatch(string Kind, string Value)
     public static ElementMatch Parse(string cell, int line)
     {
         var colon = cell.IndexOf(':', StringComparison.Ordinal);
-        if (colon < 0) return new("text", cell.Trim());
+        if (colon < 0)
+            return new("text", cell.Trim());
         var kind = cell[..colon].Trim().ToLowerInvariant();
         var value = cell[(colon + 1)..].Trim();
         return kind is "text" or "selector" ? new(kind, value) : throw new FormatException($"Line {line}: a match is 'text: …' or 'selector: …', not '{cell}'.");

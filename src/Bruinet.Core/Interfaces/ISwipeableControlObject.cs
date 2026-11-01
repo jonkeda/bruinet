@@ -25,28 +25,28 @@ public interface ISwipeableControlObject<TScope> : IControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SwipeLeft(int? timeoutMs = null);
-    
+
     /// <summary>
     /// Performs a swipe right gesture.
     /// </summary>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SwipeRight(int? timeoutMs = null);
-    
+
     /// <summary>
     /// Performs a swipe up gesture.
     /// </summary>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SwipeUp(int? timeoutMs = null);
-    
+
     /// <summary>
     /// Performs a swipe down gesture.
     /// </summary>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SwipeDown(int? timeoutMs = null);
-    
+
     /// <summary>
     /// Performs a swipe from one point to another within the control.
     /// </summary>

@@ -31,7 +31,8 @@ public static class SnapshotOutline
 
         void Visit(ScrapeNode node, int depth)
         {
-            if (cut) return;
+            if (cut)
+                return;
             var shown = node.Number == focus || Matters(node, children[node.Number].Count());
             if (shown)
             {
@@ -60,17 +61,27 @@ public static class SnapshotOutline
     {
         var line = new StringBuilder().Append('#').Append(node.Number).Append(' ');
         line.Append(node.Kind == ScrapeNodeKind.ShadowRoot ? "(shadow root)" : node.Type);
-        if (node.Text is { Length: > 0 } text) line.Append(" \"").Append(text).Append('"');
-        if (node.Name is { Length: > 0 } name) line.Append(" name=\"").Append(name).Append('"');
-        if (node.Role is { Length: > 0 } role) line.Append(" role=").Append(role);
-        if (node.Frame is { Length: > 0 } frame) line.Append(" frame=").Append(frame);
+        if (node.Text is { Length: > 0 } text)
+            line.Append(" \"").Append(text).Append('"');
+        if (node.Name is { Length: > 0 } name)
+            line.Append(" name=\"").Append(name).Append('"');
+        if (node.Role is { Length: > 0 } role)
+            line.Append(" role=").Append(role);
+        if (node.Frame is { Length: > 0 } frame)
+            line.Append(" frame=").Append(frame);
         foreach (var (key, value) in node.Attributes.OrderBy(a => a.Key, StringComparer.Ordinal))
         {
             switch (key)
             {
-                case "id": line.Append(" #").Append(value); break;
-                case "class": line.Append(' ').Append(string.Concat(value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(4).Select(c => "." + c))); break;
-                default: line.Append(" [").Append(key).Append(value.Length > 0 ? "=" + value : "").Append(']'); break;
+                case "id":
+                    line.Append(" #").Append(value);
+                    break;
+                case "class":
+                    line.Append(' ').Append(string.Concat(value.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(4).Select(c => "." + c)));
+                    break;
+                default:
+                    line.Append(" [").Append(key).Append(value.Length > 0 ? "=" + value : "").Append(']');
+                    break;
             }
         }
         return line.ToString();

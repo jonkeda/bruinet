@@ -273,12 +273,12 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     }
 
     #endregion
-    
+
     #region Window Management
-    
+
     /// <inheritdoc />
     public string CurrentWindowHandle => RootElement.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture);
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<string> WindowHandles
     {
@@ -293,17 +293,17 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             return new[] { CurrentWindowHandle };
         }
     }
-    
+
     #endregion
-    
+
     #region Session Management
-    
+
     /// <inheritdoc />
     public void Quit()
     {
         _application?.Close();
     }
-    
+
     /// <inheritdoc />
     public void Close()
     {
@@ -312,11 +312,11 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             RootElement.Patterns.Window.Pattern.Close();
         }
     }
-    
+
     #endregion
 
     #region Screenshots
-    
+
     /// <inheritdoc />
     public byte[] GetScreenshot()
     {
@@ -355,66 +355,74 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
         return stream.ToArray();
     }
-    
+
     #endregion
-    
+
     #region Context Switching (Not applicable for FlaUI)
-    
+
     /// <inheritdoc />
     public string Context
     {
         get => "NATIVE_APP";
         set { } // No-op for FlaUI
     }
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<string> Contexts => new[] { "NATIVE_APP" };
-    
+
     #endregion
-    
+
     #region Script Execution (Not applicable for FlaUI)
-    
+
     /// <inheritdoc />
     public object? ExecuteScript(string script, params object[] args)
     {
         // FlaUI doesn't support script execution
         throw new NotSupportedException("Script execution is not supported by FlaUI driver");
     }
-    
+
     #endregion
-    
+
     #region IDiagnosticDriver
-    
+
     /// <inheritdoc />
     public string GetPageSource()
     {
         return BuildAutomationTree(RootElement);
     }
-    
+
     /// <inheritdoc />
     public string GetAutomationTree()
     {
         return BuildAutomationTree(RootElement);
     }
-    
+
     private static string BuildAutomationTree(AutomationElement element, int depth = 0)
     {
         var indent = new string(' ', depth * 2);
         var sb = new System.Text.StringBuilder();
-        
+
         // Use safe property access - some elements don't support all properties
         string automationId = "";
         string name = "";
         string className = "";
         string controlType = "Unknown";
-        
-        try { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; } catch { }
-        try { name = element.Properties.Name.ValueOrDefault ?? ""; } catch { }
-        try { className = element.Properties.ClassName.ValueOrDefault ?? ""; } catch { }
-        try { controlType = element.ControlType.ToString(); } catch { }
-        
+
+        try
+        { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { name = element.Properties.Name.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { className = element.Properties.ClassName.ValueOrDefault ?? ""; }
+        catch { }
+        try
+        { controlType = element.ControlType.ToString(); }
+        catch { }
+
         sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
-        
+
         try
         {
             foreach (var child in element.FindAllChildren())
@@ -426,7 +434,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         {
             // Ignore errors traversing children
         }
-        
+
         sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}</{controlType}>");
         return sb.ToString();
     }
@@ -656,7 +664,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     #endregion
 
     #region Navigation
-    
+
     /// <inheritdoc />
     public void NavigateTo(string destination)
     {
@@ -685,13 +693,13 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 
         return result.Value;
     }
-    
+
     /// <inheritdoc />
     public void Refresh() => NavigateTo(CurrentRoute());
-    
+
     /// <inheritdoc />
     public byte[] TakeScreenshot() => GetScreenshot();
-    
+
     /// <inheritdoc />
     public void ResetAppState()
     {
@@ -702,7 +710,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             _application.Close();
         }
     }
-    
+
     #endregion
 
     #region Dialogs
@@ -940,9 +948,9 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     }
 
     #endregion
-    
+
     #region IDisposable
-    
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -954,6 +962,6 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             _disposed = true;
         }
     }
-    
+
     #endregion
 }

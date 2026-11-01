@@ -51,7 +51,7 @@ public class RelayCommand<T> : IRelayCommand<T>
     {
         if (parameter is null && typeof(T).IsValueType)
             return _canExecute?.Invoke(default) ?? true;
-        
+
         return _canExecute?.Invoke((T?)parameter) ?? true;
     }
 

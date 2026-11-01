@@ -12,7 +12,7 @@ public class MauiDriverOptions
     /// - Android/iOS: Appium
     /// </summary>
     public MauiPlatform Platform { get; set; } = MauiPlatform.Windows;
-    
+
     /// <summary>
     /// Path to application executable or package.
     /// - Windows: Path to .exe
@@ -20,35 +20,35 @@ public class MauiDriverOptions
     /// - iOS: Path to .app or bundle ID
     /// </summary>
     public string? AppPath { get; set; }
-    
+
     /// <summary>
     /// Process name to attach to (alternative to AppPath).
     /// Windows FlaUI only. Attaches to running process.
     /// </summary>
     public string? ProcessName { get; set; }
-    
+
     /// <summary>
     /// Window handle to attach to (alternative to AppPath).
     /// Windows FlaUI only.
     /// </summary>
     public IntPtr? WindowHandle { get; set; }
-    
+
     /// <summary>
     /// Appium server URI. Required for Appium driver (Android/iOS).
     /// Default: http://127.0.0.1:4723
     /// </summary>
     public Uri AppiumServerUri { get; set; } = new Uri("http://127.0.0.1:4723");
-    
+
     /// <summary>
     /// Device name for Android/iOS.
     /// </summary>
     public string? DeviceName { get; set; }
-    
+
     /// <summary>
     /// Platform version for iOS.
     /// </summary>
     public string? PlatformVersion { get; set; }
-    
+
     /// <summary>
     /// Additional Appium capabilities.
     /// </summary>
@@ -83,12 +83,12 @@ public class MauiDriverOptions
     /// placed side by side. If null, <c>BRUINET_AUT_PLACE</c> decides, as for every app.
     /// </summary>
     public string? Placement { get; set; }
-    
+
     /// <summary>
     /// Timeout settings for waits and polling.
     /// </summary>
     public TimeoutSettings? Timeouts { get; set; }
-    
+
     /// <summary>
     /// Logger for driver operations.
     /// </summary>

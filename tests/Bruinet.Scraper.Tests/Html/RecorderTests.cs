@@ -23,7 +23,8 @@ public sealed class RecorderTests : IAsyncLifetime
         await _source.StartAsync(new ScrapeStart(_site.Url("pages/form.html"), _profile, Visible: false));
         _source.Acted += (_, action) =>
         {
-            lock (_acted) _acted.Add(action);
+            lock (_acted)
+                _acted.Add(action);
         };
         await _source.StartActionsAsync(new ScrapeActionOptions(["data-testid"], [new ScrapeSecret("api key", "apiKey")]));
         _snapshot = await _source.CaptureAsync();
@@ -33,7 +34,8 @@ public sealed class RecorderTests : IAsyncLifetime
     {
         await _source.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_profile)) Directory.Delete(_profile, recursive: true);
+        if (Directory.Exists(_profile))
+            Directory.Delete(_profile, recursive: true);
     }
 
     // The actions once `count` have been raised.
@@ -44,11 +46,13 @@ public sealed class RecorderTests : IAsyncLifetime
         {
             lock (_acted)
             {
-                if (_acted.Count >= count) return [.. _acted];
+                if (_acted.Count >= count)
+                    return [.. _acted];
             }
             await Task.Delay(25); // polling the handler's list, at a named cadence
         }
-        lock (_acted) throw new TimeoutException($"{_acted.Count} of {count} actions: {string.Join(", ", _acted.Select(a => a.Kind))}");
+        lock (_acted)
+            throw new TimeoutException($"{_acted.Count} of {count} actions: {string.Join(", ", _acted.Select(a => a.Kind))}");
     }
 
     private static string? TestIdOf(ScrapeSnapshot snapshot, int? node) => node is { } n ? snapshot[n].Attribute("data-testid") : null;
@@ -187,6 +191,7 @@ public sealed class RecorderTests : IAsyncLifetime
         await Page.ClickAsync("[data-testid=submit]");
         await _source.CaptureAsync(); // after the click's message reached the host
 
-        lock (_acted) Assert.Empty(_acted);
+        lock (_acted)
+            Assert.Empty(_acted);
     }
 }

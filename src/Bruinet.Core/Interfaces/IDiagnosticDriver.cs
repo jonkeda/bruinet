@@ -15,7 +15,7 @@ public interface IDiagnosticDriver
     /// </summary>
     /// <returns>The page source as a string.</returns>
     string GetPageSource();
-    
+
     /// <summary>
     /// Gets a human-readable text representation of the automation tree.
     /// Useful for debugging element hierarchy and understanding UI structure.

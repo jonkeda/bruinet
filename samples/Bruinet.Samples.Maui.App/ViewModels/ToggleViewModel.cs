@@ -105,8 +105,8 @@ public class ToggleViewModel : ParentViewModel
 
     private void UpdateCheckBoxStatus()
     {
-        CheckBoxStatusMessage = isCheckBoxChecked 
-            ? "✓ CheckBox is checked" 
+        CheckBoxStatusMessage = isCheckBoxChecked
+            ? "✓ CheckBox is checked"
             : "✗ CheckBox is unchecked";
     }
 
@@ -124,8 +124,8 @@ public class ToggleViewModel : ParentViewModel
 
     private void UpdateSwitchStatus()
     {
-        SwitchStatusMessage = isSwitchToggled 
-            ? "✓ Switch is on (notifications enabled)" 
+        SwitchStatusMessage = isSwitchToggled
+            ? "✓ Switch is on (notifications enabled)"
             : "✗ Switch is off (notifications disabled)";
     }
 

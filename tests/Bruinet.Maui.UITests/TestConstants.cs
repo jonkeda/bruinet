@@ -10,7 +10,7 @@ public static class TestConstants
     /// Tests exceeding this duration will be cancelled.
     /// </summary>
     public const int DefaultTestTimeoutMs = 15_000;
-    
+
     /// <summary>
     /// Short timeout for fast tests in milliseconds.
     /// </summary>
@@ -28,7 +28,7 @@ public static class TestConstants
         => Environment.GetEnvironmentVariable("BRUINET_APP_PREINSTALLED") == "1";
 
     public const int ShortTestTimeoutMs = 10_000;
-    
+
     /// <summary>
     /// Long timeout for complex tests in milliseconds.
     /// </summary>

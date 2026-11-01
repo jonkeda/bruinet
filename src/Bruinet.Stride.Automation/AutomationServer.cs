@@ -61,7 +61,8 @@ public sealed class AutomationServer : IDisposable
 
     public void Start()
     {
-        if (_isRunning) return;
+        if (_isRunning)
+            return;
         _isRunning = true;
 
         for (int i = 0; i < _options.MaxConnections; i++)
@@ -75,7 +76,8 @@ public sealed class AutomationServer : IDisposable
 
     public async Task StopAsync()
     {
-        if (!_isRunning) return;
+        if (!_isRunning)
+            return;
         _isRunning = false;
         _cts.Cancel();
 
@@ -218,7 +220,8 @@ public sealed class AutomationServer : IDisposable
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
         _disposed = true;
         _cts.Cancel();
         _cts.Dispose();

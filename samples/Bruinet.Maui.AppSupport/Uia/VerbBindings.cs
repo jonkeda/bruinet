@@ -126,80 +126,80 @@ internal static class VerbBindings
         {
             case BruinetVerb.Tap:
             case BruinetVerb.DoubleTap:
-            {
-                var taps = verb == BruinetVerb.Tap ? 1 : 2;
-                var command = TapCommand(element, taps);
-                if (command is null)
                 {
-                    reason = $"no TapGestureRecognizer with NumberOfTapsRequired={taps} and a Command";
-                    return null;
-                }
+                    var taps = verb == BruinetVerb.Tap ? 1 : 2;
+                    var command = TapCommand(element, taps);
+                    if (command is null)
+                    {
+                        reason = $"no TapGestureRecognizer with NumberOfTapsRequired={taps} and a Command";
+                        return null;
+                    }
 
-                return Commanded(verb, command);
-            }
+                    return Commanded(verb, command);
+                }
 
             case BruinetVerb.SwipeLeft:
             case BruinetVerb.SwipeRight:
             case BruinetVerb.SwipeUp:
             case BruinetVerb.SwipeDown:
-            {
-                // A SwipeView's own items come first: swiping one is what the control is for.
-                if (element is SwipeView && MauiCapabilities.SwipeItemFor(verb) is { } item)
                 {
-                    return new VerbBinding(verb, (target, _, _) =>
+                    // A SwipeView's own items come first: swiping one is what the control is for.
+                    if (element is SwipeView && MauiCapabilities.SwipeItemFor(verb) is { } item)
                     {
-                        MauiCapabilities.OpenSwipeView((SwipeView)target, item);
-                        return HResults.S_OK;
-                    });
-                }
+                        return new VerbBinding(verb, (target, _, _) =>
+                        {
+                            MauiCapabilities.OpenSwipeView((SwipeView)target, item);
+                            return HResults.S_OK;
+                        });
+                    }
 
-                // A CarouselView moves one card along its own axis. Its list does publish a
-                // Scroll pattern, but scrolling that shows the next card without MAUI's Position
-                // following, so the pattern cannot stand in for the swipe (measured 2026-09-18).
-                if (element is CarouselView carousel && MauiCapabilities.CarouselStepFor(carousel, verb) is { } step)
-                {
-                    return new VerbBinding(verb, (target, _, _) =>
-                        MauiCapabilities.StepCarousel((CarouselView)target, step)
-                            ? HResults.S_OK
-                            : HResults.BRUINET_E_DECLINED);
-                }
-
-                // Then pull-to-refresh, which is a downward swipe and nothing else. A ContentView
-                // that wraps a RefreshView declares it for its content, one level deep.
-                if (verb == BruinetVerb.SwipeDown && RefreshTarget(element) is not null)
-                {
-                    return new VerbBinding(verb, (target, _, _) =>
+                    // A CarouselView moves one card along its own axis. Its list does publish a
+                    // Scroll pattern, but scrolling that shows the next card without MAUI's Position
+                    // following, so the pattern cannot stand in for the swipe (measured 2026-09-18).
+                    if (element is CarouselView carousel && MauiCapabilities.CarouselStepFor(carousel, verb) is { } step)
                     {
-                        if (RefreshTarget(target) is not { } view)
+                        return new VerbBinding(verb, (target, _, _) =>
+                            MauiCapabilities.StepCarousel((CarouselView)target, step)
+                                ? HResults.S_OK
+                                : HResults.BRUINET_E_DECLINED);
+                    }
+
+                    // Then pull-to-refresh, which is a downward swipe and nothing else. A ContentView
+                    // that wraps a RefreshView declares it for its content, one level deep.
+                    if (verb == BruinetVerb.SwipeDown && RefreshTarget(element) is not null)
+                    {
+                        return new VerbBinding(verb, (target, _, _) =>
                         {
-                            return HResults.BRUINET_E_DECLINED;
-                        }
+                            if (RefreshTarget(target) is not { } view)
+                            {
+                                return HResults.BRUINET_E_DECLINED;
+                            }
 
-                        // A refresh already running is a real state of the app, and reporting it
-                        // as success would let a test assert a refresh it did not cause. That was
-                        // the intent behind S_FALSE here, and S_FALSE never delivered it: the
-                        // client read S_OK and asserted the refresh anyway. A disabled view is
-                        // one a user cannot pull.
-                        if (view.IsRefreshing || !view.IsEnabled)
-                        {
-                            return HResults.BRUINET_E_DECLINED;
-                        }
+                            // A refresh already running is a real state of the app, and reporting it
+                            // as success would let a test assert a refresh it did not cause. That was
+                            // the intent behind S_FALSE here, and S_FALSE never delivered it: the
+                            // client read S_OK and asserted the refresh anyway. A disabled view is
+                            // one a user cannot pull.
+                            if (view.IsRefreshing || !view.IsEnabled)
+                            {
+                                return HResults.BRUINET_E_DECLINED;
+                            }
 
-                        MauiCapabilities.StartRefresh(view);
-                        return HResults.S_OK;
-                    });
+                            MauiCapabilities.StartRefresh(view);
+                            return HResults.S_OK;
+                        });
+                    }
+
+                    var direction = MauiCapabilities.SwipeDirectionFor(verb);
+                    var swipeCommand = direction is null ? null : SwipeCommand(element, direction.Value);
+                    if (swipeCommand is null)
+                    {
+                        reason = $"not a SwipeView, and no SwipeGestureRecognizer with Direction {direction} and a Command";
+                        return null;
+                    }
+
+                    return Commanded(verb, swipeCommand);
                 }
-
-                var direction = MauiCapabilities.SwipeDirectionFor(verb);
-                var swipeCommand = direction is null ? null : SwipeCommand(element, direction.Value);
-                if (swipeCommand is null)
-                {
-                    reason = $"not a SwipeView, and no SwipeGestureRecognizer with Direction {direction} and a Command";
-                    return null;
-                }
-
-                return Commanded(verb, swipeCommand);
-            }
 
             case BruinetVerb.LongPress:
                 reason = "MAUI has no long-press gesture recognizer; attach a sink that names LongPress";

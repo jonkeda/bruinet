@@ -45,7 +45,8 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IWinFormsPage<TSelf>
     /// <inheritdoc />
     public bool WaitLoaded(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? _context.Timeouts.PageLoad;
         return Poll(() => IsLoaded() == expected.Value, timeout);
     }
@@ -53,7 +54,8 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IWinFormsPage<TSelf>
     /// <inheritdoc />
     public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
         if (!WaitLoaded(expected, timeoutMs))
         {
             var actual = IsLoaded();
@@ -71,7 +73,8 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IWinFormsPage<TSelf>
     /// <inheritdoc />
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? _context.Timeouts.DefaultWait;
         return Poll(() => GetTitle() == expected, timeout);
     }
@@ -79,7 +82,8 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IWinFormsPage<TSelf>
     /// <inheritdoc />
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
         if (!WaitTitle(expected, timeoutMs))
         {
             var actual = GetTitle();

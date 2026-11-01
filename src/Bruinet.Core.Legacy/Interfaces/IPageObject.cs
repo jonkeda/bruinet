@@ -10,7 +10,7 @@ public interface IPageObject : IElementScope
     /// The name of this page for logging and identification.
     /// </summary>
     string Name { get; }
-    
+
     /// <summary>
     /// Check instantaneously whether the current usable page root exists.
     /// </summary>
@@ -35,36 +35,36 @@ public interface IPageObject : IElementScope
     /// </summary>
     bool WaitBusy(bool? expected, int? timeoutMs = null)
         => expected == null || expected == false;
-    
+
     /// <summary>
     /// Wait until page loaded state matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitLoaded(bool? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert page loaded state matches expected value.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Get the page title.
     /// </summary>
     string? GetTitle(int? timeoutMs = null);
-    
+
     /// <summary>
     /// Wait until page title matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitTitle(string? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert page title matches expected value.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     void AssertTitle(string? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Take a screenshot of the current page.
     /// </summary>

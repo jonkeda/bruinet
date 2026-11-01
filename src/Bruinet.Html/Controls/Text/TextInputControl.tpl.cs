@@ -48,7 +48,8 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SetTextCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         ActAndConfirm(
             "Fill", () => element.Fill(text),
@@ -83,7 +84,8 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void AppendCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         ActAndConfirm(
             "Append",
@@ -105,7 +107,8 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void TypeTextCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         ActAndConfirm(
             "SendKeys", () => element.SendKeys(text),

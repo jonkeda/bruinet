@@ -70,7 +70,8 @@ public partial class HubPage : ContentPage
     /// </remarks>
     private async Task OpenAsync(SamplePageEntry entry)
     {
-        if (Navigation == null) return;
+        if (Navigation == null)
+            return;
 
         var page = entry.Create();
         AddBackToHub(page);

@@ -48,7 +48,8 @@ public abstract partial class SelectableItemBase<TCollection, TSelf>
     /// </summary>
     protected static bool IsMarkedSelected(IMauiElement? element)
     {
-        if (element == null) return false;
+        if (element == null)
+            return false;
 
         return element.Selected || element.Checked == true;
     }

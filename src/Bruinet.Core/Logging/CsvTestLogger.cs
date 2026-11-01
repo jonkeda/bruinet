@@ -30,7 +30,7 @@ public class CsvTestLogger : ITestLogger
         string? value, string? expectedValue, LogResult result, string? message)
     {
         var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "", testName, pageName, controlId, action, 
+        var line = BuildCsvLine(timestamp, "", testName, pageName, controlId, action,
             value, expectedValue, result.ToString(), null, message);
         WriteLine(line);
     }
@@ -120,8 +120,8 @@ public class CsvTestLogger : ITestLogger
         }
     }
 
-    private static string BuildCsvLine(string timestamp, string direction, string testName, 
-        string pageName, string controlId, string action, string? value, string? expected, 
+    private static string BuildCsvLine(string timestamp, string direction, string testName,
+        string pageName, string controlId, string action, string? value, string? expected,
         string? result, int? durationMs, string? message)
     {
         return string.Join(";",
@@ -140,7 +140,8 @@ public class CsvTestLogger : ITestLogger
 
     private static string EscapeCsvValue(string? value)
     {
-        if (string.IsNullOrEmpty(value)) return "";
+        if (string.IsNullOrEmpty(value))
+            return "";
         if (value.Contains(';') || value.Contains('"') || value.Contains('\n') || value.Contains('\r'))
             return $"\"{value.Replace("\"", "\"\"")}\"";
         return value;

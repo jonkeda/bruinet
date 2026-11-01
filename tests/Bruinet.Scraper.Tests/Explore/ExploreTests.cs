@@ -25,7 +25,8 @@ public sealed class ExploreTests : IAsyncLifetime
     {
         await _service.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     // A project on the test site; `explore` holds the ## Explore rows and any other sections.

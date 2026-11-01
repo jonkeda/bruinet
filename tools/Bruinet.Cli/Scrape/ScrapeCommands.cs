@@ -202,7 +202,8 @@ internal static class ScrapeCommands
             {
                 await io.Out.WriteLineAsync($"{result.Stop}: {result.StopDetail}").ConfigureAwait(false);
                 await io.Out.WriteLineAsync(string.Create(CultureInfo.InvariantCulture, $"{result.Captures.Count} captures, {result.Clicks} clicks, {result.Skipped.Count} skipped, {result.Blocked.Count} blocked in {result.Took.TotalSeconds:0.0} s")).ConfigureAwait(false);
-                if (result.Report is not null) await io.Out.WriteLineAsync($"Report: {result.Report}").ConfigureAwait(false);
+                if (result.Report is not null)
+                    await io.Out.WriteLineAsync($"Report: {result.Report}").ConfigureAwait(false);
             }
 
             return result.WithinGuards ? 0 : 1;

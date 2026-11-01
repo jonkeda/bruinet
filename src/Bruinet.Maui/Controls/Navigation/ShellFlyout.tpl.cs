@@ -52,7 +52,8 @@ public partial class ShellFlyout<TParent>
     /// <returns>The flyout, for chaining.</returns>
     public ShellFlyout<TParent> Open(int? timeoutMs = null)
     {
-        if (IsOpen() == true) return Self;
+        if (IsOpen() == true)
+            return Self;
 
         Context.AppElement.OpenFlyout();
         InvalidateCache();
@@ -73,7 +74,8 @@ public partial class ShellFlyout<TParent>
     /// <returns>The flyout, for chaining.</returns>
     public ShellFlyout<TParent> Close(int? timeoutMs = null)
     {
-        if (IsOpen() != true) return Self;
+        if (IsOpen() != true)
+            return Self;
 
         Context.AppElement.CloseFlyout();
         InvalidateCache();
@@ -97,7 +99,8 @@ public partial class ShellFlyout<TParent>
             return reported;
         }
 
-        if (element == null) return false;
+        if (element == null)
+            return false;
 
         return element.Visible && TryGetItemRoots().Count > 0;
     }

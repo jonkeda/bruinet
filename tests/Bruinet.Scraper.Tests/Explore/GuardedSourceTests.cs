@@ -21,7 +21,8 @@ public sealed class GuardedSourceTests : IAsyncLifetime
     {
         await _source.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_profile)) Directory.Delete(_profile, recursive: true);
+        if (Directory.Exists(_profile))
+            Directory.Delete(_profile, recursive: true);
     }
 
     private Task StartAsync(string url) => _source.StartAsync(new ScrapeStart(url, _profile, Visible: false));

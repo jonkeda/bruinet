@@ -154,7 +154,8 @@ public static class TestCatalog
     private static int CountCases(MethodInfo method)
     {
         var data = method.GetCustomAttributes<DataAttribute>(inherit: true).ToList();
-        if (data.Count == 0) return 1;
+        if (data.Count == 0)
+            return 1;
 
         try
         {

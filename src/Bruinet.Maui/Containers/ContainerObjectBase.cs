@@ -140,7 +140,8 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     protected T WithRoot<T>(Func<IMauiElement, T> read, T whenAbsent)
     {
         var root = TryGetContainerRoot();
-        if (root == null) return whenAbsent;
+        if (root == null)
+            return whenAbsent;
 
         try
         {

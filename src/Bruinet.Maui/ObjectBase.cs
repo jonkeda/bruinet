@@ -10,12 +10,12 @@ public abstract class ObjectBase
     /// Gets the MAUI test context.
     /// </summary>
     public abstract IMauiTestContext Context { get; }
-    
+
     /// <summary>
     /// Gets the default timeout in milliseconds.
     /// </summary>
     protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait;
-    
+
     /// <summary>
     /// Gets the polling interval in milliseconds.
     /// </summary>

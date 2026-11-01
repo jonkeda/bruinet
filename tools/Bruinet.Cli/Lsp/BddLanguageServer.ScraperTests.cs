@@ -43,7 +43,8 @@ public sealed partial class BddLanguageServer
         {
             var test = Scraper.Tests(request.Project).FirstOrDefault(t => t.Session == request.Session)
                 ?? throw new ScraperProblem($"No test recording '{request.Session}'.");
-            if (test.Drafts.Count == 0) throw new ScraperProblem($"{test.Name} is not drafted yet: draft it first.");
+            if (test.Drafts.Count == 0)
+                throw new ScraperProblem($"{test.Name} is not drafted yet: draft it first.");
             var results = new List<TestRunResult>();
             foreach (var draft in test.Drafts)
             {

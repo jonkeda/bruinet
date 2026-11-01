@@ -107,9 +107,11 @@ public partial class Menu<TParent>
     [AbsenceTolerant]
     protected virtual bool? IsOpenCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
-        if (_itemsHostLocator == null) return element.Visible;
+        if (_itemsHostLocator == null)
+            return element.Visible;
 
         return element.TryFindElement(_itemsHostLocator)?.Visible == true;
     }

@@ -224,7 +224,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public bool WaitExists(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => IsExists() == expected.Value, timeout);
     }
@@ -232,7 +233,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public TScope AssertExists(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitExists(expected, timeoutMs))
         {
             var actual = IsExists();
@@ -253,7 +255,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
         try
         {
             var element = TryFindElement();
-            if (element == null) return null;
+            if (element == null)
+                return null;
             return element.Visible;
         }
         catch
@@ -265,7 +268,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public bool WaitVisible(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => IsVisible() == expected, timeout);
     }
@@ -273,7 +277,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public TScope AssertVisible(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitVisible(expected, timeoutMs))
         {
             var actual = IsVisible() ?? false;
@@ -294,7 +299,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
         try
         {
             var element = TryFindElement();
-            if (element == null) return null;
+            if (element == null)
+                return null;
             return element.Enabled;
         }
         catch
@@ -306,7 +312,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public bool WaitEnabled(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => IsEnabled() == expected, timeout);
     }
@@ -314,7 +321,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <inheritdoc />
     public TScope AssertEnabled(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitEnabled(expected, timeoutMs))
         {
             var actual = IsEnabled() ?? false;
@@ -346,7 +354,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <summary>Waits until the text equals <paramref name="expected"/>; false when it did not in time.</summary>
     public bool WaitText(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetText() == expected, timeout);
     }
@@ -354,7 +363,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <summary>Asserts the text equals <paramref name="expected"/> within the timeout.</summary>
     public TScope AssertText(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitText(expected, timeoutMs))
         {
             var actual = GetText();
@@ -368,7 +378,8 @@ public abstract class ControlBase<TScope> : ControlObjectBase<TScope>, IControlO
     /// <summary>Asserts the text contains <paramref name="expected"/> within the timeout.</summary>
     public TScope AssertTextContains(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         if (!Poll(() => GetText()?.Contains(expected) == true, timeout))
         {

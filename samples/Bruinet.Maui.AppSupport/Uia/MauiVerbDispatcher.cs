@@ -251,22 +251,22 @@ internal static class MauiVerbDispatcher
             // publishes no AutomationId for menu chrome on Windows, so the item is not in the
             // tree the client is searching.
             case BruinetVerb.InvokeMenuItem:
-            {
-                // The outcome travels as a value: a success HRESULT cannot carry it, because UI
-                // Automation reports every one of them to the client as S_OK.
-                var hr = MauiCapabilities.InvokeMenuItem(element, argument, out var outcome);
-                result = outcome;
-                return hr;
-            }
+                {
+                    // The outcome travels as a value: a success HRESULT cannot carry it, because UI
+                    // Automation reports every one of them to the client as S_OK.
+                    var hr = MauiCapabilities.InvokeMenuItem(element, argument, out var outcome);
+                    result = outcome;
+                    return hr;
+                }
 
             // A toolbar item, raised by id. Its automation peer accepts Invoke and raises nothing
             // on Windows, so without this the only route was the mouse.
             case BruinetVerb.InvokeToolbarItem:
-            {
-                var hr = MauiCapabilities.InvokeToolbarItem(element, argument, out var outcome);
-                result = outcome;
-                return hr;
-            }
+                {
+                    var hr = MauiCapabilities.InvokeToolbarItem(element, argument, out var outcome);
+                    result = outcome;
+                    return hr;
+                }
 
             // What the alert on screen is asking. Answered by any published element, because it
             // is a question about the app rather than about a control - and answered with an
@@ -278,11 +278,11 @@ internal static class MauiVerbDispatcher
             // Selection. The item now shown comes back with the answer, so a caller that asked
             // for a text two items share can see which one it got without asking again.
             case BruinetVerb.SelectByText:
-            {
-                var hr = MauiCapabilities.SelectByText(element, argument, out var landed);
-                result = landed;
-                return hr;
-            }
+                {
+                    var hr = MauiCapabilities.SelectByText(element, argument, out var landed);
+                    result = landed;
+                    return hr;
+                }
 
             // Dates and times. Two properties, replacing the calendar and clock flyout
             // navigation the client used to have to perform.

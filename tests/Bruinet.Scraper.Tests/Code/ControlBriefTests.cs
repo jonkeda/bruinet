@@ -11,7 +11,8 @@ public sealed class ControlBriefTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private ScrapeProject MakeProject(string name, string config = "")
@@ -157,7 +158,8 @@ public sealed class ControlBriefTests : IDisposable
             yield return N(3, 2, "label", text: "Status");
             yield return N(4, 2, "div", "button", "Open", ("aria-haspopup", "listbox"), ("aria-owns", "list-1"), ("aria-expanded", open ? "true" : "false"));
             yield return N(5, 4, "input", attributes: [("type", "text"), ("readonly", "readonly")]);
-            if (!open) yield break;
+            if (!open)
+                yield break;
             yield return N(6, 1, "div", "listbox", attributes: ("id", "list-1"));
             yield return N(7, 6, "div", "option", "Open");
             yield return N(8, 6, "div", "option", "Closed");

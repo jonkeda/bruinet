@@ -11,7 +11,7 @@ public interface IDateControlObject<TScope> : IControlObject<TScope>
     /// </summary>
     /// <returns>The selected date, or null if no date selected or element not found.</returns>
     DateTime? GetDate();
-    
+
     /// <summary>
     /// Sets the date value.
     /// Uses the nullable skip pattern - null skips the operation.
@@ -20,7 +20,7 @@ public interface IDateControlObject<TScope> : IControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SetDate(DateTime? date, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Waits for the date to match expected value.
     /// Uses the nullable skip pattern - null skips the check.
@@ -29,7 +29,7 @@ public interface IDateControlObject<TScope> : IControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
     bool WaitDate(DateTime? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Asserts the current date value.
     /// Uses the nullable skip pattern - null skips the check.

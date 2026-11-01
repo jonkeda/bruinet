@@ -20,7 +20,7 @@ public static class LegacyWaitHelper
     public static bool WaitFor(Func<bool> condition, int timeoutMs, int pollingIntervalMs = 100)
     {
         var sw = Stopwatch.StartNew();
-        
+
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
             try
@@ -32,10 +32,10 @@ public static class LegacyWaitHelper
             {
                 // Swallow exceptions and continue polling
             }
-            
+
             WaitHelper.Pause(pollingIntervalMs);
         }
-        
+
         try
         {
             return condition();
@@ -45,7 +45,7 @@ public static class LegacyWaitHelper
             return false;
         }
     }
-    
+
     /// <summary>
     /// Wait for a value getter to return a value that matches the predicate.
     /// </summary>
@@ -58,7 +58,7 @@ public static class LegacyWaitHelper
     public static bool WaitFor<T>(Func<T?> getValue, Func<T?, bool> predicate, int timeoutMs, int pollingIntervalMs = 100)
     {
         var sw = Stopwatch.StartNew();
-        
+
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
             try
@@ -71,10 +71,10 @@ public static class LegacyWaitHelper
             {
                 // Swallow exceptions and continue polling
             }
-            
+
             WaitHelper.Pause(pollingIntervalMs);
         }
-        
+
         try
         {
             var value = getValue();
@@ -85,7 +85,7 @@ public static class LegacyWaitHelper
             return false;
         }
     }
-    
+
     /// <summary>
     /// Wait for a value getter to return a value that matches the predicate, and report why the
     /// last attempt failed when it never does.
@@ -139,7 +139,7 @@ public static class LegacyWaitHelper
     public static T? WaitForValue<T>(Func<T?> getValue, int timeoutMs, int pollingIntervalMs = 100) where T : class
     {
         var sw = Stopwatch.StartNew();
-        
+
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
             try
@@ -152,10 +152,10 @@ public static class LegacyWaitHelper
             {
                 // Swallow exceptions and continue polling
             }
-            
+
             WaitHelper.Pause(pollingIntervalMs);
         }
-        
+
         try
         {
             return getValue();
@@ -165,7 +165,7 @@ public static class LegacyWaitHelper
             return default;
         }
     }
-    
+
     /// <summary>
     /// Get elapsed time while waiting for a condition.
     /// </summary>
@@ -176,7 +176,7 @@ public static class LegacyWaitHelper
     public static (bool Success, int ElapsedMs) WaitForWithTiming(Func<bool> condition, int timeoutMs, int pollingIntervalMs = 100)
     {
         var sw = Stopwatch.StartNew();
-        
+
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
             try
@@ -188,10 +188,10 @@ public static class LegacyWaitHelper
             {
                 // Swallow exceptions and continue polling
             }
-            
+
             WaitHelper.Pause(pollingIntervalMs);
         }
-        
+
         try
         {
             if (condition())
@@ -201,7 +201,7 @@ public static class LegacyWaitHelper
         {
             return (false, (int)sw.ElapsedMilliseconds);
         }
-        
+
         return (false, (int)sw.ElapsedMilliseconds);
     }
 }

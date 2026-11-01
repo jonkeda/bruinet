@@ -64,7 +64,7 @@ public sealed class DefaultTestArtifactPathProvider : ITestArtifactPathProvider
     {
         ArgumentNullException.ThrowIfNull(artifacts);
 
-        var root = artifacts.RootDirectory 
+        var root = artifacts.RootDirectory
             ?? Path.Combine(FindRepositoryRoot(Environment.CurrentDirectory), "TestResults");
 
         var runId = artifacts.RunId ?? LocalRunId.Value;

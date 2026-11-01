@@ -69,7 +69,8 @@ public static class DraftRun
                 Problems = result.Problems,
             };
             outcomes.Add(outcome);
-            if (result.Written) written.Add((outcome, full, before));
+            if (result.Written)
+                written.Add((outcome, full, before));
         }
 
         if (written.Count == 0)
@@ -84,8 +85,10 @@ public static class DraftRun
         var revert = failing.Count > 0 ? failing : written;
         foreach (var (drafted, full, before) in revert)
         {
-            if (before is null) File.Delete(full);
-            else await File.WriteAllTextAsync(full, before, cancellationToken).ConfigureAwait(false);
+            if (before is null)
+                File.Delete(full);
+            else
+                await File.WriteAllTextAsync(full, before, cancellationToken).ConfigureAwait(false);
             var i = outcomes.IndexOf(drafted);
             outcomes[i] = drafted with
             {
@@ -101,7 +104,8 @@ public static class DraftRun
     private static string Free(string name, HashSet<string> names)
     {
         var free = name;
-        for (var n = 2; names.Contains(free); n++) free = name[..^"Page".Length] + n + "Page";
+        for (var n = 2; names.Contains(free); n++)
+            free = name[..^"Page".Length] + n + "Page";
         return free;
     }
 

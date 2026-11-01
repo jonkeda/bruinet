@@ -10,12 +10,14 @@ public sealed class HeadlessPreferences : IPreferences
 
     public bool ContainsKey(string key, string? sharedName = null)
     {
-        lock (_gate) return _values.ContainsKey((sharedName, key));
+        lock (_gate)
+            return _values.ContainsKey((sharedName, key));
     }
 
     public void Remove(string key, string? sharedName = null)
     {
-        lock (_gate) _values.Remove((sharedName, key));
+        lock (_gate)
+            _values.Remove((sharedName, key));
     }
 
     public void Clear(string? sharedName = null)
@@ -29,7 +31,8 @@ public sealed class HeadlessPreferences : IPreferences
 
     public void Set<T>(string key, T value, string? sharedName = null)
     {
-        lock (_gate) _values[(sharedName, key)] = value;
+        lock (_gate)
+            _values[(sharedName, key)] = value;
     }
 
     public T Get<T>(string key, T defaultValue, string? sharedName = null)

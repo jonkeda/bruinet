@@ -23,7 +23,8 @@ public partial class CommunityToolkitAlertsView : ContentView
     private async void OnShowPopup(object? sender, EventArgs e)
     {
         var page = GetPage();
-        if (page == null) return;
+        if (page == null)
+            return;
 
         var popup = new Popup
         {

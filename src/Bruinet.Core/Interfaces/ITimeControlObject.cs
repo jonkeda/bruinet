@@ -11,7 +11,7 @@ public interface ITimeControlObject<TScope> : IControlObject<TScope>
     /// </summary>
     /// <returns>The selected time, or null if no time selected or element not found.</returns>
     TimeSpan? GetTime();
-    
+
     /// <summary>
     /// Sets the time value.
     /// Uses the nullable skip pattern - null skips the operation.
@@ -20,7 +20,7 @@ public interface ITimeControlObject<TScope> : IControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope SetTime(TimeSpan? time, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Waits for the time to match expected value.
     /// Uses the nullable skip pattern - null skips the check.
@@ -29,7 +29,7 @@ public interface ITimeControlObject<TScope> : IControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
     bool WaitTime(TimeSpan? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Asserts the current time value.
     /// Uses the nullable skip pattern - null skips the check.

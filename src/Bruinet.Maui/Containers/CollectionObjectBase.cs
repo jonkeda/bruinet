@@ -216,7 +216,8 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     /// <inheritdoc />
     public TItem? TryItem(int index)
     {
-        if (index < 0) return null;
+        if (index < 0)
+            return null;
 
         return WithRoot(root =>
         {
@@ -232,7 +233,8 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     /// <remarks>The logical index where the platform publishes one, otherwise the position.</remarks>
     public IMauiElement? TryGetItemRoot(int index)
     {
-        if (index < 0) return null;
+        if (index < 0)
+            return null;
 
         return WithRoot(root => FindItemRoot(root, _itemStrategy.FindItemElements(root), index), null);
     }
@@ -932,7 +934,8 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private bool TryScrollItemIntoView(int index)
     {
         var itemRoot = TryGetItemRoot(index);
-        if (itemRoot == null) return false;
+        if (itemRoot == null)
+            return false;
 
         try
         {
@@ -994,16 +997,46 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         switch (state.Phase)
         {
             case MaterializePhase.AwaitingProgress:
-            {
-                var realized = RealizedLogicalIndexes();
-                if (GetItemCount() > state.CountBefore || realized != state.RealizedBefore)
                 {
-                    state.TriedLastIntoView = false;
-                    if (state.Jumped)
+                    var realized = RealizedLogicalIndexes();
+                    if (GetItemCount() > state.CountBefore || realized != state.RealizedBefore)
                     {
-                        // Rows read while the list is still recycling mix up positions and
-                        // content, so let them settle first.
-                        state.Phase = MaterializePhase.Settling;
+                        state.TriedLastIntoView = false;
+                        if (state.Jumped)
+                        {
+                            // Rows read while the list is still recycling mix up positions and
+                            // content, so let them settle first.
+                            state.Phase = MaterializePhase.Settling;
+                            state.RealizedBefore = realized;
+                            return Observation.Pending("rows still moving");
+                        }
+
+                        state.Phase = MaterializePhase.Idle;
+                        break;
+                    }
+
+                    // A jump's rows reach the tree after the jump returns, however long that takes;
+                    // a step's rows arrive within a moment or not at all.
+                    if (state.Jumped || context.Deadline.ElapsedMs - state.MovedAtMs < ProgressWindowMs)
+                    {
+                        return Observation.Pending("waiting for new rows");
+                    }
+
+                    state.Phase = MaterializePhase.Idle;
+                    if (state.UsedLastIntoView)
+                    {
+                        // Pulling the last row into view realized nothing; take a real step next.
+                        break;
+                    }
+
+                    return Observation.Missing(EndOfList);
+                }
+
+            case MaterializePhase.Settling:
+                {
+                    var realized = RealizedLogicalIndexes();
+                    if (realized != state.RealizedBefore)
+                    {
                         state.RealizedBefore = realized;
                         return Observation.Pending("rows still moving");
                     }
@@ -1011,36 +1044,6 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                     state.Phase = MaterializePhase.Idle;
                     break;
                 }
-
-                // A jump's rows reach the tree after the jump returns, however long that takes;
-                // a step's rows arrive within a moment or not at all.
-                if (state.Jumped || context.Deadline.ElapsedMs - state.MovedAtMs < ProgressWindowMs)
-                {
-                    return Observation.Pending("waiting for new rows");
-                }
-
-                state.Phase = MaterializePhase.Idle;
-                if (state.UsedLastIntoView)
-                {
-                    // Pulling the last row into view realized nothing; take a real step next.
-                    break;
-                }
-
-                return Observation.Missing(EndOfList);
-            }
-
-            case MaterializePhase.Settling:
-            {
-                var realized = RealizedLogicalIndexes();
-                if (realized != state.RealizedBefore)
-                {
-                    state.RealizedBefore = realized;
-                    return Observation.Pending("rows still moving");
-                }
-
-                state.Phase = MaterializePhase.Idle;
-                break;
-            }
         }
 
         if (target() is { } done)
@@ -1108,7 +1111,8 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private bool TryScrollLastItemIntoView()
     {
         var roots = TryGetItemRoots();
-        if (roots.Count == 0) return false;
+        if (roots.Count == 0)
+            return false;
 
         return ScrollHelper.ScrollIntoView(roots[^1], CallRemainingMs);
     }
@@ -1174,7 +1178,8 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         ArgumentOutOfRangeException.ThrowIfNegative(index);
 
         var itemRoot = TryGetItemRoot(index);
-        if (itemRoot == null) return false;
+        if (itemRoot == null)
+            return false;
 
         return ActivateItemCore(itemRoot);
     }

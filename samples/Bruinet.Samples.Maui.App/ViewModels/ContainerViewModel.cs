@@ -81,7 +81,8 @@ public class ContainerViewModel : ParentViewModel
 
     private void Record(string? action)
     {
-        if (string.IsNullOrEmpty(action)) return;
+        if (string.IsNullOrEmpty(action))
+            return;
 
         Status = action;
     }

@@ -23,7 +23,8 @@ public static class ScraperConfigWriter
         var row = table.Rows.FirstOrDefault(r => r.Cells.GetValueOrDefault("Field", "") == field);
         if (row is not null)
         {
-            if (row.Cells.GetValueOrDefault("Value", "") == value) return new(markdown, false, $"{field} is {value} already.");
+            if (row.Cells.GetValueOrDefault("Value", "") == value)
+                return new(markdown, false, $"{field} is {value} already.");
             doc.Replace(row.LineNumber, Row([field, value]));
             return new(doc.Text, true, $"Set {field} to {value} in ## {section}.");
         }
@@ -34,8 +35,10 @@ public static class ScraperConfigWriter
     /// <summary>Adds a row to a section's table (<c>## Aliases</c>, <c>## Explore hosts</c>, <c>## Never click</c>…), unless a row with the same first cell is there; adds the section when missing.</summary>
     public static ConfigEdit AddRow(string markdown, string section, IReadOnlyList<string> columns, IReadOnlyList<string> values)
     {
-        if (columns.Count != values.Count || columns.Count == 0) throw new ArgumentException("One value per column.", nameof(values));
-        foreach (var value in values) Check(value);
+        if (columns.Count != values.Count || columns.Count == 0)
+            throw new ArgumentException("One value per column.", nameof(values));
+        foreach (var value in values)
+            Check(value);
         var doc = new Doc(markdown);
         var table = doc.Table(section);
         if (table is null)
@@ -56,8 +59,10 @@ public static class ScraperConfigWriter
         var doc = new Doc(markdown);
         var table = doc.Table(section);
         var rows = table?.Rows.Where(r => r.Cells.GetValueOrDefault(table.Columns[0], "") == first).ToArray() ?? [];
-        if (rows.Length == 0) return new(markdown, false, $"{first} is not in ## {section}.");
-        foreach (var row in rows.OrderByDescending(r => r.LineNumber)) doc.Remove(row.LineNumber);
+        if (rows.Length == 0)
+            return new(markdown, false, $"{first} is not in ## {section}.");
+        foreach (var row in rows.OrderByDescending(r => r.LineNumber))
+            doc.Remove(row.LineNumber);
         return new(doc.Text, true, $"Removed {first} from ## {section}.");
     }
 
@@ -144,8 +149,10 @@ public static class ScraperConfigWriter
 
         public void AppendSection(string section, IReadOnlyList<string> columns, IReadOnlyList<IReadOnlyList<string>> rows)
         {
-            while (_lines.Count > 0 && _lines[^1].Trim().Length == 0) _lines.RemoveAt(_lines.Count - 1);
-            if (_lines.Count > 0) _lines.Add("");
+            while (_lines.Count > 0 && _lines[^1].Trim().Length == 0)
+                _lines.RemoveAt(_lines.Count - 1);
+            if (_lines.Count > 0)
+                _lines.Add("");
             _lines.Add("## " + section);
             _lines.Add("");
             _lines.Add(Row(columns));

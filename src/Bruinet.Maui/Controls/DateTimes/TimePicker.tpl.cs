@@ -65,7 +65,8 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
             cleaned, @"\s*time\s*picker\s*$", string.Empty,
             System.Text.RegularExpressions.RegexOptions.IgnoreCase).Trim();
 
-        if (cleaned.Length == 0) return null;
+        if (cleaned.Length == 0)
+            return null;
 
         if (System.DateTime.TryParseExact(cleaned, Format, Culture,
                 System.Globalization.DateTimeStyles.None, out var exact))
@@ -96,12 +97,14 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
     /// </summary>
     protected virtual TimeSpan? ReadTime(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         foreach (var child in element.FindElements(Locator.ByAutomationId("FlyoutButton")))
         {
             var childTime = ParseTime(child.Name) ?? ParseTime(child.Text);
-            if (childTime != null) return childTime;
+            if (childTime != null)
+                return childTime;
         }
 
         return ParseTime(element.Name) ?? ParseTime(element.Text);
@@ -112,7 +115,8 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
     /// </summary>
     protected virtual void SetTimeCore(IMauiElement element, TimeSpan? time, int? timeoutMs = null)
     {
-        if (time == null) return;
+        if (time == null)
+            return;
 
         element.SetTime(time.Value);
     }
@@ -140,7 +144,8 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
     /// <returns>True if condition met, false if timeout.</returns>
     public bool WaitTime(TimeSpan? expected, int toleranceSeconds = 60, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         var tolerance = TimeSpan.FromSeconds(toleranceSeconds);
 
@@ -148,7 +153,8 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
             e =>
             {
                 var actual = ReadTime(e);
-                if (!actual.HasValue) return false;
+                if (!actual.HasValue)
+                    return false;
                 var diff = (actual.Value - expected.Value).Duration();
                 return diff <= tolerance;
             },
@@ -165,14 +171,16 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
     /// <returns>The containing scope for fluent chaining.</returns>
     public TScope AssertTime(TimeSpan? expected, int toleranceSeconds = 60, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
 
         var tolerance = TimeSpan.FromSeconds(toleranceSeconds);
 
         return RunAssertWithElement(expected,
             ReadTime, (actual, exp) =>
             {
-                if (!actual.HasValue || !exp.HasValue) return false;
+                if (!actual.HasValue || !exp.HasValue)
+                    return false;
                 var diff = (actual.Value - exp.Value).Duration();
                 return diff <= tolerance;
             },

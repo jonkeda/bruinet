@@ -151,7 +151,7 @@ public sealed class ActionTests : IAsyncLifetime
         Assert.Equal("# Feature: Shelf\n\n## Scenario: One\n\n```gherkin\nWhen I shelve \"Dune\"\n```\n", Assert.Single(wrap.Edit!.Changes![uri]).NewText);
     }
 
-    private const string Callable ="\n\n## Step: I tidy {shelf}\n\n```gherkin\nWhen I shelve <shelf>\n```\n";
+    private const string Callable = "\n\n## Step: I tidy {shelf}\n\n```gherkin\nWhen I shelve <shelf>\n```\n";
 
     // The feature file with one scenario whose steps start at line 5 (0-based).
     private Task<string> OpenAsync(string steps, string after = "")

@@ -36,7 +36,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
         {
             try
             {
-                if (!_element.IsOffscreen) return true;
+                if (!_element.IsOffscreen)
+                    return true;
                 var bounds = _element.BoundingRectangle;
                 return bounds.Width > 0 && bounds.Height > 0;
             }
@@ -230,7 +231,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
             var found = _element.FindFirstDescendant(condition);
             if (found != null)
                 return new FlaUIWinFormsElement(found, _driver);
-            if (timeoutMs <= 0) break;
+            if (timeoutMs <= 0)
+                break;
             WaitHelper.Pause(100);
         } while (DateTime.UtcNow - startTime < timeout);
 
@@ -258,7 +260,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
 
     public bool TryFindElement(Locator locator, out IWinFormsElement? element, int timeoutMs = 0)
     {
-        try { element = FindElement(locator, timeoutMs); return true; }
+        try
+        { element = FindElement(locator, timeoutMs); return true; }
         catch (ElementNotFoundException) { element = null; return false; }
     }
 
@@ -299,7 +302,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
     {
         get
         {
-            try { return _element.Patterns.RangeValue.IsSupported; }
+            try
+            { return _element.Patterns.RangeValue.IsSupported; }
             catch { return false; }
         }
     }
@@ -308,7 +312,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
     {
         try
         {
-            if (!_element.Patterns.RangeValue.IsSupported) return false;
+            if (!_element.Patterns.RangeValue.IsSupported)
+                return false;
             var pattern = _element.Patterns.RangeValue.Pattern;
             var clamped = Math.Max(pattern.Minimum.Value, Math.Min(pattern.Maximum.Value, value));
             pattern.SetValue(clamped);
@@ -319,25 +324,29 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
 
     public double? GetRangeValue()
     {
-        try { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Value.Value : null; }
+        try
+        { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Value.Value : null; }
         catch { return null; }
     }
 
     public double? GetRangeMinimum()
     {
-        try { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Minimum.Value : null; }
+        try
+        { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Minimum.Value : null; }
         catch { return null; }
     }
 
     public double? GetRangeMaximum()
     {
-        try { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Maximum.Value : null; }
+        try
+        { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.Maximum.Value : null; }
         catch { return null; }
     }
 
     public double? GetRangeSmallChange()
     {
-        try { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.SmallChange.Value : null; }
+        try
+        { return _element.Patterns.RangeValue.IsSupported ? _element.Patterns.RangeValue.Pattern.SmallChange.Value : null; }
         catch { return null; }
     }
 
@@ -351,7 +360,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
     {
         get
         {
-            if (!_element.Patterns.ExpandCollapse.IsSupported) return false;
+            if (!_element.Patterns.ExpandCollapse.IsSupported)
+                return false;
             return _element.Patterns.ExpandCollapse.Pattern.ExpandCollapseState.Value ==
                    global::FlaUI.Core.Definitions.ExpandCollapseState.Expanded;
         }
@@ -371,10 +381,12 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
 
     public IReadOnlyList<IWinFormsElement>? GetExpandedItems()
     {
-        if (!_element.Patterns.ExpandCollapse.IsSupported) return null;
+        if (!_element.Patterns.ExpandCollapse.IsSupported)
+            return null;
 
         var wasExpanded = IsExpanded;
-        if (!wasExpanded) Expand();
+        if (!wasExpanded)
+            Expand();
 
         try
         {
@@ -383,7 +395,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
             {
                 items = _element.FindAllDescendants(cf =>
                     cf.ByControlType(global::FlaUI.Core.Definitions.ControlType.ListItem));
-                if (items.Length > 0) return true;
+                if (items.Length > 0)
+                    return true;
                 items = _element.FindAllChildren(cf =>
                     cf.ByControlType(global::FlaUI.Core.Definitions.ControlType.ListItem));
                 return items.Length > 0;
@@ -393,13 +406,15 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
         }
         finally
         {
-            if (!wasExpanded) Collapse();
+            if (!wasExpanded)
+                Collapse();
         }
     }
 
     public void SelectItemByText(string text)
     {
-        if (!_element.Patterns.ExpandCollapse.IsSupported) return;
+        if (!_element.Patterns.ExpandCollapse.IsSupported)
+            return;
 
         _element.Patterns.ExpandCollapse.Pattern.Expand();
         LegacyWaitHelper.WaitFor(() => IsExpanded, timeoutMs: 2000, pollingIntervalMs: 50);
@@ -413,7 +428,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
         }, timeoutMs: 2000, pollingIntervalMs: 50);
 
         var target = items.FirstOrDefault(i => i.Name == text);
-        if (target == null) { Collapse(); return; }
+        if (target == null)
+        { Collapse(); return; }
 
         if (target.Patterns.SelectionItem.IsSupported)
             target.Patterns.SelectionItem.Pattern.Select();
@@ -421,12 +437,14 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
             target.Click();
 
         LegacyWaitHelper.WaitFor(() => !IsExpanded, timeoutMs: 2000, pollingIntervalMs: 50);
-        if (IsExpanded) Collapse();
+        if (IsExpanded)
+            Collapse();
     }
 
     public void SelectItemByIndex(int index)
     {
-        if (!_element.Patterns.ExpandCollapse.IsSupported) return;
+        if (!_element.Patterns.ExpandCollapse.IsSupported)
+            return;
 
         _element.Patterns.ExpandCollapse.Pattern.Expand();
         LegacyWaitHelper.WaitFor(() => IsExpanded, timeoutMs: 2000, pollingIntervalMs: 50);
@@ -439,7 +457,8 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
             return items.Length > 0;
         }, timeoutMs: 2000, pollingIntervalMs: 50);
 
-        if (index >= items.Length) { Collapse(); return; }
+        if (index >= items.Length)
+        { Collapse(); return; }
 
         var item = items[index];
         if (item.Patterns.SelectionItem.IsSupported)
@@ -448,14 +467,17 @@ public sealed class FlaUIWinFormsElement : IWinFormsElement, IRangePatternElemen
             item.Click();
 
         LegacyWaitHelper.WaitFor(() => !IsExpanded, timeoutMs: 2000, pollingIntervalMs: 50);
-        if (IsExpanded) Collapse();
+        if (IsExpanded)
+            Collapse();
     }
 
     public string? GetSelectedItemText()
     {
-        if (!_element.Patterns.Selection.IsSupported) return null;
+        if (!_element.Patterns.Selection.IsSupported)
+            return null;
         var selection = _element.Patterns.Selection.Pattern.Selection.Value;
-        if (selection == null || selection.Length == 0) return null;
+        if (selection == null || selection.Length == 0)
+            return null;
         return selection[0].Name;
     }
 

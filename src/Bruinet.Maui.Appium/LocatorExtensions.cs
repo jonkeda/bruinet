@@ -29,7 +29,7 @@ internal static class LocatorExtensions
     public static By ToBy(this Locator locator, MauiPlatform platform)
     {
         ArgumentNullException.ThrowIfNull(locator);
-        
+
         return locator.Strategy switch
         {
             // MAUI surfaces AutomationId differently on each mobile platform:
@@ -61,8 +61,8 @@ internal static class LocatorExtensions
             LocatorStrategy.PartialLinkText => By.PartialLinkText(locator.Value),
             LocatorStrategy.ControlType => ToControlTypeBy(locator.Value, platform),
             _ => throw new ArgumentOutOfRangeException(
-                nameof(locator), 
-                locator.Strategy, 
+                nameof(locator),
+                locator.Strategy,
                 $"Locator strategy '{locator.Strategy}' is not supported for MAUI/Appium.")
         };
     }
@@ -82,7 +82,8 @@ internal static class LocatorExtensions
     {
         ArgumentNullException.ThrowIfNull(locator);
 
-        if (platform != MauiPlatform.Android) return locator.ToBy(platform);
+        if (platform != MauiPlatform.Android)
+            return locator.ToBy(platform);
 
         return locator.Strategy switch
         {

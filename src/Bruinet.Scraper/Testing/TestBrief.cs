@@ -31,12 +31,17 @@ public static class TestBrief
         md.Append("# Gap: event ").Append(@event).Append(" of ").Append(test.Name).Append(" (").Append(test.Session).Append(")\n\n");
         md.Append(step.Gap!.Message).Append("\n\n## What the person did\n\n");
         md.Append("- ").Append(e.Kind);
-        if (e.Check is not null) md.Append(", check ").Append(e.Check);
-        if (e.Value is not null) md.Append(", value \"").Append(e.Value).Append('"');
-        if (e.Placeholder is not null) md.Append(", the secret <").Append(e.Placeholder).Append('>');
-        if (e.Checked is not null) md.Append(e.Checked == true ? ", checked" : ", unchecked");
+        if (e.Check is not null)
+            md.Append(", check ").Append(e.Check);
+        if (e.Value is not null)
+            md.Append(", value \"").Append(e.Value).Append('"');
+        if (e.Placeholder is not null)
+            md.Append(", the secret <").Append(e.Placeholder).Append('>');
+        if (e.Checked is not null)
+            md.Append(e.Checked == true ? ", checked" : ", unchecked");
         md.Append("\n- on the page `").Append(e.Page).Append('`');
-        if (page is not null) md.Append(", whose page object is `").Append(page.Name).Append("` (").Append(Relative(project, page.File)).Append(')');
+        if (page is not null)
+            md.Append(", whose page object is `").Append(page.Name).Append("` (").Append(Relative(project, page.File)).Append(')');
         md.Append('\n');
 
         var capture = e.Node is null ? null : session.CaptureOf(e);

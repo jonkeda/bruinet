@@ -30,8 +30,10 @@ public static partial class TestRunner
         using var process = Process.Start(info) ?? throw new InvalidOperationException("dotnet did not start.");
         void Add(string? line)
         {
-            if (line is null) return;
-            lock (lines) lines.Add(line);
+            if (line is null)
+                return;
+            lock (lines)
+                lines.Add(line);
         }
         process.OutputDataReceived += (_, e) => Add(e.Data);
         process.ErrorDataReceived += (_, e) => Add(e.Data);
@@ -49,7 +51,8 @@ public static partial class TestRunner
             throw;
         }
         string[] output;
-        lock (lines) output = [.. lines];
+        lock (lines)
+            output = [.. lines];
         return Read(projectFile, filter, process.ExitCode, output);
     }
 
@@ -59,7 +62,8 @@ public static partial class TestRunner
         int passed = 0, failed = 0, skipped = 0, total = 0;
         foreach (var line in output)
         {
-            if (Summary().Match(line) is not { Success: true } m) continue;
+            if (Summary().Match(line) is not { Success: true } m)
+                continue;
             failed += Int(m.Groups["failed"].Value);
             passed += Int(m.Groups["passed"].Value);
             skipped += Int(m.Groups["skipped"].Value);

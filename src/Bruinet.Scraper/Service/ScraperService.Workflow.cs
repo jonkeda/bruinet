@@ -154,7 +154,8 @@ public sealed partial class ScraperService
         var project = Project(projectName);
         var state = WorkflowState.Read(project);
         var list = state.AcceptedControls.Where(c => c != control).ToList();
-        if (accepted) list.Add(control);
+        if (accepted)
+            list.Add(control);
         (state with { AcceptedControls = list }).Write(project);
     }
 
@@ -186,7 +187,8 @@ public sealed partial class ScraperService
         {
             throw new ScraperProblem($"{project.Name}'s config was not changed: {e.Message}");
         }
-        if (edits.Any(e => e.Changed)) File.WriteAllText(path, text);
+        if (edits.Any(e => e.Changed))
+            File.WriteAllText(path, text);
         return edits;
     }
 
@@ -220,7 +222,8 @@ public sealed partial class ScraperService
         var target = code.FirstOrDefault(c => c.Kind == CodeKind.Page && c.Header?.Page == page)
             ?? throw new ScraperProblem($"No page object for '{page}' to rename.");
         var old = target.Name;
-        if (old == name) return new RenameResult(old, name, [], []);
+        if (old == name)
+            return new RenameResult(old, name, [], []);
         if (code.Any(c => c.Name.Split('<')[0] == name))
             throw new ScraperProblem($"{project.Name} has a class {name} already.");
 
@@ -229,12 +232,14 @@ public sealed partial class ScraperService
         foreach (var file in Directory.EnumerateFiles(project.Folder, "*.cs", SearchOption.AllDirectories))
         {
             var relative = Path.GetRelativePath(project.Folder, file);
-            if (relative.Split(Path.DirectorySeparatorChar)[0] is "bin" or "obj" or ScrapeProject.RecordingsFolderName) continue;
+            if (relative.Split(Path.DirectorySeparatorChar)[0] is "bin" or "obj" or ScrapeProject.RecordingsFolderName)
+                continue;
             var text = File.ReadAllText(file);
             var root = CSharpSyntaxTree.ParseText(text).GetCompilationUnitRoot();
             var declares = root.DescendantNodes().OfType<ClassDeclarationSyntax>().Any(c => c.Identifier.Text == old && Namespace(c) == target.Namespace);
             var tokens = root.DescendantTokens().Where(t => t.IsKind(SyntaxKind.IdentifierToken) && t.Text == old).ToArray();
-            if (tokens.Length == 0) continue;
+            if (tokens.Length == 0)
+                continue;
             if (!declares)
             {
                 usedElsewhere.Add(relative);
@@ -245,7 +250,8 @@ public sealed partial class ScraperService
                 ? Path.Combine(Path.GetDirectoryName(file)!, name + fileName[old.Length..])
                 : file;
             File.WriteAllText(target2, renamed.ToFullString());
-            if (target2 != file) File.Delete(file);
+            if (target2 != file)
+                File.Delete(file);
             changed.Add(Path.GetRelativePath(project.Folder, target2));
         }
         return new RenameResult(old, name, changed, usedElsewhere);

@@ -10,23 +10,27 @@ public sealed class HeadlessSecureStorage : ISecureStorage
 
     public Task<string?> GetAsync(string key)
     {
-        lock (_gate) return Task.FromResult(_values.TryGetValue(key, out var value) ? value : null);
+        lock (_gate)
+            return Task.FromResult(_values.TryGetValue(key, out var value) ? value : null);
     }
 
     public Task SetAsync(string key, string value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        lock (_gate) _values[key] = value;
+        lock (_gate)
+            _values[key] = value;
         return Task.CompletedTask;
     }
 
     public bool Remove(string key)
     {
-        lock (_gate) return _values.Remove(key);
+        lock (_gate)
+            return _values.Remove(key);
     }
 
     public void RemoveAll()
     {
-        lock (_gate) _values.Clear();
+        lock (_gate)
+            _values.Clear();
     }
 }

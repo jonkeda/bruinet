@@ -51,7 +51,8 @@ public class AutomationProbePage : PageObjectBase<AutomationProbePage>
     public IMauiElement? TryFindChildThroughContainer(string containerId, string childId)
     {
         var container = TryFindByAutomationId(containerId);
-        if (container == null) return null;
+        if (container == null)
+            return null;
 
         return container.TryFindElement(Locator.ByAutomationId(childId));
     }

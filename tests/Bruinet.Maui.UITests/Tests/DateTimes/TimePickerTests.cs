@@ -18,7 +18,7 @@ public class TimePickerTests
     public TimePickerTests(MauiFixture fixture)
     {
         _fixture = fixture;
-        
+
         // Navigate to DateTime test page if needed
         _fixture.Open(SamplePage.DateTime);
     }

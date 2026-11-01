@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using Microsoft.Maui.Controls.Hosting;
 
@@ -49,9 +49,9 @@ public static class MauiProgram
         // the first page loads: elements publish themselves on Loaded.
         builder.UseBruinetGestureBridge();
 
-        #if MAUI_DEVFLOW
+#if MAUI_DEVFLOW
             builder.AddMauiDevFlowAgent();
-        #endif
+#endif
 
 #if WINDOWS
         // Configure TabbedPage to properly map AutomationId to tab elements

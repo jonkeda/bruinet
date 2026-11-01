@@ -24,8 +24,10 @@ public sealed partial record RecordedHeader(string Session, string Hash)
         using var reader = new StringReader(text);
         for (var i = 0; i < 20 && reader.ReadLine() is { } line; i++)
         {
-            if (Code().Match(line) is { Success: true } code) return new(code.Groups[1].Value, code.Groups[2].Value);
-            if (Metadata().Match(line) is { Success: true } row) return new(row.Groups[1].Value, row.Groups[2].Value);
+            if (Code().Match(line) is { Success: true } code)
+                return new(code.Groups[1].Value, code.Groups[2].Value);
+            if (Metadata().Match(line) is { Success: true } row)
+                return new(row.Groups[1].Value, row.Groups[2].Value);
         }
         return null;
     }

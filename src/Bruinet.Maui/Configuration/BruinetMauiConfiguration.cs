@@ -87,7 +87,8 @@ public class BruinetMauiConfiguration : BruinetConfigurationBase
 
     private void ApplyPlatformOverride(string? requested)
     {
-        if (string.IsNullOrWhiteSpace(requested)) return;
+        if (string.IsNullOrWhiteSpace(requested))
+            return;
 
         Maui.Platform = requested.Trim().ToLowerInvariant() switch
         {

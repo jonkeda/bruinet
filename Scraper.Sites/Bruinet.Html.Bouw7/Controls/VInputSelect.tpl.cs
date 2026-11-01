@@ -42,7 +42,8 @@ public partial class VInputSelect<TScope> : SelectorControlBase<TScope>
 
     protected virtual void SelectItemCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         OpenCore(element, timeoutMs);
 
@@ -63,7 +64,8 @@ public partial class VInputSelect<TScope> : SelectorControlBase<TScope>
 
     protected override string? GetSelectedTextCore(IHtmlElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var input = element.TryFindElement(Input);
         var inputValue = input?.InputValue?.Trim();

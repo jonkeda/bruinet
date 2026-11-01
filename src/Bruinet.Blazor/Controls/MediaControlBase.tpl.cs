@@ -78,7 +78,8 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SetVolumeCore(IHtmlElement element, double? volume, int? timeoutMs = null)
     {
-        if (volume is not { } requested) return;
+        if (volume is not { } requested)
+            return;
 
         var target = Math.Clamp(requested, 0, 1);
         ActAndConfirm(

@@ -56,9 +56,11 @@ public sealed class DataGridView<TScope> : ControlBase<TScope>
             {
                 var grid = flaui.Element.AsGrid();
                 var rows = grid.Rows;
-                if (row >= rows.Length) return null;
+                if (row >= rows.Length)
+                    return null;
                 var cells = rows[row].Cells;
-                if (column >= cells.Length) return null;
+                if (column >= cells.Length)
+                    return null;
                 return cells[column].Value;
             }
             return null;
@@ -123,7 +125,8 @@ public sealed class DataGridView<TScope> : ControlBase<TScope>
     /// <summary>Waits for the grid to have the expected row count.</summary>
     public bool WaitRowCount(int? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => GetRowCount() == expected, timeout);
     }
@@ -131,7 +134,8 @@ public sealed class DataGridView<TScope> : ControlBase<TScope>
     /// <summary>Asserts the grid has the expected row count.</summary>
     public TScope AssertRowCount(int? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitRowCount(expected, timeoutMs))
         {
             var actual = GetRowCount();

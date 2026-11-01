@@ -41,7 +41,8 @@ public static class TestResolver
     private static ResolvedStep Resolve(RecordingEvent e, ResolvedStep step, Dictionary<string, CodeClass> pages, IReadOnlyList<CodeClass> classes, RecordingSession session, Dictionary<int, ScrapeSnapshot> snapshots)
     {
         pages.TryGetValue(e.Page, out var page);
-        if (page is not null) step = step with { PageObject = page.Name };
+        if (page is not null)
+            step = step with { PageObject = page.Name };
         switch (e.Kind)
         {
             case RecordingEvent.NavigateKind:
@@ -77,15 +78,20 @@ public static class TestResolver
         (CodeMember Member, ScrapeNode Element, int Distance)? best = null;
         foreach (var member in owner.Members.Where(m => m.Locator is not null))
         {
-            if (Scope(snapshot, member, byName, root) is not { } scope) continue;
-            if (ControlChecker.Css(member.Locator!) is not { } css || SnapshotSelector.Parse(css) is not { } selector) continue;
+            if (Scope(snapshot, member, byName, root) is not { } scope)
+                continue;
+            if (ControlChecker.Css(member.Locator!) is not { } css || SnapshotSelector.Parse(css) is not { } selector)
+                continue;
             foreach (var element in selector.Under(snapshot, scope))
             {
-                if (Distance(snapshot, node, element) is not { } distance) continue;
-                if (best is null || distance < best.Value.Distance) best = (member, element, distance);
+                if (Distance(snapshot, node, element) is not { } distance)
+                    continue;
+                if (best is null || distance < best.Value.Distance)
+                    best = (member, element, distance);
             }
         }
-        if (best is not { } chosen) return null;
+        if (best is not { } chosen)
+            return null;
         var path = prefix + chosen.Member.Name;
         var container = classes.FirstOrDefault(c => c.Kind == CodeKind.Container && c.Name.Split('<')[0] == ControlVerbs.Short(chosen.Member.Type));
         if (container is not null && chosen.Distance > 0 && Member(snapshot, node, container, chosen.Element, classes, path + ".") is { } part)
@@ -96,7 +102,8 @@ public static class TestResolver
     // The element a member's locator is looked for under: the page, or the frame its scope names.
     private static ScrapeNode? Scope(ScrapeSnapshot snapshot, CodeMember member, IReadOnlyDictionary<string, CodeMember> byName, ScrapeNode root)
     {
-        if (member.Scope is null or "this") return root;
+        if (member.Scope is null or "this")
+            return root;
         if (!byName.TryGetValue(member.Scope, out var frame) || frame.Locator is null || ControlChecker.Css(frame.Locator) is not { } css || SnapshotSelector.Parse(css) is not { } selector)
             return null;
         return selector.Under(snapshot, root).FirstOrDefault();
@@ -108,8 +115,10 @@ public static class TestResolver
         var distance = 0;
         for (var n = node; ; n = snapshot[n.Parent], distance++)
         {
-            if (n.Number == element.Number) return distance;
-            if (n.Parent == 0) return null;
+            if (n.Number == element.Number)
+                return distance;
+            if (n.Parent == 0)
+                return null;
         }
     }
 

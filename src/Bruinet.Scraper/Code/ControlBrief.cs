@@ -124,7 +124,8 @@ public static partial class ControlBrief
 
         text.Append("\n### Hints\n");
         text.Append("What the elements are: ").Append(interactive.Length == 0 ? "nothing interactive; text to read" : string.Join("; ", interactive.Select(r => $"#{r.Node.Number} {r.Reading.Core.ToString().ToLowerInvariant()} ({r.Reading.Because})").Distinct().Take(8))).Append('\n');
-        if (rule is not null) text.Append(CultureInfo.InvariantCulture, $"The config's ## Components names it: {rule.Kind}, {rule.Name} ({rule.Match.Kind}: {rule.Match.Value}). That wins.\n");
+        if (rule is not null)
+            text.Append(CultureInfo.InvariantCulture, $"The config's ## Components names it: {rule.Kind}, {rule.Name} ({rule.Match.Kind}: {rule.Match.Value}). That wins.\n");
         text.Append("Kind: ").Append(hint.Kind).Append(". Base: ").Append(hint.Base).Append('\n');
         text.Append("Members a test needs: ").Append(hint.Members).Append('\n');
         text.Append("These are a reading of the facts, not an order: where you see it differently, say why and do that.\n");
@@ -231,21 +232,27 @@ public static partial class ControlBrief
         foreach (var session in project.Sessions())
         {
             var report = Path.Combine(session.Folder, Explore.ExploreReport.FileName);
-            if (!File.Exists(report) || !MarkdownTables.ReadSections(File.ReadAllText(report)).TryGetValue("Captures", out var captures)) continue;
+            if (!File.Exists(report) || !MarkdownTables.ReadSections(File.ReadAllText(report)).TryGetValue("Captures", out var captures))
+                continue;
             foreach (var row in captures.Rows)
             {
                 var via = ClickVia().Match(row.Cells.GetValueOrDefault("Via", ""));
-                if (!via.Success || !int.TryParse(row.Cells.GetValueOrDefault("#", ""), CultureInfo.InvariantCulture, out var number)) continue;
+                if (!via.Success || !int.TryParse(row.Cells.GetValueOrDefault("#", ""), CultureInfo.InvariantCulture, out var number))
+                    continue;
                 var (label, page) = (via.Groups["label"].Value, via.Groups["page"].Value);
-                if (!byPage.TryGetValue(page, out var here)) continue;
-                if (!here.Any(o => ControlKind.Subtree(o.Snapshot, o.Root).Any(n => Says(n, label)))) continue;
+                if (!byPage.TryGetValue(page, out var here))
+                    continue;
+                if (!here.Any(o => ControlKind.Subtree(o.Snapshot, o.Root).Any(n => Says(n, label))))
+                    continue;
                 var after = session.Events.FirstOrDefault(e => e.Number == number);
                 var before = session.Events.Where(e => e.Page == page && e.Number < number).MaxBy(e => e.Number);
                 var change = after is null || before is null ? "" : ": " + Change(session.ReadSnapshot(before), session.ReadSnapshot(after));
                 facts.Add($"clicked '{label}' on {page} ({session.Id} capture #{number}){change}");
-                if (facts.Count == MaxClicks) break;
+                if (facts.Count == MaxClicks)
+                    break;
             }
-            if (facts.Count == MaxClicks) break;
+            if (facts.Count == MaxClicks)
+                break;
         }
         return facts.Count == 0 ? "" : "Explore's clicks inside it:\n" + string.Concat(facts.Select(f => "  " + f + "\n"));
     }
@@ -275,7 +282,8 @@ public static partial class ControlBrief
             .Select(o => (Occurrence: o, Children: o.Snapshot.ChildrenOf(o.Root.Number).Where(c => c.Kind == ScrapeNodeKind.Element).GroupBy(c => NodeSignature.Of(o.Snapshot, c), StringComparer.Ordinal).Where(g => g.Count() >= 2).ToArray()))
             .ToArray();
         var signature = counts.SelectMany(c => c.Children.Select(g => g.Key)).GroupBy(s => s, StringComparer.Ordinal).OrderByDescending(g => g.Count()).Select(g => g.Key).FirstOrDefault();
-        if (signature is null) return null;
+        if (signature is null)
+            return null;
         var all = counts.SelectMany(c => c.Children.Where(g => g.Key == signature).SelectMany(g => g.Select(n => new Occurrence(c.Occurrence.Page, c.Occurrence.Snapshot, n, ControlKind.Variant(c.Occurrence.Snapshot, n), n)))).ToArray();
         var example = all.MaxBy(r => ControlKind.Below(r.Snapshot, r.Root).Count)!;
         var per = counts.Select(c => $"{c.Occurrence.Page} node {c.Occurrence.Root.Number}: {c.Children.Where(g => g.Key == signature).Sum(g => g.Count())}").ToArray();
@@ -295,7 +303,8 @@ public static partial class ControlBrief
             if (values.All(v => v is { Length: > 0 }) && unique)
                 keys.Add($"{name} (unique on every row, e.g. {values[0]})");
         }
-        if (keys.Count == 0) keys.Add("none on the row itself: a part's text (the first readable part above), or the position");
+        if (keys.Count == 0)
+            keys.Add("none on the row itself: a part's text (the first readable part above), or the position");
         return string.Join("; ", keys);
     }
 
@@ -358,19 +367,24 @@ public static partial class ControlBrief
 
     private static string Line(ScrapeNode node)
     {
-        if (node.Kind == ScrapeNodeKind.ShadowRoot) return $"#{node.Number} (shadow root)";
+        if (node.Kind == ScrapeNodeKind.ShadowRoot)
+            return $"#{node.Number} (shadow root)";
         var line = new StringBuilder().Append('#').Append(node.Number).Append(' ').Append(node.Type);
-        if (node.Attribute("id") is { Length: > 0 } id) line.Append(" #").Append(id);
+        if (node.Attribute("id") is { Length: > 0 } id)
+            line.Append(" #").Append(id);
         if (node.Attribute("class") is { Length: > 0 } classes)
             line.Append(' ').Append(string.Concat(classes.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(6).Select(c => "." + c)));
-        if (node.Role is { Length: > 0 } role) line.Append(" role=").Append(role);
+        if (node.Role is { Length: > 0 } role)
+            line.Append(" role=").Append(role);
         foreach (var key in FactAttributes)
             if (node.Attribute(key) is { } value)
                 line.Append(' ').Append(key).Append(value.Length > 0 ? "=" + Short(value, 40) : "");
         foreach (var data in node.Attributes.Where(a => a.Key.StartsWith("data-", StringComparison.Ordinal)).Take(3))
             line.Append(' ').Append(data.Key).Append('=').Append(Short(data.Value, 30));
-        if (node.Name is { Length: > 0 } name && node.Attribute("aria-label") is null) line.Append(" name=\"").Append(Short(name, 40)).Append('"');
-        if (node.Text is { Length: > 0 } text && text.Trim('​', ' ').Length > 0) line.Append(" \"").Append(Short(text.Trim(), 50)).Append('"');
+        if (node.Name is { Length: > 0 } name && node.Attribute("aria-label") is null)
+            line.Append(" name=\"").Append(Short(name, 40)).Append('"');
+        if (node.Text is { Length: > 0 } text && text.Trim('​', ' ').Length > 0)
+            line.Append(" \"").Append(Short(text.Trim(), 50)).Append('"');
         return line.ToString();
     }
 
@@ -383,8 +397,10 @@ public static partial class ControlBrief
         var sources = new[] { example }.Concat(occurrences.Where(o => o != example).Take(PartSources - 1));
         foreach (var (occurrence, node, reading) in sources.SelectMany(o => ControlKind.Below(o.Snapshot, o.Root).Select(b => (o, b.Node, b.Reading))))
         {
-            if (node.Number == occurrence.Root.Number) continue;
-            if (Locator(node, testIds) is not { } locator || !seen.Add(locator)) continue;
+            if (node.Number == occurrence.Root.Number)
+                continue;
+            if (Locator(node, testIds) is not { } locator || !seen.Add(locator))
+                continue;
             if (seen.Count > MaxParts)
             {
                 text.Append("  … more parts: get_page_snapshot for the rest\n");
@@ -408,10 +424,14 @@ public static partial class ControlBrief
             if (node.Attribute(testId) is { Length: > 0 } value)
                 return $"[{testId}={Quote(value)}]";
         var naming = (node.Attribute("class") ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(PatternDetector.IsNamingClass);
-        if (naming is not null) return $"{node.Type}.{naming}";
-        if (node.Type == "input") return node.Attribute("type") is { Length: > 0 } type ? $"input[type={type}]" : "input";
-        if (node.Role is { Length: > 0 } role) return $"{node.Type}[role={role}]";
-        if (node.Attribute("aria-haspopup") is not null) return $"{node.Type}[aria-haspopup]";
+        if (naming is not null)
+            return $"{node.Type}.{naming}";
+        if (node.Type == "input")
+            return node.Attribute("type") is { Length: > 0 } type ? $"input[type={type}]" : "input";
+        if (node.Role is { Length: > 0 } role)
+            return $"{node.Type}[role={role}]";
+        if (node.Attribute("aria-haspopup") is not null)
+            return $"{node.Type}[aria-haspopup]";
         return node.Type.Length > 0 ? node.Type : null;
     }
 

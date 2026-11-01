@@ -101,7 +101,8 @@ public class NavigationDemoViewModel : ParentViewModel
 
     private void RecordAction(string? action)
     {
-        if (string.IsNullOrEmpty(action)) return;
+        if (string.IsNullOrEmpty(action))
+            return;
 
         LastAction = action;
         ActionCount++;
@@ -117,7 +118,8 @@ public class NavigationDemoViewModel : ParentViewModel
 
     private void SelectTab(string? tab)
     {
-        if (string.IsNullOrEmpty(tab)) return;
+        if (string.IsNullOrEmpty(tab))
+            return;
 
         SelectedTab = tab;
         RecordAction($"Tab/{tab}");

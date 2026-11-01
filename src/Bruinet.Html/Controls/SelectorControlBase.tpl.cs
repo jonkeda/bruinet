@@ -33,7 +33,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SelectByTextCore(IHtmlElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         var option = element.FindElements(Options)
             .FirstOrDefault(candidate => string.Equals(candidate.Text?.Trim(), text.Trim(), StringComparison.OrdinalIgnoreCase))
@@ -49,7 +50,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SelectByValueCore(IHtmlElement element, string? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         SelectValue(element, value, timeoutMs);
     }
@@ -60,7 +62,8 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected virtual void SelectByIndexCore(IHtmlElement element, int? index, int? timeoutMs = null)
     {
-        if (index == null) return;
+        if (index == null)
+            return;
 
         var options = element.FindElements(Options);
         if (index < 0 || index >= options.Count)
@@ -97,10 +100,12 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     /// <param name="element">The pre-found element.</param>
     protected virtual int? GetSelectedIndexCore(IHtmlElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var selected = GetSelectedTextCore(element);
-        if (selected == null) return null;
+        if (selected == null)
+            return null;
 
         var texts = GetItemTextsCore(element);
         var index = texts?.ToList().IndexOf(selected) ?? -1;

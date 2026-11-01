@@ -162,8 +162,10 @@ public class StepperControlTests : SemanticControlTestsBase
 
         private void Press(int direction)
         {
-            if (direction > 0) PlusPresses++;
-            else MinusPresses++;
+            if (direction > 0)
+                PlusPresses++;
+            else
+                MinusPresses++;
 
             if (_ignoresPresses)
             {

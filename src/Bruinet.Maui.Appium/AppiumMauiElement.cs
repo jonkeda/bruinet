@@ -97,16 +97,16 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     #endregion
 
     #region State Properties
-    
+
     /// <inheritdoc />
     public bool Visible => Live(() => _element.Displayed);
-    
+
     /// <inheritdoc />
     public bool Enabled => Live(() => _element.Enabled);
-    
+
     /// <inheritdoc />
     public bool Selected => Live(() => _element.Selected);
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// An empty Android text field reports its placeholder as its text: UiAutomator2 gives an empty
@@ -119,19 +119,19 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </remarks>
     public string? Text => Live(() =>
     {
-            var text = _element.Text;
+        var text = _element.Text;
 
-            if (_driver.Platform == MauiPlatform.Android
-                && !string.IsNullOrEmpty(text)
-                && TagName == "android.widget.EditText"
-                && text == Hint)
-            {
-                return string.Empty;
-            }
+        if (_driver.Platform == MauiPlatform.Android
+            && !string.IsNullOrEmpty(text)
+            && TagName == "android.widget.EditText"
+            && text == Hint)
+        {
+            return string.Empty;
+        }
 
-            return text;
+        return text;
     });
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// On Android the widget class, <c>android.widget.EditText</c>: UiAutomator2 answers the tag
@@ -141,7 +141,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public string? TagName => Live(() => _driver.Platform == MauiPlatform.Android
         ? _driver.ElementFact(_element.Id, "class", () => GetAttribute("class"))
         : _element.TagName);
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// Android, unless the session asked UiAutomator2 for invisible elements: its tree holds only
@@ -151,10 +151,10 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     /// <inheritdoc />
     public Point Location => Live(() => _element.Location);
-    
+
     /// <inheritdoc />
     public Size Size => Live(() => _element.Size);
-    
+
     /// <inheritdoc />
     /// <remarks>One request: <c>Location</c> and <c>Size</c> each fetch the element's rect, so building
     /// it from them cost two, and bounds are read on every readiness check (.my/android-performance, P2).</remarks>
@@ -190,11 +190,11 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         using var mark = Interactions.Report(InteractionKind.Swipe, () => Rect, () => AutomationId, from, to, duration, target: () => _driver.RecordingTarget);
         action();
     }
-    
+
     #endregion
-    
+
     #region Actions
-    
+
     /// <inheritdoc />
     public void Click() => Marked(InteractionKind.Tap, () => Live(() => _element.Click()));
 
@@ -531,7 +531,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     #endregion
 
-    
+
     /// <inheritdoc />
     public void SendKeys(string text, TextInputMethod method = TextInputMethod.Keys) => Marked(InteractionKind.Type, () => Live(() =>
     {
@@ -549,7 +549,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 break;
         }
     }));
-    
+
     private void SetClipboardAndPaste(string text)
     {
         // Clipboard/paste operations are complex and platform-specific.
@@ -557,7 +557,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         // Full clipboard support can be added when we have platform-specific driver implementations.
         _element.SendKeys(text);
     }
-    
+
     /// <summary>
     /// Sets an element's value directly, bypassing the keyboard.
     /// </summary>
@@ -599,14 +599,14 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     /// <inheritdoc />
     public void Clear() => Marked(InteractionKind.Clear, () => Live(() => _element.Clear()));
-    
+
     /// <inheritdoc />
     public void DoubleClick() => Marked(InteractionKind.DoubleTap, () => Live(() =>
     {
         var actions = new Actions(_driver.Driver);
         actions.DoubleClick(_element).Perform();
     }));
-    
+
     /// <inheritdoc />
     public void RightClick()
     {
@@ -615,7 +615,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         var actions = new Actions(_driver.Driver);
         actions.ContextClick(_element).Perform();
     }
-    
+
     /// <inheritdoc />
     public void Hover()
     {
@@ -624,7 +624,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         var actions = new Actions(_driver.Driver);
         actions.MoveToElement(_element).Perform();
     }
-    
+
     /// <inheritdoc />
     public void LongPress(int durationMs = 1000) => Marked(InteractionKind.LongPress, TimeSpan.FromMilliseconds(durationMs), () => Live(() =>
     {
@@ -648,22 +648,23 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 throw NotAMobilePlatform(nameof(LongPress));
         }
     }));
-    
+
     /// <inheritdoc />
     public void ScrollIntoView(int timeoutMs) => Live(() =>
     {
         try
         {
-            if (_element.Displayed) return;
+            if (_element.Displayed)
+                return;
         }
         catch (Exception error) when (!AppiumErrors.IsGone(error))
         {
             // Continue with scroll attempt
         }
-        
+
         var startTime = DateTime.UtcNow;
         var timeout = TimeSpan.FromMilliseconds(timeoutMs);
-        
+
         switch (_driver.Platform)
         {
             case MauiPlatform.Android:
@@ -676,7 +677,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 throw NotAMobilePlatform(nameof(ScrollIntoView));
         }
     });
-    
+
     private void ScrollIntoViewAndroid(DateTime startTime, TimeSpan timeout)
     {
         try
@@ -866,21 +867,21 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 throw NotAMobilePlatform(nameof(Swipe));
         }
     }));
-    
+
     private static string GetSwipeDirection(int startX, int startY, int endX, int endY)
     {
         var deltaX = endX - startX;
         var deltaY = endY - startY;
-        
+
         if (Math.Abs(deltaX) > Math.Abs(deltaY))
         {
             return deltaX > 0 ? "right" : "left";
         }
         return deltaY > 0 ? "down" : "up";
     }
-    
+
     #endregion
-    
+
     #region Element Finding
 
     /// <inheritdoc />
@@ -907,9 +908,9 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     });
 
     #endregion
-    
+
     #region Attribute Access (IMauiElement)
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// Android reports the resource id fully qualified - <c>com.example.app:id/SaveButton</c> -
@@ -984,7 +985,8 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </summary>
     private static string? WithoutResourcePackage(string? resourceId)
     {
-        if (string.IsNullOrEmpty(resourceId)) return resourceId;
+        if (string.IsNullOrEmpty(resourceId))
+            return resourceId;
 
         var separator = resourceId.LastIndexOf('/');
         return separator >= 0 ? resourceId[(separator + 1)..] : resourceId;
@@ -1013,19 +1015,19 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             return null;
         }
     });
-    
+
     /// <inheritdoc />
     public string? GetDomAttribute(string attributeName) => Live(() => _element.GetDomAttribute(attributeName));
-    
+
     /// <inheritdoc />
     public string? GetDomProperty(string propertyName) => Live(() => _element.GetDomProperty(propertyName));
-    
+
     /// <inheritdoc />
     public string? GetCssValue(string propertyName) => Live(() => _element.GetCssValue(propertyName));
-    
+
     /// <inheritdoc />
     public void Submit() => Marked(InteractionKind.Key, "Enter", () => Live(() => _element.Submit()));
-    
+
     #endregion
 
     #region Checked state
@@ -1050,27 +1052,29 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </remarks>
     public bool? Checked => Live<bool?>(() =>
     {
-            var attribute = ToggleStateAttribute;
-            if (attribute == null) return null;
+        var attribute = ToggleStateAttribute;
+        if (attribute == null)
+            return null;
 
-            try
+        try
+        {
+            if (_driver.Platform == MauiPlatform.Android && !IsAttributeTrue("checkable"))
             {
-                if (_driver.Platform == MauiPlatform.Android && !IsAttributeTrue("checkable"))
-                {
-                    return null;
-                }
-
-                var value = _element.GetAttribute(attribute);
-                if (string.IsNullOrEmpty(value)) return null;
-
-                return value.Equals("true", StringComparison.OrdinalIgnoreCase)
-                    || value.Equals("1", StringComparison.Ordinal);
-            }
-            catch (Exception error) when (!AppiumErrors.IsGone(error))
-            {
-                // A driver may throw rather than return null for an absent attribute.
                 return null;
             }
+
+            var value = _element.GetAttribute(attribute);
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            return value.Equals("true", StringComparison.OrdinalIgnoreCase)
+                || value.Equals("1", StringComparison.Ordinal);
+        }
+        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        {
+            // A driver may throw rather than return null for an absent attribute.
+            return null;
+        }
     });
 
     /// <inheritdoc />

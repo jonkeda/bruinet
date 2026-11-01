@@ -28,7 +28,8 @@ public partial class DialogsView : ContentView
     private async void OnShowAlert(object? sender, EventArgs e)
     {
         var page = GetPage();
-        if (page == null) return;
+        if (page == null)
+            return;
 
         await BruinetAlerts.DisplayAlertAsync(page, "Alert", "This is an alert.", "OK");
         ViewModel?.Record("alert dismissed");
@@ -37,7 +38,8 @@ public partial class DialogsView : ContentView
     private async void OnShowConfirm(object? sender, EventArgs e)
     {
         var page = GetPage();
-        if (page == null) return;
+        if (page == null)
+            return;
 
         var accepted = await BruinetAlerts.DisplayAlertAsync(
             page, "Confirm", "Proceed?", "Yes", "No");
@@ -47,7 +49,8 @@ public partial class DialogsView : ContentView
     private async void OnShowPrompt(object? sender, EventArgs e)
     {
         var page = GetPage();
-        if (page == null) return;
+        if (page == null)
+            return;
 
         var answer = await BruinetAlerts.DisplayPromptAsync(
             page, "Prompt", "Enter a value", "OK", "Cancel");

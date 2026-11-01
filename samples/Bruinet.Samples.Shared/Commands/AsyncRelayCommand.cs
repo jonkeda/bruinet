@@ -28,7 +28,8 @@ public class AsyncRelayCommand : IAsyncRelayCommand
         get => _executionTask;
         private set
         {
-            if (ReferenceEquals(_executionTask, value)) return;
+            if (ReferenceEquals(_executionTask, value))
+                return;
             _executionTask = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExecutionTask)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
@@ -60,7 +61,7 @@ public class AsyncRelayCommand : IAsyncRelayCommand
     /// <summary>
     /// Creates an AsyncRelayCommand with IViewVisible integration.
     /// </summary>
-    public AsyncRelayCommand(IViewVisible viewModel, Func<Task> execute, 
+    public AsyncRelayCommand(IViewVisible viewModel, Func<Task> execute,
         Func<bool>? canExecute = null,
         AsyncRelayCommandOptions options = AsyncRelayCommandOptions.None)
     {
@@ -88,7 +89,8 @@ public class AsyncRelayCommand : IAsyncRelayCommand
     /// <inheritdoc/>
     public async Task ExecuteAsync(object? parameter)
     {
-        if (!CanExecute(parameter)) return;
+        if (!CanExecute(parameter))
+            return;
 
         // ViewVisible check - protect against clicks during navigation
         if (_viewModel != null && !_viewModel.ViewVisible)
@@ -101,7 +103,8 @@ public class AsyncRelayCommand : IAsyncRelayCommand
         _hasExecuted = true;
 
         var trackBusy = _viewModel != null && !HasOption(AsyncRelayCommandOptions.SkipBusyTracking);
-        if (trackBusy) _viewModel!.BeginBusy();
+        if (trackBusy)
+            _viewModel!.BeginBusy();
 
         try
         {
@@ -122,7 +125,8 @@ public class AsyncRelayCommand : IAsyncRelayCommand
         }
         finally
         {
-            if (trackBusy) _viewModel!.EndBusy();
+            if (trackBusy)
+                _viewModel!.EndBusy();
             NotifyCanExecuteChanged();
         }
     }

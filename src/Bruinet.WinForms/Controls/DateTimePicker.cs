@@ -19,7 +19,8 @@ public sealed class DateTimePicker<TScope> : ControlBase<TScope>
     /// <summary>Sets the date value using the Value pattern if supported, else keyboard fallback.</summary>
     public TScope SetValue(string? value, int? timeoutMs = null)
     {
-        if (value == null) return ContainingScope;
+        if (value == null)
+            return ContainingScope;
         return Run("SetValue", e =>
         {
             if (e is FlaUIWinFormsElement flaui &&

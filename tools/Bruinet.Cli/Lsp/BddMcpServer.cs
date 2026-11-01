@@ -294,7 +294,7 @@ public sealed class BddMcpServer : IDisposable
             : throw new ToolProblem(result.Reason + string.Concat(result.Problems.Select(problem => $"{Environment.NewLine}line {problem.Line}, column {problem.Column}: {problem.Code} {problem.Message}")));
     }
 
-        // An agent is not asked first, so it only counts unless it says dryRun: false.
+    // An agent is not asked first, so it only counts unless it says dryRun: false.
     private DeleteResultsResult DeleteResults(JsonObject arguments)
     {
         var path = (string?)arguments["path"];

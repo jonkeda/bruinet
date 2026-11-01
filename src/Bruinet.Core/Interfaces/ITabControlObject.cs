@@ -11,13 +11,13 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// Gets the title/text of the tab.
     /// </summary>
     string Title { get; }
-    
+
     /// <summary>
     /// Checks if the tab is currently selected.
     /// </summary>
     /// <returns>True if selected, false if not, null if element not found.</returns>
     bool? IsSelected();
-    
+
     /// <summary>
     /// Waits for the tab to be selected or unselected.
     /// Uses the nullable skip pattern - null skips the check.
@@ -26,7 +26,7 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
     bool WaitSelected(bool? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Asserts the tab is selected or unselected.
     /// Uses the nullable skip pattern - null skips the check.

@@ -26,13 +26,16 @@ public partial class VBtn<TScope> : ClickableControlBase<TScope>
     /// <param name="element">The pre-found element.</param>
     protected virtual string? GetLabelCore(IHtmlElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var label = element.GetAttribute("aria-label");
-        if (!string.IsNullOrWhiteSpace(label)) return label.Trim();
+        if (!string.IsNullOrWhiteSpace(label))
+            return label.Trim();
 
         var name = element.GetAttribute("name");
-        if (!string.IsNullOrWhiteSpace(name)) return name.Trim();
+        if (!string.IsNullOrWhiteSpace(name))
+            return name.Trim();
 
         return element.Text?.Trim();
     }

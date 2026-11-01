@@ -294,7 +294,8 @@ public sealed class FlaUIWpfElement : IWpfElement, IRangePatternElement, IExpand
             if (found != null)
                 return new FlaUIWpfElement(found, _driver);
 
-            if (timeoutMs <= 0) break;
+            if (timeoutMs <= 0)
+                break;
             WaitHelper.Pause(100);
         }
         while (DateTime.UtcNow - startTime < timeout);
@@ -413,7 +414,8 @@ public sealed class FlaUIWpfElement : IWpfElement, IRangePatternElement, IExpand
     {
         get
         {
-            try { return _element.Patterns.RangeValue.IsSupported; }
+            try
+            { return _element.Patterns.RangeValue.IsSupported; }
             catch { return false; }
         }
     }
@@ -568,7 +570,8 @@ public sealed class FlaUIWpfElement : IWpfElement, IRangePatternElement, IExpand
             {
                 items = _element.FindAllDescendants(cf =>
                     cf.ByControlType(global::FlaUI.Core.Definitions.ControlType.ListItem));
-                if (items.Length > 0) return true;
+                if (items.Length > 0)
+                    return true;
 
                 items = _element.FindAllChildren(cf =>
                     cf.ByControlType(global::FlaUI.Core.Definitions.ControlType.ListItem));

@@ -47,10 +47,12 @@ public static class ElementMatch
     private static bool MatchesControlType(IMauiElement element, string controlType)
     {
         var tagName = element.TagName;
-        if (string.IsNullOrEmpty(tagName)) return false;
+        if (string.IsNullOrEmpty(tagName))
+            return false;
 
         var lastSegment = tagName[(tagName.LastIndexOf('.') + 1)..];
-        if (string.Equals(lastSegment, controlType.Trim(), StringComparison.OrdinalIgnoreCase)) return true;
+        if (string.Equals(lastSegment, controlType.Trim(), StringComparison.OrdinalIgnoreCase))
+            return true;
 
         // XCUITest reports iOS types, e.g. XCUIElementTypeCell for a list item.
         var iosType = lastSegment.StartsWith("XCUIElementType", StringComparison.Ordinal)

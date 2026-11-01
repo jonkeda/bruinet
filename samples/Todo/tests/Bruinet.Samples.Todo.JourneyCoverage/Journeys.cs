@@ -52,7 +52,8 @@ public static partial class Journeys
         foreach (var line in markdown.Split('\n'))
         {
             var row = SubtaskRow().Match(line);
-            if (!row.Success) continue;
+            if (!row.Success)
+                continue;
 
             var id = row.Groups["id"].Value;
             subtasks.Add(new Subtask(id, row.Groups["text"].Value.Trim(), ParseTiers(id, row.Groups["tier"].Value)));

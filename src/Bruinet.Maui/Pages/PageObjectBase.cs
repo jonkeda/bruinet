@@ -17,7 +17,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 {
     private readonly IMauiTestContext _context;
     private const string DefaultBusyAutomationId = "Busy";
-    
+
     /// <summary>
     /// Creates a new page object with the specified context.
     /// </summary>
@@ -29,9 +29,9 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
     /// <inheritdoc />
     public override IMauiTestContext Context => _context;
-    
+
     #region Page state
-    
+
     /// <inheritdoc />
     public virtual string Name => GetType().Name;
 
@@ -135,7 +135,8 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <inheritdoc />
     public bool WaitBusy(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         return RunProbe(() =>
         {
@@ -173,7 +174,8 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <inheritdoc />
     public bool WaitLoaded(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         return RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
@@ -184,7 +186,8 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <exception cref="ScopeNotReadyException">The loaded state did not match within the timeout.</exception>
     public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
 
         RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
@@ -203,7 +206,8 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <inheritdoc />
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         return RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
@@ -214,7 +218,8 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <exception cref="AssertionException">The title did not match within the timeout.</exception>
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
 
         RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),

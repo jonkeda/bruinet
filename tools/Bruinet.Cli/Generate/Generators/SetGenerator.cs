@@ -116,7 +116,7 @@ public class SetGenerator : IMemberGenerator
     public IReadOnlyList<string> EmittedMemberNames(MethodInfo coreMethod)
         => [coreMethod.PublicMethodName];
 
-        public string Generate(MethodInfo coreMethod, ControlObjectContext context)
+    public string Generate(MethodInfo coreMethod, ControlObjectContext context)
     {
         var writer = new CsWriter(0);
         var publicMethodName = coreMethod.PublicMethodName;

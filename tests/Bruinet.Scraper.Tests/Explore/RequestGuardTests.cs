@@ -103,7 +103,8 @@ public sealed class RequestGuardTests
         var refused = RequestGuard.RefuseHost(new Uri(location), new ExploreSettings());
 
         Assert.Equal(allowed, refused is null);
-        if (!allowed) Assert.StartsWith("Explore may not run against test.exact.nl: it is not in the Explore hosts (localhost, 127.0.0.1).", refused);
+        if (!allowed)
+            Assert.StartsWith("Explore may not run against test.exact.nl: it is not in the Explore hosts (localhost, 127.0.0.1).", refused);
     }
 
     [Fact]

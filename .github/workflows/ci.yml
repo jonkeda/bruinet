@@ -47,6 +47,10 @@ jobs:
       - name: Build
         run: dotnet build Bruinet.sln -v:minimal /nr:false
 
+      # Whitespace as .editorconfig says (AD-033); the analyzers and code style ran in the build.
+      - name: Format
+        run: dotnet format whitespace Bruinet.sln --verify-no-changes --no-restore -v:minimal
+
       # Unit tests only. The *.UITests projects (UI tests and UAT suites) launch real apps and
       # stay local; see AGENTS.md "Match the test scope to the change". The MAUI ones also run in
       # memory, below.

@@ -47,7 +47,8 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     protected override void SetValueCore(IMauiElement element, double? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         EnsureSettableCore(element);
 
@@ -84,14 +85,17 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     /// <returns>The percentage (0-100), or null if the value or the range is not published.</returns>
     protected virtual double? GetPercentageCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var current = GetValueCore(element);
         var min = GetMinimumCore(element);
         var max = GetMaximumCore(element);
-        if (current == null || min == null || max == null) return null;
+        if (current == null || min == null || max == null)
+            return null;
 
-        if (Math.Abs(max.Value - min.Value) < 0.0001) return 0;
+        if (Math.Abs(max.Value - min.Value) < 0.0001)
+            return 0;
 
         return ((current.Value - min.Value) / (max.Value - min.Value)) * 100.0;
     }
@@ -115,7 +119,8 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     protected virtual void SlideToPercentageCore(IMauiElement element, double? percentage,
         int? timeoutMs = null)
     {
-        if (percentage == null) return;
+        if (percentage == null)
+            return;
 
         var min = RequireBound(GetMinimumCore(element), "minimum");
         var max = RequireBound(GetMaximumCore(element), "maximum");

@@ -12,15 +12,15 @@ partial class MainForm : Form
         this.Text = "Bruinet WinForms Sample Application";
         this.Size = new System.Drawing.Size(600, 900);
         this.StartPosition = FormStartPosition.CenterScreen;
-        
+
         // Create a panel to hold all controls
         var panel = new Panel();
         panel.Dock = DockStyle.Fill;
         panel.AutoScroll = true;
         panel.Padding = new Padding(10);
-        
+
         int yPosition = 10;
-        
+
         // Username Label and TextBox
         var userLabel = new Label();
         userLabel.Text = "Username:";
@@ -28,7 +28,7 @@ partial class MainForm : Form
         userLabel.Size = new System.Drawing.Size(100, 20);
         userLabel.Name = "lblUsername";
         panel.Controls.Add(userLabel);
-        
+
         var usernameBox = new TextBox();
         usernameBox.Location = new System.Drawing.Point(120, yPosition);
         usernameBox.Size = new System.Drawing.Size(200, 20);
@@ -36,7 +36,7 @@ partial class MainForm : Form
         usernameBox.Text = "";
         panel.Controls.Add(usernameBox);
         yPosition += 30;
-        
+
         // Password Label and TextBox
         var passLabel = new Label();
         passLabel.Text = "Password:";
@@ -44,7 +44,7 @@ partial class MainForm : Form
         passLabel.Size = new System.Drawing.Size(100, 20);
         passLabel.Name = "lblPassword";
         panel.Controls.Add(passLabel);
-        
+
         var passwordBox = new TextBox();
         passwordBox.Location = new System.Drawing.Point(120, yPosition);
         passwordBox.Size = new System.Drawing.Size(200, 20);
@@ -52,7 +52,7 @@ partial class MainForm : Form
         passwordBox.Name = "txtPassword";
         panel.Controls.Add(passwordBox);
         yPosition += 30;
-        
+
         // Remember Me Checkbox
         var rememberCheckBox = new CheckBox();
         rememberCheckBox.Text = "Remember me";
@@ -61,7 +61,7 @@ partial class MainForm : Form
         rememberCheckBox.Name = "chkRemember";
         panel.Controls.Add(rememberCheckBox);
         yPosition += 30;
-        
+
         // Role Selection ComboBox
         var roleLabel = new Label();
         roleLabel.Text = "Role:";
@@ -69,7 +69,7 @@ partial class MainForm : Form
         roleLabel.Size = new System.Drawing.Size(100, 20);
         roleLabel.Name = "lblRole";
         panel.Controls.Add(roleLabel);
-        
+
         var roleCombo = new ComboBox();
         roleCombo.Location = new System.Drawing.Point(120, yPosition);
         roleCombo.Size = new System.Drawing.Size(200, 20);
@@ -79,7 +79,7 @@ partial class MainForm : Form
         roleCombo.Name = "cmbRole";
         panel.Controls.Add(roleCombo);
         yPosition += 30;
-        
+
         // Port (Numeric) Label and NumericUpDown
         var portLabel = new Label();
         portLabel.Text = "Port:";
@@ -87,7 +87,7 @@ partial class MainForm : Form
         portLabel.Size = new System.Drawing.Size(100, 20);
         portLabel.Name = "lblPort";
         panel.Controls.Add(portLabel);
-        
+
         var portNumeric = new NumericUpDown();
         portNumeric.Location = new System.Drawing.Point(120, yPosition);
         portNumeric.Size = new System.Drawing.Size(200, 20);
@@ -97,7 +97,7 @@ partial class MainForm : Form
         portNumeric.Name = "nudPort";
         panel.Controls.Add(portNumeric);
         yPosition += 30;
-        
+
         // Notes (Rich Text) Label and RichTextBox
         var notesLabel = new Label();
         notesLabel.Text = "Notes:";
@@ -106,7 +106,7 @@ partial class MainForm : Form
         notesLabel.Name = "lblNotes";
         panel.Controls.Add(notesLabel);
         yPosition += 20;
-        
+
         var notesRichText = new RichTextBox();
         notesRichText.Location = new System.Drawing.Point(10, yPosition);
         notesRichText.Size = new System.Drawing.Size(310, 80);
@@ -114,7 +114,7 @@ partial class MainForm : Form
         notesRichText.Text = "Enter any additional notes here...";
         panel.Controls.Add(notesRichText);
         yPosition += 90;
-        
+
         // Start Date Label and DateTimePicker
         var startDateLabel = new Label();
         startDateLabel.Text = "Start Date:";
@@ -122,7 +122,7 @@ partial class MainForm : Form
         startDateLabel.Size = new System.Drawing.Size(100, 20);
         startDateLabel.Name = "lblStartDate";
         panel.Controls.Add(startDateLabel);
-        
+
         var startDatePicker = new DateTimePicker();
         startDatePicker.Location = new System.Drawing.Point(120, yPosition);
         startDatePicker.Size = new System.Drawing.Size(200, 20);
@@ -131,7 +131,7 @@ partial class MainForm : Form
         startDatePicker.Value = System.DateTime.Today;
         panel.Controls.Add(startDatePicker);
         yPosition += 30;
-        
+
         // Volume Label and TrackBar
         var volumeLabel = new Label();
         volumeLabel.Text = "Volume:";
@@ -139,7 +139,7 @@ partial class MainForm : Form
         volumeLabel.Size = new System.Drawing.Size(100, 20);
         volumeLabel.Name = "lblVolume";
         panel.Controls.Add(volumeLabel);
-        
+
         var volumeTrackBar = new TrackBar();
         volumeTrackBar.Location = new System.Drawing.Point(120, yPosition);
         volumeTrackBar.Size = new System.Drawing.Size(200, 40);
@@ -149,7 +149,7 @@ partial class MainForm : Form
         volumeTrackBar.Name = "trbVolume";
         panel.Controls.Add(volumeTrackBar);
         yPosition += 50;
-        
+
         // Progress Label and ProgressBar
         var progressLabel = new Label();
         progressLabel.Text = "Progress:";
@@ -157,7 +157,7 @@ partial class MainForm : Form
         progressLabel.Size = new System.Drawing.Size(100, 20);
         progressLabel.Name = "lblProgress";
         panel.Controls.Add(progressLabel);
-        
+
         var progressBar = new ProgressBar();
         progressBar.Location = new System.Drawing.Point(120, yPosition);
         progressBar.Size = new System.Drawing.Size(200, 20);
@@ -167,7 +167,7 @@ partial class MainForm : Form
         progressBar.Name = "prbProgress";
         panel.Controls.Add(progressBar);
         yPosition += 30;
-        
+
         // Status Label
         var statusLabel = new Label();
         statusLabel.Text = "Status: Ready";
@@ -176,7 +176,7 @@ partial class MainForm : Form
         statusLabel.Name = "lblStatus";
         panel.Controls.Add(statusLabel);
         yPosition += 30;
-        
+
         // Login Button
         var loginButton = new Button();
         loginButton.Text = "Login";
@@ -192,7 +192,7 @@ partial class MainForm : Form
             statusLabel.ForeColor = System.Drawing.Color.Green;
         };
         panel.Controls.Add(loginButton);
-        
+
         // Clear Button
         var clearButton = new Button();
         clearButton.Text = "Clear";
@@ -212,7 +212,7 @@ partial class MainForm : Form
         };
         panel.Controls.Add(clearButton);
         yPosition += 40;
-        
+
         // Items ListBox
         var itemsLabel = new Label();
         itemsLabel.Text = "Items:";
@@ -221,14 +221,14 @@ partial class MainForm : Form
         itemsLabel.Name = "lblItems";
         panel.Controls.Add(itemsLabel);
         yPosition += 20;
-        
+
         var itemsListBox = new ListBox();
         itemsListBox.Location = new System.Drawing.Point(10, yPosition);
         itemsListBox.Size = new System.Drawing.Size(310, 100);
         itemsListBox.Name = "lstItems";
         itemsListBox.Items.AddRange(new object[] { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" });
         panel.Controls.Add(itemsListBox);
-        
+
         this.Controls.Add(panel);
     }
 }

@@ -49,10 +49,12 @@ public partial class TabMenu<TParent>
     /// </summary>
     protected override bool MatchesKey(IMauiElement itemRoot, Locator key)
     {
-        if (base.MatchesKey(itemRoot, key)) return true;
+        if (base.MatchesKey(itemRoot, key))
+            return true;
 
         var caption = TabMenuMarkup.CaptionWithin(itemRoot);
-        if (caption != null && ElementMatch.Matches(caption, key)) return true;
+        if (caption != null && ElementMatch.Matches(caption, key))
+            return true;
 
         var button = TabMenuMarkup.ButtonWithin(itemRoot);
         return button != null && ElementMatch.Matches(button, key);

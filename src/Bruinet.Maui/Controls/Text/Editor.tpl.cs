@@ -52,7 +52,8 @@ public partial class Editor<TScope> : Entry<TScope>
     /// <param name="timeoutMs">Optional timeout for enabled check.</param>
     protected override void SetTextCore(IMauiElement element, string? text, int? timeoutMs = null)
     {
-        if (text == null) return;
+        if (text == null)
+            return;
 
         element.Clear();
         element.SendKeys(text, TextInputMethod.SetValue);

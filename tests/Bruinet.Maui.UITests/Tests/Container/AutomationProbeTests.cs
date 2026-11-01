@@ -119,9 +119,12 @@ public class AutomationProbeTests
 
             report.AppendLine(CultureInfo.InvariantCulture, $"| {subject} | {(rootFound ? "yes" : "NO")} | {(childFound ? "yes" : "NO")} |");
 
-            if (childFound) scopable.Add(subject);
-            else if (rootFound) rootOnly.Add(subject);
-            else unaddressable.Add(subject);
+            if (childFound)
+                scopable.Add(subject);
+            else if (rootFound)
+                rootOnly.Add(subject);
+            else
+                unaddressable.Add(subject);
         }
 
         report.AppendLine();

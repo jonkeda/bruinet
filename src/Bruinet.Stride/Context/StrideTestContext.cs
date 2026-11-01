@@ -201,8 +201,10 @@ public class StrideTestContext : IStrideTestContext
 
     private static bool IsResultTrue(object? result)
     {
-        if (result is bool b) return b;
-        if (result is System.Text.Json.JsonElement je && je.ValueKind == System.Text.Json.JsonValueKind.True) return true;
+        if (result is bool b)
+            return b;
+        if (result is System.Text.Json.JsonElement je && je.ValueKind == System.Text.Json.JsonValueKind.True)
+            return true;
         return false;
     }
 
@@ -228,7 +230,8 @@ public class StrideTestContext : IStrideTestContext
 
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
         _disposed = true;
 
         _channel.Dispose();

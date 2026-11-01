@@ -233,7 +233,8 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             try
             {
-                if (_element.Patterns.Value.IsSupported) return _element;
+                if (_element.Patterns.Value.IsSupported)
+                    return _element;
 
                 var nested = FindNestedTextBoxElement();
                 return nested?.Patterns.Value.IsSupported == true ? nested : null;
@@ -336,41 +337,41 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// <inheritdoc />
     public string? Text => Live<string?>(() =>
     {
-            try
+        try
+        {
+            // Try Value pattern first (for text inputs)
+            if (_element.Patterns.Value.IsSupported)
             {
-                // Try Value pattern first (for text inputs)
-                if (_element.Patterns.Value.IsSupported)
-                {
-                    return _element.Patterns.Value.Pattern.Value.Value;
-                }
-                // Try RangeValue pattern for sliders and other range controls
-                if (_element.Patterns.RangeValue.IsSupported)
-                {
-                    return _element.Patterns.RangeValue.Pattern.Value.Value.ToString(CultureInfo.InvariantCulture);
-                }
-
-                // MAUI wraps text controls on WinUI: the AutomationId sits on a wrapper whose
-                // own Value pattern is absent, and the text lives in a nested Edit. Reading
-                // through to it here means a caller just asks for Text - it does not need to
-                // know that this platform nests, which is why there is no longer an
-                // INestedTextElement capability for controls to probe.
-                var nested = FindNestedTextBoxElement();
-                if (nested != null)
-                {
-                    var nestedText = nested.Patterns.Value.IsSupported
-                        ? nested.Patterns.Value.Pattern.Value.Value
-                        : nested.Properties.Name.ValueOrDefault;
-                    if (!string.IsNullOrEmpty(nestedText))
-                        return nestedText;
-                }
-
-                // Fallback to Name property with safe access
-                return _element.Properties.Name.ValueOrDefault;
+                return _element.Patterns.Value.Pattern.Value.Value;
             }
-            catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+            // Try RangeValue pattern for sliders and other range controls
+            if (_element.Patterns.RangeValue.IsSupported)
             {
-                return null;
+                return _element.Patterns.RangeValue.Pattern.Value.Value.ToString(CultureInfo.InvariantCulture);
             }
+
+            // MAUI wraps text controls on WinUI: the AutomationId sits on a wrapper whose
+            // own Value pattern is absent, and the text lives in a nested Edit. Reading
+            // through to it here means a caller just asks for Text - it does not need to
+            // know that this platform nests, which is why there is no longer an
+            // INestedTextElement capability for controls to probe.
+            var nested = FindNestedTextBoxElement();
+            if (nested != null)
+            {
+                var nestedText = nested.Patterns.Value.IsSupported
+                    ? nested.Patterns.Value.Pattern.Value.Value
+                    : nested.Properties.Name.ValueOrDefault;
+                if (!string.IsNullOrEmpty(nestedText))
+                    return nestedText;
+            }
+
+            // Fallback to Name property with safe access
+            return _element.Properties.Name.ValueOrDefault;
+        }
+        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        {
+            return null;
+        }
     });
 
     /// <inheritdoc />
@@ -502,7 +503,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     });
 
     #endregion
-   
+
     /// <inheritdoc />
     /// <remarks>
     /// <para>
@@ -1206,7 +1207,8 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
         Bruinet.Core.Calls.Settle.Until(() =>
         {
             items = _element.FindAllDescendants(cf => cf.ByControlType(ControlType.ListItem));
-            if (items.Length > 0) return true;
+            if (items.Length > 0)
+                return true;
 
             items = _element.FindAllChildren(cf => cf.ByControlType(ControlType.ListItem));
             return items.Length > 0;

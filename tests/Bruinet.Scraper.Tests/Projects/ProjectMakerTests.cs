@@ -11,7 +11,8 @@ public sealed class ProjectMakerTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private static NewProject Request(string name = "Shop.UITests", string folder = "tests/Shop.UITests", string platform = "html", string url = "https://shop.example/", BruinetReferences references = BruinetReferences.Packages) =>

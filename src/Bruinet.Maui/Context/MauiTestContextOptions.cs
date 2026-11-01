@@ -25,13 +25,13 @@ public class MauiTestContextOptions
     /// Required when Driver is not set.
     /// </summary>
     public MauiDriverOptions? DriverOptions { get; init; }
-    
+
     /// <summary>
     /// Gets or sets the timeout configuration.
     /// If null, default timeouts will be used.
     /// </summary>
     public TimeoutSettings? Timeouts { get; init; }
-    
+
     /// <summary>
     /// Gets or sets the test logger.
     /// If null, a no-op logger will be used.

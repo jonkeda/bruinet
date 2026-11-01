@@ -69,7 +69,8 @@ public abstract class ClickableControlBase<TScope> : ControlBase<TScope>, IClick
         try
         {
             var element = TryFindElement();
-            if (element == null) return null;
+            if (element == null)
+                return null;
             return element.Visible && element.Enabled;
         }
         catch
@@ -81,7 +82,8 @@ public abstract class ClickableControlBase<TScope> : ControlBase<TScope>, IClick
     /// <inheritdoc />
     public bool WaitClickable(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => IsClickable() == expected, timeout);
     }
@@ -89,7 +91,8 @@ public abstract class ClickableControlBase<TScope> : ControlBase<TScope>, IClick
     /// <inheritdoc />
     public TScope AssertClickable(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitClickable(expected, timeoutMs))
         {
             var actual = IsClickable();

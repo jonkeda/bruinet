@@ -64,7 +64,8 @@ public abstract class PageObjectBase<TSelf> : IStrideScope<TSelf>, IPageObject
 
     public virtual bool WaitLoaded(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         var timeout = timeoutMs ?? _context.Timeouts.PageLoad;
         return LegacyWaitHelper.WaitFor(
@@ -75,7 +76,8 @@ public abstract class PageObjectBase<TSelf> : IStrideScope<TSelf>, IPageObject
 
     public virtual void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
 
         if (!WaitLoaded(expected, timeoutMs))
         {
@@ -89,14 +91,16 @@ public abstract class PageObjectBase<TSelf> : IStrideScope<TSelf>, IPageObject
 
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? _context.Timeouts.DefaultWait;
         return LegacyWaitHelper.WaitFor(() => GetTitle() == expected, timeout, _context.Timeouts.PollingInterval);
     }
 
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return;
+        if (expected == null)
+            return;
 
         if (!WaitTitle(expected, timeoutMs))
         {

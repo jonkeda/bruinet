@@ -19,7 +19,7 @@ public abstract class BruinetConfigurationBase
     protected static T LoadFromJson<T>(string configFileName) where T : new()
     {
         var configPath = Path.Combine(AppContext.BaseDirectory, configFileName);
-        
+
         if (!File.Exists(configPath))
         {
             return new T();

@@ -7,7 +7,7 @@ public enum ScreenshotFormat
 {
     /// <summary>PNG format (lossless, larger files).</summary>
     Png,
-    
+
     /// <summary>JPEG format (lossy, smaller files).</summary>
     Jpeg
 }

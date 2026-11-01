@@ -12,7 +12,8 @@ public sealed class TestDrafterTests : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true);
+        if (Directory.Exists(_root))
+            Directory.Delete(_root, recursive: true);
     }
 
     private static RecordingEvent On(string kind, int? node = null, string? value = null) => new()
@@ -165,7 +166,8 @@ public sealed class TestDrafterTests : IDisposable
     public void The_default_target_is_the_setting_else_a_scenario_in_a_uat_suite_else_xunit(string config, bool uat, TestTarget expected)
     {
         var (project, _) = UserForm.Make(_root, config);
-        if (uat) File.WriteAllText(Path.Combine(project.Folder, ScrapeProject.UatConfigFileName), "# UAT Config\n");
+        if (uat)
+            File.WriteAllText(Path.Combine(project.Folder, ScrapeProject.UatConfigFileName), "# UAT Config\n");
 
         Assert.Equal(expected, ScrapeProject.Open(project.Folder).TestTarget);
     }

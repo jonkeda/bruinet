@@ -61,7 +61,8 @@ public sealed class SnapshotOutlineTests
     public void A_subtree_can_be_asked_for_and_the_budget_is_kept()
     {
         var nodes = new List<ScrapeNode> { Node(1, 0, "ul") };
-        for (var i = 2; i <= 50; i++) nodes.Add(Node(i, 1, "li", $"Item {i}"));
+        for (var i = 2; i <= 50; i++)
+            nodes.Add(Node(i, 1, "li", $"Item {i}"));
         var snapshot = Snapshot([.. nodes]);
 
         var outline = SnapshotOutline.Render(snapshot, root: 1, maxLines: 5);

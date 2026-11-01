@@ -80,9 +80,12 @@ public static class PageVerifier
     // The member's element in the page: on the page, or inside the frame its scope names.
     private static ILocator? Lookup(IPage page, CodeMember member, IReadOnlyDictionary<string, CodeMember> byName, int depth)
     {
-        if (depth > 5 || Parse(member.Locator) is not { } locator) return null;
-        if (member.Scope is null or "this") return locator(page.Locator("*"));
-        if (!byName.TryGetValue(member.Scope, out var frame) || !frame.Type.StartsWith("FrameScope<", StringComparison.Ordinal)) return null;
+        if (depth > 5 || Parse(member.Locator) is not { } locator)
+            return null;
+        if (member.Scope is null or "this")
+            return locator(page.Locator("*"));
+        if (!byName.TryGetValue(member.Scope, out var frame) || !frame.Type.StartsWith("FrameScope<", StringComparison.Ordinal))
+            return null;
         var host = Lookup(page, frame, byName, depth + 1);
         return host is null ? null : locator(host.First.ContentFrame.Locator("*"));
     }
@@ -94,9 +97,11 @@ public static class PageVerifier
     /// </summary>
     public static Func<ILocator, ILocator>? Parse(string? text)
     {
-        if (text is null) return null;
+        if (text is null)
+            return null;
         var expression = SyntaxFactory.ParseExpression(text);
-        if (expression is LiteralExpressionSyntax { Token.Value: string css }) return root => root.Locator(css);
+        if (expression is LiteralExpressionSyntax { Token.Value: string css })
+            return root => root.Locator(css);
         if (expression is not InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax access } call
             || access.Expression.ToString() is not ("Locator" or "Bruinet.Core.Locators.Locator")
             || call.ArgumentList.Arguments.Count != 1

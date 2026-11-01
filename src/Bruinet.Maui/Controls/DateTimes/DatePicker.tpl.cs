@@ -67,7 +67,8 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
     protected System.DateTime? ParseDate(string? text)
     {
         var cleaned = DateTimeFormats.Clean(text);
-        if (cleaned.Length == 0) return null;
+        if (cleaned.Length == 0)
+            return null;
 
         if (System.DateTime.TryParseExact(cleaned, Format, Culture,
                 System.Globalization.DateTimeStyles.None, out var exact))
@@ -98,15 +99,18 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
     /// </summary>
     protected virtual System.DateTime? ReadDate(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var valueDate = ParseDate(element.Value);
-        if (valueDate != null) return valueDate;
+        if (valueDate != null)
+            return valueDate;
 
         foreach (var child in element.FindElements(Locator.ByAutomationId("DateText")))
         {
             var childDate = ParseDate(child.Name) ?? ParseDate(child.Text);
-            if (childDate != null) return childDate;
+            if (childDate != null)
+                return childDate;
         }
 
         return ParseDate(element.Name) ?? ParseDate(element.Text);
@@ -117,7 +121,8 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
     /// </summary>
     protected virtual void SetDateCore(IMauiElement element, System.DateTime? date, int? timeoutMs = null)
     {
-        if (date == null) return;
+        if (date == null)
+            return;
 
         element.SetDate(date.Value);
     }
@@ -145,7 +150,8 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
     /// <returns>True if condition met, false if timeout.</returns>
     public bool WaitDate(System.DateTime? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
 
         return RunWaitWithElement(expected,
             e =>
@@ -165,7 +171,8 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
     /// <returns>The containing scope for fluent chaining.</returns>
     public TScope AssertDate(System.DateTime? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
 
         return RunAssertWithElement(expected,
             ReadDate,

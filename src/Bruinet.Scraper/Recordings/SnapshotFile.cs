@@ -55,7 +55,8 @@ public static class SnapshotFile
         while (reader.ReadLine() is { } line)
         {
             lineNumber++;
-            if (line.Length == 0) continue;
+            if (line.Length == 0)
+                continue;
             var node = ToNode(Parse(line, lineNumber));
             if (node.Number != nodes.Count + 1)
                 throw new FormatException($"Line {lineNumber}: node {node.Number} where node {nodes.Count + 1} was expected.");
@@ -97,13 +98,15 @@ public static class SnapshotFile
     private static JsonObject ToJson(ScrapeNode node)
     {
         var o = new JsonObject { ["n"] = node.Number, ["p"] = node.Parent };
-        if (node.Kind != ScrapeNodeKind.Element) o["kind"] = node.Kind == ScrapeNodeKind.ShadowRoot ? "shadow-root" : node.Kind.ToString();
+        if (node.Kind != ScrapeNodeKind.Element)
+            o["kind"] = node.Kind == ScrapeNodeKind.ShadowRoot ? "shadow-root" : node.Kind.ToString();
         Add(o, "type", node.Type);
         Add(o, "role", node.Role);
         Add(o, "name", node.Name);
         Add(o, "text", node.Text);
         Add(o, "frame", node.Frame);
-        if (node.Bounds is { } b) o["box"] = new JsonArray(b.X, b.Y, b.Width, b.Height);
+        if (node.Bounds is { } b)
+            o["box"] = new JsonArray(b.X, b.Y, b.Width, b.Height);
         if (node.Attributes.Count > 0)
         {
             var attributes = new JsonObject();
@@ -140,7 +143,8 @@ public static class SnapshotFile
 
     private static void Add(JsonObject o, string name, string? value)
     {
-        if (!string.IsNullOrEmpty(value)) o[name] = value;
+        if (!string.IsNullOrEmpty(value))
+            o[name] = value;
     }
 
     private static string ToLine(JsonObject o)

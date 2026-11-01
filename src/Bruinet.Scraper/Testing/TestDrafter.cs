@@ -97,9 +97,11 @@ public static class TestDrafter
         var pages = new Dictionary<string, string>(StringComparer.Ordinal);
         string PageVar(string pageObject)
         {
-            if (pages.TryGetValue(pageObject, out var name)) return name;
+            if (pages.TryGetValue(pageObject, out var name))
+                return name;
             name = Camel(StepNames.FromIdentifier(pageObject));
-            while (pages.ContainsValue(name)) name += "2";
+            while (pages.ContainsValue(name))
+                name += "2";
             pages[pageObject] = name;
             body.Add($"var {name} = new {pageObject}(Context);");
             return name;
@@ -144,12 +146,14 @@ public static class TestDrafter
 
         var code = new StringBuilder();
         code.Append(header).Append('\n');
-        foreach (var u in usings) code.Append("using ").Append(u).Append(";\n");
+        foreach (var u in usings)
+            code.Append("using ").Append(u).Append(";\n");
         code.Append('\n').Append("namespace ").Append(ns).Append(";\n\n");
         code.Append("// Drafted from a recording by rules: drafted again over this file, so change the page objects or your part instead.\n");
         code.Append("public sealed partial class ").Append(className).Append("\n{\n");
         code.Append("    [Fact]\n    public void ").Append(method).Append("()\n    {\n");
-        foreach (var line in TrimBlank(body)) code.Append(line.Length == 0 ? "\n" : "        " + line + "\n");
+        foreach (var line in TrimBlank(body))
+            code.Append(line.Length == 0 ? "\n" : "        " + line + "\n");
         code.Append("    }\n}\n");
         return code.ToString();
     }
@@ -174,9 +178,11 @@ public static class TestDrafter
         }
         void Flush()
         {
-            if (block.Count == 0) return;
+            if (block.Count == 0)
+                return;
             md.Append("```gherkin\n");
-            foreach (var line in block) md.Append(line).Append('\n');
+            foreach (var line in block)
+                md.Append(line).Append('\n');
             md.Append("```\n\n");
             block.Clear();
             group = null; // a new block starts with its keyword
@@ -206,7 +212,8 @@ public static class TestDrafter
 
     private static IEnumerable<string> TrimBlank(List<string> lines)
     {
-        while (lines.Count > 0 && lines[^1].Length == 0) lines.RemoveAt(lines.Count - 1);
+        while (lines.Count > 0 && lines[^1].Length == 0)
+            lines.RemoveAt(lines.Count - 1);
         return lines;
     }
 
@@ -232,7 +239,8 @@ public static class TestDrafter
     private static string Method(string text)
     {
         var words = Words(text);
-        if (words.Length == 0) return "Recorded";
+        if (words.Length == 0)
+            return "Recorded";
         var name = string.Join('_', words.Select((w, i) => i == 0 ? char.ToUpperInvariant(w[0]) + w[1..] : w.ToLowerInvariant()));
         return char.IsDigit(name[0]) ? "Recorded_" + name : name;
     }

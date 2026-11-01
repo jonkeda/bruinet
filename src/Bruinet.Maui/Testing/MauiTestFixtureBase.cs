@@ -23,7 +23,7 @@ public abstract class MauiTestFixtureBase : IDisposable
     private MauiTestContext _context;
     private IScreenshotService _screenshotService;
     private bool _disposed;
-    
+
     /// <summary>
     /// Current MAUI configuration loaded from bruinet.maui.config.json
     /// </summary>
@@ -37,16 +37,16 @@ public abstract class MauiTestFixtureBase : IDisposable
     {
         _instanceId = Interlocked.Increment(ref _instanceCount);
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATING at {DateTime.Now:HH:mm:ss.fff}");
-        
+
         Configuration = BruinetMauiConfiguration.Load();
-        
+
         _options = Options();
 
         _context = new MauiTestContext(_options);
         UseTheAppsCulture();
 
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATED - Driver session started");
-        
+
         _screenshotService = CreateScreenshotService(_context);
     }
 
@@ -162,7 +162,7 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// Gets the MAUI test context.
     /// </summary>
     public MauiTestContext Context => _context;
-    
+
     /// <summary>
     /// Gets the screenshot service.
     /// </summary>
@@ -239,7 +239,7 @@ public abstract class MauiTestFixtureBase : IDisposable
         ArgumentNullException.ThrowIfNull(Configuration.Maui, nameof(Configuration.Maui));
 
         var driverOptions = MauiDriverOptions.FromConfiguration(Configuration.Maui);
-        
+
         driverOptions.Timeouts = new TimeoutSettings
         {
             DefaultWait = 5000,
@@ -252,7 +252,7 @@ public abstract class MauiTestFixtureBase : IDisposable
         driverOptions.AppPath = string.IsNullOrWhiteSpace(Configuration.Maui.AppPath)
             ? GetDefaultAppPath(Configuration.Maui.Platform)
             : Configuration.Maui.AppPath;
-        
+
         switch (Configuration.Maui.Platform)
         {
             case MauiPlatform.Android:
@@ -261,17 +261,17 @@ public abstract class MauiTestFixtureBase : IDisposable
             case MauiPlatform.iOS:
                 ConfigureiOSOptions(driverOptions);
                 break;
-            // Windows uses FlaUI - no additional options needed
+                // Windows uses FlaUI - no additional options needed
         }
 
         return new MauiTestContextOptions
         {
-            
+
             DriverOptions = driverOptions,
             Timeouts = driverOptions.Timeouts
         };
     }
-    
+
     /// <summary>
     /// Configures driver options for Android MAUI app testing.
     /// Override to customize Android capabilities.
@@ -280,12 +280,12 @@ public abstract class MauiTestFixtureBase : IDisposable
     {
         var serverUri = Configuration?.Maui?.ServerUri ?? "http://127.0.0.1:4723";
         var deviceName = Configuration?.Maui?.DeviceName ?? "emulator-5554";
-        
+
         options.AppiumServerUri = new Uri(serverUri);
         options.DeviceName = deviceName;
         AddUdid(options);
     }
-    
+
     /// <summary>
     /// Configures driver options for iOS MAUI app testing.
     /// Override to customize iOS capabilities.
@@ -326,7 +326,7 @@ public abstract class MauiTestFixtureBase : IDisposable
     {
         return DefaultTestArtifactPathProvider.Create(Configuration.Artifacts, GetType().Assembly.GetName().Name);
     }
-    
+
     /// <summary>
     /// Finds the solution root directory by searching for *.sln files.
     /// </summary>
@@ -358,7 +358,8 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// </summary>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} DISPOSING at {DateTime.Now:HH:mm:ss.fff}");
 

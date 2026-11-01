@@ -30,7 +30,8 @@ public sealed class ScraperServiceTests : IAsyncLifetime
     {
         await _service.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     private void MakeProject(string name, string startUrl)
@@ -47,8 +48,10 @@ public sealed class ScraperServiceTests : IAsyncLifetime
         var done = new TaskCompletionSource<RecordingEventCount>(TaskCreationOptions.RunContinuationsAsynchronously);
         _service.Changed += (_, change) =>
         {
-            if (change.Kind == ScraperChangeKind.Captured && change.Recording?.Captures >= count) done.TrySetResult(new(change.Recording.Captures));
-            if (change.Kind == ScraperChangeKind.Failed) done.TrySetException(new InvalidOperationException(change.Message));
+            if (change.Kind == ScraperChangeKind.Captured && change.Recording?.Captures >= count)
+                done.TrySetResult(new(change.Recording.Captures));
+            if (change.Kind == ScraperChangeKind.Failed)
+                done.TrySetException(new InvalidOperationException(change.Message));
         };
         return done.Task.WaitAsync(Limit);
     }
@@ -81,8 +84,10 @@ public sealed class ScraperServiceTests : IAsyncLifetime
         var done = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         _service.Changed += (_, change) =>
         {
-            if (change.Recording?.Captures >= count) done.TrySetResult();
-            if (change.Kind == ScraperChangeKind.Failed) done.TrySetException(new InvalidOperationException(change.Message));
+            if (change.Recording?.Captures >= count)
+                done.TrySetResult();
+            if (change.Kind == ScraperChangeKind.Failed)
+                done.TrySetException(new InvalidOperationException(change.Message));
         };
         return done.Task.WaitAsync(Limit);
     }
@@ -134,8 +139,10 @@ public sealed class ScraperServiceTests : IAsyncLifetime
         var asserts = 0;
         _service.Changed += (_, change) =>
         {
-            if (change.Captured?.Kind == RecordingEvent.AssertKind && Interlocked.Increment(ref asserts) == 4) asserted.TrySetResult();
-            if (change.Kind == ScraperChangeKind.Failed) asserted.TrySetException(new InvalidOperationException(change.Message));
+            if (change.Captured?.Kind == RecordingEvent.AssertKind && Interlocked.Increment(ref asserts) == 4)
+                asserted.TrySetResult();
+            if (change.Kind == ScraperChangeKind.Failed)
+                asserted.TrySetException(new InvalidOperationException(change.Message));
         };
         var state = await _service.StartRecordingAsync(null, "Asserts", _site.Url("pages/form.html"), visible: false, actions: true);
         await Browser.FillAsync("[data-testid=first-name]", "Ada");

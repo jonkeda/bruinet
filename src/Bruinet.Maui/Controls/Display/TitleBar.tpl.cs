@@ -42,7 +42,8 @@ public partial class TitleBar<TScope> : Base.ViewBase<TScope>
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // The element resolves its own text, including through a nested structure where the
         // platform uses one.

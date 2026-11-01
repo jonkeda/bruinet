@@ -21,7 +21,8 @@ public sealed class DangerousPageTests : IAsyncLifetime
     {
         await _source.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_profile)) Directory.Delete(_profile, recursive: true);
+        if (Directory.Exists(_profile))
+            Directory.Delete(_profile, recursive: true);
     }
 
     private Task StartAsync(string path) => _source.StartAsync(new ScrapeStart(_site.Url(path), _profile, Visible: false));
@@ -34,7 +35,8 @@ public sealed class DangerousPageTests : IAsyncLifetime
 
     private static async Task WaitAsync(Func<bool> done, string what)
     {
-        for (var i = 0; i < 100 && !done(); i++) await Task.Delay(50);
+        for (var i = 0; i < 100 && !done(); i++)
+            await Task.Delay(50);
         Assert.True(done(), $"Waited for {what}.");
     }
 

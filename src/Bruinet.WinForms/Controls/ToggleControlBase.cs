@@ -20,7 +20,8 @@ public abstract class ToggleControlBase<TScope> : ClickableControlBase<TScope>, 
         try
         {
             var element = TryFindElement();
-            if (element == null) return null;
+            if (element == null)
+                return null;
             return IsCheckedCore(element);
         }
         catch
@@ -36,14 +37,16 @@ public abstract class ToggleControlBase<TScope> : ClickableControlBase<TScope>, 
 
     public bool WaitChecked(bool? expected, int? timeoutMs = null)
     {
-        if (expected == null) return true;
+        if (expected == null)
+            return true;
         var timeout = timeoutMs ?? DefaultTimeoutMs;
         return Poll(() => IsChecked() == expected.Value, timeout);
     }
 
     public TScope AssertChecked(bool? expected, string? message = null, int? timeoutMs = null)
     {
-        if (expected == null) return ContainingScope;
+        if (expected == null)
+            return ContainingScope;
         if (!WaitChecked(expected, timeoutMs))
         {
             var actual = IsChecked();
@@ -70,7 +73,8 @@ public abstract class ToggleControlBase<TScope> : ClickableControlBase<TScope>, 
 
     public virtual TScope SetChecked(bool? value, int? timeoutMs = null)
     {
-        if (value == null) return ContainingScope;
+        if (value == null)
+            return ContainingScope;
         return value.Value ? Check(timeoutMs) : Uncheck(timeoutMs);
     }
 

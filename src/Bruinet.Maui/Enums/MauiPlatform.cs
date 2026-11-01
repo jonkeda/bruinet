@@ -9,12 +9,12 @@ public enum MauiPlatform
     /// Windows platform (WinUI/WinAppDriver).
     /// </summary>
     Windows,
-    
+
     /// <summary>
     /// Android platform (UiAutomator2).
     /// </summary>
     Android,
-    
+
     /// <summary>
     /// iOS platform (XCUITest).
     /// </summary>

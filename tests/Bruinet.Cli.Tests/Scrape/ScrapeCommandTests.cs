@@ -17,7 +17,8 @@ public sealed class ScrapeCommandTests : IDisposable
     public void Dispose()
     {
         _site.Dispose();
-        if (Directory.Exists(_solution)) Directory.Delete(_solution, recursive: true);
+        if (Directory.Exists(_solution))
+            Directory.Delete(_solution, recursive: true);
     }
 
     private void MakeProject(string startPath, string explore = "")

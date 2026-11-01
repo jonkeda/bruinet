@@ -28,22 +28,26 @@ public class MockAudioSink : IDisposable
 
     public void Feed(byte[] pcmData)
     {
-        lock (_lock) _chunks.Add(pcmData.ToArray());
+        lock (_lock)
+            _chunks.Add(pcmData.ToArray());
     }
 
     public byte[] GetAllData()
     {
-        lock (_lock) return _chunks.SelectMany(c => c).ToArray();
+        lock (_lock)
+            return _chunks.SelectMany(c => c).ToArray();
     }
 
     public IReadOnlyList<byte[]> GetChunks()
     {
-        lock (_lock) return _chunks.ToList();
+        lock (_lock)
+            return _chunks.ToList();
     }
 
     public void Reset()
     {
-        lock (_lock) _chunks.Clear();
+        lock (_lock)
+            _chunks.Clear();
         IsActive = false;
         SampleRate = 0;
     }

@@ -48,10 +48,12 @@ public partial class TabItem<TParent> : Base.SelectableItemBase<TabMenu<TParent>
     protected override string? GetTextCore(IMauiElement element)
     {
         var caption = TabMenuMarkup.CaptionWithin(element)?.Text;
-        if (!string.IsNullOrEmpty(caption)) return caption;
+        if (!string.IsNullOrEmpty(caption))
+            return caption;
 
         var button = TabMenuMarkup.ButtonWithin(element)?.Text;
-        if (!string.IsNullOrEmpty(button)) return button;
+        if (!string.IsNullOrEmpty(button))
+            return button;
 
         return element.Text;
     }
@@ -62,7 +64,8 @@ public partial class TabItem<TParent> : Base.SelectableItemBase<TabMenu<TParent>
     /// <param name="element">The tab's root element (may be null).</param>
     protected override bool? IsSelectedCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         return IsMarkedSelected(element)
                || IsMarkedSelected(TabMenuMarkup.ButtonWithin(element));

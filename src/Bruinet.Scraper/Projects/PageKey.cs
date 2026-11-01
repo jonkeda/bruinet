@@ -12,7 +12,8 @@ public static partial class PageKey
     /// <summary>The page key of a location.</summary>
     public static string Of(string location)
     {
-        if (!Uri.TryCreate(location, UriKind.Absolute, out var uri)) return location;
+        if (!Uri.TryCreate(location, UriKind.Absolute, out var uri))
+            return location;
         var key = Normalize(uri.AbsolutePath);
         // A hash route (#/orders/12) is the page in a single-page app; a plain anchor (#top) is not.
         if (uri.Fragment.StartsWith("#/", StringComparison.Ordinal))

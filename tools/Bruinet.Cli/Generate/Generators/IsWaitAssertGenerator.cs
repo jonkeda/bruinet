@@ -502,7 +502,8 @@ public class IsWaitAssertGenerator : IMemberGenerator
     {
         var open = collectionType.IndexOf('<');
         var close = collectionType.LastIndexOf('>');
-        if (open < 0 || close < open) return collectionType;
+        if (open < 0 || close < open)
+            return collectionType;
 
         var inner = collectionType[(open + 1)..close].Trim();
 

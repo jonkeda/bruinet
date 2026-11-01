@@ -23,7 +23,8 @@ public static class ControlVerbs
         for (var depth = 0; depth < 5; depth++)
         {
             var own = classes.FirstOrDefault(c => c.Kind == CodeKind.Control && Short(c.Name) == name);
-            if (own?.Base is null) break;
+            if (own?.Base is null)
+                break;
             name = own.Base;
         }
         var bruinet = Controls.GetTypes().FirstOrDefault(t => t.IsPublic && Short(t.Name) == name);

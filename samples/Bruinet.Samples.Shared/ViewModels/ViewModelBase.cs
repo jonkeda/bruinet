@@ -19,7 +19,7 @@ public class ParentViewModel : INotifyPropertyChanged, INotifyPropertyChanging, 
     // ============================================
     // IViewVisible Implementation
     // ============================================
-    
+
     /// <summary>
     /// Gets or sets whether the view is currently visible.
     /// Commands check this before executing.
@@ -43,7 +43,8 @@ public class ParentViewModel : INotifyPropertyChanged, INotifyPropertyChanging, 
     /// </summary>
     public void BeginBusy()
     {
-        lock (_busyLock) { _busyCount++; }
+        lock (_busyLock)
+        { _busyCount++; }
         OnPropertyChanged(nameof(IsBusy));
     }
 
@@ -52,19 +53,20 @@ public class ParentViewModel : INotifyPropertyChanged, INotifyPropertyChanging, 
     /// </summary>
     public void EndBusy()
     {
-        lock (_busyLock) { _busyCount = Math.Max(0, _busyCount - 1); }
+        lock (_busyLock)
+        { _busyCount = Math.Max(0, _busyCount - 1); }
         OnPropertyChanged(nameof(IsBusy));
     }
 
     // ============================================
     // View Lifecycle
     // ============================================
-    
+
     /// <summary>
     /// Called when the view appears. Sets ViewVisible to true.
     /// </summary>
     public virtual void OnViewAppearing() => ViewVisible = true;
-    
+
     /// <summary>
     /// Called when the view disappears. Sets ViewVisible to false.
     /// </summary>

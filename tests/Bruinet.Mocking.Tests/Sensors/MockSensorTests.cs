@@ -51,7 +51,8 @@ public class MockAudioSourceTests
         source.ChunkEmitted += (_, c) => chunks.Add(c);
 
         await source.StartAsync();
-        while (!source.FinishedPlaying) await Task.Delay(10);
+        while (!source.FinishedPlaying)
+            await Task.Delay(10);
 
         var totalBytes = chunks.Sum(c => c.Length);
         Assert.Equal(32000, totalBytes); // 16000 * 2 bytes * 1 second
@@ -62,7 +63,8 @@ public class MockAudioSourceTests
     {
         using var source = new MockAudioSource(new byte[3200]);
         await source.StartAsync();
-        while (!source.FinishedPlaying) await Task.Delay(10);
+        while (!source.FinishedPlaying)
+            await Task.Delay(10);
 
         source.Reset();
 

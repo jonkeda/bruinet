@@ -176,11 +176,13 @@ public class WpfTestContext : IWpfTestContext, IDisposable, Bruinet.Core.Recordi
     /// </summary>
     protected virtual void Dispose(bool disposing)
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         if (disposing && _ownsDriver && _driver is IDisposable disposable)
         {
-            try { disposable.Dispose(); }
+            try
+            { disposable.Dispose(); }
             catch { /* Ignore errors during cleanup */ }
         }
 

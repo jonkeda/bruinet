@@ -42,7 +42,8 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // The element resolves its own text. On Windows that means reading through a MAUI
         // wrapper to the nested Edit; the control does not need to know that.

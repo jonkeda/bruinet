@@ -11,7 +11,7 @@ public interface IDriver<TElement> : IDisposable
     where TElement : IElement<TElement>
 {
     #region Element Finding
-    
+
     /// <summary>
     /// Finds an element using the specified locator.
     /// </summary>
@@ -20,7 +20,7 @@ public interface IDriver<TElement> : IDisposable
     /// <returns>The found element.</returns>
     /// <exception cref="Exceptions.ElementNotFoundException">When no element matches within timeout.</exception>
     TElement FindElement(Locator locator, int timeoutMs = 5000);
-    
+
     /// <summary>
     /// Finds all elements matching the specified locator.
     /// </summary>
@@ -28,7 +28,7 @@ public interface IDriver<TElement> : IDisposable
     /// <param name="timeoutMs">Maximum time to wait for at least one element. Default is 0ms (immediate).</param>
     /// <returns>List of matching elements (empty if none found).</returns>
     IReadOnlyList<TElement> FindElements(Locator locator, int timeoutMs = 0);
-    
+
     /// <summary>
     /// Tries to find an element without throwing.
     /// </summary>
@@ -37,30 +37,30 @@ public interface IDriver<TElement> : IDisposable
     /// <param name="timeoutMs">Maximum time to wait for the element. Default is 0ms (immediate).</param>
     /// <returns>True if element was found.</returns>
     bool TryFindElement(Locator locator, out TElement? element, int timeoutMs = 0);
-    
+
     #endregion
-    
+
     #region Session Management
-    
+
     /// <summary>
     /// Closes the current window/context.
     /// </summary>
     void Close();
-    
+
     /// <summary>
     /// Terminates the driver session and cleans up resources.
     /// </summary>
     void Quit();
-    
+
     #endregion
-    
+
     #region Screenshots
-    
+
     /// <summary>
     /// Captures a screenshot of the current state.
     /// </summary>
     /// <returns>Screenshot as PNG byte array.</returns>
     byte[] GetScreenshot();
-    
+
     #endregion
 }

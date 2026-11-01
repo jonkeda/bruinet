@@ -105,7 +105,8 @@ public static partial class ProjectMaker
 
     private static string? FullFolder(string solutionDir, string folder)
     {
-        if (string.IsNullOrWhiteSpace(folder)) return null;
+        if (string.IsNullOrWhiteSpace(folder))
+            return null;
         var root = Path.GetFullPath(solutionDir);
         var full = Path.GetFullPath(Path.Combine(root, folder));
         return full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ? full : null;

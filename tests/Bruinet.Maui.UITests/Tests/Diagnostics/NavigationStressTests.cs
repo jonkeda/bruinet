@@ -82,7 +82,8 @@ public class NavigationStressTests
                     // being tested.
                 }
             }
-        }) { IsBackground = true };
+        })
+        { IsBackground = true };
 
         busy.Start();
 

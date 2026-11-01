@@ -22,7 +22,8 @@ public sealed class SnapshotSelector
         var alternatives = new List<Compound[]>();
         foreach (var part in SplitTop(css, ','))
         {
-            if (ParseComplex(part.Trim()) is not { } complex) return null;
+            if (ParseComplex(part.Trim()) is not { } complex)
+                return null;
             alternatives.Add(complex);
         }
         return alternatives.Count == 0 ? null : new SnapshotSelector(alternatives);
@@ -35,7 +36,8 @@ public sealed class SnapshotSelector
         var found = new List<ScrapeNode>();
         foreach (var node in snapshot.Nodes)
         {
-            if (node.Parent == 0 || !(node.Parent == root.Number || below.Contains(node.Parent))) continue;
+            if (node.Parent == 0 || !(node.Parent == root.Number || below.Contains(node.Parent)))
+                continue;
             below.Add(node.Number);
             if (node.Kind == ScrapeNodeKind.Element && _alternatives.Any(a => Matches(snapshot, node, a, a.Length - 1, root.Number)))
                 found.Add(node);
@@ -46,13 +48,17 @@ public sealed class SnapshotSelector
     // Right to left: the last compound on the node, the ones before on its ancestors (stopping at the root).
     private static bool Matches(ScrapeSnapshot snapshot, ScrapeNode node, Compound[] complex, int index, int root)
     {
-        if (!complex[index].Matches(snapshot, node)) return false;
-        if (index == 0) return true;
+        if (!complex[index].Matches(snapshot, node))
+            return false;
+        if (index == 0)
+            return true;
         var combinator = complex[index].Combinator;
         for (var parent = node.Parent; parent != 0 && parent != root; parent = snapshot[parent].Parent)
         {
-            if (Matches(snapshot, snapshot[parent], complex, index - 1, root)) return true;
-            if (combinator == '>') return false;
+            if (Matches(snapshot, snapshot[parent], complex, index - 1, root))
+                return true;
+            if (combinator == '>')
+                return false;
         }
         return false;
     }
@@ -64,21 +70,29 @@ public sealed class SnapshotSelector
         var i = 0;
         while (i < text.Length)
         {
-            if (text[i] == '>') { combinator = '>'; i++; continue; }
-            if (char.IsWhiteSpace(text[i])) { i++; continue; }
+            if (text[i] == '>')
+            { combinator = '>'; i++; continue; }
+            if (char.IsWhiteSpace(text[i]))
+            { i++; continue; }
             var start = i;
             var depth = 0;
             char? quote = null;
             for (; i < text.Length; i++)
             {
                 var c = text[i];
-                if (quote is not null) { if (c == quote) quote = null; continue; }
-                if (c is '"' or '\'') quote = c;
-                else if (c is '(' or '[') depth++;
-                else if (c is ')' or ']') depth--;
-                else if (depth == 0 && (char.IsWhiteSpace(c) || c == '>')) break;
+                if (quote is not null)
+                { if (c == quote) quote = null; continue; }
+                if (c is '"' or '\'')
+                    quote = c;
+                else if (c is '(' or '[')
+                    depth++;
+                else if (c is ')' or ']')
+                    depth--;
+                else if (depth == 0 && (char.IsWhiteSpace(c) || c == '>'))
+                    break;
             }
-            if (Compound.Parse(text[start..i], compounds.Count == 0 ? ' ' : combinator) is not { } compound) return null;
+            if (Compound.Parse(text[start..i], compounds.Count == 0 ? ' ' : combinator) is not { } compound)
+                return null;
             compounds.Add(compound);
             combinator = ' ';
         }
@@ -93,11 +107,16 @@ public sealed class SnapshotSelector
         for (var i = 0; i < text.Length; i++)
         {
             var c = text[i];
-            if (quote is not null) { if (c == quote) quote = null; continue; }
-            if (c is '"' or '\'') quote = c;
-            else if (c is '(' or '[') depth++;
-            else if (c is ')' or ']') depth--;
-            else if (c == separator && depth == 0) { yield return text[start..i]; start = i + 1; }
+            if (quote is not null)
+            { if (c == quote) quote = null; continue; }
+            if (c is '"' or '\'')
+                quote = c;
+            else if (c is '(' or '[')
+                depth++;
+            else if (c is ')' or ']')
+                depth--;
+            else if (c == separator && depth == 0)
+            { yield return text[start..i]; start = i + 1; }
         }
         yield return text[start..];
     }
@@ -108,9 +127,11 @@ public sealed class SnapshotSelector
         var below = new HashSet<int> { node.Number };
         foreach (var n in snapshot.Nodes)
         {
-            if (n.Parent == 0 || !below.Contains(n.Parent)) continue;
+            if (n.Parent == 0 || !below.Contains(n.Parent))
+                continue;
             below.Add(n.Number);
-            if (n.Text is { Length: > 0 } t) text.Append(' ').Append(t);
+            if (n.Text is { Length: > 0 } t)
+                text.Append(' ').Append(t);
         }
         return text.ToString();
     }
@@ -125,12 +146,15 @@ public sealed class SnapshotSelector
             var i = 0;
             string? type = null;
             var tests = new List<Func<ScrapeSnapshot, ScrapeNode, bool>>();
-            if (i < text.Length && text[i] == '*') i++;
+            if (i < text.Length && text[i] == '*')
+                i++;
             else
             {
                 var start = i;
-                while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] is '-' or '_')) i++;
-                if (i > start) type = text[start..i];
+                while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] is '-' or '_'))
+                    i++;
+                if (i > start)
+                    type = text[start..i];
             }
             while (i < text.Length)
             {
@@ -138,9 +162,11 @@ public sealed class SnapshotSelector
                 if (c is '#' or '.')
                 {
                     var start = ++i;
-                    while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] is '-' or '_')) i++;
+                    while (i < text.Length && (char.IsLetterOrDigit(text[i]) || text[i] is '-' or '_'))
+                        i++;
                     var name = text[start..i];
-                    if (name.Length == 0) return null;
+                    if (name.Length == 0)
+                        return null;
                     tests.Add(c == '#'
                         ? (_, n) => n.Attribute("id") == name
                         : (_, n) => n.Attribute("class")?.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(name, StringComparer.Ordinal) == true);
@@ -148,27 +174,32 @@ public sealed class SnapshotSelector
                 else if (c == '[')
                 {
                     var end = text.IndexOf(']', i);
-                    if (end < 0 || Attribute(text[(i + 1)..end]) is not { } test) return null;
+                    if (end < 0 || Attribute(text[(i + 1)..end]) is not { } test)
+                        return null;
                     tests.Add(test);
                     i = end + 1;
                 }
                 else if (c == ':')
                 {
                     var start = ++i;
-                    while (i < text.Length && (char.IsLetter(text[i]) || text[i] == '-')) i++;
+                    while (i < text.Length && (char.IsLetter(text[i]) || text[i] == '-'))
+                        i++;
                     var name = text[start..i];
                     string? argument = null;
                     if (i < text.Length && text[i] == '(')
                     {
                         var close = Close(text, i);
-                        if (close < 0) return null;
+                        if (close < 0)
+                            return null;
                         argument = text[(i + 1)..close].Trim();
                         i = close + 1;
                     }
-                    if (Pseudo(name, argument) is not { } test) return null;
+                    if (Pseudo(name, argument) is not { } test)
+                        return null;
                     tests.Add(test);
                 }
-                else return null;
+                else
+                    return null;
             }
             return new Compound(combinator, type, tests);
         }
@@ -180,10 +211,14 @@ public sealed class SnapshotSelector
             for (var i = open; i < text.Length; i++)
             {
                 var c = text[i];
-                if (quote is not null) { if (c == quote) quote = null; continue; }
-                if (c is '"' or '\'') quote = c;
-                else if (c == '(') depth++;
-                else if (c == ')' && --depth == 0) return i;
+                if (quote is not null)
+                { if (c == quote) quote = null; continue; }
+                if (c is '"' or '\'')
+                    quote = c;
+                else if (c == '(')
+                    depth++;
+                else if (c == ')' && --depth == 0)
+                    return i;
             }
             return -1;
         }

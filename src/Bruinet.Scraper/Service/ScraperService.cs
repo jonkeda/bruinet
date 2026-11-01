@@ -119,7 +119,8 @@ public sealed partial class ScraperService : IAsyncDisposable
             _gate.Release();
         }
         Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Started, _recording.State, null));
-        if (autoCapture) await CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        if (autoCapture)
+            await CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
         return _recording.State;
     }
 
@@ -136,7 +137,8 @@ public sealed partial class ScraperService : IAsyncDisposable
         {
             recording = _recording ?? throw new ScraperProblem("No recording is in progress: start one first.");
             var snapshot = await recording.Source.CaptureAsync(cancellationToken).ConfigureAwait(false);
-            if (pageName is null && recording.IsUnchanged(snapshot)) return null;
+            if (pageName is null && recording.IsUnchanged(snapshot))
+                return null;
             var screenshot = recording.Project.Config.Screenshots ? await recording.Source.ScreenshotAsync(cancellationToken).ConfigureAwait(false) : null;
             added = recording.Session.AddPage(snapshot, screenshot, pageName);
             recording.Remember(snapshot);
@@ -225,7 +227,8 @@ public sealed partial class ScraperService : IAsyncDisposable
         {
             throw new ScraperProblem($"{project.Name}'s config was not changed: {e.Message}");
         }
-        if (write && edit.Changed) File.WriteAllText(path, edit.Text);
+        if (write && edit.Changed)
+            File.WriteAllText(path, edit.Text);
         return edit;
     }
 
@@ -243,7 +246,8 @@ public sealed partial class ScraperService : IAsyncDisposable
             foreach (var child in Directory.EnumerateDirectories(folder))
             {
                 var name = Path.GetFileName(child);
-                if (name is "bin" or "obj" or "node_modules" or ScrapeProject.RecordingsFolderName || name.StartsWith('.')) continue;
+                if (name is "bin" or "obj" or "node_modules" or ScrapeProject.RecordingsFolderName || name.StartsWith('.'))
+                    continue;
                 pending.Push(child);
             }
         }
@@ -258,8 +262,10 @@ public sealed partial class ScraperService : IAsyncDisposable
         if (!full.StartsWith(_solutionDir, StringComparison.OrdinalIgnoreCase) || !Directory.Exists(full) || !Directory.EnumerateFiles(full, "*.csproj").Any())
             throw new ScraperProblem($"{folder} is not a project folder under {_solutionDir}.");
         var path = Path.Combine(full, ScraperConfig.FileName);
-        if (File.Exists(path)) throw new ScraperProblem($"{path} is there already.");
-        if (!Uri.TryCreate(startUrl, UriKind.Absolute, out _)) throw new ScraperProblem($"'{startUrl}' is not an address to start at.");
+        if (File.Exists(path))
+            throw new ScraperProblem($"{path} is there already.");
+        if (!Uri.TryCreate(startUrl, UriKind.Absolute, out _))
+            throw new ScraperProblem($"'{startUrl}' is not an address to start at.");
         File.WriteAllText(path, ScraperConfigWriter.New(startUrl, target: ScrapeProject.DefaultTestTarget(full)));
         return ScrapeProject.Open(full);
     }
@@ -302,13 +308,17 @@ public sealed partial class ScraperService : IAsyncDisposable
     {
         var project = Project(projectName);
         var (_, snapshot) = Snapshot(project.Name, page);
-        if (node < 1 || node > snapshot.Nodes.Count) throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {node}.");
+        if (node < 1 || node > snapshot.Nodes.Count)
+            throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {node}.");
         var n = snapshot[node];
         foreach (var testId in project.Config.TestIds)
-            if (n.Attribute(testId) is { Length: > 0 } value) return $"selector: [{testId}='{value}']";
+            if (n.Attribute(testId) is { Length: > 0 } value)
+                return $"selector: [{testId}='{value}']";
         var text = n.Name ?? n.Text ?? snapshot.ChildrenOf(node).Select(c => c.Text).FirstOrDefault(t => t is { Length: > 0 });
-        if (text is { Length: > 0 }) return $"text: {text}";
-        if (n.Attribute("id") is { Length: > 0 } id) return $"selector: #{id}";
+        if (text is { Length: > 0 })
+            return $"text: {text}";
+        if (n.Attribute("id") is { Length: > 0 } id)
+            return $"selector: #{id}";
         throw new ScraperProblem($"Node #{node} has no test id, text or id to name it by: name it in the config by hand.");
     }
 
@@ -375,7 +385,8 @@ public sealed partial class ScraperService : IAsyncDisposable
             _exploring?.Cancel();
             stopped = _recording;
             _recording = null;
-            if (stopped is null) return null;
+            if (stopped is null)
+                return null;
             stopped.Source.Transitioned -= OnTransitioned;
             stopped.Source.Acted -= OnActed;
             stopped.Source.Commanded -= OnCommanded;
@@ -492,8 +503,10 @@ public sealed partial class ScraperService : IAsyncDisposable
     {
         var (capture, snapshot) = Snapshot(projectName, page);
         var from = $"{capture.Session}/{capture.Event.Snapshot}";
-        if (node is null) return new ScrapedHeader { Page = page, From = from, Hash = SnapshotFile.ContentHash(snapshot) }.ToString();
-        if (node < 1 || node > snapshot.Nodes.Count) throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {node}.");
+        if (node is null)
+            return new ScrapedHeader { Page = page, From = from, Hash = SnapshotFile.ContentHash(snapshot) }.ToString();
+        if (node < 1 || node > snapshot.Nodes.Count)
+            throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {node}.");
         return new ScrapedHeader { Control = NodeSignature.Of(snapshot, snapshot[node.Value]), Variant = variant, Lifted = lifted, From = $"{from}#{node}" }.ToString();
     }
 
@@ -523,7 +536,8 @@ public sealed partial class ScraperService : IAsyncDisposable
     {
         var project = Project(projectName);
         var (_, snapshot) = Snapshot(project.Name, page);
-        if (node is { } n && (n < 1 || n > snapshot.Nodes.Count)) throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {n}.");
+        if (node is { } n && (n < 1 || n > snapshot.Nodes.Count))
+            throw new ScraperProblem($"Page '{page}' has nodes 1 to {snapshot.Nodes.Count}, not {n}.");
         return ControlAdvisor.Suggest(snapshot, project.Config.TestIds, project.Config.Platform == "blazor", node ?? 0);
     }
 
@@ -658,7 +672,8 @@ public sealed partial class ScraperService : IAsyncDisposable
     // A transition captures once the page settles; a page elsewhere (a sign-in provider) is not captured.
     private void OnTransitioned(object? sender, ScrapeTransition transition)
     {
-        if (_recording is not { } recording || !recording.Project.IsOwnPage(transition.Location)) return;
+        if (_recording is not { } recording || !recording.Project.IsOwnPage(transition.Location))
+            return;
         _ = CaptureOnTransitionAsync();
     }
 
@@ -670,7 +685,8 @@ public sealed partial class ScraperService : IAsyncDisposable
     public Task<RecordingEvent?> AssertAsync(CancellationToken cancellationToken = default)
     {
         var recording = _recording ?? throw new ScraperProblem("No recording is in progress: start a test recording first.");
-        if (!recording.Actions) throw new ScraperProblem($"{recording.State.Session} is not a test recording: an assert goes with recorded actions.");
+        if (!recording.Actions)
+            throw new ScraperProblem($"{recording.State.Session} is not a test recording: an assert goes with recorded actions.");
         var done = new TaskCompletionSource<RecordingEvent?>(TaskCreationOptions.RunContinuationsAsynchronously);
         recording.Then(async () =>
         {
@@ -689,12 +705,14 @@ public sealed partial class ScraperService : IAsyncDisposable
     private async Task<RecordingEvent?> AssertNowAsync(Recording recording, CancellationToken cancellationToken)
     {
         var capture = await CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (await recording.Source.PickAssertAsync(cancellationToken).ConfigureAwait(false) is not { } picked) return null;
+        if (await recording.Source.PickAssertAsync(cancellationToken).ConfigureAwait(false) is not { } picked)
+            return null;
         RecordingEvent added;
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
-            if (_recording != recording) return null;
+            if (_recording != recording)
+                return null;
             added = recording.Session.AddAction(new RecordingEvent
             {
                 Kind = RecordingEvent.AssertKind,
@@ -720,9 +738,12 @@ public sealed partial class ScraperService : IAsyncDisposable
     // The toolbar: Assert records a check in turn; Stop ends the recording as the view's Stop does.
     private void OnCommanded(object? sender, string command)
     {
-        if (_recording is not { } recording) return;
-        if (command == "assert") recording.Then(() => AssertNowSafeAsync(recording));
-        else if (command == "stop") _ = StopRecordingAsync();
+        if (_recording is not { } recording)
+            return;
+        if (command == "assert")
+            recording.Then(() => AssertNowSafeAsync(recording));
+        else if (command == "stop")
+            _ = StopRecordingAsync();
     }
 
     private async Task AssertNowSafeAsync(Recording recording)
@@ -739,7 +760,8 @@ public sealed partial class ScraperService : IAsyncDisposable
 
     private void OnActed(object? sender, ScrapeAction action)
     {
-        if (_recording is { } recording) recording.Then(() => SaveActionAsync(recording, action));
+        if (_recording is { } recording)
+            recording.Then(() => SaveActionAsync(recording, action));
     }
 
     // The capture taken for the action first (unless the page is unchanged since its last capture), then
@@ -750,7 +772,8 @@ public sealed partial class ScraperService : IAsyncDisposable
         await _gate.WaitAsync().ConfigureAwait(false);
         try
         {
-            if (_recording != recording) return;
+            if (_recording != recording)
+                return;
             RecordingEvent? capture = null;
             if (action.Capture is { } snapshot && !recording.IsUnchanged(snapshot))
             {

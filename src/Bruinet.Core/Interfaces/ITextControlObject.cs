@@ -11,27 +11,27 @@ public interface ITextControlObject<TScope> : IControlObject<TScope>
     /// If expected is null, returns true immediately (skip).
     /// </summary>
     bool WaitTextEquals(string? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Wait until text contains expected substring.
     /// If expected is null, the wait is skipped and null is returned.
     /// </summary>
     bool WaitTextContains(string? expected, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert text starts with expected prefix.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert text ends with expected suffix.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
     TScope AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null);
-    
+
     /// <summary>
     /// Assert text is empty or not empty.
     /// If expected is null, returns immediately (skip).

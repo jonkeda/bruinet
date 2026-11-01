@@ -19,7 +19,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     private readonly System.Collections.Concurrent.ConcurrentDictionary<(string Element, string Name), string?> _elementFacts = new();
     private readonly MauiPlatform _platform;
     private bool _disposed;
-    
+
     /// <summary>
     /// Creates a new AppiumMauiDriver wrapper.
     /// </summary>
@@ -43,9 +43,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
         _platform = platform;
     }
-    
+
     #region Platform
-    
+
     /// <inheritdoc />
     public MauiPlatform Platform => _platform;
 
@@ -58,9 +58,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
            && (_driver.Capabilities.GetCapability("deviceUDID") ?? _driver.Capabilities.GetCapability("udid"))?.ToString() is { Length: > 0 } serial
             ? new Bruinet.Core.Recording.RecordingTarget.AndroidDevice(serial)
             : null;
-    
+
     #endregion
-    
+
     #region Element Finding
 
     /// <inheritdoc />
@@ -207,71 +207,71 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     #endregion
 
     #region Window Management
-    
+
     /// <inheritdoc />
     public string CurrentWindowHandle => _driver.CurrentWindowHandle;
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<string> WindowHandles => _driver.WindowHandles;
-    
+
     #endregion
-    
+
     #region Session Management
-    
+
     /// <inheritdoc />
     public void Quit() => _driver.Quit();
-    
+
     /// <inheritdoc />
     public void Close() => _driver.Close();
-    
+
     #endregion
-    
+
     #region Screenshots
-    
+
     /// <inheritdoc />
     public byte[] GetScreenshot() => AppiumErrors.Live(() => _driver.GetScreenshot().AsByteArray);
-    
+
     #endregion
-    
+
     #region Context Switching
-    
+
     /// <inheritdoc />
     public string Context
     {
         get => _driver.Context;
         set => _driver.Context = value;
     }
-    
+
     /// <inheritdoc />
     public IReadOnlyCollection<string> Contexts => _driver.Contexts;
-    
+
     #endregion
-    
+
     #region Script Execution
-    
+
     /// <inheritdoc />
     public object? ExecuteScript(string script, params object[] args)
     {
         return AppiumErrors.Live(() => _driver.ExecuteScript(script, args));
     }
-    
+
     #endregion
-    
+
     #region IDiagnosticDriver
-    
+
     /// <inheritdoc />
     public string GetPageSource() => AppiumErrors.Live(() => _driver.PageSource);
-    
+
     /// <inheritdoc />
     public string GetAutomationTree() => AppiumErrors.Live(() => _driver.PageSource);
-    
+
     #endregion
-    
+
     #region Navigation
-    
+
     /// <inheritdoc />
     public void NavigateTo(string destination) => AppiumErrors.Live(() => _driver.Navigate().GoToUrl(destination));
-    
+
     /// <inheritdoc />
     /// <remarks>
     /// <b>Sends back whatever <see cref="IsAtNavigationRoot"/> thinks.</b> That answer reads the
@@ -390,13 +390,13 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// page to go back to, not how many; to unwind several, loop on <see cref="IsAtNavigationRoot"/>.
     /// </remarks>
     public int NavigationDepth() => IsAtNavigationRoot() ? 1 : 2;
-    
+
     /// <inheritdoc />
     public void Refresh() => AppiumErrors.Live(() => _driver.Navigate().Refresh());
-    
+
     /// <inheritdoc />
     public byte[] TakeScreenshot() => GetScreenshot();
-    
+
     /// <inheritdoc />
     public void ResetAppState() => AppiumErrors.Live(ResetApp);
 
@@ -404,16 +404,16 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         var bundleId = _driver.Capabilities.GetCapability("appPackage")?.ToString()
                     ?? _driver.Capabilities.GetCapability("bundleId")?.ToString();
-        
+
         if (!string.IsNullOrEmpty(bundleId))
         {
             _driver.TerminateApp(bundleId);
             _driver.ActivateApp(bundleId);
         }
     }
-    
+
     #endregion
-    
+
     #region Dialogs
 
     /// <summary>The dialog on screen, or null. Answers <c>AppElement.TryFindActiveDialog</c>.</summary>
@@ -614,7 +614,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         MobileBy.AndroidUIAutomator("new UiSelector().resourceIdMatches(\".*:id/parentPanel\")");
 
     #endregion
-    
+
     #region Scrolling
 
     /// <summary>
@@ -824,9 +824,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     }
 
     #endregion
-    
+
     #region IDisposable
-    
+
     /// <inheritdoc />
     public void Dispose()
     {
@@ -836,15 +836,15 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             _disposed = true;
         }
     }
-    
+
     #endregion
-    
+
     #region Internal (for AppiumMauiElement access)
-    
+
     /// <summary>
     /// Gets the underlying AppiumDriver for internal use.
     /// </summary>
     internal AppiumDriver Driver => _driver;
-    
+
     #endregion
 }

@@ -28,7 +28,8 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         get => _executionTask;
         private set
         {
-            if (ReferenceEquals(_executionTask, value)) return;
+            if (ReferenceEquals(_executionTask, value))
+                return;
             _executionTask = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ExecutionTask)));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsRunning)));
@@ -75,7 +76,7 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         // Handle null for value types
         if (parameter is null && default(T) is not null)
             return false;
-        
+
         return CanExecute((T?)parameter);
     }
 
@@ -92,7 +93,7 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
     {
         if (IsRunning && !HasOption(AsyncRelayCommandOptions.AllowConcurrentExecutions))
             return false;
-        
+
         return _canExecute?.Invoke(parameter) ?? true;
     }
 
@@ -108,7 +109,8 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
     /// <inheritdoc/>
     public async Task ExecuteAsync(T? parameter)
     {
-        if (!CanExecute(parameter)) return;
+        if (!CanExecute(parameter))
+            return;
 
         // ViewVisible check
         if (_viewModel != null && !_viewModel.ViewVisible)
@@ -121,7 +123,8 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         _hasExecuted = true;
 
         var trackBusy = _viewModel != null && !HasOption(AsyncRelayCommandOptions.SkipBusyTracking);
-        if (trackBusy) _viewModel!.BeginBusy();
+        if (trackBusy)
+            _viewModel!.BeginBusy();
 
         try
         {
@@ -140,7 +143,8 @@ public class AsyncRelayCommand<T> : IAsyncRelayCommand<T>
         }
         finally
         {
-            if (trackBusy) _viewModel!.EndBusy();
+            if (trackBusy)
+                _viewModel!.EndBusy();
             NotifyCanExecuteChanged();
         }
     }

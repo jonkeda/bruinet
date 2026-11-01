@@ -8,7 +8,8 @@ public static class Redactor
     /// <summary>The snapshot with its names, texts, frame addresses, location, title and attribute values masked.</summary>
     public static ScrapeSnapshot Apply(ScrapeSnapshot snapshot, IReadOnlyList<TextMask> masks)
     {
-        if (masks.Count == 0) return snapshot;
+        if (masks.Count == 0)
+            return snapshot;
         return snapshot with
         {
             Location = Mask(snapshot.Location, masks)!,
@@ -29,8 +30,10 @@ public static class Redactor
     /// </summary>
     public static RecordingEvent Apply(RecordingEvent action, IReadOnlyList<TextMask> masks)
     {
-        if (action.Placeholder is not null) action = action with { Value = null };
-        if (masks.Count == 0) return action;
+        if (action.Placeholder is not null)
+            action = action with { Value = null };
+        if (masks.Count == 0)
+            return action;
         var location = Mask(action.Location, masks)!;
         return action with
         {
@@ -44,7 +47,8 @@ public static class Redactor
     /// <summary>A text with every mask applied.</summary>
     public static string? Mask(string? text, IReadOnlyList<TextMask> masks)
     {
-        if (string.IsNullOrEmpty(text)) return text;
+        if (string.IsNullOrEmpty(text))
+            return text;
         foreach (var mask in masks)
             text = mask.Pattern.Replace(text, mask.Replacement);
         return text;

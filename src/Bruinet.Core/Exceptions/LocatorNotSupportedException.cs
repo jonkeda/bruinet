@@ -12,12 +12,12 @@ public class LocatorNotSupportedException : BruinetException
     /// The locator strategy that is not supported.
     /// </summary>
     public LocatorStrategy Strategy { get; }
-    
+
     /// <summary>
     /// The name of the driver that does not support the strategy.
     /// </summary>
     public string DriverName { get; }
-    
+
     /// <summary>
     /// Creates a new LocatorNotSupportedException.
     /// </summary>
@@ -30,7 +30,7 @@ public class LocatorNotSupportedException : BruinetException
         Strategy = strategy;
         DriverName = driverName;
     }
-    
+
     private static string BuildMessage(LocatorStrategy strategy, string driverName, string? suggestion)
     {
         var message = $"Locator strategy '{strategy}' is not supported by the {driverName} driver.";

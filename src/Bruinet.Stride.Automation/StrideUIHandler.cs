@@ -126,20 +126,25 @@ public class StrideUIHandler : IAutomationHandler
 
     private static string? GetArgString(object[]? args, int index)
     {
-        if (args == null || args.Length <= index) return null;
+        if (args == null || args.Length <= index)
+            return null;
         var arg = args[index];
-        if (arg is JsonElement je) return je.GetString() ?? je.GetRawText();
+        if (arg is JsonElement je)
+            return je.GetString() ?? je.GetRawText();
         return arg?.ToString();
     }
 
     private static double GetArgDouble(object[]? args, int index)
     {
-        if (args == null || args.Length <= index) return 0;
+        if (args == null || args.Length <= index)
+            return 0;
         var arg = args[index];
         if (arg is JsonElement je)
         {
-            if (je.TryGetDouble(out var d)) return d;
-            if (je.TryGetInt32(out var i)) return i;
+            if (je.TryGetDouble(out var d))
+                return d;
+            if (je.TryGetInt32(out var i))
+                return i;
             return 0;
         }
         return Convert.ToDouble(arg, CultureInfo.InvariantCulture);
@@ -147,12 +152,15 @@ public class StrideUIHandler : IAutomationHandler
 
     private static int GetArgInt(object[]? args, int index)
     {
-        if (args == null || args.Length <= index) return 0;
+        if (args == null || args.Length <= index)
+            return 0;
         var arg = args[index];
         if (arg is JsonElement je)
         {
-            if (je.TryGetInt32(out var i)) return i;
-            if (je.TryGetDouble(out var d)) return (int)d;
+            if (je.TryGetInt32(out var i))
+                return i;
+            if (je.TryGetDouble(out var d))
+                return (int)d;
             return 0;
         }
         return Convert.ToInt32(arg, CultureInfo.InvariantCulture);
@@ -165,7 +173,8 @@ public class StrideUIHandler : IAutomationHandler
     private UIElement? FindElement(string automationId)
     {
         var root = _rootProvider();
-        if (root == null) return null;
+        if (root == null)
+            return null;
         return FindElementRecursive(root, automationId);
     }
 
@@ -179,18 +188,21 @@ public class StrideUIHandler : IAutomationHandler
             foreach (var child in panel.Children)
             {
                 var found = FindElementRecursive(child, automationId);
-                if (found != null) return found;
+                if (found != null)
+                    return found;
             }
         }
         else if (element is ContentControl contentControl && contentControl.Content is UIElement content)
         {
             var found = FindElementRecursive(content, automationId);
-            if (found != null) return found;
+            if (found != null)
+                return found;
         }
         else if (element is ScrollViewer scrollViewer && scrollViewer.Content is UIElement scrollContent)
         {
             var found = FindElementRecursive(scrollContent, automationId);
-            if (found != null) return found;
+            if (found != null)
+                return found;
         }
 
         return null;
@@ -243,24 +255,29 @@ public class StrideUIHandler : IAutomationHandler
 
     private bool IsElementActuallyVisible(UIElement element)
     {
-        if (!element.IsVisible) return false;
+        if (!element.IsVisible)
+            return false;
         var current = element.VisualParent as UIElement;
         while (current != null)
         {
-            if (!current.IsVisible) return false;
+            if (!current.IsVisible)
+                return false;
             current = current.VisualParent as UIElement;
         }
-        if (element.Opacity <= 0.01f) return false;
+        if (element.Opacity <= 0.01f)
+            return false;
         return true;
     }
 
     private bool IsElementActuallyEnabled(UIElement element)
     {
-        if (!element.IsEnabled) return false;
+        if (!element.IsEnabled)
+            return false;
         var current = element.VisualParent as UIElement;
         while (current != null)
         {
-            if (!current.IsEnabled) return false;
+            if (!current.IsEnabled)
+                return false;
             current = current.VisualParent as UIElement;
         }
         return true;
@@ -279,14 +296,18 @@ public class StrideUIHandler : IAutomationHandler
         if (width < minWidth)
         {
             width = element.Width;
-            if (float.IsNaN(width) || width < minWidth) width = element.MinimumWidth;
-            if (float.IsNaN(width) || width < minWidth) width = minWidth;
+            if (float.IsNaN(width) || width < minWidth)
+                width = element.MinimumWidth;
+            if (float.IsNaN(width) || width < minWidth)
+                width = minWidth;
         }
         if (height < minHeight)
         {
             height = element.Height;
-            if (float.IsNaN(height) || height < minHeight) height = element.MinimumHeight;
-            if (float.IsNaN(height) || height < minHeight) height = minHeight;
+            if (float.IsNaN(height) || height < minHeight)
+                height = element.MinimumHeight;
+            if (float.IsNaN(height) || height < minHeight)
+                height = minHeight;
         }
 
         var uiCenterX = 640f;

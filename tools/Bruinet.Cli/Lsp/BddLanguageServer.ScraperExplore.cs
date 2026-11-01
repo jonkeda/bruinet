@@ -21,7 +21,8 @@ public sealed partial class BddLanguageServer
     public ScraperResult<bool> ScraperExplore(ScraperExploreParams request)
         => Answer(() =>
         {
-            if (Scraper.IsExploring) throw new ScraperProblem("Explore is running already.");
+            if (Scraper.IsExploring)
+                throw new ScraperProblem("Explore is running already.");
             _ = ExploreInBackgroundAsync(request);
             return true;
         });

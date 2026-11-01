@@ -85,7 +85,8 @@ public sealed partial class ScrapeProject
             foreach (var child in Directory.EnumerateDirectories(folder))
             {
                 var name = Path.GetFileName(child);
-                if (SkippedFolders.Contains(name) || name.StartsWith('.')) continue;
+                if (SkippedFolders.Contains(name) || name.StartsWith('.'))
+                    continue;
                 pending.Push(child);
             }
         }
@@ -113,7 +114,8 @@ public sealed partial class ScrapeProject
             foreach (var path in paths.OfType<string>())
             {
                 var folder = Path.GetDirectoryName(Path.GetFullPath(Path.Combine(root, path.Replace('\\', Path.DirectorySeparatorChar))));
-                if (folder is not null && Directory.Exists(folder)) yield return folder;
+                if (folder is not null && Directory.Exists(folder))
+                    yield return folder;
             }
         }
     }
@@ -124,7 +126,8 @@ public sealed partial class ScrapeProject
     /// <summary>Whether a location is one of the app's own pages: on the start URL's host or an alias's.</summary>
     public bool IsOwnPage(string location)
     {
-        if (!Uri.TryCreate(location, UriKind.Absolute, out var uri)) return false;
+        if (!Uri.TryCreate(location, UriKind.Absolute, out var uri))
+            return false;
         return new[] { Config.StartUrl }.Concat(Config.Aliases)
             .Select(u => Uri.TryCreate(u, UriKind.Absolute, out var a) ? a : null)
             .Any(a => a is not null && string.Equals(a.Authority, uri.Authority, StringComparison.OrdinalIgnoreCase));

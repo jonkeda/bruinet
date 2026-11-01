@@ -40,7 +40,8 @@ public partial class SearchBar<TScope> : Entry<TScope>
     /// <param name="timeoutMs">Optional timeout.</param>
     protected virtual void SetSearchCore(IMauiElement element, string? searchText, int? timeoutMs = null)
     {
-        if (searchText == null) return;
+        if (searchText == null)
+            return;
 
         SetTextCore(element, searchText, timeoutMs);
         SubmitSearchCore(element, timeoutMs);
@@ -68,7 +69,8 @@ public partial class SearchBar<TScope> : Entry<TScope>
     /// <returns>The text content, or null if not found.</returns>
     protected override string? GetTextCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         return base.GetTextCore(element);
     }

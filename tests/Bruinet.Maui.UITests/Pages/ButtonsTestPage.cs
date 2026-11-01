@@ -20,17 +20,17 @@ public class ButtonsTestPage : PageObjectBase<ButtonsTestPage>
     /// <summary>
     /// The basic Button test control.
     /// </summary>
-    public Button<ButtonsTestPage> TestButton => new(this,"TestButton");
+    public Button<ButtonsTestPage> TestButton => new(this, "TestButton");
 
     /// <summary>
     /// The ImageButton test control.
     /// </summary>
-    public Button<ButtonsTestPage> TestImageButton => new(this,"TestImageButton");
+    public Button<ButtonsTestPage> TestImageButton => new(this, "TestImageButton");
 
     /// <summary>
     /// The Reset button.
     /// </summary>
-    public Button<ButtonsTestPage> ResetButton => new(this,"ResetButton");
+    public Button<ButtonsTestPage> ResetButton => new(this, "ResetButton");
 
     #endregion
 
@@ -39,7 +39,7 @@ public class ButtonsTestPage : PageObjectBase<ButtonsTestPage>
     /// <summary>
     /// The status message label showing test results.
     /// </summary>
-    public Label<ButtonsTestPage> StatusLabel => new(this,"StatusLabel");
+    public Label<ButtonsTestPage> StatusLabel => new(this, "StatusLabel");
 
     #endregion
 }

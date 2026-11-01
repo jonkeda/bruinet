@@ -97,7 +97,8 @@ internal sealed class LocatorItemStrategy : IItemStrategy
     /// <inheritdoc />
     public IMauiElement? FindItemElement(IMauiElement collectionRoot, int index)
     {
-        if (index < 0) return null;
+        if (index < 0)
+            return null;
 
         var items = FindItemElements(collectionRoot);
         return index < items.Count ? items[index] : null;
@@ -134,7 +135,8 @@ internal sealed class IndexedIdItemStrategy : IItemStrategy
         for (var index = 0; index < _maxItems; index++)
         {
             var element = FindItemElement(collectionRoot, index);
-            if (element == null) break;
+            if (element == null)
+                break;
 
             items.Add(element);
         }
@@ -147,7 +149,8 @@ internal sealed class IndexedIdItemStrategy : IItemStrategy
     {
         ArgumentNullException.ThrowIfNull(collectionRoot);
 
-        if (index < 0) return null;
+        if (index < 0)
+            return null;
 
         try
         {
@@ -188,7 +191,8 @@ internal sealed class WithinItemStrategy : IItemStrategy
     /// <inheritdoc />
     public IMauiElement? FindItemElement(IMauiElement collectionRoot, int index)
     {
-        if (index < 0) return null;
+        if (index < 0)
+            return null;
 
         var host = TryFindHost(collectionRoot);
         return host == null ? null : _inner.FindItemElement(host, index);

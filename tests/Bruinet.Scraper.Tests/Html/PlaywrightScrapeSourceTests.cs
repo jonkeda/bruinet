@@ -19,7 +19,8 @@ public sealed class PlaywrightScrapeSourceTests : IAsyncLifetime
     {
         await _source.DisposeAsync();
         _site.Dispose();
-        if (Directory.Exists(_profile)) Directory.Delete(_profile, recursive: true);
+        if (Directory.Exists(_profile))
+            Directory.Delete(_profile, recursive: true);
     }
 
     private Task StartAsync(string path) => _source.StartAsync(new ScrapeStart(_site.Url(path), _profile, Visible: false));
@@ -32,7 +33,8 @@ public sealed class PlaywrightScrapeSourceTests : IAsyncLifetime
     private static bool IsUnder(ScrapeSnapshot snapshot, ScrapeNode node, int ancestor)
     {
         for (var p = node.Parent; p != 0; p = snapshot[p].Parent)
-            if (p == ancestor) return true;
+            if (p == ancestor)
+                return true;
         return false;
     }
 

@@ -872,7 +872,8 @@ public class ContainerCollectionTests
             : base(scope,
                    automationId,
                    ItemStrategy.ByAutomationId("RowRoot"),
-                   (collection, itemRoot, index) => new RowContainer(collection, itemRoot, index)) { }
+                   (collection, itemRoot, index) => new RowContainer(collection, itemRoot, index))
+        { }
 
         public Label<RowCollection> EmptyLabel => new(this, "RowsEmptyLabel");
     }

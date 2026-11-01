@@ -37,7 +37,8 @@ public partial class ActivityIndicator<TScope> : Base.ViewBase<TScope>
     /// <returns>True if running, false otherwise, null if not found.</returns>
     protected virtual bool? IsRunningCore(IMauiElement? element)
     {
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         // No platform publishes IsRunning: a spinner is a view, not a state machine. Being on
         // screen is the only observable form of the question, and MAUI hides the indicator when

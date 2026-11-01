@@ -31,7 +31,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     {
         public bool IsButtonMode => Native is null;
     }
-    
+
     /// <summary>
     /// Creates a new stepper control within the specified scope.
     /// </summary>
@@ -59,9 +59,9 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
         // Store base automation ID for button mode fallback
         _baseAutomationId = locatorValue;
     }
-    
+
     #region Button Mode for Windows
-    
+
     /// <summary>
     /// Resolves the native Stepper or its two Windows buttons.
     /// </summary>
@@ -102,7 +102,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     protected override ElementNotFoundException NotFound()
         => new($"Stepper was not found by '{Locator}', '{_baseAutomationId}Minus', or "
                + $"'{_baseAutomationId}Plus'.");
-    
+
     /// <summary>
     /// The Stepper as the app declared it, or null where it was never declared.
     /// </summary>
@@ -130,11 +130,11 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
             : throw new FormatException(
                 $"Stepper '{_baseAutomationId}' returned '{value}' for {property}.");
     }
-    
+
     #endregion
-    
+
     #region Core Method Overrides
-    
+
     /// <summary>
     /// Presses the stepper's + button: the Windows <c>{id}Plus</c> button, or the last button
     /// inside the Stepper elsewhere.
@@ -210,7 +210,8 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     /// <param name="timeoutMs">The budget for all the presses and their confirmations; null for the default.</param>
     protected override void SetValueCore(IMauiElement element, double? value, int? timeoutMs = null)
     {
-        if (value == null) return;
+        if (value == null)
+            return;
 
         EnsureSettableCore(element);
 
@@ -301,7 +302,8 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     /// <param name="timeoutMs">Optional timeout for each increment.</param>
     protected virtual void IncrementByCore(IMauiElement element, int? times, int? timeoutMs = null)
     {
-        if (times == null || times <= 0) return;
+        if (times == null || times <= 0)
+            return;
 
         for (int i = 0; i < times; i++)
         {
@@ -317,7 +319,8 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     /// <param name="timeoutMs">Optional timeout for each decrement.</param>
     protected virtual void DecrementByCore(IMauiElement element, int? times, int? timeoutMs = null)
     {
-        if (times == null || times <= 0) return;
+        if (times == null || times <= 0)
+            return;
 
         for (int i = 0; i < times; i++)
         {
@@ -358,12 +361,14 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     public bool? CanIncrement()
     {
         var element = TryFindElement();
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var current = GetValueCore(element);
         var max = GetMaximumCore(element);
 
-        if (current == null || max == null) return null;
+        if (current == null || max == null)
+            return null;
         return current.Value < max.Value;
     }
 
@@ -374,12 +379,14 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     public bool? CanDecrement()
     {
         var element = TryFindElement();
-        if (element == null) return null;
+        if (element == null)
+            return null;
 
         var current = GetValueCore(element);
         var min = GetMinimumCore(element);
 
-        if (current == null || min == null) return null;
+        if (current == null || min == null)
+            return null;
         return current.Value > min.Value;
     }
 

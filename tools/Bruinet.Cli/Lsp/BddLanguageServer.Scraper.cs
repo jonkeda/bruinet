@@ -48,7 +48,7 @@ public sealed partial class BddLanguageServer
     public ScraperResult<string> ScraperHeader(ScraperPageNodeParams request)
         => Answer(() => Scraper.Header(request.Project, request.Page, request.Node));
 
-        /// <summary><c>bruinet/scraper/projects</c>: the scraped projects and what each has recorded.</summary>
+    /// <summary><c>bruinet/scraper/projects</c>: the scraped projects and what each has recorded.</summary>
     [JsonRpcMethod("bruinet/scraper/projects")]
     public IReadOnlyList<ScraperProjectInfo> ScraperProjects()
     {
@@ -140,7 +140,7 @@ public sealed partial class BddLanguageServer
     public ScraperResult<IReadOnlyList<Bruinet.Scraper.Code.CodeClass>> ScraperControls(ScraperProjectParams request)
         => Answer(() => Scraper.Controls(request.Project));
 
-        // A request the Scraper cannot answer comes back as a reason the view shows, not as an RPC error.
+    // A request the Scraper cannot answer comes back as a reason the view shows, not as an RPC error.
     private static ScraperResult<T> Answer<T>(Func<T> work)
     {
         try

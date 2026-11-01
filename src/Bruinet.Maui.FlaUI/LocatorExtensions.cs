@@ -23,30 +23,30 @@ public static class LocatorExtensions
     {
         ArgumentNullException.ThrowIfNull(locator);
         ArgumentNullException.ThrowIfNull(conditionFactory);
-        
+
         return locator.Strategy switch
         {
             // AutomationId is the primary locator for MAUI/WPF.
             // Some MAUI/WinUI elements expose test identifiers via Name instead of AutomationId,
             // so include Name as a fallback for better cross-platform compatibility.
             LocatorStrategy.AutomationId => conditionFactory.ByAutomationId(locator.Value).Or(conditionFactory.ByName(locator.Value)),
-            
+
             // AccessibilityId maps to AutomationId in Windows UI Automation,
             // with Name as a compatibility fallback.
             LocatorStrategy.AccessibilityId => conditionFactory.ByAutomationId(locator.Value).Or(conditionFactory.ByName(locator.Value)),
-            
+
             // Name property
             LocatorStrategy.Name => conditionFactory.ByName(locator.Value),
-            
+
             // ClassName
             LocatorStrategy.ClassName => conditionFactory.ByClassName(locator.Value),
-            
+
             // ControlType - parse the string to ControlType enum
             LocatorStrategy.ControlType => conditionFactory.ByControlType(ParseControlType(locator.Value)),
-            
+
             // Text - search by Name (FlaUI uses Name for visible text)
             LocatorStrategy.Text => conditionFactory.ByName(locator.Value),
-            
+
             // ID - map to AutomationId for WPF/MAUI, with Name fallback.
             LocatorStrategy.Id => conditionFactory.ByAutomationId(locator.Value).Or(conditionFactory.ByName(locator.Value)),
 
@@ -55,7 +55,7 @@ public static class LocatorExtensions
                 conditionFactory.ByControlType(ParseControlType(locator.TypeName!)),
                 conditionFactory.ByName(locator.Value)
                 ),
-            
+
             // XPath, CSS, LinkText etc. are not supported by Windows UI Automation
             LocatorStrategy.XPath or
             LocatorStrategy.Css or
@@ -65,18 +65,18 @@ public static class LocatorExtensions
             LocatorStrategy.DataTestId or
             LocatorStrategy.DataAutomationId =>
                 throw new LocatorNotSupportedException(locator.Strategy, "FlaUI"),
-            
+
             _ => throw new LocatorNotSupportedException(locator.Strategy, "FlaUI")
         };
     }
-    
+
     private static ControlType ParseControlType(string value)
     {
         if (Enum.TryParse<ControlType>(value, ignoreCase: true, out var controlType))
         {
             return controlType;
         }
-        
+
         // Try common mappings
         return value.ToLowerInvariant() switch
         {

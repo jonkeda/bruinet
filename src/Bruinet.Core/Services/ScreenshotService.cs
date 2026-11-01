@@ -15,7 +15,7 @@ public class ScreenshotService : IScreenshotService
     private readonly Action<string> _save;
     private readonly ITestLogger _logger;
     private readonly ScreenshotSettings _settings;
-    
+
     /// <summary>
     /// Creates a new screenshot service.
     /// </summary>
@@ -46,34 +46,34 @@ public class ScreenshotService : IScreenshotService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settings = settings ?? ScreenshotSettings.Default;
     }
-    
+
     /// <inheritdoc />
     public ScreenshotSettings Settings => _settings;
-    
+
     /// <inheritdoc />
     public string Capture(string? description = null)
     {
         return Capture("Manual", "Capture", description ?? "screenshot");
     }
-    
+
     /// <inheritdoc />
     public string Capture(string testClass, string testMethod, string description)
     {
         var filename = GenerateFilename(testClass, testMethod, description);
         return CaptureAndSave(filename, testClass, testMethod, ScreenshotReason.Manual);
     }
-    
+
     /// <inheritdoc />
     public string CaptureOnFailure(string testClass, string testMethod, Exception exception)
     {
         if (!_settings.CaptureOnFailure)
             return string.Empty;
-        
+
         var (description, reason) = GetFailureInfo(exception);
         var filename = GenerateFilename(testClass, testMethod, description);
         return CaptureAndSave(filename, testClass, testMethod, reason);
     }
-    
+
     /// <summary>
     /// Generates a filename following the pattern: {TestClass}_{TestMethod}_{Timestamp}_{Description}.{ext}
     /// </summary>
@@ -86,7 +86,7 @@ public class ScreenshotService : IScreenshotService
         var filename = $"{testClass}_{testMethod}{timestamp}_{description}.{ext}";
         return SanitizeFilename(filename);
     }
-    
+
     /// <summary>
     /// Captures and saves the screenshot, returning the file path.
     /// </summary>
@@ -118,7 +118,7 @@ public class ScreenshotService : IScreenshotService
             return string.Empty;
         }
     }
-    
+
     /// <summary>
     /// Ensures the output directory exists.
     /// </summary>
@@ -129,7 +129,7 @@ public class ScreenshotService : IScreenshotService
             Directory.CreateDirectory(_settings.OutputDirectory);
         }
     }
-    
+
     /// <summary>
     /// Maps exception types to failure descriptions and reasons.
     /// </summary>
@@ -144,7 +144,7 @@ public class ScreenshotService : IScreenshotService
             _ => ("exception", ScreenshotReason.Exception)
         };
     }
-    
+
     /// <summary>
     /// Removes invalid filename characters.
     /// </summary>
