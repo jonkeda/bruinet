@@ -22,6 +22,21 @@ public static class Screen
     internal static Page VisiblePage(Page page, Window window)
         => window.Navigation.ModalStack.LastOrDefault() ?? page;
 
+    /// <summary>
+    /// The pages <paramref name="window"/> draws, top first: each modal, then the page under them, which a
+    /// modal covers without taking it away, as on Windows (a page under a modal stays in the tree, found
+    /// and ready; measured with the Maui sample's covered page). A page a NavigationPage pushed over is
+    /// gone, as there.
+    /// </summary>
+    public static IReadOnlyList<Page> ShownPages(Window window)
+        => window.Page is { } root
+            ? [.. window.Navigation.ModalStack.Reverse().Append(root).Select(Descend)]
+            : [];
+
+    /// <summary>The pages under the window in the tree, top first: each modal, then the page under them.</summary>
+    internal static IEnumerable<Page> Layers(Window window)
+        => window.Page is { } root ? window.Navigation.ModalStack.Reverse().Append(root) : [];
+
     private static Page Descend(Page page) => page switch
     {
         NavigationPage { CurrentPage: { } current } => Descend(current),

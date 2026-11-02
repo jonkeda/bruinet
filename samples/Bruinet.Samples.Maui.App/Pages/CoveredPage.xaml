@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    A page that other pages cover, as an editor that opens a nested editor or a sheet does: it is busy
+    (its Busy signal reads True) until its first load ends, and it can push a detail page or open a
+    modal over itself. Each covering page closes itself, which shows this page again.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Bruinet.Samples.Maui.App.CoveredPage"
+             AutomationId="CoveredPage"
+             Title="Covered pages">
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <Label x:Name="BusySignal" AutomationId="Busy" Text="True" FontSize="10" />
+        <Label x:Name="StatusLabel" AutomationId="CoveredStatus" Text="loading" />
+        <Button AutomationId="PushDetailButton" Text="Push detail" Clicked="OnPushDetail" />
+        <Button AutomationId="OpenModalButton" Text="Open modal" Clicked="OnOpenModal" />
+    </VerticalStackLayout>
+</ContentPage>

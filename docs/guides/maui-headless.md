@@ -123,6 +123,8 @@ ends its call at once with `DeviceOnlyException` naming the member.
 
 ## What Behaves Differently
 
+- **A busy signal** (`BusySignalPolicy.Required`) that the app clears after async work clears when that
+  work has run; one cleared after a delay or a timer waits for the virtual clock (see below).
 - **Visible** means on the shown page of the driver's window, with no `IsVisible="False"` ancestor. An
   off-screen carousel card is found and is not shown; scrolling succeeds at once.
 - **A list's end asks for more**, as a device's does when scrolled there: a search or `ScrollToEnd` past
@@ -178,6 +180,7 @@ Windows, Android 16 (emulator) and MauiHeadless; iOS from how XCUITest reports i
 | A grouped list's `PositionInSet` | restarts per group | none | none | none | Fixed: repeats are noticed (`ListAndPageRootPinTests`) |
 | A row partly on screen | its content is in the tree, not visible | its content is left out | as Windows | all rows visible | Fixed: a search moves past it |
 | An item above the viewport | in the tree only when realized | left out | as Windows | always in the tree | Fixed: a search scrolls to the top once |
+| A page under a modal | in the tree, found and ready | not tried | not tried | as Windows | Fixed: a modal covers its page without taking it away (`CoveredPageTests`) |
 | A page navigated away from | answers for about a second after leaving the tree | leaves at once | leaves after the push animation | leaves at once | Fixed: a page root must be attached |
 | Sticky group headers | cover the rows under them, which stay "on screen" | not pinned | not pinned by default | no layout | Known: turn them off in the app (`ItemsStackPanel.AreStickyGroupHeadersEnabled`) |
 | A button's text with `SemanticProperties.Description` | the description | the text | the description | the text | Known: read both, or assert what the app shows |

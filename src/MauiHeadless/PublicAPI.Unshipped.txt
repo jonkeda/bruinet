@@ -232,6 +232,7 @@ static MauiHeadless.Inspection.ElementQueries.FindByText<T>(this Microsoft.Maui.
 static MauiHeadless.Inspection.ElementQueries.Read(Microsoft.Maui.Controls.Element! root) -> MauiHeadless.Inspection.VisualNode!
 static MauiHeadless.Inspection.Screen.CurrentPage(Microsoft.Maui.Controls.Shell! shell) -> Microsoft.Maui.Controls.Page?
 static MauiHeadless.Inspection.Screen.CurrentPage(Microsoft.Maui.Controls.Window! window) -> Microsoft.Maui.Controls.Page?
+static MauiHeadless.Inspection.Screen.ShownPages(Microsoft.Maui.Controls.Window! window) -> System.Collections.Generic.IReadOnlyList<Microsoft.Maui.Controls.Page!>!
 static MauiHeadless.Inspection.VisualTree.AdapterFor(Microsoft.Maui.Controls.Element! element, System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>! adapters) -> MauiHeadless.Inspection.IElementAdapter!
 static MauiHeadless.Inspection.VisualTree.IsEffectivelyEnabled(Microsoft.Maui.Controls.Element! element) -> bool
 static MauiHeadless.Inspection.VisualTree.IsEffectivelyVisible(Microsoft.Maui.Controls.Element! element) -> bool

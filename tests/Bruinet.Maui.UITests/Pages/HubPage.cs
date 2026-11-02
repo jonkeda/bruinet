@@ -33,7 +33,8 @@ public enum SamplePage
     CommunityToolkit,
     CommunityToolkitAlerts,
     CommunityToolkitMedia,
-    PagedList
+    PagedList,
+    Covered
 }
 
 /// <summary>

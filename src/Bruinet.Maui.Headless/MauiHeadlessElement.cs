@@ -678,10 +678,13 @@ public sealed class MauiHeadlessElement : IMauiElement
         if (nearestPage is null)
             return true;
 
-        for (MauiElement? shown = Screen.CurrentPage(_driver.Window); shown is not null; shown = shown.Parent)
+        foreach (var page in Screen.ShownPages(_driver.Window))
         {
-            if (ReferenceEquals(shown, nearestPage))
-                return true;
+            for (MauiElement? shown = page; shown is not null; shown = shown.Parent)
+            {
+                if (ReferenceEquals(shown, nearestPage))
+                    return true;
+            }
         }
 
         return false;

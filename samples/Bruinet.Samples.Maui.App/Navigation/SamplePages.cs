@@ -119,6 +119,9 @@ public static class SamplePages
 
         new(SamplePage.PagedList, "Paged list", "A CollectionView that loads pages and searches",
             () => new PagedListPage()),
+
+        new(SamplePage.Covered, "Covered pages", "A busy page under a pushed page and a modal",
+            () => new CoveredPage()),
     ];
 
     /// <summary>

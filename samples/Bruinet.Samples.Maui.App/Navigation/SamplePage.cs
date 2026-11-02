@@ -75,5 +75,8 @@ public enum SamplePage
     CommunityToolkitMedia,
 
     /// <summary>A CollectionView that loads its pages as it nears its end, with a search.</summary>
-    PagedList
+    PagedList,
+
+    /// <summary>A busy page that a pushed page and a modal cover.</summary>
+    Covered
 }

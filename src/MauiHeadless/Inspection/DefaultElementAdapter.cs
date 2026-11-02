@@ -27,7 +27,7 @@ public sealed class DefaultElementAdapter : IElementAdapter
                 return Dialogs.DialogRequests.Of(window).Reverse<Element>()
                     .Concat(back.CanGoBack ? [back] : [])
                     .Concat(title.Text is not null ? [title] : [])
-                    .Concat(window.Page is { } root ? [Screen.VisiblePage(root, window)] : []);
+                    .Concat(Screen.Layers(window));
             case NavigationBackButton or NavigationTitle:
                 return [];
             case NavigationPage navigation:
