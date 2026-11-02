@@ -122,6 +122,9 @@ public static class SamplePages
 
         new(SamplePage.Covered, "Covered pages", "A busy page under a pushed page and a modal",
             () => new CoveredPage()),
+
+        new(SamplePage.Timed, "Timed", "Delays, delayed work, a debounce, a message that hides",
+            () => new TimedPage()),
     ];
 
     /// <summary>

@@ -34,7 +34,8 @@ public enum SamplePage
     CommunityToolkitAlerts,
     CommunityToolkitMedia,
     PagedList,
-    Covered
+    Covered,
+    Timed
 }
 
 /// <summary>

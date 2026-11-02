@@ -123,8 +123,8 @@ ends its call at once with `DeviceOnlyException` naming the member.
 
 ## What Behaves Differently
 
-- **A busy signal** (`BusySignalPolicy.Required`) that the app clears after async work clears when that
-  work has run; one cleared after a delay or a timer waits for the virtual clock (see below).
+- **A busy signal** (`BusySignalPolicy.Required`) that the app clears after async work, a delay or a
+  timer clears when that has run, as a test waits.
 - **Visible** means on the shown page of the driver's window, with no `IsVisible="False"` ancestor. An
   off-screen carousel card is found and is not shown; scrolling succeeds at once.
 - **A list's end asks for more**, as a device's does when scrolled there: a search or `ScrollToEnd` past
@@ -139,8 +139,11 @@ ends its call at once with `DeviceOnlyException` naming the member.
   wait (`Assert*`, `WaitArrived`) is what moves the app on. A wait outside the driver must let it run (the
   Todo fixture's reset passes `whileWaiting: IsIdle`), and a fixture lets the last test's work settle
   before the next (`WaitForQuiet`).
-- **The virtual clock does not move under the head.** App timers and `DispatchDelayed` work fire only
-  when a test advances MauiHeadless's clock; a test that needs them is a device test for now.
+- **The virtual clock keeps pace with real time under the head** (`TimeFollowsWallClock`, which
+  `MauiHeadlessHead.Options` turns on): app timers and `DispatchDelayed` work fire as a test waits, as on
+  a device, so a status after a delay, a debounced search or a message that hides itself is asserted
+  like any other text (`TimedUiTests`). An awaited `Task.Delay` is a runtime timer and runs anyway.
+  MauiHeadless on its own keeps the clock still until a test calls `AdvanceTime`.
 - **Fields** behave as the platform's do: text typed into a field with a `TextTransform` is held and
   shown transformed, and an app's own `Focus()` and `Unfocus()` move focus (MAUI asks the platform, and
   without one does nothing: MauiHeadless answers its `FocusChangeRequested`).

@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiHeadless: a page under a modal stays in the tree, found and ready, as on Windows, where a modal
   (or a Mopups popup) covers its page without taking it away; it read as a missing root. The Maui
   sample has a busy page covered by a pushed page and a modal (`CoveredPageTests`).
+- MauiHeadless: `MauiTestContextOptions.TimeFollowsWallClock` (`TestDispatcher.FollowsWallClock`) makes
+  the virtual clock keep pace with real time; the Bruinet head turns it on, so app timers and
+  `DispatchDelayed` work fire as a test waits, as on a device. MauiHeadless on its own is unchanged.
+  The Maui sample has a timed page (`TimedUiTests`).
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name

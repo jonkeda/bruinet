@@ -53,7 +53,7 @@ public sealed class MauiTestContext : IDisposable
         ArgumentNullException.ThrowIfNull(options);
         Options = options;
         Adapters = [.. options.Adapters];
-        Dispatcher = new TestDispatcher();
+        Dispatcher = new TestDispatcher { FollowsWallClock = options.TimeFollowsWallClock };
         if (options.SetApplicationCurrent)
             Dispatcher.OnEnter = () => _application is { } application ? new ApplicationScope(application) : null;
         TestDispatcherProvider.Install(Dispatcher);

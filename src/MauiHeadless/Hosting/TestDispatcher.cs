@@ -26,6 +26,9 @@ public sealed class TestDispatcher : IDispatcher
     private readonly TestSynchronizationContext _synchronizationContext;
     private long _sequence;
     private bool _draining;
+    private bool _catchingUp;
+    private Stopwatch? _wallClock;
+    private TimeSpan _wallClockFrom;
 
     public TestDispatcher()
     {
@@ -38,8 +41,24 @@ public sealed class TestDispatcher : IDispatcher
     /// <summary>Called when this thread starts running the dispatcher's work, outermost entry only; its result is disposed when it stops.</summary>
     internal Func<IDisposable?>? OnEnter { get; set; }
 
-    /// <summary>The virtual time: advanced only by <see cref="AdvanceTime"/>.</summary>
+    /// <summary>The virtual time: advanced by <see cref="AdvanceTime"/>, and with the wall clock when <see cref="FollowsWallClock"/>.</summary>
     public TimeSpan Now { get; private set; }
+
+    /// <summary>
+    /// Whether the virtual clock keeps pace with the wall clock from now on: each drain first runs the
+    /// delayed work and timer ticks that the real time passed since has made due, in order, as a device's
+    /// app runs them while a test waits. Off by default, so a test sees the same order on every run;
+    /// Bruinet's head turns it on, as its tests wait on what the app shows rather than move a clock.
+    /// </summary>
+    public bool FollowsWallClock
+    {
+        get => _wallClock is not null;
+        set
+        {
+            _wallClock = value ? Stopwatch.StartNew() : null;
+            _wallClockFrom = Now;
+        }
+    }
 
     /// <summary>Whether work is queued, delayed work not counted.</summary>
     public bool HasPendingWork
@@ -76,6 +95,7 @@ public sealed class TestDispatcher : IDispatcher
         using var _ = Enter();
         action();
         Drain();
+        CatchUp();
     }
 
     /// <summary>Runs a function as the UI thread would, then drains what it queued.</summary>
@@ -85,6 +105,7 @@ public sealed class TestDispatcher : IDispatcher
         using var _ = Enter();
         var result = function();
         Drain();
+        CatchUp();
         return result;
     }
 
@@ -93,6 +114,7 @@ public sealed class TestDispatcher : IDispatcher
     {
         using var _ = Enter();
         Drain();
+        CatchUp();
     }
 
     /// <summary>
@@ -106,7 +128,11 @@ public sealed class TestDispatcher : IDispatcher
 
         using var _ = Enter();
         Drain();
-        var until = Now + by;
+        RunDueUntil(Now + by);
+    }
+
+    private void RunDueUntil(TimeSpan until)
+    {
         while (TakeNextDue(until) is { } next)
         {
             Now = next.Due;
@@ -114,7 +140,25 @@ public sealed class TestDispatcher : IDispatcher
             Drain();
         }
 
-        Now = until;
+        if (until > Now)
+            Now = until;
+    }
+
+    // The wall clock's time, when the virtual clock follows it: the due work up to then.
+    private void CatchUp()
+    {
+        if (_wallClock is null || _catchingUp)
+            return;
+
+        _catchingUp = true;
+        try
+        {
+            RunDueUntil(_wallClockFrom + _wallClock.Elapsed);
+        }
+        finally
+        {
+            _catchingUp = false;
+        }
     }
 
     /// <summary>
@@ -132,6 +176,7 @@ public sealed class TestDispatcher : IDispatcher
             using (Enter())
             {
                 Drain();
+                CatchUp();
                 if (condition())
                     return true;
             }
@@ -158,6 +203,7 @@ public sealed class TestDispatcher : IDispatcher
             using (Enter())
             {
                 Drain();
+                CatchUp();
             }
 
             var left = timeout - clock.Elapsed;

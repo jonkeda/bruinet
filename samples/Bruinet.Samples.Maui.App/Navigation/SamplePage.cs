@@ -78,5 +78,8 @@ public enum SamplePage
     PagedList,
 
     /// <summary>A busy page that a pushed page and a modal cover.</summary>
-    Covered
+    Covered,
+
+    /// <summary>UI that changes by time: delays, delayed work, a debounce, a message that hides.</summary>
+    Timed
 }

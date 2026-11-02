@@ -44,7 +44,8 @@ public static class MauiHeadlessHead
         TimeoutSettings? timeouts = null)
     {
         ArgumentNullException.ThrowIfNull(root);
-        var options = new global::MauiHeadless.MauiTestContextOptions();
+        // The head's tests wait on what the app shows, as on a device, where timers run by themselves.
+        var options = new global::MauiHeadless.MauiTestContextOptions { TimeFollowsWallClock = true };
         configure?.Invoke(options);
         var context = new global::MauiHeadless.MauiTestContext(options);
         arrange?.Invoke(context);

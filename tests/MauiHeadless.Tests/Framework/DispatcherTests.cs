@@ -27,6 +27,31 @@ public sealed class DispatcherTests
     }
 
     [Fact]
+    public void A_clock_that_follows_the_wall_clock_runs_delayed_work_once_that_much_real_time_has_passed()
+    {
+        using var ctx = new MauiTestContext(new MauiTestContextOptions { TimeFollowsWallClock = true });
+        var ran = false;
+        ctx.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(50), () => ran = true);
+
+        ctx.Dispatcher.RunPending();
+        Assert.False(ran);
+
+        Assert.True(ctx.Dispatcher.WaitFor(() => ran, TimeSpan.FromSeconds(2)));
+        Assert.True(ctx.Dispatcher.Now >= TimeSpan.FromMilliseconds(50));
+    }
+
+    [Fact]
+    public void By_default_real_time_moves_nothing()
+    {
+        using var ctx = new MauiTestContext();
+        var ran = false;
+        ctx.Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(1), () => ran = true);
+
+        Assert.False(ctx.Dispatcher.WaitFor(() => ran, TimeSpan.FromMilliseconds(100)));
+        Assert.Equal(TimeSpan.Zero, ctx.Dispatcher.Now);
+    }
+
+    [Fact]
     public void Delayed_work_runs_in_due_order()
     {
         using var ctx = new MauiTestContext();

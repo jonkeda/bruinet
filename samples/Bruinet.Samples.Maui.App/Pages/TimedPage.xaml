@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    UI that changes by time, as an app's does: a status written after an awaited delay, one written by
+    work the app dispatches with a delay, a search that runs once typing pauses (a dispatcher timer),
+    and a message that hides itself after a second.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Bruinet.Samples.Maui.App.TimedPage"
+             AutomationId="TimedPage"
+             Title="Timed">
+    <VerticalStackLayout Padding="20" Spacing="12">
+        <Button AutomationId="SaveButton" Text="Save" Clicked="OnSave" />
+        <Label x:Name="SaveStatus" AutomationId="SaveStatus" Text="not saved" />
+
+        <Button AutomationId="SaveLaterButton" Text="Save later" Clicked="OnSaveLater" />
+        <Label x:Name="SaveLaterStatus" AutomationId="SaveLaterStatus" Text="not saved" />
+
+        <Entry x:Name="Search" AutomationId="DebouncedSearch" Placeholder="Search" TextChanged="OnSearchChanged" />
+        <Label x:Name="SearchStatus" AutomationId="SearchStatus" Text="no search" />
+
+        <Button AutomationId="ShowMessageButton" Text="Show message" Clicked="OnShowMessage" />
+        <Label x:Name="Message" AutomationId="TimedMessage" Text="Saved to the cloud" IsVisible="False" />
+    </VerticalStackLayout>
+</ContentPage>

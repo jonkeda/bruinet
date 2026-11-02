@@ -274,3 +274,7 @@ static MauiHeadless.Snapshots.TreeSnapshot.Format(MauiHeadless.Inspection.Visual
 static readonly MauiHeadless.Hosting.HeadlessBehaviors.StripProperty -> Microsoft.Maui.Controls.BindableProperty!
 static readonly MauiHeadless.Inspection.DefaultElementAdapter.Instance -> MauiHeadless.Inspection.DefaultElementAdapter!
 static readonly MauiHeadless.Snapshots.TreeSnapshot.ForMessages -> MauiHeadless.Snapshots.SnapshotOptions!
+MauiHeadless.Hosting.TestDispatcher.FollowsWallClock.get -> bool
+MauiHeadless.Hosting.TestDispatcher.FollowsWallClock.set -> void
+MauiHeadless.MauiTestContextOptions.TimeFollowsWallClock.get -> bool
+MauiHeadless.MauiTestContextOptions.TimeFollowsWallClock.set -> void

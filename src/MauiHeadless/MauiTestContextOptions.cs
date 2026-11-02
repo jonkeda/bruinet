@@ -38,6 +38,13 @@ public sealed class MauiTestContextOptions
     public IList<Type> DialogPages { get; } = [];
 
     /// <summary>
+    /// Whether the virtual clock keeps pace with the wall clock (<see cref="Hosting.TestDispatcher.FollowsWallClock"/>):
+    /// delayed work and timers then fire as real time passes, as on a device. Off by default: a test moves
+    /// the clock with <c>AdvanceTime</c>. Bruinet's MauiHeadless head turns it on.
+    /// </summary>
+    public bool TimeFollowsWallClock { get; set; }
+
+    /// <summary>
     /// How long <c>WaitForAssertion</c> and <c>WaitForState</c> wait by default on the wall clock, for work
     /// that real asynchrony has yet to post back. Virtual time never needs it.
     /// </summary>
