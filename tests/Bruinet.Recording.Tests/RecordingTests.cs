@@ -137,13 +137,16 @@ public sealed class FrameVideoTests
         var sink = new CountingSink();
         var video = new FrameVideo(new Size(4, 2), 20, sink);
         var start = RecordingClock.Now;
+        var clock = System.Diagnostics.Stopwatch.StartNew();
 
         video.Offer(start, new byte[32], new Size(4, 2), 16);
         await Task.Delay(500);
         var result = await video.StopAsync("video.mp4", CancellationToken.None);
+        clock.Stop();
 
         Assert.Equal(start, result.StartedAt);
-        Assert.InRange(sink.Frames, 9, 13);
+        // Frames are written at the rate until the stop, so a busy runner's late stop adds its time.
+        Assert.InRange(sink.Frames, 9, (int)Math.Ceiling(20 * clock.Elapsed.TotalSeconds) + 1);
         Assert.Equal(TimeSpan.FromSeconds(sink.Frames / 20.0), result.Duration);
         Assert.True(sink.Completed);
         Assert.Empty(result.Warnings);

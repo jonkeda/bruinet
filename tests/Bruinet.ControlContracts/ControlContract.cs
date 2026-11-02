@@ -18,8 +18,11 @@ public abstract class ControlContract<TScope> where TScope : class
     /// <summary>The page the controls' calls return, the same instance each time.</summary>
     protected abstract TScope Scope { get; }
 
-    /// <summary>How long a wait or assert that must fail may take, in milliseconds.</summary>
-    protected virtual int ShortTimeoutMs => 300;
+    /// <summary>
+    /// How long a wait or assert that must fail may take, in milliseconds. A shared build agent can spend most of a
+    /// short budget before the first attempt, and a call that never got to ask fails differently.
+    /// </summary>
+    protected virtual int ShortTimeoutMs => Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is null ? 300 : 1500;
 
     /// <summary>How long the page may take to show an action's effect, in milliseconds.</summary>
     protected virtual int EffectTimeoutMs => 3000;

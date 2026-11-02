@@ -8,6 +8,9 @@ namespace Bruinet.Core.Calls;
 /// </summary>
 internal static class Poller
 {
+    /// <summary>How close to the end of the budget a driver's timeout still counts as the budget running out.</summary>
+    private const int BudgetSlopMs = 10;
+
     /// <summary>
     /// Runs <paramref name="attempt"/> until it reports <see cref="ObservationKind.Done"/> or the
     /// deadline passes.
@@ -34,11 +37,12 @@ internal static class Poller
                     observation = attempt(context);
                 }
             }
-            catch (TimeoutException) when (context.Deadline.RemainingMs <= 0 && context.Log.Attempts > 0)
+            catch (TimeoutException) when (context.Deadline.RemainingMs <= BudgetSlopMs && context.Log.Attempts > 0)
             {
                 // The budget ran out in the middle of this attempt: a driver call below it was
                 // given what was left (?A5) and used it up. That is not something the attempt saw,
-                // so the call is reported by the last attempt that completed.
+                // so the call is reported by the last attempt that completed. The driver's timer
+                // is its own, and fires a few milliseconds before this deadline's clock does.
                 return false;
             }
             catch (Exception error) when (!IsFatal(error))
