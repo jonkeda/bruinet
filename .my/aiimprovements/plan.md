@@ -228,7 +228,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI7 | open | | |
 | AI8 | open | | |
 | AI9 | open | | |
-| AI10 | open | | |
+| AI10 | done | branch ai10-states, not pushed | `[BddState]` states, a Given a scenario names; `list_states`, `set_state {state, page?, testData?}` left paused for `step_state`; only text that binds to a declared state alone runs; Todo declares two; the agent check needs the MCP host on this branch (AI10-review.md) |
 | AI11 | done (library) | branch ai11-http-replay, not pushed | HTTP replay in and out of process, the Dependencies table, SQLite copy, `bruinet http`, `http_calls`; the Todo app's sync replays hermetic; a host making sessions from the table is AI11b (AI11-review.md) |
 | AI11b | done | branch ai11-http-replay, not pushed | the Todo UAT suites record and replay their backend headless and on bUnit (36 and 30 scenarios hermetic, `@needs-stub` for the ones that read the stub back); the agent check passed in 5 calls; the Azure OpenAI spike still needs a deployment (AI11-review.md) |
 | AI12 | open | | |
