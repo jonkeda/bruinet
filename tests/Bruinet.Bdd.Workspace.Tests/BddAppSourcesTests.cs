@@ -17,6 +17,8 @@ public sealed class BddAppSourcesTests : IDisposable
     [InlineData("[data-testid='counter-title']", "counter-title")]
     [InlineData("Css:[data-testid=\"save\"]", "save")]
     [InlineData("#login", "login")]
+    [InlineData("DataTestId:List > DataTestId:Row_3", "Row_3")]
+    [InlineData("XPath://button[@id='go']", "go")]
     public void ValueOf_AFailuresLocator_GivesTheTestId(string locator, string value)
         => Assert.Equal(new BddLocatorValue(value, IsPrefix: false), BddAppSources.ValueOf(locator));
 
@@ -94,6 +96,54 @@ public sealed class BddAppSourcesTests : IDisposable
 
         Assert.EndsWith("CartPage.razor", web[0].File, StringComparison.Ordinal);
         Assert.EndsWith("CartView.xaml", xaml[0].File, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Find_SkipsOtherCheckoutsAndDotFolders_AndKeepsAnAppBesideTheTests()
+    {
+        Write("src/Shop.Web/Pages/Cart.razor", """<button data-testid="pay">Pay</button>""");
+        Write(".claude/worktrees/agent/src/Shop.Web/Pages/Cart.razor", """<button data-testid="pay">Pay</button>""");
+        Write("external/lib/.git", "gitdir: ../.git/modules/lib");
+        Write("external/lib/Pay.razor", """<button data-testid="pay">Pay</button>""");
+        Write("tests/Shop.TestSite/Pay.razor", """<button data-testid="pay">Pay</button>""");
+        Write("tests/Shop.Checks/Shop.Checks.csproj", """<Project><ItemGroup><PackageReference Include="xunit" /></ItemGroup></Project>""");
+        Write("tests/Shop.Checks/PayPage.cs", """Locator.ByDataTestId("pay")""");
+
+        var files = new BddAppSources(_root).Find(new BddLocatorValue("pay", IsPrefix: false)).Select(hit => Path.GetRelativePath(_root, hit.File));
+
+        Assert.Equal([Path.Combine("src", "Shop.Web", "Pages", "Cart.razor"), Path.Combine("tests", "Shop.TestSite", "Pay.razor")], files.Order());
+    }
+
+    [Fact]
+    public void Find_ATestIdIsTheAttributesOwnValue_AndAPrefixStartsAWord()
+    {
+        Write("src/Shop.Web/Pages/Cart.razor", """
+            <div id="cart" title="pay">Pay</div>
+            <li data-testid="MyRow_@item.Id"></li>
+            <li data-testid="Row_@item.Id"></li>
+            """);
+        var sources = new BddAppSources(_root);
+
+        var pay = Assert.Single(sources.Find(new BddLocatorValue("pay", IsPrefix: false)));
+        var row = Assert.Single(sources.Find(new BddLocatorValue("Row_", IsPrefix: true)));
+
+        Assert.False(pay.IsAttribute);
+        Assert.True(row is { Line: 3, IsAttribute: true });
+    }
+
+    [Fact]
+    public void Find_TheSameIdInTwoApps_PutsTheOneNamedLikeThePageObjectsProjectFirst()
+    {
+        Write("src/Shop.Admin/Shop.Admin.csproj", "<Project />");
+        Write("src/Shop.Admin/Pages/Cart.razor", """<button data-testid="Save">Save</button>""");
+        Write("src/Shop.Store/Shop.Store.csproj", "<Project />");
+        Write("src/Shop.Store/Pages/Cart.razor", """<button data-testid="Save">Save</button>""");
+        var pageObject = Write("tests/Shop.Store.UITests/Pages/CartPage.cs", string.Empty);
+        Write("tests/Shop.Store.UITests/Shop.Store.UITests.csproj", "<Project />");
+
+        var hits = new BddAppSources(_root).Find(new BddLocatorValue("Save", IsPrefix: false), hint: new BddAppSourceHint(pageObject, null, null));
+
+        Assert.Contains("Shop.Store", hits[0].File, StringComparison.Ordinal);
     }
 
     private string Write(string relative, string text)

@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiUnit is renamed MauiHeadless (`src/MauiHeadless`, package `MauiHeadless`), and Bruinet's head `Bruinet.Maui.MauiUnit` is `Bruinet.Maui.Headless`: `BRUINET_HEAD=headless`, `MauiPlatform.Headless`, `MauiHeads.IsHeadless`, `CreateHeadlessOptions`, `HeadlessPreferences` and `HeadlessSecureStorage`. No release shipped the old names.
 
 ### Added
+- From a control to its source (AI7): the MCP server's `where_is {page, control}` gives the page object member's line,
+  the test id it finds by, and the app's `.razor`, `.cshtml` or XAML line that makes the element (the suite's own app
+  first when a web and a MAUI app share ids); a failure's `appSource` gives the same for its locator. No build step: the
+  test id is searched in the app's sources.
 - States (AI10): `[BddState("the app starts from the {testSet} test set")]` declares one on the method that sets it through
   test data or the service head; it is a `Given` a scenario names. The MCP server's `list_states` gives them and
   `set_state` puts the app in one on the suite's runner, leaving it paused there (`page` for `step_state`); only a declared

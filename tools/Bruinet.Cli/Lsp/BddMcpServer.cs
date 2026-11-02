@@ -26,6 +26,8 @@ public sealed class BddMcpServer : IDisposable
     // The Step-through events this server has answered with: one raised since is a pause a wait gives.
     private long _stepEventsSeen;
     private readonly string _solutionDir;
+    private BddAppSources? _appSources;
+    private DateTime _appSourcesAt;
 
     /// <summary>A server for the suites under <paramref name="solutionDir"/>.</summary>
     public BddMcpServer(string solutionDir)
@@ -377,6 +379,7 @@ public sealed class BddMcpServer : IDisposable
                 result.DurationMs,
                 FailedStep = result.FailedStep is { } step ? new { File = step.File is null ? null : Path.GetRelativePath(_solutionDir, step.File), step.Line, step.Text } : null,
                 Failure = runs?.GetValueOrDefault(result.Scenario) is { } run ? Failure(run) : null,
+                AppSource = runs?.GetValueOrDefault(result.Scenario) is { } failedRun ? AppSource(Failure(failedRun), SuiteFolder(uri, suite)) : null,
                 Message = Cap(result.Message, 2000),
             }),
         };
@@ -773,14 +776,15 @@ public sealed class BddMcpServer : IDisposable
         var config = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } configPath ? Path.GetDirectoryName(configPath)! : _solutionDir;
         var file = step?.File is { } written ? Path.GetFullPath(written, config) : new Uri(uri).LocalPath;
         var text = step is not null && File.Exists(file) && File.ReadLines(file).Skip(step.Line - 1).FirstOrDefault() is { } line ? line.Trim() : null;
+        var failure = Failure(failed);
         return new
         {
             failed.Scenario,
             failed.Status,
             At = failed.At.ToString("u", CultureInfo.InvariantCulture),
             FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
-            Failure = Failure(failed),
-            AppSource = AppSource(Failure(failed)),
+            Failure = failure,
+            AppSource = AppSource(failure, config),
             AppEvents = step?.AppEvents is { } said ? JsonNode.Parse(said) : null,
             Screenshot = failed.EvidencePath,
             Message = Cap(step?.Message, 2000),
@@ -839,7 +843,6 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    // A failed run's failure, as its report wrote it; null for a report written before failures were.
     // A page object control: its member's line, the locator value it declares, and where the app makes that element.
     private object WhereIs(JsonObject arguments)
     {
@@ -854,7 +857,7 @@ public sealed class BddMcpServer : IDisposable
 
         var at = BddSourceLocator.Of(page.PageType, control.MemberName ?? Compact(control.Name));
         var value = at is { FilePath: { } file } ? BddAppSources.ValueAt(file, at.LineNumber) : null;
-        var app = value is null ? [] : new BddAppSources(_solutionDir).Find(value, hint: new BddAppSourceHint(at?.FilePath, page.PageType.Name, IsXaml(control.ControlType)));
+        var app = value is null ? [] : AppSources().Find(value, hint: new BddAppSourceHint(at?.FilePath, page.PageType.Name, IsXaml(control.ControlType)));
         return new
         {
             Page = page.Name,
@@ -862,33 +865,65 @@ public sealed class BddMcpServer : IDisposable
             PageObject = at is { FilePath: { } declared } ? $"{Path.GetRelativePath(_solutionDir, declared)}:{at.LineNumber}" : null,
             Locator = value is null ? null : value.IsPrefix ? value.Value + "…" : value.Value,
             App = app.Select(hit => new { File = $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}", hit.Text, TestId = hit.IsAttribute }),
-            Note = value is null ? "The member declares no string to find by (a constant or nameof): look for it in the page object."
+            Note = at?.FilePath is null ? "The page object's source was not found: build the suite with its PDB (Debug)."
+                : value is null ? "The member declares no string to find by (a constant or nameof): look for it in the page object."
                 : app.Count == 0 ? "No app source has this value: the app may build it some other way, or the element is gone." : null,
         };
 
         static string Compact(string name) => name.Replace(" ", string.Empty, StringComparison.Ordinal);
 
-        // A MAUI, Avalonia or WPF control's app is XAML, an Html or Blazor one's web markup.
-        static bool? IsXaml(Type controlType) => controlType.Assembly.GetName().Name switch
-        {
-            { } name when name.Contains("Maui", StringComparison.Ordinal) || name.Contains("Avalonia", StringComparison.Ordinal) || name.Contains("Wpf", StringComparison.Ordinal) => true,
-            { } name when name.Contains("Html", StringComparison.Ordinal) || name.Contains("Blazor", StringComparison.Ordinal) => false,
-            _ => null,
-        };
     }
 
-    // Where the app makes the element a failure's locator names: the top three lines; null when the failure names none.
-    private object? AppSource(JsonNode? failure)
+    // A MAUI, Avalonia or WPF control's app is XAML, an Html or Blazor one's web markup: by the first Bruinet assembly in
+    // its bases (a suite's own control derives from one); null for neither.
+    private static bool? IsXaml(Type? controlType)
+    {
+        for (var type = controlType; type is not null; type = type.BaseType)
+        {
+            var name = type.Assembly.GetName().Name ?? string.Empty;
+            if (!name.StartsWith("Bruinet.", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            return name.Contains("Maui", StringComparison.Ordinal) || name.Contains("Avalonia", StringComparison.Ordinal) || name.Contains("Wpf", StringComparison.Ordinal) ? true
+                : name.Contains("Html", StringComparison.Ordinal) || name.Contains("Blazor", StringComparison.Ordinal) ? false
+                : null;
+        }
+
+        return null;
+    }
+
+    // The app's sources, their file list kept a minute rather than walked again per call.
+    private BddAppSources AppSources()
+    {
+        if (_appSources is null || DateTime.UtcNow - _appSourcesAt > TimeSpan.FromMinutes(1))
+        {
+            _appSources = new BddAppSources(_solutionDir);
+            _appSourcesAt = DateTime.UtcNow;
+        }
+
+        return _appSources;
+    }
+
+    // The folder of the suite a feature file runs in; the solution's when none.
+    private string SuiteFolder(string uri, string? suite)
+        => _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } configPath ? Path.GetDirectoryName(configPath)! : _solutionDir;
+
+    // Where the app makes the element a failure's locator names: the top three lines, the suite's own app first; null
+    // when the failure names none.
+    private object? AppSource(JsonNode? failure, string suiteFolder)
     {
         if (failure?["locator"] is not JsonValue locator || BddAppSources.ValueOf(locator.ToString()) is not { } value)
         {
             return null;
         }
 
-        var hits = new BddAppSources(_solutionDir).Find(value, max: 3);
+        var hits = AppSources().Find(value, max: 3, hint: new BddAppSourceHint(Path.Combine(suiteFolder, "uat.config.md"), null, null));
         return hits.Count == 0 ? null : hits.Select(hit => $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}: {hit.Text}").ToList();
     }
 
+    // A failed run's failure, as its report wrote it; null for a report written before failures were.
     private static JsonNode? Failure(Bruinet.Bdd.Preview.BddScenarioRun run)
         => run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Failure is { } json ? JsonNode.Parse(json) : null;
 

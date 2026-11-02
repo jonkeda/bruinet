@@ -270,6 +270,9 @@ VS Code) and any other MCP client:
   where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it
   ended; a step still running after the wait (2 minutes) answers Waiting, and `wait` waits again;
   `step_state` reads the paused page: each control, whether it is shown, and what it shows;
+- `where_is` gives where a page's control is made: the page object member's file and line, the test id it finds by,
+  and the app lines (`.razor`, `.cshtml`, XAML, code) that render an element with it, the suite's own app first; a
+  failure from `get_failure` or `run_scenario` gives the same lines for its locator as `appSource`;
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
   it ran and missed (for the given files, or the working tree's changed ones);
 - `step_log` gives what the app said during each step of a scenario's newest run: its log's warnings and

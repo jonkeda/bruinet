@@ -36,7 +36,7 @@ on the member (a constant, `nameof`), or no app source has the value (a stale pa
 
 | Project | Class | What |
 | --- | --- | --- |
-| `Bruinet.Bdd.Workspace` | `BddAppSources` (new) | `ValueOf(locator)`, `ValueAt(file, line)`, `Find(value, max, hint)`; skips `bin`, `obj`, `node_modules`, test projects (`tests`, `*Tests`, `*.Uat`, `*.TestSupport`) |
+| `Bruinet.Bdd.Workspace` | `BddAppSources` (new) | `ValueOf(locator)`, `ValueAt(file, line)`, `Find(value, max, hint)`; skips `bin`, `obj`, dot-folders, other checkouts (own `.git`), links, and test projects (by name or a test framework reference) |
 | `Bruinet.Bdd.Workspace` | `BddLocatorValue`, `BddAppSourceHit`, `BddAppSourceHint` (new records) | the value or its prefix; a hit; what ranks one app over another |
 | `Bruinet.Uat` | `UatControlModel.MemberName` (new init property) | the page object member (`DeleteButton` for "Delete"), filled by `UatReflectionRuntime.PageModels()` |
 | `Bruinet.Cli` | `BddMcpServer.WhereIs`, `AppSource` | the tool row, the switch entry, `appSource` in `get_failure` |

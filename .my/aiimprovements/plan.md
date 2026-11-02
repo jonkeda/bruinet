@@ -225,7 +225,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI4b | done | (this commit) | step_state through a new runner request; on Todo it reads the list page (filter "All", "Synced 10:00"); a list control's rows are not read yet |
 | AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
 | AI6 | done | 29728c45 + review fixes (AI6-review.md) | a step's events by its mark and scope, read at the report; TOD.08.1 shows "Sync failed: ServerError" on line 26; the web head's app log is a follow-up (own process) |
-| AI7 | open | | |
+| AI7 | done | branch ai7-where-is, not pushed | a static search of the test id in the app's sources, no build step: the spike found 267 of 286 controls of four suites, the rest are containers with constant locators or a stale page object (AI7-design.md); the ranking needs the control's family (XAML or web) when two apps share ids |
 | AI8 | open | | |
 | AI9 | open | | |
 | AI10 | done | branch ai10-states, not pushed | `[BddState]` states, a Given a scenario names; `list_states`, `set_state {state, page?, testData?}` left paused for `step_state`; only text that binds to a declared state alone runs; Todo declares two; agent check 12 calls against 23 without; `step_state` reading a list's rows is a follow-up (AI10-review.md) |

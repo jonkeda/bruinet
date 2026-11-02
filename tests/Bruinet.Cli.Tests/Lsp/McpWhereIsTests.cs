@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json.Nodes;
 using Xunit;
 
@@ -18,7 +19,9 @@ public sealed class McpWhereIsTests : IDisposable
     {
         var where = Answer(Call("where_is", new JsonObject { ["suite"] = "Bruinet.Samples.Todo.Web.Uat", ["page"] = "Todo Detail", ["control"] = "Delete" }));
 
-        Assert.Matches(@"TodoDetailPage\.cs:\d+$", (string)where["pageObject"]!);
+        var pageObject = ((string)where["pageObject"]!).Split(':');
+        Assert.EndsWith("TodoDetailPage.cs", pageObject[0], StringComparison.Ordinal);
+        Assert.Contains("DeleteButton", File.ReadLines(Path.Combine(Solution(), pageObject[0])).ElementAt(int.Parse(pageObject[1], CultureInfo.InvariantCulture) - 1), StringComparison.Ordinal);
         Assert.Equal("TodoDetail_Delete", (string)where["locator"]!);
         var top = where["app"]![0]!;
         Assert.Contains("Bruinet.Samples.Todo.Web", (string)top["file"]!, StringComparison.Ordinal);

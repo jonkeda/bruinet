@@ -33,6 +33,7 @@ public sealed partial class BddAppSources
         StringComparer.OrdinalIgnoreCase);
 
     private readonly Lazy<IReadOnlyList<string>> _files;
+    private readonly Dictionary<string, HashSet<string>> _projectWords = new(StringComparer.OrdinalIgnoreCase);
 
     /// <param name="root">The solution's folder.</param>
     public BddAppSources(string root)
@@ -41,6 +42,7 @@ public sealed partial class BddAppSources
         _files = new Lazy<IReadOnlyList<string>>(() => [.. Files(root)]);
     }
 
+    /// <summary>The solution's folder searched.</summary>
     public string Root { get; }
 
     /// <summary>The value of a locator as a failure gives it (<c>DataTestId:TodoList_Sync</c>); null for one with none.</summary>
@@ -51,6 +53,9 @@ public sealed partial class BddAppSources
             return null;
         }
 
+        // A nested locator (DataTestId:List > DataTestId:Row_3) finds by its last part.
+        var last = locator.LastIndexOf(" > ", StringComparison.Ordinal);
+        locator = last >= 0 ? locator[(last + 3)..] : locator;
         var colon = locator.IndexOf(':', StringComparison.Ordinal);
         var value = Unwrapped((colon >= 0 ? locator[(colon + 1)..] : locator).Trim());
         return value is null ? null : new BddLocatorValue(value, IsPrefix: false);
@@ -108,22 +113,38 @@ public sealed partial class BddAppSources
         var escaped = Regex.Escape(value.Value);
         // Exactly the value, quoted; or, for a start, the value followed by what the app adds ({id}, @id, + id).
         var quoted = value.IsPrefix
-            ? new Regex(escaped + @"(?=\{|@|""\s*\+)", RegexOptions.CultureInvariant)
+            ? new Regex(@"(?<![\w-])" + escaped + @"(?=\{|@|""\s*\+)", RegexOptions.CultureInvariant)
             : new Regex(@"(?<![\w-])" + escaped + @"(?=[""'])", RegexOptions.CultureInvariant);
+        // A test id when the value is that attribute's own: data-testid="value", AutomationId="value", id="@value…".
+        var attribute = new Regex(TestIdAttributes + @"\s*=\s*[""']@?" + escaped, RegexOptions.CultureInvariant);
         var hits = new List<BddAppSourceHit>();
         foreach (var file in _files.Value)
         {
-            var number = 0;
-            foreach (var line in File.ReadLines(file))
+            if (hits.Count >= MostHits)
             {
-                number++;
+                break;
+            }
+
+            string[] lines;
+            try
+            {
+                lines = File.ReadAllLines(file);
+            }
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+            {
+                continue;
+            }
+
+            for (var index = 0; index < lines.Length && hits.Count < MostHits; index++)
+            {
+                var line = lines[index];
                 if (!line.Contains(value.Value, StringComparison.Ordinal) || !quoted.IsMatch(line))
                 {
                     continue;
                 }
 
                 var trimmed = line.Trim();
-                hits.Add(new BddAppSourceHit(file, number, trimmed.Length > 160 ? trimmed[..160] + "…" : trimmed, TestIdAttribute().IsMatch(line)));
+                hits.Add(new BddAppSourceHit(file, index + 1, trimmed.Length > 160 ? trimmed[..160] + "…" : trimmed, attribute.IsMatch(line)));
             }
         }
 
@@ -138,7 +159,8 @@ public sealed partial class BddAppSources
             .Take(max)];
     }
 
-    // The app's markup and code: no build output, no test project (a folder named for tests).
+    // The app's markup and code: no build output, no test project, no other checkout (a worktree, a submodule: a folder
+    // with its own .git), no dot-folder, no link.
     private static IEnumerable<string> Files(string folder)
     {
         IEnumerable<string> files;
@@ -146,9 +168,11 @@ public sealed partial class BddAppSources
         try
         {
             files = Directory.EnumerateFiles(folder).Where(file => Extensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase)).ToList();
-            folders = Directory.EnumerateDirectories(folder).ToList();
+            folders = Directory.EnumerateDirectories(folder)
+                .Where(below => !File.GetAttributes(below).HasFlag(FileAttributes.ReparsePoint))
+                .ToList();
         }
-        catch (UnauthorizedAccessException)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
             yield break;
         }
@@ -161,7 +185,7 @@ public sealed partial class BddAppSources
         foreach (var below in folders)
         {
             var name = Path.GetFileName(below);
-            if (SkippedFolders.Contains(name) || IsTestFolder(name))
+            if (SkippedFolders.Contains(name) || name.StartsWith('.') || IsTestFolder(name) || IsOtherCheckout(below) || IsTestProject(below))
             {
                 continue;
             }
@@ -187,18 +211,42 @@ public sealed partial class BddAppSources
     private static HashSet<string> Words(string name)
         => [.. NameWord().Matches(name).Select(word => word.Value.ToLowerInvariant()).Where(word => !CommonWords.Contains(word))];
 
-    // The words of the project a file is in (the folder with its .csproj), without the test ones.
-    private static HashSet<string> ProjectWords(string file)
+    // The words of the project a file is in (the folder with its .csproj), without the test ones; once per folder.
+    private HashSet<string> ProjectWords(string file)
     {
-        for (var folder = Path.GetDirectoryName(Path.GetFullPath(file)); folder is not null; folder = Path.GetDirectoryName(folder))
+        var start = Path.GetDirectoryName(Path.GetFullPath(file)) ?? string.Empty;
+        if (_projectWords.TryGetValue(start, out var known))
         {
-            if (Directory.EnumerateFiles(folder, "*.csproj").Any())
+            return known;
+        }
+
+        HashSet<string> words = [];
+        for (var folder = start; folder.Length > 0; folder = Path.GetDirectoryName(folder) ?? string.Empty)
+        {
+            if (Directory.Exists(folder) && Directory.EnumerateFiles(folder, "*.csproj").Any())
             {
-                return [.. Path.GetFileName(folder).Split('.').Select(word => word.ToLowerInvariant()).Where(word => !CommonWords.Contains(word))];
+                words = [.. Path.GetFileName(folder).Split('.').Select(word => word.ToLowerInvariant()).Where(word => !CommonWords.Contains(word))];
+                break;
             }
         }
 
-        return [];
+        _projectWords[start] = words;
+        return words;
+    }
+
+    private static bool IsOtherCheckout(string folder) => Path.Exists(Path.Combine(folder, ".git"));
+
+    // A project that references a test framework, whatever its name (an app beside the tests is searched).
+    private static bool IsTestProject(string folder)
+    {
+        try
+        {
+            return Directory.EnumerateFiles(folder, "*.csproj").Any(project => TestFramework().IsMatch(File.ReadAllText(project)));
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     private static readonly HashSet<string> CommonWords = new(
@@ -226,9 +274,14 @@ public sealed partial class BddAppSources
         ["a", "button", "div", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "footer", "img", "input", "label", "li", "main", "nav", "ol", "p", "section", "select", "span", "table", "td", "textarea", "th", "tr", "ul"],
         StringComparer.OrdinalIgnoreCase);
 
+    private const int MostHits = 200;
+    private const string TestIdAttributes = @"(?:data-testid|data-test-id|data-test|AutomationProperties\.AutomationId|AutomationId|x:Name|\bid)";
+
     private static bool IsTestFolder(string name)
-        => name.Equals("tests", StringComparison.OrdinalIgnoreCase)
-           || name.EndsWith("Tests", StringComparison.Ordinal)
+        => name.EndsWith("Tests", StringComparison.Ordinal)
+           || name.EndsWith("UITest", StringComparison.Ordinal)
+           || name.EndsWith(".Specs", StringComparison.Ordinal)
+           || name.EndsWith(".E2E", StringComparison.Ordinal)
            || name.EndsWith(".Uat", StringComparison.Ordinal)
            || name.EndsWith(".TestSupport", StringComparison.Ordinal)
            || name.Contains(".TestSupport.", StringComparison.Ordinal);
@@ -236,7 +289,7 @@ public sealed partial class BddAppSources
     [GeneratedRegex(@"(?<interpolated>\$)?@?""(?<value>(?:[^""\\]|\\.)*)""", RegexOptions.CultureInvariant)]
     private static partial Regex Literal();
 
-    [GeneratedRegex(@"\[[\w:-]+\s*=\s*['""]?(?<value>[^'""\]]+)['""]?\]", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(@"\[@?[\w:-]+\s*=\s*['""]?(?<value>[^'""\]]+)['""]?\]", RegexOptions.CultureInvariant)]
     private static partial Regex SelectorValue();
 
     [GeneratedRegex(@"^#(?<value>[\w-]+)$", RegexOptions.CultureInvariant)]
@@ -245,6 +298,6 @@ public sealed partial class BddAppSources
     [GeneratedRegex(@"[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\d+", RegexOptions.CultureInvariant)]
     private static partial Regex NameWord();
 
-    [GeneratedRegex(@"(data-testid|data-test-id|data-test|AutomationId|AutomationProperties\.AutomationId|x:Name|\bid)\s*=\s*", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
-    private static partial Regex TestIdAttribute();
+    [GeneratedRegex(@"<PackageReference\s+Include=""(?:xunit|xunit\.v3|NUnit|MSTest\.TestFramework|MSTest|Microsoft\.NET\.Test\.Sdk)""", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
+    private static partial Regex TestFramework();
 }
