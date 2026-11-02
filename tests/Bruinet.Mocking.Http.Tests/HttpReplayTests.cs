@@ -313,6 +313,25 @@ public sealed class HttpReplayTests : IDisposable
     }
 
     [Fact]
+    public async Task A_volatile_value_that_is_not_an_id_is_matched_as_anything_but_never_rewritten()
+    {
+        // The answer holds the same text as the second recording's volatile "at": an earlier binding rewrote it.
+        _service.Given(Request.Create().WithPath("/notes").UsingPost()).RespondWith(Response.Create().WithBody("""{"created":"2026-11-02T10:00:00Z"}"""));
+        foreach (var at in new[] { "2026-11-01T10:00:00Z", "2026-11-02T10:00:00Z" })
+        {
+            await RecordAsync(async client =>
+            {
+                using var post = await client.PostAsync(_service.Url + "/notes", Json($$"""{"at":"{{at}}","created":"2026-11-02T10:00:00Z"}"""));
+            });
+        }
+
+        var (_, client) = Replaying();
+        using var answer = await client.PostAsync("http://x.test/notes", Json("""{"at":"2026-12-24T10:00:00Z","created":"2026-11-02T10:00:00Z"}"""));
+
+        Assert.Contains("\"created\":\"2026-11-02T10:00:00Z\"", await answer.Content.ReadAsStringAsync(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task A_call_that_got_no_answer_is_recorded_and_fails_the_same_way_in_replay()
     {
         await RecordAsync(client => Assert.ThrowsAsync<HttpRequestException>(() => client.GetStringAsync("http://127.0.0.1:1/api/users")));

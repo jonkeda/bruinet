@@ -63,7 +63,9 @@ public sealed class BddDependenciesTests
     [Fact]
     public void A_scenario_that_reads_its_stub_back_is_skipped_while_recording_or_replaying()
     {
-        var config = BddConfigParser.Parse(Config);
+        // The backend a stub, as the Todo suites have it: replay comes from the run's variable or the row's override.
+        var config = BddConfigParser.Parse(Config.Replace("| backend | http | replay |", "| backend | http | stub |", StringComparison.Ordinal)
+            .Replace("| model | http | replay |", "| model | http | stub |", StringComparison.Ordinal));
 
         var replaying = config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Replay" : null);
 
@@ -72,6 +74,10 @@ public sealed class BddDependenciesTests
         Assert.True(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Record" : null).ShouldSkip);
         Assert.False(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Off" : null).ShouldSkip);
         Assert.False(config.EvaluateSkip(["@needs-stub"], _ => null).ShouldSkip);
+
+        var byTheRow = config.EvaluateSkip(["@needs-stub"], name => name == "BRUINET_DEP_BACKEND" ? "replay" : null);
+        Assert.True(byTheRow.ShouldSkip);
+        Assert.Contains("backend: replay", byTheRow.Reason, StringComparison.Ordinal);
     }
 
     [Fact]

@@ -6,7 +6,8 @@ field, values that change between runs left out of the match. A run's mode is `B
 SQL replay (AD-031). A suite says per dependency how its tests get it, in `uat.config.md`'s `## Dependencies`: an HTTP
 service real, recorded, replayed or stubbed; SQL Server real or replayed; SQLite real, copied or replayed.
 
-A SQLite dependency is **copied by default**, not replayed: each test gets its own file from a template the app's own
+A scenario that reads its stub back is tagged `@needs-stub` and skipped while a run records or replays, so both run the
+same scenarios in order. A SQLite dependency is **copied by default**, not replayed: each test gets its own file from a template the app's own
 migrations and seed made once. A `Hermetic` suite refuses any dependency that leaves the process. The real services and
 databases judge the gate.
 
@@ -22,7 +23,9 @@ SQLite file.
 - WireMock.Net's scenarios for the order of repeated calls out of process: the second of two quick calls still got the
   first answer; a counter per call hands out the answers instead;
 - matching on host and port: a local backend has a new port every run; a hermetic run checks the host;
-- an Azure-specific transport: an Azure SDK client takes `HttpClientTransport` over the replay handler.
+- an Azure-specific transport: an Azure SDK client takes `HttpClientTransport` over the replay handler;
+- replaying a scenario that reads its stub back from the session's calls: what the stub holds is the stub's own logic,
+  which a replay does not run; such a scenario needs the stub.
 
 **Broken when:** replay answers a call it did not record; a recording is saved with a secret in it; a hermetic suite
 reaches the network; a gate passes on replay alone; or a recording goes in without its review (`bruinet http reviewed`).

@@ -1,10 +1,11 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +14,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 4,
+      "DurationMs": 7,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -34,7 +35,7 @@
     {
       "Index": 2,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -43,23 +44,23 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 4,
+      "DurationMs": 5,
       "Volatile": []
     },
     {
       "Index": 3,
       "Method": "PUT",
-      "Url": "http://localhost:54591/api/todos/34fab64c-d1e9-4f0d-937d-dae40e48743e",
+      "Url": "http://localhost:49341/api/todos/7a7ed8b5-246d-4c0f-aad2-7a8b3eb35cd0",
       "RequestHeaders": {
         "X-Api-Key": "***",
         "Content-Type": "application/json; charset=utf-8"
       },
-      "RequestBody": "{\u0022id\u0022:\u002234fab64c-d1e9-4f0d-937d-dae40e48743e\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "RequestBody": "{\u0022id\u0022:\u00227a7ed8b5-246d-4c0f-aad2-7a8b3eb35cd0\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
       "Status": 200,
       "ResponseHeaders": {
         "Content-Type": "application/json"
       },
-      "ResponseBody": "{\u0022id\u0022:\u002234fab64c-d1e9-4f0d-937d-dae40e48743e\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "ResponseBody": "{\u0022id\u0022:\u00227a7ed8b5-246d-4c0f-aad2-7a8b3eb35cd0\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
       "DurationMs": 2,
       "Volatile": [
         "$.id",
@@ -69,7 +70,7 @@
     {
       "Index": 4,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -77,7 +78,7 @@
       "ResponseHeaders": {
         "Content-Type": "application/json"
       },
-      "ResponseBody": "[{\u0022id\u0022:\u002255555555-0000-0000-0000-000000000001\u0022,\u0022title\u0022:\u0022Buy milk\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:\u00222026-03-12\u0022,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002234fab64c-d1e9-4f0d-937d-dae40e48743e\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
+      "ResponseBody": "[{\u0022id\u0022:\u002255555555-0000-0000-0000-000000000001\u0022,\u0022title\u0022:\u0022Buy milk\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:\u00222026-03-12\u0022,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u00227a7ed8b5-246d-4c0f-aad2-7a8b3eb35cd0\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
       "DurationMs": 0,
       "Volatile": []
     }

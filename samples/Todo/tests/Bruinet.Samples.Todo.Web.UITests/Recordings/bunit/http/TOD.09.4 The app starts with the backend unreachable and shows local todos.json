@@ -1,4 +1,5 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
@@ -10,7 +11,7 @@
       },
       "Status": 0,
       "ResponseHeaders": {},
-      "DurationMs": 2018,
+      "DurationMs": 2033,
       "Failure": "No connection could be made because the target machine actively refused it. (127.0.0.1:1)",
       "Volatile": []
     }

@@ -1,0 +1,13 @@
+diff --git a/samples/Todo/src/Bruinet.Samples.Todo.Infrastructure/Api/TodoApiClient.cs b/samples/Todo/src/Bruinet.Samples.Todo.Infrastructure/Api/TodoApiClient.cs
+index dfd6128d..9a7e00bd 100644
+--- a/samples/Todo/src/Bruinet.Samples.Todo.Infrastructure/Api/TodoApiClient.cs
++++ b/samples/Todo/src/Bruinet.Samples.Todo.Infrastructure/Api/TodoApiClient.cs
+@@ -215,7 +215,7 @@ public static class TodoMapping
+     public static TodoDto ToDto(TodoItem item) => new(
+         item.Id,
+         item.Title,
+-        item.Notes,
++        item.Notes ?? string.Empty,
+         item.DueDate,
+         item.Status switch
+         {

@@ -1,10 +1,11 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +14,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 5,
+      "DurationMs": 10,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -34,7 +35,7 @@
     {
       "Index": 2,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -43,13 +44,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 4,
+      "DurationMs": 9,
       "Volatile": []
     },
     {
       "Index": 3,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -58,13 +59,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[{\u0022id\u0022:\u002299999999-0000-0000-0000-000000000007\u0022,\u0022title\u0022:\u0022Clean gutter\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
-      "DurationMs": 1,
+      "DurationMs": 2,
       "Volatile": []
     },
     {
       "Index": 4,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -73,24 +74,24 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 0,
+      "DurationMs": 1,
       "Volatile": []
     },
     {
       "Index": 5,
       "Method": "PUT",
-      "Url": "http://localhost:54591/api/todos/6e2679d4-f5ff-47a8-9232-e958e3598b2d",
+      "Url": "http://localhost:49341/api/todos/79265d32-bdc0-46e4-aa5f-bd2f8a211716",
       "RequestHeaders": {
         "X-Api-Key": "***",
         "Content-Type": "application/json; charset=utf-8"
       },
-      "RequestBody": "{\u0022id\u0022:\u00226e2679d4-f5ff-47a8-9232-e958e3598b2d\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "RequestBody": "{\u0022id\u0022:\u002279265d32-bdc0-46e4-aa5f-bd2f8a211716\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
       "Status": 200,
       "ResponseHeaders": {
         "Content-Type": "application/json"
       },
-      "ResponseBody": "{\u0022id\u0022:\u00226e2679d4-f5ff-47a8-9232-e958e3598b2d\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
-      "DurationMs": 23,
+      "ResponseBody": "{\u0022id\u0022:\u002279265d32-bdc0-46e4-aa5f-bd2f8a211716\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "DurationMs": 62,
       "Volatile": [
         "$.id",
         "/3"
@@ -99,7 +100,7 @@
     {
       "Index": 6,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -107,7 +108,7 @@
       "ResponseHeaders": {
         "Content-Type": "application/json"
       },
-      "ResponseBody": "[{\u0022id\u0022:\u002299999999-0000-0000-0000-000000000007\u0022,\u0022title\u0022:\u0022Clean gutter\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022},{\u0022id\u0022:\u00226e2679d4-f5ff-47a8-9232-e958e3598b2d\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
+      "ResponseBody": "[{\u0022id\u0022:\u002299999999-0000-0000-0000-000000000007\u0022,\u0022title\u0022:\u0022Clean gutter\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002279265d32-bdc0-46e4-aa5f-bd2f8a211716\u0022,\u0022title\u0022:\u0022Oil the hinges\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
       "DurationMs": 1,
       "Volatile": []
     }

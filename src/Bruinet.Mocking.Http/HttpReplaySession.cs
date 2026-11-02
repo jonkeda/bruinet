@@ -190,14 +190,22 @@ public sealed class HttpReplaySession
         var live = await ToExchangeAsync(request, cancellationToken).ConfigureAwait(false);
         if (Mode == HttpReplayMode.Replay)
         {
-            var (answer, delayMs) = Answer(live, request);
+            var (answer, delayMs, failure) = Answer(live, request);
             if (delayMs > 0)
             {
-                // The recorded wait, cancelled as the real one is: by the client's timeout or the caller.
-                await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    // The recorded wait, cancelled as the real one is: by the client's timeout or the caller.
+                    await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    answer?.Dispose();
+                    throw;
+                }
             }
 
-            return answer;
+            return answer ?? throw new HttpRequestException(failure);
         }
 
         var clock = Stopwatch.StartNew();
@@ -309,7 +317,8 @@ public sealed class HttpReplaySession
         }
     }
 
-    private (HttpResponseMessage Response, int DelayMs) Answer(HttpExchange live, HttpRequestMessage request)
+    // The recorded answer and how long to wait for it; or, for a call that got none, no answer and its failure.
+    private (HttpResponseMessage? Response, int DelayMs, string? Failure) Answer(HttpExchange live, HttpRequestMessage request)
     {
         lock (_gate)
         {
@@ -330,19 +339,22 @@ public sealed class HttpReplaySession
             _used[chosen] = true;
             var exchange = _recording.Exchanges[chosen];
             Bind(live, exchange);
+            // A streamed answer's duration is its parts' gaps, which its content waits out itself.
+            var delayMs = Options.Pace == HttpReplayPace.Recorded && exchange.Chunks is null ? exchange.DurationMs : 0;
             if (exchange.Failure is { } failure)
             {
                 _calls.Add(new HttpCall(live.Method, Logged(live.Url), 0, "failed", chosen));
-                throw new HttpRequestException(failure);
+                return (null, delayMs, failure);
             }
 
             _calls.Add(new HttpCall(live.Method, Logged(live.Url), exchange.Status, "matched", chosen));
-            return (Respond(Bound(exchange), request, Options.Pace), Options.Pace == HttpReplayPace.Recorded ? exchange.DurationMs : 0);
+            return (Respond(Bound(exchange), request, Options.Pace), delayMs, null);
         }
     }
 
-    // A volatile value the live call sends in place of the recorded one (a new id): from now on the answers carry the live
-    // one, as SQL replay binds a new id to the recorded. Only values long enough to be ids, so a "1" rewrites nothing.
+    // A volatile id the live call sends in place of the recorded one (a new GUID in its body or path): from now on the
+    // answers carry the live one, as SQL replay binds a new id to the recorded. Only ids: a volatile time or number is
+    // matched as anything but never rewritten, as the same text elsewhere in an answer (a seeded date) is not it.
     private void Bind(HttpExchange live, HttpExchange recorded)
     {
         if (recorded.Volatile.Count == 0)
@@ -355,7 +367,8 @@ public sealed class HttpReplaySession
         foreach (var name in recorded.Volatile)
         {
             if (then.TryGetValue(name, out var old) && now.TryGetValue(name, out var value)
-                && Unquoted(old) is { Length: >= 8 } from && Unquoted(value) is { } to && from != to)
+                && Unquoted(old) is { } from && Unquoted(value) is { } to && from != to
+                && Guid.TryParse(from, out _) && Guid.TryParse(to, out _))
             {
                 _bindings[from] = to;
             }
@@ -370,7 +383,10 @@ public sealed class HttpReplaySession
             return exchange;
         }
 
-        string Rewrite(string text) => _bindings.Aggregate(text, (current, binding) => current.Replace(binding.Key, binding.Value, StringComparison.Ordinal));
+        // Whole ids only: a JSON string, or a path segment (a Location); a GUID needs no escaping either way.
+        string Rewrite(string text) => _bindings.Aggregate(text, (current, binding) => current
+            .Replace("\"" + binding.Key + "\"", "\"" + binding.Value + "\"", StringComparison.OrdinalIgnoreCase)
+            .Replace("/" + binding.Key, "/" + binding.Value, StringComparison.OrdinalIgnoreCase));
         var bound = new HttpExchange
         {
             Status = exchange.Status,

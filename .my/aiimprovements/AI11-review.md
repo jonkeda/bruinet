@@ -46,9 +46,56 @@ Date: 2026-11-02. Branch `ai11-http-replay` (local, not pushed: a PR waits on `m
 | Record buffers a streamed answer before the app sees it | recorded |
 | CLI `http` commands have no tests of their own | recorded |
 
-## Not done: the design's step 5
+## Not done in AI11: the design's step 5 (built in AI11b, below)
 
 The Todo UAT suites on MauiHeadless, bUnit and Chromium running hermetic. It needs the suites' hosts to make a session per
 scenario from the Dependencies table, end it and fail the scenario on its misses, and Todo's backend phrases (23 places read
 the stub server's request log) to read the session's calls in replay. A model call into a real Azure OpenAI client (the
 spike) needs a deployment and was not run.
+
+# AI11b: the Todo UAT suites replay their backend
+
+Commits cbde293a..close, on the same local branch.
+
+## What was built
+
+- `TodoHttpReplay` (TestSupport): the app's handler through `TodoPlatform.HttpHandler`, a session per scenario begun in
+  `BeforeScenario` and ended in `AfterScenario` (misses fail it), a startup session; the mode is the run's
+  `BRUINET_HTTP_REPLAY`, else the suite's `backend` row. Off (and no handler) without a config or replay.
+- The MAUI headless suite and the bUnit web suite (its main app; a scenario with two apps reads the backend they share and
+  needs the stub) have `Hermetic`, `HttpReplayPace recorded` and `## Dependencies`; recordings in git, call logs not.
+- `@needs-stub`: a scenario that reads its stub back is skipped while a run records or replays (by the variable or a
+  dependency's mode), so recording and replay run the same scenarios in order. Seven scenarios carry it.
+- What replay needed from the suites: an id in the path volatile and calls paired by the path's shape; volatile GUIDs bound
+  into later answers (whole JSON strings and path segments only); a call that got no answer recorded and failing the same
+  way after its recorded wait; each answer's duration waited out at recorded pace; `"Kind": "http"` so SQL replay's review
+  skips an HTTP recording with no calls; `bruinet http diff` reading a long-named recording (`--`).
+
+## Checks
+
+| Run | Result |
+| --- | --- |
+| Todo UAT headless: record twice, replay | 36 passed, 7 skipped, 0 failed, no backend reached (hermetic guard) |
+| Todo UAT headless with the stub | 42 passed, 1 skipped |
+| Todo web UAT bUnit: record twice, replay | 30 passed, 5 skipped, 0 failed |
+| Todo web UAT bUnit with the stub | 33 passed, 2 skipped; TOD.08.8 flakes about 1 run in 4, as on the commit before AI11 (3 in 6 there) |
+| Todo UI tests headless, web UI tests bUnit (the SQL review gate), integration | 45, 11, 62 passed |
+| Mocking.Http, Mocking, Mocking.Data, Bdd, CLI http | 21, 54, 56, 282, 2 passed |
+
+Agent check (`checks/AI11.md`): a fresh agent fixed a seeded request bug in 5 tool calls from the miss alone; without
+replay the bug is not seen at all.
+
+## Review findings and what was done
+
+| Finding | Done |
+| --- | --- |
+| Blocker: with replay off the app still got the replay's handler (decompression, a pool across restarts) | fixed: no handler when off |
+| Blocker: `@needs-stub` read only the variable, not the suite's `backend` row | fixed: either; tested |
+| Binding rewrote any substring (a seeded date, part of a number) | fixed: GUIDs only, whole JSON strings and path segments; tested |
+| A streamed answer waited twice at recorded pace; a recorded failure did not wait | fixed |
+| A cancelled wait left its answer undisposed | fixed |
+| A suite without a config with the variable set kept one startup session forever | fixed: off without a config |
+| The web fixture does not wait for the app's work to go quiet between scenarios | recorded: bUnit renders in the test's thread; three record-and-replay runs agreed |
+| A client timeout is not recorded (it arrives as the caller's cancellation) | recorded: no Todo scenario times out |
+| Out of process a recorded failure is an empty response, not a refused connection | recorded |
+| A hermetic violation outside a session shows as the app's "Unreachable", not as a failure by name | recorded |

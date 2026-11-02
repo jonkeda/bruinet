@@ -83,6 +83,9 @@ public sealed class HttpRecording
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
+    /// <summary>The kind of recording, <c>http</c>: SQL replay's recordings share a folder, and one with no calls looks like theirs.</summary>
+    public string Kind { get; set; } = "http";
+
     public int Version { get; set; } = 1;
 
     public List<HttpExchange> Exchanges { get; set; } = [];

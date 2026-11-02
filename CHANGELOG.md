@@ -65,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`BRUINET_DEP_<NAME>` overrides one), and `SqliteTemplate` gives each test its own copy of a seeded SQLite file.
   `bruinet http stale|diff|reviewed`, and the MCP server's `run_scenario {replay}` and `http_calls`. See
   [HTTP Replay](docs/guides/http-replay.md) and AD-034.
+- The Todo sample's UAT suites record and replay their backend (AI11b): headless and on bUnit, each scenario in its own
+  session, hermetic. An id in a path is volatile, volatile values are bound into later answers, a call that got no
+  answer and each answer's duration are recorded. `@needs-stub` skips a scenario that reads its stub back while a run
+  records or replays.
 - The MCP server's `run_scenario` and `last_runs`: an agent runs a scenario (or a file's) on the suite's
   runner and reads how it went (its address, duration, and the failed step's file, line and text),
   and each scenario's newest result.

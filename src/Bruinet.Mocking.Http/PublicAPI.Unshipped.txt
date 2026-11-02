@@ -66,6 +66,8 @@ Bruinet.Mocking.Http.HttpRecording.Exchanges.get -> System.Collections.Generic.L
 Bruinet.Mocking.Http.HttpRecording.Exchanges.set -> void
 Bruinet.Mocking.Http.HttpRecording.HttpRecording() -> void
 Bruinet.Mocking.Http.HttpRecording.KeepVolatile(Bruinet.Mocking.Http.HttpRecording! previous) -> void
+Bruinet.Mocking.Http.HttpRecording.Kind.get -> string!
+Bruinet.Mocking.Http.HttpRecording.Kind.set -> void
 Bruinet.Mocking.Http.HttpRecording.MarkVolatile(Bruinet.Mocking.Http.HttpRecording! previous) -> void
 Bruinet.Mocking.Http.HttpRecording.Save(string! path) -> void
 Bruinet.Mocking.Http.HttpRecording.Version.get -> int

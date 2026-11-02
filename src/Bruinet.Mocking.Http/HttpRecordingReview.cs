@@ -106,7 +106,8 @@ public static class HttpRecordingReview
             return document.RootElement.ValueKind == JsonValueKind.Object
                    && document.RootElement.TryGetProperty("Exchanges", out var exchanges)
                    && exchanges.ValueKind == JsonValueKind.Array
-                   && (exchanges.GetArrayLength() == 0 || exchanges[0].TryGetProperty("Url", out _));
+                   && (document.RootElement.TryGetProperty("Kind", out var kind) && kind.ValueKind == JsonValueKind.String && kind.GetString() == "http"
+                       || exchanges.GetArrayLength() > 0 && exchanges[0].TryGetProperty("Url", out _));
         }
         catch (JsonException)
         {

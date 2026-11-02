@@ -85,13 +85,11 @@ public sealed record BddConfig(
                 Rule: null);
         }
 
-        if (normalizedTags.Contains(BddTagConventions.NeedsStub)
-            && getEnvironmentVariable(BddReplayFields.HttpReplayVariable)?.Trim() is { Length: > 0 } replay
-            && !string.Equals(replay, "Off", StringComparison.OrdinalIgnoreCase))
+        if (normalizedTags.Contains(BddTagConventions.NeedsStub) && RecordsOrReplaysHttp(getEnvironmentVariable) is { } replay)
         {
             return new BddSkipDecision(
                 ShouldSkip: true,
-                Reason: $"Scenario is tagged @{BddTagConventions.NeedsStub}: it reads its backend stub back, and this run records or replays the backend ({BddReplayFields.HttpReplayVariable}={replay}).",
+                Reason: $"Scenario is tagged @{BddTagConventions.NeedsStub}: it reads its backend stub back, and this run records or replays the backend ({replay}).",
                 Rule: null);
         }
 
@@ -118,6 +116,21 @@ public sealed record BddConfig(
         }
 
         return BddSkipDecision.Run;
+    }
+
+    // How a run records or replays HTTP, as the suite's host decides it: the run's variable, else an http dependency's mode
+    // (BRUINET_DEP_<NAME> over its row); null when neither does.
+    private string? RecordsOrReplaysHttp(Func<string, string?> environment)
+    {
+        if (environment(BddReplayFields.HttpReplayVariable)?.Trim() is { Length: > 0 } run)
+        {
+            return string.Equals(run, "Off", StringComparison.OrdinalIgnoreCase) ? null : $"{BddReplayFields.HttpReplayVariable}={run}";
+        }
+
+        return BddDependencies.Effective(this, environment)
+            .Where(dependency => dependency.Kind == "http" && dependency.Mode is "record" or "replay" or "refresh")
+            .Select(dependency => $"{dependency.Name}: {dependency.Mode}")
+            .FirstOrDefault();
     }
 }
 

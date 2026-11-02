@@ -1,10 +1,11 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +14,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 6,
+      "DurationMs": 8,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -34,7 +35,7 @@
     {
       "Index": 2,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -43,13 +44,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 6,
+      "DurationMs": 9,
       "Volatile": []
     },
     {
       "Index": 3,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -64,7 +65,7 @@
     {
       "Index": 4,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/users",
+      "Url": "http://localhost:49341/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -73,13 +74,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 1,
+      "DurationMs": 2,
       "Volatile": []
     },
     {
       "Index": 5,
       "Method": "GET",
-      "Url": "http://localhost:54591/api/todos",
+      "Url": "http://localhost:49341/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -88,7 +89,7 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 2005,
+      "DurationMs": 2022,
       "Volatile": []
     }
   ]

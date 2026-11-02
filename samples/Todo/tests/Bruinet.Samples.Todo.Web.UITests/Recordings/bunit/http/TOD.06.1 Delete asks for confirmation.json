@@ -1,10 +1,11 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:50914/api/users",
+      "Url": "http://localhost:61243/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -19,7 +20,7 @@
     {
       "Index": 1,
       "Method": "PUT",
-      "Url": "http://localhost:50914/api/todos/99999999-0000-0000-0000-000000000018",
+      "Url": "http://localhost:61243/api/todos/99999999-0000-0000-0000-000000000018",
       "RequestHeaders": {
         "X-Api-Key": "***",
         "Content-Type": "application/json; charset=utf-8"
@@ -30,13 +31,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "{\u0022id\u0022:\u002299999999-0000-0000-0000-000000000018\u0022,\u0022title\u0022:\u0022Fix the bike\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Done\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
-      "DurationMs": 3,
+      "DurationMs": 2,
       "Volatile": []
     },
     {
       "Index": 2,
       "Method": "GET",
-      "Url": "http://localhost:50914/api/todos",
+      "Url": "http://localhost:61243/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },

@@ -32,7 +32,8 @@ public sealed class TodoHttpReplay
             throw new InvalidOperationException(string.Join(Environment.NewLine, problems));
         }
 
-        Mode = head is null ? HttpReplayMode.Off : ModeOf(config);
+        // A suite without a config begins no scenario sessions (the code UI tests), so it is not replayed.
+        Mode = head is null || config is null ? HttpReplayMode.Off : ModeOf(config);
         _folder = Path.Combine(TodoSqlReplay.RecordingsOf(project), head ?? "none");
         var backend = config is null ? null : BddDependencies.Find(config, "backend");
         _options = HttpReplayOptions.ForSuite(
@@ -40,16 +41,22 @@ public sealed class TodoHttpReplay
             config?.Runtime.GetValueOrDefault(BddReplayFields.HttpRedact),
             config?.Runtime.GetValueOrDefault(BddReplayFields.HttpReplayPace),
             backend?.Where);
-        Handler = new ScenarioHandler(this, Mode == HttpReplayMode.Replay && _options.Hermetic
-            ? HermeticGuard.Handler()
-            : new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All });
+        // Off, none: the app makes its own client, as without replay.
+        Handler = Mode == HttpReplayMode.Off
+            ? null
+            : new ScenarioHandler(this, Mode == HttpReplayMode.Replay && _options.Hermetic
+                ? HermeticGuard.Handler()
+                : new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All });
     }
 
     /// <summary>This app's mode: off on a head that runs the app in a process of its own, or for a stubbed backend.</summary>
     public HttpReplayMode Mode { get; }
 
-    /// <summary>The app's HTTP handler (<c>TodoPlatform.HttpHandler</c>): through the scenario's session, or straight on.</summary>
-    public HttpMessageHandler Handler { get; }
+    /// <summary>
+    /// The app's HTTP handler (<c>TodoPlatform.HttpHandler</c>): through the scenario's session, or straight on; null when
+    /// replay is off, so a run without it is the app as it is.
+    /// </summary>
+    public HttpMessageHandler? Handler { get; }
 
     /// <summary>The running scenario's calls while it is replayed: what "the server received" reads then. Null otherwise.</summary>
     public IReadOnlyList<HttpCall>? ReplayedCalls => Mode == HttpReplayMode.Replay ? _session?.Calls : null;

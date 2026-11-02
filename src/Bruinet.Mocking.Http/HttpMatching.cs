@@ -19,7 +19,7 @@ internal static class HttpMatching
 
     /// <summary>The path with each segment that is an id (a GUID, a number) as <c>{}</c>: <c>/api/todos/{}</c>.</summary>
     public static string PathShape(string url)
-        => string.Join("/", Path(url).Split('/').Select(segment => Guid.TryParse(segment, out _) || long.TryParse(segment, out _) ? "{}" : segment));
+        => string.Join("/", Path(url).Split('/').Select(segment => Guid.TryParse(segment, out _) || (segment.Length > 0 && segment.All(char.IsAsciiDigit)) ? "{}" : segment));
 
     /// <summary>The path and query of <paramref name="url"/>, absolute or not.</summary>
     public static string PathAndQuery(string url)

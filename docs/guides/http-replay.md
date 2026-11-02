@@ -36,8 +36,9 @@ session.Finish();
 session.ThrowIfMissed();
 ```
 
-Record twice. What differs between the two recordings of a call (a request id, a time) is marked **volatile** and
-matches anything. Presets name the usual ones without a second recording: `model` (request ids, `temperature`, `seed`,
+Record twice. What differs between the two recordings of a call (a request id, a time, an id in the path) is marked
+**volatile**: it matches anything, and the live value is **bound**, so later answers that carry the recorded one carry
+the live one instead (an app that makes a new id each run gets its own id back). Presets name the usual ones without a second recording: `model` (request ids, `temperature`, `seed`,
 `user`, timestamps) and `oauth` (state, nonces, tokens).
 
 ## Matching
@@ -52,6 +53,9 @@ HTTP replay miss in Add a todo.json: POST /todos; nearest recorded is exchange 1
 $.title is '"Bread"' where '"Milk"' was recorded.
 ```
 
+A call that got no answer when recorded (a refused connection, an unreachable backend) fails the same way in replay.
+Each answer's duration is recorded; `| HttpReplayPace | recorded |` waits it out, for a test that shows a slow server.
+
 ## Secrets
 
 - `Authorization`, `api-key`, `X-Api-Key`, `Ocp-Apim-Subscription-Key`, cookies and named query parameters and JSON
@@ -63,7 +67,7 @@ $.title is '"Bread"' where '"Milk"' was recorded.
 ## Streamed Answers
 
 Server-sent events and other streamed answers are recorded part by part with the gaps between them. They replay at once
-by default; `| HttpReplayPace | recorded |` keeps the gaps, for a test that measures waiting.
+by default; `| HttpReplayPace | recorded |` keeps the gaps.
 
 ## An App In A Process Of Its Own
 
@@ -115,6 +119,23 @@ replaying it saves nothing and stops proving the real queries, constraints and m
 makes a seeded template once per stamp (the app's own migrations and seed), and `SqliteTemplate.Copy` gives each test
 its own file, deleted after.
 
+## A Suite Of Scenarios
+
+The Todo sample's UAT suites show the wiring (`TodoHttpReplay`): the fixture hands the app one handler
+(`TodoPlatform.HttpHandler`), each scenario gets a session in `BeforeScenario`, and `AfterScenario` ends it, a miss
+failing the scenario. Recordings are kept in git (`Recordings/<head>/http`, with `reviewed.http.json`); call logs
+(`*.calls.json`) are not.
+
+```powershell
+# working directory: the repository root
+$env:BRUINET_HEAD='headless'; $env:BRUINET_HTTP_REPLAY='Record'; dotnet test samples/Todo/tests/Bruinet.Samples.Todo.Uat   # twice
+$env:BRUINET_HTTP_REPLAY='Replay'; dotnet test samples/Todo/tests/Bruinet.Samples.Todo.Uat                                # no backend reached
+```
+
+A scenario that reads its stub back ("the server should have todos", what one app sent another) has nothing to read in
+replay. Tag it `@needs-stub`: a run that records or replays skips it, recording too, so both run the same scenarios in
+the same order (an app's work outlives a scenario, and a skipped one changes what the next one calls).
+
 ## Review
 
 ```bash
@@ -133,7 +154,6 @@ recorded calls it no longer makes.
 - Prove the service still answers that way: the gate runs against the real one, and `Refresh` shows what changed.
 - Replace a stub a test reads back: replay sends nothing, so a "the backend received" check needs a stub, or the
   session's `Calls`.
-- Bind a volatile value of a request into a later answer (SQL replay's bindings): an answer is given as recorded.
 - Guard a client the app makes itself: `AddBruinetHttpReplay` covers `IHttpClientFactory` clients; give any other
   `HttpReplayHandler.Create(session)`.
 - Stream while recording: a streamed answer is read whole, then given to the app; replay streams it.

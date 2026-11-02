@@ -1,10 +1,11 @@
 {
+  "Kind": "http",
   "Version": 1,
   "Exchanges": [
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:50914/api/users",
+      "Url": "http://localhost:61243/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +14,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 321,
+      "DurationMs": 512,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:50914/api/todos",
+      "Url": "http://localhost:61243/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -28,7 +29,7 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 2,
+      "DurationMs": 4,
       "Volatile": []
     }
   ]
