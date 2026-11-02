@@ -21,6 +21,8 @@ public class DialogsTestPage : PageObjectBase<DialogsTestPage>
 
     public Button<DialogsTestPage> ShowPromptButton => new(this, "ShowPromptButton");
 
+    public Button<DialogsTestPage> ShowConfirmThenErrorButton => new(this, "ShowConfirmThenErrorButton");
+
     public Button<DialogsTestPage> ResetButton => new(this, "DialogsResetButton");
 
     public Label<DialogsTestPage> Result => new(this, "DialogResultLabel");

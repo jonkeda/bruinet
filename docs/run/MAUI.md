@@ -12,7 +12,7 @@ dotnet test tests\Bruinet.Maui.Tests\Bruinet.Maui.Tests.csproj -v:minimal /nr:fa
 
 ```powershell
 dotnet build src\Bruinet.Maui.FlaUI\Bruinet.Maui.FlaUI.csproj -f net10.0-windows -v:minimal /nr:false
-dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj -f net10.0-windows7.0 -v:minimal /nr:false
+dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj -v:minimal /nr:false
 ```
 
 The Windows run drives the app without mouse, keyboard or foreground, so you can keep

@@ -43,6 +43,20 @@ public class ContentDialogTests
     }
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    public Task ConfirmThenError_EachDialogIsOnTopInTurnAndBothClose()
+    {
+        var dialog = _page.Dialog;
+
+        _page.ShowConfirmThenErrorButton.Click();
+        dialog.AssertAsks("Delete").Choose("Yes");
+        dialog.AssertAsks("Error").AssertButtonTexts(["OK"]).Choose("OK");
+        dialog.AssertNotShown();
+        _page.Result.AssertText("error acknowledged");
+
+        return Task.CompletedTask;
+    }
+
+    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task Prompt_AcceptsTextThroughScopedControls()
     {
         var dialog = _page.Dialog;

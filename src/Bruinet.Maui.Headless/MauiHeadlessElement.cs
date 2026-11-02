@@ -578,7 +578,7 @@ public sealed class MauiHeadlessElement : IMauiElement
             throw new NotSupportedException("Ask IMauiTestContext.AppElement.");
 
         _driver.TestContext.Dispatcher.RunPending();
-        return DialogRequests.Top(_driver.Window) is { } dialog ? new MauiHeadlessElement(_driver, dialog) : null;
+        return _driver.ActiveDialog() is { } dialog ? new MauiHeadlessElement(_driver, dialog) : null;
     }
 
     public IMauiElement? TryFindDeclared(string automationId)
@@ -609,6 +609,8 @@ public sealed class MauiHeadlessElement : IMauiElement
            ?? element switch
            {
                TestDialog dialog => dialog.Title,
+               // A popup page's name is its title, as a platform names the popup window.
+               Page { Title.Length: > 0 } page => page.Title,
                Microsoft.Maui.Controls.Button button => button.Text,
                Label label => DefaultElementAdapter.Instance.GetText(label),
                MenuItem item => item.Text,

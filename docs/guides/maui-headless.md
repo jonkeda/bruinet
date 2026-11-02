@@ -142,6 +142,11 @@ ends its call at once with `DeviceOnlyException` naming the member.
   over the page; its buttons answer the app's await. A back closes the open dialog first, as a device's
   back key does (`TestDialog.Dismiss`: an alert answers false, a prompt null), then a modal, then a page.
   A dialog raised by a page a modal covers is still open.
+- **The active dialog** (`ContentDialog<T>`) is the open alert, prompt or action sheet, else the top
+  modal page when its type is in the context's `DialogPages` (`options.DialogPages.Add(typeof(PopupPage))`
+  in `MauiHeadlessHead.Options`' `configure`). That is the page a platform draws as a popup: Mopups' and
+  an app's own popup pages, which are WinUI popups on Windows. Its buttons are found by their label's
+  text and its field by `PromptInput`, and an alert raised while it is open is on top of it.
 - **Between tests** `ResetAppState` (or `MauiHeadlessDriver.ClearWindow`, which says what it cleared)
   takes focus away, dismisses every dialog, pops the modals and goes back to the navigation root. The
   app's services and data stay: those are the fixture's. A fixture that logs a non-empty `ClearWindow`
@@ -167,6 +172,7 @@ Windows, Android 16 (emulator) and MauiHeadless; iOS from how XCUITest reports i
 | A page navigated away from | answers for about a second after leaving the tree | leaves at once | leaves after the push animation | leaves at once | Fixed: a page root must be attached |
 | Sticky group headers | cover the rows under them, which stay "on screen" | not pinned | not pinned by default | no layout | Known: turn them off in the app (`ItemsStackPanel.AreStickyGroupHeadersEnabled`) |
 | A button's text with `SemanticProperties.Description` | the description | the text | the description | the text | Known: read both, or assert what the app shows |
+| A modal page as `ContentDialog` | only a WinUI popup (Mopups, a platform popup) | as Windows | as Windows | a modal page whose type is in `DialogPages` | Known: register the app's popup page types (`PopupPageDialogTests`) |
 | The Shell title | `title` | `title` (mapped) | `title` (mapped) | `title` (mapped) | Fixed |
 
 ## MauiHeadless On Its Own

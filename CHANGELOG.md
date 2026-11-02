@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `DeviceOnlyException`: it clears the window (`MauiHeadlessDriver.ClearWindow`, focus, dialogs, modals,
   pushed pages) and the latter returns what it cleared. A dialog raised by a page a modal covers is
   collected. The `ControlTypeAndName` locator resolves headless.
+- MauiHeadless: `MauiTestContextOptions.DialogPages` names the page types a platform draws as a popup;
+  pushed as a modal, one is the active dialog for `ContentDialog<T>`, as a WinUI popup is on Windows.
+  An open alert stays on top of it. A page with a title is named by it.
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name

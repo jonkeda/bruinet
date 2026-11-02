@@ -183,6 +183,22 @@ public sealed class MauiHeadlessDriver : IMauiDriver
 
     public void Refresh() => TestContext.Dispatcher.RunPending();
 
+    /// <summary>
+    /// The window's active dialog: its open alert, prompt or action sheet, which a platform draws over
+    /// everything; else the top modal page when it is one of the context's <c>DialogPages</c>, as a
+    /// WinUI popup is the active dialog on Windows. Null when neither.
+    /// </summary>
+    internal VisualElement? ActiveDialog()
+    {
+        if (DialogRequests.Top(Window) is { } alert)
+            return alert;
+
+        return _rendered.Navigation.ModalStack is [.., var top]
+               && TestContext.Options.DialogPages.Any(type => type.IsInstanceOfType(top))
+            ? top
+            : null;
+    }
+
     /// <summary>The window as a fresh launch shows it, as a device's reset relaunches the app: see <see cref="ClearWindow"/>.</summary>
     public void ResetAppState() => ClearWindow();
 

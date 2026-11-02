@@ -57,6 +57,24 @@ public partial class DialogsView : ContentView
         ViewModel?.Record(answer == null ? "prompt cancelled" : $"prompt: {answer}");
     }
 
+    // Two dialogs in a row, the second raised by the first's answer: a test answers each in turn and
+    // sees the second's title, not the first's.
+    private async void OnShowConfirmThenError(object? sender, EventArgs e)
+    {
+        var page = GetPage();
+        if (page == null)
+            return;
+
+        if (!await BruinetAlerts.DisplayAlertAsync(page, "Delete", "Delete the item?", "Yes", "No"))
+        {
+            ViewModel?.Record("declined");
+            return;
+        }
+
+        await BruinetAlerts.DisplayAlertAsync(page, "Error", "The item could not be deleted.", "OK");
+        ViewModel?.Record("error acknowledged");
+    }
+
     /// <summary>
     /// Finds the hosting page. Returns null rather than throwing when the view is not yet
     /// attached, which happens during teardown.

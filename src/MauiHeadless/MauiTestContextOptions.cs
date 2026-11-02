@@ -31,6 +31,13 @@ public sealed class MauiTestContextOptions
     public IList<Type> BehaviorHosts { get; } = [];
 
     /// <summary>
+    /// Page types a platform draws as a popup over the window (a Mopups <c>PopupPage</c>, an app's own popup
+    /// page): pushed as a modal, one is the window's active dialog, as a WinUI popup is on Windows. A
+    /// subclass counts. An ordinary modal page is not a dialog.
+    /// </summary>
+    public IList<Type> DialogPages { get; } = [];
+
+    /// <summary>
     /// How long <c>WaitForAssertion</c> and <c>WaitForState</c> wait by default on the wall clock, for work
     /// that real asynchrony has yet to post back. Virtual time never needs it.
     /// </summary>

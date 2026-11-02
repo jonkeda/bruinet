@@ -162,6 +162,7 @@ MauiHeadless.MauiTestContextOptions.Adapters.get -> System.Collections.Generic.I
 MauiHeadless.MauiTestContextOptions.Application.get -> System.Func<System.IServiceProvider!, Microsoft.Maui.Controls.Application!>?
 MauiHeadless.MauiTestContextOptions.Application.set -> void
 MauiHeadless.MauiTestContextOptions.BehaviorHosts.get -> System.Collections.Generic.IList<System.Type!>!
+MauiHeadless.MauiTestContextOptions.DialogPages.get -> System.Collections.Generic.IList<System.Type!>!
 MauiHeadless.MauiTestContextOptions.MauiTestContextOptions() -> void
 MauiHeadless.MauiTestContextOptions.SetApplicationCurrent.get -> bool
 MauiHeadless.MauiTestContextOptions.SetApplicationCurrent.set -> void

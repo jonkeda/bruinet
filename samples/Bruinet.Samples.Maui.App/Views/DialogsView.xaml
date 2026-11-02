@@ -47,6 +47,11 @@
                     Text="Show prompt"
                     Clicked="OnShowPrompt" />
 
+            <Label Text="Confirmation, then an error" FontSize="16" FontAttributes="Bold" />
+            <Button AutomationId="ShowConfirmThenErrorButton"
+                    Text="Delete with error"
+                    Clicked="OnShowConfirmThenError" />
+
             <Button AutomationId="DialogsResetButton"
                     Text="Reset"
                     Command="{Binding ResetCommand}" />
