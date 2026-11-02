@@ -27,6 +27,10 @@ public sealed class BackendPhrases(ITodoArrangement fixture) : BddStepDefinition
         }
     }
 
+    /// <summary>A state (AI10): one open todo on the server, as another device made it; the app sees it after a sync.</summary>
+    [BddState("the server also has a todo {title}")]
+    public void ServerAlsoHasTodo(string title) => fixture.Server.Store(new TodoData(fixture.TestSet.Now).Todo(title, TodoStatusDto.Open, null, null));
+
     /// <summary>Every request for the todo list fails with this status until the next scenario.</summary>
     [BddGiven("the server fails with status {status}")]
     public void ServerFails(int status) => fixture.Backend.Get(TodoApi.TodosPath).AtPriority(1).Fails(status);

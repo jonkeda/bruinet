@@ -20,6 +20,17 @@ public sealed class AppLifecyclePhrases(TodoUatFixture fixture) : BddStepDefinit
         fixture.RescopeAfterRestart(context);
     }
 
+    /// <summary>
+    /// A state (AI10): the app restarted on a test set's seeded data and backend, the list showing it. What a scenario or
+    /// an agent (set_state) starts from without adding the todos by hand.
+    /// </summary>
+    [BddState("the app starts from the {testSet} test set")]
+    public void StartFrom(string testSet, BddExecutionContext context)
+    {
+        fixture.UseTestSet(testSet);
+        fixture.RescopeAfterRestart(context);
+    }
+
     /// <summary>Restarts the app pointed at an address nothing listens on; the next scenario restores it.</summary>
     [BddWhen("I restart the app with the server unreachable")]
     public void RestartUnreachable(BddExecutionContext context)

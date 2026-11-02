@@ -467,3 +467,6 @@ Scraper.Sites/*/Recordings/
 
 # HTTP replay: a test's calls in its newest run, beside its recording (AI11)
 *.calls.json
+
+# set_state's scenario, written in the suite it runs in (AI10)
+**/.bruinet/set-state.feature.md
