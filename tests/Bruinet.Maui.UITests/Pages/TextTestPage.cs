@@ -43,6 +43,15 @@ public class TextTestPage : PageObjectBase<TextTestPage>
     /// </summary>
     public Button<TextTestPage> ClearEntryButton => new(this, "ClearEntryButton");
 
+    /// <summary>An upper-case field (<c>TextTransform</c>).</summary>
+    public Entry<TextTestPage> PlateEntry => new(this, "PlateEntry");
+
+    /// <summary>A field of at most nine characters (<c>MaxLength</c>).</summary>
+    public Entry<TextTestPage> ReadingEntry => new(this, "ReadingEntry");
+
+    /// <summary>Empties the plate field and focuses it, from the app's code.</summary>
+    public Button<TextTestPage> ClearPlateButton => new(this, "ClearPlateButton");
+
     /// <summary>
     /// The Clear Editor button.
     /// </summary>

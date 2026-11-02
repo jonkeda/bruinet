@@ -134,6 +134,27 @@
                 AutomationId="ResetAllButton"
                 BackgroundColor="#FF3B30" />
 
+            <!-- Below the page's first screen, so the fields above stay on it. An upper-case field, as a licence plate is: typed in lower case, it shows and holds
+                 upper case. Its clear button empties it and gives it focus back, from app code. -->
+            <Entry
+                x:Name="PlateEntry"
+                AutomationId="PlateEntry"
+                Placeholder="Licence plate"
+                TextTransform="Uppercase"
+                uia:GestureAutomation.Verbs="Focus,Unfocus,IsFocused,GetText,SetText,ClearText" />
+
+            <!-- At most nine digits, as a meter reading is. -->
+            <Entry
+                AutomationId="ReadingEntry"
+                Placeholder="Reading"
+                MaxLength="9"
+                uia:GestureAutomation.Verbs="Focus,Unfocus,IsFocused,GetText,SetText,ClearText" />
+
+            <Button
+                Text="Clear plate"
+                Clicked="OnClearPlate"
+                AutomationId="ClearPlateButton" />
+
             <Button 
                 Text="Fake 1" 
                 BackgroundColor="#FF3B30" />

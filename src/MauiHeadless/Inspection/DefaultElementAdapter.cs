@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using MauiHeadless.Internals;
 
 namespace MauiHeadless.Inspection;
 
@@ -64,7 +65,8 @@ public sealed class DefaultElementAdapter : IElementAdapter
         Span span => span.Text,
         Button button => button.Text,
         RadioButton radio => radio.Content as string ?? radio.ContentAsString(),
-        InputView input => input.Text,
+        // As the field draws it: an app that sets Text in lower case on an upper-case field shows upper case.
+        InputView input => TextTransforms.Apply(input.Text, input.TextTransform),
         Picker picker => picker.SelectedIndex >= 0 && picker.SelectedIndex < picker.Items.Count
             ? picker.Items[picker.SelectedIndex]
             : null,

@@ -139,6 +139,9 @@ ends its call at once with `DeviceOnlyException` naming the member.
   before the next (`WaitForQuiet`).
 - **The virtual clock does not move under the head.** App timers and `DispatchDelayed` work fire only
   when a test advances MauiHeadless's clock; a test that needs them is a device test for now.
+- **Fields** behave as the platform's do: text typed into a field with a `TextTransform` is held and
+  shown transformed, and an app's own `Focus()` and `Unfocus()` move focus (MAUI asks the platform, and
+  without one does nothing: MauiHeadless answers its `FocusChangeRequested`).
 - **A pull** (`PullToRefresh`, a swipe down) on a view that keeps a `RefreshView` inside, however deep,
   pulls that one, as on Windows; a view holding two refuses, naming them.
 - **Gestures and toolkit state** go to the app's own verb sinks (`GestureAutomation.Sink` in

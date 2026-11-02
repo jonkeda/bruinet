@@ -137,10 +137,14 @@ public static class Interactions
     public static TInput SetText<TInput>(this TInput input, string? text) where TInput : InputView
     {
         EnsureWritable(input, "type into");
+        // Typed text goes through the platform's field, which shows it in the field's TextTransform and
+        // gives the transformed text back to Text.
         Act(input, "type into", () =>
-            input.Text = text is not null && input.MaxLength >= 0 && text.Length > input.MaxLength
-                ? text[..input.MaxLength]
-                : text);
+            input.Text = TextTransforms.Apply(
+                text is not null && input.MaxLength >= 0 && text.Length > input.MaxLength
+                    ? text[..input.MaxLength]
+                    : text,
+                input.TextTransform));
         return input;
     }
 

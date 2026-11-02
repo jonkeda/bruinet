@@ -130,6 +130,7 @@ public sealed class MauiTestContext : IDisposable
                 shell.Handler = new HeadlessHandler(MauiContext);
 
             var window = new Window(page);
+            HeadlessFocus.Attach(window);
             Windows.Add(window, this);
             MauiInternals.AddWindow(application, window);
             if (options.Appear)

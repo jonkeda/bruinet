@@ -107,6 +107,48 @@ public sealed class ChromeAndSwipeTests
     }
 
     [Fact]
+    public void The_apps_own_Focus_and_Unfocus_move_focus_as_a_platform_does()
+    {
+        using var ctx = new MauiTestContext();
+        var first = new Entry { AutomationId = "First" };
+        var clear = new Button { AutomationId = "Clear" };
+        // Added after the render, as a page that builds part of itself later does.
+        var later = new Entry { AutomationId = "Later" };
+        var layout = new VerticalStackLayout { first, clear };
+        clear.Clicked += (_, _) =>
+        {
+            first.Text = string.Empty;
+            first.Focus();
+        };
+        var page = ctx.Render(new ContentPage { Content = layout });
+        ctx.Dispatcher.Run(() => layout.Add(later));
+
+        page.Find<Button>("Clear").Click();
+        Assert.True(first.IsFocused);
+
+        Assert.True(ctx.Dispatcher.Run(() => later.Focus()));
+        Assert.False(first.IsFocused);
+        Assert.True(later.IsFocused);
+
+        ctx.Dispatcher.Run(later.Unfocus);
+        Assert.False(later.IsFocused);
+    }
+
+    [Fact]
+    public void An_upper_case_field_takes_typed_text_in_upper_case_and_shows_set_text_so()
+    {
+        using var ctx = new MauiTestContext();
+        var typed = new Entry { AutomationId = "Typed", TextTransform = TextTransform.Uppercase };
+        var set = new Entry { AutomationId = "Set", TextTransform = TextTransform.Uppercase, Text = "ab-12" };
+        var page = ctx.Render(new ContentPage { Content = new VerticalStackLayout { typed, set } });
+
+        page.Find<Entry>("Typed").SetText("ab-12-cd");
+
+        Assert.Equal("AB-12-CD", typed.Text);
+        page.Find<Entry>("Set").Should().HaveText("AB-12");
+    }
+
+    [Fact]
     public void A_view_that_keeps_a_RefreshView_deep_inside_is_pulled_through_it()
     {
         using var ctx = new MauiTestContext();

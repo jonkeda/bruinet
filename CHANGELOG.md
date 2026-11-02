@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A pull (`PullToRefresh`, `SwipeDown`) on a view that keeps its `RefreshView` private reaches it
   however deep, headless and through the Windows bridge (it went one `ContentView` deep); a view
   holding two is refused. The Maui sample's containers page has such a list (`NestedRefreshTests`).
+- MauiHeadless: an app's own `Focus()` and `Unfocus()` move focus, as a platform answers them (they
+  returned false and focused nothing), and a field's `TextTransform` holds and shows typed text
+  transformed. The Maui sample's text page has an upper-case field, a `MaxLength` field and a clear
+  that refocuses (`FieldRulesTests`).
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name
