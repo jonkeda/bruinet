@@ -32,6 +32,19 @@ separate agent and its findings fixed or recorded (`AI1-review.md`, `AI2-review.
 | 4 | AI2b is a separate `coverage` tool; Done-when not run on bUnit or Chromium | keep the tool; run the Done-when with the next browser run |
 | 5 | Agent checks proved nothing yet | keep them, one per item, fixtures without history |
 
+## After the answers (the second part of the run)
+
+| Item | What was done |
+| --- | --- |
+| Answer 1 | the generator puts `[GeneratedCode]` on every member it writes; every `.gen.cs` regenerated; coverage leaves them out; AD-033 says so |
+| C4 | done: Blazor 84.2% on hand-written code (a test makes each control from a `Locator`) |
+| Answer 3 | the MAUI picker starts with "Option 2"; an unchosen picker reads no index and no text |
+| AI2b | done: its Done-when on the Todo web suite, bUnit and Chromium, the same lines as on MauiHeadless |
+| AI4b | done: `step_state` reads the paused page (on Todo: the filter "All", "Synced 10:00", which messages are shown) |
+| C6 | done: mutation testing on the controls (Html on bUnit, Blazor, Maui on MauiHeadless); Html's selector 62 to 78%, range 77 to 81% after the survivors became tests |
+| C7 | started: Core's CSV and console loggers and the settings' enum converter tested; `Timing` needs its own process (it reads `BRUINET_TIMINGS` once) |
+| AI6 | design only: Bruinet has no logging hook yet; four open questions with proposals in `AI6-design.md` |
+
 ## Not done, and why
 
 - Not run: the Windows head (it drives the desktop), the Tomorrow submodule pointer (not moved).
@@ -39,4 +52,4 @@ separate agent and its findings fixed or recorded (`AI1-review.md`, `AI2-review.
   running `bruinet` processes hold `tools/Bruinet.Cli/bin`): they read files three folders above their binary.
 - `StepTests.RunOfTheFile_...` failed once under load and passed three times alone: a race in the test.
 
-Expected next action: `/ai-item next` (C6, mutation testing of the controls), with the answers above applied first.
+Expected next action: answer AI6's four questions (`AI6-design.md`), then `/ai-item next`.
