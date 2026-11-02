@@ -248,6 +248,10 @@ public sealed class MauiHeadlessElement : IMauiElement
             case ShellItem flyoutItem:
                 flyoutItem.Select();
                 break;
+            // A row with its own tap recognizer is tapped, as a finger would: the recognizer runs, not the list's selection.
+            case View row when HasOwnTap(row):
+                row.Tap();
+                break;
             case MauiElement row when TrySelectRow(row):
                 break;
             case View view when MauiHeadlessAppBridge.Names(view, "Tap"):
@@ -733,6 +737,10 @@ public sealed class MauiHeadlessElement : IMauiElement
     private bool IsSelectedRow()
         => Element.Parent is SelectableItemsView view && Element.BindingContext is { } item
            && (Equals(view.SelectedItem, item) || view.SelectedItems?.Contains(item) == true);
+
+    private static bool HasOwnTap(View row)
+        => row.Parent is SelectableItemsView
+           && row.GestureRecognizers.OfType<TapGestureRecognizer>().Any(recognizer => recognizer.NumberOfTapsRequired == 1);
 
     private static bool TrySelectRow(MauiElement row)
     {

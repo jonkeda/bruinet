@@ -179,7 +179,7 @@
              TapGestureRecognizer whose command is bound through x:Reference to the page's view model. -->
         <VerticalStackLayout Grid.Row="3" Spacing="6">
             <Label AutomationId="OpenedProductLabel" Text="{Binding OpenedProduct}" />
-            <CollectionView AutomationId="ShortcutCollectionView" ItemsSource="{Binding Shortcuts}" HeightRequest="120">
+            <CollectionView AutomationId="ShortcutCollectionView" ItemsSource="{Binding Shortcuts}" HeightRequest="120" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:ProductItem">
                         <Grid AutomationId="ShortcutRow" Padding="8">
