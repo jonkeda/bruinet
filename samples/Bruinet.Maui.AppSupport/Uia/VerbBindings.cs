@@ -164,8 +164,8 @@ internal static class VerbBindings
                                 : HResults.BRUINET_E_DECLINED);
                     }
 
-                    // Then pull-to-refresh, which is a downward swipe and nothing else. A ContentView
-                    // that wraps a RefreshView declares it for its content, one level deep.
+                    // Then pull-to-refresh, which is a downward swipe and nothing else. A view that
+                    // keeps a RefreshView inside declares it for that one, however deep.
                     if (verb == BruinetVerb.SwipeDown && RefreshTarget(element) is not null)
                     {
                         return new VerbBinding(verb, (target, _, _) =>
@@ -307,13 +307,29 @@ internal static class VerbBindings
                 .FirstOrDefault(found => found is not null);
 
     /// <summary>
-    /// The RefreshView a SwipeDown on this element pulls: the element itself, or the direct
-    /// content of a ContentView.
+    /// The RefreshView a SwipeDown on this element pulls: the element itself, or the one RefreshView
+    /// inside it however deep, as a reusable list control keeps its own private; none when it holds two.
     /// </summary>
-    internal static RefreshView? RefreshTarget(VisualElement element) => element switch
+    internal static RefreshView? RefreshTarget(VisualElement element)
     {
-        RefreshView view => view,
-        ContentView { Content: RefreshView view } => view,
-        _ => null,
-    };
+        if (element is RefreshView view)
+        {
+            return view;
+        }
+
+        var inside = Descendants(element).OfType<RefreshView>().Take(2).ToList();
+        return inside.Count == 1 ? inside[0] : null;
+    }
+
+    private static IEnumerable<IVisualTreeElement> Descendants(IVisualTreeElement element)
+    {
+        foreach (var child in element.GetVisualChildren())
+        {
+            yield return child;
+            foreach (var below in Descendants(child))
+            {
+                yield return below;
+            }
+        }
+    }
 }

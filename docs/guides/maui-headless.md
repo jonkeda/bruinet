@@ -139,6 +139,8 @@ ends its call at once with `DeviceOnlyException` naming the member.
   before the next (`WaitForQuiet`).
 - **The virtual clock does not move under the head.** App timers and `DispatchDelayed` work fire only
   when a test advances MauiHeadless's clock; a test that needs them is a device test for now.
+- **A pull** (`PullToRefresh`, a swipe down) on a view that keeps a `RefreshView` inside, however deep,
+  pulls that one, as on Windows; a view holding two refuses, naming them.
 - **Gestures and toolkit state** go to the app's own verb sinks (`GestureAutomation.Sink` in
   `Bruinet.Maui.AppSupport`), called in process: the half of the Windows bridge that lives in the app,
   without UI Automation.

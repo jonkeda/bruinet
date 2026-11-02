@@ -50,6 +50,18 @@ public class ContainerTestPage : PageObjectBase<ContainerTestPage>
     /// <summary>Completes a refresh without needing a pull gesture.</summary>
     public Button<ContainerTestPage> TriggerRefreshButton => new(this, "TriggerRefreshButton");
 
+    /// <summary>
+    /// A list control that keeps its RefreshView private, two levels down; a pull of the control
+    /// reaches it.
+    /// </summary>
+    public RefreshView<ContainerTestPage> NestedRefreshList => new(this, "NestedRefreshList");
+
+    /// <summary>"fetched n: rows" after the nested list's refresh asked its fake service.</summary>
+    public Label<ContainerTestPage> NestedRefreshStatus => new(this, "NestedRefreshStatus");
+
+    /// <summary>The nested list's header button, running the same refresh.</summary>
+    public Button<ContainerTestPage> NestedRefreshButton => new(this, "NestedRefreshButton");
+
     /// <summary>Restores the initial state.</summary>
     public Button<ContainerTestPage> ResetButton => new(this, "ContainerResetButton");
 

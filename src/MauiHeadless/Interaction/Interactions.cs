@@ -282,11 +282,20 @@ public static class Interactions
                 return view;
         }
 
-        // A ContentView that wraps a RefreshView is pulled through it, one level deep.
-        if (direction == SwipeDirection.Down && view is ContentView { Content: RefreshView wrapped })
+        // A view that keeps a RefreshView inside, however deep (a reusable list control's private one),
+        // is pulled through it, as a finger pulling the list pulls its refresh. Two would be a guess.
+        if (direction == SwipeDirection.Down && view is Layout or ContentView or Border or ScrollView)
         {
-            wrapped.Swipe(direction);
-            return view;
+            var inside = VisualTree.Read(view).DescendantsAndSelf().Skip(1)
+                .Select(node => node.Element).OfType<RefreshView>().Distinct().ToList();
+            if (inside.Count > 1)
+                throw new ElementNotInteractableException(
+                    $"Cannot pull {Name(view)}: it holds {inside.Count} RefreshViews ({string.Join(", ", inside.Select(Name))}); pull one of them.");
+            if (inside.Count == 1)
+            {
+                inside[0].Swipe(direction);
+                return view;
+            }
         }
 
         var recognizers = view.GestureRecognizers.OfType<SwipeGestureRecognizer>()

@@ -123,6 +123,11 @@ the element a test names and the bridge element that acts for it.
     <RefreshView AutomationId="TestRefreshView"
                  uia:GestureAutomation.Verbs="SwipeDown" />
 
+    <!-- A list control that keeps its RefreshView private: SwipeDown on the control pulls the one
+         RefreshView inside it, however deep. One holding two is declined. -->
+    <controls:RefreshingList AutomationId="NestedRefreshList"
+                             uia:GestureAutomation.Verbs="SwipeDown" />
+
 </ContentView>
 ```
 

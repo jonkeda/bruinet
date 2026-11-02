@@ -19,11 +19,19 @@ public class ContainerViewModel : ParentViewModel
     private bool _isWrappedRefreshing;
     private string _refreshText = NotRefreshed;
     private int _refreshCount;
+    private IReadOnlyList<string> _nestedRows = OldRows;
+    private bool _isNestedRefreshing;
+    private string _nestedStatus = NotFetched;
+    private int _fetches;
+
+    private const string NotFetched = "not fetched";
+    private static readonly IReadOnlyList<string> OldRows = ["Old A", "Old B"];
 
     public ContainerViewModel()
     {
         RecordCommand = new RelayCommand<string>(Record);
         RefreshCommand = new RelayCommand(Refresh);
+        NestedRefreshCommand = new RelayCommand(async () => await RefreshNestedAsync());
         ResetCommand = new RelayCommand(Reset);
     }
 
@@ -87,6 +95,40 @@ public class ContainerViewModel : ParentViewModel
         Status = action;
     }
 
+    /// <summary>The nested list's rows: old ones until a refresh fetches fresh ones.</summary>
+    public IReadOnlyList<string> NestedRows
+    {
+        get => _nestedRows;
+        private set => SetProperty(ref _nestedRows, value);
+    }
+
+    /// <summary>The nested list's spinner.</summary>
+    public bool IsNestedRefreshing
+    {
+        get => _isNestedRefreshing;
+        set => SetProperty(ref _isNestedRefreshing, value);
+    }
+
+    /// <summary>How often the fake service was asked, and what the list shows since.</summary>
+    public string NestedStatus
+    {
+        get => _nestedStatus;
+        private set => SetProperty(ref _nestedStatus, value);
+    }
+
+    /// <summary>Fetches the nested list's rows: a pull, or the header's refresh button.</summary>
+    public ICommand NestedRefreshCommand { get; }
+
+    // As an app's list refreshes: the service is awaited off the UI thread, then the source replaced.
+    private async Task RefreshNestedAsync()
+    {
+        var fetched = await Task.Run(() => (IReadOnlyList<string>)["Fresh A", "Fresh B", "Fresh C"]);
+        _fetches++;
+        NestedRows = fetched;
+        NestedStatus = $"fetched {_fetches}: {string.Join(", ", fetched)}";
+        IsNestedRefreshing = false;
+    }
+
     private void Refresh()
     {
         _refreshCount++;
@@ -111,6 +153,10 @@ public class ContainerViewModel : ParentViewModel
         Status = NoAction;
         RefreshText = NotRefreshed;
         _refreshCount = 0;
+        _fetches = 0;
+        NestedRows = OldRows;
+        NestedStatus = NotFetched;
+        IsNestedRefreshing = false;
 
         if (_isRefreshing)
         {

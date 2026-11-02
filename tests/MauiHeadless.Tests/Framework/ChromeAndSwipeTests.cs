@@ -107,6 +107,32 @@ public sealed class ChromeAndSwipeTests
     }
 
     [Fact]
+    public void A_view_that_keeps_a_RefreshView_deep_inside_is_pulled_through_it()
+    {
+        using var ctx = new MauiTestContext();
+        var pulls = 0;
+        var refresh = new RefreshView { Content = new CollectionView(), Command = new Command(() => pulls++) };
+        var list = new ContentView { AutomationId = "List", Content = new Grid { new Border { Content = refresh } } };
+        var page = ctx.Render(new ContentPage { Content = list });
+
+        page.Find<ContentView>("List").Swipe(SwipeDirection.Down);
+
+        Assert.Equal(1, pulls);
+    }
+
+    [Fact]
+    public void A_view_with_two_RefreshViews_inside_is_not_pulled_by_guess()
+    {
+        using var ctx = new MauiTestContext();
+        var both = new VerticalStackLayout { new RefreshView { AutomationId = "First" }, new RefreshView { AutomationId = "Second" } };
+        var page = ctx.Render(new ContentPage { Content = new ContentView { AutomationId = "Two", Content = both } });
+
+        var refused = Assert.Throws<ElementNotInteractableException>(() => page.Find<ContentView>("Two").Swipe(SwipeDirection.Down));
+
+        Assert.Contains("2 RefreshViews", refused.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_swipe_recognizer_runs_for_its_direction_only()
     {
         using var ctx = new MauiTestContext();

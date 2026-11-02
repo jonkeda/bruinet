@@ -19,6 +19,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="using:Bruinet.Samples.Maui.App.ViewModels"
              xmlns:uia="clr-namespace:Bruinet.Maui.AppSupport.Uia;assembly=Bruinet.Maui.AppSupport"
+             xmlns:controls="clr-namespace:Bruinet.Samples.Maui.App.Controls"
              x:Class="Bruinet.Samples.Maui.App.Views2.TestViews.ContainerView"
              x:DataType="viewModels:ContainerViewModel"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#1F1F1F}">
@@ -193,6 +194,22 @@
                     </ScrollView>
                 </RefreshView>
             </ContentView>
+
+            <!-- A list control that keeps its RefreshView private, two levels down: the control
+                 declares SwipeDown, and a pull of it reaches the RefreshView inside. Its refresh
+                 awaits a fake service and replaces the rows; the header button runs the same. -->
+            <HorizontalStackLayout Spacing="10">
+                <Label AutomationId="NestedRefreshStatus" Text="{Binding NestedStatus}" />
+                <Button AutomationId="NestedRefreshButton"
+                        Text="Refresh list"
+                        Command="{Binding NestedRefreshCommand}" />
+            </HorizontalStackLayout>
+            <controls:RefreshingList AutomationId="NestedRefreshList"
+                                     uia:GestureAutomation.Verbs="SwipeDown"
+                                     HeightRequest="90"
+                                     ItemsSource="{Binding NestedRows}"
+                                     RefreshCommand="{Binding NestedRefreshCommand}"
+                                     IsRefreshing="{Binding IsNestedRefreshing}" />
 
             <Button AutomationId="TriggerRefreshButton"
                     Text="Trigger refresh"
