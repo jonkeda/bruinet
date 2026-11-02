@@ -58,6 +58,13 @@ public sealed class McpRunTests : IDisposable
             Given the counter counts
             When the counter complains
             ```
+
+            ## Scenario: Starts
+
+            ```gherkin
+            Given the counter counts
+            Then the counter was started
+            ```
             """);
         _server = new BddMcpServer(_solution);
     }
@@ -128,7 +135,7 @@ public sealed class McpRunTests : IDisposable
 
         var runs = Answer(Call("last_runs", new JsonObject { ["path"] = Feature })).AsArray();
 
-        Assert.Equal(["Complains", "Counts", "Fails"], runs.Select(run => (string?)run!["scenario"]));
+        Assert.Equal(["Complains", "Counts", "Fails", "Starts"], runs.Select(run => (string?)run!["scenario"]));
         Assert.Equal("Failed", (string?)runs[2]!["status"], ignoreCase: true);
     }
 
@@ -319,6 +326,14 @@ public sealed class McpRunTests : IDisposable
             ["params"] = new JsonObject { ["name"] = tool, ["arguments"] = arguments },
         }.ToJsonString())!;
         return response["result"]!.AsObject();
+    }
+
+    [Fact]
+    public void RunScenario_AFixtureWithAnAsyncStart_IsStartedFirst()
+    {
+        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 26 }));
+
+        Assert.Equal("passed", (string)run["scenarios"]![0]!["status"]!);
     }
 
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;

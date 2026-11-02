@@ -33,7 +33,7 @@ namespace Bruinet.Samples.Todo.Web.Uat.Runtime;
 [TestModuleScan(typeof(TodoListPage), NamespacePrefix = "Bruinet.Samples.Todo.Web.UITests.Pages")]
 [TestModuleScan(typeof(AppLifecyclePhrases), NamespacePrefix = "Bruinet.Samples.Todo.Web.Uat.Phrases")]
 [TestModuleScan(typeof(BackendPhrases), NamespacePrefix = "Bruinet.Samples.Todo.TestSupport.Uat")]
-public sealed class TodoWebUatFixture : TodoWebFixture, IUatAppsHost
+public sealed class TodoWebUatFixture : TodoWebFixture, IUatAppsHost, IUatScenarioLifecycle
 {
     private TestComposition? _composition;
     private TestAppSet? _apps;
@@ -87,6 +87,28 @@ public sealed class TodoWebUatFixture : TodoWebFixture, IUatAppsHost
     /// <inheritdoc />
     public void AddAppServices(ITestApp app, IServiceCollection services)
         => AddContext(services, (TodoWebDevice)app);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The file's <c>TestData</c>, or <see cref="DefaultTestData"/>. Here, not in the test class, so a runner that drives
+    /// the fixture without xunit (run_scenario, the preview's Run) starts it the same way.
+    /// </remarks>
+    public void BeforeFile(BddDocument document)
+        => UseTestSet(document.Metadata.TryGetValue(BddMetadataFields.TestData, out var name) && name.Length > 0
+            ? name
+            : DefaultTestData);
+
+    /// <inheritdoc />
+    /// <remarks>From the list, online, with the backend reset, in the scenario's HTTP replay session.</remarks>
+    public void BeforeScenario(BddBoundScenario scenario)
+    {
+        BeginReplay(scenario.Source.Name);
+        StartTest();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>The scenario's HTTP replay session ended: a call it missed fails it.</remarks>
+    public void AfterScenario(BddBoundScenario scenario) => EndReplay();
 
     /// <inheritdoc />
     /// <remarks>The fixture's own members (the network, a restart) act on the app a scenario is using.</remarks>

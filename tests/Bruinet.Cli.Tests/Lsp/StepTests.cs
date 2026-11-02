@@ -348,9 +348,22 @@ public sealed class StepTests : IAsyncLifetime
 }
 
 /// <summary>The fixture <see cref="StepTests"/> steps through: no app, a counter.</summary>
-public sealed class StepCounterFixture
+public sealed class StepCounterFixture : IAsyncLifetime
 {
     private int _count;
+    private bool _started;
+
+    // As xunit starts a collection fixture, and a suite's app may only start here (the Todo web fixture).
+    public Task InitializeAsync()
+    {
+        _started = true;
+        return Task.CompletedTask;
+    }
+
+    public Task DisposeAsync() => Task.CompletedTask;
+
+    [BddThen("the counter was started")]
+    public void WasStarted() => Assert.True(_started, "The fixture's InitializeAsync did not run.");
 
     /// <summary>Screenshots of the counter: a file with its count, as an app's fixture has its own.</summary>
     public Bruinet.Core.Interfaces.IScreenshotService ScreenshotService => new CounterShots(this);

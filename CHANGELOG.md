@@ -819,6 +819,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on Windows ran in under 2 minutes instead of 3.
 
 ### Fixed
+- `run_scenario` and the preview's Run start a suite's fixture as xunit does: `InitializeAsync` first and
+  `DisposeAsync` at the end (`IAsyncLifetime`). The Todo web suite's fixture starts there, so every run of it stopped with
+  "The fixture is not started"; its file and scenario start (`IUatScenarioLifecycle`) is now on the fixture as in the MAUI
+  suite, so the runner does it too.
 - The MAUI sample's slider started at 1, not its view model's 50: it set `Value` before `Minimum` and
   `Maximum`, and MAUI clamps a value to the bounds it has then (1 by default). Found by the new control
   contracts on MauiHeadless; the sample sets the bounds first now.

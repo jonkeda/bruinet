@@ -369,7 +369,7 @@ public sealed class BddRunnerHost
             catch
             {
                 // AfterScenario failed: the fixture's app is in an unknown state, so it is not kept.
-                (open.Fixture as IDisposable)?.Dispose();
+                End(open.Fixture);
                 DisposeKept();
                 throw;
             }
@@ -381,7 +381,7 @@ public sealed class BddRunnerHost
             }
             else
             {
-                (fixture as IDisposable)?.Dispose();
+                End(fixture);
             }
         }
 
@@ -406,8 +406,21 @@ public sealed class BddRunnerHost
 
     private void DisposeKept()
     {
-        (_kept?.Fixture as IDisposable)?.Dispose();
+        End(_kept?.Fixture);
         _kept = null;
+    }
+
+    // A fixture ended as xunit ends one: DisposeAsync, then Dispose.
+    private static void End(object? fixture)
+    {
+        try
+        {
+            (fixture as Xunit.IAsyncLifetime)?.DisposeAsync().GetAwaiter().GetResult();
+        }
+        finally
+        {
+            (fixture as IDisposable)?.Dispose();
+        }
     }
 
     private sealed record KeptFixture(string Config, string Pages, object Fixture)
@@ -578,7 +591,7 @@ public sealed class BddRunnerHost
             catch
             {
                 scope?.Dispose();
-                (fixture as IDisposable)?.Dispose();
+                End(fixture);
                 throw;
             }
         }
@@ -586,7 +599,7 @@ public sealed class BddRunnerHost
         public void Dispose()
         {
             _scope?.Dispose();
-            (Fixture as IDisposable)?.Dispose();
+            End(Fixture);
         }
 
         // The scenario is over (AfterScenario) and its scope ends; its fixture is the caller's to keep or end.
@@ -634,8 +647,25 @@ public sealed class BddRunnerHost
                             type.Name.Equals(name + "Fixture", StringComparison.Ordinal)))
                        ?? throw new InvalidOperationException($"Fixture '{name}' was not found in {pages.GetName().Name}.");
 
-            return Activator.CreateInstance(type)
-                   ?? throw new InvalidOperationException($"Fixture '{type.FullName}' could not be created.");
+            var fixture = Activator.CreateInstance(type)
+                          ?? throw new InvalidOperationException($"Fixture '{type.FullName}' could not be created.");
+
+            // As xunit starts a collection fixture: a suite whose app starts in InitializeAsync (the Todo web one) has
+            // none before it.
+            if (fixture is Xunit.IAsyncLifetime lifetime)
+            {
+                try
+                {
+                    lifetime.InitializeAsync().GetAwaiter().GetResult();
+                }
+                catch
+                {
+                    End(fixture);
+                    throw;
+                }
+            }
+
+            return fixture;
         }
     }
 }

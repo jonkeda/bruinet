@@ -10,9 +10,8 @@ namespace Bruinet.Samples.Todo.Web.Uat.Runtime;
 /// <c>@web</c>) is skipped by the engine: <c>Head</c> is <c>web</c> in <c>uat.config.md</c>.
 /// </summary>
 /// <remarks>
-/// As in the MAUI suite: before a file's first scenario, <see cref="BeforeFile"/> loads the file's
-/// <c>TestData</c>; each scenario then starts from the list, online, with the backend reset
-/// (<see cref="BeforeScenario"/>).
+/// As in the MAUI suite: before a file's first scenario, the fixture (<see cref="IUatScenarioLifecycle"/>) loads the
+/// file's <c>TestData</c>; each scenario then starts from the list, online, with the backend reset.
 /// </remarks>
 [Collection(TodoWebUatCollection.CollectionName)]
 [TestCaseOrderer(BddScenarioOrderer.TypeName, BddScenarioOrderer.AssemblyName)]
@@ -36,27 +35,6 @@ public sealed class TodoWebUatScenarioTests : UatScenarioTestBase<TodoWebUatFixt
     [UatScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
-
-    /// <inheritdoc />
-    protected override void BeforeFile(BddDocument document)
-        => Fixture.UseTestSet(document.Metadata.TryGetValue(BddMetadataFields.TestData, out var name) && name.Length > 0
-            ? name
-            : TodoWebUatFixture.DefaultTestData);
-
-    /// <inheritdoc />
-    protected override void BeforeScenario(BddBoundScenario scenario)
-    {
-        Fixture.BeginReplay(scenario.Source.Name);
-        Fixture.StartTest();
-    }
-
-    /// <inheritdoc />
-    /// <remarks>The scenario's HTTP replay session ended: a call it missed fails it.</remarks>
-    protected override void AfterScenario(BddBoundScenario scenario)
-    {
-        base.AfterScenario(scenario);
-        Fixture.EndReplay();
-    }
 
     /// <inheritdoc />
     /// <remarks>An earlier scenario may have restarted the app with other launch settings; they are put back here.</remarks>
