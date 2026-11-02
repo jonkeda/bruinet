@@ -22,6 +22,7 @@ public sealed class UserBackendPhrases(TodoWebUatFixture fixture) : BddStepDefin
     [BddThen("the server should have received the todo {title} from {user}")]
     public void ServerReceivedFrom(string title, string user)
     {
+        TestSupport.Uat.BackendPhrases.NeedsTheStub(fixture, "the server should have received the todo from a user");
         var clientId = fixture.ClientIdOfUser(user);
         fixture.Backend.WaitForRequest(
             "PUT",

@@ -86,11 +86,12 @@ public sealed record BddConfig(
         }
 
         if (normalizedTags.Contains(BddTagConventions.NeedsStub)
-            && string.Equals(getEnvironmentVariable(BddReplayFields.HttpReplayVariable)?.Trim(), "Replay", StringComparison.OrdinalIgnoreCase))
+            && getEnvironmentVariable(BddReplayFields.HttpReplayVariable)?.Trim() is { Length: > 0 } replay
+            && !string.Equals(replay, "Off", StringComparison.OrdinalIgnoreCase))
         {
             return new BddSkipDecision(
                 ShouldSkip: true,
-                Reason: $"Scenario is tagged @{BddTagConventions.NeedsStub}: it reads its backend stub back, and this run answers the backend from recordings ({BddReplayFields.HttpReplayVariable}=Replay).",
+                Reason: $"Scenario is tagged @{BddTagConventions.NeedsStub}: it reads its backend stub back, and this run records or replays the backend ({BddReplayFields.HttpReplayVariable}={replay}).",
                 Rule: null);
         }
 
@@ -231,8 +232,9 @@ public static class BddTagConventions
     public const string Device = "device";
 
     /// <summary>
-    /// A scenario that reads its backend stub back (what the server holds): skipped when the run answers the backend from
-    /// recordings (<see cref="BddReplayFields.HttpReplayVariable"/> is <c>Replay</c>), where the stub receives nothing.
+    /// A scenario that reads its backend stub back (what the server holds): skipped in a run that records or replays the
+    /// backend (<see cref="BddReplayFields.HttpReplayVariable"/> set), where the stub receives nothing, recording too, so a
+    /// recording run and its replay run the same scenarios in the same order.
     /// </summary>
     public const string NeedsStub = "needs-stub";
     public const string OpenAiLive = "openai-live";

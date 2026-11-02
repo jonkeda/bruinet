@@ -27,6 +27,7 @@ public abstract class TodoWebFixture : IAsyncLifetime, ITodoArrangement
     private MockApiServer? _backend;
     private TodoWebDevice? _main;
     private TodoWebDevice? _device;
+    private TodoHttpReplay? _http;
 
     /// <summary>The test set the fixture seeds from.</summary>
     protected abstract string TestDataName { get; }
@@ -62,14 +63,34 @@ public abstract class TodoWebFixture : IAsyncLifetime, ITodoArrangement
 
     public TodoListPage List => Device.List;
 
+    /// <summary>The suite's <c>uat.config.md</c>, for its <c>backend</c> dependency; null for a suite with none.</summary>
+    protected virtual Bruinet.Bdd.BddConfig? SuiteConfig => null;
+
+    /// <summary>
+    /// The main device's HTTP replay (AI11b), on bUnit, where the app is composed here. Another device talks to the stub:
+    /// a scenario with two apps reads the backend they share, so it needs the stub (<c>@needs-stub</c>).
+    /// </summary>
+    public TodoHttpReplay HttpReplay => _http ?? throw new InvalidOperationException("The fixture is not started.");
+
+    /// <inheritdoc />
+    public IReadOnlyList<Mocking.Http.HttpCall>? ReplayedCalls => _http?.ReplayedCalls;
+
     public virtual async Task InitializeAsync()
     {
         TestSet = TodoTestSet.Load(TestDataName);
         _backend = MockApiServer.Start();
         Server = TestSet.StubServer(_backend);
-        _main = await StartDeviceAsync("todo-web", ClientId);
+        _http = new TodoHttpReplay(BrowserTodoWebHead.Project, WebHeads.IsBunit ? "bunit" : null, SuiteConfig);
+        _http.BeginStartup(GetType().Name);
+        _main = await TodoWebDevice.StartAsync("todo-web", TestSet, Backend.BaseUrl, ClientId, AdjustSettings, httpHandler: _http.Handler);
         _device = _main;
     }
+
+    /// <summary>Begins <paramref name="scenario"/>'s HTTP replay session on the main device. Nothing when replay is off.</summary>
+    public void BeginReplay(string scenario) => HttpReplay.Begin(scenario);
+
+    /// <summary>Ends the scenario's HTTP replay session: its recording saved, or its misses thrown into it.</summary>
+    public void EndReplay() => HttpReplay.End();
 
     public virtual async Task DisposeAsync()
     {

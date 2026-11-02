@@ -4,7 +4,7 @@
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/users",
+      "Url": "http://localhost:54591/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +13,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 7,
+      "DurationMs": 10,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/todos",
+      "Url": "http://localhost:54591/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },

@@ -10,7 +10,7 @@
       },
       "Status": 0,
       "ResponseHeaders": {},
-      "DurationMs": 2023,
+      "DurationMs": 2036,
       "Failure": "No connection could be made because the target machine actively refused it. (127.0.0.1:1)",
       "Volatile": []
     }

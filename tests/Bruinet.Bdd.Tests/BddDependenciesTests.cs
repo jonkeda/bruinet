@@ -61,7 +61,7 @@ public sealed class BddDependenciesTests
     }
 
     [Fact]
-    public void A_scenario_that_reads_its_stub_back_is_skipped_only_while_replaying()
+    public void A_scenario_that_reads_its_stub_back_is_skipped_while_recording_or_replaying()
     {
         var config = BddConfigParser.Parse(Config);
 
@@ -69,7 +69,8 @@ public sealed class BddDependenciesTests
 
         Assert.True(replaying.ShouldSkip);
         Assert.Contains("reads its backend stub back", replaying.Reason, StringComparison.Ordinal);
-        Assert.False(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Record" : null).ShouldSkip);
+        Assert.True(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Record" : null).ShouldSkip);
+        Assert.False(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Off" : null).ShouldSkip);
         Assert.False(config.EvaluateSkip(["@needs-stub"], _ => null).ShouldSkip);
     }
 

@@ -81,7 +81,7 @@ public sealed class BackendPhrases(ITodoArrangement fixture) : BddStepDefinition
     /// Stops a step that reads the stub server's state back while the scenario is replayed: a replay sends it nothing, so
     /// its state is the scenario's start, not what the app did.
     /// </summary>
-    internal static void NeedsTheStub(ITodoArrangement fixture, string step)
+    public static void NeedsTheStub(ITodoArrangement fixture, string step)
     {
         if (fixture.ReplayedCalls is not null)
         {

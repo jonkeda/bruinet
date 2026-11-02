@@ -10,7 +10,7 @@
 | Journey | TOD.07 |
 | Tags | web, sync, multi-app |
 
-@TOD.07.3 @web @sync @multi-app
+@TOD.07.3 @web @sync @multi-app @needs-stub
 ## Scenario: TOD.07.3 A todo Alice syncs appears on Bob's device after Bob syncs
 
 ```gherkin

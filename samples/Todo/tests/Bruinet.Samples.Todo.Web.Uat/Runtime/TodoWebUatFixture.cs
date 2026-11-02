@@ -46,6 +46,10 @@ public sealed class TodoWebUatFixture : TodoWebFixture, IUatAppsHost
     /// <inheritdoc />
     protected override string TestDataName => DefaultTestData;
 
+    /// <inheritdoc />
+    /// <remarks>Its <c>## Dependencies</c> say how the backend is answered: a stub, or recorded and replayed (AI11b).</remarks>
+    protected override BddConfig? SuiteConfig => ReadConfig();
+
     /// <summary>The page graph and DI scope the UAT runtime resolves controls through: the main device's.</summary>
     public TestComposition Composition => _composition
         ?? throw new InvalidOperationException("The fixture is not started.");

@@ -9,6 +9,8 @@
 | Head | web |
 | WorkingDirectory | ../../../.. |
 | DefaultTestData | one-todo |
+| Hermetic | true |
+| HttpReplayPace | recorded |
 
 ## Apps
 
@@ -16,6 +18,17 @@
 | --- | --- |
 | Alice | web-alice |
 | Bob | web-bob |
+
+## Dependencies
+
+How each scenario gets what is outside the app ([HTTP Replay](../../../../docs/guides/http-replay.md)). The backend is the
+stub the scenarios arrange; on bUnit a run with `BRUINET_HTTP_REPLAY=Record`, then `Replay`, answers the main app's calls
+from recordings instead (`Bruinet.Samples.Todo.Web.UITests/Recordings/bunit/http`). The database is the test set's.
+
+| Name | Kind | Mode | Where |
+| --- | --- | --- | --- |
+| backend | http | stub | `TodoServerStub` |
+| db | sqlite | copy | the test set's seeded file |
 
 ## Assemblies
 

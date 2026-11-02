@@ -44,7 +44,19 @@ public sealed class TodoWebUatScenarioTests : UatScenarioTestBase<TodoWebUatFixt
             : TodoWebUatFixture.DefaultTestData);
 
     /// <inheritdoc />
-    protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTest();
+    protected override void BeforeScenario(BddBoundScenario scenario)
+    {
+        Fixture.BeginReplay(scenario.Source.Name);
+        Fixture.StartTest();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>The scenario's HTTP replay session ended: a call it missed fails it.</remarks>
+    protected override void AfterScenario(BddBoundScenario scenario)
+    {
+        base.AfterScenario(scenario);
+        Fixture.EndReplay();
+    }
 
     /// <inheritdoc />
     /// <remarks>An earlier scenario may have restarted the app with other launch settings; they are put back here.</remarks>

@@ -37,8 +37,10 @@ public interface ITodoWebHead : IAsyncDisposable
 /// <summary>The device's head for this run.</summary>
 public static class TodoWebHeads
 {
-    public static async Task<ITodoWebHead> CreateAsync(string name)
-        => WebHeads.IsBunit ? new BunitTodoWebHead(name) : await BrowserTodoWebHead.CreateAsync(name);
+    /// <param name="name">The device's name.</param>
+    /// <param name="httpHandler">The app's HTTP handler on bUnit (an HTTP replay's); the network when null. The browser's app has its own.</param>
+    public static async Task<ITodoWebHead> CreateAsync(string name, HttpMessageHandler? httpHandler = null)
+        => WebHeads.IsBunit ? new BunitTodoWebHead(name, httpHandler) : await BrowserTodoWebHead.CreateAsync(name);
 }
 
 /// <summary>The app as its own process (<see cref="WebAppHost"/>), one browser context that outlives restarts.</summary>
@@ -98,7 +100,7 @@ public sealed class BrowserTodoWebHead : ITodoWebHead
 /// <c>Routes</c>: the singletons outlive page loads as in the host, and a restart builds them again, in the same
 /// context (<see cref="BunitTestContext.RestartApp"/>), as the browser head keeps its browser context.
 /// </summary>
-public sealed class BunitTodoWebHead(string name) : ITodoWebHead
+public sealed class BunitTodoWebHead(string name, HttpMessageHandler? httpHandler = null) : ITodoWebHead
 {
     private const string Address = "http://localhost";
     private ServiceProvider? _services;
@@ -116,7 +118,7 @@ public sealed class BunitTodoWebHead(string name) : ITodoWebHead
     {
         Clock = new DatabaseClock();
         var old = _services;
-        _services = Compose(settings, Clock, Replay);
+        _services = Compose(settings, Clock, Replay, httpHandler);
 
         // Started again: the same context with the app's new services, as the browser head keeps its browser context, so
         // what holds it (the UAT scenario's composition, its page objects) is not left with a disposed one.
@@ -144,10 +146,10 @@ public sealed class BunitTodoWebHead(string name) : ITodoWebHead
     }
 
     // Program.cs's registrations, with the repositories timed for the spike's measurement (.my/sql-replay/plan.md, 0.4).
-    private static ServiceProvider Compose(LaunchSettings settings, DatabaseClock clock, TodoSqlReplay replay)
+    private static ServiceProvider Compose(LaunchSettings settings, DatabaseClock clock, TodoSqlReplay replay, HttpMessageHandler? httpHandler)
     {
         var services = new ServiceCollection();
-        services.AddTodoServices(settings);
+        services.AddTodoServices(settings, new TodoPlatform(HttpHandler: httpHandler));
         services.AddSingleton<WebNavigator>();
         services.AddSingleton<INavigator>(provider => provider.GetRequiredService<WebNavigator>());
         services.AddSingleton<WebDialogs>();

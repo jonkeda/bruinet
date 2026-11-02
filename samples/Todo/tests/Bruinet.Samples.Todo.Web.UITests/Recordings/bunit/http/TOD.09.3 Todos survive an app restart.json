@@ -1,0 +1,55 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "GET",
+      "Url": "http://localhost:50914/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 7,
+      "Volatile": []
+    },
+    {
+      "Index": 1,
+      "Method": "PUT",
+      "Url": "http://localhost:50914/api/todos/9fc4f7cb-7106-4daa-82fd-2ee1f2b3f9ba",
+      "RequestHeaders": {
+        "X-Api-Key": "***",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "RequestBody": "{\u0022id\u0022:\u00229fc4f7cb-7106-4daa-82fd-2ee1f2b3f9ba\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "{\u0022id\u0022:\u00229fc4f7cb-7106-4daa-82fd-2ee1f2b3f9ba\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "DurationMs": 5,
+      "Volatile": [
+        "$.id",
+        "/3"
+      ]
+    },
+    {
+      "Index": 2,
+      "Method": "GET",
+      "Url": "http://localhost:50914/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[{\u0022id\u0022:\u002255555555-0000-0000-0000-000000000001\u0022,\u0022title\u0022:\u0022Buy milk\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:\u00222026-03-12\u0022,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u00229fc4f7cb-7106-4daa-82fd-2ee1f2b3f9ba\u0022,\u0022title\u0022:\u0022Survives restart\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:null,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}]",
+      "DurationMs": 0,
+      "Volatile": []
+    }
+  ]
+}

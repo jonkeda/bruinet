@@ -4,7 +4,7 @@
     {
       "Index": 0,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/users",
+      "Url": "http://localhost:54591/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -13,13 +13,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 8,
+      "DurationMs": 5,
       "Volatile": []
     },
     {
       "Index": 1,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/todos",
+      "Url": "http://localhost:54591/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -28,13 +28,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[{\u0022id\u0022:\u002255555555-0000-0000-0000-000000000001\u0022,\u0022title\u0022:\u0022Buy milk\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:\u00222026-03-12\u0022,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022}]",
-      "DurationMs": 1,
+      "DurationMs": 0,
       "Volatile": []
     },
     {
       "Index": 2,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/users",
+      "Url": "http://localhost:54591/api/users",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },
@@ -43,13 +43,13 @@
         "Content-Type": "application/json"
       },
       "ResponseBody": "[]",
-      "DurationMs": 8,
+      "DurationMs": 4,
       "Volatile": []
     },
     {
       "Index": 3,
       "Method": "GET",
-      "Url": "http://localhost:49803/api/todos",
+      "Url": "http://localhost:54591/api/todos",
       "RequestHeaders": {
         "X-Api-Key": "***"
       },

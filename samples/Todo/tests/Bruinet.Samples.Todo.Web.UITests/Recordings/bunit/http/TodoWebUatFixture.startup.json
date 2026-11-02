@@ -1,0 +1,35 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "GET",
+      "Url": "http://localhost:50914/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 321,
+      "Volatile": []
+    },
+    {
+      "Index": 1,
+      "Method": "GET",
+      "Url": "http://localhost:50914/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 2,
+      "Volatile": []
+    }
+  ]
+}

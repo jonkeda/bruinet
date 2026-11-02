@@ -85,13 +85,15 @@ public sealed class TodoWebDevice : ITestApp
     /// <param name="clientId">What the app sends in <c>X-Todo-Client</c>.</param>
     /// <param name="adjust">Changes the launch settings before the app starts.</param>
     /// <param name="definition">The app, as a row of an <c>Apps</c> table; one named <paramref name="name"/> when null.</param>
+    /// <param name="httpHandler">The app's HTTP handler on bUnit (the fixture's HTTP replay); the network when null.</param>
     public static async Task<TodoWebDevice> StartAsync(
         string name,
         TodoTestSet testSet,
         string apiBaseUrl,
         string clientId,
         Func<LaunchSettings, LaunchSettings>? adjust = null,
-        TestAppDefinition? definition = null)
+        TestAppDefinition? definition = null,
+        HttpMessageHandler? httpHandler = null)
     {
         var database = await SeedAsync(name, testSet);
         var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network-state.txt"));
@@ -106,7 +108,7 @@ public sealed class TodoWebDevice : ITestApp
             ClientId = clientId,
         };
 
-        var head = await TodoWebHeads.CreateAsync(name);
+        var head = await TodoWebHeads.CreateAsync(name, httpHandler);
         definition ??= new TestAppDefinition(name, name, "web", new Dictionary<string, string>());
         var device = new TodoWebDevice(definition, name, database, network, adjust?.Invoke(settings) ?? settings, head);
         device.StartApp();
