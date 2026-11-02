@@ -4,9 +4,9 @@ Date: 2026-11-02. From: Bruinet. To: Exact.Construction.
 
 ## Outcome
 
-Take **Bruinet `fcbaad7a`** (branch `move`). Your full headless run on it went from 388 to 408 passed out of 424.
-Of the 9 left, CTS.05 passes on `fcbaad7a` (the run was on the commit before) and MIL.V02 passed on a rerun.
-Rows 1 to 9 and ask 4 were head gaps and are fixed; one test (EQU.V04) now shows a race in its steps.
+Take **Bruinet `747ca002`** (branch `move`). Your full headless run on it: **413 passed, 4 failed, 7 skipped** out of
+424, up from 388. Every head gap you reported, and the three we found on the way, is fixed. The 4 left are in your
+tests; each has a proposal below.
 
 | Ask | What it was | Fix | Commit |
 |---|---|---|---|
@@ -15,33 +15,22 @@ Rows 1 to 9 and ask 4 were head gaps and are fixed; one test (EQU.V04) now shows
 | 2. Row 9 | rows found by `ControlType ListItem` matched only `ListView` cells headless; a `CollectionView` row is a list item on Windows, so the contact list read 0 rows | a realized `CollectionView` row is a `ListItem` (`VisualTree.IsItemRow`) | `fcbaad7a` |
 | 3. Screenshots | a head with no pixels saves the tree as `<name>.tree.txt`; no more empty `.png` files | | `32d1c2ae` |
 | 5. Popup shim docs | `maui-headless.md`: a popup shim follows the window's modal stack and keeps no stack of its own | | `32d1c2ae` |
+| HOURS.V03, PROG.V04, `ProgressDialog_RejectThenSave` | a popup page is a modal headless, and MAUI's modal push sent `Disappearing` to the page under it. Your Hours overview cancels on `Disappearing` the token the amount sheet's answer is awaited with, so Save never closed the sheet. With Mopups on Windows the page under a popup stays as it is | the page under a `DialogPages` page gets neither `Disappearing` nor `Appearing` | `747ca002` |
+| FILE.V07 | headless `MediaPicker.IsCaptureSupported` was false; Windows answers true, so your sheet offers Photo there | true by default (`HeadlessEssentialsOptions.CaptureSupported`); a capture answers as cancelled | `1692a001` |
 
-Each fix has a test in Bruinet that failed before it with your message (the shortcut rows in the MAUI sample,
+Each fix has a test in Bruinet that fails without it (the shortcut rows in the MAUI sample,
 `NavigationTests.Back_raises_the_navigation_pages_Popped_as_a_device_does`,
-`DialogTests.An_alert_the_navigation_page_raises_is_shown_as_well`).
+`DialogTests.An_alert_the_navigation_page_raises_is_shown_as_well`, `PopupPageTests`,
+`HeadlessAppTests.The_camera_can_capture_as_on_Windows_and_a_capture_is_cancelled`).
 
-## Now visible: views are destroyed on back
+## The 4 left: in your tests
 
-A back now raises `Popped`, so your `OnViewDestroyed` runs headless, as on a device.
-
-- **EQU.V04.1** fails: `AssertRemembered` reads "All (no group selected)". `AssertMachines` passes on the group input's
-  display while `SelectGroupAsync` (network reads, then the save) is still running; `ReopenSelector`'s back destroys
-  the selector, `CancelGroupChange` cancels the save, and the group is not remembered. On Windows the steps are slow
-  enough for the save to finish. **Proposal:** in `ReopenSelector`, wait for the save before going back (the
-  fixture's `IsIdle(50)` poll, or the group's request count, as change 3 did).
-
-## Still failing on `e8437046`, not looked at yet
-
-| Test | First failure |
-|---|---|
-| `ProgressionTabTests.ProgressDialog_RejectThenSave`, PROG.V04.1 | `Expected Text to be 'Progress saved'` |
-| `GarbageOverviewReviewTests.ReviewRows_ConveyCommentAndInactiveRelationVisiblyAndAccessibly` | `Assert.Single() Failure: The collection was empty` |
-| `GarbageCatalogJourneyTests.NestedCatalogCreation_ReturnsSelectionsAndPreservesBookingAmount` | `Expected container visibility 'False'. Locator: GarbageCatalogEditor_Name` |
-| HOURS.V03.1 | the amount sheet did not close after saving |
-| FILE.V07.1 | `Expected Exists to be 'True'. Locator: Text:Photo` |
-
-These were on your "not rerun yet" list too. Next on our side: the nested catalog creation (it shares ask 4's flow)
-and the Hours sheet; send a `.tree.txt` for any of them if you get there first.
+| Test | Cause | Proposal |
+|---|---|---|
+| EQU.V04.1 | a back now raises `Popped`, so `OnViewDestroyed` runs headless, as on a device. `AssertMachines` passes on the group input's display while `SelectGroupAsync` is still saving; `ReopenSelector`'s back destroys the selector and `CancelGroupChange` cancels the save. On Windows the steps are slow enough for it to finish | in `ReopenSelector`, wait for the save before going back (the fixture's `IsIdle(50)` poll, or the request count, as your change 3) |
+| `NestedCatalogCreation_ReturnsSelectionsAndPreservesBookingAmount` | the nested save works (back to the combination editor, Ready, within a second). `CreateNestedValue`'s `NameField.AssertVisible(false)` then reads `null`: the combination editor's Name field is hidden, and a hidden MAUI element leaves the tree, on Windows as headless | `AssertExists(false)`, as `uat-step-definitions.md` says for an element hidden with `IsVisible="False"` |
+| `ReviewRows_ConveyCommentAndInactiveRelationVisiblyAndAccessibly` | it captures the window and reads UI Automation bounds in physical pixels; headless has no pixels or layout | mark it device-only (`[DeviceFact]` or your Windows-only trait) |
+| MIL.V02.1 | passes alone, fails in the full run: `AssertNextWeek` spins on the mock's request count outside the driver, so the app does not run while it waits | the same fix as your change 3: wait on the screen, or `IsIdle(50)` on each poll |
 
 ## ClearWindow logging
 
