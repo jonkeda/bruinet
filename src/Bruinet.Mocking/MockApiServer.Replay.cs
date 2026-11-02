@@ -143,7 +143,9 @@ public sealed partial class MockApiServer
 
     private static IRequestBuilder RequestFor(HttpExchange exchange, IReadOnlyCollection<string> ignored)
     {
-        var request = Request.Create().UsingMethod(exchange.Method.ToUpperInvariant()).WithPath(HttpMatching.Path(exchange.Url));
+        // By the path's shape, an id as a wildcard: the handler's comparison below decides whether that id may differ.
+        var request = Request.Create().UsingMethod(exchange.Method.ToUpperInvariant())
+            .WithPath(new WildcardMatcher(HttpMatching.PathShape(exchange.Url).Replace("{}", "*", StringComparison.Ordinal)));
         // The query and body as the handler compares them: the live call is the recorded one with its own query, then body.
         var withQuery = request.WithUrl(url => HttpMatching.Matches(
             new HttpExchange { Method = exchange.Method, Url = new Uri(url).PathAndQuery, RequestBody = exchange.RequestBody, RequestBodyEncoding = exchange.RequestBodyEncoding },
@@ -159,7 +161,8 @@ public sealed partial class MockApiServer
 
     private static ResponseMessage ResponseFor(HttpExchange exchange)
     {
-        var response = new ResponseMessage { StatusCode = exchange.Status };
+        // A call that got no answer when recorded gets none now: the connection closed without one.
+        var response = new ResponseMessage { StatusCode = exchange.Failure is null ? exchange.Status : 200, FaultType = exchange.Failure is null ? FaultType.NONE : FaultType.EMPTY_RESPONSE };
         foreach (var (name, value) in exchange.ResponseHeaders)
         {
             response.AddHeader(name, value);

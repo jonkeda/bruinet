@@ -22,6 +22,9 @@ public abstract class TodoAppFixture : TodoAppFixtureBase, ITodoArrangement
     public MockApiServer Backend => _backend
         ?? throw new InvalidOperationException("The backend was used before it was started.");
 
+    /// <inheritdoc />
+    public IReadOnlyList<Mocking.Http.HttpCall>? ReplayedCalls => HttpReplay.ReplayedCalls;
+
     /// <summary>The fake API's state: what the app has sent it, and changes "from another device".</summary>
     public TodoServerStub Server => _server
         ?? throw new InvalidOperationException("The backend was used before it was started.");

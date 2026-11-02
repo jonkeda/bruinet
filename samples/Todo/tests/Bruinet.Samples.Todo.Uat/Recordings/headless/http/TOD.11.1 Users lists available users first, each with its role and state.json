@@ -1,0 +1,35 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000001\u0022,\u0022name\u0022:\u0022Daan\u0022,\u0022email\u0022:\u0022daan@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Lead\u0022,\u0022hoursPerWeek\u0022:40,\u0022hourlyRate\u0022:85.00,\u0022startOfDay\u0022:\u002208:30:00\u0022,\u0022receivesReminders\u0022:true,\u0022workload\u0022:60,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000002\u0022,\u0022name\u0022:\u0022Eva\u0022,\u0022email\u0022:\u0022eva@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:\u00222026-12-31\u0022,\u0022role\u0022:\u0022Member\u0022,\u0022hoursPerWeek\u0022:38,\u0022hourlyRate\u0022:1250.75,\u0022startOfDay\u0022:\u002209:00:00\u0022,\u0022receivesReminders\u0022:true,\u0022workload\u0022:35,\u0022notes\u0022:\u0022Works Monday to Thursday\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000003\u0022,\u0022name\u0022:\u0022Finn\u0022,\u0022email\u0022:null,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:\u00222026-03-01\u0022,\u0022role\u0022:\u0022Member\u0022,\u0022hoursPerWeek\u0022:24,\u0022hourlyRate\u0022:45.50,\u0022startOfDay\u0022:\u002210:00:00\u0022,\u0022receivesReminders\u0022:true,\u0022workload\u0022:20,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000004\u0022,\u0022name\u0022:\u0022Gus\u0022,\u0022email\u0022:\u0022gus@example.com\u0022,\u0022status\u0022:\u0022Inactive\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Admin\u0022,\u0022hoursPerWeek\u0022:40,\u0022hourlyRate\u0022:70.00,\u0022startOfDay\u0022:\u002209:00:00\u0022,\u0022receivesReminders\u0022:true,\u0022workload\u0022:0,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022},{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000005\u0022,\u0022name\u0022:\u0022Hana\u0022,\u0022email\u0022:\u0022hana@example.com\u0022,\u0022status\u0022:\u0022OnLeave\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Member\u0022,\u0022hoursPerWeek\u0022:32,\u0022hourlyRate\u0022:55.25,\u0022startOfDay\u0022:\u002208:00:00\u0022,\u0022receivesReminders\u0022:false,\u0022workload\u0022:50,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022}]",
+      "DurationMs": 6,
+      "Volatile": []
+    },
+    {
+      "Index": 1,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[{\u0022id\u0022:\u002255555555-0000-0000-0000-000000000001\u0022,\u0022title\u0022:\u0022Buy milk\u0022,\u0022notes\u0022:null,\u0022dueDate\u0022:\u00222026-03-12\u0022,\u0022status\u0022:\u0022Open\u0022,\u0022createdAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022,\u0022updatedAt\u0022:\u00222026-03-01T08:00:00\u002B00:00\u0022}]",
+      "DurationMs": 1,
+      "Volatile": []
+    }
+  ]
+}

@@ -33,6 +33,10 @@ Bruinet.Mocking.Http.HttpChunk.HttpChunk() -> void
 Bruinet.Mocking.Http.HttpExchange
 Bruinet.Mocking.Http.HttpExchange.Chunks.get -> System.Collections.Generic.List<Bruinet.Mocking.Http.HttpChunk!>?
 Bruinet.Mocking.Http.HttpExchange.Chunks.set -> void
+Bruinet.Mocking.Http.HttpExchange.DurationMs.get -> int
+Bruinet.Mocking.Http.HttpExchange.DurationMs.set -> void
+Bruinet.Mocking.Http.HttpExchange.Failure.get -> string?
+Bruinet.Mocking.Http.HttpExchange.Failure.set -> void
 Bruinet.Mocking.Http.HttpExchange.HttpExchange() -> void
 Bruinet.Mocking.Http.HttpExchange.Index.get -> int
 Bruinet.Mocking.Http.HttpExchange.Index.set -> void

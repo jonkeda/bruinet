@@ -85,6 +85,15 @@ public sealed record BddConfig(
                 Rule: null);
         }
 
+        if (normalizedTags.Contains(BddTagConventions.NeedsStub)
+            && string.Equals(getEnvironmentVariable(BddReplayFields.HttpReplayVariable)?.Trim(), "Replay", StringComparison.OrdinalIgnoreCase))
+        {
+            return new BddSkipDecision(
+                ShouldSkip: true,
+                Reason: $"Scenario is tagged @{BddTagConventions.NeedsStub}: it reads its backend stub back, and this run answers the backend from recordings ({BddReplayFields.HttpReplayVariable}=Replay).",
+                Rule: null);
+        }
+
         if (SkipRules.Count == 0)
         {
             return BddSkipDecision.Run;
@@ -220,6 +229,12 @@ public static class BddTagConventions
 
     /// <summary>A MAUI scenario that needs a device: skipped on the MauiHeadless head (<see cref="MauiHeads"/>).</summary>
     public const string Device = "device";
+
+    /// <summary>
+    /// A scenario that reads its backend stub back (what the server holds): skipped when the run answers the backend from
+    /// recordings (<see cref="BddReplayFields.HttpReplayVariable"/> is <c>Replay</c>), where the stub receives nothing.
+    /// </summary>
+    public const string NeedsStub = "needs-stub";
     public const string OpenAiLive = "openai-live";
 
     /// <summary>

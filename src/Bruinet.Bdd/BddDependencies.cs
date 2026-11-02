@@ -44,8 +44,11 @@ public static class BddReplayFields
     /// <summary>Headers and fields never written to a recording, beside the defaults (comma-separated).</summary>
     public const string HttpRedact = "HttpRedact";
 
-    /// <summary><c>none</c> (the default) or <c>recorded</c>: how a replayed streamed answer is paced.</summary>
+    /// <summary><c>none</c> (the default) or <c>recorded</c>: whether a replayed answer takes as long as it did, a streamed one part by part.</summary>
     public const string HttpReplayPace = "HttpReplayPace";
+
+    /// <summary>The run's HTTP replay mode (<c>Record</c>, <c>Replay</c>, <c>Refresh</c>), as <c>Bruinet.Mocking.Http</c> reads it.</summary>
+    public const string HttpReplayVariable = "BRUINET_HTTP_REPLAY";
 }
 
 /// <summary>A suite's dependencies as a run gets them.</summary>

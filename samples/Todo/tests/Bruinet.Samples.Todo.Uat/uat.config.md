@@ -10,6 +10,19 @@
 | AppPath | ../../src/Bruinet.Samples.Todo.App/bin/Debug/net10.0-windows10.0.19041.0/win-x64/Bruinet.Samples.Todo.App.exe |
 | WorkingDirectory | ../../../.. |
 | DefaultTestData | one-todo |
+| Hermetic | true |
+| HttpReplayPace | recorded |
+
+## Dependencies
+
+How each scenario gets what is outside the app ([HTTP Replay](../../../../docs/guides/http-replay.md)). The backend is the
+stub the scenarios arrange; a run with `BRUINET_HTTP_REPLAY=Record`, then `Replay` (what `run_scenario`'s `replay` sets),
+answers the app's calls from recordings instead (`Recordings/headless/http`), the stub reached only while recording. The database is the test set's, restored before each scenario.
+
+| Name | Kind | Mode | Where |
+| --- | --- | --- | --- |
+| backend | http | stub | `TodoServerStub` |
+| db | sqlite | copy | the test set's seeded file |
 
 ## Assemblies
 

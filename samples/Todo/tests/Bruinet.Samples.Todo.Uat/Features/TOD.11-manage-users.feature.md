@@ -27,7 +27,7 @@ And the user "Gus" should show state "Inactive"
 And the user "Hana" should show state "On leave"
 ```
 
-@TOD.11.2 @maui @users
+@TOD.11.2 @maui @users @needs-stub
 ## Scenario: TOD.11.2 A user added with every field shows in the list, and the server has each value
 
 ```gherkin
@@ -72,7 +72,7 @@ And I tap Save
 Then Name Error should equal "Another user already has this name"
 ```
 
-@TOD.11.4 @maui @users
+@TOD.11.4 @maui @users @needs-stub
 ## Scenario: TOD.11.4 Editing a user changes what the list shows
 
 ```gherkin
@@ -93,7 +93,7 @@ And the server should have users
   | Hana | Lead | Active |
 ```
 
-@TOD.11.5 @TOD.11.6 @maui @users
+@TOD.11.5 @TOD.11.6 @maui @users @needs-stub
 ## Scenario: TOD.11.5 An end date is set only when checked; a past one shows Expired
 
 ```gherkin
@@ -112,7 +112,7 @@ And the server should have users
   | Kees | 09-Mar-2026   |
 ```
 
-@TOD.11.7 @maui @users
+@TOD.11.7 @maui @users @needs-stub
 ## Scenario: TOD.11.7 An inactive user stays listed, and their name can be used again
 
 ```gherkin

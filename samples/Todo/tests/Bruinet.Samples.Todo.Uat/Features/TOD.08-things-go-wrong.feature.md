@@ -68,7 +68,7 @@ Then the list should show the Loading state
 And the list should show the Empty state
 ```
 
-@TOD.08.8 @maui @web @errors @offline @windows
+@TOD.08.8 @maui @web @errors @offline @windows @needs-stub
 ## Scenario: TOD.08.8 Offline disables Sync and shows "Offline"; back online, Sync clears the pending edits
 
 ```gherkin

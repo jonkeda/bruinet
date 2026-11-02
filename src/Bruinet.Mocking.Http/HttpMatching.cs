@@ -17,17 +17,27 @@ internal static class HttpMatching
         return question < 0 ? pathAndQuery : pathAndQuery[..question];
     }
 
+    /// <summary>The path with each segment that is an id (a GUID, a number) as <c>{}</c>: <c>/api/todos/{}</c>.</summary>
+    public static string PathShape(string url)
+        => string.Join("/", Path(url).Split('/').Select(segment => Guid.TryParse(segment, out _) || long.TryParse(segment, out _) ? "{}" : segment));
+
     /// <summary>The path and query of <paramref name="url"/>, absolute or not.</summary>
     public static string PathAndQuery(string url)
         => Uri.TryCreate(url, UriKind.Absolute, out var absolute) ? absolute.PathAndQuery : (url.StartsWith('/') ? url : "/" + url);
 
     /// <summary>
-    /// A request's compared values by name: <c>?name</c> for each query parameter (repeated ones joined), <c>$.path</c>
-    /// for each JSON body leaf, <c>$</c> for a body that is not JSON.
+    /// A request's compared values by name: <c>/n</c> for the path's n-th segment, <c>?name</c> for each query parameter
+    /// (repeated ones joined), <c>$.path</c> for each JSON body leaf, <c>$</c> for a body that is not JSON.
     /// </summary>
     public static Dictionary<string, string> RequestValues(HttpExchange exchange)
     {
         var values = new Dictionary<string, string>(StringComparer.Ordinal);
+        var segments = Path(exchange.Url).Split('/');
+        for (var index = 1; index < segments.Length; index++)
+        {
+            values["/" + index.ToString(CultureInfo.InvariantCulture)] = Uri.UnescapeDataString(segments[index]);
+        }
+
         var pathAndQuery = PathAndQuery(exchange.Url);
         var question = pathAndQuery.IndexOf('?', StringComparison.Ordinal);
         if (question >= 0)
@@ -72,7 +82,8 @@ internal static class HttpMatching
             return $"method {live.Method} where {recorded.Method} was recorded";
         }
 
-        if (!string.Equals(Path(live.Url), Path(recorded.Url), StringComparison.Ordinal))
+        // Another shape is another call; the same shape is compared segment by segment below, an id volatile or not.
+        if (!string.Equals(PathShape(live.Url), PathShape(recorded.Url), StringComparison.Ordinal))
         {
             return $"path {Path(live.Url)} where {Path(recorded.Url)} was recorded";
         }
@@ -106,7 +117,7 @@ internal static class HttpMatching
             return true;
         }
 
-        var last = name.StartsWith('?') ? name[1..] : LastName(name);
+        var last = name.StartsWith('?') ? name[1..] : name.StartsWith('/') ? string.Empty : LastName(name);
         return last.Length > 0 && ignoredFields.Contains(last);
     }
 

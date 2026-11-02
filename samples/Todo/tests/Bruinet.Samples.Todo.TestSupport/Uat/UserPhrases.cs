@@ -24,5 +24,9 @@ public sealed class UserPhrases(ITodoArrangement fixture) : BddStepDefinitionsBa
 
     /// <summary>The fake server holds a user like each row.</summary>
     [BddThen("the server should have users")]
-    public void ServerHas(BddTable table) => table.AssertContains(fixture.Server.Users, fixture.TestSet.Now);
+    public void ServerHas(BddTable table)
+    {
+        BackendPhrases.NeedsTheStub(fixture, "the server should have users");
+        table.AssertContains(fixture.Server.Users, fixture.TestSet.Now);
+    }
 }

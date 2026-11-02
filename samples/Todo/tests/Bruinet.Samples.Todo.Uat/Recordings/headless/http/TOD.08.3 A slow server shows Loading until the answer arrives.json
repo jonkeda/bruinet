@@ -1,0 +1,95 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 6,
+      "Volatile": []
+    },
+    {
+      "Index": 1,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 1,
+      "Volatile": []
+    },
+    {
+      "Index": 2,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 7,
+      "Volatile": []
+    },
+    {
+      "Index": 3,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 1,
+      "Volatile": []
+    },
+    {
+      "Index": 4,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/users",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 1,
+      "Volatile": []
+    },
+    {
+      "Index": 5,
+      "Method": "GET",
+      "Url": "http://localhost:49803/api/todos",
+      "RequestHeaders": {
+        "X-Api-Key": "***"
+      },
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "[]",
+      "DurationMs": 2008,
+      "Volatile": []
+    }
+  ]
+}

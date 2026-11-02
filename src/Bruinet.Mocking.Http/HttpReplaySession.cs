@@ -14,7 +14,7 @@ public sealed class HttpReplayMissException(string message) : HttpRequestExcepti
 /// <param name="Method">The method.</param>
 /// <param name="Url">The URL, redacted as recorded.</param>
 /// <param name="Status">The answer's status; 0 for a miss.</param>
-/// <param name="Outcome"><c>recorded</c>, <c>matched</c> or <c>missed</c>.</param>
+/// <param name="Outcome"><c>recorded</c>, <c>matched</c>, <c>missed</c>, or <c>failed</c> (no answer, as recorded).</param>
 /// <param name="Exchange">The recorded exchange that answered it; -1 for none.</param>
 public sealed record HttpCall(string Method, string Url, int Status, string Outcome, int Exchange);
 
@@ -62,6 +62,7 @@ public sealed class HttpReplaySession
     private readonly List<HttpCall> _calls = [];
     private readonly List<string> _misses = [];
     private readonly List<string> _changes = [];
+    private readonly Dictionary<string, string> _bindings = new(StringComparer.Ordinal);
 
     /// <param name="mode">Record, replay or refresh.</param>
     /// <param name="path">The test's recording (<see cref="PathFor"/>).</param>
@@ -189,19 +190,50 @@ public sealed class HttpReplaySession
         var live = await ToExchangeAsync(request, cancellationToken).ConfigureAwait(false);
         if (Mode == HttpReplayMode.Replay)
         {
-            return Answer(live, request);
+            var (answer, delayMs) = Answer(live, request);
+            if (delayMs > 0)
+            {
+                // The recorded wait, cancelled as the real one is: by the client's timeout or the caller.
+                await Task.Delay(delayMs, cancellationToken).ConfigureAwait(false);
+            }
+
+            return answer;
         }
 
-        using var response = await network(request, cancellationToken).ConfigureAwait(false);
-        await ReadAnswerAsync(live, response, cancellationToken).ConfigureAwait(false);
+        var clock = Stopwatch.StartNew();
+        HttpResponseMessage response;
+        try
+        {
+            response = await network(request, cancellationToken).ConfigureAwait(false);
+        }
+        catch (HttpRequestException failure) when (!cancellationToken.IsCancellationRequested)
+        {
+            // No answer (a refused connection) is what the app got: recorded, so a replay fails the same way.
+            live.Status = 0;
+            live.Failure = failure.Message;
+            live.DurationMs = (int)clock.ElapsedMilliseconds;
+            Keep(live, "failed");
+            throw;
+        }
+
+        using (response)
+        {
+            await ReadAnswerAsync(live, response, cancellationToken).ConfigureAwait(false);
+        }
+
+        live.DurationMs = (int)clock.ElapsedMilliseconds;
+        Keep(live, "recorded");
+        return Respond(live, request, HttpReplayPace.None);
+    }
+
+    private void Keep(HttpExchange live, string outcome)
+    {
         lock (_gate)
         {
             live.Index = _recording.Exchanges.Count;
             _recording.Exchanges.Add(live);
-            _calls.Add(new HttpCall(live.Method, Logged(live.Url), live.Status, "recorded", live.Index));
+            _calls.Add(new HttpCall(live.Method, Logged(live.Url), live.Status, outcome, live.Index));
         }
-
-        return Respond(live, request, HttpReplayPace.None);
     }
 
     /// <summary>Record and refresh: keeps an exchange recorded elsewhere (a proxy, <c>MockApiServer.Record</c>), in order.</summary>
@@ -277,7 +309,7 @@ public sealed class HttpReplaySession
         }
     }
 
-    private HttpResponseMessage Answer(HttpExchange live, HttpRequestMessage request)
+    private (HttpResponseMessage Response, int DelayMs) Answer(HttpExchange live, HttpRequestMessage request)
     {
         lock (_gate)
         {
@@ -297,10 +329,64 @@ public sealed class HttpReplaySession
             var chosen = matching.FirstOrDefault(index => !_used[index], matching[^1]);
             _used[chosen] = true;
             var exchange = _recording.Exchanges[chosen];
+            Bind(live, exchange);
+            if (exchange.Failure is { } failure)
+            {
+                _calls.Add(new HttpCall(live.Method, Logged(live.Url), 0, "failed", chosen));
+                throw new HttpRequestException(failure);
+            }
+
             _calls.Add(new HttpCall(live.Method, Logged(live.Url), exchange.Status, "matched", chosen));
-            return Respond(exchange, request, Options.Pace);
+            return (Respond(Bound(exchange), request, Options.Pace), Options.Pace == HttpReplayPace.Recorded ? exchange.DurationMs : 0);
         }
     }
+
+    // A volatile value the live call sends in place of the recorded one (a new id): from now on the answers carry the live
+    // one, as SQL replay binds a new id to the recorded. Only values long enough to be ids, so a "1" rewrites nothing.
+    private void Bind(HttpExchange live, HttpExchange recorded)
+    {
+        if (recorded.Volatile.Count == 0)
+        {
+            return;
+        }
+
+        var now = HttpMatching.RequestValues(live);
+        var then = HttpMatching.RequestValues(recorded);
+        foreach (var name in recorded.Volatile)
+        {
+            if (then.TryGetValue(name, out var old) && now.TryGetValue(name, out var value)
+                && Unquoted(old) is { Length: >= 8 } from && Unquoted(value) is { } to && from != to)
+            {
+                _bindings[from] = to;
+            }
+        }
+    }
+
+    // The recorded answer with each bound value rewritten to the live one: its body, its parts, its headers (a Location).
+    private HttpExchange Bound(HttpExchange exchange)
+    {
+        if (_bindings.Count == 0 || exchange.ResponseBodyEncoding is not null)
+        {
+            return exchange;
+        }
+
+        string Rewrite(string text) => _bindings.Aggregate(text, (current, binding) => current.Replace(binding.Key, binding.Value, StringComparison.Ordinal));
+        var bound = new HttpExchange
+        {
+            Status = exchange.Status,
+            ResponseBody = exchange.ResponseBody is { } body ? Rewrite(body) : null,
+            Chunks = exchange.Chunks?.Select(chunk => new HttpChunk { DelayMs = chunk.DelayMs, Data = Rewrite(chunk.Data) }).ToList(),
+        };
+        foreach (var (name, value) in exchange.ResponseHeaders)
+        {
+            bound.ResponseHeaders[name] = Rewrite(value);
+        }
+
+        return bound;
+    }
+
+    private static string? Unquoted(string raw)
+        => raw.Length >= 2 && raw[0] == '"' && raw[^1] == '"' ? raw[1..^1] : raw.StartsWith('"') ? null : raw;
 
     // A URL as the call log and a miss show it: its named query values never written, as in the recording.
     private string Logged(string url) => HttpRedaction.RedactQuery(url, Options.RedactedFields);

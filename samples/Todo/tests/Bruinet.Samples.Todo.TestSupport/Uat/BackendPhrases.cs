@@ -55,7 +55,11 @@ public sealed class BackendPhrases(ITodoArrangement fixture) : BddStepDefinition
 
     /// <summary>The fake server holds a todo like each row.</summary>
     [BddThen("the server should have todos")]
-    public void ServerHas(BddTable table) => table.AssertContains(fixture.Server.Todos, fixture.TestSet.Now);
+    public void ServerHas(BddTable table)
+    {
+        NeedsTheStub(fixture, "the server should have todos");
+        table.AssertContains(fixture.Server.Todos, fixture.TestSet.Now);
+    }
 
     /// <summary>
     /// The fake server received exactly these requests, in this order, since the scenario began:
@@ -64,10 +68,26 @@ public sealed class BackendPhrases(ITodoArrangement fixture) : BddStepDefinition
     [BddThen("the server should have received, in order")]
     public void ServerReceivedInOrder(IReadOnlyList<RequestRow> requests)
     {
-        var actual = fixture.Backend.Requests().Select(request => new RequestRow(request.Method, ResourceOf(request.Path)));
+        // Replayed, the calls the app made in this scenario: the stub server received none of them.
+        var actual = fixture.ReplayedCalls is { } calls
+            ? calls.Select(call => new RequestRow(call.Method, ResourceOf(new Uri(call.Url).AbsolutePath)))
+            : fixture.Backend.Requests().Select(request => new RequestRow(request.Method, ResourceOf(request.Path)));
         BddSets.AssertSet(requests.Select(Normal), actual.Select(Normal), ordered: true, what: "requests the server received");
 
         static RequestRow Normal(RequestRow row) => new(row.Method.ToUpperInvariant(), row.Resource.ToLowerInvariant());
+    }
+
+    /// <summary>
+    /// Stops a step that reads the stub server's state back while the scenario is replayed: a replay sends it nothing, so
+    /// its state is the scenario's start, not what the app did.
+    /// </summary>
+    internal static void NeedsTheStub(ITodoArrangement fixture, string step)
+    {
+        if (fixture.ReplayedCalls is not null)
+        {
+            throw new InvalidOperationException(
+                $"'{step}' reads the stub server back, which a replayed scenario never changes: run it with the backend as a stub (BRUINET_HTTP_REPLAY unset).");
+        }
     }
 
     private static string ResourceOf(string path)

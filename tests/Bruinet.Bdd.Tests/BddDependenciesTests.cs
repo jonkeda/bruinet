@@ -61,6 +61,19 @@ public sealed class BddDependenciesTests
     }
 
     [Fact]
+    public void A_scenario_that_reads_its_stub_back_is_skipped_only_while_replaying()
+    {
+        var config = BddConfigParser.Parse(Config);
+
+        var replaying = config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Replay" : null);
+
+        Assert.True(replaying.ShouldSkip);
+        Assert.Contains("reads its backend stub back", replaying.Reason, StringComparison.Ordinal);
+        Assert.False(config.EvaluateSkip(["@needs-stub"], name => name == BddReplayFields.HttpReplayVariable ? "Record" : null).ShouldSkip);
+        Assert.False(config.EvaluateSkip(["@needs-stub"], _ => null).ShouldSkip);
+    }
+
+    [Fact]
     public void A_suite_without_the_table_has_no_dependencies()
     {
         var config = BddConfigParser.Parse("# UAT Config\n\n## Runtime\n\n| Field | Value |\n| --- | --- |\n| Head | web |\n");

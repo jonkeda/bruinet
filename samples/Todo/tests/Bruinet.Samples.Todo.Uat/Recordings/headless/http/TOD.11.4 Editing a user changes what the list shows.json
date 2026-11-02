@@ -1,0 +1,22 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "PUT",
+      "Url": "http://localhost:49803/api/users/77777777-0000-0000-0000-000000000005",
+      "RequestHeaders": {
+        "X-Api-Key": "***",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "RequestBody": "{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000005\u0022,\u0022name\u0022:\u0022Hana\u0022,\u0022email\u0022:\u0022hana@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Lead\u0022,\u0022hoursPerWeek\u0022:32,\u0022hourlyRate\u0022:55.25,\u0022startOfDay\u0022:\u002208:00:00\u0022,\u0022receivesReminders\u0022:false,\u0022workload\u0022:50,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "{\u0022id\u0022:\u002277777777-0000-0000-0000-000000000005\u0022,\u0022name\u0022:\u0022Hana\u0022,\u0022email\u0022:\u0022hana@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Lead\u0022,\u0022hoursPerWeek\u0022:32,\u0022hourlyRate\u0022:55.25,\u0022startOfDay\u0022:\u002208:00:00\u0022,\u0022receivesReminders\u0022:false,\u0022workload\u0022:50,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "DurationMs": 11,
+      "Volatile": []
+    }
+  ]
+}

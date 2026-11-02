@@ -43,6 +43,18 @@ public sealed class TodoUatFixture : TodoAppFixture, IUatScenarioLifecycle
     /// <inheritdoc />
     protected override string TestDataName => DefaultTestData;
 
+    /// <inheritdoc />
+    protected override string RecordingsProject => "Bruinet.Samples.Todo.Uat";
+
+    /// <inheritdoc />
+    /// <remarks>Its <c>## Dependencies</c> say how the backend is answered: a stub, or recorded and replayed (AI11b).</remarks>
+    protected override BddConfig? SuiteConfig => Config;
+
+    // Read on first use: DefaultTestData's initializer reads it, before the initializers below it would run.
+    private static BddConfig Config => _config ??= BddConfigParser.ParseFile(BddScenarioSource.GetConfigFilePath(BddScenarioSource.SuiteDirectory(AssemblyFile.FolderOf(typeof(TodoUatFixture).Assembly))));
+
+    private static BddConfig? _config;
+
     /// <summary>The page graph and DI scope the UAT runtime resolves controls through.</summary>
     public TestComposition Composition { get; private set; }
 
@@ -58,7 +70,15 @@ public sealed class TodoUatFixture : TodoAppFixture, IUatScenarioLifecycle
 
     /// <inheritdoc />
     /// <remarks>The app back to the file's test set, its own data too, with no restart (<see cref="TodoAppFixtureBase.StartOver"/>).</remarks>
-    public void BeforeScenario(BddBoundScenario scenario) => StartOver();
+    public void BeforeScenario(BddBoundScenario scenario)
+    {
+        BeginReplay(scenario.Source.Name);
+        StartOver();
+    }
+
+    /// <inheritdoc />
+    /// <remarks>The scenario's HTTP replay session ended: a call it missed fails it.</remarks>
+    public void AfterScenario(BddBoundScenario scenario) => EndReplay();
 
     /// <inheritdoc />
     /// <remarks>On Windows, where <see cref="TodoAppFixtureBase.StartOver"/> resets the app's data in place; a warm runner then keeps the app between runs.</remarks>
@@ -93,7 +113,7 @@ public sealed class TodoUatFixture : TodoAppFixture, IUatScenarioLifecycle
     private static string ReadDefaultTestData()
     {
         // Beside this assembly, wherever the suite runs (AD-025); the source's when a host runs it from there.
-        var config = BddConfigParser.ParseFile(BddScenarioSource.GetConfigFilePath(BddScenarioSource.SuiteDirectory(AssemblyFile.FolderOf(typeof(TodoUatFixture).Assembly))));
+        var config = Config;
         return config.Runtime.TryGetValue(BddConfigFields.DefaultTestData, out var name) && name.Length > 0
             ? name
             : throw new InvalidOperationException($"uat.config.md has no '{BddConfigFields.DefaultTestData}' in its Runtime table.");

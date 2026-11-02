@@ -31,4 +31,10 @@ public interface ITodoArrangement : IBddClock
 
     /// <summary>The app's SQLite file.</summary>
     string DatabasePath { get; }
+
+    /// <summary>
+    /// The running scenario's HTTP calls while it is replayed (<see cref="TodoHttpReplay.ReplayedCalls"/>): a replay sends the
+    /// stub server nothing, so what it received is read here. Null when the backend is the stub.
+    /// </summary>
+    IReadOnlyList<Bruinet.Mocking.Http.HttpCall>? ReplayedCalls => null;
 }

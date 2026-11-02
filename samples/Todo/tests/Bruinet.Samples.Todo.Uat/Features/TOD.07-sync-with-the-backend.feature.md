@@ -31,7 +31,7 @@ And the server should have todos
   | Order paint |
 ```
 
-@TOD.07.2 @smoke @maui @web @sync
+@TOD.07.2 @smoke @maui @web @sync @needs-stub
 ## Scenario: TOD.07.2 After a successful sync the pending markers disappear
 
 ```gherkin

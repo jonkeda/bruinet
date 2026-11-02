@@ -54,12 +54,19 @@ public sealed class HttpExchange
     /// <summary><c>base64</c> when the response body is not text.</summary>
     public string? ResponseBodyEncoding { get; set; }
 
+    /// <summary>How long the answer took, in milliseconds: waited out by a replay at recorded pace.</summary>
+    public int DurationMs { get; set; }
+
+    /// <summary>A call that got no answer (the connection refused): how it failed. A replay fails the same way.</summary>
+    public string? Failure { get; set; }
+
     /// <summary>A streamed answer (server-sent events), part by part; then <see cref="ResponseBody"/> is null.</summary>
     public List<HttpChunk>? Chunks { get; set; }
 
     /// <summary>
-    /// The request's values that differ between two recordings of the test (a request id, a time), matched as anything:
-    /// <c>$.path</c> for a JSON body field, <c>?name</c> for a query parameter.
+    /// The request's values that differ between two recordings of the test (a request id, a time), matched as anything
+    /// and bound to the live value in later answers: <c>$.path</c> for a JSON body field, <c>?name</c> for a query
+    /// parameter, <c>/n</c> for the path's n-th segment (an id in the path).
     /// </summary>
     public List<string> Volatile { get; set; } = [];
 
@@ -137,7 +144,8 @@ public sealed class HttpRecording
         var keyed = new Dictionary<string, HttpExchange>(StringComparer.Ordinal);
         foreach (var exchange in exchanges)
         {
-            var call = exchange.Method.ToUpperInvariant() + " " + HttpMatching.Path(exchange.Url);
+            // By the path's shape: the same call with a new id in its path is the same call.
+            var call = exchange.Method.ToUpperInvariant() + " " + HttpMatching.PathShape(exchange.Url);
             var occurrence = (seen.TryGetValue(call, out var count) ? count : 0) + 1;
             seen[call] = occurrence;
             keyed[call + "#" + occurrence.ToString(CultureInfo.InvariantCulture)] = exchange;

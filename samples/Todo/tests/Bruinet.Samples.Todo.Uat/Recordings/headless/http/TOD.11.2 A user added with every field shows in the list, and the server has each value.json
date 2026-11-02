@@ -1,0 +1,25 @@
+{
+  "Version": 1,
+  "Exchanges": [
+    {
+      "Index": 0,
+      "Method": "PUT",
+      "Url": "http://localhost:49803/api/users/e65c8bc9-1740-4320-b3ef-111993bdc4f2",
+      "RequestHeaders": {
+        "X-Api-Key": "***",
+        "Content-Type": "application/json; charset=utf-8"
+      },
+      "RequestBody": "{\u0022id\u0022:\u0022e65c8bc9-1740-4320-b3ef-111993bdc4f2\u0022,\u0022name\u0022:\u0022Ivo\u0022,\u0022email\u0022:\u0022ivo@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Lead\u0022,\u0022hoursPerWeek\u0022:32,\u0022hourlyRate\u0022:1250.75,\u0022startOfDay\u0022:\u002208:30:00\u0022,\u0022receivesReminders\u0022:false,\u0022workload\u0022:35,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "Status": 200,
+      "ResponseHeaders": {
+        "Content-Type": "application/json"
+      },
+      "ResponseBody": "{\u0022id\u0022:\u0022e65c8bc9-1740-4320-b3ef-111993bdc4f2\u0022,\u0022name\u0022:\u0022Ivo\u0022,\u0022email\u0022:\u0022ivo@example.com\u0022,\u0022status\u0022:\u0022Active\u0022,\u0022allowedUntil\u0022:null,\u0022role\u0022:\u0022Lead\u0022,\u0022hoursPerWeek\u0022:32,\u0022hourlyRate\u0022:1250.75,\u0022startOfDay\u0022:\u002208:30:00\u0022,\u0022receivesReminders\u0022:false,\u0022workload\u0022:35,\u0022notes\u0022:null,\u0022updatedAt\u0022:\u00222026-03-10T09:00:00\u002B00:00\u0022}",
+      "DurationMs": 15,
+      "Volatile": [
+        "$.id",
+        "/3"
+      ]
+    }
+  ]
+}

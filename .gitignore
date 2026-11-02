@@ -464,3 +464,6 @@ Scraper.Sites/*/Recordings/
 
 # The Scraper workflow's per-person state (last check, verify, accepted controls)
 **/.scraper-state.json
+
+# HTTP replay: a test's calls in its newest run, beside its recording (AI11)
+*.calls.json

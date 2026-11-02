@@ -46,6 +46,7 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     // A field initializer, so it is there when the base constructor composes the app. Replayed headless only: on a
     // device the app runs in a process of its own, on its own file.
     private readonly TodoSqlReplay _replay = new("Bruinet.Samples.Todo.UITests", MauiHeads.IsHeadless ? "headless" : null);
+    private TodoHttpReplay? _http;
     private string? _test;
     private Arrangement? _arrangement;
     private LaunchSettings? _settings;
@@ -57,6 +58,43 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     {
         WaitForTheList();
         LetTheStartupSyncFinish();
+    }
+
+    /// <summary>
+    /// The app's HTTP replay (AI11b): made on first use, which is during base construction, so it reads only
+    /// <see cref="RecordingsProject"/> and <see cref="SuiteConfig"/>, which answer from constants.
+    /// </summary>
+    protected TodoHttpReplay HttpReplay => _http ??= new(RecordingsProject, MauiHeads.IsHeadless ? "headless" : null, SuiteConfig);
+
+    /// <summary>The project whose <c>Recordings</c> folder holds the HTTP recordings.</summary>
+    protected virtual string RecordingsProject => "Bruinet.Samples.Todo.UITests";
+
+    /// <summary>The suite's <c>uat.config.md</c>, for its <c>backend</c> dependency; null for a suite with none.</summary>
+    protected virtual Bruinet.Bdd.BddConfig? SuiteConfig => null;
+
+    /// <summary>
+    /// Begins <paramref name="scenario"/>'s HTTP replay session, after the last one's work is quiet, so none of it lands in this
+    /// one's recording. Nothing when replay is off.
+    /// </summary>
+    public void BeginReplay(string scenario)
+    {
+        if (HttpReplay.Mode != Mocking.Http.HttpReplayMode.Off)
+        {
+            LetTheLastTestFinish();
+        }
+
+        HttpReplay.Begin(scenario);
+    }
+
+    /// <summary>Ends the scenario's HTTP replay session, its own work finished inside it: its recording saved, or its misses thrown.</summary>
+    public void EndReplay()
+    {
+        if (HttpReplay.Mode != Mocking.Http.HttpReplayMode.Off)
+        {
+            LetTheLastTestFinish();
+        }
+
+        HttpReplay.End();
     }
 
     /// <summary>The test set the app starts in. Answer with a constant: it is read during base construction.</summary>
@@ -286,8 +324,9 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     {
         var settings = _settings ?? Arrange();
 
-        // What the app does before the first test is recorded too: the first list load reads the file.
+        // What the app does before the first test is recorded too: the first list load reads the file, the first sync calls.
         _replay.BeginStartup(GetType().Name);
+        HttpReplay.BeginStartup(GetType().Name);
 
         // What UseMauiCommunityToolkit() does first on a device: the toolkit's assembly loaded. In
         // Debug, XAML is parsed at run time, and the parser knows only the XAML namespaces of loaded
@@ -300,7 +339,7 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
             {
                 context.Services.AddTodoApp(
                     _ => settings,
-                    new TodoPlatform(Dispatch: action => context.Dispatcher.Dispatch(action)));
+                    new TodoPlatform(Dispatch: action => context.Dispatcher.Dispatch(action), HttpHandler: HttpReplay.Handler));
 
                 // The app's file through the test's SQL replay session, when there is one.
                 context.Services.AddSingleton(new Infrastructure.Data.TodoDatabase(settings.DatabasePath) { Wrap = _replay.Wrap });

@@ -288,6 +288,61 @@ public sealed class HttpReplayTests : IDisposable
     }
 
     [Fact]
+    public async Task An_id_new_each_run_in_the_path_and_body_is_bound_into_the_later_answers()
+    {
+        _service.Given(Request.Create().WithPath("/todos/*").UsingPut()).RespondWith(Response.Create().WithBody("{{request.path}}").WithTransformer());
+        _service.Given(Request.Create().WithPath("/todos").UsingGet()).RespondWith(Response.Create().WithBody("seen"));
+        foreach (var id in new[] { "11111111-1111-1111-1111-111111111111", "22222222-2222-2222-2222-222222222222" })
+        {
+            await RecordAsync(async client =>
+            {
+                using var put = await client.PutAsync(_service.Url + "/todos/" + id, Json($$"""{"id":"{{id}}","title":"Milk"}"""));
+                await client.GetStringAsync(_service.Url + "/todos");
+            });
+        }
+
+        Assert.Contains("/2", HttpRecording.Load(Recording)!.Exchanges[0].Volatile);
+
+        var (session, client) = Replaying();
+        const string live = "33333333-3333-3333-3333-333333333333";
+        using var answer = await client.PutAsync("http://x.test/todos/" + live, Json($$"""{"id":"{{live}}","title":"Milk"}"""));
+
+        Assert.Equal("/todos/" + live, await answer.Content.ReadAsStringAsync());
+        Assert.Equal("seen", await client.GetStringAsync("http://x.test/todos"));
+        Assert.Empty(session.Misses);
+    }
+
+    [Fact]
+    public async Task A_call_that_got_no_answer_is_recorded_and_fails_the_same_way_in_replay()
+    {
+        await RecordAsync(client => Assert.ThrowsAsync<HttpRequestException>(() => client.GetStringAsync("http://127.0.0.1:1/api/users")));
+
+        Assert.NotNull(Assert.Single(HttpRecording.Load(Recording)!.Exchanges).Failure);
+        var (session, client) = Replaying(new HttpReplayOptions { Hermetic = true });
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.GetStringAsync("http://127.0.0.1:1/api/users"));
+        Assert.Equal("failed", Assert.Single(session.Calls).Outcome);
+        Assert.Empty(session.Misses);
+    }
+
+    [Fact]
+    public async Task At_recorded_pace_an_answer_takes_as_long_as_it_did()
+    {
+        _service.Given(Request.Create().WithPath("/slow").UsingGet()).RespondWith(Response.Create().WithBody("late").WithDelay(300));
+        await RecordAsync(client => client.GetStringAsync(_service.Url + "/slow"));
+        Assert.True(Assert.Single(HttpRecording.Load(Recording)!.Exchanges).DurationMs >= 280);
+
+        var (_, paced) = Replaying(new HttpReplayOptions { Pace = HttpReplayPace.Recorded });
+        var clock = Stopwatch.StartNew();
+        Assert.Equal("late", await paced.GetStringAsync("http://x.test/slow"));
+        Assert.True(clock.ElapsedMilliseconds >= 280, $"Answered after {clock.ElapsedMilliseconds} ms.");
+
+        var (_, fast) = Replaying();
+        clock.Restart();
+        await fast.GetStringAsync("http://x.test/slow");
+        Assert.True(clock.ElapsedMilliseconds < 250, $"Answered after {clock.ElapsedMilliseconds} ms at no pace.");
+    }
+
+    [Fact]
     public async Task Review_names_new_and_changed_recordings_and_stale_ones_after_a_replay()
     {
         _service.Given(Request.Create().WithPath("/a").UsingGet()).RespondWith(Response.Create().WithBody("1"));
