@@ -86,8 +86,9 @@ public sealed class HttpReplaySession
             _previous = HttpRecording.Load(path);
         }
 
+        // By host, not port: a local backend (a stub server on port 0) has a new port each run.
         _hosts = new HashSet<string>(
-            _recording.Exchanges.Select(exchange => Uri.TryCreate(exchange.Url, UriKind.Absolute, out var url) ? url.Authority : string.Empty),
+            _recording.Exchanges.Select(exchange => Uri.TryCreate(exchange.Url, UriKind.Absolute, out var url) ? url.Host : string.Empty),
             StringComparer.OrdinalIgnoreCase);
         _used = new bool[_recording.Exchanges.Count];
     }
@@ -277,9 +278,9 @@ public sealed class HttpReplaySession
     {
         lock (_gate)
         {
-            if (Options.Hermetic && request.RequestUri is { IsAbsoluteUri: true } uri && !_hosts.Contains(uri.Authority))
+            if (Options.Hermetic && request.RequestUri is { IsAbsoluteUri: true } uri && !_hosts.Contains(uri.Host))
             {
-                throw Miss(live, $"Hermetic: {live.Method} {live.Url} goes to {uri.Authority}, which the recording never called.");
+                throw Miss(live, $"Hermetic: {live.Method} {live.Url} goes to {uri.Host}, which the recording never called.");
             }
 
             var matching = Enumerable.Range(0, _recording.Exchanges.Count)

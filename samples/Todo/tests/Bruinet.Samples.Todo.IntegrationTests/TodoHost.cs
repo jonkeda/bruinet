@@ -31,15 +31,18 @@ internal sealed class TodoHost : IDisposable
 {
     private ServiceProvider _services;
 
-    private TodoHost(TodoTestSet testSet, LaunchSettings settings, MockApiServer mock, TempDatabase database, TodoServerStub server, NetworkStateFile network)
+    private readonly HttpMessageHandler? _handler;
+
+    private TodoHost(TodoTestSet testSet, LaunchSettings settings, MockApiServer mock, TempDatabase database, TodoServerStub server, NetworkStateFile network, HttpMessageHandler? handler)
     {
+        _handler = handler;
         TestSet = testSet;
         Settings = settings;
         Mock = mock;
         Database = database;
         Server = server;
         Network = network;
-        _services = Build(settings);
+        _services = Build(settings, handler);
     }
 
     public TodoTestSet TestSet { get; }
@@ -66,7 +69,8 @@ internal sealed class TodoHost : IDisposable
     /// <summary>Starts a host from a test set: local half in the database, server half in WireMock.</summary>
     public static async Task<TodoHost> StartAsync(
         string testSetName = "empty",
-        Func<LaunchSettings, LaunchSettings>? adjust = null)
+        Func<LaunchSettings, LaunchSettings>? adjust = null,
+        HttpMessageHandler? handler = null)
     {
         var testSet = TodoTestSet.Load(testSetName);
         var database = new TempDatabase("integration");
@@ -85,7 +89,7 @@ internal sealed class TodoHost : IDisposable
             NetworkStateFile = network.Path,
         };
 
-        return new TodoHost(testSet, adjust?.Invoke(settings) ?? settings, mock, database, server, network);
+        return new TodoHost(testSet, adjust?.Invoke(settings) ?? settings, mock, database, server, network, handler);
     }
 
     public T Get<T>()
@@ -96,7 +100,7 @@ internal sealed class TodoHost : IDisposable
     public void Restart()
     {
         _services.Dispose();
-        _services = Build(Settings);
+        _services = Build(Settings, _handler);
     }
 
     /// <summary>Drops every per-test override on the fake server and puts back the test set's server half.</summary>
@@ -117,10 +121,10 @@ internal sealed class TodoHost : IDisposable
         Database.Dispose();
     }
 
-    private static ServiceProvider Build(LaunchSettings settings)
+    private static ServiceProvider Build(LaunchSettings settings, HttpMessageHandler? handler)
     {
         var services = new ServiceCollection();
-        services.AddTodoServices(settings);
+        services.AddTodoServices(settings, new TodoPlatform(HttpHandler: handler));
         services.AddSingleton(Substitute.For<INavigator>());
         services.AddSingleton(Substitute.For<IDialogs>());
 
