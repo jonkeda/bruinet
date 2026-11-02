@@ -10,9 +10,9 @@ namespace MauiHeadless.Hosting;
 /// <c>ActivatorUtilities</c> over the nearest handler's services and stops looking at the window.
 /// </summary>
 /// <remarks>
-/// It is never put on a <c>NavigationPage</c>: with a handler, a push waits for the platform to
-/// report it finished. Controls get no handler at all; fake handlers for them (measure, layout) are
-/// the roadmap's Phase 6.
+/// On a <c>NavigationPage</c> (<see cref="HeadlessNavigation"/>) it reports each navigation finished at once,
+/// as the platform would, so the page's events after it are raised. Controls get no handler at all; fake
+/// handlers for them (measure, layout) are the roadmap's Phase 6.
 /// </remarks>
 internal sealed class HeadlessHandler(IMauiContext mauiContext) : IViewHandler
 {
@@ -38,6 +38,9 @@ internal sealed class HeadlessHandler(IMauiContext mauiContext) : IViewHandler
 
     public void Invoke(string command, object? args = null)
     {
+        if (command == nameof(IStackNavigation.RequestNavigation) && VirtualView is IStackNavigation navigation
+            && args is NavigationRequest request)
+            navigation.NavigationFinished(request.NavigationStack);
     }
 
     public void DisconnectHandler() => VirtualView = null;

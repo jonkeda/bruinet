@@ -131,6 +131,7 @@ public sealed class MauiTestContext : IDisposable
 
             var window = new Window(page);
             HeadlessFocus.Attach(window);
+            HeadlessNavigation.Attach(window, MauiContext);
             Windows.Add(window, this);
             MauiInternals.AddWindow(application, window);
             if (options.Appear)

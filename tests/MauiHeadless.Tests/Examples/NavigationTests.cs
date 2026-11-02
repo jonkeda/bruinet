@@ -36,6 +36,23 @@ public sealed class NavigationTests
     }
 
     [Fact]
+    public void Back_raises_the_navigation_pages_Popped_as_a_device_does()
+    {
+        using var ctx = new MauiTestContext();
+        ctx.Services.AddSingleton<IProductCatalog>(new FakeCatalog(Water, Rope));
+        var shop = ctx.Render<ProductsPage>(o => o.WithNavigation());
+        var navigation = (NavigationPage)shop.Instance.Parent;
+        Page? popped = null;
+        navigation.Popped += (_, e) => popped = e.Page;
+        shop.Find<CollectionView>("Products").Select(Rope);
+        var product = shop.Navigation.ShouldBeOn<ProductPage>();
+
+        shop.Navigation.GoBack();
+
+        Assert.Same(product, popped);
+    }
+
+    [Fact]
     public void Rows_are_realized_from_the_item_template()
     {
         using var ctx = new MauiTestContext();
