@@ -32,7 +32,7 @@ public sealed partial class TodoListViewModel : ParentViewModel
     private string _syncLine = string.Empty;
     private bool _isOnline;
     private TodoRowViewModel? _selectedItem;
-    private readonly ILogger<TodoListViewModel>? _logger;
+    private readonly ILogger<TodoListViewModel> _logger;
 
     /// <summary>Creates the view model.</summary>
     public TodoListViewModel(
@@ -43,7 +43,7 @@ public sealed partial class TodoListViewModel : ParentViewModel
         TodoAppOptions options,
         ILogger<TodoListViewModel>? logger = null)
     {
-        _logger = logger;
+        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<TodoListViewModel>.Instance;
         _todos = todos;
         _sync = sync;
         _connectivity = connectivity;
@@ -226,10 +226,7 @@ public sealed partial class TodoListViewModel : ParentViewModel
             _lastSyncError = result.Error;
             if (!result.Succeeded)
             {
-                if (_logger is not null)
-                {
-                    LogSyncFailed(_logger, result.Error);
-                }
+                LogSyncFailed(_logger, result.Error);
             }
 
             OnPropertyChanged(nameof(ErrorMessage));

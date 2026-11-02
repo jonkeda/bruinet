@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <!-- The app logs what goes wrong (a failed sync), as a real app does; a test sees it beside the step. -->
-    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
 </Project>

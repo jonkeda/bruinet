@@ -46,11 +46,9 @@ public sealed class StepLogProvider : ILoggerProvider
 /// <summary>Adds <see cref="StepLogProvider"/> to an app's services.</summary>
 public static class StepLogServices
 {
-    /// <summary>The app's logging, with its log kept by the step that made it; and the exceptions nothing caught.</summary>
-    /// <param name="services">The app's services, before they are built.</param>
+    /// <summary>The app's logging, with its log kept by the step that made it; nothing with <c>BRUINET_STEP_LOG=off</c>.</summary>
+    /// <param name="services">The app's services, before they are built: after the app's own registrations, so one that
+    /// clears the logging providers does not take this one away.</param>
     public static IServiceCollection AddBruinetStepLog(this IServiceCollection services)
-    {
-        StepLog.Watch();
-        return services.AddLogging(logging => logging.AddProvider(new StepLogProvider()));
-    }
+        => StepLog.Enabled ? services.AddLogging(logging => logging.AddProvider(new StepLogProvider())) : services;
 }

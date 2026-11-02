@@ -269,8 +269,8 @@ VS Code) and any other MCP client:
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
   it ran and missed (for the given files, or the working tree's changed ones);
 - `step_log` gives what the app said during each step of a scenario's newest run: its log's warnings and
-  errors (with `AddBruinetStepLog`, which the MauiHeadless head adds), the browser's console errors, exceptions
-  nothing caught;
+  errors (with `AddBruinetStepLog`, which the MauiHeadless head adds), and the browser's console errors and
+  warnings;
 - `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;
 - `get_failure` says why a scenario failed in its newest run: the step, the kind of failure
   (assertion, locator-not-found, timeout, ...), expected and actual, the locator, the binding, and

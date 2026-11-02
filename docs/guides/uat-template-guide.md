@@ -460,8 +460,9 @@ call's line (`callLine`), and each step that ran its time (`durationMs`). A fail
 control's `locator`, the step's `binding`, and the first five `frames` of the suite's and the app's
 code it came through (`TodoList.AssertRowStatus (TodoList.cs:83)`). A step during which the app said something has
 `appEvents`: its log's warnings and errors (`Bruinet.Logging`'s `AddBruinetStepLog`, added by the MauiHeadless head;
-any other host adds it to the app's services), the browser's console errors, and exceptions nothing caught; with
-`BRUINET_STEP_LOG=all`, information too. That is what the IDE preview
+a bUnit or service suite adds it where it composes the app's services, after the app's own registrations), and the
+browser's console errors and warnings and page errors; with `BRUINET_STEP_LOG=all`, information too, with `off`
+nothing. An app in a process of its own (the web head's host, a device) is not read. That is what the IDE preview
 shows at the lines that ran, and what the MCP server's `get_failure` gives an agent. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
 discovery data, and command catalog data. Scenario result files are also registered in the

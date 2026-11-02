@@ -55,7 +55,7 @@ internal static class UatScenarioReport
             ["evidencePath"] = execution.EvidencePath,
             ["skipReason"] = execution.Result.SkipDecision?.Reason,
             ["head"] = WebHeads.Current.ToString().ToLowerInvariant(),
-            ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, scenario.Source.Name, configDirectory, trace is not null))]),
+            ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, configDirectory, trace is not null))]),
         };
 
         if (trace is not null)
@@ -74,7 +74,7 @@ internal static class UatScenarioReport
     }
 
     // Always the lines and the outcome; with the trace, what the step bound to and its call chain.
-    private static JsonObject Step(BddStepResult step, string scenario, string configDirectory, bool trace)
+    private static JsonObject Step(BddStepResult step, string configDirectory, bool trace)
     {
         var invocation = step.Invocation;
         var outermost = invocation.Call?.Chain.FirstOrDefault();
@@ -94,16 +94,15 @@ internal static class UatScenarioReport
         }
 
         // What the app said while the step ran: its log, the browser's console, exceptions nothing caught.
-        var said = Bruinet.Core.Logging.StepLog.Of(null, scenario, $"{invocation.Step.Source.LineNumber}: {invocation.Step.Text}");
-        if (said.Count > 0)
+        // A line said again and again (a console error per render) once, with how many times.
+        if (step.AppEvents.Count > 0)
         {
-            node["appEvents"] = new JsonArray([.. said.TakeLast(10).Select(entry => (JsonNode?)new JsonObject
-            {
-                ["level"] = entry.Level.ToString().ToLowerInvariant(),
-                ["source"] = entry.Source,
-                ["message"] = entry.Message,
-                ["exception"] = entry.Exception,
-            })]);
+            node["appEvents"] = new JsonArray([.. step.AppEvents
+                .GroupBy(entry => (entry.Level, entry.Source, entry.Message, entry.Exception))
+                .Select(said => (Entry: said.First(), Times: said.Count()))
+                .OrderBy(said => said.Entry.AtMs)
+                .TakeLast(10)
+                .Select(said => (JsonNode?)Said(said.Entry, said.Times))]);
         }
 
         if (trace)
@@ -121,6 +120,28 @@ internal static class UatScenarioReport
                     ["source"] = frame.Location.ToString(),
                     ["row"] = frame.Row,
                 })]);
+        }
+
+        return node;
+    }
+
+    // An app event: only the fields it has.
+    private static JsonObject Said(Bruinet.Core.Logging.StepLogEntry entry, int times)
+    {
+        var node = new JsonObject
+        {
+            ["level"] = entry.Level.ToString().ToLowerInvariant(),
+            ["source"] = entry.Source,
+            ["message"] = entry.Message,
+        };
+        if (entry.Exception is { } exception)
+        {
+            node["exception"] = exception;
+        }
+
+        if (times > 1)
+        {
+            node["times"] = times;
         }
 
         return node;

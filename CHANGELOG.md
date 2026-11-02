@@ -37,10 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The MCP server's `step_start`, `step_move` and `step_screenshot`: the preview's Step through for an agent, each
   call answering where the run paused next or how it ended.
 - `Bruinet.Logging`: `AddBruinetStepLog()` adds an `ILoggerProvider` to an app's services that keeps what the app
-  logs under the step that made it (`StepLog` in Core). The MauiHeadless head adds it; Playwright's context keeps
-  the browser's console errors and page errors; exceptions nothing caught are kept too. A step's `__result.json`
-  has them as `appEvents`; the MCP server's `step_log` and `get_failure` give them. Warnings and up;
-  `BRUINET_STEP_LOG=all` keeps information.
+  logs with the step that made it (`StepLog` in Core; `BddStepResult.AppEvents`). The MauiHeadless head adds it; a
+  bUnit or service suite that composes the app adds it there. Playwright's context keeps the browser's console
+  errors and warnings and its page errors. A step's `__result.json` has them as `appEvents`, a line said again once
+  with how many times; the MCP server's `step_log` and `get_failure` give them. Warnings and up;
+  `BRUINET_STEP_LOG=all` keeps information, `off` nothing.
 - The MCP server's `step_state`: the paused Step-through's page, each control with whether it is shown and
   what it shows (a toggle's state, a range's value, a choice, or text), read by the runner (`BddRunnerReadPage`).
 - The MCP server's `coverage`: one scenario run through the gate with .NET's code coverage (what

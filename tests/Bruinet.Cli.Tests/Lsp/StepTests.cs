@@ -357,6 +357,10 @@ public sealed class StepCounterFixture
     [BddWhen("the counter counts")]
     public void Count() => _count++;
 
+    // As an app logs a warning while a step runs (StepLog, as Bruinet.Logging's provider keeps it).
+    [BddWhen("the counter complains")]
+    public void Complain() => Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel.Warning, "counter", "Counted too often");
+
     [BddThen("the counter has counted {times} times")]
     public void HasCounted(int times) => Assert.True(times == _count, $"The counter counted {_count} times, not {times}.");
 

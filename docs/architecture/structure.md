@@ -33,6 +33,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - `Bruinet.Maui.Appium`
 - `Bruinet.Maui.CommunityToolkit`
 - `Bruinet.Maui.FlaUI`
+- `Bruinet.Logging` - an `ILoggerProvider` for an app's services: what the app logs goes with the step that made it (`StepLog` in Core)
 - `Bruinet.Mocking`
 - `Bruinet.NativeAndroid` - native Android apps (Views, AndroidX, Material) through Appium, in MAUI's and Html's shape
 - `Bruinet.Presenter`

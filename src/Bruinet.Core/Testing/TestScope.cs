@@ -40,11 +40,16 @@ public sealed record TestScope(string? Test, string? Scenario, string? Step)
         var before = Now.Value;
         Now.Value = scope;
         Volatile.Write(ref _latest, scope);
-        return new Restore(before);
+        return new Restore(scope, before);
     }
 
-    private sealed class Restore(TestScope? before) : IDisposable
+    private sealed class Restore(TestScope scope, TestScope? before) : IDisposable
     {
-        public void Dispose() => Now.Value = before;
+        // The latest goes back too, unless another scope was entered since (a parallel test's).
+        public void Dispose()
+        {
+            Now.Value = before;
+            Interlocked.CompareExchange(ref _latest, before, scope);
+        }
     }
 }

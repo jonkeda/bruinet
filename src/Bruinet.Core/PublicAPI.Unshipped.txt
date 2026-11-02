@@ -1082,10 +1082,11 @@ static Bruinet.Core.Locators.Locator.ByXPath(string! xpath) -> Bruinet.Core.Loca
 static Bruinet.Core.Locators.Locator.operator !=(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
 static Bruinet.Core.Locators.Locator.operator ==(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
 static Bruinet.Core.Logging.NullTestLogger.Instance.get -> Bruinet.Core.Logging.NullTestLogger!
-static Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel level, string! source, string! message, System.Exception? exception = null) -> void
+static Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel level, string! source, string! message, System.Exception? exception = null, bool elsewhere = false) -> void
+static Bruinet.Core.Logging.StepLog.Enabled.get -> bool
+static Bruinet.Core.Logging.StepLog.Mark() -> long
 static Bruinet.Core.Logging.StepLog.Minimum.get -> Bruinet.Core.Logging.StepLogLevel
-static Bruinet.Core.Logging.StepLog.Of(string? test, string? scenario, string? step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
-static Bruinet.Core.Logging.StepLog.Watch() -> void
+static Bruinet.Core.Logging.StepLog.Since(long mark, Bruinet.Core.Testing.TestScope! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
 static Bruinet.Core.Logging.Timing.Call(string! page, string! control, string! action, long startMs, int durationMs, int attempts, string! result) -> void
 static Bruinet.Core.Logging.Timing.Enabled.get -> bool
 static Bruinet.Core.Logging.Timing.NowMs.get -> long

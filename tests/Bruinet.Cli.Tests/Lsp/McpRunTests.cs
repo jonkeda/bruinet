@@ -51,6 +51,13 @@ public sealed class McpRunTests : IDisposable
             Then the counter has counted 5 times
             Then the counter has counted 1 times
             ```
+
+            ## Scenario: Complains
+
+            ```gherkin
+            Given the counter counts
+            When the counter complains
+            ```
             """);
         _server = new BddMcpServer(_solution);
     }
@@ -121,8 +128,8 @@ public sealed class McpRunTests : IDisposable
 
         var runs = Answer(Call("last_runs", new JsonObject { ["path"] = Feature })).AsArray();
 
-        Assert.Equal(["Counts", "Fails"], runs.Select(run => (string?)run!["scenario"]));
-        Assert.Equal("Failed", (string?)runs[1]!["status"], ignoreCase: true);
+        Assert.Equal(["Complains", "Counts", "Fails"], runs.Select(run => (string?)run!["scenario"]));
+        Assert.Equal("Failed", (string?)runs[2]!["status"], ignoreCase: true);
     }
 
     [Fact]
@@ -150,6 +157,20 @@ public sealed class McpRunTests : IDisposable
         Assert.Equal(1, (int?)answer["count"]);
         var failed = answer["failing"]![0]!;
         Assert.Equal(("Fails", "Features/counter.feature.md#Fails", "assertion"), ((string?)failed["scenario"], (string?)failed["address"], (string?)failed["kind"]));
+    }
+
+    [Fact]
+    public void StepLog_GivesWhatTheAppSaidAtItsStep_OnlyFromTheNewestRun()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 19 });
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 19 });
+
+        var log = Answer(Call("step_log", new JsonObject { ["path"] = Feature, ["line"] = 19 }));
+
+        var step = Assert.Single(log["steps"]!.AsArray())!;
+        Assert.Equal(23, (int)step["line"]!);
+        var said = Assert.Single(step["events"]!.AsArray())!;
+        Assert.Equal(("warning", "counter", "Counted too often"), ((string?)said["level"], (string?)said["source"], (string?)said["message"]));
     }
 
     [Fact]

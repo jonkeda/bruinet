@@ -644,13 +644,16 @@ Bruinet.Bdd.BddStepMove.Into = 1 -> Bruinet.Bdd.BddStepMove
 Bruinet.Bdd.BddStepMove.Out = 2 -> Bruinet.Bdd.BddStepMove
 Bruinet.Bdd.BddStepMove.Over = 0 -> Bruinet.Bdd.BddStepMove
 Bruinet.Bdd.BddStepResult
+Bruinet.Bdd.BddStepResult.AppEvents.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
 Bruinet.Bdd.BddStepResult.BddStepResult(Bruinet.Bdd.BddStepResultStatus Status, Bruinet.Bdd.BddStepInvocation! Invocation, string? Message = null, System.Exception? Exception = null) -> void
-Bruinet.Bdd.BddStepResult.Exception.get -> System.Exception?
-Bruinet.Bdd.BddStepResult.Exception.init -> void
 Bruinet.Bdd.BddStepResult.Duration.get -> System.TimeSpan?
 Bruinet.Bdd.BddStepResult.Duration.init -> void
+Bruinet.Bdd.BddStepResult.Exception.get -> System.Exception?
+Bruinet.Bdd.BddStepResult.Exception.init -> void
 Bruinet.Bdd.BddStepResult.Invocation.get -> Bruinet.Bdd.BddStepInvocation!
 Bruinet.Bdd.BddStepResult.Invocation.init -> void
+Bruinet.Bdd.BddStepResult.LogWindow.get -> (long Mark, Bruinet.Core.Testing.TestScope! Scope)?
+Bruinet.Bdd.BddStepResult.LogWindow.init -> void
 Bruinet.Bdd.BddStepResult.Message.get -> string?
 Bruinet.Bdd.BddStepResult.Message.init -> void
 Bruinet.Bdd.BddStepResult.Status.get -> Bruinet.Bdd.BddStepResultStatus
@@ -798,7 +801,6 @@ Bruinet.Bdd.Runner.BddRunnerClose
 Bruinet.Bdd.Runner.BddRunnerClose.BddRunnerClose(bool Keep = false) -> void
 Bruinet.Bdd.Runner.BddRunnerClose.Keep.get -> bool
 Bruinet.Bdd.Runner.BddRunnerClose.Keep.init -> void
-Bruinet.Bdd.Runner.BddRunnerDone
 Bruinet.Bdd.Runner.BddRunnerControlState
 Bruinet.Bdd.Runner.BddRunnerControlState.BddRunnerControlState(string! Name, string! Kind, bool? Shown, string? Value, string? Unreadable) -> void
 Bruinet.Bdd.Runner.BddRunnerControlState.Kind.get -> string!
@@ -811,15 +813,7 @@ Bruinet.Bdd.Runner.BddRunnerControlState.Unreadable.get -> string?
 Bruinet.Bdd.Runner.BddRunnerControlState.Unreadable.init -> void
 Bruinet.Bdd.Runner.BddRunnerControlState.Value.get -> string?
 Bruinet.Bdd.Runner.BddRunnerControlState.Value.init -> void
-Bruinet.Bdd.Runner.BddRunnerPageState
-Bruinet.Bdd.Runner.BddRunnerPageState.BddRunnerPageState(string? Page, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>! Controls, string? Reason) -> void
-Bruinet.Bdd.Runner.BddRunnerPageState.Controls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>!
-Bruinet.Bdd.Runner.BddRunnerPageState.Controls.init -> void
-Bruinet.Bdd.Runner.BddRunnerPageState.Page.get -> string?
-Bruinet.Bdd.Runner.BddRunnerPageState.Page.init -> void
-Bruinet.Bdd.Runner.BddRunnerPageState.Reason.get -> string?
-Bruinet.Bdd.Runner.BddRunnerPageState.Reason.init -> void
-Bruinet.Bdd.Runner.BddRunnerReadPage
+Bruinet.Bdd.Runner.BddRunnerDone
 Bruinet.Bdd.Runner.BddRunnerDropRecording
 Bruinet.Bdd.Runner.BddRunnerException
 Bruinet.Bdd.Runner.BddRunnerException.BddRunnerException(string! message) -> void
@@ -861,6 +855,14 @@ Bruinet.Bdd.Runner.BddRunnerOpened.Next.get -> Bruinet.Bdd.Runner.BddRunnerPosit
 Bruinet.Bdd.Runner.BddRunnerOpened.Next.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpened.Steps.get -> int
 Bruinet.Bdd.Runner.BddRunnerOpened.Steps.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState
+Bruinet.Bdd.Runner.BddRunnerPageState.BddRunnerPageState(string? Page, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>! Controls, string? Reason) -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Controls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>!
+Bruinet.Bdd.Runner.BddRunnerPageState.Controls.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Page.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPageState.Page.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Reason.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPageState.Reason.init -> void
 Bruinet.Bdd.Runner.BddRunnerPosition
 Bruinet.Bdd.Runner.BddRunnerPosition.App.get -> string?
 Bruinet.Bdd.Runner.BddRunnerPosition.App.init -> void
@@ -886,6 +888,7 @@ Bruinet.Bdd.Runner.BddRunnerPrepare.Config.init -> void
 Bruinet.Bdd.Runner.BddRunnerPrepare.Pages.get -> string!
 Bruinet.Bdd.Runner.BddRunnerPrepare.Pages.init -> void
 Bruinet.Bdd.Runner.BddRunnerProtocol
+Bruinet.Bdd.Runner.BddRunnerReadPage
 Bruinet.Bdd.Runner.BddRunnerRecord
 Bruinet.Bdd.Runner.BddRunnerRecord.BddRunnerRecord(int Number, string! Name, string! Scenario, string! Folder, string? Hash, Bruinet.Bdd.Runner.BddRunnerClips! Clips, double BeatMilliseconds, bool SpeakAloud, double? PauseMilliseconds = null, bool SayBefore = false) -> void
 Bruinet.Bdd.Runner.BddRunnerRecord.BeatMilliseconds.get -> double

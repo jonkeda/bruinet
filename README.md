@@ -86,6 +86,7 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 | `Bruinet.Bdd` | Markdown feature files: parse, bind, values, tables, callable steps and run, with no UI |
 | `Bruinet.Uat` | Markdown-driven UAT scenario runtime for xUnit |
 | `Bruinet.TestData` | Typed, validated test data and test sets |
+| `Bruinet.Logging` | An app's log kept by the step that made it, for the step's result: `AddBruinetStepLog()` |
 | `Bruinet.Mocking` | WireMock servers and mock sensors for UI tests |
 
 **Platforms**

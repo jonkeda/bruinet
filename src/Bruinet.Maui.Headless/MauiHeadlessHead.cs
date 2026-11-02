@@ -47,10 +47,11 @@ public static class MauiHeadlessHead
         var options = new global::MauiHeadless.MauiTestContextOptions();
         configure?.Invoke(options);
         var context = new global::MauiHeadless.MauiTestContext(options);
-
-        // The app's log, kept by the step that made it, for the step's result (StepLog).
-        Bruinet.Logging.StepLogServices.AddBruinetStepLog(context.Services);
         arrange?.Invoke(context);
+
+        // The app's log, kept by the step that made it, for the step's result (StepLog): after the app's registrations,
+        // so one that clears the logging providers does not take it away. BRUINET_STEP_LOG=off leaves it out.
+        Bruinet.Logging.StepLogServices.AddBruinetStepLog(context.Services);
         var rendered = context.Render(root);
         return new BruinetMauiTestContextOptions
         {

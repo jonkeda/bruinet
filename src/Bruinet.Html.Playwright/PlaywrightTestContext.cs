@@ -48,14 +48,16 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
         _ownsLifecycle = true;
 
         // The browser's console errors and warnings, and its uncaught errors, kept by the step that caused them (StepLog).
+        // Raised on Playwright's own loop, which carries whatever scope it started in: elsewhere, so the latest step
+        // files them. Unsubscribed with the page, which ends with this context.
         page.Console += (_, message) =>
         {
             if (message.Type is "error" or "warning")
             {
-                StepLog.Add(message.Type == "error" ? StepLogLevel.Error : StepLogLevel.Warning, "browser", message.Text);
+                StepLog.Add(message.Type == "error" ? StepLogLevel.Error : StepLogLevel.Warning, "browser", message.Text, elsewhere: true);
             }
         };
-        page.PageError += (_, error) => StepLog.Add(StepLogLevel.Error, "browser", error);
+        page.PageError += (_, error) => StepLog.Add(StepLogLevel.Error, "browser", error, elsewhere: true);
     }
 
     private PlaywrightTestContext(

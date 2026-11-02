@@ -93,6 +93,16 @@ public sealed record BddStepResult(
     /// <summary>How long the step ran; null for a step that did not run (skipped, canceled before it began).</summary>
     public TimeSpan? Duration { get; init; }
 
+    /// <summary>Where the step's log starts and the scope it ran in (StepLog): null for a step that did not run.</summary>
+    public (long Mark, Bruinet.Core.Testing.TestScope Scope)? LogWindow { get; init; }
+
+    /// <summary>
+    /// What the app said for the step, read now: since its start, on its flow (an async continuation it started, even
+    /// after it ended) or elsewhere while it was the step entered last. Empty when nothing.
+    /// </summary>
+    public IReadOnlyList<Bruinet.Core.Logging.StepLogEntry> AppEvents
+        => LogWindow is { } window ? Bruinet.Core.Logging.StepLog.Since(window.Mark, window.Scope) : [];
+
     public static BddStepResult Passed(BddStepInvocation invocation, string? message = null)
     {
         return new BddStepResult(BddStepResultStatus.Passed, invocation, message);
@@ -240,6 +250,8 @@ public sealed class BddStepExecutionSession
 
         // The step's own time: started at its handler, so a breakpoint or the pacing before it is not counted.
         var clock = new System.Diagnostics.Stopwatch();
+        Bruinet.Core.Testing.TestScope? stepScope = null;
+        var mark = 0L;
         try
         {
             if (invocation.App is { } app)
@@ -264,7 +276,14 @@ public sealed class BddStepExecutionSession
             using (Bruinet.Core.Testing.TestScope.EnterStep($"{invocation.Step.Source.LineNumber}: {invocation.Step.Text}"))
             using (Bruinet.Core.Logging.Timing.Span("step", invocation.Step.Text))
             {
-                result = NameTheSession(await handler(_context, invocation, cancellationToken).ConfigureAwait(false)) with { Duration = clock.Elapsed };
+                // What the app says while the step runs goes with its result (StepLog): its own, not an earlier run's.
+                stepScope = Bruinet.Core.Testing.TestScope.Current;
+                mark = Bruinet.Core.Logging.StepLog.Mark();
+                result = NameTheSession(await handler(_context, invocation, cancellationToken).ConfigureAwait(false)) with
+                {
+                    Duration = clock.Elapsed,
+                    LogWindow = (mark, stepScope),
+                };
             }
 
             BreakOnFailure(invocation, result);
@@ -280,7 +299,11 @@ public sealed class BddStepExecutionSession
         }
         catch (Exception ex)
         {
-            var failed = NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex)) with { Duration = clock.Elapsed };
+            var failed = NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex)) with
+            {
+                Duration = clock.Elapsed,
+                LogWindow = stepScope is null ? null : (mark, stepScope),
+            };
             BreakOnFailure(invocation, failed);
             _results.Add(failed);
             await PaceAfterAsync(failed, cancellationToken).ConfigureAwait(false);
