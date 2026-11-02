@@ -47,6 +47,12 @@ internal static class MauiInternals
 
     // VisualElement.IsFocusedPropertyKey: IsFocused is read-only to everyone but the platform, whose
     // handler sets it through this key when focus lands or leaves; its change raises Focused and Unfocused.
+    // VisualElement.IsPlatformEnabled: true once an element has a handler. A page with it set sends its alerts
+    // to the window's alert manager instead of keeping them in its pending actions, where the dialogs are read.
+    private static readonly Lazy<PropertyInfo> IsPlatformEnabledProperty = new(() =>
+        typeof(VisualElement).GetProperty("IsPlatformEnabled", Instance)
+        ?? throw Missing("VisualElement.IsPlatformEnabled"));
+
     private static readonly Lazy<BindablePropertyKey> IsFocusedKey = new(() =>
         typeof(VisualElement).GetField("IsFocusedPropertyKey", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
             ?.GetValue(null) as BindablePropertyKey
@@ -85,6 +91,10 @@ internal static class MauiInternals
 
         return requests;
     }
+
+    /// <summary>Marks <paramref name="element"/> as having no platform, though it has a handler.</summary>
+    public static void ClearPlatformEnabled(VisualElement element)
+        => IsPlatformEnabledProperty.Value.SetValue(element, false);
 
     /// <summary>Sets <see cref="VisualElement.IsFocused"/> as the platform does.</summary>
     public static void SetFocused(VisualElement element, bool focused)

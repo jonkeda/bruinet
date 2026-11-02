@@ -39,6 +39,19 @@ public sealed class DialogTests
     }
 
     [Fact]
+    public void An_alert_the_navigation_page_raises_is_shown_as_well()
+    {
+        using var ctx = new MauiTestContext();
+        var (made, _) = Asking(async page => (await ((Page)page.Parent).DisplayAlertAsync("Delete?", "It cannot be undone.", "Delete", "Keep")).ToString());
+        var page = ctx.Render(made, o => o.WithNavigation());
+
+        page.Find<Button>("Ask").Click();
+
+        page.Find<TestDialog>().Choose("Delete");
+        page.Find<Label>("Result").Should().HaveText("True");
+    }
+
+    [Fact]
     public void Dismissed_as_by_a_back_key_an_alert_answers_false_and_is_gone()
     {
         using var ctx = new MauiTestContext();

@@ -1,5 +1,6 @@
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using MauiHeadless.Internals;
 
 namespace MauiHeadless.Hosting;
 
@@ -22,8 +23,15 @@ internal static class HeadlessNavigation
     private static void HookAll(Element root, IMauiContext mauiContext)
     {
         if (root is NavigationPage { Handler: null } navigation)
-            navigation.Handler = new HeadlessHandler(mauiContext);
+            Hook(navigation, mauiContext);
         foreach (var below in root.GetVisualTreeDescendants().OfType<NavigationPage>().Where(page => page.Handler is null))
-            below.Handler = new HeadlessHandler(mauiContext);
+            Hook(below, mauiContext);
+    }
+
+    private static void Hook(NavigationPage navigation, IMauiContext mauiContext)
+    {
+        navigation.Handler = new HeadlessHandler(mauiContext);
+        // Its alerts stay with the page, where the dialogs are read, as every other page's do.
+        MauiInternals.ClearPlatformEnabled(navigation);
     }
 }
