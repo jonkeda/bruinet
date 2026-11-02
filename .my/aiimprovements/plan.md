@@ -241,7 +241,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI20 | open | | |
 | C4 | done | Blazor 84.2% on hand-written code (generated members marked and left out) | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
 | C5 | built, target open | Maui 49 to 50.9%; the rest is platform code a device head runs; the sample slider started at 1 |
-| C6 | open | | |
+| C6 | done | (this commit) | Html's selector and range bases at 78 and 81% after the survivors became tests; Maui's survivors are device paths |
 | C7 | open | | |
 | C8 | open | | |
 

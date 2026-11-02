@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Direct, though Bruinet.Html.Bunit brings it: Stryker mutates only a project the test project names (mutate.ps1). -->
+    <ProjectReference Include="..\..\src\Bruinet.Html\Bruinet.Html.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Html.Bunit\Bruinet.Html.Bunit.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Blazor\Bruinet.Blazor.csproj" />
     <!-- The control contracts on the bUnit head (.my/coverage/plan.md, C2). -->

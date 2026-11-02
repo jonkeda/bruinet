@@ -1,0 +1,69 @@
+using Bruinet.ControlContracts.Html;
+using Bruinet.ControlContracts.Html.Pages;
+using Bruinet.Html.Controls.Range;
+using Bruinet.Html.Controls.Selection;
+
+namespace Bruinet.Html.Bunit.Tests.Contracts;
+
+// Html's selector and range controls at their edges, beyond what the contracts ask: what mutation testing of
+// SelectorControlBase and RangeControlBase found no test for (an index just out of range, an option with no value,
+// the first option, a value at the tolerance's edge).
+public sealed class HtmlSelectorEdgeTests : IAsyncLifetime
+{
+    private readonly ContractSession<BunitHead> _session = new(typeof(SelectorControls));
+
+    public Task InitializeAsync() => _session.OpenAsync();
+
+    public Task DisposeAsync() => _session.DisposeAsync().AsTask();
+
+    private SelectControl<ContractPage> List => new(_session.Page, ContractSession<BunitHead>.Selector("list"));
+
+    private SelectControl<ContractPage> Plain => new(_session.Page, ContractSession<BunitHead>.Selector("plain"));
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(3)]
+    public void AnIndexJustOutOfRange_Throws(int index)
+        => Assert.Throws<ArgumentOutOfRangeException>(() => List.SelectByIndex(index));
+
+    [Fact]
+    public void TheFirstOption_IsIndexZero()
+    {
+        List.SelectByIndex(0);
+
+        Assert.Equal((0, "Apple"), (List.GetSelectedIndex(), List.GetSelectedText()));
+    }
+
+    [Fact]
+    public void AnOptionWithNoValue_IsChosenByItsText()
+    {
+        Plain.SelectByText("Plum");
+        Assert.Equal("Plum", Plain.GetSelectedText());
+
+        Plain.SelectByIndex(0);
+        Assert.Equal("Pear", Plain.GetSelectedText());
+    }
+
+    [Fact]
+    public void AnUnknownText_SaysItWasNotFound()
+        => Assert.Contains("was not found", Assert.Throws<InvalidOperationException>(() => List.SelectByText("Durian")).Message);
+}
+
+public sealed class HtmlRangeEdgeTests : IAsyncLifetime
+{
+    private readonly ContractSession<BunitHead> _session = new(typeof(RangeControls));
+
+    public Task InitializeAsync() => _session.OpenAsync();
+
+    public Task DisposeAsync() => _session.DisposeAsync().AsTask();
+
+    private RangeInputControl<ContractPage> Slider => new(_session.Page, ContractSession<BunitHead>.Selector("slider"));
+
+    // The slider is at 2: 3 is within 1 of it, at the edge.
+    [Fact]
+    public void AValueAtTheToleranceEdge_IsWithin()
+    {
+        Assert.True(Slider.WaitValueWithin(3, 1));
+        Slider.AssertValueWithin(3, 1);
+    }
+}

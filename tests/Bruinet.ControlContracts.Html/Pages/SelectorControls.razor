@@ -12,8 +12,15 @@
     }
 </div>
 
+@* A drop-down whose options have no value: chosen by their text. Bound, so bUnit keeps its choice. *@
+<select data-testid="plain" @bind="plain">
+    <option>Pear</option>
+    <option>Plum</option>
+</select>
+
 @code {
     private static readonly (string Value, string Text)[] Fruits = [("a", "Apple"), ("b", "Banana"), ("c", "Cherry")];
     private string choice = "b";
     private string fruit = "b";
+    private string plain = "Pear";
 }

@@ -9,8 +9,9 @@
     notice: a test to add, or code no test needs. Fails when a library's score on the changed code
     is under -Break. Reports land in TestResults/mutation/<library>.
 
-    The libraries are the ones whose logic their own unit tests prove; the drivers and controls are
-    proven by the UI suites, which Stryker cannot run.
+    The libraries are the ones whose logic their own unit tests prove, and the controls whose suites
+    run in the test process: Html's on bUnit, Blazor's on its unit tests, Maui's on MauiHeadless
+    (BRUINET_HEAD=headless). The drivers and the device heads stay with the UI suites.
 
 .PARAMETER Since
     The revision the change starts from. Default: origin/move.
@@ -22,14 +23,24 @@
 .PARAMETER All
     Mutate every file, not only the changed ones: a baseline, minutes per library.
 
+.PARAMETER Mutate
+    Only these files, as globs under each library (for example '**/Controls/RangeControlBase.tpl.cs'),
+    whatever changed: a baseline of the files named. With -Library, one library.
+
+.PARAMETER Library
+    Only this library.
+
 .EXAMPLE
     ./tools/Scripts/mutate.ps1
     ./tools/Scripts/mutate.ps1 -Since HEAD~3 -Break 70
+    ./tools/Scripts/mutate.ps1 -Library Bruinet.Html -Mutate '**/Controls/RangeControlBase.tpl.cs'
 #>
 param(
     [string] $Since = 'origin/move',
     [int] $Break = 0,
-    [switch] $All
+    [switch] $All,
+    [string[]] $Mutate = @(),
+    [string] $Library
 )
 
 $ErrorActionPreference = 'Stop'
@@ -43,30 +54,43 @@ $libraries = [ordered]@{
     'Bruinet.TestData'     = 'Bruinet.TestData.Tests'
     'Bruinet.Mocking.Data' = 'Bruinet.Mocking.Data.Tests'
     'Bruinet.Recording'    = 'Bruinet.Recording.Tests'
+    'Bruinet.Html'         = 'Bruinet.Html.Bunit.Tests'
+    'Bruinet.Blazor'       = 'Bruinet.Blazor.Tests'
+    'Bruinet.Maui'         = 'Bruinet.Maui.UITests'
 }
+
+# A library whose suite needs a head: the one that runs in the test process.
+$heads = @{ 'Bruinet.Maui' = 'headless' }
 
 # The changed files come from git here: Stryker's own --since cannot read a submodule's history.
 $changed = git diff --name-only $Since -- src
 $failed = @()
-foreach ($library in $libraries.Keys) {
-    $files = @($changed | Where-Object { $_ -like "src/$library/*.cs" -and $_ -notlike '*.gen.cs' -and (Test-Path $_) })
-    if (-not $All -and -not $files) { continue }
+foreach ($current in $libraries.Keys) {
+    if ($Library -and $current -ne $Library) { continue }
+    $files = @($changed | Where-Object { $_ -like "src/$current/*.cs" -and $_ -notlike '*.gen.cs' -and (Test-Path $_) })
+    if (-not $All -and -not $Mutate -and -not $files) { continue }
 
-    $output = Join-Path $root "TestResults/mutation/$library"
-    $arguments = @('--project', "$library.csproj", '--target-framework', 'net10.0',
+    $output = Join-Path $root "TestResults/mutation/$current"
+    $arguments = @('--project', "$current.csproj", '--target-framework', 'net10.0',
         '--reporter', 'html', '--reporter', 'json', '--reporter', 'progress',
         '--break-at', $Break, '--output', $output)
-    if (-not $All) {
-        foreach ($file in $files) { $arguments += '--mutate', ('**/' + $file.Substring("src/$library/".Length)) }
+    if ($Mutate) {
+        foreach ($glob in $Mutate) { $arguments += '--mutate', $glob }
+    }
+    elseif (-not $All) {
+        foreach ($file in $files) { $arguments += '--mutate', ('**/' + $file.Substring("src/$current/".Length)) }
     }
 
-    Write-Host "== $library"
-    Push-Location (Join-Path $root "tests/$($libraries[$library])")
+    Write-Host "== $current"
+    Push-Location (Join-Path $root "tests/$($libraries[$current])")
+    $head = $env:BRUINET_HEAD
     try {
+        if ($heads[$current]) { $env:BRUINET_HEAD = $heads[$current] }
         dotnet tool run dotnet-stryker -- @arguments
-        if ($LASTEXITCODE -ne 0) { $failed += $library }
+        if ($LASTEXITCODE -ne 0) { $failed += $current }
     }
     finally {
+        $env:BRUINET_HEAD = $head
         Pop-Location
     }
 }
