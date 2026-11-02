@@ -131,3 +131,25 @@ public sealed class TestSettingsEnumTests
         Assert.Contains("Valid values are: Sunday, Monday", error.ToString());
     }
 }
+
+// A context with no pixels saves its tree as text beside the screenshot's path: the service gives that file.
+public sealed class ScreenshotServiceTests : IDisposable
+{
+    private readonly string _folder = Directory.CreateTempSubdirectory("bruinet-shots-").FullName;
+
+    public void Dispose() => Directory.Delete(_folder, recursive: true);
+
+    [Fact]
+    public void AContextWithNoPixels_GivesTheTreeItSavedInstead()
+    {
+        var service = new Bruinet.Core.Services.ScreenshotService(
+            path => File.WriteAllText(Bruinet.Core.Services.ScreenshotService.TreePathFor(path), "Page\n  Button #Save"),
+            NullTestLogger.Instance,
+            new Bruinet.Core.Configuration.ScreenshotSettings { OutputDirectory = _folder, IncludeTimestamp = false });
+
+        var saved = service.Capture("Tests", "Saves", "failure");
+
+        Assert.EndsWith(".tree.txt", saved);
+        Assert.Contains("Button #Save", File.ReadAllText(saved));
+    }
+}

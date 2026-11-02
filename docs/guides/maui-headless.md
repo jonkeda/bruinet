@@ -160,7 +160,10 @@ ends its call at once with `DeviceOnlyException` naming the member.
   modal page when its type is in the context's `DialogPages` (`options.DialogPages.Add(typeof(PopupPage))`
   in `MauiHeadlessHead.Options`' `configure`). That is the page a platform draws as a popup: Mopups' and
   an app's own popup pages, which are WinUI popups on Windows. Its buttons are found by their label's
-  text and its field by `PromptInput`, and an alert raised while it is open is on top of it.
+  text and its field by `PromptInput`, and an alert raised while it is open is on top of it. A popup shim
+  (an app's stand-in for Mopups' `PopupNavigation`) follows the window's modal stack and keeps no stack of
+  its own: the head pops modal pages itself (a back, `ClearWindow`), and a shim with its own stack is then
+  left holding popups that are gone.
 - **Between tests** `ResetAppState` (or `MauiHeadlessDriver.ClearWindow`, which says what it cleared)
   takes focus away, dismisses every dialog, pops the modals and goes back to the navigation root. The
   app's services and data stay: those are the fixture's. A fixture that logs a non-empty `ClearWindow`

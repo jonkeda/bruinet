@@ -74,6 +74,10 @@ public class ScreenshotService : IScreenshotService
         return CaptureAndSave(filename, testClass, testMethod, reason);
     }
 
+    /// <summary>Where a context with no pixels saves its tree instead of the screenshot at <paramref name="path"/>.</summary>
+    /// <param name="path">The screenshot's path.</param>
+    public static string TreePathFor(string path) => Path.ChangeExtension(path, ".tree.txt");
+
     /// <summary>
     /// Generates a filename following the pattern: {TestClass}_{TestMethod}_{Timestamp}_{Description}.{ext}
     /// </summary>
@@ -97,6 +101,12 @@ public class ScreenshotService : IScreenshotService
             EnsureDirectoryExists();
             var path = Path.Combine(_settings.OutputDirectory, filename);
             _save(path);
+
+            // A context with no pixels saved its tree as text beside it (TreePathFor): that file is the evidence.
+            if (!File.Exists(path) && File.Exists(TreePathFor(path)))
+            {
+                path = TreePathFor(path);
+            }
             _logger.LogScreenshot(testMethod, testClass, path, reason);
             TestArtifactManifestWriter.RecordArtifact(
                 path,

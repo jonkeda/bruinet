@@ -16,6 +16,7 @@ public class GridCollectionDemoPage : PageObjectBase<GridCollectionDemoPage>
     {
         ProductForm = new ProductFormContainer(this, "ProductFormContainer");
         Products = new ProductCollection(this, "ProductListContainer");
+        Shortcuts = new ShortcutRows(this);
     }
 
     /// <inheritdoc />
@@ -30,4 +31,10 @@ public class GridCollectionDemoPage : PageObjectBase<GridCollectionDemoPage>
 
     /// <summary>The product collection.</summary>
     public ProductCollection Products { get; }
+
+    /// <summary>Rows opened by a tap on the row.</summary>
+    public ShortcutRows Shortcuts { get; }
+
+    /// <summary>Which shortcut was opened last.</summary>
+    public Label<GridCollectionDemoPage> OpenedProduct => new(this, "OpenedProductLabel");
 }

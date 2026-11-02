@@ -18,6 +18,7 @@
              xmlns:uia="clr-namespace:Bruinet.Maui.AppSupport.Uia;assembly=Bruinet.Maui.AppSupport"
              xmlns:viewModels="using:Bruinet.Samples.Maui.App.ViewModels"
              x:Class="Bruinet.Samples.Maui.App.Views2.TestViews.GridCollectionDemoView"
+             x:Name="PageRoot"
              x:DataType="viewModels:GridCollectionDemoViewModel"
              BackgroundColor="{AppThemeBinding Light=White, Dark=#1F1F1F}">
 
@@ -26,7 +27,7 @@
     </ContentView.BindingContext>
 
     <!-- Auto row: the form. Star row: the collection, which scrolls itself. -->
-    <Grid RowDefinitions="Auto,Auto,*" Padding="20" RowSpacing="15">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="15">
 
         <Label Grid.Row="0"
                AutomationId="PageTitle"
@@ -173,6 +174,25 @@
                 </HorizontalStackLayout>
             </Grid>
         </controls:AutomationContainer>
+
+        <!-- A row opened by a tap, as Construction's journal rows are: a Grid in the item template with a
+             TapGestureRecognizer whose command is bound through x:Reference to the page's view model. -->
+        <VerticalStackLayout Grid.Row="3" Spacing="6">
+            <Label AutomationId="OpenedProductLabel" Text="{Binding OpenedProduct}" />
+            <CollectionView AutomationId="ShortcutCollectionView" ItemsSource="{Binding Shortcuts}" HeightRequest="120">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:ProductItem">
+                        <Grid AutomationId="ShortcutRow" Padding="8">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={x:Reference PageRoot}, Path=BindingContext.OpenProductCommand, x:DataType=ContentView}"
+                                                      CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Label AutomationId="ShortcutNameLabel" Text="{Binding Name}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
 
     </Grid>
 </ContentView>

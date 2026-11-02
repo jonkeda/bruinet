@@ -1101,6 +1101,7 @@ static Bruinet.Core.Recording.Interactions.Report(Bruinet.Core.Recording.Interac
 static Bruinet.Core.Recording.Interactions.ReportSwipe(System.Func<System.Drawing.Rectangle>! bounds, int dx, int dy, System.Func<string?>? label = null, System.Func<Bruinet.Core.Recording.RecordingTarget?>? target = null) -> Bruinet.Core.Recording.Interactions.Scope
 static Bruinet.Core.Recording.RecordingTarget.ForWindow(string? handle) -> Bruinet.Core.Recording.RecordingTarget?
 static Bruinet.Core.Scopes.ScopeReadiness.Ready(string! scopeName) -> Bruinet.Core.Scopes.ScopeReadiness
+static Bruinet.Core.Services.ScreenshotService.TreePathFor(string! path) -> string!
 static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.TestSettings!
 static Bruinet.Core.Testing.BddNamespaceAttribute.Of(System.Type! type) -> string?
 static Bruinet.Core.Testing.MauiHeads.Current.get -> Bruinet.Core.Testing.MauiHead

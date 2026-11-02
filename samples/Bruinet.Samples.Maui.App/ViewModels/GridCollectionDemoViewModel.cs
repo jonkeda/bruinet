@@ -38,6 +38,8 @@ public class GridCollectionDemoViewModel : ParentViewModel
         ClearProductsCommand = new RelayCommand(() => Products.Clear());
         BulkAddProductsCommand = new RelayCommand(BulkAddProducts);
         ResetDemoCommand = new RelayCommand(ResetDemo);
+        OpenProductCommand = new RelayCommand<ProductItem>(product => OpenedProduct = $"Opened {product?.Name}");
+        Shortcuts = [new ProductItem { Name = "Excavator" }, new ProductItem { Name = "Crane" }];
 
         ResetDemo();
     }
@@ -106,6 +108,19 @@ public class GridCollectionDemoViewModel : ParentViewModel
     public int ProductCount => Products.Count;
 
     public bool IsProductListEmpty => Products.Count == 0;
+
+    /// <summary>Rows opened by a tap on the row (a recognizer bound through x:Reference), as Construction's.</summary>
+    public ObservableCollection<ProductItem> Shortcuts { get; }
+
+    public ICommand OpenProductCommand { get; }
+
+    public string OpenedProduct
+    {
+        get => _openedProduct;
+        private set => SetProperty(ref _openedProduct, value);
+    }
+
+    private string _openedProduct = string.Empty;
 
     public ICommand DeleteProductCommand { get; }
     public ICommand ClearProductsCommand { get; }

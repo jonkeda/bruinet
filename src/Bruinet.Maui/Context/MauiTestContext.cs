@@ -171,6 +171,14 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
         ArgumentNullException.ThrowIfNull(path);
 
         var screenshot = _driver.TakeScreenshot();
+
+        // A head with no pixels (MauiHeadless) saves the tree it reads instead, as text: an empty .png is no evidence.
+        if (screenshot.Length == 0)
+        {
+            File.WriteAllText(Bruinet.Core.Services.ScreenshotService.TreePathFor(path), _driver.GetPageSource());
+            return;
+        }
+
         File.WriteAllBytes(path, screenshot);
     }
 
