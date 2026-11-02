@@ -4,8 +4,7 @@ namespace Bruinet.Maui.UITests.Tests.Collection;
 
 /// <summary>
 /// A list that loads its first page after its page appears and the next as it nears its end
-/// (<c>RemainingItemsThreshold</c>): a search for a row finds it however many pages away. The Windows
-/// head does not page it yet (<see cref="WindowsGapFactAttribute"/>).
+/// (<c>RemainingItemsThreshold</c>): a search for a row finds it however many pages away, on every head.
 /// </summary>
 [Collection("Maui")]
 [Trait("Category", "UITest")]
@@ -19,8 +18,8 @@ public class PagedListTests
         _page = fixture.NavigateToPagedList();
     }
 
-    private const string NoThresholdOnWindows =
-        "the list pages, but a search steps one row per scroll and calls it the end before the next page lands, and ScrollToEnd stops short of the first page's threshold";
+    // Three pages fetched and added on the app's UI thread, between a device's reads of each row.
+    private const int PagingMs = 10000;
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task FirstPage_ArrivesAfterThePageAppears()
@@ -30,20 +29,20 @@ public class PagedListTests
         return Task.CompletedTask;
     }
 
-    [WindowsGapFact(NoThresholdOnWindows, Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task RowOnPageThree_IsFoundByLoadingThePagesBeforeIt()
     {
-        _page.Rows.Row("Item 45").Text.AssertText("Item 45");
+        _page.Rows.Row("Item 45", PagingMs).Text.AssertText("Item 45");
 
         return Task.CompletedTask;
     }
 
-    [WindowsGapFact(NoThresholdOnWindows, Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task ScrollToEnd_LoadsEveryPage()
     {
         _page.Rows.Row("Item 1");
 
-        _page.Rows.ScrollToEnd();
+        _page.Rows.ScrollToEnd(PagingMs);
 
         _page.Status.AssertText("60 of 60");
         _page.Rows.Row("Item 60").Text.AssertText("Item 60");

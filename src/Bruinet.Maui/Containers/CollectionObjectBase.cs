@@ -265,7 +265,13 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     {
         var roots = TryGetItemRoots();
         NoticeRepeatedPositions(roots);
-        return string.Join(",", roots.Select(root => LogicalIndexOf(root)?.ToString(CultureInfo.InvariantCulture) ?? "-"));
+        var indexes = roots.Select(LogicalIndexOf).ToList();
+
+        // Rows that report no position: a virtualizing list recycles a fixed set of them, so their count
+        // and their unknown indexes look the same after a scroll; where they are on screen does not.
+        return indexes.Count > 0 && indexes.All(index => index is null)
+            ? "@" + string.Join(",", roots.Select(root => root.Location.Y.ToString(CultureInfo.InvariantCulture)))
+            : string.Join(",", indexes.Select(index => index?.ToString(CultureInfo.InvariantCulture) ?? "-"));
     }
 
     /// <summary>
@@ -976,6 +982,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         public bool Jumped;
         public bool UsedLastIntoView;
         public bool TriedLastIntoView;
+        public long? AtEndSinceMs;
     }
 
     /// <summary>
@@ -1002,6 +1009,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                     if (GetItemCount() > state.CountBefore || realized != state.RealizedBefore)
                     {
                         state.TriedLastIntoView = false;
+                        state.AtEndSinceMs = null;
                         if (state.Jumped)
                         {
                             // Rows read while the list is still recycling mix up positions and
@@ -1029,6 +1037,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                         break;
                     }
 
+
                     return Observation.Missing(EndOfList);
                 }
 
@@ -1055,7 +1064,15 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         state.CountBefore = GetItemCount();
         if (!ScrollOnce(root, nextIndex(), state))
         {
-            return Observation.Missing(EndOfList);
+            // At its end a paging list asks for its next page (RemainingItemsThresholdReached), whose
+            // rows land a moment later below the viewport, unrealized: the step is tried again for a
+            // while, and a list that grew moves. Never past the call's budget: a search with less left
+            // than the wait ends here, as it did before lists paged.
+            state.AtEndSinceMs ??= context.Deadline.ElapsedMs;
+            var waitLeft = NextPageWindowMs - (context.Deadline.ElapsedMs - state.AtEndSinceMs.Value);
+            return waitLeft > 0 && context.Deadline.RemainingMs > waitLeft + PollingIntervalMs
+                ? Observation.Pending("at the end, waiting for a next page")
+                : Observation.Missing(EndOfList);
         }
 
         state.Phase = MaterializePhase.AwaitingProgress;
@@ -1066,12 +1083,20 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     /// <summary>How long a scroll step's new rows may take to appear before the step counts as the end.</summary>
     private int ProgressWindowMs => Math.Max(AnimationMs, PollingIntervalMs * 5);
 
+    /// <summary>
+    /// How long a list at its end gets to grow before it is the end: a next page is fetched and added on
+    /// the app's UI thread, which the automation's reads keep busy during a search.
+    /// </summary>
+    private int NextPageWindowMs => ProgressWindowMs * 3;
+
     /// <summary>One scroll step toward <paramref name="nextIndex"/>; false when the list cannot move.</summary>
     private bool ScrollOnce(IMauiElement root, int nextIndex, Materialization state)
     {
         // On a collection known not to jump, pull the last realized row into view first, which
         // makes the virtualizing panel realize the rows after it.
-        if (_lastScrollJumped == false && !state.TriedLastIntoView && TryScrollLastItemIntoView())
+        // Not at the end, where the last row is in view and only a next page can add more.
+        if (_lastScrollJumped == false && !state.TriedLastIntoView && state.AtEndSinceMs is null
+            && TryScrollLastItemIntoView())
         {
             state.TriedLastIntoView = true;
             state.UsedLastIntoView = true;

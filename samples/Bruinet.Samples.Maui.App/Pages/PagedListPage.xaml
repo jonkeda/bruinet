@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
     A paged list, as an app's selection sheet is (its first page taller than the window, as a device
-    raises RemainingItemsThresholdReached only for a list that scrolls): the first page loads after the page appears, the
+    raises RemainingItemsThresholdReached only for a list that scrolls; KeepScrollOffset, as on Windows
+    the default KeepItemsInView jumps the list to its top when a page is added): the first page loads after the page appears, the
     next when the list nears its end (RemainingItemsThreshold), a search replaces the list's source,
     a header holds rows that are not items, and an overlay shows while a page loads.
 -->
@@ -31,6 +32,7 @@
                         AutomationId="PagedListView"
                         ItemsSource="{Binding Rows}"
                         ItemSizingStrategy="MeasureAllItems"
+                        ItemsUpdatingScrollMode="KeepScrollOffset"
                         RemainingItemsThreshold="2"
                         RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
             <CollectionView.Header>

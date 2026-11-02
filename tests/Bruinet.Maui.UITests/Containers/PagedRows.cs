@@ -18,5 +18,5 @@ public class PagedRows : CollectionObjectBase<PagedListTestPage, PagedRows, Page
     }
 
     /// <summary>The row showing <paramref name="text"/>, loading pages until it is there.</summary>
-    public PagedRow Row(string text) => ItemWhere(row => row.Text.GetText() == text);
+    public PagedRow Row(string text, int? timeoutMs = null) => ItemWhere(row => row.Text.GetText() == text, timeoutMs);
 }

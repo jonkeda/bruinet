@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiHeadless: a collection search or `ScrollToEnd` past a list's last row no longer ends at once:
   the app's loading is let finish and a paging list's `RemainingItemsThresholdReached` is raised, as a
   device's list does at its end. The Maui sample has a paged list page (`PagedListTests`).
+- A collection search or `ScrollToEnd` on a paging list reaches its later pages on Windows: at a
+  list's end the Windows head nudges it (a step back and forward), as MAUI decides the next page from
+  a last-visible index a jump leaves stale; at the end a search waits a moment for the page to land,
+  within its budget; and rows that report no position count as new when they move on screen.
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name

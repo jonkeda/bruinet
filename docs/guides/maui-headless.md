@@ -177,7 +177,8 @@ Windows, Android 16 (emulator) and MauiHeadless; iOS from how XCUITest reports i
 | Sticky group headers | cover the rows under them, which stay "on screen" | not pinned | not pinned by default | no layout | Known: turn them off in the app (`ItemsStackPanel.AreStickyGroupHeadersEnabled`) |
 | A button's text with `SemanticProperties.Description` | the description | the text | the description | the text | Known: read both, or assert what the app shows |
 | A modal page as `ContentDialog` | only a WinUI popup (Mopups, a platform popup) | as Windows | as Windows | a modal page whose type is in `DialogPages` | Known: register the app's popup page types (`PopupPageDialogTests`) |
-| A list's next page (`RemainingItemsThresholdReached`) | raised, but a search steps one row a scroll and ends before the page lands | not tried | not tried | raised at the list's end | Known on Windows (`PagedListTests`, `WindowsGapFact`; `BRUINET_RUN_GAPS=1` runs them) |
+| A list's next page (`RemainingItemsThresholdReached`) | missed after a jump to the end (a stale last-visible index) | not tried | not tried | raised at the list's end | Fixed: at a list's end Windows nudges it, and a search waits a moment for the page (`PagedListTests`) |
+| Rows added at a list's end | the list jumps to its top (`ItemsUpdatingScrollMode` `KeepItemsInView`) | not tried | not tried | no scrolling | Known: a paging list sets `KeepScrollOffset` |
 | The Shell title | `title` | `title` (mapped) | `title` (mapped) | `title` (mapped) | Fixed |
 
 ## MauiHeadless On Its Own

@@ -654,6 +654,10 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
 
         var before = (scroll.VerticalScrollPercent.ValueOrDefault, scroll.HorizontalScrollPercent.ValueOrDefault);
 
+        // A list already at its end cannot step on: it is only nudged, without waiting out a step's move.
+        if (horizontalSteps == 0 && NudgeAtTheEnd(scroll, verticalSteps))
+            return ScrollStep.NotMoved;
+
         try
         {
             scroll.Scroll(ToAmount(horizontalSteps), ToAmount(verticalSteps));
@@ -669,6 +673,41 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
         // pre-scroll value, making a successful scroll look like no progress.
         return WaitForScrollChange(scroll, before) ? ScrollStep.Moved : ScrollStep.NotMoved;
     });
+
+    /// <summary>
+    /// At a list's end, a small step back and forward again: MAUI's CollectionView on Windows decides
+    /// <c>RemainingItemsThresholdReached</c> on each scroll from the panel's last visible index, which a
+    /// jump to the end leaves stale (measured: offset at the end, last visible 10 of 20), so a paging
+    /// list is never asked for its next page. The second scroll reads it fresh.
+    /// </summary>
+    /// <returns>True when the list was at its end (and nudged), false when it was not, or no list.</returns>
+    private bool NudgeAtTheEnd(IScrollPattern scroll, int verticalSteps)
+    {
+        if (verticalSteps <= 0
+            || _element.ControlType != ControlType.List
+            || scroll.VerticalScrollPercent.ValueOrDefault < 99.9)
+        {
+            return false;
+        }
+
+        try
+        {
+            var atEnd = (scroll.VerticalScrollPercent.ValueOrDefault, scroll.HorizontalScrollPercent.ValueOrDefault);
+            scroll.Scroll(ScrollAmount.NoAmount, ScrollAmount.SmallDecrement);
+            if (WaitForScrollChange(scroll, atEnd))
+            {
+                var back = (scroll.VerticalScrollPercent.ValueOrDefault, scroll.HorizontalScrollPercent.ValueOrDefault);
+                scroll.Scroll(ScrollAmount.NoAmount, ScrollAmount.LargeIncrement);
+                WaitForScrollChange(scroll, back);
+            }
+        }
+        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        {
+            // A list that refuses the nudge is left where it is: the end it reported stands.
+        }
+
+        return true;
+    }
 
     /// <summary>The height below which a swipe has no room to travel.</summary>
     private const int MinimumSwipeHeight = 40;
