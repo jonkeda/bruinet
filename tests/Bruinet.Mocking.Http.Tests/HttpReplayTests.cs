@@ -298,6 +298,23 @@ public sealed class HttpReplayTests : IDisposable
         Assert.Throws<ArgumentException>(() => HttpReplaySession.ModeFromEnvironment(_ => "sometimes"));
     }
 
+    [Fact]
+    public void A_suites_settings_make_the_options_and_a_dependencys_mode_the_session()
+    {
+        var options = HttpReplayOptions.ForSuite(hermetic: true, "x-functions-key", "recorded", "https://*.openai.azure.com, preset model");
+
+        Assert.True(options.Hermetic);
+        Assert.Equal(HttpReplayPace.Recorded, options.Pace);
+        Assert.Contains("x-functions-key", options.RedactedHeaders);
+        Assert.Contains("temperature", options.IgnoredFields);
+        Assert.Throws<ArgumentException>(() => HttpReplayOptions.ForSuite(false, where: "preset nonsense"));
+
+        Assert.Null(HttpReplaySession.ForMode("real", _folder, "t"));
+        Assert.Null(HttpReplaySession.ForMode("stub", _folder, "t"));
+        Assert.Equal(HttpReplayMode.Record, HttpReplaySession.ForMode("Record", _folder, "t")!.Mode);
+        Assert.Throws<ArgumentException>(() => HttpReplaySession.ForMode("copy", _folder, "t"));
+    }
+
     private static StringContent Json(string body) => new(body, Encoding.UTF8, "application/json");
 
     private async Task RecordAsync(Func<HttpClient, Task> calls)

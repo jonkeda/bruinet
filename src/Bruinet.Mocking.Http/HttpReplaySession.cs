@@ -155,6 +155,24 @@ public sealed class HttpReplaySession
         return System.IO.Path.Combine(folder, "http", name + ".json");
     }
 
+    /// <summary>
+    /// The session a dependency's mode asks for (its <c>## Dependencies</c> row): <c>record</c>, <c>replay</c> or
+    /// <c>refresh</c>; null for <c>real</c> and <c>stub</c>, which take no session.
+    /// </summary>
+    /// <exception cref="ArgumentException">A mode an http dependency does not take.</exception>
+    public static HttpReplaySession? ForMode(string mode, string folder, string test, HttpReplayOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(mode);
+        return mode.Trim().ToLowerInvariant() switch
+        {
+            "real" or "stub" => null,
+            "record" => new HttpReplaySession(HttpReplayMode.Record, PathFor(folder, test), options),
+            "replay" => new HttpReplaySession(HttpReplayMode.Replay, PathFor(folder, test), options),
+            "refresh" => new HttpReplaySession(HttpReplayMode.Refresh, PathFor(folder, test), options),
+            _ => throw new ArgumentException($"An http dependency is real, record, replay, refresh or stub, not '{mode}'.", nameof(mode)),
+        };
+    }
+
     /// <summary>The session <see cref="ModeVariable"/> asks for, or null when it is off.</summary>
     public static HttpReplaySession? FromEnvironment(string folder, string test, HttpReplayOptions? options = null)
         => ModeFromEnvironment() is var mode && mode == HttpReplayMode.Off ? null : new HttpReplaySession(mode, PathFor(folder, test), options);

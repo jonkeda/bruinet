@@ -29,6 +29,12 @@ public sealed record BddConfig(
     /// <summary>The namespaces every scenario of the suite uses, from the <c>## Using</c> table.</summary>
     public IReadOnlyList<string> Usings { get; init; } = [];
 
+    /// <summary>
+    /// How the suite's tests get what is outside the app, from the <c>## Dependencies</c> table as written; a run's
+    /// overrides are applied by <see cref="BddDependencies.Effective"/>. Empty for a suite with no table.
+    /// </summary>
+    public IReadOnlyList<BddDependency> Dependencies { get; init; } = [];
+
     /// <summary>The suite's <c>Head</c>, trimmed; null when it names none.</summary>
     public string? SuiteHead => Runtime.TryGetValue(BddConfigFields.Head, out var head) && head.Trim() is { Length: > 0 } trimmed ? trimmed : null;
 
@@ -361,6 +367,7 @@ public static class BddConfigParser
         {
             Apps = apps,
             Usings = usings,
+            Dependencies = sections.TryGetValue("Dependencies", out var dependencies) ? ReadDependencies(dependencies) : [],
         };
     }
 
@@ -389,6 +396,17 @@ public static class BddConfigParser
             Apps = TestAppDefinition.ReadMarkdownFile(path).Select(app => new BddAppConfig(app.Name, app.Values)).ToArray(),
         };
     }
+
+    private static List<BddDependency> ReadDependencies(BddTable table)
+        => [.. table.Rows
+            .Where(row => row.Cells.TryGetValue("Name", out var name) && name.Length > 0)
+            .Select(row => new BddDependency(
+                row.Cells["Name"],
+                Cell(row, "Kind").ToLowerInvariant(),
+                Cell(row, "Mode").ToLowerInvariant(),
+                Cell(row, "Where").Trim('`')))];
+
+    private static string Cell(BddTableRow row, string column) => row.Cells.TryGetValue(column, out var value) ? value : string.Empty;
 
     private static Dictionary<string, BddTable> ParseSections(string markdown)
         => MarkdownTables.ReadSections(markdown).ToDictionary(

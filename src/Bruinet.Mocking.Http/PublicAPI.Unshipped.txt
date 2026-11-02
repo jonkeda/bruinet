@@ -97,6 +97,7 @@ Bruinet.Mocking.Http.HttpReplayPace.Recorded = 1 -> Bruinet.Mocking.Http.HttpRep
 Bruinet.Mocking.Http.HttpReplayPresets
 Bruinet.Mocking.Http.HttpReplayServiceCollectionExtensions
 Bruinet.Mocking.Http.HttpReplaySession
+Bruinet.Mocking.Http.HttpReplaySession.Add(Bruinet.Mocking.Http.HttpExchange! exchange) -> void
 Bruinet.Mocking.Http.HttpReplaySession.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Http.HttpCall!>!
 Bruinet.Mocking.Http.HttpReplaySession.Changes.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Mocking.Http.HttpReplaySession.Finish() -> void
@@ -123,8 +124,10 @@ static Bruinet.Mocking.Http.HttpRecordingReview.Recordings(string! folder) -> Sy
 static Bruinet.Mocking.Http.HttpRecordingReview.Stale(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Mocking.Http.HttpRecordingReview.Unreviewed(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Mocking.Http.HttpReplayHandler.Create(Bruinet.Mocking.Http.HttpReplaySession! session) -> Bruinet.Mocking.Http.HttpReplayHandler!
+static Bruinet.Mocking.Http.HttpReplayOptions.ForSuite(bool hermetic, string? redact = null, string? pace = null, string? where = null) -> Bruinet.Mocking.Http.HttpReplayOptions!
 static Bruinet.Mocking.Http.HttpReplayPresets.Named(string! name) -> System.Collections.Generic.IReadOnlyList<string!>?
 static Bruinet.Mocking.Http.HttpReplayServiceCollectionExtensions.AddBruinetHttpReplay(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, Bruinet.Mocking.Http.HttpReplaySession! session) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Bruinet.Mocking.Http.HttpReplaySession.ForMode(string! mode, string! folder, string! test, Bruinet.Mocking.Http.HttpReplayOptions? options = null) -> Bruinet.Mocking.Http.HttpReplaySession?
 static Bruinet.Mocking.Http.HttpReplaySession.FromEnvironment(string! folder, string! test, Bruinet.Mocking.Http.HttpReplayOptions? options = null) -> Bruinet.Mocking.Http.HttpReplaySession?
 static Bruinet.Mocking.Http.HttpReplaySession.ModeFromEnvironment(System.Func<string!, string?>? environment = null) -> Bruinet.Mocking.Http.HttpReplayMode
 static Bruinet.Mocking.Http.HttpReplaySession.PathFor(string! folder, string! test) -> string!
@@ -132,4 +135,3 @@ static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedFields -> 
 static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedHeaders -> System.Collections.Generic.IReadOnlyList<string!>!
 static readonly Bruinet.Mocking.Http.HttpReplayPresets.Model -> System.Collections.Generic.IReadOnlyList<string!>!
 static readonly Bruinet.Mocking.Http.HttpReplayPresets.OAuth -> System.Collections.Generic.IReadOnlyList<string!>!
-Bruinet.Mocking.Http.HttpReplaySession.Add(Bruinet.Mocking.Http.HttpExchange! exchange) -> void

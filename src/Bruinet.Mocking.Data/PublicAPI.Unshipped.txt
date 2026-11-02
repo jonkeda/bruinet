@@ -242,6 +242,11 @@ Bruinet.Mocking.Data.SqlLogEntry.Test.set -> void
 Bruinet.Mocking.Data.SqlLogEntry.Text.get -> string?
 Bruinet.Mocking.Data.SqlLogEntry.Text.set -> void
 Bruinet.Mocking.Data.SqlLogScope
+Bruinet.Mocking.Data.SqliteCopy
+Bruinet.Mocking.Data.SqliteCopy.ConnectionString.get -> string!
+Bruinet.Mocking.Data.SqliteCopy.Dispose() -> void
+Bruinet.Mocking.Data.SqliteCopy.Path.get -> string!
+Bruinet.Mocking.Data.SqliteTemplate
 Bruinet.Mocking.Data.Statements
 const Bruinet.Mocking.Data.Replay.RecordingReview.FileName = "reviewed.json" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayHook.BeginPath = "/__bruinet/sql/begin" -> string!
@@ -450,6 +455,8 @@ static Bruinet.Mocking.Data.SqlLog.Read(string! folderOrFile) -> System.Collecti
 static Bruinet.Mocking.Data.SqlLog.Run.get -> string!
 static Bruinet.Mocking.Data.SqlLogScope.Current.get -> System.Func<string?>!
 static Bruinet.Mocking.Data.SqlLogScope.Current.set -> void
+static Bruinet.Mocking.Data.SqliteTemplate.Copy(string! templatePath, string! test, string? folder = null) -> Bruinet.Mocking.Data.SqliteCopy!
+static Bruinet.Mocking.Data.SqliteTemplate.EnsureAsync(string! templatePath, string! stamp, System.Func<string!, System.Threading.Tasks.Task!>! create, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<string!>!
 static Bruinet.Mocking.Data.Statements.InsertParameters(string! text) -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
 static Bruinet.Mocking.Data.Statements.IsWrite(string! text) -> bool
 static Bruinet.Mocking.Data.Statements.Key(string! text) -> string!
@@ -458,3 +465,5 @@ static Bruinet.Mocking.Data.Statements.Normalize(string! text) -> string!
 static Bruinet.Mocking.Data.Statements.Objects(string! text) -> System.Collections.Generic.IEnumerable<string!>!
 static Bruinet.Mocking.Data.Statements.Projection(string! normalized) -> Bruinet.Mocking.Data.Projected?
 static Bruinet.Mocking.Data.Statements.WithoutLiterals(string! text) -> string!
+static readonly Bruinet.Mocking.Data.SqliteTemplate.LockPollInterval -> System.TimeSpan
+static readonly Bruinet.Mocking.Data.SqliteTemplate.LockTimeout -> System.TimeSpan

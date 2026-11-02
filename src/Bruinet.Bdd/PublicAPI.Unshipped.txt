@@ -183,6 +183,8 @@ Bruinet.Bdd.BddConfig.Assemblies.get -> System.Collections.Generic.IReadOnlyList
 Bruinet.Bdd.BddConfig.Assemblies.init -> void
 Bruinet.Bdd.BddConfig.BddConfig(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Runtime, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAssemblyRegistration!>! Assemblies, Bruinet.Bdd.BddDiscoverySettings! Discovery) -> void
 Bruinet.Bdd.BddConfig.BddConfig(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Runtime, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddAssemblyRegistration!>! Assemblies, Bruinet.Bdd.BddDiscoverySettings! Discovery, Bruinet.Bdd.BddReportingSettings! Reporting, Bruinet.Bdd.BddSettingsConfig! Settings, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddSkipRule!>! SkipRules) -> void
+Bruinet.Bdd.BddConfig.Dependencies.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDependency!>!
+Bruinet.Bdd.BddConfig.Dependencies.init -> void
 Bruinet.Bdd.BddConfig.Discovery.get -> Bruinet.Bdd.BddDiscoverySettings!
 Bruinet.Bdd.BddConfig.Discovery.init -> void
 Bruinet.Bdd.BddConfig.EvaluateSkip(System.Collections.Generic.IEnumerable<string!>! tags, System.Func<string!, string?>? getEnvironmentVariable = null) -> Bruinet.Bdd.BddSkipDecision!
@@ -239,6 +241,20 @@ Bruinet.Bdd.BddControlVerb.NamesControl.get -> bool
 Bruinet.Bdd.BddControlVerb.NamesControl.init -> void
 Bruinet.Bdd.BddControlVerb.Navigates.get -> bool
 Bruinet.Bdd.BddControlVerb.Navigates.init -> void
+Bruinet.Bdd.BddDependencies
+Bruinet.Bdd.BddDependency
+Bruinet.Bdd.BddDependency.BddDependency(string! Name, string! Kind, string! Mode, string! Where) -> void
+Bruinet.Bdd.BddDependency.IsHermetic.get -> bool
+Bruinet.Bdd.BddDependency.Kind.get -> string!
+Bruinet.Bdd.BddDependency.Kind.init -> void
+Bruinet.Bdd.BddDependency.Mode.get -> string!
+Bruinet.Bdd.BddDependency.Mode.init -> void
+Bruinet.Bdd.BddDependency.Name.get -> string!
+Bruinet.Bdd.BddDependency.Name.init -> void
+Bruinet.Bdd.BddDependency.OverrideVariable.get -> string!
+Bruinet.Bdd.BddDependency.Problem.get -> string?
+Bruinet.Bdd.BddDependency.Where.get -> string!
+Bruinet.Bdd.BddDependency.Where.init -> void
 Bruinet.Bdd.BddDiagnostic
 Bruinet.Bdd.BddDiagnostic.BddDiagnostic(Bruinet.Bdd.BddDiagnosticSeverity Severity, string! Code, string! Message, Bruinet.Bdd.BddSourceLocation! Location) -> void
 Bruinet.Bdd.BddDiagnostic.Code.get -> string!
@@ -442,6 +458,7 @@ Bruinet.Bdd.BddPreparedCallables.Callables.get -> System.Collections.Generic.IRe
 Bruinet.Bdd.BddPreparedCallables.Candidates(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
 Bruinet.Bdd.BddPreparedCallables.Get(Bruinet.Bdd.BddCallable! callable) -> Bruinet.Bdd.BddPreparedCallable!
 Bruinet.Bdd.BddPreparedCallables.TypeNamed(string! name) -> System.Type?
+Bruinet.Bdd.BddReplayFields
 Bruinet.Bdd.BddReportingSettings
 Bruinet.Bdd.BddReportingSettings.BddReportingSettings(string! OutputDirectory, bool ScreenshotOnFailure = false, bool IncludeRuntimeTrace = false) -> void
 Bruinet.Bdd.BddReportingSettings.IncludeRuntimeTrace.get -> bool
@@ -1036,6 +1053,9 @@ const Bruinet.Bdd.BddMetadataFields.Tags = "Tags" -> string!
 const Bruinet.Bdd.BddMetadataFields.Target = "Target" -> string!
 const Bruinet.Bdd.BddMetadataFields.TestData = "TestData" -> string!
 const Bruinet.Bdd.BddMetadataFields.Using = "Using" -> string!
+const Bruinet.Bdd.BddReplayFields.Hermetic = "Hermetic" -> string!
+const Bruinet.Bdd.BddReplayFields.HttpRedact = "HttpRedact" -> string!
+const Bruinet.Bdd.BddReplayFields.HttpReplayPace = "HttpReplayPace" -> string!
 const Bruinet.Bdd.BddScenarioAddress.Trait = "BddScenario" -> string!
 const Bruinet.Bdd.BddScenarioFiles.PhraseFilePattern = "*.steps.md" -> string!
 const Bruinet.Bdd.BddScenarioSource.SourceDirectoryEnvironmentVariable = "BRUINET_SUITE_SOURCE" -> string!
@@ -1088,6 +1108,10 @@ static Bruinet.Bdd.BddConfigWriter.Apply(string! markdown, Bruinet.Bdd.BddConfig
 static Bruinet.Bdd.BddConfigWriter.ApplyToFile(string! filePath, Bruinet.Bdd.BddConfigEdit! edit) -> bool
 static Bruinet.Bdd.BddConfigWriter.Create(Bruinet.Bdd.BddConfigTemplate! template) -> string!
 static Bruinet.Bdd.BddConfigWriter.CreateFile(string! filePath, Bruinet.Bdd.BddConfigTemplate! template) -> void
+static Bruinet.Bdd.BddDependencies.Effective(Bruinet.Bdd.BddConfig! config, System.Func<string!, string?>? environment = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDependency!>!
+static Bruinet.Bdd.BddDependencies.Find(Bruinet.Bdd.BddConfig! config, string! name, System.Func<string!, string?>? environment = null) -> Bruinet.Bdd.BddDependency?
+static Bruinet.Bdd.BddDependencies.IsHermetic(Bruinet.Bdd.BddConfig! config) -> bool
+static Bruinet.Bdd.BddDependencies.Problems(Bruinet.Bdd.BddConfig! config, System.Func<string!, string?>? environment = null) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Bdd.BddDiagnosticsFormatter.FormatBindFailure(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddDiagnostic!>! diagnostics, string! discoveryReport, Bruinet.Bdd.BddCommandCatalog! catalog) -> string!
 static Bruinet.Bdd.BddDiagnosticsFormatter.FormatCatalog(Bruinet.Bdd.BddCommandCatalog! catalog) -> string!
 static Bruinet.Bdd.BddDiagnosticsFormatter.FormatDiagnostics(System.Collections.Generic.IEnumerable<Bruinet.Bdd.BddDiagnostic!>! diagnostics) -> string!
@@ -1177,5 +1201,6 @@ static Bruinet.Bdd.Runner.BddShadowCopy.Into(Bruinet.Bdd.Runner.BddRunnerStart! 
 static Bruinet.Bdd.Runner.BddShadowCopy.Make(string! output, string! copy) -> string!
 static Bruinet.Bdd.Runner.BddShadowCopy.NewFolder(string! output, string? root = null, string? owner = null) -> string!
 static Bruinet.Bdd.Runner.BddShadowCopy.ProcessOwner.get -> string!
+static readonly Bruinet.Bdd.BddDependency.ModesByKind -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>!
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.CancelGrace -> System.TimeSpan
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.ConnectTimeout -> System.TimeSpan

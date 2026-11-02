@@ -55,6 +55,30 @@ public sealed class HttpReplayOptions
     /// <summary>Request fields left out of matching by their last name: a preset's (<see cref="HttpReplayPresets"/>), or a suite's own.</summary>
     public ISet<string> IgnoredFields { get; } = new HashSet<string>(StringComparer.Ordinal);
 
+    /// <summary>
+    /// A suite's options from its <c>uat.config.md</c>: <c>Hermetic</c>, <c>HttpRedact</c>, <c>HttpReplayPace</c>, and a
+    /// dependency's <c>Where</c> naming presets (<c>https://*.openai.azure.com, preset model</c>).
+    /// </summary>
+    /// <exception cref="ArgumentException">A pace or preset it does not know.</exception>
+    public static HttpReplayOptions ForSuite(bool hermetic, string? redact = null, string? pace = null, string? where = null)
+    {
+        var options = new HttpReplayOptions
+        {
+            Hermetic = hermetic,
+            Pace = string.IsNullOrWhiteSpace(pace) ? HttpReplayPace.None
+                : Enum.TryParse<HttpReplayPace>(pace.Trim(), ignoreCase: true, out var parsed) ? parsed
+                : throw new ArgumentException($"HttpReplayPace '{pace}': none or recorded."),
+        }.Redacting(redact);
+        foreach (var part in (where ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                     .Where(part => part.StartsWith("preset ", StringComparison.OrdinalIgnoreCase)))
+        {
+            var name = part["preset ".Length..];
+            options.WithPreset(HttpReplayPresets.Named(name) ?? throw new ArgumentException($"Preset '{name}': model or oauth."));
+        }
+
+        return options;
+    }
+
     /// <summary>Adds a preset's fields to <see cref="IgnoredFields"/>.</summary>
     public HttpReplayOptions WithPreset(IEnumerable<string> fields)
     {
