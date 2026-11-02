@@ -53,6 +53,11 @@ internal static class MauiInternals
         typeof(VisualElement).GetProperty("IsPlatformEnabled", Instance)
         ?? throw Missing("VisualElement.IsPlatformEnabled"));
 
+    // Page._hasAppeared: SendAppearing and SendDisappearing do nothing when it already says so.
+    private static readonly Lazy<FieldInfo> HasAppearedField = new(() =>
+        typeof(Page).GetField("_hasAppeared", Instance)
+        ?? throw Missing("Page._hasAppeared"));
+
     private static readonly Lazy<BindablePropertyKey> IsFocusedKey = new(() =>
         typeof(VisualElement).GetField("IsFocusedPropertyKey", BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
             ?.GetValue(null) as BindablePropertyKey
@@ -95,6 +100,12 @@ internal static class MauiInternals
     /// <summary>Marks <paramref name="element"/> as having no platform, though it has a handler.</summary>
     public static void ClearPlatformEnabled(VisualElement element)
         => IsPlatformEnabledProperty.Value.SetValue(element, false);
+
+    /// <summary>Whether <paramref name="page"/> has appeared, as its next <c>SendAppearing</c> and <c>SendDisappearing</c> read it.</summary>
+    public static bool HasAppeared(Page page) => (bool)HasAppearedField.Value.GetValue(page)!;
+
+    /// <summary>Sets whether <paramref name="page"/> has appeared, without raising Appearing or Disappearing.</summary>
+    public static void SetHasAppeared(Page page, bool appeared) => HasAppearedField.Value.SetValue(page, appeared);
 
     /// <summary>Sets <see cref="VisualElement.IsFocused"/> as the platform does.</summary>
     public static void SetFocused(VisualElement element, bool focused)
