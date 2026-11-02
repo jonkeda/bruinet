@@ -57,16 +57,16 @@ Each step is one or more commits on `move`, the numbers after it written in the 
   the Core interface beside their own members (`GetProgress` as a fraction, `GetDate` as `DateTime`),
   then bind them; until then they wait for C7.
 
-- **Generated code in the targets** (found in C4). Blazor's `.gen.cs` wrappers are three quarters of what no test runs;
+- **Answered 2026-11-02 (the owner took the proposal): generated code in the targets** (found in C4). Blazor's `.gen.cs` wrappers are three quarters of what no test runs;
   the generator is tested on its own (`Bruinet.Generator.Tests`). Proposal: measure the targets on hand-written code
   (`ExcludeByFile` `**/*.gen.cs` in `coverage.runsettings`), and report generated code apart.
 
-- **C4's and C5's targets not met** (the AI run, 2026-11-02). Blazor 58.3% (75 asked), Maui 50.9% (80 asked). Of
+- **Answered 2026-11-02 (the owner took the proposal): C4's and C5's targets not met** (the AI run, 2026-11-02). Blazor 58.3% (75 asked), Maui 50.9% (80 asked). Of
   Blazor's gap 193 of 240 lines are generated wrappers; of Maui's, the hand-written gap in Slider, Picker and Stepper
   is mostly platform code (UI Automation, Android) only a device head runs. Proposal: count the targets on
   hand-written code (the generated-code question above), and run the device paths in C8's desktop session, on the
   Windows head, with C5's contracts (not yet run there: `--filter "Head!=MauiHeadless"` keeps them out of a device run).
-- **The picker's start** (found in C5's review). The contract needs a chosen item at the start; the sample's picker
+- **Answered 2026-11-02 (the owner took the proposal): the picker's start** (found in C5's review). The contract needs a chosen item at the start; the sample's picker
   starts with none, so the binding chooses one with `SelectByIndex` first. Proposal: the sample's view model starts with
   an item chosen, and a separate check that an unchosen picker reads -1 and null.
 

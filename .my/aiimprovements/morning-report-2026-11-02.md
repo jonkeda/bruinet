@@ -22,15 +22,15 @@ separate agent and its findings fixed or recorded (`AI1-review.md`, `AI2-review.
 | MAUI sample | the slider started at 1, not 50 (value set before its bounds) |
 | Todo sample | its SQL replay looked for recordings from the process folder, so the IDE's Run failed on it |
 
-## Waiting on you
+## Answered (the owner took the proposals, 2026-11-02)
 
-| # | Question | Proposed |
+| # | Question | Answer |
 | --- | --- | --- |
-| 1 | C4 (Blazor 58.3%, 75 asked) and C5 (Maui 50.9%, 80 asked) | count targets on hand-written code; generated wrappers and device-only paths apart |
-| 2 | C5's contracts never ran on the Windows head | run them once in a desktop session (with C8); until then `--filter "Head!=MauiHeadless"` |
-| 3 | The MAUI picker starts with nothing chosen; its binding chooses first | the sample's view model starts with a choice |
-| 4 | AI2b is a separate `coverage` tool, not `run_scenario {coverage: true}`; Done-when not run on bUnit or Chromium | keep the tool; run the Done-when with the next browser run |
-| 5 | Agent checks proved nothing yet (both solved by reading a comment, then by `git show`) | the skill now builds fixtures without history; keep them, one per item |
+| 1 | C4 (Blazor 58.3%, 75 asked) and C5 (Maui 50.9%, 80 asked) | targets count hand-written code; generated wrappers and device-only paths are reported apart |
+| 2 | C5's contracts never ran on the Windows head | run them once in a desktop session, with C8; until then `--filter "Head!=MauiHeadless"` on a device run |
+| 3 | The MAUI picker starts with nothing chosen; its binding chooses first | the sample's view model starts with a choice; a separate check reads an unchosen picker |
+| 4 | AI2b is a separate `coverage` tool; Done-when not run on bUnit or Chromium | keep the tool; run the Done-when with the next browser run |
+| 5 | Agent checks proved nothing yet | keep them, one per item, fixtures without history |
 
 ## Not done, and why
 
@@ -39,4 +39,4 @@ separate agent and its findings fixed or recorded (`AI1-review.md`, `AI2-review.
   running `bruinet` processes hold `tools/Bruinet.Cli/bin`): they read files three folders above their binary.
 - `StepTests.RunOfTheFile_...` failed once under load and passed three times alone: a race in the test.
 
-Expected next action: answer question 1, then `/ai-item next` (C6, mutation testing of the controls).
+Expected next action: `/ai-item next` (C6, mutation testing of the controls), with the answers above applied first.

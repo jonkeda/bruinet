@@ -113,6 +113,21 @@ public class PickerTests
     }
 
     /// <summary>
+    /// A picker with nothing chosen reads no index and no text (the long picker starts that way). The Core
+    /// interface says null only for a missing element; Maui's picker answers null for no choice too.
+    /// </summary>
+    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Trait("Method", "GetSelected")]
+    public Task Picker_WithNothingChosen_ReadsNoIndex_AndNoText()
+    {
+        var page = GetPage();
+
+        Assert.Null(page.LongPicker.GetSelectedIndex());
+        Assert.Null(page.LongPicker.GetSelectedText());
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
     /// Verifies that tapping the Reset button clears the selection.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

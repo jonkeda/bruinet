@@ -134,12 +134,11 @@ public sealed class MauiPickerContract : SelectorContract<SelectionTestPage>
 {
     private readonly SelectionTestPage _page;
 
-    // The picker starts with nothing chosen; the contract starts from a choice, so the second item is chosen first.
+    // SelectionViewModel starts with the second item chosen.
     public MauiPickerContract(MauiFixture fixture)
     {
         fixture.Open(SamplePage.Selection);
         _page = new SelectionTestPage(fixture.Context);
-        _page.TestPicker.SelectByIndex(1);
     }
 
     protected override SelectionTestPage Scope => _page;

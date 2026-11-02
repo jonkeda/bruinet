@@ -78,6 +78,11 @@ public class SelectionViewModel : ParentViewModel
     public SelectionViewModel()
     {
         InitializePickerItems();
+
+        // A choice to start from, as most pickers in an app have; Reset clears it.
+        selectedIndex = 1;
+        selectedItem = PickerItems[1];
+        UpdateStatus();
     }
 
     private void InitializePickerItems()
