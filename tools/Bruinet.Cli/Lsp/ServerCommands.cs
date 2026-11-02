@@ -23,6 +23,31 @@ internal static class ServerCommands
         return command;
     }
 
+    /// <summary>
+    /// The MCP server for a session while Bruinet is developed: runs <c>bruinet mcp</c> from a snapshot of a build folder,
+    /// and again on each new build there, the session kept.
+    /// </summary>
+    public static Command McpHost(CliIo io)
+    {
+        var solution = new Option<string?>("--solution") { Description = "The solution's folder. Default: this folder." };
+        var build = new Option<string>("--build") { Description = "The build folder to run and watch (.bruinet/mcp).", Required = true };
+        var runs = new Option<string?>("--runs") { Description = "Where the snapshots go. Default: the build folder's sibling 'run'." };
+        var command = new Command("mcp-host", "For tools: the MCP server, run from a build folder and started again on each new build there.") { solution, build, runs };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            var protocol = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
+            Console.SetOut(Console.Error);
+            var buildFolder = Path.GetFullPath(parsed.GetValue(build)!, io.CurrentDirectory);
+            var runFolder = parsed.GetValue(runs) is { } given ? Path.GetFullPath(given, io.CurrentDirectory) : Path.Combine(Path.GetDirectoryName(buildFolder.TrimEnd('\\', '/'))!, "run");
+            var solutionFolder = Path.GetFullPath(parsed.GetValue(solution) ?? io.CurrentDirectory, io.CurrentDirectory);
+            using var host = new McpReloadingHost(buildFolder, runFolder, ["mcp", "--solution", solutionFolder]);
+            host.Reloaded += stamp => Console.Error.WriteLine($"bruinet mcp-host: a new build ({stamp}), the server started again.");
+            await host.RunAsync(Console.In, protocol, cancellationToken).ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
     /// <summary>The language server every IDE talks to about feature and step files, and the Scraper view.</summary>
     public static Command Lsp()
     {

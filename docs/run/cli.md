@@ -66,6 +66,7 @@ For tools, not people:
 | --- | --- |
 | `bruinet lsp` | The Visual Studio and VS Code extensions: the language server, over stdio |
 | `bruinet mcp [--solution <folder>]` | Copilot, Claude and other agents: the MCP server, over stdio (`.mcp.json`, `.vscode/mcp.json`) |
+| `bruinet mcp-host --build <folder> [--solution <folder>]` | The MCP server while Bruinet is developed: runs `bruinet mcp` from a snapshot of the build folder and starts it again when a new `mcp.stamp` appears there, the session kept and told its tools changed; nothing holds the build folder |
 
 ## Options Every Command Spells The Same
 

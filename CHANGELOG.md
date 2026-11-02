@@ -42,6 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   errors and warnings and its page errors. A step's `__result.json` has them as `appEvents`, a line said again once
   with how many times; the MCP server's `step_log` and `get_failure` give them. Warnings and up;
   `BRUINET_STEP_LOG=all` keeps information, `off` nothing.
+- `bruinet mcp-host`: an agent's session keeps one MCP server while Bruinet changes under it. It runs `bruinet mcp`
+  from a snapshot of a build folder; on a new build (`mcp.stamp`) it waits for the calls in flight, starts the server
+  again, replays the session's `initialize` and sends `notifications/tools/list_changed`.
 - The MCP server's `step_state`: the paused Step-through's page, each control with whether it is shown and
   what it shows (a toggle's state, a range's value, a choice, or text), read by the runner (`BddRunnerReadPage`).
 - The MCP server's `coverage`: one scenario run through the gate with .NET's code coverage (what

@@ -45,6 +45,7 @@ internal static class BruinetCommand
             GenerateCommand.Build(io),
             Version(io),
             ServerCommands.Mcp(io),
+            ServerCommands.McpHost(io),
             ServerCommands.Lsp(),
         };
         HelpWhenBare(root);
