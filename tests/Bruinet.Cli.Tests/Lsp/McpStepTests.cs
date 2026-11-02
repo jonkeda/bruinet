@@ -92,6 +92,18 @@ public sealed class McpStepTests : IDisposable
     }
 
     [Fact]
+    public void ThePageState_OfASuiteWithNoPages_SaysNoPageIsCurrent()
+    {
+        Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        var state = Answer(Call("step_state", new JsonObject()));
+        Call("step_move", new JsonObject { ["move"] = "stop" });
+
+        Assert.Empty(state["controls"]!.AsArray());
+        Assert.Contains("No page is current", (string?)state["reason"]);
+    }
+
+    [Fact]
     public void AStart_AtALineWithNoHeading_IsAToolError()
     {
         var result = Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 6 });

@@ -226,6 +226,45 @@ public sealed partial class BddLanguageServer
         }
     }
 
+    /// <summary>The paused Step-through's current page: its controls and what each shows, read by the runner.</summary>
+    internal async Task<(BddRunnerPageState? State, string? Reason)> StepReadPageAsync()
+    {
+        StepRun? run;
+        lock (_gate)
+        {
+            run = _step;
+        }
+
+        if (run?.Stepper?.Paused is null || run.Runner is not { } runner)
+        {
+            return (null, "No Step-through run is paused.");
+        }
+
+        // Holds the run still, as a screenshot does.
+        if (Interlocked.Exchange(ref run.Moving, 1) == 1)
+        {
+            return (null, "The run is not paused.");
+        }
+
+        try
+        {
+            return await runner.RequestAsync(new BddRunnerReadPage(), run.Cancel.Token).ConfigureAwait(false) switch
+            {
+                BddRunnerPageState state => (state, null),
+                BddRunnerFailed failed => (null, failed.Message),
+                var answer => (null, $"The runner answered {answer.GetType().Name}."),
+            };
+        }
+        catch (Exception exception) when (exception is BddRunnerException or IOException or OperationCanceledException or ObjectDisposedException)
+        {
+            return (null, exception.Message);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref run.Moving, 0);
+        }
+    }
+
     /// <summary>
     /// <c>bruinet/step/debug</c>: Debug from here (D6). Answers the runner's process id at once; the
     /// runner then waits for the IDE's debugger, and the next move's first step breaks in it. A

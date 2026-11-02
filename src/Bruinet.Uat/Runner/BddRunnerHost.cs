@@ -145,6 +145,9 @@ public sealed class BddRunnerHost
             case BddRunnerScreenshot screenshot:
                 return Screenshot(Opened(), screenshot.Description);
 
+            case BddRunnerReadPage:
+                return Opened().ReadPage();
+
             case BddRunnerBreak debug:
                 return await BreakAsync(Opened(), debug).ConfigureAwait(false);
 
@@ -514,6 +517,9 @@ public sealed class BddRunnerHost
                 UatScenarioResults.EvidenceName(Scenario),
                 _mode);
         }
+
+        // The current page's controls, read between steps.
+        public BddRunnerPageState ReadPage() => _runtime.Reflection.ReadCurrentPage(Runner.Context);
 
         // The suite's fixture, made as an open makes it: for a prepare ahead of the first open.
         public static object MakeFixture(string config, string pages) => CreateFixture(BddConfigParser.ParseFile(config), LoadPages(pages));

@@ -222,7 +222,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
 | AI4 | partly | dfeaef23 + review fixes | step_start, step_move (over, into, out, continue, wait, stop), step_screenshot built. Not as planned: a second step_start is refused (not a stop of the first), no `to-line` move and no `--break-at` on run_scenario, `continue` stops at the IDE's breakpoints file; step_state is AI4b |
-| AI4b | open | | |
+| AI4b | done | (this commit) | step_state through a new runner request; on Todo it reads the list page (filter "All", "Synced 10:00"); a list control's rows are not read yet |
 | AI5 | done | 2348bab4 | the Scraper's rename changes only declaring files |
 | AI6 | open | | |
 | AI7 | open | | |

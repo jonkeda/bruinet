@@ -265,6 +265,7 @@ VS Code) and any other MCP client:
 - `step_start`, `step_move` and `step_screenshot` are the preview's Step through for an agent: each answers
   where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it
   ended; a step still running after the wait (2 minutes) answers Waiting, and `wait` waits again;
+  `step_state` reads the paused page: each control, whether it is shown, and what it shows;
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
   it ran and missed (for the given files, or the working tree's changed ones);
 - `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;

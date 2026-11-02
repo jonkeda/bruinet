@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `run_scenario` gives it for each failed scenario.
 - The MCP server's `step_start`, `step_move` and `step_screenshot`: the preview's Step through for an agent, each
   call answering where the run paused next or how it ended.
+- The MCP server's `step_state`: the paused Step-through's page, each control with whether it is shown and
+  what it shows (a toggle's state, a range's value, a choice, or text), read by the runner (`BddRunnerReadPage`).
 - The MCP server's `coverage`: one scenario run through the gate with .NET's code coverage (what
   `Microsoft.NET.Test.Sdk` brings; nothing to install), and per file the lines it ran and missed, as ranges.
 - The MCP server's `failing`: every scenario whose newest run failed, in one suite or all, with the kind of

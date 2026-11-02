@@ -36,6 +36,9 @@ public sealed class UatRuntime
 
     public TestComposition? Composition { get; }
 
+    /// <summary>The page objects and steps the runtime binds with: for a host that reads the current page.</summary>
+    internal UatReflectionRuntime Reflection => _reflectionRuntime;
+
     public string DiscoveryReport => string.Join(Environment.NewLine, _reflectionRuntime.DescribeDiscovery());
 
     public BddCommandCatalog CreateCommandCatalog()

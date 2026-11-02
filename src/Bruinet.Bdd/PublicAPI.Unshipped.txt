@@ -799,6 +799,27 @@ Bruinet.Bdd.Runner.BddRunnerClose.BddRunnerClose(bool Keep = false) -> void
 Bruinet.Bdd.Runner.BddRunnerClose.Keep.get -> bool
 Bruinet.Bdd.Runner.BddRunnerClose.Keep.init -> void
 Bruinet.Bdd.Runner.BddRunnerDone
+Bruinet.Bdd.Runner.BddRunnerControlState
+Bruinet.Bdd.Runner.BddRunnerControlState.BddRunnerControlState(string! Name, string! Kind, bool? Shown, string? Value, string? Unreadable) -> void
+Bruinet.Bdd.Runner.BddRunnerControlState.Kind.get -> string!
+Bruinet.Bdd.Runner.BddRunnerControlState.Kind.init -> void
+Bruinet.Bdd.Runner.BddRunnerControlState.Name.get -> string!
+Bruinet.Bdd.Runner.BddRunnerControlState.Name.init -> void
+Bruinet.Bdd.Runner.BddRunnerControlState.Shown.get -> bool?
+Bruinet.Bdd.Runner.BddRunnerControlState.Shown.init -> void
+Bruinet.Bdd.Runner.BddRunnerControlState.Unreadable.get -> string?
+Bruinet.Bdd.Runner.BddRunnerControlState.Unreadable.init -> void
+Bruinet.Bdd.Runner.BddRunnerControlState.Value.get -> string?
+Bruinet.Bdd.Runner.BddRunnerControlState.Value.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState
+Bruinet.Bdd.Runner.BddRunnerPageState.BddRunnerPageState(string? Page, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>! Controls, string? Reason) -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Controls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.Runner.BddRunnerControlState!>!
+Bruinet.Bdd.Runner.BddRunnerPageState.Controls.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Page.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPageState.Page.init -> void
+Bruinet.Bdd.Runner.BddRunnerPageState.Reason.get -> string?
+Bruinet.Bdd.Runner.BddRunnerPageState.Reason.init -> void
+Bruinet.Bdd.Runner.BddRunnerReadPage
 Bruinet.Bdd.Runner.BddRunnerDropRecording
 Bruinet.Bdd.Runner.BddRunnerException
 Bruinet.Bdd.Runner.BddRunnerException.BddRunnerException(string! message) -> void

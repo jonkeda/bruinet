@@ -22,6 +22,8 @@ namespace Bruinet.Bdd.Runner;
 [JsonDerivedType(typeof(BddRunnerScreenshot), "screenshot")]
 [JsonDerivedType(typeof(BddRunnerBreak), "break")]
 [JsonDerivedType(typeof(BddRunnerScreenshotTaken), "screenshotTaken")]
+[JsonDerivedType(typeof(BddRunnerReadPage), "readPage")]
+[JsonDerivedType(typeof(BddRunnerPageState), "pageState")]
 [JsonDerivedType(typeof(BddRunnerClose), "close")]
 [JsonDerivedType(typeof(BddRunnerPrepare), "prepare")]
 [JsonDerivedType(typeof(BddRunnerCancel), "cancel")]
@@ -159,6 +161,23 @@ public sealed record BddRunnerBreak(double WaitSeconds, bool Launch = false) : B
 /// <summary>A screenshot was taken.</summary>
 /// <param name="Path">Its file.</param>
 public sealed record BddRunnerScreenshotTaken(string Path) : BddRunnerMessage;
+
+/// <summary>Reads the current page's controls between steps. Answered by <see cref="BddRunnerPageState"/> or <see cref="BddRunnerFailed"/>.</summary>
+public sealed record BddRunnerReadPage : BddRunnerMessage;
+
+/// <summary>The current page's controls and what each shows.</summary>
+/// <param name="Page">The page's name; null when no page is current.</param>
+/// <param name="Controls">Each control of its page object.</param>
+/// <param name="Reason">Why there are none, when there are none.</param>
+public sealed record BddRunnerPageState(string? Page, IReadOnlyList<BddRunnerControlState> Controls, string? Reason) : BddRunnerMessage;
+
+/// <summary>A control of the current page and what it shows.</summary>
+/// <param name="Name">The control's name on its page object.</param>
+/// <param name="Kind">The control's type, without its scope.</param>
+/// <param name="Shown">Whether it is shown; null when it could not be read.</param>
+/// <param name="Value">Its toggle state, value, choice or text; null for a control without one, or one not shown.</param>
+/// <param name="Unreadable">Why it could not be read, when it could not.</param>
+public sealed record BddRunnerControlState(string Name, string Kind, bool? Shown, string? Value, string? Unreadable);
 
 /// <summary>Closes the open scenario: its fixture and app. Answered by <see cref="BddRunnerDone"/>.</summary>
 /// <param name="Keep">

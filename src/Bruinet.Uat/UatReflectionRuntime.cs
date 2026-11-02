@@ -768,6 +768,16 @@ public sealed class UatReflectionRuntime
         return methods.Length == 0 ? "(none)" : string.Join(", ", methods);
     }
 
+    /// <summary>The current page's controls and what each shows, for a paused Step-through.</summary>
+    /// <param name="context">The scenario's context.</param>
+    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context)
+    {
+        var page = context.AppItems.TryGetValue(CurrentPageItemKey, out var value) && value is UatRuntimePage current ? current
+            : context.CurrentPageName is { } name && _pages.TryGetValue(name, out var named) ? named
+            : null;
+        return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page));
+    }
+
     private static object? GetPageInstance(BddExecutionContext context, UatRuntimePage page)
     {
         if (page.Instance is not null)
