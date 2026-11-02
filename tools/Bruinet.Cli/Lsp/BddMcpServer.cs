@@ -82,7 +82,8 @@ public sealed class BddMcpServer : IDisposable
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text). Read without a screenshot; where to look when a step is about to fail.", Schema()),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
-        ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("where_is", "Where a page object's control is made: the page object member's file and line, the locator value it finds by, and the lines of the app's sources (.razor, .cshtml, XAML, code) that render an element with that value, test-id attributes first. Where to change the app or the page object when a control is not found or wrong.", Schema(("page", "string", "The page, as list_pages names it; required."), ("control", "string", "The control, as list_pages names it; required."), ("suite", "string", "The suite; its only one when left out."))),
+        ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, the message, and the app source lines that make the element its locator names (appSource; where_is gives one control's). run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("http_calls", "The HTTP calls a scenario made in its newest run that recorded or replayed them (AI11): method, URL, status and whether the recording answered it (recorded, matched, missed), the misses, and the recorded calls it no longer makes. Shows why a replayed scenario failed on its backend.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
         ("step_log", "What the app said during each step of a scenario's newest run (any run): its log's warnings and errors, the browser's console errors and warnings, by step (file and line; at most 20 steps). Where to look when a step passed but the app complained, or failed for a reason the UI does not show.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -139,7 +140,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; where_is gives the page object line of a control and the app line (razor, XAML) that makes it; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -190,6 +191,7 @@ public sealed class BddMcpServer : IDisposable
                 "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? new { Screenshot = taken } : throw new ToolProblem($"No screenshot: {shot.Reason}"),
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
+                "where_is" => WhereIs(arguments),
                 "http_calls" => HttpCalls(arguments),
                 "failing" => Failing(arguments),
                 "step_log" => StepLogOf(arguments),
@@ -778,6 +780,7 @@ public sealed class BddMcpServer : IDisposable
             At = failed.At.ToString("u", CultureInfo.InvariantCulture),
             FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
             Failure = Failure(failed),
+            AppSource = AppSource(Failure(failed)),
             AppEvents = step?.AppEvents is { } said ? JsonNode.Parse(said) : null,
             Screenshot = failed.EvidencePath,
             Message = Cap(step?.Message, 2000),
@@ -837,6 +840,55 @@ public sealed class BddMcpServer : IDisposable
     }
 
     // A failed run's failure, as its report wrote it; null for a report written before failures were.
+    // A page object control: its member's line, the locator value it declares, and where the app makes that element.
+    private object WhereIs(JsonObject arguments)
+    {
+        var suite = Suite(arguments);
+        var pageName = Required(arguments, "page");
+        var controlName = Required(arguments, "control");
+        var pages = UatPageSet.Of(Catalogs(suite).Default);
+        var page = pages.Values.FirstOrDefault(model => string.Equals(model.Key, pageName, StringComparison.OrdinalIgnoreCase) || string.Equals(model.Name, pageName, StringComparison.OrdinalIgnoreCase))
+            ?? throw new ToolProblem($"{suite.Name} has no page '{pageName}': list_pages names them.");
+        var control = page.Controls.FirstOrDefault(model => string.Equals(Compact(model.Name), Compact(controlName), StringComparison.OrdinalIgnoreCase))
+            ?? throw new ToolProblem($"The page {page.Name} has no control '{controlName}': list_pages names its controls.");
+
+        var at = BddSourceLocator.Of(page.PageType, control.MemberName ?? Compact(control.Name));
+        var value = at is { FilePath: { } file } ? BddAppSources.ValueAt(file, at.LineNumber) : null;
+        var app = value is null ? [] : new BddAppSources(_solutionDir).Find(value, hint: new BddAppSourceHint(at?.FilePath, page.PageType.Name, IsXaml(control.ControlType)));
+        return new
+        {
+            Page = page.Name,
+            Control = control.Name,
+            PageObject = at is { FilePath: { } declared } ? $"{Path.GetRelativePath(_solutionDir, declared)}:{at.LineNumber}" : null,
+            Locator = value is null ? null : value.IsPrefix ? value.Value + "…" : value.Value,
+            App = app.Select(hit => new { File = $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}", hit.Text, TestId = hit.IsAttribute }),
+            Note = value is null ? "The member declares no string to find by (a constant or nameof): look for it in the page object."
+                : app.Count == 0 ? "No app source has this value: the app may build it some other way, or the element is gone." : null,
+        };
+
+        static string Compact(string name) => name.Replace(" ", string.Empty, StringComparison.Ordinal);
+
+        // A MAUI, Avalonia or WPF control's app is XAML, an Html or Blazor one's web markup.
+        static bool? IsXaml(Type controlType) => controlType.Assembly.GetName().Name switch
+        {
+            { } name when name.Contains("Maui", StringComparison.Ordinal) || name.Contains("Avalonia", StringComparison.Ordinal) || name.Contains("Wpf", StringComparison.Ordinal) => true,
+            { } name when name.Contains("Html", StringComparison.Ordinal) || name.Contains("Blazor", StringComparison.Ordinal) => false,
+            _ => null,
+        };
+    }
+
+    // Where the app makes the element a failure's locator names: the top three lines; null when the failure names none.
+    private object? AppSource(JsonNode? failure)
+    {
+        if (failure?["locator"] is not JsonValue locator || BddAppSources.ValueOf(locator.ToString()) is not { } value)
+        {
+            return null;
+        }
+
+        var hits = new BddAppSources(_solutionDir).Find(value, max: 3);
+        return hits.Count == 0 ? null : hits.Select(hit => $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}: {hit.Text}").ToList();
+    }
+
     private static JsonNode? Failure(Bruinet.Bdd.Preview.BddScenarioRun run)
         => run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Failure is { } json ? JsonNode.Parse(json) : null;
 

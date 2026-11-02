@@ -235,7 +235,10 @@ public sealed class UatReflectionRuntime
                         control.Property.GetCustomAttribute<UatNavigatesToAttribute>() is { } goesTo
                             ? nameOf.GetValueOrDefault(goesTo.Page) ?? throw new InvalidOperationException(
                                 $"{page.PageType.Name}.{control.MemberName} navigates to {goesTo.Page.Name}, which is not a UAT page.")
-                            : null))
+                            : null)
+                    {
+                        MemberName = control.MemberName,
+                    })
                     .ToArray())
             {
                 Namespace = page.Namespace,
