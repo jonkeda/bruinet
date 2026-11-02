@@ -218,7 +218,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | --- | --- | --- | --- |
 | AI1 | done | 24057842 | the preview's Run kept no failed result; samples must find files from their assembly, not the process (AD-025) |
 | AI2 | done | (this commit) | BddInvoker lost every step's own frames (`throw ex.InnerException`); the locator is often only in the message |
-| AI2b | partly | c25cc7ee + review fixes | a `coverage` tool through the gate with .NET's own collector (nothing to install), proved on MauiHeadless by hand; not built: `run_scenario {coverage: true}`, a stored `__coverage.json`, the Done-when on bUnit and Chromium (open, see AI2b-review.md) |
+| AI2b | done | c25cc7ee, 3dfe82d5 | a separate `coverage` tool (answered: kept so); Done-when run 2026-11-02 on the Todo web suite with `head: bunit` and `head: web`: TOD.05.3 hits `TodoService` 12-28 and `TodoRowViewModel` whole on both, as on MauiHeadless |
 | AI2c | done | (with AI2's review) | found by AI2's agent check |
 | AI3 | done | 2348bab4 | |
 | AI4 | partly | dfeaef23 + review fixes | step_start, step_move (over, into, out, continue, wait, stop), step_screenshot built. Not as planned: a second step_start is refused (not a stop of the first), no `to-line` move and no `--break-at` on run_scenario, `continue` stops at the IDE's breakpoints file; step_state is AI4b |

@@ -1,6 +1,6 @@
 # AI2b and C5 review
 
-Status: **partly done**, 2026-11-02. Commits 714608f9 (C5), c25cc7ee (AI2b), and the review fixes after them.
+Status: **done**, 2026-11-02 (the Done-when run on bUnit and Chromium after the review; the separate tool kept, as answered). Commits 714608f9 (C5), c25cc7ee (AI2b), and the review fixes after them.
 
 ## What AI2b is now
 
