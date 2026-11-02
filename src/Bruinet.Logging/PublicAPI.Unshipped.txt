@@ -1,0 +1,7 @@
+#nullable enable
+Bruinet.Logging.StepLogProvider
+Bruinet.Logging.StepLogProvider.CreateLogger(string! categoryName) -> Microsoft.Extensions.Logging.ILogger!
+Bruinet.Logging.StepLogProvider.Dispose() -> void
+Bruinet.Logging.StepLogProvider.StepLogProvider() -> void
+Bruinet.Logging.StepLogServices
+static Bruinet.Logging.StepLogServices.AddBruinetStepLog(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!

@@ -585,6 +585,23 @@ Bruinet.Core.Logging.ScreenshotReason.ElementNotFound = 4 -> Bruinet.Core.Loggin
 Bruinet.Core.Logging.ScreenshotReason.Exception = 2 -> Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.Manual = 0 -> Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.Timeout = 3 -> Bruinet.Core.Logging.ScreenshotReason
+Bruinet.Core.Logging.StepLog
+Bruinet.Core.Logging.StepLogEntry
+Bruinet.Core.Logging.StepLogEntry.AtMs.get -> long
+Bruinet.Core.Logging.StepLogEntry.AtMs.init -> void
+Bruinet.Core.Logging.StepLogEntry.Exception.get -> string?
+Bruinet.Core.Logging.StepLogEntry.Exception.init -> void
+Bruinet.Core.Logging.StepLogEntry.Level.get -> Bruinet.Core.Logging.StepLogLevel
+Bruinet.Core.Logging.StepLogEntry.Level.init -> void
+Bruinet.Core.Logging.StepLogEntry.Message.get -> string!
+Bruinet.Core.Logging.StepLogEntry.Message.init -> void
+Bruinet.Core.Logging.StepLogEntry.Source.get -> string!
+Bruinet.Core.Logging.StepLogEntry.Source.init -> void
+Bruinet.Core.Logging.StepLogEntry.StepLogEntry(long AtMs, Bruinet.Core.Logging.StepLogLevel Level, string! Source, string! Message, string? Exception) -> void
+Bruinet.Core.Logging.StepLogLevel
+Bruinet.Core.Logging.StepLogLevel.Error = 2 -> Bruinet.Core.Logging.StepLogLevel
+Bruinet.Core.Logging.StepLogLevel.Information = 0 -> Bruinet.Core.Logging.StepLogLevel
+Bruinet.Core.Logging.StepLogLevel.Warning = 1 -> Bruinet.Core.Logging.StepLogLevel
 Bruinet.Core.Logging.Timing
 Bruinet.Core.Models.ScreenshotInfo
 Bruinet.Core.Models.ScreenshotInfo.ExceptionMessage.get -> string?
@@ -979,6 +996,7 @@ const Bruinet.Core.Composition.TestPages.FirstModelPageInterface = "Bruinet.Core
 const Bruinet.Core.Configuration.TimeoutSettings.ScaleEnvironmentVariable = "BRUINET_TIMEOUT_SCALE" -> string!
 const Bruinet.Core.Diagnostics.AutWindow.BoundsVariable = "BRUINET_AUT_BOUNDS" -> string!
 const Bruinet.Core.Diagnostics.AutWindow.Variable = "BRUINET_AUT_WINDOW" -> string!
+const Bruinet.Core.Logging.StepLog.Variable = "BRUINET_STEP_LOG" -> string!
 const Bruinet.Core.Logging.Timing.Variable = "BRUINET_TIMINGS" -> string!
 const Bruinet.Core.Scraping.ScrapeActionKind.Assert = "assert" -> string!
 const Bruinet.Core.Scraping.ScrapeActionKind.Check = "check" -> string!
@@ -1064,6 +1082,10 @@ static Bruinet.Core.Locators.Locator.ByXPath(string! xpath) -> Bruinet.Core.Loca
 static Bruinet.Core.Locators.Locator.operator !=(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
 static Bruinet.Core.Locators.Locator.operator ==(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
 static Bruinet.Core.Logging.NullTestLogger.Instance.get -> Bruinet.Core.Logging.NullTestLogger!
+static Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel level, string! source, string! message, System.Exception? exception = null) -> void
+static Bruinet.Core.Logging.StepLog.Minimum.get -> Bruinet.Core.Logging.StepLogLevel
+static Bruinet.Core.Logging.StepLog.Of(string? test, string? scenario, string? step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
+static Bruinet.Core.Logging.StepLog.Watch() -> void
 static Bruinet.Core.Logging.Timing.Call(string! page, string! control, string! action, long startMs, int durationMs, int attempts, string! result) -> void
 static Bruinet.Core.Logging.Timing.Enabled.get -> bool
 static Bruinet.Core.Logging.Timing.NowMs.get -> long
@@ -1098,6 +1120,7 @@ static Bruinet.Core.Testing.TestScope.Empty.get -> Bruinet.Core.Testing.TestScop
 static Bruinet.Core.Testing.TestScope.EnterScenario(string! scenario) -> System.IDisposable!
 static Bruinet.Core.Testing.TestScope.EnterStep(string! step) -> System.IDisposable!
 static Bruinet.Core.Testing.TestScope.EnterTest(string! test) -> System.IDisposable!
+static Bruinet.Core.Testing.TestScope.Latest.get -> Bruinet.Core.Testing.TestScope!
 static Bruinet.Core.Testing.WebHeads.Current.get -> Bruinet.Core.Testing.WebHead
 static Bruinet.Core.Testing.WebHeads.IsBunit.get -> bool
 static Bruinet.Core.Testing.WebHeads.Parse(string? value) -> Bruinet.Core.Testing.WebHead

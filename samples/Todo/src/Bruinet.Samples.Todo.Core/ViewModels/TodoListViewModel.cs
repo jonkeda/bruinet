@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using Bruinet.Samples.Shared.Commands;
 using Bruinet.Samples.Shared.ViewModels;
@@ -15,7 +16,7 @@ public sealed record TodoAppOptions(bool SyncOnStart = true);
 /// <summary>
 /// The list page: rows, filter, sync, and the Loading / Empty / Error / Content state.
 /// </summary>
-public sealed class TodoListViewModel : ParentViewModel
+public sealed partial class TodoListViewModel : ParentViewModel
 {
     private readonly TodoService _todos;
     private readonly ISyncService _sync;
@@ -31,6 +32,7 @@ public sealed class TodoListViewModel : ParentViewModel
     private string _syncLine = string.Empty;
     private bool _isOnline;
     private TodoRowViewModel? _selectedItem;
+    private readonly ILogger<TodoListViewModel>? _logger;
 
     /// <summary>Creates the view model.</summary>
     public TodoListViewModel(
@@ -38,8 +40,10 @@ public sealed class TodoListViewModel : ParentViewModel
         ISyncService sync,
         IConnectivityState connectivity,
         INavigator navigator,
-        TodoAppOptions options)
+        TodoAppOptions options,
+        ILogger<TodoListViewModel>? logger = null)
     {
+        _logger = logger;
         _todos = todos;
         _sync = sync;
         _connectivity = connectivity;
@@ -220,6 +224,14 @@ public sealed class TodoListViewModel : ParentViewModel
         {
             var result = await _sync.SyncAsync();
             _lastSyncError = result.Error;
+            if (!result.Succeeded)
+            {
+                if (_logger is not null)
+                {
+                    LogSyncFailed(_logger, result.Error);
+                }
+            }
+
             OnPropertyChanged(nameof(ErrorMessage));
             UpdateSyncLine();
             await ReloadAsync();
@@ -259,4 +271,7 @@ public sealed class TodoListViewModel : ParentViewModel
     private void UpdateSyncLine() => SyncLine = TodoFormatting.SyncLine(IsOnline, _sync.LastResult, culture: CultureInfo.CurrentCulture);
 
     private void UpdateState() => State = TodoListRules.StateFor(_isLoading, Items.Count, _lastSyncError);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "Sync failed: {Error}")]
+    private static partial void LogSyncFailed(ILogger logger, SyncError error);
 }

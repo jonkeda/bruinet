@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <RootNamespace>Bruinet.Logging</RootNamespace>
+    <Description>An app's log during a Bruinet test, kept by the step that made it: an ILoggerProvider to add to the app's services.</Description>
+    <PackageId>Bruinet.Logging</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
+  </ItemGroup>
+
+</Project>

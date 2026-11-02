@@ -46,6 +46,16 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
         _timeouts = options.Timeouts;
         _logger = options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance;
         _ownsLifecycle = true;
+
+        // The browser's console errors and warnings, and its uncaught errors, kept by the step that caused them (StepLog).
+        page.Console += (_, message) =>
+        {
+            if (message.Type is "error" or "warning")
+            {
+                StepLog.Add(message.Type == "error" ? StepLogLevel.Error : StepLogLevel.Warning, "browser", message.Text);
+            }
+        };
+        page.PageError += (_, error) => StepLog.Add(StepLogLevel.Error, "browser", error);
     }
 
     private PlaywrightTestContext(

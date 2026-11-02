@@ -36,6 +36,7 @@ public sealed record BddScenarioRun(string Scenario, string Status, long Duratio
                 {
                     DurationMs = step.TryGetProperty("durationMs", out var ms) && ms.ValueKind == JsonValueKind.Number ? ms.GetInt64() : null,
                     Failure = step.TryGetProperty("failure", out var failure) && failure.ValueKind == JsonValueKind.Object ? failure.GetRawText() : null,
+                    AppEvents = step.TryGetProperty("appEvents", out var said) && said.ValueKind == JsonValueKind.Array ? said.GetRawText() : null,
                 })
                 .ToList();
             return new BddScenarioRun(
@@ -72,4 +73,7 @@ public sealed record BddStepRun(int Line, string? File, int? CallLine, string St
 
     /// <summary>A failed step's failure as the report gives it (kind, expected, actual, locator, binding, frames), as JSON; null otherwise.</summary>
     public string? Failure { get; init; }
+
+    /// <summary>What the app said while the step ran (its log, the browser's console, exceptions nothing caught), as JSON; null when nothing.</summary>
+    public string? AppEvents { get; init; }
 }

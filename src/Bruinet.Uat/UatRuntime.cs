@@ -14,6 +14,9 @@ public sealed class UatRuntime
         string configFilePath,
         UatRuntimeValidationOptions? validationOptions = null)
     {
+        // Exceptions nothing caught are kept by the step they happened in (StepLog), for the step's result.
+        Bruinet.Core.Logging.StepLog.Watch();
+
         ArgumentNullException.ThrowIfNull(root);
         ArgumentException.ThrowIfNullOrWhiteSpace(configFilePath);
 

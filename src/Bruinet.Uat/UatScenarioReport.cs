@@ -55,7 +55,7 @@ internal static class UatScenarioReport
             ["evidencePath"] = execution.EvidencePath,
             ["skipReason"] = execution.Result.SkipDecision?.Reason,
             ["head"] = WebHeads.Current.ToString().ToLowerInvariant(),
-            ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, configDirectory, trace is not null))]),
+            ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, scenario.Source.Name, configDirectory, trace is not null))]),
         };
 
         if (trace is not null)
@@ -74,7 +74,7 @@ internal static class UatScenarioReport
     }
 
     // Always the lines and the outcome; with the trace, what the step bound to and its call chain.
-    private static JsonObject Step(BddStepResult step, string configDirectory, bool trace)
+    private static JsonObject Step(BddStepResult step, string scenario, string configDirectory, bool trace)
     {
         var invocation = step.Invocation;
         var outermost = invocation.Call?.Chain.FirstOrDefault();
@@ -91,6 +91,19 @@ internal static class UatScenarioReport
         if (UatStepFailure.Of(step) is { } failure)
         {
             node["failure"] = failure;
+        }
+
+        // What the app said while the step ran: its log, the browser's console, exceptions nothing caught.
+        var said = Bruinet.Core.Logging.StepLog.Of(null, scenario, $"{invocation.Step.Source.LineNumber}: {invocation.Step.Text}");
+        if (said.Count > 0)
+        {
+            node["appEvents"] = new JsonArray([.. said.TakeLast(10).Select(entry => (JsonNode?)new JsonObject
+            {
+                ["level"] = entry.Level.ToString().ToLowerInvariant(),
+                ["source"] = entry.Source,
+                ["message"] = entry.Message,
+                ["exception"] = entry.Exception,
+            })]);
         }
 
         if (trace)

@@ -458,7 +458,10 @@ call's line (`callLine`), and each step that ran its time (`durationMs`). A fail
 `failure`: its `kind` (`assertion`, `locator-not-found`, `timeout`, `app-unavailable`, `bind`,
 `app-exception`, `error`), the `exception`'s type, `expected` and `actual` for an assertion, the
 control's `locator`, the step's `binding`, and the first five `frames` of the suite's and the app's
-code it came through (`TodoList.AssertRowStatus (TodoList.cs:83)`). That is what the IDE preview
+code it came through (`TodoList.AssertRowStatus (TodoList.cs:83)`). A step during which the app said something has
+`appEvents`: its log's warnings and errors (`Bruinet.Logging`'s `AddBruinetStepLog`, added by the MauiHeadless head;
+any other host adds it to the app's services), the browser's console errors, and exceptions nothing caught; with
+`BRUINET_STEP_LOG=all`, information too. That is what the IDE preview
 shows at the lines that ran, and what the MCP server's `get_failure` gives an agent. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
 discovery data, and command catalog data. Scenario result files are also registered in the

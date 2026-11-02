@@ -18,6 +18,14 @@ public sealed record TestScope(string? Test, string? Scenario, string? Step)
     /// <summary>No test, scenario or step.</summary>
     public static TestScope Empty { get; } = new(null, null, null);
 
+    /// <summary>
+    /// The scope entered last on any flow: for what runs outside a test's own flow, as an app's code on its UI thread
+    /// does, so what it says can still be put under the step that made it run (<see cref="Logging.StepLog"/>).
+    /// </summary>
+    public static TestScope Latest => Volatile.Read(ref _latest) ?? Empty;
+
+    private static TestScope? _latest;
+
     /// <summary>Enters a test; its scenario and step start empty. Disposing puts back the scope before.</summary>
     public static IDisposable EnterTest(string test) => Enter(new TestScope(test, null, null));
 
@@ -31,6 +39,7 @@ public sealed record TestScope(string? Test, string? Scenario, string? Step)
     {
         var before = Now.Value;
         Now.Value = scope;
+        Volatile.Write(ref _latest, scope);
         return new Restore(before);
     }
 

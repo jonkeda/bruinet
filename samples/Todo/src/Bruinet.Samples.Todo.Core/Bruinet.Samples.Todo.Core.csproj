@@ -16,4 +16,9 @@
     <InternalsVisibleTo Include="Bruinet.Samples.Todo.UnitTests" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The app logs what goes wrong (a failed sync), as a real app does; a test sees it beside the step. -->
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+
 </Project>

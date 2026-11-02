@@ -82,6 +82,7 @@ public sealed class BddMcpServer : IDisposable
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, and the message. run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
+        ("step_log", "What the app said during each step of a scenario's newest run (any run): its log's warnings and errors, the browser's console errors, exceptions nothing caught, by step line. Where to look when a step passed but the app complained, or failed for a reason the UI does not show.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
         ("rename_step", "Renames a callable step (a '## Step:' heading in a steps file) and every call of it across the suites, each call keeping its values. Give the heading's or a call's line. Without apply: true it only gives the edits (file, line, before, after); with it, it writes them, then checks every changed file as validate_scenario does and puts all back when one fails.", Schema(("path", "string", "The steps file or a feature file with a call; required."), ("line", "integer", "The heading's or the call's line; required."), ("newPhrase", "string", "The new phrase, with the same {placeholders}; required."), ("apply", "boolean", "Write the edits; false when left out."))),
         ("rename_page_object", "Renames a scraped project's page object for a recorded page: its class, its draft and the person's part, in the files that declare it. Files that only use it are listed, not changed: fix them, then check_code. Asks first: without 'confirm' it only says what it would do.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("newName", "string", "The new class name; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
@@ -185,6 +186,7 @@ public sealed class BddMcpServer : IDisposable
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
                 "failing" => Failing(arguments),
+                "step_log" => StepLogOf(arguments),
                 "tests_affected" => TestsAffected(arguments),
                 "rename_step" => RenameStep(arguments),
                 "rename_page_object" => Scraper(() => RenamePageObject(arguments)),
@@ -620,6 +622,7 @@ public sealed class BddMcpServer : IDisposable
             At = failed.At.ToString("u", CultureInfo.InvariantCulture),
             FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
             Failure = Failure(failed),
+            AppEvents = step?.AppEvents is { } said ? JsonNode.Parse(said) : null,
             Screenshot = failed.EvidencePath,
             Message = Cap(step?.Message, 2000),
         };
@@ -656,6 +659,24 @@ public sealed class BddMcpServer : IDisposable
                 Message = Cap(item.Run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Message, 300),
             }),
             More = failed.Count > Shown ? failed.Count - Shown : (int?)null,
+        };
+    }
+
+    // The newest run of the scenario at a heading: each step that has app events, with them.
+    private object StepLogOf(JsonObject arguments)
+    {
+        var uri = FileUri(Required(arguments, "path"));
+        var names = _server.ScenarioNames(uri, Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required."));
+        var runs = _server.NewestRuns(uri, (string?)arguments["suite"]);
+        var run = names.Select(name => runs.GetValueOrDefault(name)).OfType<Bruinet.Bdd.Preview.BddScenarioRun>().OrderByDescending(candidate => candidate.At).FirstOrDefault()
+            ?? throw new ToolProblem("No run of it has a result yet: run it with run_scenario.");
+        return new
+        {
+            run.Scenario,
+            run.Status,
+            At = run.At.ToString("u", CultureInfo.InvariantCulture),
+            Steps = run.Steps.Where(step => step.AppEvents is not null).Select(step => new { step.Line, step.CallLine, step.Status, Events = JsonNode.Parse(step.AppEvents!) }),
+            Note = run.Steps.Any(step => step.AppEvents is not null) ? null : "The app said nothing at warning level or up (BRUINET_STEP_LOG=all keeps information too), or its log is not wired (AddBruinetStepLog).",
         };
     }
 

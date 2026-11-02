@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Maui\Bruinet.Maui.csproj" />
     <ProjectReference Include="..\MauiHeadless\MauiHeadless.csproj" />
+    <ProjectReference Include="..\Bruinet.Logging\Bruinet.Logging.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,14 +1,14 @@
 # AI6 design: what the app said during a step
 
-Status: **design**, 2026-11-02. Bruinet has no hook into an app's logging today: no `ILoggerProvider`, no browser
+Status: **built**, 2026-11-02, the owner taking the four proposals. Bruinet has no hook into an app's logging today: no `ILoggerProvider`, no browser
 console capture, no unhandled-exception hook. Everything below is new.
 
 ## Sources, per head
 
 | Head | Logs | Unhandled exceptions | Browser console |
 | --- | --- | --- | --- |
-| MauiHeadless, bUnit, service | an `ILoggerProvider` the test host adds to the app's `IServiceCollection` (the app runs in the test process) | `AppDomain.UnhandledException`, `TaskScheduler.UnobservedTaskException` | n/a |
-| Web (Playwright) | the app's host is `WebApplicationFactory`-like in process: the same provider | the same | `IPage.Console` and `IPage.PageError` |
+| MauiHeadless, bUnit, service | an `ILoggerProvider` added to the app's services: by the MauiHeadless head itself; a bUnit or service suite that composes the app adds `AddBruinetStepLog()` where it does | `AppDomain.UnhandledException`, `TaskScheduler.UnobservedTaskException` | n/a |
+| Web (Playwright) | as built: the app runs in its own process (`WebAppHost`), so its log is not read; a later item | n/a | `IPage.Console` and `IPage.PageError` |
 | Windows, Android, iOS | out of process: not now (a file or adb logcat later) | not now | n/a |
 
 ## Shape
