@@ -1,0 +1,13 @@
+diff --git a/samples/Todo/src/Bruinet.Samples.Todo.App/Pages/TodoDetailPage.xaml b/samples/Todo/src/Bruinet.Samples.Todo.App/Pages/TodoDetailPage.xaml
+index 4127379a..49bf46f0 100644
+--- a/samples/Todo/src/Bruinet.Samples.Todo.App/Pages/TodoDetailPage.xaml
++++ b/samples/Todo/src/Bruinet.Samples.Todo.App/Pages/TodoDetailPage.xaml
+@@ -14,7 +14,7 @@
+ 
+     <ContentPage.ToolbarItems>
+         <ToolbarItem Text="Edit" AutomationId="TodoDetail_Edit" Command="{Binding EditCommand}" />
+-        <ToolbarItem Text="Delete" AutomationId="TodoDetail_Delete" Command="{Binding DeleteCommand}" />
++        <ToolbarItem Text="Delete" AutomationId="TodoDetail_Delete" Command="{Binding EditCommand}" />
+     </ContentPage.ToolbarItems>
+ 
+     <ScrollView>

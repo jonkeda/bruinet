@@ -57,6 +57,12 @@ public sealed partial class BddAppSources
         var last = locator.LastIndexOf(" > ", StringComparison.Ordinal);
         locator = last >= 0 ? locator[(last + 3)..] : locator;
         var colon = locator.IndexOf(':', StringComparison.Ordinal);
+        // A class, control type, tag or text names no element of the app's own: its value is in the framework's code.
+        if (colon > 0 && NotTestIds.Contains(locator[..colon]))
+        {
+            return null;
+        }
+
         var value = Unwrapped((colon >= 0 ? locator[(colon + 1)..] : locator).Trim());
         return value is null ? null : new BddLocatorValue(value, IsPrefix: false);
     }
@@ -272,6 +278,10 @@ public sealed partial class BddAppSources
 
     private static readonly HashSet<string> TagNames = new(
         ["a", "button", "div", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "footer", "img", "input", "label", "li", "main", "nav", "ol", "p", "section", "select", "span", "table", "td", "textarea", "th", "tr", "ul"],
+        StringComparer.OrdinalIgnoreCase);
+
+    private static readonly HashSet<string> NotTestIds = new(
+        ["ClassName", "ControlType", "TagName", "Text", "LinkText", "PartialLinkText"],
         StringComparer.OrdinalIgnoreCase);
 
     private const int MostHits = 200;

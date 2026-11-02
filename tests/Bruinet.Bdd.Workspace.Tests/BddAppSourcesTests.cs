@@ -27,6 +27,8 @@ public sealed class BddAppSourcesTests : IDisposable
     [InlineData("")]
     [InlineData("Css:h1")]
     [InlineData("button")]
+    [InlineData("ClassName:ContentDialog")]
+    [InlineData("Text:Save")]
     public void ValueOf_NoValueOrATagName_IsNull(string? locator) => Assert.Null(BddAppSources.ValueOf(locator));
 
     [Fact]

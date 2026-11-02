@@ -17,7 +17,8 @@
   under `--artifacts-path`. After the fixes, `McpWhereIsTests`, `McpServerTests` and `McpRunTests` passed (28).
 - The solution build under `--artifacts-path` stops on the Stride sample's path and on `Bruinet.Maui.UITests`'
   `ControlContracts`. This diff touches neither.
-- Agent check: not run yet.
+- Agent check (checks/AI7.md): passed by its rule, 2 tool calls as the baseline's, 2 file reads against 6, but the
+  agent did not use `where_is`: the seeded bug was one grep away. It found `appSource` noisy for a class locator; fixed.
 
 ## Review
 

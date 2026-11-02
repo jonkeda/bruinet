@@ -11,8 +11,8 @@ import os
 import subprocess
 import sys
 
-SOLUTION = r"E:\repos\Private\tomorrow"
-SERVER = os.path.join(SOLUTION, ".bruinet", "mcp", "bruinet.dll")
+SOLUTION = os.environ.get("MCP_SOLUTION", r"E:\repos\Private\tomorrow")
+SERVER = os.path.join(r"E:\repos\Private\tomorrow", ".bruinet", "mcp", "bruinet.dll")
 HIDDEN = {name for name in os.environ.get("MCP_HIDE", "").split(",") if name}
 
 
@@ -38,6 +38,23 @@ def request(process, ident, method, params):
             return message
 
 
+def without_app_source(text):
+    """The answer as a server without AI7 gives it: no appSource."""
+    try:
+        node = json.loads(text)
+    except ValueError:
+        return text
+
+    def strip(value):
+        if isinstance(value, dict):
+            return {key: strip(item) for key, item in value.items() if key != "appSource"}
+        if isinstance(value, list):
+            return [strip(item) for item in value]
+        return value
+
+    return json.dumps(strip(node), indent=2)
+
+
 def main():
     process = start()
     try:
@@ -46,6 +63,7 @@ def main():
             instructions = init["result"].get("instructions", "")
             if HIDDEN:
                 instructions = instructions.replace(" to look at a screen without clicking to it, set_state puts the app in a declared state (list_states);", "")
+                instructions = instructions.replace(" where_is gives the page object line of a control and the app line (razor, XAML) that makes it;", "")
             print("INSTRUCTIONS:", instructions)
             tools = request(process, 2, "tools/list", {})["result"]["tools"]
             for tool in [tool for tool in tools if tool["name"] not in HIDDEN]:
@@ -61,6 +79,8 @@ def main():
             answer = request(process, index, "tools/call", {"name": call["tool"], "arguments": call.get("arguments", {})})
             result = answer.get("result", {})
             text = "".join(part.get("text", "") for part in result.get("content", []))
+            if "where_is" in HIDDEN:
+                text = without_app_source(text)
             flag = " (error)" if result.get("isError") else ""
             print(f"== {call['tool']}{flag}\n{text}\n")
     finally:

@@ -919,7 +919,10 @@ public sealed class BddMcpServer : IDisposable
             return null;
         }
 
-        var hits = AppSources().Find(value, max: 3, hint: new BddAppSourceHint(Path.Combine(suiteFolder, "uat.config.md"), null, null));
+        // Only where the value is a test id: a string elsewhere is as likely a test's or the framework's.
+        var hits = AppSources().Find(value, max: 3, hint: new BddAppSourceHint(Path.Combine(suiteFolder, "uat.config.md"), null, null))
+            .Where(hit => hit.IsAttribute)
+            .ToList();
         return hits.Count == 0 ? null : hits.Select(hit => $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}: {hit.Text}").ToList();
     }
 
