@@ -57,6 +57,10 @@
          (GHSA-qhrr-8q5h-9q3h). Each the patched version of its own line. -->
     <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <PackageVersion Include="MessagePack" Version="2.5.303" />
+    <!-- The same for the Visual Studio SDK's net48 closure (Bruinet.Bdd.VisualStudio*): MessagePack
+         2.5.124, Microsoft.IO.Redist 6.0.0 and System.Text.Json 8.0.0 come with it. -->
+    <PackageVersion Include="Microsoft.IO.Redist" Version="6.0.1" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <!-- Stride 3D Engine -->
     <PackageVersion Include="Stride.Engine" Version="4.3.0.2507" />
     <PackageVersion Include="Stride.UI" Version="4.3.0.2507" />

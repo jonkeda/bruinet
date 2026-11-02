@@ -12,6 +12,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" ExcludeAssets="runtime" />
+    <!-- The SDK's transitive packages with advisories, pinned in Directory.Packages.props; Visual Studio
+         carries its own at run time. -->
+    <PackageReference Include="MessagePack" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.IO.Redist" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Text.Json" ExcludeAssets="runtime" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
