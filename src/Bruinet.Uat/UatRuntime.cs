@@ -102,6 +102,7 @@ public sealed class UatRuntime
         }
 
         context.Apps = Config.Apps;
+        context.PageReader = _reflectionRuntime.ReadCurrentPage;
         if (_root is IBddClock clock)
         {
             context.Clock = clock;

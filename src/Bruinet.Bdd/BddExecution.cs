@@ -25,6 +25,12 @@ public sealed class BddExecutionContext
     /// <summary>The fixture's pinned clock, read only when a step needs the time.</summary>
     public IBddClock? Clock { get; set; }
 
+    /// <summary>
+    /// Reads the current page's controls for a step's trace (AI8): after a failed step, after every step with
+    /// <c>BRUINET_TRACE=all</c>. Null when the suite cannot read pages.
+    /// </summary>
+    public Func<BddExecutionContext, Runner.BddRunnerPageState>? PageReader { get; set; }
+
     /// <summary>The config's <c>Apps</c> table, which user arguments are read against.</summary>
     public IReadOnlyList<BddAppConfig> Apps { get; set; } = [];
 
@@ -102,6 +108,13 @@ public sealed record BddStepResult(
     /// </summary>
     public IReadOnlyList<Bruinet.Core.Logging.StepLogEntry> AppEvents
         => LogWindow is { } window ? Bruinet.Core.Logging.StepLog.Since(window.Mark, window.Scope) : [];
+
+    /// <summary>The control calls the step made (AI8), oldest first; empty for a step that did not run.</summary>
+    public IReadOnlyList<Bruinet.Core.Logging.StepTraceCall> Calls
+        => LogWindow is { } window ? Bruinet.Core.Logging.StepTrace.Of(window.Scope) : [];
+
+    /// <summary>The page's controls after the step, for its trace: read after a failed step, after each with <c>BRUINET_TRACE=all</c>.</summary>
+    public Runner.BddRunnerPageState? PageAfter { get; init; }
 
     public static BddStepResult Passed(BddStepInvocation invocation, string? message = null)
     {
@@ -286,6 +299,7 @@ public sealed class BddStepExecutionSession
                 };
             }
 
+            result = WithPageAfter(result);
             BreakOnFailure(invocation, result);
             _results.Add(result);
             await PaceAfterAsync(result, cancellationToken).ConfigureAwait(false);
@@ -299,15 +313,35 @@ public sealed class BddStepExecutionSession
         }
         catch (Exception ex)
         {
-            var failed = NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex)) with
+            var failed = WithPageAfter(NameTheSession(BddStepResult.Failed(invocation, ex.Message, ex)) with
             {
                 Duration = clock.Elapsed,
                 LogWindow = stepScope is null ? null : (mark, stepScope),
-            };
+            });
             BreakOnFailure(invocation, failed);
             _results.Add(failed);
             await PaceAfterAsync(failed, cancellationToken).ConfigureAwait(false);
             return failed;
+        }
+    }
+
+    // The page after the step, for its trace: read outside the step's scope, so its reads are not the step's calls; a page
+    // that cannot be read leaves the step as it was.
+    private BddStepResult WithPageAfter(BddStepResult result)
+    {
+        if (_context.PageReader is not { } reader || !Bruinet.Core.Logging.StepTrace.Enabled
+            || (result.Status != BddStepResultStatus.Failed && !Bruinet.Core.Logging.StepTrace.All))
+        {
+            return result;
+        }
+
+        try
+        {
+            return result with { PageAfter = reader(_context) };
+        }
+        catch (Exception exception) when (exception is not OutOfMemoryException)
+        {
+            return result with { PageAfter = new Runner.BddRunnerPageState(null, [], $"The page could not be read: {exception.Message}") };
         }
     }
 

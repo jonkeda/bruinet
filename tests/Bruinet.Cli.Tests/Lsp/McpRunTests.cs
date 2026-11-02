@@ -65,6 +65,14 @@ public sealed class McpRunTests : IDisposable
             Given the counter counts
             Then the counter was started
             ```
+
+            ## Scenario: Traces
+
+            ```gherkin
+            Given the counter counts
+            When the counter taps Plus
+            Then the counter has counted 5 times
+            ```
             """);
         _server = new BddMcpServer(_solution);
     }
@@ -135,7 +143,7 @@ public sealed class McpRunTests : IDisposable
 
         var runs = Answer(Call("last_runs", new JsonObject { ["path"] = Feature })).AsArray();
 
-        Assert.Equal(["Complains", "Counts", "Fails", "Starts"], runs.Select(run => (string?)run!["scenario"]));
+        Assert.Equal(["Complains", "Counts", "Fails", "Starts", "Traces"], runs.Select(run => (string?)run!["scenario"]));
         Assert.Equal("Failed", (string?)runs[2]!["status"], ignoreCase: true);
     }
 
@@ -161,8 +169,8 @@ public sealed class McpRunTests : IDisposable
 
         var answer = Answer(Call("failing", new JsonObject()));
 
-        Assert.Equal(1, (int?)answer["count"]);
-        var failed = answer["failing"]![0]!;
+        Assert.Equal(2, (int?)answer["count"]);
+        var failed = answer["failing"]!.AsArray().Single(item => (string?)item!["scenario"] == "Fails")!;
         Assert.Equal(("Fails", "Features/counter.feature.md#Fails", "assertion"), ((string?)failed["scenario"], (string?)failed["address"], (string?)failed["kind"]));
     }
 
@@ -334,6 +342,43 @@ public sealed class McpRunTests : IDisposable
         var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 26 }));
 
         Assert.Equal("passed", (string)run["scenarios"]![0]!["status"]!);
+    }
+
+    [Fact]
+    public void GetTrace_AfterAFailedRun_GivesEachStepsCalls_AndThePageAfterTheFailure()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 33 });
+
+        var trace = Answer(Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 33 }));
+
+        var steps = trace["steps"]!.AsArray();
+        Assert.Equal([36, 37, 38], steps.Select(step => (int)step!["line"]!));
+        Assert.Equal("Counter.Plus.Tap 1200ms x3", (string)steps[1]!["slowest"]!);
+        var failed = trace["failed"]!;
+        Assert.Equal(38, (int)failed["line"]!);
+        Assert.NotNull(failed["pageAfter"]!["reason"]);
+    }
+
+    [Fact]
+    public void GetTrace_AStep_GivesItInFull()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 33 });
+
+        var step = Answer(Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 33, ["step"] = 37 }));
+
+        var call = Assert.Single(step["calls"]!.AsArray())!;
+        Assert.Equal(("Plus", 3), ((string)call["control"]!, (int)call["attempts"]!));
+    }
+
+    [Fact]
+    public void GetTrace_APass_HasNoTrace_AndSaysHowToGetOne()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        var result = Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("BRUINET_TRACE=all", Text(result), StringComparison.Ordinal);
     }
 
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;

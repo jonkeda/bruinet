@@ -602,6 +602,23 @@ Bruinet.Core.Logging.StepLogLevel
 Bruinet.Core.Logging.StepLogLevel.Error = 2 -> Bruinet.Core.Logging.StepLogLevel
 Bruinet.Core.Logging.StepLogLevel.Information = 0 -> Bruinet.Core.Logging.StepLogLevel
 Bruinet.Core.Logging.StepLogLevel.Warning = 1 -> Bruinet.Core.Logging.StepLogLevel
+Bruinet.Core.Logging.StepTrace
+Bruinet.Core.Logging.StepTraceCall
+Bruinet.Core.Logging.StepTraceCall.Action.get -> string!
+Bruinet.Core.Logging.StepTraceCall.Action.init -> void
+Bruinet.Core.Logging.StepTraceCall.AtMs.get -> long
+Bruinet.Core.Logging.StepTraceCall.AtMs.init -> void
+Bruinet.Core.Logging.StepTraceCall.Attempts.get -> int
+Bruinet.Core.Logging.StepTraceCall.Attempts.init -> void
+Bruinet.Core.Logging.StepTraceCall.Control.get -> string!
+Bruinet.Core.Logging.StepTraceCall.Control.init -> void
+Bruinet.Core.Logging.StepTraceCall.DurationMs.get -> int
+Bruinet.Core.Logging.StepTraceCall.DurationMs.init -> void
+Bruinet.Core.Logging.StepTraceCall.Page.get -> string!
+Bruinet.Core.Logging.StepTraceCall.Page.init -> void
+Bruinet.Core.Logging.StepTraceCall.Result.get -> string!
+Bruinet.Core.Logging.StepTraceCall.Result.init -> void
+Bruinet.Core.Logging.StepTraceCall.StepTraceCall(string! Page, string! Control, string! Action, long AtMs, int DurationMs, int Attempts, string! Result) -> void
 Bruinet.Core.Logging.Timing
 Bruinet.Core.Models.ScreenshotInfo
 Bruinet.Core.Models.ScreenshotInfo.ExceptionMessage.get -> string?
@@ -999,6 +1016,7 @@ const Bruinet.Core.Configuration.TimeoutSettings.ScaleEnvironmentVariable = "BRU
 const Bruinet.Core.Diagnostics.AutWindow.BoundsVariable = "BRUINET_AUT_BOUNDS" -> string!
 const Bruinet.Core.Diagnostics.AutWindow.Variable = "BRUINET_AUT_WINDOW" -> string!
 const Bruinet.Core.Logging.StepLog.Variable = "BRUINET_STEP_LOG" -> string!
+const Bruinet.Core.Logging.StepTrace.Variable = "BRUINET_TRACE" -> string!
 const Bruinet.Core.Logging.Timing.Variable = "BRUINET_TIMINGS" -> string!
 const Bruinet.Core.Scraping.ScrapeActionKind.Assert = "assert" -> string!
 const Bruinet.Core.Scraping.ScrapeActionKind.Check = "check" -> string!
@@ -1089,6 +1107,10 @@ static Bruinet.Core.Logging.StepLog.Enabled.get -> bool
 static Bruinet.Core.Logging.StepLog.Mark() -> long
 static Bruinet.Core.Logging.StepLog.Minimum.get -> Bruinet.Core.Logging.StepLogLevel
 static Bruinet.Core.Logging.StepLog.Since(long mark, Bruinet.Core.Testing.TestScope! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
+static Bruinet.Core.Logging.StepTrace.Add(Bruinet.Core.Logging.StepTraceCall! call) -> void
+static Bruinet.Core.Logging.StepTrace.All.get -> bool
+static Bruinet.Core.Logging.StepTrace.Enabled.get -> bool
+static Bruinet.Core.Logging.StepTrace.Of(Bruinet.Core.Testing.TestScope! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepTraceCall!>!
 static Bruinet.Core.Logging.Timing.Call(string! page, string! control, string! action, long startMs, int durationMs, int attempts, string! result) -> void
 static Bruinet.Core.Logging.Timing.Enabled.get -> bool
 static Bruinet.Core.Logging.Timing.NowMs.get -> long

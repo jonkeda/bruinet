@@ -35,13 +35,15 @@ internal static class UatScenarioReport
     /// <param name="duration">How long it took.</param>
     /// <param name="configDirectory">The config's folder, which file paths are relative to.</param>
     /// <param name="trace">The binding and catalog detail, when the config's <c>IncludeRuntimeTrace</c> asks for it; null otherwise.</param>
+    /// <param name="tracePath">The scenario's step trace (AI8), when one was written.</param>
     public static string Build(
         BddBoundScenario scenario,
         BddScenarioExecutionResult execution,
         string status,
         TimeSpan duration,
         string configDirectory,
-        UatReportTrace? trace)
+        UatReportTrace? trace,
+        string? tracePath = null)
     {
         var source = scenario.Source.Source;
         var report = new JsonObject
@@ -53,6 +55,7 @@ internal static class UatScenarioReport
             ["durationMs"] = (long)duration.TotalMilliseconds,
             ["tags"] = new JsonArray([.. scenario.Source.Tags.Select(tag => (JsonNode?)tag)]),
             ["evidencePath"] = execution.EvidencePath,
+            ["tracePath"] = tracePath,
             ["skipReason"] = execution.Result.SkipDecision?.Reason,
             ["head"] = WebHeads.Current.ToString().ToLowerInvariant(),
             ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, configDirectory, trace is not null))]),
@@ -97,12 +100,7 @@ internal static class UatScenarioReport
         // A line said again and again (a console error per render) once, with how many times.
         if (step.AppEvents.Count > 0)
         {
-            node["appEvents"] = new JsonArray([.. step.AppEvents
-                .GroupBy(entry => (entry.Level, entry.Source, entry.Message, entry.Exception))
-                .Select(said => (Entry: said.First(), Times: said.Count()))
-                .OrderBy(said => said.Entry.AtMs)
-                .TakeLast(10)
-                .Select(said => (JsonNode?)Said(said.Entry, said.Times))]);
+            node["appEvents"] = AppEvents(step);
         }
 
         if (trace)
@@ -124,6 +122,15 @@ internal static class UatScenarioReport
 
         return node;
     }
+
+    /// <summary>What the app said during a step: a line said again and again once, with how many times; the last ten.</summary>
+    public static JsonArray AppEvents(BddStepResult step)
+        => new([.. step.AppEvents
+            .GroupBy(entry => (entry.Level, entry.Source, entry.Message, entry.Exception))
+            .Select(said => (Entry: said.First(), Times: said.Count()))
+            .OrderBy(said => said.Entry.AtMs)
+            .TakeLast(10)
+            .Select(said => (JsonNode?)Said(said.Entry, said.Times))]);
 
     // An app event: only the fields it has.
     private static JsonObject Said(Bruinet.Core.Logging.StepLogEntry entry, int times)
@@ -147,7 +154,7 @@ internal static class UatScenarioReport
         return node;
     }
 
-    private static string? Relative(string configDirectory, string? path)
+    internal static string? Relative(string configDirectory, string? path)
         => path is null ? null : Path.GetRelativePath(configDirectory, Path.GetFullPath(path)).Replace('\\', '/');
 }
 

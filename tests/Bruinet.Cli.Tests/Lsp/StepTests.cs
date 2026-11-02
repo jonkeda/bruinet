@@ -362,6 +362,10 @@ public sealed class StepCounterFixture : IAsyncLifetime
 
     public Task DisposeAsync() => Task.CompletedTask;
 
+    // As a page object's control call is timed: the step's trace keeps it (AI8).
+    [BddWhen("the counter taps {control}")]
+    public void Taps(string control) => Bruinet.Core.Logging.Timing.Call("Counter", control, "Tap", Bruinet.Core.Logging.Timing.NowMs, 1200, 3, "success");
+
     [BddThen("the counter was started")]
     public void WasStarted() => Assert.True(_started, "The fixture's InitializeAsync did not run.");
 

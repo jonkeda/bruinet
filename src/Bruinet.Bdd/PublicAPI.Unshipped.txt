@@ -315,6 +315,8 @@ Bruinet.Bdd.BddExecutionContext.Now.get -> System.DateTimeOffset?
 Bruinet.Bdd.BddExecutionContext.Now.set -> void
 Bruinet.Bdd.BddExecutionContext.Pacer.get -> Bruinet.Bdd.IBddStepPacer?
 Bruinet.Bdd.BddExecutionContext.Pacer.set -> void
+Bruinet.Bdd.BddExecutionContext.PageReader.get -> System.Func<Bruinet.Bdd.BddExecutionContext!, Bruinet.Bdd.Runner.BddRunnerPageState!>?
+Bruinet.Bdd.BddExecutionContext.PageReader.set -> void
 Bruinet.Bdd.BddExecutionContext.SessionHost.get -> Bruinet.Bdd.IBddSessionHost?
 Bruinet.Bdd.BddExecutionContext.SessionHost.set -> void
 Bruinet.Bdd.BddExecutionContext.SwitchApp(string! app) -> void
@@ -667,6 +669,7 @@ Bruinet.Bdd.BddStepMove.Over = 0 -> Bruinet.Bdd.BddStepMove
 Bruinet.Bdd.BddStepResult
 Bruinet.Bdd.BddStepResult.AppEvents.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
 Bruinet.Bdd.BddStepResult.BddStepResult(Bruinet.Bdd.BddStepResultStatus Status, Bruinet.Bdd.BddStepInvocation! Invocation, string? Message = null, System.Exception? Exception = null) -> void
+Bruinet.Bdd.BddStepResult.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepTraceCall!>!
 Bruinet.Bdd.BddStepResult.Duration.get -> System.TimeSpan?
 Bruinet.Bdd.BddStepResult.Duration.init -> void
 Bruinet.Bdd.BddStepResult.Exception.get -> System.Exception?
@@ -677,6 +680,8 @@ Bruinet.Bdd.BddStepResult.LogWindow.get -> (long Mark, Bruinet.Core.Testing.Test
 Bruinet.Bdd.BddStepResult.LogWindow.init -> void
 Bruinet.Bdd.BddStepResult.Message.get -> string?
 Bruinet.Bdd.BddStepResult.Message.init -> void
+Bruinet.Bdd.BddStepResult.PageAfter.get -> Bruinet.Bdd.Runner.BddRunnerPageState?
+Bruinet.Bdd.BddStepResult.PageAfter.init -> void
 Bruinet.Bdd.BddStepResult.Status.get -> Bruinet.Bdd.BddStepResultStatus
 Bruinet.Bdd.BddStepResult.Status.init -> void
 Bruinet.Bdd.BddStepResultStatus

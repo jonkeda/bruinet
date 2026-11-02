@@ -11,6 +11,9 @@ namespace Bruinet.Bdd.Preview;
 /// <param name="At">When the report was written.</param>
 public sealed record BddScenarioRun(string Scenario, string Status, long DurationMs, string? EvidencePath, IReadOnlyList<BddStepRun> Steps, DateTimeOffset At)
 {
+    /// <summary>The step trace written for it (AI8): a failed run's, every run's with <c>BRUINET_TRACE=all</c>; null when none.</summary>
+    public string? TracePath { get; init; }
+
     /// <summary>Reads a report; null when it is not one this version can read (no step lines).</summary>
     /// <param name="json">The report's text.</param>
     /// <param name="at">When it was written.</param>
@@ -45,7 +48,10 @@ public sealed record BddScenarioRun(string Scenario, string Status, long Duratio
                 root.TryGetProperty("durationMs", out var duration) && duration.ValueKind == JsonValueKind.Number ? duration.GetInt64() : 0,
                 Text(root, "evidencePath"),
                 runs,
-                at);
+                at)
+            {
+                TracePath = Text(root, "tracePath"),
+            };
         }
         catch (JsonException)
         {

@@ -52,7 +52,16 @@ public static class UatScenarioResults
                 ? new UatReportTrace(catalog, runtime.DiscoveryReport)
                 : null;
 
-            File.WriteAllText(reportPath, UatScenarioReport.Build(scenario, execution, status, duration, runtime.ConfigDirectory, trace));
+            // The step trace (AI8): a failed scenario's, every one's with BRUINET_TRACE=all.
+            string? tracePath = null;
+            if (Bruinet.Core.Logging.StepTrace.Enabled && (status == "failed" || Bruinet.Core.Logging.StepTrace.All))
+            {
+                tracePath = Path.Combine(directory, "traces", UatScenarioTrace.FileName(file, evidenceName));
+                Directory.CreateDirectory(Path.GetDirectoryName(tracePath)!);
+                File.WriteAllText(tracePath, UatScenarioTrace.Build(scenario, execution, status, runtime.ConfigDirectory));
+            }
+
+            File.WriteAllText(reportPath, UatScenarioReport.Build(scenario, execution, status, duration, runtime.ConfigDirectory, trace, tracePath));
 
             // The suite, file and line let a tool find the newest run of a file's scenarios (P5, AD-007).
             TestArtifactManifestWriter.RecordArtifact(
