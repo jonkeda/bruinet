@@ -42,6 +42,7 @@ internal static class BruinetCommand
             ScenarioCommands.Build(io),
             SelectionCommands.Build(io),
             Sql.SqlCommands.Build(io),
+            Http.HttpCommands.Build(io),
             GenerateCommand.Build(io),
             Version(io),
             ServerCommands.Mcp(io),

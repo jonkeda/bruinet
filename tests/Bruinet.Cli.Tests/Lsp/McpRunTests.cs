@@ -193,6 +193,54 @@ public sealed class McpRunTests : IDisposable
         Assert.Contains("no scenario heading at line 6", Text(result));
     }
 
+    [Fact]
+    public void RunScenario_WithReplay_GivesTheRunnerTheMode()
+    {
+        var replays = Path.Combine(Suite, "Features", "replay.feature.md");
+        File.WriteAllText(replays, """
+            # Feature: Replay
+
+            ## Scenario: Replays
+
+            ```gherkin
+            Then the HTTP replay mode is Replay
+            ```
+            """);
+
+        var replayed = Answer(Call("run_scenario", new JsonObject { ["path"] = replays, ["line"] = 3, ["replay"] = "replay" }));
+        var plain = Answer(Call("run_scenario", new JsonObject { ["path"] = replays, ["line"] = 3 }));
+
+        Assert.Equal("passed", (string)replayed["scenarios"]![0]!["status"]!);
+        Assert.Equal("failed", (string)plain["scenarios"]![0]!["status"]!);
+        Assert.Contains("record, replay or refresh", Text(Call("run_scenario", new JsonObject { ["path"] = replays, ["line"] = 3, ["replay"] = "often" })));
+    }
+
+    [Fact]
+    public void HttpCalls_GivesTheScenariosCallsInItsNewestRun_WithTheMisses()
+    {
+        var log = Bruinet.Mocking.Http.HttpCallLog.PathFor(Bruinet.Mocking.Http.HttpReplaySession.PathFor(Path.Combine(Suite, "Recordings"), "Counts"));
+        Directory.CreateDirectory(Path.GetDirectoryName(log)!);
+        File.WriteAllText(log, """
+            {
+              "Mode": "Replay",
+              "Calls": [
+                { "Method": "GET", "Url": "https://api.test/todos", "Status": 200, "Outcome": "matched", "Exchange": 0 },
+                { "Method": "POST", "Url": "https://api.test/todos", "Status": 0, "Outcome": "missed", "Exchange": -1 }
+              ],
+              "Unused": [1],
+              "Misses": [ "HTTP replay miss in Counts.json: POST /todos; nearest recorded is exchange 1 POST /todos: $.title is '\"Bread\"' where '\"Milk\"' was recorded." ]
+            }
+            """);
+
+        var calls = Answer(Call("http_calls", new JsonObject { ["path"] = Feature, ["line"] = 3 }));
+
+        Assert.Equal("Counts", (string)calls["scenario"]!);
+        Assert.Equal(["matched", "missed"], calls["calls"]!.AsArray().Select(call => (string)call!["outcome"]!));
+        Assert.Contains("Bread", (string)calls["misses"]![0]!, StringComparison.Ordinal);
+        Assert.Equal(1, (int)calls["unusedExchanges"]![0]!);
+        Assert.Contains("run it with run_scenario", Text(Call("http_calls", new JsonObject { ["path"] = Feature, ["line"] = 11 })), StringComparison.Ordinal);
+    }
+
     private JsonObject Call(string tool, JsonObject arguments)
     {
         var response = _server.Handle(new JsonObject

@@ -89,7 +89,13 @@ public sealed partial class BddLanguageServer
         try
         {
             // The suite's warm runner, or a new one from a copy of its output (AD-025).
-            run.Start = new BddRunnerStart(assemblies.Start, Environment: RunnerEnvironment(suite));
+            var environment = RunnerEnvironment(suite);
+            foreach (var (name, value) in request.Environment ?? new Dictionary<string, string>())
+            {
+                environment[name] = value;
+            }
+
+            run.Start = new BddRunnerStart(assemblies.Start, Environment: environment);
             run.Runner = await Warm.TakeAsync(run.Start, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)

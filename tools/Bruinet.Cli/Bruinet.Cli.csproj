@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
     <!-- sql: the SQL log's schema snapshot, Extended Events and report (.my/sql-replay/plan.md, step 1). -->
     <ProjectReference Include="..\..\src\Bruinet.Mocking.Data\Bruinet.Mocking.Data.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

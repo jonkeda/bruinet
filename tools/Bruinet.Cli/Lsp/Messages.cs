@@ -468,7 +468,8 @@ public sealed record StepPausedParams(string Uri, string Scenario, string? At, i
 /// <param name="Uri">The feature file.</param>
 /// <param name="Line">A scenario heading's line; null for every scenario of the file.</param>
 /// <param name="Suite">The suite picked for a linked file; null for the first.</param>
-public sealed record RunStartParams(string Uri, int? Line, string? Suite);
+/// <param name="Environment">Variables the runner gets beside its own: a replay mode (AI11); a runner with others is a new one.</param>
+public sealed record RunStartParams(string Uri, int? Line, string? Suite, IReadOnlyDictionary<string, string>? Environment = null);
 
 /// <summary>Whether the run started; <c>bruinet/run/ended</c> says how it went.</summary>
 /// <param name="Started">Whether it started.</param>

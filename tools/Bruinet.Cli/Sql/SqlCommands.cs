@@ -155,7 +155,7 @@ internal static class SqlCommands
         return command;
     }
 
-    private static string GitText(string directory, params string[] arguments)
+    internal static string GitText(string directory, params string[] arguments)
     {
         var start = new ProcessStartInfo("git") { WorkingDirectory = directory, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
         foreach (var argument in arguments)

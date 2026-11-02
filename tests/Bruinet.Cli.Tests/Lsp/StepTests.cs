@@ -363,6 +363,10 @@ public sealed class StepCounterFixture
     [BddWhen("the counter complains")]
     public void Complain() => Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel.Warning, "counter", "Counted too often");
 
+    // What run_scenario's replay argument hands the runner (AI11).
+    [BddThen("the HTTP replay mode is {mode}")]
+    public void ReplayModeIs(string mode) => Assert.Equal(mode, Environment.GetEnvironmentVariable("BRUINET_HTTP_REPLAY") ?? "off");
+
     [BddThen("the counter has counted {times} times")]
     public void HasCounted(int times) => Assert.True(times == _count, $"The counter counted {_count} times, not {times}.");
 
