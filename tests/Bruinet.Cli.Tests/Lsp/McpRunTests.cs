@@ -371,6 +371,17 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
+    public void GetTrace_APassRunWithTraceAll_IsTraced()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3, ["trace"] = "all" });
+
+        var trace = Answer(Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 3 }));
+
+        Assert.Equal("passed", (string)trace["status"]!);
+        Assert.Equal(3, trace["steps"]!.AsArray().Count);
+    }
+
+    [Fact]
     public void GetTrace_APass_HasNoTrace_AndSaysHowToGetOne()
     {
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });
@@ -378,7 +389,7 @@ public sealed class McpRunTests : IDisposable
         var result = Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 3 });
 
         Assert.True((bool)result["isError"]!);
-        Assert.Contains("BRUINET_TRACE=all", Text(result), StringComparison.Ordinal);
+        Assert.Contains("trace: all", Text(result), StringComparison.Ordinal);
     }
 
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;

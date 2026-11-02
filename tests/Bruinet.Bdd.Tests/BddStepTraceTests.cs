@@ -42,6 +42,21 @@ public sealed class BddStepTraceTests
         Assert.Contains("The app closed.", ask.PageAfter!.Reason, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task WithAll_EveryStepHasThePageAfterIt()
+    {
+        var runner = new BddScenarioRunner();
+        runner.Context.PageReader = _ => new BddRunnerPageState("Todo Detail", [], null);
+
+        BddScenarioRunResult result;
+        using (StepTrace.Use("all"))
+        {
+            result = await runner.RunAsync(Scenario());
+        }
+
+        Assert.All(result.Steps, step => Assert.Equal("Todo Detail", step.PageAfter?.Page));
+    }
+
     private static (string, string, string) Single(IReadOnlyList<StepTraceCall> calls)
     {
         var call = Assert.Single(calls);

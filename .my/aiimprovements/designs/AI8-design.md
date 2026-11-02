@@ -1,6 +1,8 @@
 # AI8 design: a per-step trace, text first
 
-Status: **design**, 2026-11-02, branch `ai8-trace` off `move`. Open questions are decided by their proposals.
+Status: **built**, 2026-11-02, branch `ai8-trace` off `move`. Open questions are decided by their proposals. Changed in
+the review (AI8-review.md): the folder is `step-traces/`, calls are kept per step (not a shared ring), the page read has
+a 3-second budget, `run_scenario` has `trace`, and the trace leaves out empty fields.
 
 ## Outcome
 
@@ -39,7 +41,7 @@ With `step` (a step's line): that step in full, as `failed` above.
 | Step's calls | `Bruinet.Bdd` | `BddStepResult.Calls` | `StepTrace.Of(scope)`, read like `AppEvents` |
 | Page after | `Bruinet.Bdd` | `BddExecutionContext.PageReader`, `BddStepResult.PageAfter` | read after the step, outside its scope (its reads are not its calls): after a failed step always, after every step with `BRUINET_TRACE=all` |
 | Reader | `Bruinet.Uat` | `UatRuntime.ConfigureContext` | `PageReader = ReadCurrentPage` (`UatPageState`, 200 ms per control) |
-| File | `Bruinet.Uat` | `UatScenarioTrace` (new), `UatScenarioResults.Record` | `<OutputDirectory>/traces/<feature>__<scenario>__trace.json` for a failed scenario, for every one with `BRUINET_TRACE=all`; the report names it (`tracePath`) |
+| File | `Bruinet.Uat` | `UatScenarioTrace` (new), `UatScenarioResults.Record` | `<OutputDirectory>/step-traces/<feature>__<scenario>__trace.json` for a failed scenario, for every one with `BRUINET_TRACE=all`; the report names it (`tracePath`) |
 | Read | `Bruinet.Bdd.Workspace` | `BddScenarioRun.TracePath` | from the report |
 | Tool | `Bruinet.Cli` | `BddMcpServer.GetTrace` | the summary and a step |
 

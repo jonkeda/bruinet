@@ -5,7 +5,7 @@ using Bruinet.Core.Logging;
 namespace Bruinet.Uat;
 
 /// <summary>
-/// A scenario's step trace (AI8), <c>traces/&lt;feature&gt;__&lt;scenario&gt;__trace.json</c> beside its report: per step,
+/// A scenario's step trace (AI8), <c>step-traces/&lt;feature&gt;__&lt;scenario&gt;__trace.json</c> beside its report: per step,
 /// the control calls it made (a wait shows as a long call or many attempts), what the app said, and the page's controls
 /// after it, read after a failed step and, with <c>BRUINET_TRACE=all</c>, after each. Text for an agent; a viewer for
 /// people reads the same file.
@@ -38,7 +38,7 @@ internal static class UatScenarioTrace
             ["status"] = status,
             ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, configDirectory))]),
         };
-        return trace.ToJsonString(Json);
+        return Pruned(trace).ToJsonString(Json);
     }
 
     private static JsonObject Step(BddStepResult step, string configDirectory)
@@ -53,7 +53,7 @@ internal static class UatScenarioTrace
             ["text"] = step.Invocation.Step.Text,
             ["status"] = step.Status.ToString(),
             ["durationMs"] = step.Duration is { } duration ? (long)duration.TotalMilliseconds : null,
-            ["page"] = calls.LastOrDefault()?.Page ?? step.PageAfter?.Page,
+            ["page"] = step.PageAfter?.Page ?? calls.LastOrDefault()?.Page,
             ["message"] = step.Status == BddStepResultStatus.Failed ? step.Message : null,
             ["calls"] = new JsonArray([.. Kept(calls).Select(call => (JsonNode?)Call(call))]),
         };
@@ -83,6 +83,32 @@ internal static class UatScenarioTrace
                     ["unreadable"] = control.Unreadable,
                 })]),
             };
+        }
+
+        return node;
+    }
+
+    // Without its empty fields: a smaller file for an agent to read.
+    private static JsonNode Pruned(JsonNode node)
+    {
+        if (node is JsonObject json)
+        {
+            foreach (var name in json.Where(field => field.Value is null).Select(field => field.Key).ToList())
+            {
+                json.Remove(name);
+            }
+
+            foreach (var field in json)
+            {
+                Pruned(field.Value!);
+            }
+        }
+        else if (node is JsonArray array)
+        {
+            foreach (var item in array.OfType<JsonNode>())
+            {
+                Pruned(item);
+            }
         }
 
         return node;

@@ -463,7 +463,11 @@ code it came through (`TodoList.AssertRowStatus (TodoList.cs:83)`). A step durin
 a bUnit or service suite adds it where it composes the app's services, after the app's own registrations), and the
 browser's console errors and warnings and page errors; with `BRUINET_STEP_LOG=all`, information too, with `off`
 nothing. An app in a process of its own (the web head's host, a device) is not read. That is what the IDE preview
-shows at the lines that ran, and what the MCP server's `get_failure` gives an agent. If
+shows at the lines that ran, and what the MCP server's `get_failure` gives an agent. A failed scenario also writes
+its step trace, `step-traces/<feature>__<scenario>__trace.json` beside the report (named in its `tracePath`): each
+step's control calls with their duration and attempts, its app events, and the page's controls after the failed step
+(60 at most, 3 seconds of reading). `BRUINET_TRACE=all` traces a passing scenario too and reads the page after every
+step; `off` traces nothing. The MCP server's `get_trace` reads it. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
 discovery data, and command catalog data. Scenario result files are also registered in the
 shared artifact manifest as `uat-scenario` artifacts, with the suite, file and line in their

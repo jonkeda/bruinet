@@ -52,14 +52,7 @@ public static class UatScenarioResults
                 ? new UatReportTrace(catalog, runtime.DiscoveryReport)
                 : null;
 
-            // The step trace (AI8): a failed scenario's, every one's with BRUINET_TRACE=all.
-            string? tracePath = null;
-            if (Bruinet.Core.Logging.StepTrace.Enabled && (status == "failed" || Bruinet.Core.Logging.StepTrace.All))
-            {
-                tracePath = Path.Combine(directory, "traces", UatScenarioTrace.FileName(file, evidenceName));
-                Directory.CreateDirectory(Path.GetDirectoryName(tracePath)!);
-                File.WriteAllText(tracePath, UatScenarioTrace.Build(scenario, execution, status, runtime.ConfigDirectory));
-            }
+            var tracePath = WriteTrace(Path.Combine(directory, "step-traces", UatScenarioTrace.FileName(file, evidenceName)), scenario, execution, status, runtime.ConfigDirectory);
 
             File.WriteAllText(reportPath, UatScenarioReport.Build(scenario, execution, status, duration, runtime.ConfigDirectory, trace, tracePath));
 
@@ -84,6 +77,28 @@ public static class UatScenarioResults
         catch (Exception)
         {
             // Whatever stops the report, it does not change the scenario's outcome.
+            return null;
+        }
+    }
+
+    // The step trace (AI8): a failed scenario's, every one's with BRUINET_TRACE=all; an older run's is removed when this
+    // one has none. Whatever stops it leaves the report to be written: null then.
+    private static string? WriteTrace(string path, BddBoundScenario scenario, BddScenarioExecutionResult execution, string status, string configDirectory)
+    {
+        try
+        {
+            if (!Bruinet.Core.Logging.StepTrace.Enabled || (status != "failed" && !Bruinet.Core.Logging.StepTrace.All))
+            {
+                File.Delete(path);
+                return null;
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            File.WriteAllText(path, UatScenarioTrace.Build(scenario, execution, status, configDirectory));
+            return path;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        {
             return null;
         }
     }

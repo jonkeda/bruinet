@@ -1107,7 +1107,6 @@ static Bruinet.Core.Logging.StepLog.Enabled.get -> bool
 static Bruinet.Core.Logging.StepLog.Mark() -> long
 static Bruinet.Core.Logging.StepLog.Minimum.get -> Bruinet.Core.Logging.StepLogLevel
 static Bruinet.Core.Logging.StepLog.Since(long mark, Bruinet.Core.Testing.TestScope! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepLogEntry!>!
-static Bruinet.Core.Logging.StepTrace.Add(Bruinet.Core.Logging.StepTraceCall! call) -> void
 static Bruinet.Core.Logging.StepTrace.All.get -> bool
 static Bruinet.Core.Logging.StepTrace.Enabled.get -> bool
 static Bruinet.Core.Logging.StepTrace.Of(Bruinet.Core.Testing.TestScope! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Logging.StepTraceCall!>!

@@ -6,5 +6,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Bruinet.Maui.Tests")]
 [assembly: InternalsVisibleTo("Bruinet.Html")]
 [assembly: InternalsVisibleTo("Bruinet.Html.Tests")]
+[assembly: InternalsVisibleTo("Bruinet.Core.Tests")]
+[assembly: InternalsVisibleTo("Bruinet.Bdd.Tests")]
 [assembly: InternalsVisibleTo("Bruinet.NativeAndroid")]
 [assembly: InternalsVisibleTo("Bruinet.NativeAndroid.Tests")]

@@ -784,12 +784,14 @@ public sealed class UatReflectionRuntime
 
     /// <summary>The current page's controls and what each shows, for a paused Step-through.</summary>
     /// <param name="context">The scenario's context.</param>
-    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context)
+    /// <param name="most">The most controls read.</param>
+    /// <param name="budget">How long the reads may take in all.</param>
+    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context, int most = int.MaxValue, TimeSpan? budget = null)
     {
         var page = context.AppItems.TryGetValue(CurrentPageItemKey, out var value) && value is UatRuntimePage current ? current
             : context.CurrentPageName is { } name && _pages.TryGetValue(name, out var named) ? named
             : null;
-        return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page));
+        return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page), most, budget);
     }
 
     private static object? GetPageInstance(BddExecutionContext context, UatRuntimePage page)

@@ -27,7 +27,9 @@ internal static class UatPageState
     /// <summary>The page's controls, or why there are none to read.</summary>
     /// <param name="page">The current page, null when none is.</param>
     /// <param name="instance">The page object.</param>
-    public static BddRunnerPageState Read(UatRuntimePage? page, object? instance)
+    /// <param name="most">The most controls read; the rest are left out, and the reason says so.</param>
+    /// <param name="budget">How long the reads may take in all; the controls not reached by then are left out.</param>
+    public static BddRunnerPageState Read(UatRuntimePage? page, object? instance, int most = int.MaxValue, TimeSpan? budget = null)
     {
         if (page is null || instance is null)
         {
@@ -35,8 +37,15 @@ internal static class UatPageState
         }
 
         List<BddRunnerControlState> controls = [];
-        foreach (var binding in page.Controls)
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        var bindings = page.Controls.ToList();
+        foreach (var binding in bindings)
         {
+            if (controls.Count >= most || clock.Elapsed > budget)
+            {
+                return new BddRunnerPageState(page.Name, controls, $"{controls.Count} of {bindings.Count} controls read: the rest left out ({(controls.Count >= most ? $"at most {most}" : $"after {budget!.Value.TotalSeconds:0} s")}).");
+            }
+
             object? control;
             try
             {

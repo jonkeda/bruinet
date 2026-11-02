@@ -44,7 +44,7 @@ public static class Timing
     public static void Call(string page, string control, string action, long startMs, int durationMs, int attempts, string result)
     {
         // The step's trace (AI8) keeps it whether or not timings are written.
-        StepTrace.Add(new StepTraceCall(page, control, action, startMs, durationMs, attempts, result));
+        StepTrace.Add(page, control, action, startMs, durationMs, attempts, result);
         if (Enabled)
         {
             Write(TestScope.Current, "call", action, page, control, action, startMs, durationMs, attempts, result);

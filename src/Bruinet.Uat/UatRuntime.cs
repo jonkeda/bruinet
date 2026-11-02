@@ -102,7 +102,8 @@ public sealed class UatRuntime
         }
 
         context.Apps = Config.Apps;
-        context.PageReader = _reflectionRuntime.ReadCurrentPage;
+        // A trace's page (AI8): 60 controls, 3 seconds at most, as a failed step's app may no longer answer.
+        context.PageReader = read => _reflectionRuntime.ReadCurrentPage(read, most: 60, budget: TimeSpan.FromSeconds(3));
         if (_root is IBddClock clock)
         {
             context.Clock = clock;

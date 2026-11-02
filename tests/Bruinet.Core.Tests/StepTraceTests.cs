@@ -44,6 +44,26 @@ public sealed class StepTraceTests
         }
     }
 
+    [Fact]
+    public void Off_KeepsNone_AndACallOutsideAStepIsNoStepsEither()
+    {
+        using (TestScope.EnterStep("27: When I tap Delete"))
+        {
+            using (StepTrace.Use("off"))
+            {
+                Timing.Call("Todo Detail", "Delete", "Tap", Timing.NowMs, 95, 1, "success");
+            }
+
+            Assert.Empty(StepTrace.Of(TestScope.Current));
+        }
+
+        using (TestScope.EnterScenario("Delete"))
+        {
+            Timing.Call("Todo Detail", "Delete", "Tap", Timing.NowMs, 95, 1, "success");
+            Assert.Empty(StepTrace.Of(TestScope.Current));
+        }
+    }
+
     private static (string, string, string, int, int, string) Summary(StepTraceCall call)
         => (call.Page, call.Control, call.Action, call.DurationMs, call.Attempts, call.Result);
 }

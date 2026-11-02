@@ -77,7 +77,7 @@ public sealed class BddMcpServer : IDisposable
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("list_states", "The states the suite's app can be put in, declared with [BddState] in its test project: each state's phrase, its parameters and the method that sets it (through test data or the service head). A Given may name one; set_state puts the app in one.", Schema(("suite", "string", "The suite; its only one when left out."))),
         ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("page", "string", "The page the app is on in that state (list_pages): checked, and the page step_state then reads; none when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
-        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."))),
+        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."), ("trace", "string", "all: trace every scenario, a pass too, reading the page after each step (get_trace); off: none; a failed scenario is traced when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
@@ -360,7 +360,7 @@ public sealed class BddMcpServer : IDisposable
         }
 
         using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10));
-        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, Whole(arguments, "line", 1, int.MaxValue), suite, ReplayEnvironment((string?)arguments["replay"])), timeout.Token).GetAwaiter().GetResult();
+        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, Whole(arguments, "line", 1, int.MaxValue), suite, RunEnvironment(arguments)), timeout.Token).GetAwaiter().GetResult();
         if (ended is null)
         {
             throw new ToolProblem(started.Reason ?? "The run did not start.");
@@ -388,6 +388,25 @@ public sealed class BddMcpServer : IDisposable
     }
 
     // The replay mode a run asks for, as the variables both replays read; SQL replay has no refresh, so it records.
+    // The run's variables: its replay mode and its trace (BRUINET_TRACE); a warm runner with other ones is not reused.
+    private static Dictionary<string, string>? RunEnvironment(JsonObject arguments)
+    {
+        var environment = ReplayEnvironment((string?)arguments["replay"]);
+        if ((string?)arguments["trace"] is { } trace)
+        {
+            environment ??= [];
+            environment[Bruinet.Core.Logging.StepTrace.Variable] = trace.Trim().ToLowerInvariant() switch
+            {
+                "all" => "all",
+                "off" => "off",
+                "failed" => "failed",
+                _ => throw new ToolProblem($"trace '{trace}': all, failed or off."),
+            };
+        }
+
+        return environment;
+    }
+
     private static Dictionary<string, string>? ReplayEnvironment(string? replay)
         => replay?.Trim().ToLowerInvariant() switch
         {
@@ -855,20 +874,21 @@ public sealed class BddMcpServer : IDisposable
             throw new ToolProblem("There is no scenario heading at that line.");
         }
 
+        // Of an outline's rows, the newest with a trace: a newer row that passed has none.
         var runs = _server.NewestRuns(uri, (string?)arguments["suite"]);
-        var newest = names.Select(name => runs.GetValueOrDefault(name)).OfType<Bruinet.Bdd.Preview.BddScenarioRun>().OrderByDescending(run => run.At).FirstOrDefault()
-            ?? throw new ToolProblem("No run of it has a result yet: run it with run_scenario.");
-        if (newest.TracePath is not { } path || !File.Exists(path))
+        var ran = names.Select(name => runs.GetValueOrDefault(name)).OfType<Bruinet.Bdd.Preview.BddScenarioRun>().OrderByDescending(run => run.At).ToList();
+        var newest = ran.FirstOrDefault(run => run.TracePath is { } traced && File.Exists(traced));
+        if (newest?.TracePath is not { } path)
         {
-            throw new ToolProblem($"Its newest run {newest.Status} ({newest.At:u}) has no trace: a failed run is traced; run it with BRUINET_TRACE=all to trace a pass.");
+            throw new ToolProblem(ran.Count == 0
+                ? "No run of it has a result yet: run it with run_scenario."
+                : $"Its newest run {ran[0].Status} ({ran[0].At:u}) has no trace: a failed run is traced; run_scenario with trace: all traces a pass.");
         }
 
-        var trace = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
-        var steps = trace["steps"]!.AsArray().OfType<JsonObject>().ToList();
+        var (trace, steps) = ReadTrace(path);
         if (Whole(arguments, "step", 1, int.MaxValue) is { } stepLine)
         {
-            return steps.FirstOrDefault(step => (int?)step["line"] == stepLine || (int?)step["callLine"] == stepLine)
-                ?? throw new ToolProblem($"The trace has no step at line {stepLine}: its steps are at {string.Join(", ", steps.Select(step => (int?)step["callLine"] ?? (int?)step["line"]))}.");
+            return TraceStep(steps, stepLine, Path.GetFileName(new Uri(uri).LocalPath));
         }
 
         return new
@@ -876,20 +896,52 @@ public sealed class BddMcpServer : IDisposable
             Scenario = (string?)trace["scenario"],
             Status = (string?)trace["status"],
             At = newest.At.ToString("u", CultureInfo.InvariantCulture),
-            Steps = steps.Select(step => new
-            {
-                Line = (int?)step["callLine"] ?? (int?)step["line"],
-                Text = (string?)step["text"],
-                Status = (string?)step["status"],
-                Ms = (long?)step["durationMs"],
-                Page = (string?)step["page"],
-                Calls = step["calls"]?.AsArray().Count ?? 0,
-                Slowest = step["calls"]?.AsArray().OfType<JsonObject>().MaxBy(call => (int?)call["ms"] ?? 0) is { } slow
-                    ? $"{slow["page"]}.{slow["control"]}.{slow["action"]} {slow["ms"]}ms" + ((int?)slow["attempts"] > 1 ? $" x{slow["attempts"]}" : string.Empty)
-                    : null,
-                Events = step["appEvents"]?.AsArray().Count ?? 0,
-            }),
+            Steps = steps.Select(TraceRow),
             Failed = steps.FirstOrDefault(step => (string?)step["status"] == "Failed")?.DeepClone(),
+        };
+    }
+
+    private (JsonObject Trace, List<JsonObject> Steps) ReadTrace(string path)
+    {
+        try
+        {
+            var trace = JsonNode.Parse(File.ReadAllText(path))?.AsObject() ?? throw new JsonException("empty");
+            return (trace, trace["steps"]?.AsArray().OfType<JsonObject>().ToList() ?? throw new JsonException("no steps"));
+        }
+        catch (Exception exception) when (exception is JsonException or InvalidOperationException or IOException)
+        {
+            throw new ToolProblem($"The trace at {Path.GetRelativePath(_solutionDir, path)} cannot be read ({exception.Message}): run the scenario again.");
+        }
+    }
+
+    // A step at a line of the feature file: a callable's inner steps share its call line, so the failed one of them.
+    private static JsonObject TraceStep(List<JsonObject> steps, int line, string feature)
+    {
+        var at = steps.Where(step => (int?)step["callLine"] == line).ToList();
+        if (at.Count == 0)
+        {
+            at = [.. steps.Where(step => (int?)step["line"] == line && ((string?)step["file"])?.EndsWith(feature, StringComparison.OrdinalIgnoreCase) != false)];
+        }
+
+        return at.FirstOrDefault(step => (string?)step["status"] == "Failed") ?? at.FirstOrDefault()
+            ?? throw new ToolProblem($"The trace has no step at line {line}: its steps are at {string.Join(", ", steps.Select(step => (int?)step["callLine"] ?? (int?)step["line"]).Distinct())}.");
+    }
+
+    // A step in a line: its page, how many calls, the slowest (a wait), how many app events.
+    private static object TraceRow(JsonObject step)
+    {
+        var calls = step["calls"]?.AsArray().OfType<JsonObject>().ToList() ?? [];
+        var slow = calls.MaxBy(call => (int?)call["ms"] ?? 0);
+        return new
+        {
+            Line = (int?)step["callLine"] ?? (int?)step["line"],
+            Text = (string?)step["text"],
+            Status = (string?)step["status"],
+            Ms = (long?)step["durationMs"],
+            Page = (string?)step["page"],
+            Calls = calls.Count + ((int?)step["callsLeftOut"] ?? 0),
+            Slowest = slow is null ? null : $"{slow["page"]}.{slow["control"]}.{slow["action"]} {slow["ms"]}ms" + ((int?)slow["attempts"] > 1 ? $" x{slow["attempts"]}" : string.Empty),
+            Events = step["appEvents"]?.AsArray().Count ?? 0,
         };
     }
 
