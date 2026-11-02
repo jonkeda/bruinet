@@ -73,6 +73,8 @@ public sealed class BddMcpServer : IDisposable
         ("verify_page_objects", "Opens each recorded page in the running app (a browser of its own, under the Explore guards) and looks up every member of the project's page objects as Bruinet would: found once, found several times, or not found. Stop a recording first.", Schema(("project", "string", "The project; the only one when left out."), ("headless", "boolean", "No browser window; true when left out."))),
         ("update_scraper_config", "Makes one change to a scraped project's scraper.config.md, keeping the rest of the file: 'set' a field (values: field, value; in 'Danger words': category, true or false), 'add' a row (values: its cells: Explore hosts [Host], Never click and Always click [Match: 'text: ...' or 'selector: ...'], Never visit [Url], Allow requests [Method, Url], Aliases [Url]) or 'remove' one (values: its first cell). Asks first: without 'confirm' it says what it would write; call again with confirm: true once the person agrees.", Schema(("project", "string", "The project; the only one when left out."), ("action", "string", "set, add or remove; required."), ("section", "string", "The section without ##, e.g. Explore, Never click; required."), ("values", "array", "The values, as strings; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
+        ("list_states", "The states the suite's app can be put in, declared with [BddState] in its test project: each state's phrase, its parameters and the method that sets it (through test data or the service head). A Given may name one; set_state puts the app in one.", Schema(("suite", "string", "The suite; its only one when left out."))),
+        ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -172,6 +174,8 @@ public sealed class BddMcpServer : IDisposable
             {
                 "list_suites" => ListSuites(),
                 "list_steps" => ListSteps(Suite(arguments), (string?)arguments["query"]),
+                "list_states" => ListStates(Suite(arguments)),
+                "set_state" => SetState(arguments),
                 "list_pages" => ListPages(Suite(arguments)),
                 "list_test_sets" => Suite(arguments).TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Distinct().ToList(),
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
@@ -416,6 +420,68 @@ public sealed class BddMcpServer : IDisposable
     }
 
     // A Step-through, waited for: where it paused, or how it ended.
+    // The suite's declared states: [BddState] phrases, each a Given.
+    private static object ListStates(BddSuite suite)
+    {
+        var states = Catalogs(suite).Default.Patterns
+            .Where(pattern => pattern.IsState)
+            .Select(pattern => new
+            {
+                pattern.Phrase,
+                Parameters = pattern.Parameters.Select(parameter => parameter.ToString()).ToList(),
+                From = pattern.CommandId,
+            })
+            .OrderBy(state => state.Phrase, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        return states.Count > 0
+            ? states
+            : throw new ToolProblem($"{suite.Name} declares no states: a method of its test project marked [BddState(\"...\")] declares one.");
+    }
+
+    // A declared state, set by a Step-through of a scenario of its own: the state's Given, then a step that does nothing,
+    // where it stays paused. Only a phrase a declared state matches runs: nothing else an agent writes reaches the app.
+    private object SetState(JsonObject arguments)
+    {
+        var suite = Suite(arguments);
+        var state = Required(arguments, "state").Trim();
+        if (state.StartsWith("Given ", StringComparison.OrdinalIgnoreCase))
+        {
+            state = state["Given ".Length..].Trim();
+        }
+
+        var step = new BddStep(BddStepKeyword.Given, Bruinet.Core.Testing.BddEffectiveStepKeyword.Given, state, null, new BddSourceLocation(null, 1));
+        var match = Catalogs(suite).Default.Patterns.Where(pattern => pattern.IsState).Select(pattern => pattern.TryMatch(step)).OfType<BddCommandMatch>().FirstOrDefault()
+            ?? throw new ToolProblem($"'{state}' is not a declared state of {suite.Name}: list_states names them.");
+
+        var metadata = new List<string>();
+        if ((string?)arguments["testData"] is { Length: > 0 } testData)
+        {
+            metadata.Add($"| {BddMetadataFields.TestData} | {testData} |");
+        }
+
+        if (match.Pattern.Namespace.Length > 0)
+        {
+            metadata.Add($"| {BddMetadataFields.Using} | {match.Pattern.Namespace} |");
+        }
+
+        var lines = new List<string> { "# Feature: Set state", string.Empty };
+        if (metadata.Count > 0)
+        {
+            lines.AddRange(["## Metadata", string.Empty, "| Field | Value |", "| --- | --- |", .. metadata, string.Empty]);
+        }
+
+        var line = lines.Count + 1;
+        lines.AddRange([$"## Scenario: {state}", string.Empty, "```gherkin", $"Given {state}", $"Then {Bruinet.Uat.UatReflectionRuntime.PausePhrase}", "```", string.Empty]);
+
+        // In the suite's project, so the suite holds it; not in Features, so no run of the suite picks it up.
+        var path = Path.Combine(suite.ProjectDirectory, ".bruinet", "set-state.feature.md");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.WriteAllText(path, string.Join("\n", lines));
+
+        StepStart(new JsonObject { ["path"] = path, ["line"] = line, ["suite"] = suite.Name });
+        return StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = Whole(arguments, "timeoutMinutes", 1, 10) ?? 2 });
+    }
+
     private object StepStart(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));

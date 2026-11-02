@@ -889,6 +889,8 @@ Bruinet.Core.Testing.BddGivenAttribute.BddGivenAttribute(string! phrase) -> void
 Bruinet.Core.Testing.BddNamespaceAttribute
 Bruinet.Core.Testing.BddNamespaceAttribute.BddNamespaceAttribute(string! name) -> void
 Bruinet.Core.Testing.BddNamespaceAttribute.Name.get -> string!
+Bruinet.Core.Testing.BddStateAttribute
+Bruinet.Core.Testing.BddStateAttribute.BddStateAttribute(string! phrase) -> void
 Bruinet.Core.Testing.BddStepAttribute
 Bruinet.Core.Testing.BddStepAttribute.BddStepAttribute(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase) -> void
 Bruinet.Core.Testing.BddStepAttribute.CommandId.get -> string?

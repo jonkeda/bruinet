@@ -139,7 +139,8 @@ public sealed class BddStepDefinitionRuntime
                         handler: handlerFactory?.Invoke(phraseClass.Type, method.Method),
                         parameters: phrase.Parameters,
                         problem: phrase.Problem,
-                        phraseNamespace: phraseClass.Namespace);
+                        phraseNamespace: phraseClass.Namespace,
+                        isState: phrase.IsState);
                 }
 
                 foreach (var unmatchable in method.Unmatchable)
@@ -194,7 +195,8 @@ public sealed class BddStepDefinitionRuntime
                     commandId,
                     handler: handlerFactory?.Invoke(method),
                     parameters: phrase.Parameters,
-                    problem: phrase.Problem);
+                    problem: phrase.Problem,
+                    isState: phrase.IsState);
             }
 
             foreach (var declaration in unmatchable)
@@ -413,6 +415,7 @@ public sealed class BddStepDefinitionRuntime
                     {
                         Parameters = phrase.Parameters,
                         Problem = phrase.Problem,
+                        IsState = phrase.IsState,
                     }).ToArray())
                 {
                     Unmatchable = unmatchable,
@@ -482,4 +485,7 @@ public sealed record BddPhraseMethodPhrase(
 
     /// <summary>Why the phrase cannot run; null when it is fine.</summary>
     public BddPhraseProblem? Problem { get; init; }
+
+    /// <summary>Whether it is a declared state (<c>[BddState]</c>).</summary>
+    public bool IsState { get; init; }
 }

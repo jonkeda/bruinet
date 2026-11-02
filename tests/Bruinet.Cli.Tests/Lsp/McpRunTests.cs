@@ -241,6 +241,57 @@ public sealed class McpRunTests : IDisposable
         Assert.Contains("run it with run_scenario", Text(Call("http_calls", new JsonObject { ["path"] = Feature, ["line"] = 11 })), StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void ListStates_GivesTheDeclaredStates_AndOnlyThem()
+    {
+        var states = Answer(Call("list_states", new JsonObject())).AsArray();
+
+        Assert.Equal(["the counter has already counted {times} times"], states.Select(state => (string)state!["phrase"]!));
+        Assert.Contains("HasAlreadyCounted", (string)states[0]!["from"]!, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void SetState_PutsTheAppInTheState_AndLeavesItPausedThere()
+    {
+        var paused = Answer(Call("set_state", new JsonObject { ["state"] = "the counter has already counted 3 times" }));
+        var ended = Answer(Call("step_move", new JsonObject { ["move"] = "stop" }));
+
+        Assert.True((bool)paused["paused"]!);
+        Assert.Equal("the run pauses here", (string)paused["text"]!);
+        Assert.Null(paused["lastStepFailed"]);
+        Assert.True((bool)ended["ended"]!);
+    }
+
+    [Fact]
+    public void SetState_OfAGivenThatIsNoState_IsRefused()
+    {
+        var refused = Call("set_state", new JsonObject { ["state"] = "the counter counts" });
+
+        Assert.True((bool)refused["isError"]!);
+        Assert.Contains("is not a declared state", Text(refused), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AScenario_StartsFromAState_ByNamingItInAGiven()
+    {
+        var states = Path.Combine(Suite, "Features", "states.feature.md");
+        File.WriteAllText(states, """
+            # Feature: States
+
+            ## Scenario: Starts from a state
+
+            ```gherkin
+            Given the counter has already counted 3 times
+            When the counter counts
+            Then the counter has counted 4 times
+            ```
+            """);
+
+        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = states, ["line"] = 3 }));
+
+        Assert.Equal("passed", (string)run["scenarios"]![0]!["status"]!);
+    }
+
     private JsonObject Call(string tool, JsonObject arguments)
     {
         var response = _server.Handle(new JsonObject

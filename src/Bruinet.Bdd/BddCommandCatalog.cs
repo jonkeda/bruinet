@@ -58,10 +58,12 @@ public sealed class BddCommandCatalog
         string? page = null,
         string? pageAfter = null,
         BddControlVerb? controlVerb = null,
-        string? phraseNamespace = null)
+        string? phraseNamespace = null,
+        bool isState = false)
     {
         var pattern = new BddCommandPattern(keyword, phrase, commandId, requiresTable, allowsTable, handler, parameters, problem)
         {
+            IsState = isState,
             NamesPage = namesPage,
             Page = page,
             PageAfter = pageAfter,
@@ -169,6 +171,9 @@ public sealed class BddCommandPattern
     }
 
     public BddEffectiveStepKeyword Keyword { get; }
+
+    /// <summary>Whether it is a declared state (<c>[BddState]</c>): a <c>Given</c> that <c>set_state</c> may run (AI10).</summary>
+    public bool IsState { get; init; }
 
     /// <summary>
     /// The catalog's index key: the phrase's first one or two whole literal words, a space between; empty for a phrase that

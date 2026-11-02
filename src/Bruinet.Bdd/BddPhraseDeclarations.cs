@@ -44,7 +44,11 @@ internal sealed record BddDeclaredPhrase(
     BddEffectiveStepKeyword Keyword,
     string Phrase,
     IReadOnlyList<BddPhraseParameter> Parameters,
-    BddPhraseProblem? Problem);
+    BddPhraseProblem? Problem)
+{
+    /// <summary>Whether it is a declared state (<c>[BddState]</c>), which <c>set_state</c> may run.</summary>
+    public bool IsState { get; init; }
+}
 
 /// <summary>
 /// Turns a phrase method into its phrases: attribute text, an empty attribute (the method name),
@@ -114,7 +118,7 @@ internal static partial class BddPhraseDeclarations
                 return;
             }
 
-            phrases.Add(new BddDeclaredPhrase(keyword, phrase, parameters, problem));
+            phrases.Add(new BddDeclaredPhrase(keyword, phrase, parameters, problem) { IsState = fromAttribute is BddStateAttribute });
         }
     }
 

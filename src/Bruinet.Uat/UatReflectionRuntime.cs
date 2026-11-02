@@ -166,6 +166,9 @@ public sealed class UatReflectionRuntime
             handlerFactory: null);
     }
 
+    /// <summary>The built-in step that does nothing: a Step-through paused before it has run every step before it.</summary>
+    public const string PausePhrase = "the run pauses here";
+
     public BddCommandCatalog CreateCommandCatalog()
     {
         var catalog = new BddCommandCatalog { ArgumentTypes = _steps.ArgumentTypes, Scope = new UatPageSet(PageModels()) };
@@ -191,6 +194,14 @@ public sealed class UatReflectionRuntime
                 allowsTable: false,
                 handler: AssertAnyControlTextContainsAsync);
         }
+
+        // A step that does nothing: where a Step-through stays paused after the steps before it (set_state, AI10).
+        catalog.Register(
+            BddEffectiveStepKeyword.Then,
+            PausePhrase,
+            "Builtin.Pause",
+            allowsTable: false,
+            handler: (_, invocation, _) => Task.FromResult(BddStepResult.Passed(invocation)));
 
         // Everything control-shaped is discovered from [BddWhen]/[BddThen] on Bruinet.Core interfaces
         // and any decorated app control types found during page discovery.

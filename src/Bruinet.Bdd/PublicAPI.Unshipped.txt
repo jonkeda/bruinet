@@ -136,7 +136,7 @@ Bruinet.Bdd.BddCommandCatalog.IsGeneric.get -> bool
 Bruinet.Bdd.BddCommandCatalog.IsGeneric.set -> void
 Bruinet.Bdd.BddCommandCatalog.Match(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
 Bruinet.Bdd.BddCommandCatalog.Patterns.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandPattern!>!
-Bruinet.Bdd.BddCommandCatalog.Register(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null, bool namesPage = false, string? page = null, string? pageAfter = null, Bruinet.Bdd.BddControlVerb? controlVerb = null, string? phraseNamespace = null) -> Bruinet.Bdd.BddCommandPattern!
+Bruinet.Bdd.BddCommandCatalog.Register(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null, bool namesPage = false, string? page = null, string? pageAfter = null, Bruinet.Bdd.BddControlVerb? controlVerb = null, string? phraseNamespace = null, bool isState = false) -> Bruinet.Bdd.BddCommandPattern!
 Bruinet.Bdd.BddCommandCatalog.Scope.get -> Bruinet.Bdd.IStepScopeModel?
 Bruinet.Bdd.BddCommandCatalog.Scope.set -> void
 Bruinet.Bdd.BddCommandCatalog.Unmatchable.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddUnmatchableDeclaration!>!
@@ -161,6 +161,8 @@ Bruinet.Bdd.BddCommandPattern.Handler.get -> Bruinet.Bdd.BddCommandHandler?
 Bruinet.Bdd.BddCommandPattern.IndexKey.get -> string!
 Bruinet.Bdd.BddCommandPattern.IsExact.get -> bool
 Bruinet.Bdd.BddCommandPattern.IsPageScoped.get -> bool
+Bruinet.Bdd.BddCommandPattern.IsState.get -> bool
+Bruinet.Bdd.BddCommandPattern.IsState.init -> void
 Bruinet.Bdd.BddCommandPattern.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
 Bruinet.Bdd.BddCommandPattern.NamesPage.get -> bool
 Bruinet.Bdd.BddCommandPattern.NamesPage.init -> void
@@ -395,6 +397,8 @@ Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.get -> System.Collections.Ge
 Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.init -> void
 Bruinet.Bdd.BddPhraseMethodPhrase
 Bruinet.Bdd.BddPhraseMethodPhrase.BddPhraseMethodPhrase(string! Phrase, Bruinet.Core.Testing.BddEffectiveStepKeyword Keyword) -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.IsState.get -> bool
+Bruinet.Bdd.BddPhraseMethodPhrase.IsState.init -> void
 Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
 Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.init -> void
 Bruinet.Bdd.BddPhraseMethodPhrase.Parameters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>!

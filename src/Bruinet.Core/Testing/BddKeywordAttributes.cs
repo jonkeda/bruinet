@@ -53,3 +53,18 @@ public sealed class BddThenAttribute : BddStepAttribute
     {
     }
 }
+
+/// <summary>
+/// Declares a state the app can be put in, on the method that puts it there through test data or the service head (AI10):
+/// a <c>Given</c> a scenario names (<c>Given signed in as Alice</c>), and what <c>set_state</c> may run. Only a declared state
+/// can be set that way, so an agent cannot invent one that writes elsewhere than the suite's own host and database.
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+public sealed class BddStateAttribute : BddStepAttribute
+{
+    /// <param name="phrase">The state, e.g. <c>signed in as {user}</c>.</param>
+    public BddStateAttribute(string phrase)
+        : base(BddEffectiveStepKeyword.Given, phrase)
+    {
+    }
+}
