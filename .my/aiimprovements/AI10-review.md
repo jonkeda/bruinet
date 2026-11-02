@@ -24,9 +24,9 @@ phrases fill in, plus `page` and `testData`.
 
 ## Agent check
 
-Not run: it needs an MCP server built from this branch, and the session's MCP host is the owner's (`Update-BruinetMcp.ps1`);
-changing it was not done unasked. Proposed fixture: "show what the Todo List looks like with three todos, one overdue",
-baseline clicking through Add three times, with `set_state` one call.
+Passed (`checks/AI10.md`): reading the Todo list in the three-todos state took 12 tool calls with `set_state` and 23
+without, and without it the agent wrote a probe scenario into the suite. Its first try showed `set_state` without `page`
+leaves nothing for `step_state`; the answer now says so. `step_state` reads no list rows: a follow-up.
 
 ## Review findings and what was done
 

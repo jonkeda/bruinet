@@ -259,6 +259,7 @@ public sealed class McpRunTests : IDisposable
         Assert.True((bool)paused["paused"]!);
         Assert.Equal("the run pauses here", (string)paused["text"]!);
         Assert.Null(paused["lastStepFailed"]);
+        Assert.Contains("give 'page'", (string)paused["next"]!, StringComparison.Ordinal);
         Assert.True((bool)ended["ended"]!);
     }
 

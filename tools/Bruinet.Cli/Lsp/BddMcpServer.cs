@@ -508,7 +508,18 @@ public sealed class BddMcpServer : IDisposable
 
         var timeout = Whole(arguments, "timeoutMinutes", 1, 10) ?? 2;
         var paused = StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = timeout });
-        return page is null || paused is not JsonObject { } after || after["lastStepFailed"] is not null || after["paused"] is null
+        if (page is null)
+        {
+            // The agent check's first try: paused with no page, step_state had nothing to read.
+            if (paused is JsonObject { } noPage && noPage["paused"] is not null && noPage["page"] is null)
+            {
+                noPage["next"] = "No page is current, so step_state reads nothing: give 'page' (list_pages names them) to set it.";
+            }
+
+            return paused;
+        }
+
+        return paused is not JsonObject { } after || after["lastStepFailed"] is not null || after["paused"] is null
             ? paused
             : StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = timeout });
     }
