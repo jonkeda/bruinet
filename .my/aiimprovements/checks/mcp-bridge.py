@@ -64,6 +64,7 @@ def main():
             if HIDDEN:
                 instructions = instructions.replace(" to look at a screen without clicking to it, set_state puts the app in a declared state (list_states);", "")
                 instructions = instructions.replace(" where_is gives the page object line of a control and the app line (razor, XAML) that makes it;", "")
+                instructions = instructions.replace(" get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure);", "")
             print("INSTRUCTIONS:", instructions)
             tools = request(process, 2, "tools/list", {})["result"]["tools"]
             for tool in [tool for tool in tools if tool["name"] not in HIDDEN]:

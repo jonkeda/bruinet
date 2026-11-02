@@ -19,7 +19,9 @@
   before.
 - The Todo UAT suites: MAUI headless 42 passed, 1 skipped; web on bUnit 33 passed, 2 skipped, and after the fixes 32 with
   TOD.08.8 failing (the known bUnit flake, about 1 run in 4, on the base too).
-- Agent check: not run yet.
+- Agent check (checks/AI8.md): passed by its rule, 2 tool calls as the baseline's, 2 file reads against 4, but the
+  agent did not use `get_trace`: the seeded bug was one grep away in the small Todo sample. A check that needs the trace
+  needs a cause the source does not show; proposed for AI9.
 
 ## Review
 

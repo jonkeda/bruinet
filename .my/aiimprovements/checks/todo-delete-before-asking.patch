@@ -1,0 +1,21 @@
+diff --git a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoDetailViewModel.cs b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoDetailViewModel.cs
+index deb61202..96031952 100644
+--- a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoDetailViewModel.cs
++++ b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoDetailViewModel.cs
+@@ -122,6 +122,7 @@ public sealed class TodoDetailViewModel : ParentViewModel
+ 
+     private async Task DeleteAsync()
+     {
++        var deleting = _todos.DeleteAsync(_item!.Id);
+         var confirmed = await _dialogs.ConfirmAsync(
+             DeleteTitle,
+             $"\"{_item!.Title}\" will be deleted.",
+@@ -133,7 +134,7 @@ public sealed class TodoDetailViewModel : ParentViewModel
+             return;
+         }
+ 
+-        await _todos.DeleteAsync(_item.Id);
++        await deleting;
+         await _navigator.GoBackAsync();
+     }
+ 
