@@ -43,6 +43,8 @@ MauiHeadless.Hosting.HeadlessEssentialsOptions.AppName.get -> string!
 MauiHeadless.Hosting.HeadlessEssentialsOptions.AppName.set -> void
 MauiHeadless.Hosting.HeadlessEssentialsOptions.AppVersion.get -> System.Version!
 MauiHeadless.Hosting.HeadlessEssentialsOptions.AppVersion.set -> void
+MauiHeadless.Hosting.HeadlessEssentialsOptions.CaptureSupported.get -> bool
+MauiHeadless.Hosting.HeadlessEssentialsOptions.CaptureSupported.set -> void
 MauiHeadless.Hosting.HeadlessEssentialsOptions.HeadlessEssentialsOptions() -> void
 MauiHeadless.Hosting.HeadlessEssentialsOptions.Idiom.get -> Microsoft.Maui.Devices.DeviceIdiom
 MauiHeadless.Hosting.HeadlessEssentialsOptions.Idiom.set -> void

@@ -26,6 +26,12 @@ public sealed class HeadlessEssentialsOptions
 
     /// <summary><c>DeviceInfo.Idiom</c>; desktop, as the Windows head the MauiHeadless head answers like.</summary>
     public DeviceIdiom Idiom { get; set; } = DeviceIdiom.Desktop;
+
+    /// <summary>
+    /// <c>MediaPicker.IsCaptureSupported</c>; true, as Windows answers, so an app offers its camera sources. A capture
+    /// itself answers as cancelled.
+    /// </summary>
+    public bool CaptureSupported { get; set; } = true;
 }
 
 /// <summary>
@@ -58,7 +64,7 @@ public static class HeadlessEssentials
         MauiInternals.SetEssential(typeof(Connectivity), "SetCurrent", new HeadlessConnectivity());
         MauiInternals.SetEssential(typeof(DeviceDisplay), "SetCurrent", new HeadlessDeviceDisplay());
         MauiInternals.SetEssential(typeof(Accessibility.SemanticScreenReader), "SetDefault", new SilentScreenReader());
-        MauiInternals.SetEssential(typeof(Media.MediaPicker), "SetDefault", Unavailable.Create<Media.IMediaPicker>());
+        MauiInternals.SetEssential(typeof(Media.MediaPicker), "SetDefault", CancellingMediaPicker.Create(options.CaptureSupported));
         MauiInternals.SetEssential(typeof(FilePicker), "SetDefault", Unavailable.Create<IFilePicker>());
     }
 
@@ -87,6 +93,25 @@ public static class HeadlessEssentials
 
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
+    }
+
+    /// <summary>A media picker every pick and capture of which is cancelled, and that says whether it can capture.</summary>
+    internal class CancellingMediaPicker : Unavailable
+    {
+        private bool _captureSupported;
+
+        /// <summary>A picker answering <c>IsCaptureSupported</c> with <paramref name="captureSupported"/>.</summary>
+        public static Media.IMediaPicker Create(bool captureSupported)
+        {
+            var picker = Create<Media.IMediaPicker, CancellingMediaPicker>();
+            ((CancellingMediaPicker)(object)picker)._captureSupported = captureSupported;
+            return picker;
+        }
+
+        protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+            => targetMethod?.Name == "get_" + nameof(Media.IMediaPicker.IsCaptureSupported)
+                ? _captureSupported
+                : base.Invoke(targetMethod, args);
     }
 
     private sealed class HeadlessFileSystem(string root) : IFileSystem

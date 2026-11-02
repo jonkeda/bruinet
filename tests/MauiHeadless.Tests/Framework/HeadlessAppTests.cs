@@ -158,6 +158,19 @@ public sealed class HeadlessAppTests
         Assert.Equal("value", Preferences.Default.Get("key", ""));
     }
 
+    [Fact]
+    public async Task The_camera_can_capture_as_on_Windows_and_a_capture_is_cancelled()
+    {
+        HeadlessEssentials.Install();
+
+        Assert.True(Microsoft.Maui.Media.MediaPicker.Default.IsCaptureSupported);
+        Assert.Null(await Microsoft.Maui.Media.MediaPicker.Default.CapturePhotoAsync());
+
+        HeadlessEssentials.Install(new HeadlessEssentialsOptions { CaptureSupported = false });
+        Assert.False(Microsoft.Maui.Media.MediaPicker.Default.IsCaptureSupported);
+        HeadlessEssentials.Install();
+    }
+
     private static Label Bound(string path, bool automationId = false)
     {
         var label = new Label();
