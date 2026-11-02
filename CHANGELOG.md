@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiHeadless: `MauiTestContextOptions.DialogPages` names the page types a platform draws as a popup;
   pushed as a modal, one is the active dialog for `ContentDialog<T>`, as a WinUI popup is on Windows.
   An open alert stays on top of it. A page with a title is named by it.
+- MauiHeadless: a collection search or `ScrollToEnd` past a list's last row no longer ends at once:
+  the app's loading is let finish and a paging list's `RemainingItemsThresholdReached` is raised, as a
+  device's list does at its end. The Maui sample has a paged list page (`PagedListTests`).
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name

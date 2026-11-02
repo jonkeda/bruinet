@@ -362,6 +362,18 @@ public class MauiFixture : MauiTestFixtureBase
     }
 
     /// <summary>
+    /// Opens the paged list. Nothing to reset: the hub builds a fresh page, which loads its first page.
+    /// </summary>
+    public PagedListTestPage NavigateToPagedList()
+    {
+        Open(SamplePage.PagedList);
+
+        var page = new PagedListTestPage(Context);
+        page.WaitLoaded(true, TestConstants.DefaultTestTimeoutMs);
+        return page;
+    }
+
+    /// <summary>
     /// Opens the dialogs sample page and restores its initial result.
     /// </summary>
     public DialogsTestPage NavigateToDialogs()

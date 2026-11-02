@@ -32,7 +32,8 @@ public enum SamplePage
     AutomationProbe,
     CommunityToolkit,
     CommunityToolkitAlerts,
-    CommunityToolkitMedia
+    CommunityToolkitMedia,
+    PagedList
 }
 
 /// <summary>

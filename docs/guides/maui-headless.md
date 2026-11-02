@@ -125,6 +125,10 @@ ends its call at once with `DeviceOnlyException` naming the member.
 
 - **Visible** means on the shown page of the driver's window, with no `IsVisible="False"` ancestor. An
   off-screen carousel card is found and is not shown; scrolling succeeds at once.
+- **A list's end asks for more**, as a device's does when scrolled there: a search or `ScrollToEnd` past
+  the last row lets the app's work finish (a first page still loading), then raises the list's
+  `RemainingItemsThresholdReached` when it pages (`RemainingItemsThreshold` 0 or more). New rows are a
+  step forward; none is the end of the list.
 - **A tap goes where a touch would.** It runs the tapped view's recognizers, else those of the single
   content it wraps (a ContentView or Border filled by one child), else those of the nearest ancestor up
   to the page. A tap inside a list row that nothing above takes selects the row, and a ListView cell
@@ -173,6 +177,7 @@ Windows, Android 16 (emulator) and MauiHeadless; iOS from how XCUITest reports i
 | Sticky group headers | cover the rows under them, which stay "on screen" | not pinned | not pinned by default | no layout | Known: turn them off in the app (`ItemsStackPanel.AreStickyGroupHeadersEnabled`) |
 | A button's text with `SemanticProperties.Description` | the description | the text | the description | the text | Known: read both, or assert what the app shows |
 | A modal page as `ContentDialog` | only a WinUI popup (Mopups, a platform popup) | as Windows | as Windows | a modal page whose type is in `DialogPages` | Known: register the app's popup page types (`PopupPageDialogTests`) |
+| A list's next page (`RemainingItemsThresholdReached`) | not raised when UI Automation scrolls the list | not tried | not tried | raised at the list's end | Known on Windows: the sample's paged list stays at its first page there (`PagedListTests`, `WindowsGapFact`) |
 | The Shell title | `title` | `title` (mapped) | `title` (mapped) | `title` (mapped) | Fixed |
 
 ## MauiHeadless On Its Own

@@ -435,10 +435,12 @@ public sealed class MauiHeadlessElement : IMauiElement
     // Every row is realized and nothing is off screen, so a scroll has nowhere to go: it succeeds
     // at once where the target exists, and says so where it does not.
 
-    public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0)
-        => Element is ScrollView or ItemsView
-            ? ScrollStep.NotMoved
-            : throw new BruinetException($"{TagName} #{AutomationId} does not scroll.");
+    public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0) => Element switch
+    {
+        ItemsView items when verticalSteps > 0 => LoadedMore(items) ? ScrollStep.Moved : ScrollStep.NotMoved,
+        ScrollView or ItemsView => ScrollStep.NotMoved,
+        _ => throw new BruinetException($"{TagName} #{AutomationId} does not scroll."),
+    };
 
     // Scrolling reveals what is off screen, and nothing is: what a lookup missed, a scroll cannot
     // find. Answering with a lookup here made a container's miss an app-wide hit.
@@ -452,6 +454,11 @@ public sealed class MauiHeadlessElement : IMauiElement
 
     public ScrollStep ScrollTowards(int index)
     {
+        // Past the last row is where a device's list asks for more: wait for the app's loading,
+        // then raise its threshold. Rows that came are a step forward.
+        if (Element is ItemsView items && index >= CountOf(items) && LoadedMore(items))
+            return ScrollStep.Jumped;
+
         ScrollToIndex(index);
         return ScrollStep.Jumped;
     }
@@ -460,11 +467,34 @@ public sealed class MauiHeadlessElement : IMauiElement
     {
         var count = Element switch
         {
-            ItemsView items => items.ItemsSource?.Cast<object>().Count() ?? 0,
+            ItemsView items => CountOf(items),
             _ => throw new BruinetException($"{TagName} #{AutomationId} has no items to scroll to."),
         };
         if (index < 0 || index >= count)
             throw new ArgumentOutOfRangeException(nameof(index), index, $"{TagName} #{AutomationId}: {index} is past the end, its item count is {count}.");
+    }
+
+    private int CountOf(ItemsView items) => _driver.TestContext.Dispatcher.Run(() => items.ItemsSource?.Cast<object>().Count() ?? 0);
+
+    /// <summary>
+    /// What a device's list does when scrolled to its end: the app's work let finish (a first page
+    /// still loading), then, where the list pages (<c>RemainingItemsThreshold</c> 0 or more), its
+    /// <c>RemainingItemsThresholdReached</c> raised and the work it starts let finish. True when the list
+    /// has more items than before.
+    /// </summary>
+    private bool LoadedMore(ItemsView items)
+    {
+        var before = CountOf(items);
+        _driver.IsIdle();
+        if (CountOf(items) > before)
+            return true;
+
+        if (_driver.TestContext.Dispatcher.Run(() => items.RemainingItemsThreshold) < 0)
+            return false;
+
+        _driver.TestContext.Dispatcher.Run(items.SendRemainingItemsThresholdReached);
+        _driver.IsIdle();
+        return CountOf(items) > before;
     }
 
     public ScrollPosition ReadScrollPosition() => throw new DeviceOnlyException(nameof(ReadScrollPosition));

@@ -72,5 +72,8 @@ public enum SamplePage
     CommunityToolkitAlerts,
 
     /// <summary>CommunityToolkit.Maui MediaElement.</summary>
-    CommunityToolkitMedia
+    CommunityToolkitMedia,
+
+    /// <summary>A CollectionView that loads its pages as it nears its end, with a search.</summary>
+    PagedList
 }

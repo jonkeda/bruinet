@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+    A paged list, as an app's selection sheet is (its first page taller than the window, as a device
+    raises RemainingItemsThresholdReached only for a list that scrolls): the first page loads after the page appears, the
+    next when the list nears its end (RemainingItemsThreshold), a search replaces the list's source,
+    a header holds rows that are not items, and an overlay shows while a page loads.
+-->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="using:Bruinet.Samples.Maui.App.ViewModels"
+             x:Class="Bruinet.Samples.Maui.App.PagedListPage"
+             x:DataType="viewModels:PagedListViewModel"
+             AutomationId="PagedListPage"
+             Title="Paged list">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="20" RowSpacing="10">
+
+        <Label Grid.Row="0" AutomationId="PagedListStatus" Text="{Binding Status}" />
+
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+            <Entry AutomationId="PagedListSearch"
+                   Placeholder="Search"
+                   WidthRequest="200"
+                   Text="{Binding SearchText}" />
+            <Button AutomationId="PagedListClearSearch"
+                    Text="Clear"
+                    Command="{Binding ClearSearchCommand}" />
+        </HorizontalStackLayout>
+
+        <CollectionView Grid.Row="2"
+                        AutomationId="PagedListView"
+                        ItemsSource="{Binding Rows}"
+                        ItemSizingStrategy="MeasureAllItems"
+                        RemainingItemsThreshold="2"
+                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+            <CollectionView.Header>
+                <VerticalStackLayout AutomationId="PagedListHeader"
+                                     BindableLayout.ItemsSource="{Binding Recent}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Label Text="{Binding .}" FontAttributes="Italic" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <Grid AutomationId="PagedRow" HeightRequest="80">
+                        <Label AutomationId="PagedRowText" Text="{Binding .}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Grid Grid.Row="2"
+              AutomationId="PagedListBusy"
+              IsVisible="{Binding IsLoading}"
+              InputTransparent="True">
+            <ActivityIndicator IsRunning="{Binding IsLoading}" />
+        </Grid>
+    </Grid>
+</ContentPage>

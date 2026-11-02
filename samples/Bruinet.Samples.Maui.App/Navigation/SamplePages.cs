@@ -116,6 +116,9 @@ public static class SamplePages
 
         new(SamplePage.CommunityToolkitMedia, "Toolkit Media", "MediaElement",
             () => new CommunityToolkitMediaPage()),
+
+        new(SamplePage.PagedList, "Paged list", "A CollectionView that loads pages and searches",
+            () => new PagedListPage()),
     ];
 
     /// <summary>
