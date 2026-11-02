@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.Mocking.Http.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The real service a test records: a WireMock server, stopped before the replay. -->
+    <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+</Project>

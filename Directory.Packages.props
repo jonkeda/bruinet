@@ -84,6 +84,7 @@
     <!-- WebView2 (the Visual Studio extension), DI, SQLite (the Todo sample), Roslyn (the generator) -->
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.4078.44" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Data.Sqlite" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.12" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />

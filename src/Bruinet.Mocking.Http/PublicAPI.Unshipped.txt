@@ -1,0 +1,134 @@
+#nullable enable
+Bruinet.Mocking.Http.HermeticGuard
+Bruinet.Mocking.Http.HermeticViolationException
+Bruinet.Mocking.Http.HermeticViolationException.HermeticViolationException(string! message) -> void
+Bruinet.Mocking.Http.HttpCall
+Bruinet.Mocking.Http.HttpCall.Exchange.get -> int
+Bruinet.Mocking.Http.HttpCall.Exchange.init -> void
+Bruinet.Mocking.Http.HttpCall.HttpCall(string! Method, string! Url, int Status, string! Outcome, int Exchange) -> void
+Bruinet.Mocking.Http.HttpCall.Method.get -> string!
+Bruinet.Mocking.Http.HttpCall.Method.init -> void
+Bruinet.Mocking.Http.HttpCall.Outcome.get -> string!
+Bruinet.Mocking.Http.HttpCall.Outcome.init -> void
+Bruinet.Mocking.Http.HttpCall.Status.get -> int
+Bruinet.Mocking.Http.HttpCall.Status.init -> void
+Bruinet.Mocking.Http.HttpCall.Url.get -> string!
+Bruinet.Mocking.Http.HttpCall.Url.init -> void
+Bruinet.Mocking.Http.HttpCallLog
+Bruinet.Mocking.Http.HttpCallLog.Calls.get -> System.Collections.Generic.List<Bruinet.Mocking.Http.HttpCall!>!
+Bruinet.Mocking.Http.HttpCallLog.Calls.set -> void
+Bruinet.Mocking.Http.HttpCallLog.HttpCallLog() -> void
+Bruinet.Mocking.Http.HttpCallLog.Misses.get -> System.Collections.Generic.List<string!>!
+Bruinet.Mocking.Http.HttpCallLog.Misses.set -> void
+Bruinet.Mocking.Http.HttpCallLog.Mode.get -> string!
+Bruinet.Mocking.Http.HttpCallLog.Mode.set -> void
+Bruinet.Mocking.Http.HttpCallLog.Unused.get -> System.Collections.Generic.List<int>!
+Bruinet.Mocking.Http.HttpCallLog.Unused.set -> void
+Bruinet.Mocking.Http.HttpChunk
+Bruinet.Mocking.Http.HttpChunk.Data.get -> string!
+Bruinet.Mocking.Http.HttpChunk.Data.set -> void
+Bruinet.Mocking.Http.HttpChunk.DelayMs.get -> int
+Bruinet.Mocking.Http.HttpChunk.DelayMs.set -> void
+Bruinet.Mocking.Http.HttpChunk.HttpChunk() -> void
+Bruinet.Mocking.Http.HttpExchange
+Bruinet.Mocking.Http.HttpExchange.Chunks.get -> System.Collections.Generic.List<Bruinet.Mocking.Http.HttpChunk!>?
+Bruinet.Mocking.Http.HttpExchange.Chunks.set -> void
+Bruinet.Mocking.Http.HttpExchange.HttpExchange() -> void
+Bruinet.Mocking.Http.HttpExchange.Index.get -> int
+Bruinet.Mocking.Http.HttpExchange.Index.set -> void
+Bruinet.Mocking.Http.HttpExchange.Method.get -> string!
+Bruinet.Mocking.Http.HttpExchange.Method.set -> void
+Bruinet.Mocking.Http.HttpExchange.PathAndQuery.get -> string!
+Bruinet.Mocking.Http.HttpExchange.RequestBody.get -> string?
+Bruinet.Mocking.Http.HttpExchange.RequestBody.set -> void
+Bruinet.Mocking.Http.HttpExchange.RequestBodyEncoding.get -> string?
+Bruinet.Mocking.Http.HttpExchange.RequestBodyEncoding.set -> void
+Bruinet.Mocking.Http.HttpExchange.RequestHeaders.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Mocking.Http.HttpExchange.RequestHeaders.set -> void
+Bruinet.Mocking.Http.HttpExchange.ResponseBody.get -> string?
+Bruinet.Mocking.Http.HttpExchange.ResponseBody.set -> void
+Bruinet.Mocking.Http.HttpExchange.ResponseBodyEncoding.get -> string?
+Bruinet.Mocking.Http.HttpExchange.ResponseBodyEncoding.set -> void
+Bruinet.Mocking.Http.HttpExchange.ResponseHeaders.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Mocking.Http.HttpExchange.ResponseHeaders.set -> void
+Bruinet.Mocking.Http.HttpExchange.Status.get -> int
+Bruinet.Mocking.Http.HttpExchange.Status.set -> void
+Bruinet.Mocking.Http.HttpExchange.Url.get -> string!
+Bruinet.Mocking.Http.HttpExchange.Url.set -> void
+Bruinet.Mocking.Http.HttpExchange.Volatile.get -> System.Collections.Generic.List<string!>!
+Bruinet.Mocking.Http.HttpExchange.Volatile.set -> void
+Bruinet.Mocking.Http.HttpRecording
+Bruinet.Mocking.Http.HttpRecording.Exchanges.get -> System.Collections.Generic.List<Bruinet.Mocking.Http.HttpExchange!>!
+Bruinet.Mocking.Http.HttpRecording.Exchanges.set -> void
+Bruinet.Mocking.Http.HttpRecording.HttpRecording() -> void
+Bruinet.Mocking.Http.HttpRecording.MarkVolatile(Bruinet.Mocking.Http.HttpRecording! previous) -> void
+Bruinet.Mocking.Http.HttpRecording.Save(string! path) -> void
+Bruinet.Mocking.Http.HttpRecording.Version.get -> int
+Bruinet.Mocking.Http.HttpRecording.Version.set -> void
+Bruinet.Mocking.Http.HttpRecordingDiff
+Bruinet.Mocking.Http.HttpRecordingReview
+Bruinet.Mocking.Http.HttpRecordingSecretException
+Bruinet.Mocking.Http.HttpRecordingSecretException.HttpRecordingSecretException(string! message) -> void
+Bruinet.Mocking.Http.HttpReplayHandler
+Bruinet.Mocking.Http.HttpReplayHandler.HttpReplayHandler(Bruinet.Mocking.Http.HttpReplaySession! session) -> void
+Bruinet.Mocking.Http.HttpReplayHandler.HttpReplayHandler(Bruinet.Mocking.Http.HttpReplaySession! session, System.Net.Http.HttpMessageHandler! inner) -> void
+Bruinet.Mocking.Http.HttpReplayHandler.Session.get -> Bruinet.Mocking.Http.HttpReplaySession!
+Bruinet.Mocking.Http.HttpReplayMissException
+Bruinet.Mocking.Http.HttpReplayMissException.HttpReplayMissException(string! message) -> void
+Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplayMode.Off = 0 -> Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplayMode.Record = 1 -> Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplayMode.Refresh = 3 -> Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplayMode.Replay = 2 -> Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplayOptions
+Bruinet.Mocking.Http.HttpReplayOptions.Hermetic.get -> bool
+Bruinet.Mocking.Http.HttpReplayOptions.Hermetic.set -> void
+Bruinet.Mocking.Http.HttpReplayOptions.HttpReplayOptions() -> void
+Bruinet.Mocking.Http.HttpReplayOptions.IgnoredFields.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Mocking.Http.HttpReplayOptions.Pace.get -> Bruinet.Mocking.Http.HttpReplayPace
+Bruinet.Mocking.Http.HttpReplayOptions.Pace.set -> void
+Bruinet.Mocking.Http.HttpReplayOptions.RedactedFields.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Mocking.Http.HttpReplayOptions.RedactedHeaders.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Mocking.Http.HttpReplayOptions.Redacting(string? names) -> Bruinet.Mocking.Http.HttpReplayOptions!
+Bruinet.Mocking.Http.HttpReplayOptions.WithPreset(System.Collections.Generic.IEnumerable<string!>! fields) -> Bruinet.Mocking.Http.HttpReplayOptions!
+Bruinet.Mocking.Http.HttpReplayPace
+Bruinet.Mocking.Http.HttpReplayPace.None = 0 -> Bruinet.Mocking.Http.HttpReplayPace
+Bruinet.Mocking.Http.HttpReplayPace.Recorded = 1 -> Bruinet.Mocking.Http.HttpReplayPace
+Bruinet.Mocking.Http.HttpReplayPresets
+Bruinet.Mocking.Http.HttpReplayServiceCollectionExtensions
+Bruinet.Mocking.Http.HttpReplaySession
+Bruinet.Mocking.Http.HttpReplaySession.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Mocking.Http.HttpCall!>!
+Bruinet.Mocking.Http.HttpReplaySession.Changes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Http.HttpReplaySession.Finish() -> void
+Bruinet.Mocking.Http.HttpReplaySession.HttpReplaySession(Bruinet.Mocking.Http.HttpReplayMode mode, string! path, Bruinet.Mocking.Http.HttpReplayOptions? options = null) -> void
+Bruinet.Mocking.Http.HttpReplaySession.Misses.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Http.HttpReplaySession.Mode.get -> Bruinet.Mocking.Http.HttpReplayMode
+Bruinet.Mocking.Http.HttpReplaySession.Options.get -> Bruinet.Mocking.Http.HttpReplayOptions!
+Bruinet.Mocking.Http.HttpReplaySession.Path.get -> string!
+Bruinet.Mocking.Http.HttpReplaySession.SendAsync(System.Net.Http.HttpRequestMessage! request, System.Func<System.Net.Http.HttpRequestMessage!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! network, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
+Bruinet.Mocking.Http.HttpReplaySession.ThrowIfMissed() -> void
+const Bruinet.Mocking.Http.HttpRecordingReview.FileName = "reviewed.json" -> string!
+const Bruinet.Mocking.Http.HttpReplaySession.ModeVariable = "BRUINET_HTTP_REPLAY" -> string!
+static Bruinet.Mocking.Http.HermeticGuard.Handler() -> System.Net.Http.SocketsHttpHandler!
+static Bruinet.Mocking.Http.HermeticGuard.IsViolation(System.Exception? exception) -> bool
+static Bruinet.Mocking.Http.HttpCallLog.Load(string! path) -> Bruinet.Mocking.Http.HttpCallLog?
+static Bruinet.Mocking.Http.HttpCallLog.PathFor(string! recordingPath) -> string!
+static Bruinet.Mocking.Http.HttpRecording.Load(string! path) -> Bruinet.Mocking.Http.HttpRecording?
+static Bruinet.Mocking.Http.HttpRecording.Parse(string! json) -> Bruinet.Mocking.Http.HttpRecording?
+static Bruinet.Mocking.Http.HttpRecordingDiff.Compare(Bruinet.Mocking.Http.HttpRecording? before, Bruinet.Mocking.Http.HttpRecording? after) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Http.HttpRecordingReview.Accept(string! folder) -> void
+static Bruinet.Mocking.Http.HttpRecordingReview.Hash(string! json) -> string!
+static Bruinet.Mocking.Http.HttpRecordingReview.IsRecording(string! json) -> bool
+static Bruinet.Mocking.Http.HttpRecordingReview.Recordings(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Http.HttpRecordingReview.Stale(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Http.HttpRecordingReview.Unreviewed(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Http.HttpReplayHandler.Create(Bruinet.Mocking.Http.HttpReplaySession! session) -> Bruinet.Mocking.Http.HttpReplayHandler!
+static Bruinet.Mocking.Http.HttpReplayPresets.Named(string! name) -> System.Collections.Generic.IReadOnlyList<string!>?
+static Bruinet.Mocking.Http.HttpReplayServiceCollectionExtensions.AddBruinetHttpReplay(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, Bruinet.Mocking.Http.HttpReplaySession! session) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Bruinet.Mocking.Http.HttpReplaySession.FromEnvironment(string! folder, string! test, Bruinet.Mocking.Http.HttpReplayOptions? options = null) -> Bruinet.Mocking.Http.HttpReplaySession?
+static Bruinet.Mocking.Http.HttpReplaySession.ModeFromEnvironment(System.Func<string!, string?>? environment = null) -> Bruinet.Mocking.Http.HttpReplayMode
+static Bruinet.Mocking.Http.HttpReplaySession.PathFor(string! folder, string! test) -> string!
+static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedFields -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedHeaders -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Mocking.Http.HttpReplayPresets.Model -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Mocking.Http.HttpReplayPresets.OAuth -> System.Collections.Generic.IReadOnlyList<string!>!
