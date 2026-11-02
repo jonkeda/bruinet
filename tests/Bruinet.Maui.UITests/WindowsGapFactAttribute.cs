@@ -7,6 +7,7 @@ namespace Bruinet.Maui.UITests;
 /// <remarks>
 /// The reverse of <see cref="DeviceFactAttribute"/>, for what the device cannot do yet and the other heads
 /// can. A skip rather than a failure, so a Windows run says what it did not prove and why.
+/// <c>BRUINET_RUN_GAPS=1</c> runs it anyway, to work on the gap.
 /// </remarks>
 public sealed class WindowsGapFactAttribute : FactAttribute
 {
@@ -14,7 +15,7 @@ public sealed class WindowsGapFactAttribute : FactAttribute
     public WindowsGapFactAttribute(string reason)
     {
 #if WINDOWS
-        if (!MauiHeads.IsHeadless)
+        if (!MauiHeads.IsHeadless && Environment.GetEnvironmentVariable("BRUINET_RUN_GAPS") != "1")
         {
             Skip = $"Known Windows gap: {reason}.";
         }

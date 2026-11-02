@@ -20,7 +20,7 @@ public class PagedListTests
     }
 
     private const string NoThresholdOnWindows =
-        "a CollectionView scrolled through UI Automation does not raise RemainingItemsThresholdReached, so the list stays at its first page";
+        "the list pages, but a search steps one row per scroll and calls it the end before the next page lands, and ScrollToEnd stops short of the first page's threshold";
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task FirstPage_ArrivesAfterThePageAppears()
