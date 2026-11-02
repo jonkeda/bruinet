@@ -32,7 +32,7 @@ namespace Bruinet.Mocking;
 /// something did <i>not</i> happen, or happened exactly once.
 /// </para>
 /// </remarks>
-public sealed class MockApiServer : IDisposable
+public sealed partial class MockApiServer : IDisposable
 {
     /// <summary>How often <see cref="WaitForRequest"/> looks at the request log.</summary>
     public static readonly TimeSpan RequestPollInterval = TimeSpan.FromMilliseconds(25);

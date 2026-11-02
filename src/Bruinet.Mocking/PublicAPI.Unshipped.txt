@@ -15,6 +15,7 @@ Bruinet.Mocking.ApiStubBuilder.WithHeader(string! name, string! value) -> Bruine
 Bruinet.Mocking.ApiStubBuilder.WithQuery(string! name, string! value) -> Bruinet.Mocking.ApiStubBuilder!
 Bruinet.Mocking.MockApiServer
 Bruinet.Mocking.MockApiServer.BaseUrl.get -> string!
+Bruinet.Mocking.MockApiServer.CopyRecordedTo(Bruinet.Mocking.Http.HttpReplaySession! session) -> void
 Bruinet.Mocking.MockApiServer.Delete(string! path) -> Bruinet.Mocking.ApiStubBuilder!
 Bruinet.Mocking.MockApiServer.Dispose() -> void
 Bruinet.Mocking.MockApiServer.FormRequestCount(string? method, string! path, System.Func<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!, bool>! predicate) -> int
@@ -26,6 +27,9 @@ Bruinet.Mocking.MockApiServer.Patch(string! path) -> Bruinet.Mocking.ApiStubBuil
 Bruinet.Mocking.MockApiServer.Port.get -> int
 Bruinet.Mocking.MockApiServer.Post(string! path) -> Bruinet.Mocking.ApiStubBuilder!
 Bruinet.Mocking.MockApiServer.Put(string! path) -> Bruinet.Mocking.ApiStubBuilder!
+Bruinet.Mocking.MockApiServer.Record(string! target) -> void
+Bruinet.Mocking.MockApiServer.Replay(Bruinet.Mocking.Http.HttpRecording! recording, Bruinet.Mocking.Http.HttpReplayOptions? options = null) -> void
+Bruinet.Mocking.MockApiServer.ReplayMisses() -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Mocking.MockApiServer.RequestBodies(string? method, string! path) -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Mocking.MockApiServer.RequestCount(string? method, string! path) -> int
 Bruinet.Mocking.MockApiServer.RequestCount(string? method, string! path, System.Func<Bruinet.Mocking.RecordedRequest!, bool>! predicate) -> int
@@ -119,6 +123,7 @@ Bruinet.Mocking.Sensors.MockInputSource<TEvent>.SimulateDisconnect() -> void
 Bruinet.Mocking.Sensors.MockInputSource<TEvent>.Start() -> void
 Bruinet.Mocking.Sensors.MockInputSource<TEvent>.Stop() -> void
 const Bruinet.Mocking.ApiStubBuilder.DefaultPriority = 10 -> int
+const Bruinet.Mocking.MockApiServer.ReplayMissStatus = 599 -> int
 const Bruinet.Mocking.NetworkStateFile.Offline = "offline" -> string!
 const Bruinet.Mocking.NetworkStateFile.Online = "online" -> string!
 override Bruinet.Mocking.RecordedRequest.ToString() -> string!

@@ -185,6 +185,23 @@ public sealed class HttpReplaySession
         return Respond(live, request, HttpReplayPace.None);
     }
 
+    /// <summary>Record and refresh: keeps an exchange recorded elsewhere (a proxy, <c>MockApiServer.Record</c>), in order.</summary>
+    public void Add(HttpExchange exchange)
+    {
+        ArgumentNullException.ThrowIfNull(exchange);
+        if (Mode == HttpReplayMode.Replay)
+        {
+            throw new InvalidOperationException("A replay adds nothing to its recording.");
+        }
+
+        lock (_gate)
+        {
+            exchange.Index = _recording.Exchanges.Count;
+            _recording.Exchanges.Add(exchange);
+            _calls.Add(new HttpCall(exchange.Method, exchange.Url, exchange.Status, "recorded", exchange.Index));
+        }
+    }
+
     /// <summary>
     /// Saves what the run left: in record and refresh the recording, its volatile values found against the one it
     /// replaces, redacted and scanned for secrets; in every mode the call log beside it.

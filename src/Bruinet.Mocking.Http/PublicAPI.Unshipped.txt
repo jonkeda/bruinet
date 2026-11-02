@@ -132,3 +132,4 @@ static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedFields -> 
 static readonly Bruinet.Mocking.Http.HttpReplayOptions.DefaultRedactedHeaders -> System.Collections.Generic.IReadOnlyList<string!>!
 static readonly Bruinet.Mocking.Http.HttpReplayPresets.Model -> System.Collections.Generic.IReadOnlyList<string!>!
 static readonly Bruinet.Mocking.Http.HttpReplayPresets.OAuth -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Mocking.Http.HttpReplaySession.Add(Bruinet.Mocking.Http.HttpExchange! exchange) -> void

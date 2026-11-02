@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Bruinet.Mocking.Http.Tests" />
+    <!-- MockApiServer's replay matches as the in-process handler does. -->
+    <InternalsVisibleTo Include="Bruinet.Mocking" />
   </ItemGroup>
 
   <ItemGroup>
