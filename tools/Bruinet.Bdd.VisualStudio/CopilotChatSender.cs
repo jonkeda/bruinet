@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -122,6 +123,7 @@ internal static class CopilotChatSender
         return new Connection(proxy, serviceType, sessionType, contracts);
     }
 
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private static async Task<bool> SendAsync(AsyncPackage package, string prompt, string? model, Action<string> log, Action done, CancellationToken cancellationToken)
     {
         var connection = await ConnectAsync(package, log, cancellationToken);

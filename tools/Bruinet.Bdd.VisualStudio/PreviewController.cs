@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -747,6 +748,7 @@ internal sealed class PreviewController : IVsSelectionEvents, IVsUpdateSolutionE
     }
 
     // From the page: a click on a block moves the caret there; a suite picked binds the file in it.
+    [SuppressMessage("Maintainability", "CA1502", Justification = "Known debt (AD-033): split when it next changes.")]
     private void OnMessage(object sender, JObject message)
     {
         ThreadHelper.ThrowIfNotOnUIThread();
