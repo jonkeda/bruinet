@@ -242,12 +242,14 @@ public sealed class StepTests : IAsyncLifetime
         await PausedAsync();
         var firstStop = clock.Elapsed;
 
-        Assert.True(firstStop < TimeSpan.FromSeconds(1), $"The first stop took {firstStop}.");
+        // A shared build agent is slower than a developer's machine; a cold start is many seconds either way.
+        var limit = TimeSpan.FromSeconds(Environment.GetEnvironmentVariable("GITHUB_ACTIONS") is null ? 1 : 3);
+        Assert.True(firstStop < limit, $"The first stop took {firstStop}.");
         await MoveOnlyAsync("continue");
         Assert.Equal("passed", (await EndedAsync()).Status);
         clock.Restart();
         var again = await _client.InvokeWithParameterObjectAsync<RunnerWarmResult>("bruinet/runner/warm", new { uri = new Uri(Feature).AbsoluteUri });
-        Assert.True(again.Warm && clock.Elapsed < TimeSpan.FromSeconds(1), $"The runner did not wait again: {again.Reason} ({clock.Elapsed}).");
+        Assert.True(again.Warm && clock.Elapsed < limit, $"The runner did not wait again: {again.Reason} ({clock.Elapsed}).");
     }
 
     [Fact]

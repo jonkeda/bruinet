@@ -13,7 +13,7 @@ public sealed class FrameworkTests
 {
     private static string Server => Environment.GetEnvironmentVariable("BRUINET_SQL_SERVER") is { Length: > 0 } server ? server : ".";
 
-    [Fact]
+    [SqlServerFact]
     public void Wrapper_LogsTheFrameworksSqlClient_CommandsReadersAndProcedures()
     {
         Assert.StartsWith(".NET Framework", System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription);
@@ -56,7 +56,7 @@ public sealed class FrameworkTests
         Assert.Contains(entries, entry => entry.Text == "EXEC sys.sp_server_info" && entry.Rows > 0);
     }
 
-    [Fact]
+    [SqlServerFact]
     public void Replay_TheFrameworksSqlClient_OutputsRowsAndErrors_WithNoServer()
     {
         var recording = Path.Combine(Path.GetTempPath(), "Bruinet", "ReplayTests", Guid.NewGuid().ToString("N"), "framework.json");

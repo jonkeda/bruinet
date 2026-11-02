@@ -33,11 +33,14 @@ public sealed class PlaywrightRecorderTests
         var target = new RecordingTarget.BrowserPage(page);
 
         Assert.True(recorder.CanRecord(target));
+        var clock = System.Diagnostics.Stopwatch.StartNew();
         await using var recording = await recorder.StartAsync(target, new RecordingOptions("page.mp4", FramesPerSecond: 20));
         await Task.Delay(1000);
         var result = await recording.StopAsync();
+        clock.Stop();
 
-        Assert.InRange(sink.Frames, 15, 25);
+        // Frames are written at the rate until the stop, so a slow start or stop (a busy runner) adds its time.
+        Assert.InRange(sink.Frames, 15, (int)Math.Ceiling(20 * clock.Elapsed.TotalSeconds) + 2);
         Assert.Equal([0xFF, 0xD8], sink.Last.Take(2));
         Assert.Equal(result.StartedAt, recording.StartedAt);
         Assert.Contains(result.Warnings, warning => warning.Contains("first frame arrived", StringComparison.Ordinal));

@@ -102,8 +102,9 @@
         send('input', el, valueOf(el, el.value));
     };
 
-    // The toolbar's own clicks, and a click that picks an element for an assert, are not the person's actions.
-    const ours = ev => !!window.__bruinetPickCancel || ev.composedPath().some(e => e.id === '__bruinet_toolbar');
+    // The toolbar's own clicks, a click that picks an element for an assert, and the keys of choosing its check
+    // (Escape cancels it) are not the person's actions.
+    const ours = ev => !!window.__bruinetPickCancel || !!window.__bruinetChooseCancel || ev.composedPath().some(e => e.id === '__bruinet_toolbar');
 
     document.addEventListener('click', ev => {
         if (ours(ev)) return;

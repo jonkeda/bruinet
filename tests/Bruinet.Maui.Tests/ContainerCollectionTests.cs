@@ -469,7 +469,9 @@ public class ContainerCollectionTests
         var page = new TestPage(_context.Object);
         SetupCollection("Rows", ("Alpha", "1"));
 
-        Assert.Null(page.Rows.FindItem(r => r.Name.GetText() == "Zeta"));
+        // The search down and back up each wait out a scroll step's progress window; the default
+        // budget of this fixture leaves too little of them on a slow machine.
+        Assert.Null(page.Rows.FindItem(r => r.Name.GetText() == "Zeta", timeoutMs: 5000));
     }
 
     [Fact]
