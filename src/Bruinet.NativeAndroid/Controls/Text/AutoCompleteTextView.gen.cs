@@ -21,6 +21,7 @@ public partial class AutoCompleteTextView<TScope> : EditText<TScope>
 {
     #region ChooseSuggestion
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ChooseSuggestion(string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ChooseSuggestionCore(element, text, timeoutMs); }, timeoutMs);

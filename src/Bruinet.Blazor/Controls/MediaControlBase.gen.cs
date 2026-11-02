@@ -22,6 +22,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
 {
     #region Play
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Play(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PlayCore(element, timeoutMs); }, timeoutMs);
@@ -30,6 +31,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Pause
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Pause(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PauseCore(element, timeoutMs); }, timeoutMs);
@@ -38,11 +40,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Playing (IsPlaying / WaitPlaying / AssertPlaying)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsPlaying()
     {
         return IsPlayingCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPlaying(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -50,6 +54,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPlaying(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -60,11 +65,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Paused (IsPaused / WaitPaused / AssertPaused)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsPaused()
     {
         return IsPausedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPaused(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -72,6 +79,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPaused(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -82,11 +90,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Ended (IsEnded / WaitEnded / AssertEnded)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsEnded()
     {
         return IsEndedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitEnded(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -94,6 +104,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertEnded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -104,11 +115,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region CurrentTime (GetCurrentTime / WaitCurrentTime / AssertCurrentTime)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetCurrentTime(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetCurrentTimeCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitCurrentTime(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -116,6 +129,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertCurrentTime(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -123,6 +137,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            message ?? $"Expected CurrentTime to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitCurrentTimeGreaterThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -130,6 +145,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertCurrentTimeGreaterThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -137,6 +153,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            message ?? $"Expected CurrentTime to be greater than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitCurrentTimeAtLeast(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -144,6 +161,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertCurrentTimeAtLeast(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -154,6 +172,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Seek
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Seek(double seconds, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SeekCore(element, seconds, timeoutMs); }, timeoutMs);
@@ -162,11 +181,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Duration (GetDuration / WaitDuration / AssertDuration)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetDuration(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetDurationCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitDuration(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -174,6 +195,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertDuration(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -184,11 +206,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Volume (GetVolume / WaitVolume / AssertVolume)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetVolume(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetVolumeCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitVolume(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -196,6 +220,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertVolume(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -206,6 +231,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region SetVolume
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetVolume(double? volume, int? timeoutMs = null)
     {
         return RunSetWithElement(volume, element => { SetVolumeCore(element, volume, timeoutMs); }, timeoutMs);
@@ -214,11 +240,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Muted (IsMuted / WaitMuted / AssertMuted)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsMuted()
     {
         return IsMutedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMuted(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -226,6 +254,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMuted(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -236,6 +265,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Mute
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Mute(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { MuteCore(element, timeoutMs); }, timeoutMs);
@@ -244,6 +274,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Unmute
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Unmute(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { UnmuteCore(element, timeoutMs); }, timeoutMs);
@@ -252,11 +283,13 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #endregion
     #region Source (GetSource / WaitSource / AssertSource)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSource(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSourceCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSource(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -264,6 +297,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSource(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -271,6 +305,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            message ?? $"Expected Source to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSourceContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -278,6 +313,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

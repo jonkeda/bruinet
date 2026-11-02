@@ -17,6 +17,7 @@ public partial class SearchBar<TScope> : Entry<TScope>
 {
     #region SetSearch
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetSearch(string? searchText, int? timeoutMs = null)
     {
         return RunSetWithElement(searchText, element => { SetSearchCore(element, searchText, timeoutMs); }, timeoutMs);
@@ -25,6 +26,7 @@ public partial class SearchBar<TScope> : Entry<TScope>
     #endregion
     #region SubmitSearch
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SubmitSearch(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SubmitSearchCore(element, timeoutMs); }, timeoutMs);

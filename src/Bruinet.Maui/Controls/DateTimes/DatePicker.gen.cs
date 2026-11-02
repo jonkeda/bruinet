@@ -21,6 +21,7 @@ public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
 {
     #region SetDate
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetDate(System.DateTime? date, int? timeoutMs = null)
     {
         return RunSetWithElement(date, element => { SetDateCore(element, date, timeoutMs); }, timeoutMs);

@@ -144,6 +144,7 @@ public class ActionGenerator : IMemberGenerator
         var paramList = BuildParameterList(coreMethod);
 
         // Write method signature
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {returnTypeStr} {publicMethodName}({paramList})");
         writer.Open();
 

@@ -59,11 +59,13 @@ public abstract partial class CarouselView<TParent, TSelf, TItem> : CollectionOb
 {
     #region Position (GetPosition / WaitPosition / AssertPosition)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetPosition(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPositionCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPosition(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -71,6 +73,7 @@ public abstract partial class CarouselView<TParent, TSelf, TItem> : CollectionOb
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertPosition(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -81,6 +84,7 @@ public abstract partial class CarouselView<TParent, TSelf, TItem> : CollectionOb
     #endregion
     #region SwipeNext
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipeNext(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeNextCore(element, timeoutMs); }, timeoutMs);
@@ -89,6 +93,7 @@ public abstract partial class CarouselView<TParent, TSelf, TItem> : CollectionOb
     #endregion
     #region SwipePrevious
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipePrevious(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipePreviousCore(element, timeoutMs); }, timeoutMs);

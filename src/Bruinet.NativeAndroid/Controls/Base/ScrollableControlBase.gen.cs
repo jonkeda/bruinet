@@ -20,6 +20,7 @@ public abstract partial class ScrollableControlBase<TScope> : ViewBase<TScope>
 {
     #region Scroll
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Scroll(GestureDirection direction, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ScrollCore(element, direction, timeoutMs); }, timeoutMs);
@@ -28,6 +29,7 @@ public abstract partial class ScrollableControlBase<TScope> : ViewBase<TScope>
     #endregion
     #region ScrollToStart
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ScrollToStart(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ScrollToStartCore(element, timeoutMs); }, timeoutMs);
@@ -36,6 +38,7 @@ public abstract partial class ScrollableControlBase<TScope> : ViewBase<TScope>
     #endregion
     #region ScrollToEnd
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ScrollToEnd(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ScrollToEndCore(element, timeoutMs); }, timeoutMs);

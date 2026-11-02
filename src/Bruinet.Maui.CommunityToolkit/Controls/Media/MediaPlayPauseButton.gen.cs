@@ -30,11 +30,13 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
 {
     #region Playing (IsPlaying / WaitPlaying / AssertPlaying)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsPlaying()
     {
         return IsPlayingCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPlaying(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -42,6 +44,7 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPlaying(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -52,6 +55,7 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
     #endregion
     #region Play
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Play(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PlayCore(element, timeoutMs); }, timeoutMs);
@@ -60,6 +64,7 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
     #endregion
     #region Pause
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Pause(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PauseCore(element, timeoutMs); }, timeoutMs);
@@ -68,6 +73,7 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
     #endregion
     #region SetPlaying
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetPlaying(bool? playing, int? timeoutMs = null)
     {
         return RunSetWithElement(playing, element => { SetPlayingCore(element, playing, timeoutMs); }, timeoutMs);

@@ -18,11 +18,13 @@ public partial class VideoControl<TScope> : MediaControlBase<TScope>
 {
     #region Poster (GetPoster / WaitPoster / AssertPoster)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetPoster(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPosterCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPoster(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -30,6 +32,7 @@ public partial class VideoControl<TScope> : MediaControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPoster(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

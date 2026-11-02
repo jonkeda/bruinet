@@ -36,6 +36,7 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     #endregion
     #region Pause (shortcut to PlayPauseButton.Pause)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public MediaElement<TScope> Pause(int? timeoutMs = null)
        => PlayPauseButton.Pause(timeoutMs);
 

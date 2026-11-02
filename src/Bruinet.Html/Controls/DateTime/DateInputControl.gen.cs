@@ -19,11 +19,13 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
 {
     #region Date (GetDate / WaitDate / AssertDate)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public DateOnly? GetDate(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetDateCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitDate(DateOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -31,6 +33,7 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertDate(DateOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -41,6 +44,7 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region SetDate
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetDate(DateOnly? date, int? timeoutMs = null)
     {
         return RunSetWithElement(date, element => { SetDateCore(element, date, timeoutMs); }, timeoutMs);
@@ -49,11 +53,13 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region Minimum (GetMinimum / WaitMinimum / AssertMinimum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public DateOnly? GetMinimum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMinimumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMinimum(DateOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -61,6 +67,7 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMinimum(DateOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -71,11 +78,13 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region Maximum (GetMaximum / WaitMaximum / AssertMaximum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public DateOnly? GetMaximum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMaximumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMaximum(DateOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -83,6 +92,7 @@ public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMaximum(DateOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

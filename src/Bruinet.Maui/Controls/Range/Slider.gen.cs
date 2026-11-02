@@ -20,11 +20,13 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
 {
     #region Percentage (GetPercentage / WaitPercentage / AssertPercentage)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetPercentage(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPercentageCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentage(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentage(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -42,6 +45,7 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region SlideToPercentage
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SlideToPercentage(double? percentage, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SlideToPercentageCore(element, percentage, timeoutMs); }, timeoutMs);
@@ -50,6 +54,7 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region SlideToMinimum
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SlideToMinimum(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SlideToMinimumCore(element, timeoutMs); }, timeoutMs);
@@ -58,6 +63,7 @@ public partial class Slider<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region SlideToMaximum
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SlideToMaximum(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SlideToMaximumCore(element, timeoutMs); }, timeoutMs);

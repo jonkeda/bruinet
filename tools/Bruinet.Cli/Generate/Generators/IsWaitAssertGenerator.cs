@@ -280,6 +280,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.WriteLine();
 
         // Get{PropertyName}(...) getter
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {nullableReturnType} Get{propertyName}({paramPrefix}int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {GetHelper(coreMethod)}(element => {coreMethod.MethodName}(element{lambdaArgs}), timeoutMs);");
@@ -294,6 +295,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         if (!hasSequenceEquality)
         {
             // Wait{PropertyName}(...) waiter
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public bool Wait{propertyName}({paramPrefix}{nullableReturnType} expected, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
@@ -305,6 +307,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             writer.WriteLine();
 
             // Assert{PropertyName}(...) assertion
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public {fluentReturnType} Assert{propertyName}({paramPrefix}{nullableReturnType} expected, string? message = null, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
@@ -343,6 +346,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         if (comparison == "Empty")
         {
             // Empty is a bool? predicate over the value, not a value comparison.
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public bool Wait{memberName}({paramPrefix}bool? expected = true, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
@@ -353,6 +357,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             writer.Close();
             writer.WriteLine();
 
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public {fluentReturnType} Assert{memberName}({paramPrefix}bool? expected = true, string? message = null, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
@@ -374,6 +379,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         if (OrderedComparisons.TryGetValue(comparison, out var ordered))
         {
             // Lifted operators: a null actual compares false, so an unreadable value never passes.
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public bool Wait{memberName}({paramPrefix}{nullableReturnType} expected, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
@@ -384,6 +390,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             writer.Close();
             writer.WriteLine();
 
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public {fluentReturnType} Assert{memberName}({paramPrefix}{nullableReturnType} expected, string? message = null, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
@@ -399,6 +406,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         var ordinal = comparison is "StartsWith" or "EndsWith" ? ", StringComparison.Ordinal" : string.Empty;
         var predicate = $"actual?.{comparison}(expected1!{ordinal}) == true";
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public bool Wait{memberName}({paramPrefix}{nullableReturnType} expected, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
@@ -409,6 +417,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.Close();
         writer.WriteLine();
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {fluentReturnType} Assert{memberName}({paramPrefix}{nullableReturnType} expected, string? message = null, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
@@ -437,6 +446,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         {
             var itemType = ElementTypeOf(nullableReturnType);
 
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public bool Wait{memberName}({paramPrefix}{itemType} item, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {WaitHelper(coreMethod)}(item,");
@@ -447,6 +457,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             writer.Close();
             writer.WriteLine();
 
+            writer.WriteLine(GeneratedMember.Attribute);
             writer.WriteLine($"public {fluentReturnType} Assert{memberName}({paramPrefix}{itemType} item, string? message = null, int? timeoutMs = null)");
             writer.Open();
             writer.WriteLine($"return {AssertHelper(coreMethod)}((bool?)true,");
@@ -475,6 +486,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
                 "actual == expected1"),
         };
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public bool Wait{memberName}({paramPrefix}{expectedType} expected, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {WaitHelper(coreMethod)}(expected,");
@@ -485,6 +497,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.Close();
         writer.WriteLine();
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {fluentReturnType} Assert{memberName}({paramPrefix}{expectedType} expected, string? message = null, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
@@ -547,6 +560,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
     {
         var parameters = string.Join(", ", coreMethod.Parameters.Select(p => $"{p.TypeName} {p.ParameterName}"));
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {coreMethod.ReturnType} Is{propertyName}({parameters})");
         writer.Open();
         writer.WriteLine($"return {coreMethod.MethodName}(TryFindElement(){BuildLambdaArguments(coreMethod)}) == true;");
@@ -565,6 +579,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             ? "RunWaitWithOptionalElement"
             : "RunWaitWithElement";
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public bool Wait{propertyName}({BuildParameterListPrefix(coreMethod)}bool? expected = true, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {helper}(expected,");
@@ -592,6 +607,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
             ? coreMethod.MethodName
             : $"element => {coreMethod.MethodName}(element{BuildLambdaArguments(coreMethod)})";
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {fluentReturnType} Assert{propertyName}({BuildParameterListPrefix(coreMethod)}bool? expected = true, string? message = null, int? timeoutMs = null)");
         writer.Open();
         writer.WriteLine($"return {helper}(expected,");

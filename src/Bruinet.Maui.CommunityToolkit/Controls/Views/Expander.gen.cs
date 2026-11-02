@@ -18,11 +18,13 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
 {
     #region Expanded (IsExpanded / WaitExpanded / AssertExpanded)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsExpanded()
     {
         return IsExpandedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitExpanded(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -30,6 +32,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertExpanded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -40,6 +43,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     #endregion
     #region Toggle
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Toggle(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ToggleCore(element, timeoutMs); }, timeoutMs);
@@ -48,6 +52,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     #endregion
     #region Expand
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Expand(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ExpandCore(element, timeoutMs); }, timeoutMs);
@@ -56,6 +61,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     #endregion
     #region Collapse
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Collapse(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { CollapseCore(element, timeoutMs); }, timeoutMs);
@@ -64,6 +70,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     #endregion
     #region SetExpanded
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetExpanded(bool? expanded, int? timeoutMs = null)
     {
         return RunSetWithElement(expanded, element => { SetExpandedCore(element, expanded, timeoutMs); }, timeoutMs);

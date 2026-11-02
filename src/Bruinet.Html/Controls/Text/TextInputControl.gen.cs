@@ -20,11 +20,13 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
 {
     #region Value (GetValue / WaitValue / AssertValue)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetValue(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetValueCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValue(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValue(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -39,6 +42,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            message ?? $"Expected Value to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -46,6 +50,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -53,6 +58,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            message ?? $"Expected ValueContains to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueEmpty(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -60,6 +66,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueEmpty(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -70,6 +77,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region SetText
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetText(string? text, int? timeoutMs = null)
     {
         return RunSetWithElement(text, element => { SetTextCore(element, text, timeoutMs); }, timeoutMs);
@@ -78,6 +86,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region Clear
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Clear(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClearCore(element, timeoutMs); }, timeoutMs);
@@ -86,6 +95,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region Append
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Append(string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { AppendCore(element, text, timeoutMs); }, timeoutMs);
@@ -94,6 +104,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region TypeText
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope TypeText(string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { TypeTextCore(element, text, timeoutMs); }, timeoutMs);
@@ -102,6 +113,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region Submit
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Submit(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SubmitCore(element, timeoutMs); }, timeoutMs);
@@ -110,11 +122,13 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region Placeholder (GetPlaceholder / WaitPlaceholder / AssertPlaceholder)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetPlaceholder(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPlaceholderCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPlaceholder(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -122,6 +136,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -132,11 +147,13 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #endregion
     #region ReadOnly (IsReadOnly / WaitReadOnly / AssertReadOnly)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsReadOnly()
     {
         return IsReadOnlyCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitReadOnly(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -144,6 +161,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

@@ -14,6 +14,7 @@ public abstract partial class ControlBase<TScope>
 {
     #region SendKeys
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SendKeys(string keys)
     {
         return RunDoWithElement(element => { SendKeysCore(element, keys); });
@@ -22,11 +23,13 @@ public abstract partial class ControlBase<TScope>
     #endregion
     #region Visible (IsVisible / WaitVisible / AssertVisible)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsVisible()
     {
         return IsVisibleCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitVisible(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -34,6 +37,7 @@ public abstract partial class ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -44,11 +48,13 @@ public abstract partial class ControlBase<TScope>
     #endregion
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -56,6 +62,7 @@ public abstract partial class ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -66,11 +73,13 @@ public abstract partial class ControlBase<TScope>
     #endregion
     #region Exists (IsExists / WaitExists / AssertExists)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool IsExists()
     {
         return IsExistsCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitExists(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -78,6 +87,7 @@ public abstract partial class ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

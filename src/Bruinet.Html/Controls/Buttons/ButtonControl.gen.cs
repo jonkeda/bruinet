@@ -18,6 +18,7 @@ public partial class ButtonControl<TScope> : ClickableControlBase<TScope>
 {
     #region Submit
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Submit(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SubmitCore(element, timeoutMs); }, timeoutMs);

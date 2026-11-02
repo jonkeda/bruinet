@@ -22,11 +22,13 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
 {
     #region Title (GetTitle / WaitTitle / AssertTitle)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetTitle(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTitleCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -34,6 +36,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ContentDialog<TParent> AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -44,11 +47,13 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
     #endregion
     #region ButtonTexts (GetButtonTexts / WaitButtonTexts / AssertButtonTexts)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetButtonTexts(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetButtonTextsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitButtonTexts(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -56,6 +61,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ContentDialog<TParent> AssertButtonTexts(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -63,6 +69,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            message ?? $"Expected ButtonTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitButtonTextsHasItem(string item, int? timeoutMs = null)
     {
         return RunWaitWithElement(item,
@@ -70,6 +77,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ContentDialog<TParent> AssertButtonTextsHasItem(string item, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement((bool?)true,
@@ -77,6 +85,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            message ?? $"Expected ButtonTextsHasItem to contain '{item}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitButtonTextsCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -84,6 +93,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ContentDialog<TParent> AssertButtonTextsCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -94,11 +104,13 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
     #endregion
     #region Message (GetMessage / WaitMessage / AssertMessage)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetMessage(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMessageCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMessage(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -106,6 +118,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ContentDialog<TParent> AssertMessage(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

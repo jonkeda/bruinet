@@ -23,11 +23,13 @@ public partial class AvatarImage<TScope> : Image<TScope>
 {
     #region Shown (IsShown / WaitShown / AssertShown)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsShown()
     {
         return IsShownCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitShown(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -35,6 +37,7 @@ public partial class AvatarImage<TScope> : Image<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertShown(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

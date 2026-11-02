@@ -17,11 +17,13 @@ public partial class ActivityIndicator<TScope> : Base.ViewBase<TScope>
 {
     #region Running (IsRunning / WaitRunning / AssertRunning)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsRunning()
     {
         return IsRunningCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitRunning(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class ActivityIndicator<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertRunning(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

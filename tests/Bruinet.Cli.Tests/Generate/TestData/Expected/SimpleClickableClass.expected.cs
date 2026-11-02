@@ -15,6 +15,7 @@ public abstract partial class SimpleClickable<TScope> : Base<TScope>
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);

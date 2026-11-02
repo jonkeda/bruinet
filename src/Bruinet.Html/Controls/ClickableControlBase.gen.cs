@@ -21,6 +21,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);
@@ -29,6 +30,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region ClickAt
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ClickAt(double x, double y, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickAtCore(element, x, y, timeoutMs); }, timeoutMs);
@@ -37,6 +39,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region DoubleClick
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope DoubleClick(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { DoubleClickCore(element, timeoutMs); }, timeoutMs);
@@ -45,6 +48,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region RightClick
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope RightClick(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { RightClickCore(element, timeoutMs); }, timeoutMs);
@@ -53,6 +57,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region Hover
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Hover(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { HoverCore(element, timeoutMs); }, timeoutMs);
@@ -61,6 +66,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region LongPress
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope LongPress(int? durationMs = null, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { LongPressCore(element, durationMs, timeoutMs); }, timeoutMs);
@@ -69,11 +75,13 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
     #endregion
     #region Clickable (IsClickable / WaitClickable / AssertClickable)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsClickable()
     {
         return IsClickableCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitClickable(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -81,6 +89,7 @@ public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

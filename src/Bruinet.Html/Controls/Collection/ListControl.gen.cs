@@ -20,11 +20,13 @@ public partial class ListControl<TScope> : ControlBase<TScope>
 {
     #region ItemCount (GetItemCount / WaitItemCount / AssertItemCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetItemCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -42,11 +45,13 @@ public partial class ListControl<TScope> : ControlBase<TScope>
     #endregion
     #region ItemText (GetItemText / WaitItemText / AssertItemText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetItemText(int index, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemTextCore(element, index), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemText(int index, string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -54,6 +59,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemText(int index, string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -64,11 +70,13 @@ public partial class ListControl<TScope> : ControlBase<TScope>
     #endregion
     #region ItemTexts (GetItemTexts / WaitItemTexts / AssertItemTexts)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetItemTexts(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemTextsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTexts(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -76,6 +84,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTexts(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -83,6 +92,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            message ?? $"Expected ItemTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTextsHasItem(string item, int? timeoutMs = null)
     {
         return RunWaitWithElement(item,
@@ -90,6 +100,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTextsHasItem(string item, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement((bool?)true,
@@ -97,6 +108,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            message ?? $"Expected ItemTextsHasItem to contain '{item}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTextsCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -104,6 +116,7 @@ public partial class ListControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTextsCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

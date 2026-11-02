@@ -20,6 +20,7 @@ public abstract partial class FocusableControlBase<TScope> : ClickableControlBas
 {
     #region Focus
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Focus(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { FocusCore(element, timeoutMs); }, timeoutMs);
@@ -28,6 +29,7 @@ public abstract partial class FocusableControlBase<TScope> : ClickableControlBas
     #endregion
     #region Blur
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Blur(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { BlurCore(element, timeoutMs); }, timeoutMs);
@@ -36,11 +38,13 @@ public abstract partial class FocusableControlBase<TScope> : ClickableControlBas
     #endregion
     #region Focused (IsFocused / WaitFocused / AssertFocused)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsFocused()
     {
         return IsFocusedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitFocused(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -48,6 +52,7 @@ public abstract partial class FocusableControlBase<TScope> : ClickableControlBas
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

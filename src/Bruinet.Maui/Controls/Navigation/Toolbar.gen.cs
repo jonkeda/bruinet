@@ -33,11 +33,13 @@ public partial class Toolbar<TParent> : CollectionObjectBase<TParent, Toolbar<TP
 {
     #region Title (GetTitle / WaitTitle / AssertTitle)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetTitle(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTitleCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -45,6 +47,7 @@ public partial class Toolbar<TParent> : CollectionObjectBase<TParent, Toolbar<TP
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public Toolbar<TParent> AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

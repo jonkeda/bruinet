@@ -23,6 +23,7 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);
@@ -31,6 +32,7 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
     #endregion
     #region Toggle
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Toggle(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ToggleCore(element, timeoutMs); }, timeoutMs);
@@ -39,6 +41,7 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
     #endregion
     #region SetChecked
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetChecked(bool? @checked, int? timeoutMs = null)
     {
         return RunSetWithElement(@checked, element => { SetCheckedCore(element, @checked, timeoutMs); }, timeoutMs);
@@ -47,11 +50,13 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
     #endregion
     #region Checked (IsChecked / WaitChecked / AssertChecked)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsChecked()
     {
         return IsCheckedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitChecked(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -59,6 +64,7 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

@@ -23,11 +23,13 @@ public abstract partial class SelectableItemBase<TCollection, TSelf> : Clickable
 {
     #region Selected (IsSelected / WaitSelected / AssertSelected)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsSelected()
     {
         return IsSelectedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSelected(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -35,6 +37,7 @@ public abstract partial class SelectableItemBase<TCollection, TSelf> : Clickable
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

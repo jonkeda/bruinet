@@ -17,11 +17,13 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
 {
     #region Url (GetUrl / WaitUrl / AssertUrl)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetUrl(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetUrlCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitUrl(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertUrl(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -36,6 +39,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected Url to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitUrlContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -43,6 +47,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertUrlContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -53,11 +58,13 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
     #endregion
     #region PageTitle (GetPageTitle / WaitPageTitle / AssertPageTitle)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetPageTitle(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPageTitleCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPageTitle(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -65,6 +72,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPageTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -72,6 +80,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected PageTitle to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPageTitleContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -79,6 +88,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPageTitleContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

@@ -21,6 +21,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
 {
     #region SetText
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetText(string? text, int? timeoutMs = null)
     {
         return RunSetWithElement(text, element => { SetTextCore(element, text, timeoutMs); }, timeoutMs);
@@ -29,6 +30,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     #endregion
     #region Clear
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Clear(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClearCore(element, timeoutMs); }, timeoutMs);
@@ -37,6 +39,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     #endregion
     #region Append
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Append(string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { AppendCore(element, text, timeoutMs); }, timeoutMs);
@@ -45,6 +48,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     #endregion
     #region Submit
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Submit(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SubmitCore(element, timeoutMs); }, timeoutMs);
@@ -53,11 +57,13 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     #endregion
     #region Placeholder (GetPlaceholder / WaitPlaceholder / AssertPlaceholder)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetPlaceholder(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPlaceholderCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPlaceholder(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -65,6 +71,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -75,11 +82,13 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
     #endregion
     #region ReadOnly (IsReadOnly / WaitReadOnly / AssertReadOnly)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsReadOnly()
     {
         return IsReadOnlyCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitReadOnly(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -87,6 +96,7 @@ public partial class EditText<TScope> : FocusableControlBase<TScope>, IEditableT
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

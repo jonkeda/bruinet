@@ -29,11 +29,13 @@ public partial class DrawingView<TScope> : Bruinet.Maui.Controls.Base.ViewBase<T
 {
     #region LineCount (GetLineCount / WaitLineCount / AssertLineCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetLineCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetLineCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitLineCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -41,6 +43,7 @@ public partial class DrawingView<TScope> : Bruinet.Maui.Controls.Base.ViewBase<T
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertLineCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -51,6 +54,7 @@ public partial class DrawingView<TScope> : Bruinet.Maui.Controls.Base.ViewBase<T
     #endregion
     #region DrawLine
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope DrawLine(int deltaX, int deltaY, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { DrawLineCore(element, deltaX, deltaY, timeoutMs); }, timeoutMs);

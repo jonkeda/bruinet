@@ -21,6 +21,7 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
 {
     #region SetTime
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetTime(TimeSpan? time, int? timeoutMs = null)
     {
         return RunSetWithElement(time, element => { SetTimeCore(element, time, timeoutMs); }, timeoutMs);

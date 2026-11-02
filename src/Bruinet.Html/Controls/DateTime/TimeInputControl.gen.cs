@@ -19,11 +19,13 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
 {
     #region Time (GetTime / WaitTime / AssertTime)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TimeOnly? GetTime(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTimeCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTime(TimeOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -31,6 +33,7 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTime(TimeOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -41,6 +44,7 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region SetTime
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetTime(TimeOnly? time, int? timeoutMs = null)
     {
         return RunSetWithElement(time, element => { SetTimeCore(element, time, timeoutMs); }, timeoutMs);
@@ -49,11 +53,13 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region Minimum (GetMinimum / WaitMinimum / AssertMinimum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TimeOnly? GetMinimum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMinimumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMinimum(TimeOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -61,6 +67,7 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMinimum(TimeOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -71,11 +78,13 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
     #endregion
     #region Maximum (GetMaximum / WaitMaximum / AssertMaximum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TimeOnly? GetMaximum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMaximumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMaximum(TimeOnly? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -83,6 +92,7 @@ public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMaximum(TimeOnly? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

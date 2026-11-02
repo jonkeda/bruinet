@@ -30,6 +30,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
 {
     #region IncrementBy
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope IncrementBy(int? times, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { IncrementByCore(element, times, timeoutMs); }, timeoutMs);
@@ -38,6 +39,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region DecrementBy
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope DecrementBy(int? times, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { DecrementByCore(element, times, timeoutMs); }, timeoutMs);
@@ -46,6 +48,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region SetToMinimum
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetToMinimum(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SetToMinimumCore(element, timeoutMs); }, timeoutMs);
@@ -54,6 +57,7 @@ public partial class Stepper<TScope> : Base.RangeControlBase<TScope>
     #endregion
     #region SetToMaximum
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetToMaximum(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SetToMaximumCore(element, timeoutMs); }, timeoutMs);

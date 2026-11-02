@@ -22,6 +22,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
 {
     #region SelectByText
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SelectByText(string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SelectByTextCore(element, text, timeoutMs); }, timeoutMs);
@@ -30,6 +31,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region SelectByValue
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SelectByValue(string? value, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SelectByValueCore(element, value, timeoutMs); }, timeoutMs);
@@ -38,6 +40,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region SelectByIndex
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SelectByIndex(int? index, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SelectByIndexCore(element, index, timeoutMs); }, timeoutMs);
@@ -46,11 +49,13 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region SelectedText (GetSelectedText / WaitSelectedText / AssertSelectedText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSelectedText(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSelectedTextCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSelectedText(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -58,6 +63,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -68,11 +74,13 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region SelectedValue (GetSelectedValue / WaitSelectedValue / AssertSelectedValue)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSelectedValue(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSelectedValueCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSelectedValue(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -80,6 +88,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSelectedValue(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -90,11 +99,13 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region SelectedIndex (GetSelectedIndex / WaitSelectedIndex / AssertSelectedIndex)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetSelectedIndex(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSelectedIndexCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSelectedIndex(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -102,6 +113,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -112,11 +124,13 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region ItemTexts (GetItemTexts / WaitItemTexts / AssertItemTexts)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetItemTexts(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemTextsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTexts(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -124,6 +138,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTexts(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -131,6 +146,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            message ?? $"Expected ItemTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTextsHasItem(string item, int? timeoutMs = null)
     {
         return RunWaitWithElement(item,
@@ -138,6 +154,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTextsHasItem(string item, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement((bool?)true,
@@ -145,6 +162,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            message ?? $"Expected ItemTextsHasItem to contain '{item}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemTextsCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -152,6 +170,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemTextsCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -162,11 +181,13 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
     #endregion
     #region ItemCount (GetItemCount / WaitItemCount / AssertItemCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetItemCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -174,6 +195,7 @@ public abstract partial class SelectorControlBase<TScope> : ClickableControlBase
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

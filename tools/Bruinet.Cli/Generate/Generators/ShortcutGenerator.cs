@@ -87,6 +87,7 @@ public class ShortcutGenerator : IMemberGenerator
                 GenerateGetter(writer, shortcut, coreMethod.Comparisons, fluentReturnType);
                 break;
             default:
+                writer.WriteLine(GeneratedMember.Attribute);
                 writer.WriteLine($"public {shortcut.ReturnType} {shortcut.PublicName}{shortcut.ParameterListText}");
                 writer.IncreaseSpace(1);
                 writer.WriteLine($"=> {shortcut.Invocation};");

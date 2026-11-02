@@ -33,6 +33,7 @@ public partial class Menu<TParent> : CollectionObjectBase<TParent, Menu<TParent>
 {
     #region Open
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public Menu<TParent> Open(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { OpenCore(element, timeoutMs); }, timeoutMs);
@@ -41,11 +42,13 @@ public partial class Menu<TParent> : CollectionObjectBase<TParent, Menu<TParent>
     #endregion
     #region Open (IsOpen / WaitOpen / AssertOpen)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsOpen()
     {
         return IsOpenCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitOpen(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -53,6 +56,7 @@ public partial class Menu<TParent> : CollectionObjectBase<TParent, Menu<TParent>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public Menu<TParent> AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

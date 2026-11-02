@@ -20,11 +20,13 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
 {
     #region Value (GetValue / WaitValue / AssertValue)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetValue(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetValueCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValue(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValue(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -39,6 +42,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Value to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueGreaterThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -46,6 +50,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueGreaterThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -53,6 +58,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Value to be greater than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueAtLeast(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -60,6 +66,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -67,6 +74,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Value to be at least '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueLessThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -74,6 +82,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -81,6 +90,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Value to be less than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueAtMost(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -88,6 +98,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -98,11 +109,13 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
     #endregion
     #region Max (GetMax / WaitMax / AssertMax)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetMax(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMaxCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMax(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -110,6 +123,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMax(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -120,11 +134,13 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
     #endregion
     #region Percentage (GetPercentage / WaitPercentage / AssertPercentage)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetPercentage(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPercentageCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentage(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -132,6 +148,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentage(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -139,6 +156,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Percentage to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentageGreaterThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -146,6 +164,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentageGreaterThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -153,6 +172,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Percentage to be greater than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentageAtLeast(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -160,6 +180,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentageAtLeast(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -167,6 +188,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Percentage to be at least '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentageLessThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -174,6 +196,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentageLessThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -181,6 +204,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Percentage to be less than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPercentageAtMost(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -188,6 +212,7 @@ public partial class ProgressControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPercentageAtMost(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

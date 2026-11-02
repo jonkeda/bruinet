@@ -34,11 +34,13 @@ public partial class Popup<TParent, TSelf> : ContainerObjectBase<TParent, TSelf>
 {
     #region Open (IsOpen / WaitOpen / AssertOpen)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsOpen()
     {
         return IsOpenCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitOpen(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -46,6 +48,7 @@ public partial class Popup<TParent, TSelf> : ContainerObjectBase<TParent, TSelf>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

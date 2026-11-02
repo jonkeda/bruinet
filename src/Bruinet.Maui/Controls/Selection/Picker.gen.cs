@@ -17,6 +17,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
 {
     #region OpenFlyout
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope OpenFlyout(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { OpenFlyoutCore(element, timeoutMs); }, timeoutMs);
@@ -25,6 +26,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     #endregion
     #region CloseFlyout
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope CloseFlyout(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { CloseFlyoutCore(element, timeoutMs); }, timeoutMs);
@@ -33,11 +35,13 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     #endregion
     #region FlyoutOpen (IsFlyoutOpen / WaitFlyoutOpen / AssertFlyoutOpen)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsFlyoutOpen()
     {
         return IsFlyoutOpenCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitFlyoutOpen(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -45,6 +49,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertFlyoutOpen(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -55,11 +60,13 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     #endregion
     #region DropdownItemTexts (GetDropdownItemTexts / WaitDropdownItemTexts / AssertDropdownItemTexts)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetDropdownItemTexts(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetDropdownItemTextsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitDropdownItemTexts(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -67,6 +74,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertDropdownItemTexts(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -77,11 +85,13 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     #endregion
     #region Title (GetTitle / WaitTitle / AssertTitle)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetTitle(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTitleCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -89,6 +99,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

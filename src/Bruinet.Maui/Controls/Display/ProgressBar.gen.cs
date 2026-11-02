@@ -17,11 +17,13 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
 {
     #region Progress (GetProgress / WaitProgress / AssertProgress)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetProgress(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetProgressCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitProgress(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertProgress(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

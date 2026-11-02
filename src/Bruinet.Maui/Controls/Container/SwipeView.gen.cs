@@ -32,11 +32,13 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
 {
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -44,6 +46,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,
@@ -54,6 +57,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #endregion
     #region SwipeLeft
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipeLeft(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeLeftCore(element, timeoutMs); }, timeoutMs);
@@ -62,6 +66,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #endregion
     #region SwipeRight
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipeRight(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeRightCore(element, timeoutMs); }, timeoutMs);
@@ -70,6 +75,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #endregion
     #region SwipeUp
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipeUp(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeUpCore(element, timeoutMs); }, timeoutMs);
@@ -78,6 +84,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #endregion
     #region SwipeDown
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf SwipeDown(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeDownCore(element, timeoutMs); }, timeoutMs);
@@ -86,6 +93,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #endregion
     #region Swipe
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf Swipe(int startX, int startY, int endX, int endY, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SwipeCore(element, startX, startY, endX, endY, timeoutMs); }, timeoutMs);

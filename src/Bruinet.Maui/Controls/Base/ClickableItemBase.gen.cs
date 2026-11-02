@@ -25,6 +25,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);
@@ -33,11 +34,13 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
     #endregion
     #region Text (GetText / WaitText / AssertText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetText(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTextCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitText(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -45,6 +48,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertText(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -52,6 +56,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            message ?? $"Expected Text to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -59,6 +64,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertTextContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -66,6 +72,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            message ?? $"Expected TextContains to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextEmpty(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -73,6 +80,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -83,11 +91,13 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
     #endregion
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -95,6 +105,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

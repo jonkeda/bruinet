@@ -33,11 +33,13 @@ public partial class IndicatorView<TScope> : Base.ViewBase<TScope>
 {
     #region Position (GetPosition / WaitPosition / AssertPosition)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetPosition(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetPositionCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitPosition(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -45,6 +47,7 @@ public partial class IndicatorView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertPosition(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -55,11 +58,13 @@ public partial class IndicatorView<TScope> : Base.ViewBase<TScope>
     #endregion
     #region Count (GetCount / WaitCount / AssertCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -67,6 +72,7 @@ public partial class IndicatorView<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

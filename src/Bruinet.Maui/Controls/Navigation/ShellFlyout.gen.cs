@@ -23,11 +23,13 @@ public partial class ShellFlyout<TParent> : CollectionObjectBase<TParent, ShellF
 {
     #region Open (IsOpen / WaitOpen / AssertOpen)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsOpen()
     {
         return IsOpenCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitOpen(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -35,6 +37,7 @@ public partial class ShellFlyout<TParent> : CollectionObjectBase<TParent, ShellF
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public ShellFlyout<TParent> AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

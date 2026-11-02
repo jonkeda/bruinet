@@ -22,11 +22,13 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
 {
     #region Value (GetValue / WaitValue / AssertValue)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetValue(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetValueCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValue(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -34,6 +36,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValue(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -41,6 +44,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            message ?? $"Expected Value to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueGreaterThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -48,6 +52,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueGreaterThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -55,6 +60,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            message ?? $"Expected Value to be greater than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueAtLeast(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -62,6 +68,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -69,6 +76,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            message ?? $"Expected Value to be at least '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueLessThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -76,6 +84,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -83,6 +92,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            message ?? $"Expected Value to be less than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitValueAtMost(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -90,6 +100,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -100,6 +111,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region SetValue
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetValue(double? value, int? timeoutMs = null)
     {
         return RunSetWithElement(value, element => { SetValueCore(element, value, timeoutMs); }, timeoutMs);
@@ -108,11 +120,13 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region Minimum (GetMinimum / WaitMinimum / AssertMinimum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetMinimum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMinimumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMinimum(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -120,6 +134,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMinimum(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -130,11 +145,13 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region Maximum (GetMaximum / WaitMaximum / AssertMaximum)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetMaximum(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetMaximumCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitMaximum(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -142,6 +159,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertMaximum(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -152,11 +170,13 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region Step (GetStep / WaitStep / AssertStep)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetStep(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetStepCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitStep(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -164,6 +184,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertStep(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -174,6 +195,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region Increment
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Increment(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { IncrementCore(element, timeoutMs); }, timeoutMs);
@@ -182,6 +204,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
     #endregion
     #region Decrement
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Decrement(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { DecrementCore(element, timeoutMs); }, timeoutMs);

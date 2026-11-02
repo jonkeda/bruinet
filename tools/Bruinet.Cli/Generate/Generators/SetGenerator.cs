@@ -135,6 +135,7 @@ public class SetGenerator : IMemberGenerator
         var valueParameterName = coreMethod.Parameters[0].ParameterName;
         var hasTimeoutMs = coreMethod.Parameters.Any(p => p.ParameterName == "timeoutMs");
 
+        writer.WriteLine(GeneratedMember.Attribute);
         writer.WriteLine($"public {returnTypeStr} {publicMethodName}({paramList})");
         writer.Open();
 

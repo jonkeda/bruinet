@@ -32,11 +32,13 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
 {
     #region Seconds (GetSeconds / WaitSeconds / AssertSeconds)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public double? GetSeconds(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSecondsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSeconds(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -44,6 +46,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSeconds(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -51,6 +54,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            message ?? $"Expected Seconds to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSecondsGreaterThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -58,6 +62,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSecondsGreaterThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -65,6 +70,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            message ?? $"Expected Seconds to be greater than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSecondsAtLeast(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -72,6 +78,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSecondsAtLeast(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -79,6 +86,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            message ?? $"Expected Seconds to be at least '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSecondsLessThan(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -86,6 +94,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSecondsLessThan(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -93,6 +102,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            message ?? $"Expected Seconds to be less than '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSecondsAtMost(double? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -100,6 +110,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSecondsAtMost(double? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

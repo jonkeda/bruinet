@@ -19,6 +19,7 @@ public partial class SelectControl<TScope> : SelectorControlBase<TScope>
 {
     #region SelectMultiple
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SelectMultiple(string[] values, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { SelectMultipleCore(element, values, timeoutMs); }, timeoutMs);

@@ -19,11 +19,13 @@ public partial class LinkControl<TScope> : ClickableControlBase<TScope>
 {
     #region Href (GetHref / WaitHref / AssertHref)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetHref(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetHrefCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitHref(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -31,6 +33,7 @@ public partial class LinkControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertHref(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -38,6 +41,7 @@ public partial class LinkControl<TScope> : ClickableControlBase<TScope>
            message ?? $"Expected Href to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitHrefContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -45,6 +49,7 @@ public partial class LinkControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertHrefContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

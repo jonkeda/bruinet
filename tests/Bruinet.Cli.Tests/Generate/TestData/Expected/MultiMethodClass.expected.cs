@@ -15,6 +15,7 @@ public abstract partial class MultiClickable<TScope> : Base<TScope>
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);
@@ -23,6 +24,7 @@ public abstract partial class MultiClickable<TScope> : Base<TScope>
     #endregion
     #region Hover
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Hover()
     {
         return RunDoWithElement(element => { HoverCore(element); });

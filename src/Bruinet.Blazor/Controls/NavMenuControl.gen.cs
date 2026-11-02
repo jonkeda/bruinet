@@ -20,11 +20,13 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
 {
     #region ItemCount (GetItemCount / WaitItemCount / AssertItemCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetItemCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -42,11 +45,13 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     #endregion
     #region Items (GetItems / WaitItems / AssertItems)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetItems(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItems(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -54,6 +59,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItems(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -61,6 +67,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Items to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemsHasItem(string item, int? timeoutMs = null)
     {
         return RunWaitWithElement(item,
@@ -68,6 +75,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemsHasItem(string item, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement((bool?)true,
@@ -75,6 +83,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            message ?? $"Expected ItemsHasItem to contain '{item}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemsCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -82,6 +91,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemsCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -92,11 +102,13 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     #endregion
     #region ActiveItem (GetActiveItem / WaitActiveItem / AssertActiveItem)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetActiveItem(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetActiveItemCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitActiveItem(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -104,6 +116,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertActiveItem(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -114,11 +127,13 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     #endregion
     #region ItemHref (GetItemHref / WaitItemHref / AssertItemHref)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetItemHref(string itemText, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetItemHrefCore(element, itemText), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitItemHref(string itemText, string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -126,6 +141,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertItemHref(string itemText, string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -136,6 +152,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     #endregion
     #region NavigateTo
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope NavigateTo(string itemText, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { NavigateToCore(element, itemText, timeoutMs); }, timeoutMs);
@@ -144,6 +161,7 @@ public partial class NavMenuControl<TScope> : ControlBase<TScope>
     #endregion
     #region NavigateToIndex
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope NavigateToIndex(int index, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { NavigateToIndexCore(element, index, timeoutMs); }, timeoutMs);

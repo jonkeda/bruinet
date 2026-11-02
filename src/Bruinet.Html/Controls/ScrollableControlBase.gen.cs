@@ -19,6 +19,7 @@ public abstract partial class ScrollableControlBase<TScope> : ClickableControlBa
 {
     #region ScrollTo
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ScrollTo(int x, int y, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ScrollToCore(element, x, y, timeoutMs); }, timeoutMs);
@@ -27,6 +28,7 @@ public abstract partial class ScrollableControlBase<TScope> : ClickableControlBa
     #endregion
     #region ScrollToTop
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ScrollToTop(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ScrollToTopCore(element, timeoutMs); }, timeoutMs);

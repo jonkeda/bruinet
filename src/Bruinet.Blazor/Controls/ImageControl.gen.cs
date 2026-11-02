@@ -20,11 +20,13 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
 {
     #region Source (GetSource / WaitSource / AssertSource)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSource(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSourceCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSource(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -32,6 +34,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSource(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -39,6 +42,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            message ?? $"Expected Source to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSourceContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -46,6 +50,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -56,11 +61,13 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
     #endregion
     #region AltText (GetAltText / WaitAltText / AssertAltText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetAltText(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetAltTextCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitAltText(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -68,6 +75,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertAltText(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -78,11 +86,13 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
     #endregion
     #region Loaded (IsLoaded / WaitLoaded / AssertLoaded)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsLoaded()
     {
         return IsLoadedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitLoaded(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -90,6 +100,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -100,11 +111,13 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
     #endregion
     #region NaturalWidth (GetNaturalWidth / WaitNaturalWidth / AssertNaturalWidth)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetNaturalWidth(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetNaturalWidthCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitNaturalWidth(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -112,6 +125,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertNaturalWidth(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -122,11 +136,13 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
     #endregion
     #region NaturalHeight (GetNaturalHeight / WaitNaturalHeight / AssertNaturalHeight)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetNaturalHeight(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetNaturalHeightCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitNaturalHeight(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -134,6 +150,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertNaturalHeight(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

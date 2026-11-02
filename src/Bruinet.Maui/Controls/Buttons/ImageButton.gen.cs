@@ -17,11 +17,13 @@ public partial class ImageButton<TScope> : Base.ClickableControlBase<TScope>
 {
     #region Aspect (GetAspect / WaitAspect / AssertAspect)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetAspect(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetAspectCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitAspect(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class ImageButton<TScope> : Base.ClickableControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertAspect(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

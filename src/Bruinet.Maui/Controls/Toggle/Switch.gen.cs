@@ -17,11 +17,13 @@ public partial class Switch<TScope> : Base.ToggleControlBase<TScope>
 {
     #region On (IsOn / WaitOn / AssertOn)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsOn()
     {
         return IsOnCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitOn(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class Switch<TScope> : Base.ToggleControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertOn(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -39,6 +42,7 @@ public partial class Switch<TScope> : Base.ToggleControlBase<TScope>
     #endregion
     #region SetOn
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope SetOn(bool? on, int? timeoutMs = null)
     {
         return RunSetWithElement(on, element => { SetOnCore(element, on, timeoutMs); }, timeoutMs);

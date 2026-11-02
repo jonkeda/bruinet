@@ -29,11 +29,13 @@ public partial class RatingView<TScope> : Bruinet.Maui.Controls.Base.RangeContro
 {
     #region ReadOnly (IsReadOnly / WaitReadOnly / AssertReadOnly)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsReadOnly()
     {
         return IsReadOnlyCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitReadOnly(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -41,6 +43,7 @@ public partial class RatingView<TScope> : Bruinet.Maui.Controls.Base.RangeContro
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -51,6 +54,7 @@ public partial class RatingView<TScope> : Bruinet.Maui.Controls.Base.RangeContro
     #endregion
     #region TapStar
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope TapStar(int? star, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { TapStarCore(element, star, timeoutMs); }, timeoutMs);

@@ -19,11 +19,13 @@ public partial class TableControl<TScope> : ControlBase<TScope>
 {
     #region RowCount (GetRowCount / WaitRowCount / AssertRowCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetRowCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetRowCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitRowCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -31,6 +33,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertRowCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -41,11 +44,13 @@ public partial class TableControl<TScope> : ControlBase<TScope>
     #endregion
     #region ColumnCount (GetColumnCount / WaitColumnCount / AssertColumnCount)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetColumnCount(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetColumnCountCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitColumnCount(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -53,6 +58,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertColumnCount(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -63,11 +69,13 @@ public partial class TableControl<TScope> : ControlBase<TScope>
     #endregion
     #region CellText (GetCellText / WaitCellText / AssertCellText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetCellText(int row, int column, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetCellTextCore(element, row, column), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitCellText(int row, int column, string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -75,6 +83,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertCellText(int row, int column, string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -85,11 +94,13 @@ public partial class TableControl<TScope> : ControlBase<TScope>
     #endregion
     #region HeaderText (GetHeaderText / WaitHeaderText / AssertHeaderText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetHeaderText(int column, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetHeaderTextCore(element, column), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitHeaderText(int column, string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -97,6 +108,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertHeaderText(int column, string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -107,11 +119,13 @@ public partial class TableControl<TScope> : ControlBase<TScope>
     #endregion
     #region RowTexts (GetRowTexts / WaitRowTexts / AssertRowTexts)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public IReadOnlyList<string>? GetRowTexts(int row, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetRowTextsCore(element, row), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitRowTexts(int row, IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -119,6 +133,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertRowTexts(int row, IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -126,6 +141,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            message ?? $"Expected RowTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitRowTextsHasItem(int row, string item, int? timeoutMs = null)
     {
         return RunWaitWithElement(item,
@@ -133,6 +149,7 @@ public partial class TableControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertRowTextsHasItem(int row, string item, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement((bool?)true,

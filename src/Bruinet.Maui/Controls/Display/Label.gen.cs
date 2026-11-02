@@ -17,11 +17,13 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
 {
     #region Text (GetText / WaitText / AssertText)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetText(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTextCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitText(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertText(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -36,6 +39,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected Text to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -43,6 +47,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTextContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -50,6 +55,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected TextContains to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextStartsWith(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -57,6 +63,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -64,6 +71,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected TextStartsWith to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextEndsWith(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -71,6 +79,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -78,6 +87,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            message ?? $"Expected TextEndsWith to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextEmpty(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -85,6 +95,7 @@ public partial class Label<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

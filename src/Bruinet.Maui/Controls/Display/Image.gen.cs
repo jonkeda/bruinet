@@ -17,11 +17,13 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
 {
     #region Loaded (IsLoaded / WaitLoaded / AssertLoaded)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsLoaded()
     {
         return IsLoadedCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitLoaded(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -29,6 +31,7 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -39,11 +42,13 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
     #endregion
     #region Source (GetSource / WaitSource / AssertSource)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSource(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSourceCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSource(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -51,6 +56,7 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSource(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -61,11 +67,13 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
     #endregion
     #region Width (GetWidth / WaitWidth / AssertWidth)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetWidth(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetWidthCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitWidth(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -73,6 +81,7 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertWidth(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -83,11 +92,13 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
     #endregion
     #region Height (GetHeight / WaitHeight / AssertHeight)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public int? GetHeight(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetHeightCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitHeight(int? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -95,6 +106,7 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertHeight(int? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

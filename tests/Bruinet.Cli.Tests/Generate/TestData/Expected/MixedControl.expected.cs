@@ -15,6 +15,7 @@ public abstract partial class MixedControl<TScope> : Base<TScope>
 {
     #region Click
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope Click(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickCore(element, timeoutMs); }, timeoutMs);
@@ -23,11 +24,13 @@ public abstract partial class MixedControl<TScope> : Base<TScope>
     #endregion
     #region Visible (IsVisible / WaitVisible / AssertVisible)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsVisible()
     {
         return IsVisibleCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitVisible(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -35,6 +38,7 @@ public abstract partial class MixedControl<TScope> : Base<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

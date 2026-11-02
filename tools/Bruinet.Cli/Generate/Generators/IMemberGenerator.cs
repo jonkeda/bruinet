@@ -45,3 +45,14 @@ public interface IMemberGenerator
     /// <returns>The generated member(s) as a formatted C# code string.</returns>
     string Generate(MethodInfo coreMethod, ControlObjectContext context);
 }
+
+/// <summary>
+/// The marker on every member the generator writes. Not on the class: a control's class is partial, and its
+/// hand-written part (<c>.tpl.cs</c>) is not generated. Coverage leaves members with it out
+/// (<c>coverage.runsettings</c>), as the generator is tested on its own.
+/// </summary>
+internal static class GeneratedMember
+{
+    /// <summary>The attribute line, as it is written above a member.</summary>
+    public const string Attribute = "[global::System.CodeDom.Compiler.GeneratedCode(\"Bruinet.Generator\", \"1.0\")]";
+}

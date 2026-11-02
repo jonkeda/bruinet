@@ -24,6 +24,7 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
 {
     #region ScrollForward
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf ScrollForward()
     {
         return RunDoWithElement(element => { ScrollForwardCore(element); });
@@ -32,6 +33,7 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
     #endregion
     #region ScrollBack
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf ScrollBack()
     {
         return RunDoWithElement(element => { ScrollBackCore(element); });

@@ -26,11 +26,13 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
 {
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -38,6 +40,7 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,
@@ -48,6 +51,7 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
     #endregion
     #region PullToRefresh
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf PullToRefresh(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PullToRefreshCore(element, timeoutMs); }, timeoutMs);
@@ -56,11 +60,13 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
     #endregion
     #region Refreshing (IsRefreshing / WaitRefreshing / AssertRefreshing)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsRefreshing()
     {
         return IsRefreshingCore(TryFindElement()) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitRefreshing(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -68,6 +74,7 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertRefreshing(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

@@ -24,11 +24,13 @@ public partial class StateContainer<TParent, TSelf> : ContainerObjectBase<TParen
 {
     #region Showing (IsShowing / WaitShowing / AssertShowing)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsShowing(string viewAutomationId)
     {
         return IsShowingCore(TryFindElement(), viewAutomationId) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitShowing(string viewAutomationId, bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -36,6 +38,7 @@ public partial class StateContainer<TParent, TSelf> : ContainerObjectBase<TParen
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TSelf AssertShowing(string viewAutomationId, bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,

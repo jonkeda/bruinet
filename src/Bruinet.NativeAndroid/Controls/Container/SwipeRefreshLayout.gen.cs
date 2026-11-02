@@ -21,6 +21,7 @@ public partial class SwipeRefreshLayout<TScope> : ViewBase<TScope>
 {
     #region PullToRefresh
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope PullToRefresh(int? timeoutMs = null)
     {
         return RunDoWithElement(element => { PullToRefreshCore(element, timeoutMs); }, timeoutMs);

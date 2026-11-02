@@ -21,11 +21,13 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
 {
     #region Source (GetSource / WaitSource / AssertSource)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetSource(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetSourceCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSource(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -33,6 +35,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSource(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -40,6 +43,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            message ?? $"Expected Source to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitSourceContains(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -47,6 +51,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertSourceContains(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -57,11 +62,13 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region Title (GetTitle / WaitTitle / AssertTitle)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetTitle(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTitleCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -69,6 +76,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -79,11 +87,13 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region Name (GetName / WaitName / AssertName)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetName(int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetNameCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitName(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -91,6 +101,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertName(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -101,6 +112,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region ClickInside
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope ClickInside(string selector, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { ClickInsideCore(element, selector, timeoutMs); }, timeoutMs);
@@ -109,6 +121,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region FillInside
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope FillInside(string selector, string? text, int? timeoutMs = null)
     {
         return RunDoWithElement(element => { FillInsideCore(element, selector, text, timeoutMs); }, timeoutMs);
@@ -117,11 +130,13 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region TextInside (GetTextInside / WaitTextInside / AssertTextInside)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetTextInside(string selector, int? timeoutMs = null)
     {
         return RunGetWithElement(element => GetTextInsideCore(element, selector), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitTextInside(string selector, string? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -129,6 +144,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertTextInside(string selector, string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
@@ -139,11 +155,13 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
     #endregion
     #region ElementInside (IsElementInside / WaitElementInside / AssertElementInside)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool? IsElementInside(string selector)
     {
         return IsElementInsideCore(TryFindElement(), selector) == true;
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitElementInside(string selector, bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
@@ -151,6 +169,7 @@ public partial class IFrameControl<TScope> : ControlBase<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertElementInside(string selector, bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,

@@ -23,11 +23,13 @@ public partial class AvatarInitials<TScope> : Label<TScope>
 {
     #region Initials (GetInitials / WaitInitials / AssertInitials)
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public string? GetInitials(int? timeoutMs = null)
     {
         return RunGetWithOptionalElement(element => GetInitialsCore(element), timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitInitials(string? expected, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -35,6 +37,7 @@ public partial class AvatarInitials<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertInitials(string? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,
@@ -42,6 +45,7 @@ public partial class AvatarInitials<TScope> : Label<TScope>
            message ?? $"Expected Initials to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public bool WaitInitialsEmpty(bool? expected = true, int? timeoutMs = null)
     {
         return RunWaitWithOptionalElement(expected,
@@ -49,6 +53,7 @@ public partial class AvatarInitials<TScope> : Label<TScope>
            timeoutMs);
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
     public TScope AssertInitialsEmpty(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithOptionalElement(expected,
