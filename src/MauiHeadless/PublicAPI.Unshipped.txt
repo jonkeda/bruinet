@@ -235,6 +235,7 @@ static MauiHeadless.Inspection.Screen.CurrentPage(Microsoft.Maui.Controls.Window
 static MauiHeadless.Inspection.Screen.ShownPages(Microsoft.Maui.Controls.Window! window) -> System.Collections.Generic.IReadOnlyList<Microsoft.Maui.Controls.Page!>!
 static MauiHeadless.Inspection.VisualTree.AdapterFor(Microsoft.Maui.Controls.Element! element, System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>! adapters) -> MauiHeadless.Inspection.IElementAdapter!
 static MauiHeadless.Inspection.VisualTree.IsEffectivelyEnabled(Microsoft.Maui.Controls.Element! element) -> bool
+static MauiHeadless.Inspection.VisualTree.IsItemRow(Microsoft.Maui.Controls.Element! element) -> bool
 static MauiHeadless.Inspection.VisualTree.IsEffectivelyVisible(Microsoft.Maui.Controls.Element! element) -> bool
 static MauiHeadless.Inspection.VisualTree.Read(Microsoft.Maui.Controls.Element! root, System.Collections.Generic.IReadOnlyList<MauiHeadless.Inspection.IElementAdapter!>? adapters = null) -> MauiHeadless.Inspection.VisualNode!
 static MauiHeadless.Interaction.Interactions.Act(Microsoft.Maui.Controls.Element! element, string! verb, System.Action! action) -> void

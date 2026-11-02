@@ -8,9 +8,16 @@ namespace Bruinet.Maui.UITests.Containers;
 public class ShortcutRows : CollectionObjectBase<GridCollectionDemoPage, ShortcutRows, ShortcutRow>
 {
     public ShortcutRows(IMauiScope<GridCollectionDemoPage> parentScope)
+        : this(parentScope, ItemStrategy.ByAutomationId("ShortcutRow"))
+    {
+    }
+
+    /// <param name="parentScope">The page.</param>
+    /// <param name="rows">How a row is found: by its AutomationId, or by the control type a device reports for it.</param>
+    public ShortcutRows(IMauiScope<GridCollectionDemoPage> parentScope, IItemStrategy rows)
         : base(parentScope,
                "ShortcutCollectionView",
-               ItemStrategy.ByAutomationId("ShortcutRow"),
+               rows,
                (collection, itemRoot, index) => new ShortcutRow(collection, itemRoot, index))
     {
     }

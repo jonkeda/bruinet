@@ -36,6 +36,13 @@ public static class VisualTree
     public static bool IsEffectivelyEnabled(Element element)
         => OwnEnabled(element) && AncestorsEnabled(element);
 
+    /// <summary>
+    /// Whether <paramref name="element"/> is a row an items view realized for one of its items: not its header,
+    /// footer, empty view or a group's header or footer. A platform reports it as a list item.
+    /// </summary>
+    public static bool IsItemRow(Element element)
+        => element.Parent is ItemsView && ItemRealizer.TryGetItem(element, out _);
+
     private static VisualNode ReadNode(
         Element element, VisualNode? parent, bool parentVisible, bool parentEnabled,
         IReadOnlyList<IElementAdapter> adapters, HashSet<Element> seen)

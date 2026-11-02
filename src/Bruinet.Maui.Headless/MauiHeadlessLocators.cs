@@ -53,9 +53,9 @@ internal static class MauiHeadlessLocators
 
     private static Func<VisualNode, bool> OfControlType(string controlType)
     {
-        // A ListView cell's view is the row a device reports as a list item.
+        // A ListView cell's view and a CollectionView's realized row are what a device reports as a list item.
         if (string.Equals(controlType, "ListItem", StringComparison.OrdinalIgnoreCase))
-            return node => node.Element is View { Parent: Cell };
+            return node => node.Element is View { Parent: Cell } || VisualTree.IsItemRow(node.Element);
         if (ControlTypes.TryGetValue(controlType, out var types))
             return node => types.Any(type => type.IsInstanceOfType(node.Element));
         return node => IsOfType(node.Element, controlType);

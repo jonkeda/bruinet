@@ -30,4 +30,14 @@ public class RowTapTests
         Page.OpenedProduct.AssertText("Opened Crane");
         return Task.CompletedTask;
     }
+
+    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Trait("Method", "ItemWhere")]
+    public Task RowsFoundByTheListItemControlType_AreTheListsRows()
+    {
+        Page.ShortcutListItems.Row("Crane").Click();
+
+        Page.OpenedProduct.AssertText("Opened Crane");
+        return Task.CompletedTask;
+    }
 }

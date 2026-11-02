@@ -1,3 +1,4 @@
+using Bruinet.Maui.Containers;
 using Bruinet.Maui.UITests.Containers;
 
 namespace Bruinet.Maui.UITests.Pages;
@@ -17,6 +18,7 @@ public class GridCollectionDemoPage : PageObjectBase<GridCollectionDemoPage>
         ProductForm = new ProductFormContainer(this, "ProductFormContainer");
         Products = new ProductCollection(this, "ProductListContainer");
         Shortcuts = new ShortcutRows(this);
+        ShortcutListItems = new ShortcutRows(this, ItemStrategy.ByLocator(Locator.ByControlType("ListItem")));
     }
 
     /// <inheritdoc />
@@ -34,6 +36,9 @@ public class GridCollectionDemoPage : PageObjectBase<GridCollectionDemoPage>
 
     /// <summary>Rows opened by a tap on the row.</summary>
     public ShortcutRows Shortcuts { get; }
+
+    /// <summary>The same rows, found as a device reports them: each a list item.</summary>
+    public ShortcutRows ShortcutListItems { get; }
 
     /// <summary>Which shortcut was opened last.</summary>
     public Label<GridCollectionDemoPage> OpenedProduct => new(this, "OpenedProductLabel");
