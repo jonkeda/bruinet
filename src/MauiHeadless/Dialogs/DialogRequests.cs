@@ -52,10 +52,19 @@ public static class DialogRequests
     private static IEnumerable<Page> PagesOf(Window window)
     {
         var pages = new HashSet<Page>(ReferenceEqualityComparer.Instance);
+        // Every page in the window's stacks, the covered ones too: an alert a page raised before a modal
+        // covered it is still the app's open question, and shows when the modal goes.
         if (window.Page is { } root)
+        {
             pages.Add(root);
+            pages.UnionWith(root.Navigation.NavigationStack.OfType<Page>());
+        }
+
         foreach (var modal in window.Navigation.ModalStack.OfType<Page>())
+        {
             pages.Add(modal);
+            pages.UnionWith(modal.Navigation.NavigationStack.OfType<Page>());
+        }
         if (Screen.CurrentPage(window) is { } current)
         {
             for (Element? walker = current; walker is not null and not Window; walker = walker.Parent)

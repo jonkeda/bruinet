@@ -139,7 +139,15 @@ ends its call at once with `DeviceOnlyException` naming the member.
   `Bruinet.Maui.AppSupport`), called in process: the half of the Windows bridge that lives in the app,
   without UI Automation.
 - **Dialogs**: `DisplayAlertAsync`, `DisplayPromptAsync` and `DisplayActionSheetAsync` show a `TestDialog`
-  over the page; its buttons answer the app's await.
+  over the page; its buttons answer the app's await. A back closes the open dialog first, as a device's
+  back key does (`TestDialog.Dismiss`: an alert answers false, a prompt null), then a modal, then a page.
+  A dialog raised by a page a modal covers is still open.
+- **Between tests** `ResetAppState` (or `MauiHeadlessDriver.ClearWindow`, which says what it cleared)
+  takes focus away, dismisses every dialog, pops the modals and goes back to the navigation root. The
+  app's services and data stay: those are the fixture's. A fixture that logs a non-empty `ClearWindow`
+  finds the test that left something open.
+- **Locators** answer every strategy a page object uses that needs no layout, `ControlTypeAndName`
+  (`new Locator("Button", "Yes")`) included, with the type words of `ControlType`.
 - **Shell and navigation chrome** (tab bar, flyout, back button, title) are nodes in the tree, found under
   the Windows ids.
 - **Animations** end at once at their final value.

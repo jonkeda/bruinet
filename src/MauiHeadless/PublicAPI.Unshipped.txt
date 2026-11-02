@@ -25,6 +25,7 @@ MauiHeadless.Dialogs.TestDialog.Accept.get -> string!
 MauiHeadless.Dialogs.TestDialog.Cancel.get -> string!
 MauiHeadless.Dialogs.TestDialog.Choices.get -> System.Collections.Generic.IReadOnlyList<string!>!
 MauiHeadless.Dialogs.TestDialog.Choose(string! text) -> MauiHeadless.Dialogs.TestDialog!
+MauiHeadless.Dialogs.TestDialog.Dismiss() -> MauiHeadless.Dialogs.TestDialog!
 MauiHeadless.Dialogs.TestDialog.IsAnswered.get -> bool
 MauiHeadless.Dialogs.TestDialog.Kind.get -> MauiHeadless.Dialogs.DialogKind
 MauiHeadless.Dialogs.TestDialog.Message.get -> string!

@@ -5,7 +5,9 @@ using Bruinet.Maui.Enums;
 using Bruinet.Maui.Interfaces;
 using Microsoft.Maui.Controls;
 using MauiHeadless;
+using MauiHeadless.Dialogs;
 using MauiHeadless.Inspection;
+using MauiHeadless.Interaction;
 using MauiHeadless.Rendering;
 using MauiHeadless.Snapshots;
 using MauiElement = Microsoft.Maui.Controls.Element;
@@ -134,8 +136,20 @@ public sealed class MauiHeadlessDriver : IMauiDriver
         _rendered.Navigation.GoTo(destination);
     }
 
+    /// <summary>
+    /// Goes back as a device's back key does: an open dialog closes first (<see cref="TestDialog.Dismiss"/>),
+    /// then a modal page, then the pushed page. Without the first, a back under an alert popped the page and
+    /// left the alert open for the next test.
+    /// </summary>
     public void NavigateBack()
     {
+        if (DialogRequests.Top(Window) is { } dialog)
+        {
+            TestContext.Dispatcher.Run(() => dialog.Dismiss());
+            TestContext.Dispatcher.RunPending();
+            return;
+        }
+
         try
         {
             _rendered.Navigation.GoBack();
@@ -169,7 +183,56 @@ public sealed class MauiHeadlessDriver : IMauiDriver
 
     public void Refresh() => TestContext.Dispatcher.RunPending();
 
-    public void ResetAppState() => throw new DeviceOnlyException(nameof(ResetAppState));
+    /// <summary>The window as a fresh launch shows it, as a device's reset relaunches the app: see <see cref="ClearWindow"/>.</summary>
+    public void ResetAppState() => ClearWindow();
+
+    /// <summary>
+    /// Clears what a test left in the window: focus taken away, its dialogs dismissed (top first), its
+    /// modal pages popped, the navigation back at its root, and the app's queued work run. The app's own
+    /// state (its services, view models, data) stays: that is the fixture's to reset.
+    /// </summary>
+    /// <returns>What had to be cleared, one line each; empty when the window was clean.</returns>
+    public IReadOnlyList<string> ClearWindow()
+    {
+        var cleared = new List<string>();
+        TestContext.Dispatcher.RunPending();
+
+        // First, while the focused element is still in the window: a popped page takes its focus along.
+        var pages = _rendered.Navigation.Stack.Concat(_rendered.Navigation.ModalStack).Prepend(_rendered.Window.Page!);
+        var focusedOnes = pages.SelectMany(page => Read(page).DescendantsAndSelf())
+            .Select(node => node.Element).OfType<VisualElement>().Where(e => e.IsFocused).Distinct().ToList();
+        foreach (var focused in focusedOnes)
+        {
+            cleared.Add($"focus on {Describe(focused)}");
+            focused.ClearFocus();
+        }
+
+        // A dismissed dialog's await may raise the next one, so read the top again each time.
+        for (var guard = 0; guard < 20 && DialogRequests.Top(Window) is { } dialog; guard++)
+        {
+            cleared.Add($"dialog '{dialog.Title}'");
+            TestContext.Dispatcher.Run(() => dialog.Dismiss());
+            TestContext.Dispatcher.RunPending();
+        }
+
+        while (_rendered.Navigation.ModalStack.Count > 0)
+        {
+            cleared.Add($"modal page {Describe(_rendered.Navigation.ModalStack[^1])}");
+            _rendered.Navigation.GoBack();
+        }
+
+        while (_rendered.Navigation.Stack.Count > 1)
+        {
+            cleared.Add($"pushed page {Describe(CurrentPage)}");
+            _rendered.Navigation.GoBack();
+        }
+
+        TestContext.Dispatcher.RunPending();
+        return cleared;
+    }
+
+    private static string Describe(VisualElement element)
+        => string.IsNullOrEmpty(element.AutomationId) ? element.GetType().Name : element.AutomationId;
 
     public object? ExecuteScript(string script, params object[] args) => throw new DeviceOnlyException(nameof(ExecuteScript));
 

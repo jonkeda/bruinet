@@ -39,6 +39,20 @@ public sealed class DialogTests
     }
 
     [Fact]
+    public void Dismissed_as_by_a_back_key_an_alert_answers_false_and_is_gone()
+    {
+        using var ctx = new MauiTestContext();
+        var (made, _) = Asking(async page => (await page.DisplayAlertAsync("Delete?", "It cannot be undone.", "Delete", "Keep")).ToString());
+        var page = ctx.Render(made);
+
+        page.Find<Button>("Ask").Click();
+        ctx.Dispatcher.Run(() => page.Find<TestDialog>().Dismiss());
+
+        page.Find<Label>("Result").Should().HaveText("False");
+        Assert.Empty(page.FindAll<TestDialog>());
+    }
+
+    [Fact]
     public void A_prompt_takes_what_is_typed()
     {
         using var ctx = new MauiTestContext();

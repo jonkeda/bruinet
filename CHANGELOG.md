@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- MauiHeadless: a back with a dialog open dismisses the dialog (`TestDialog.Dismiss`) instead of popping
+  the page under it, which left the dialog open for the next test. `ResetAppState` no longer throws
+  `DeviceOnlyException`: it clears the window (`MauiHeadlessDriver.ClearWindow`, focus, dialogs, modals,
+  pushed pages) and the latter returns what it cleared. A dialog raised by a page a modal covers is
+  collected. The `ControlTypeAndName` locator resolves headless.
 - A Run or a Step-through on the runner keeps a scenario's result at its first failed step, as the
   gate does; it kept one only when every step had run, so a Run that failed early left none.
 - The runner's error names an exception's type when its message is a bare name

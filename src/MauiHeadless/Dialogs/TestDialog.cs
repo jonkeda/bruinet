@@ -99,6 +99,16 @@ public sealed class TestDialog : ContentView
         return this;
     }
 
+    /// <summary>
+    /// Closes it as a device's back key does, without a button: an alert answers false, a prompt
+    /// null, an action sheet its cancel (null when it has none).
+    /// </summary>
+    public TestDialog Dismiss()
+    {
+        Answer(Kind switch { DialogKind.Alert => false, DialogKind.ActionSheet when Cancel.Length > 0 => Cancel, _ => null });
+        return this;
+    }
+
     /// <summary>Types into a prompt's field.</summary>
     /// <exception cref="ElementNotInteractableException">The dialog is no prompt.</exception>
     public TestDialog Type(string text)

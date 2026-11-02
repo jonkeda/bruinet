@@ -41,15 +41,24 @@ internal static class MauiHeadlessLocators
             LocatorStrategy.Name => node => MauiHeadlessElement.NameOf(node.Element) == value,
             LocatorStrategy.Text or LocatorStrategy.LinkText => node => node.Text == value,
             LocatorStrategy.PartialLinkText => node => node.Text?.Contains(value, StringComparison.Ordinal) == true,
-            // A ListView cell's view is the row a device reports as a list item.
-            LocatorStrategy.ControlType when string.Equals(value, "ListItem", StringComparison.OrdinalIgnoreCase)
-                => node => node.Element is View { Parent: Cell },
-            LocatorStrategy.ControlType when ControlTypes.TryGetValue(value, out var types)
-                => node => types.Any(type => type.IsInstanceOfType(node.Element)),
-            LocatorStrategy.ClassName or LocatorStrategy.TagName or LocatorStrategy.ControlType
+            LocatorStrategy.ControlType => OfControlType(value),
+            // A control type and a name, as UI Automation's AndCondition of the two (Windows' "Button" "Yes").
+            LocatorStrategy.ControlTypeAndName when locator.TypeName is { } typeName
+                => node => OfControlType(typeName)(node) && MauiHeadlessElement.NameOf(node.Element) == value,
+            LocatorStrategy.ClassName or LocatorStrategy.TagName
                 => node => IsOfType(node.Element, value),
             _ => throw new DeviceOnlyException($"Locator {locator.Strategy}:{value}"),
         };
+    }
+
+    private static Func<VisualNode, bool> OfControlType(string controlType)
+    {
+        // A ListView cell's view is the row a device reports as a list item.
+        if (string.Equals(controlType, "ListItem", StringComparison.OrdinalIgnoreCase))
+            return node => node.Element is View { Parent: Cell };
+        if (ControlTypes.TryGetValue(controlType, out var types))
+            return node => types.Any(type => type.IsInstanceOfType(node.Element));
+        return node => IsOfType(node.Element, controlType);
     }
 
     // The control-type words of the platform trees (UI Automation's, Appium's), as the MAUI types a

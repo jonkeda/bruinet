@@ -54,6 +54,16 @@ public sealed class SamplePagesOnMauiHeadlessTests : IDisposable
     }
 
     [Fact]
+    public void A_control_type_and_name_locator_finds_the_button_and_not_a_label()
+    {
+        var app = _ctx.Render<ButtonsPage>().AsBruinetContext().AppElement;
+
+        Assert.Single(app.FindElements(new Bruinet.Core.Locators.Locator("Button", "Reset")));
+        Assert.Single(app.FindElements(new Bruinet.Core.Locators.Locator("text", "Basic Button")));
+        Assert.Empty(app.FindElements(new Bruinet.Core.Locators.Locator("Button", "Basic Button")));
+    }
+
+    [Fact]
     public void The_context_says_it_runs_on_MauiHeadless()
     {
         var context = _ctx.Render<ButtonsPage>().AsBruinetContext();

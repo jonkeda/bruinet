@@ -109,3 +109,4 @@ override Bruinet.Maui.Headless.MauiHeadlessElement.ToString() -> string!
 static Bruinet.Maui.Headless.MauiHeadlessHead.AsBruinetContext(this MauiHeadless.Rendering.IRenderedElement<Microsoft.Maui.Controls.Element!>! rendered, Bruinet.Core.Configuration.TimeoutSettings? timeouts = null) -> Bruinet.Maui.Interfaces.IMauiTestContext!
 static Bruinet.Maui.Headless.MauiHeadlessHead.Options(System.Func<System.IServiceProvider!, Microsoft.Maui.Controls.Page!>! root, System.Action<MauiHeadless.MauiTestContextOptions!>? configure = null, System.Action<MauiHeadless.MauiTestContext!>? arrange = null, Bruinet.Core.Configuration.TimeoutSettings? timeouts = null) -> Bruinet.Maui.Context.MauiTestContextOptions!
 static Bruinet.Maui.Headless.MauiHeadlessHead.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Maui.Headless.MauiHeadlessDriver.ClearWindow() -> System.Collections.Generic.IReadOnlyList<string!>!
