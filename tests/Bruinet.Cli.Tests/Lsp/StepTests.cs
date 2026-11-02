@@ -363,6 +363,10 @@ public sealed class StepCounterFixture
     [BddState("the counter has already counted {times} times")]
     public void HasAlreadyCounted(int times) => _count = times;
 
+    // No state, though a state's text matches it, and more exactly: set_state must not run it.
+    [BddGiven("the counter has already counted 9 times")]
+    public void HasAlreadyCountedNine() => _count = 9;
+
     // As an app logs a warning while a step runs (StepLog, as Bruinet.Logging's provider keeps it).
     [BddWhen("the counter complains")]
     public void Complain() => Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel.Warning, "counter", "Counted too often");

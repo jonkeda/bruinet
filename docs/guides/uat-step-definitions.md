@@ -325,7 +325,7 @@ and `phrases` lists callables with their types.
 
 ## Built-In Phrases
 
-The 18 built-in phrases have two sources. Three page verbs are registered
+The 19 built-in phrases have two sources. Three page verbs and the pause are registered
 directly by `UatReflectionRuntime.CreateCommandCatalog()` and
 `UatSpecCommandCatalog.RegisterDefault()`, since they do not bind to control
 methods. The other fifteen are `[BddWhen]` / `[BddThen]` attributes on `Bruinet.Core` control
@@ -335,7 +335,7 @@ drift apart. To add a control verb, annotate its method rather than registering
 another catalog entry. See
 [AD-011](../../.docs/decisions/ad-011-uat-vocabulary-is-attribute-declared.md).
 
-Three verbs are the engine's own. They bind to no control method, so they are
+Four phrases are the engine's own. They bind to no control method, so they are
 registered directly in the runtime and spec catalogs:
 
 | Keyword | Phrase | What it does |
@@ -343,6 +343,7 @@ registered directly in the runtime and spec catalogs:
 | `Given` | `I am on the {page} page` | Opens or asserts the page and sets the current page. |
 | `Then` | `I should be on the {page} page` | Asserts the page and sets the current page. |
 | `Then` | `I should see {text}` | Searches controls on the current page with `GetText()`. |
+| `Then` | `the run pauses here` | Nothing: a Step-through stays paused before it after the steps above (what `set_state` ends with). |
 
 A fourth is registered only when the fixture hosts several apps (`IBddSessionHost`):
 `{app} uses the app`, as a `Given` or a `When`, makes an app of the config's `Apps` table current.
@@ -858,6 +859,25 @@ The test base's own `BeforeFile` and `BeforeScenario` run first; then the hooks 
 class and method name. A hook may take a `BddExecutionContext` and a `CancellationToken`. A hook
 that throws fails the scenario: before it, at the first step; after a step, at that step. The
 step-by-step session the Presenter drives does not run hooks.
+
+## States
+
+A **state** is somewhere the app can be put without clicking to it: a test set's data, a todo on the server, a signed-in
+user. Declare it with `[BddState]` on the method that puts it there, through test data or the service head:
+
+```csharp
+[BddState("the app starts from the {testSet} test set")]
+public void StartFrom(string testSet, BddExecutionContext context)
+{
+    fixture.UseTestSet(testSet);
+    fixture.RescopeAfterRestart(context);
+}
+```
+
+A state is a `Given`, so a scenario starts where it means to (`Given the app starts from the three-todos test set`). An
+agent lists the states with the MCP server's `list_states` and sets one with `set_state`, which runs it on the suite's
+runner and leaves the app paused there (`page` names the page it is on, for `step_state`). Only a declared state runs that
+way: an agent cannot make one up that writes elsewhere than the suite's own host and database.
 
 ## Several Users And Apps
 

@@ -263,6 +263,9 @@ VS Code) and any other MCP client:
   the message; `build: true` builds the suite first, after a change to C#; `replay: "record" | "replay" | "refresh"`
   runs with [HTTP and SQL replay](http-replay.md) in that mode;
 - `last_runs` gives each scenario's newest result, from any run;
+- `list_states` gives the states the suite's app can be put in (`[BddState]`, see
+  [states](uat-step-definitions.md#states)); `set_state` puts it in one on the suite's runner and leaves it paused there,
+  for `step_state` and `step_screenshot`;
 - `step_start`, `step_move` and `step_screenshot` are the preview's Step through for an agent: each answers
   where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it
   ended; a step still running after the wait (2 minutes) answers Waiting, and `wait` waits again;

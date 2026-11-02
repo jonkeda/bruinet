@@ -139,7 +139,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -419,11 +419,9 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    // A Step-through, waited for: where it paused, or how it ended.
-    // The suite's declared states: [BddState] phrases, each a Given.
+    // The suite's declared states: [BddState] phrases, each a Given. None is an empty list.
     private static object ListStates(BddSuite suite)
-    {
-        var states = Catalogs(suite).Default.Patterns
+        => Catalogs(suite).Default.Patterns
             .Where(pattern => pattern.IsState)
             .Select(pattern => new
             {
@@ -433,28 +431,42 @@ public sealed class BddMcpServer : IDisposable
             })
             .OrderBy(state => state.Phrase, StringComparer.OrdinalIgnoreCase)
             .ToList();
-        return states.Count > 0
-            ? states
-            : throw new ToolProblem($"{suite.Name} declares no states: a method of its test project marked [BddState(\"...\")] declares one.");
-    }
 
-    // A declared state, set by a Step-through of a scenario of its own: the state's Given, then a step that does nothing,
-    // where it stays paused. Only a phrase a declared state matches runs: nothing else an agent writes reaches the app.
+    // A declared state, set by a Step-through of a scenario of its own: the state's Given (and the page check), then a step
+    // that does nothing, where it stays paused. Only a declared state runs: the text binds to its state, in the catalog the
+    // runner binds with, and no argument can add a line or a table cell to the scenario.
     private object SetState(JsonObject arguments)
     {
         var suite = Suite(arguments);
-        var state = Required(arguments, "state").Trim();
+        var state = OneLine(Required(arguments, "state"), "state");
         if (state.StartsWith("Given ", StringComparison.OrdinalIgnoreCase))
         {
             state = state["Given ".Length..].Trim();
         }
 
+        var page = (string?)arguments["page"] is { Length: > 0 } named ? OneLine(named, "page") : null;
+        var testData = (string?)arguments["testData"] is { Length: > 0 } set ? OneLine(set, "testData") : null;
+        if (testData is not null && !suite.TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Contains(testData, StringComparer.Ordinal))
+        {
+            throw new ToolProblem($"'{testData}' is not a test set of {suite.Name}: list_test_sets names them.");
+        }
+
+        var catalog = Catalogs(suite).Default;
         var step = new BddStep(BddStepKeyword.Given, Bruinet.Core.Testing.BddEffectiveStepKeyword.Given, state, null, new BddSourceLocation(null, 1));
-        var match = Catalogs(suite).Default.Patterns.Where(pattern => pattern.IsState).Select(pattern => pattern.TryMatch(step)).OfType<BddCommandMatch>().FirstOrDefault()
-            ?? throw new ToolProblem($"'{state}' is not a declared state of {suite.Name}: list_states names them.");
+        if (!catalog.Patterns.Any(pattern => pattern.IsState && pattern.TryMatch(step) is not null))
+        {
+            throw new ToolProblem($"'{state}' is not a declared state of {suite.Name}: list_states names them.");
+        }
+
+        // The runner binds the step against every phrase: a more specific Given that is no state would win there.
+        var bound = catalog.Match(step);
+        if (bound is not [{ Pattern.IsState: true } match])
+        {
+            throw new ToolProblem($"'{state}' binds to {string.Join(" and ", bound.Select(other => other.Pattern.CommandId))}, not to a state alone: say the state as list_states gives it.");
+        }
 
         var metadata = new List<string>();
-        if ((string?)arguments["testData"] is { Length: > 0 } testData)
+        if (testData is not null)
         {
             metadata.Add($"| {BddMetadataFields.TestData} | {testData} |");
         }
@@ -472,7 +484,6 @@ public sealed class BddMcpServer : IDisposable
 
         var line = lines.Count + 1;
         // With a page, the built-in check of it, which also makes it the page step_state reads.
-        var page = (string?)arguments["page"] is { Length: > 0 } named ? named : null;
         lines.AddRange([$"## Scenario: {state}", string.Empty, "```gherkin", $"Given {state}"]);
         if (page is not null)
         {
@@ -481,12 +492,20 @@ public sealed class BddMcpServer : IDisposable
 
         lines.AddRange([$"Then {Bruinet.Uat.UatReflectionRuntime.PausePhrase}", "```", string.Empty]);
 
-        // In the suite's project, so the suite holds it; not in Features, so no run of the suite picks it up.
-        var path = Path.Combine(suite.ProjectDirectory, ".bruinet", "set-state.feature.md");
+        // In the suite's project, so the suite holds it; a file of this call's own, gone once the runner has read it, so
+        // no run, preview or second call finds it.
+        var path = Path.Combine(suite.ProjectDirectory, ".bruinet", $"set-state-{Guid.NewGuid():N}.feature.md");
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         File.WriteAllText(path, string.Join("\n", lines));
+        try
+        {
+            StepStart(new JsonObject { ["path"] = path, ["line"] = line, ["suite"] = suite.Name });
+        }
+        finally
+        {
+            File.Delete(path);
+        }
 
-        StepStart(new JsonObject { ["path"] = path, ["line"] = line, ["suite"] = suite.Name });
         var timeout = Whole(arguments, "timeoutMinutes", 1, 10) ?? 2;
         var paused = StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = timeout });
         return page is null || paused is not JsonObject { } after || after["lastStepFailed"] is not null || after["paused"] is null
@@ -494,6 +513,13 @@ public sealed class BddMcpServer : IDisposable
             : StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = timeout });
     }
 
+    // A value written into a scenario: one line, no table bar or backtick, so it adds no step, cell or code fence.
+    private static string OneLine(string value, string name)
+        => value.Any(character => char.IsControl(character) || character is '|' or '`')
+            ? throw new ToolProblem($"'{name}' must be one line, with no | or `.")
+            : value.Trim();
+
+    // A Step-through, waited for: where it paused, or how it ended.
     private object StepStart(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));

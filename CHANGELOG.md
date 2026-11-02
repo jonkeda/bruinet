@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiUnit is renamed MauiHeadless (`src/MauiHeadless`, package `MauiHeadless`), and Bruinet's head `Bruinet.Maui.MauiUnit` is `Bruinet.Maui.Headless`: `BRUINET_HEAD=headless`, `MauiPlatform.Headless`, `MauiHeads.IsHeadless`, `CreateHeadlessOptions`, `HeadlessPreferences` and `HeadlessSecureStorage`. No release shipped the old names.
 
 ### Added
+- States (AI10): `[BddState("the app starts from the {testSet} test set")]` declares one on the method that sets it through
+  test data or the service head; it is a `Given` a scenario names. The MCP server's `list_states` gives them and
+  `set_state` puts the app in one on the suite's runner, leaving it paused there (`page` for `step_state`); only a declared
+  state runs. The built-in `Then the run pauses here` does nothing. The Todo sample declares two.
 - HTTP replay (`Bruinet.Mocking.Http`, AI11): a test's app's outgoing calls recorded once against the real services
   (`BRUINET_HTTP_REPLAY=Record`) and answered from the recording after, with no service (`Replay`); `Refresh` lists the
   answers that changed. In the test process through `HttpReplayHandler` or `AddBruinetHttpReplay` (every

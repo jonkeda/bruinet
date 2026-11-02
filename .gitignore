@@ -469,4 +469,4 @@ Scraper.Sites/*/Recordings/
 *.calls.json
 
 # set_state's scenario, written in the suite it runs in (AI10)
-**/.bruinet/set-state.feature.md
+**/.bruinet/set-state-*.feature.md

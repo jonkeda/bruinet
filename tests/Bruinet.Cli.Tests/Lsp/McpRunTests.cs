@@ -272,6 +272,22 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
+    public void SetState_RefusesWhatCouldRunAnythingButTheState()
+    {
+        string Refused(JsonObject arguments)
+        {
+            var result = Call("set_state", arguments);
+            Assert.True((bool)result["isError"]!);
+            return Text(result);
+        }
+
+        Assert.Contains("must be one line", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["page"] = "Home\nWhen the counter counts" }), StringComparison.Ordinal);
+        Assert.Contains("is not a test set", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["testData"] = "nothing-like-it" }), StringComparison.Ordinal);
+        Assert.Contains("HasAlreadyCountedNine", Refused(new JsonObject { ["state"] = "the counter has already counted 9 times" }), StringComparison.Ordinal);
+        Assert.False(Directory.Exists(Path.Combine(Suite, ".bruinet")) && Directory.EnumerateFiles(Path.Combine(Suite, ".bruinet")).Any());
+    }
+
+    [Fact]
     public void AScenario_StartsFromAState_ByNamingItInAGiven()
     {
         var states = Path.Combine(Suite, "Features", "states.feature.md");

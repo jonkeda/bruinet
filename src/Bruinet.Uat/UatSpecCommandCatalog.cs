@@ -21,6 +21,7 @@ public static class UatSpecCommandCatalog
         catalog.Register(BddEffectiveStepKeyword.Then, "{user} should be on the {page} page", "Spec.Page.AssertOpen", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "I should see {text}", "Spec.Page.AssertTextVisible");
         catalog.Register(BddEffectiveStepKeyword.Then, "{user} should see {text}", "Spec.Page.AssertTextVisible");
+        catalog.Register(BddEffectiveStepKeyword.Then, UatReflectionRuntime.PausePhrase, "Spec.Pause", allowsTable: false);
 
         // Control vocabulary is discovered from the same [BddWhen]/[BddThen] attributes the runtime uses,
         // so the spec surface and the executable surface can never drift.
