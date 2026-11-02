@@ -59,7 +59,8 @@ internal static class HttpCommands
             {
                 var now = Path.Combine(folder, path);
                 var nowJson = File.Exists(now) ? File.ReadAllText(now) : null;
-                var oldJson = before.Contains(path, StringComparer.Ordinal) ? SqlCommands.GitText(folder, "show", $"{revision}:{prefix}{path}") : null;
+                // "--": the argument is a revision, never a file to look for (a scenario's long name passes Windows' path limit).
+                var oldJson = before.Contains(path, StringComparer.Ordinal) ? SqlCommands.GitText(folder, "show", $"{revision}:{prefix}{path}", "--") : null;
                 if (nowJson is not null && !HttpRecordingReview.IsRecording(nowJson) || oldJson is not null && !HttpRecordingReview.IsRecording(oldJson)
                     || nowJson is not null && oldJson is not null && HttpRecordingReview.Hash(nowJson) == HttpRecordingReview.Hash(oldJson))
                 {
