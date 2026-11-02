@@ -20,7 +20,8 @@ public static class SqliteTemplate
     /// </summary>
     /// <param name="templatePath">The template file.</param>
     /// <param name="stamp">What the template was made from; a different one makes it again.</param>
-    /// <param name="create">Makes the database at the path it is given: the app's own migrations and seed.</param>
+    /// <param name="create">Makes the database at the path it is given: the app's own migrations and seed. It closes its
+    /// connections (and clears a provider's pool) before it returns, so the file is complete and free to move.</param>
     /// <param name="cancellationToken">Stops the wait for another process's template.</param>
     /// <returns><paramref name="templatePath"/>, full.</returns>
     public static async Task<string> EnsureAsync(string templatePath, string stamp, Func<string, Task> create, CancellationToken cancellationToken = default)
@@ -48,12 +49,15 @@ public static class SqliteTemplate
             var made = full + "." + Guid.NewGuid().ToString("N") + ".tmp";
             await create(made).ConfigureAwait(false);
             TryDelete(stampPath);
+            // Replaced in one step, so a copy made meanwhile reads the old template or the new, never none.
             if (File.Exists(full))
             {
-                File.Delete(full);
+                File.Replace(made, full, destinationBackupFileName: null);
             }
-
-            File.Move(made, full);
+            else
+            {
+                File.Move(made, full);
+            }
             File.WriteAllText(stampPath, stamp);
             return full;
         }
@@ -111,7 +115,8 @@ public static class SqliteTemplate
             {
                 return new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1, FileOptions.DeleteOnClose);
             }
-            catch (IOException) when (DateTime.UtcNow < deadline)
+            // A lock file another process is closing (delete on close) refuses access until it is gone.
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException && DateTime.UtcNow < deadline)
             {
                 await Task.Delay(LockPollInterval, cancellationToken).ConfigureAwait(false);
             }

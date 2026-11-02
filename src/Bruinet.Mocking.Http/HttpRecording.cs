@@ -116,6 +116,20 @@ public sealed class HttpRecording
         }
     }
 
+    /// <summary>Gives each call the volatile values the same call had in <paramref name="previous"/>, adding none.</summary>
+    public void KeepVolatile(HttpRecording previous)
+    {
+        ArgumentNullException.ThrowIfNull(previous);
+        var earlier = Occurrences(previous.Exchanges);
+        foreach (var (key, exchange) in Occurrences(Exchanges))
+        {
+            if (earlier.TryGetValue(key, out var before))
+            {
+                exchange.Volatile = [.. before.Volatile];
+            }
+        }
+    }
+
     // Each exchange by its method, path and which time that call was made.
     internal static Dictionary<string, HttpExchange> Occurrences(IEnumerable<HttpExchange> exchanges)
     {

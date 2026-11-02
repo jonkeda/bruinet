@@ -55,6 +55,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiUnit is renamed MauiHeadless (`src/MauiHeadless`, package `MauiHeadless`), and Bruinet's head `Bruinet.Maui.MauiUnit` is `Bruinet.Maui.Headless`: `BRUINET_HEAD=headless`, `MauiPlatform.Headless`, `MauiHeads.IsHeadless`, `CreateHeadlessOptions`, `HeadlessPreferences` and `HeadlessSecureStorage`. No release shipped the old names.
 
 ### Added
+- HTTP replay (`Bruinet.Mocking.Http`, AI11): a test's app's outgoing calls recorded once against the real services
+  (`BRUINET_HTTP_REPLAY=Record`) and answered from the recording after, with no service (`Replay`); `Refresh` lists the
+  answers that changed. In the test process through `HttpReplayHandler` or `AddBruinetHttpReplay` (every
+  `IHttpClientFactory` client, an Azure SDK client through `HttpClientTransport`); out of it through
+  `MockApiServer.Record` and `Replay`. Matching by method, path, query and JSON body field by field; volatile values
+  from two recordings; `model` and `oauth` presets; keys written as `***` and a secret scan before saving; streamed
+  answers part by part; a hermetic guard. `uat.config.md`'s `## Dependencies` gives each dependency a mode
+  (`BRUINET_DEP_<NAME>` overrides one), and `SqliteTemplate` gives each test its own copy of a seeded SQLite file.
+  `bruinet http stale|diff|reviewed`, and the MCP server's `run_scenario {replay}` and `http_calls`. See
+  [HTTP Replay](docs/guides/http-replay.md) and AD-034.
 - The MCP server's `run_scenario` and `last_runs`: an agent runs a scenario (or a file's) on the suite's
   runner and reads how it went (its address, duration, and the failed step's file, line and text),
   and each scenario's newest result.

@@ -61,6 +61,7 @@ Bruinet.Mocking.Http.HttpRecording
 Bruinet.Mocking.Http.HttpRecording.Exchanges.get -> System.Collections.Generic.List<Bruinet.Mocking.Http.HttpExchange!>!
 Bruinet.Mocking.Http.HttpRecording.Exchanges.set -> void
 Bruinet.Mocking.Http.HttpRecording.HttpRecording() -> void
+Bruinet.Mocking.Http.HttpRecording.KeepVolatile(Bruinet.Mocking.Http.HttpRecording! previous) -> void
 Bruinet.Mocking.Http.HttpRecording.MarkVolatile(Bruinet.Mocking.Http.HttpRecording! previous) -> void
 Bruinet.Mocking.Http.HttpRecording.Save(string! path) -> void
 Bruinet.Mocking.Http.HttpRecording.Version.get -> int
@@ -108,7 +109,7 @@ Bruinet.Mocking.Http.HttpReplaySession.Options.get -> Bruinet.Mocking.Http.HttpR
 Bruinet.Mocking.Http.HttpReplaySession.Path.get -> string!
 Bruinet.Mocking.Http.HttpReplaySession.SendAsync(System.Net.Http.HttpRequestMessage! request, System.Func<System.Net.Http.HttpRequestMessage!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! network, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
 Bruinet.Mocking.Http.HttpReplaySession.ThrowIfMissed() -> void
-const Bruinet.Mocking.Http.HttpRecordingReview.FileName = "reviewed.json" -> string!
+const Bruinet.Mocking.Http.HttpRecordingReview.FileName = "reviewed.http.json" -> string!
 const Bruinet.Mocking.Http.HttpReplaySession.ModeVariable = "BRUINET_HTTP_REPLAY" -> string!
 static Bruinet.Mocking.Http.HermeticGuard.Handler() -> System.Net.Http.SocketsHttpHandler!
 static Bruinet.Mocking.Http.HermeticGuard.IsViolation(System.Exception? exception) -> bool
@@ -117,6 +118,7 @@ static Bruinet.Mocking.Http.HttpCallLog.PathFor(string! recordingPath) -> string
 static Bruinet.Mocking.Http.HttpRecording.Load(string! path) -> Bruinet.Mocking.Http.HttpRecording?
 static Bruinet.Mocking.Http.HttpRecording.Parse(string! json) -> Bruinet.Mocking.Http.HttpRecording?
 static Bruinet.Mocking.Http.HttpRecordingDiff.Compare(Bruinet.Mocking.Http.HttpRecording? before, Bruinet.Mocking.Http.HttpRecording? after) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Mocking.Http.HttpRecordingDiff.Compare(Bruinet.Mocking.Http.HttpRecording? before, Bruinet.Mocking.Http.HttpRecording? after, System.Collections.Generic.IReadOnlyCollection<string!>! ignoredFields) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Mocking.Http.HttpRecordingReview.Accept(string! folder) -> void
 static Bruinet.Mocking.Http.HttpRecordingReview.Hash(string! json) -> string!
 static Bruinet.Mocking.Http.HttpRecordingReview.IsRecording(string! json) -> bool

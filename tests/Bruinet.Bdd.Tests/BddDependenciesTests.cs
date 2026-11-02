@@ -23,6 +23,7 @@ public sealed class BddDependenciesTests
         | backend | http | replay | `https://api.example.com` |
         | maps | http | stub | `MapsStubs` |
         | db | sqlite | copy | `TestData/seed.db` |
+        | model | http | replay | `https://*.openai.azure.com`, preset `model` |
         """;
 
     [Fact]
@@ -31,7 +32,7 @@ public sealed class BddDependenciesTests
         var config = BddConfigParser.Parse(Config);
 
         Assert.Equal(
-            [new BddDependency("backend", "http", "replay", "https://api.example.com"), new BddDependency("maps", "http", "stub", "MapsStubs"), new BddDependency("db", "sqlite", "copy", "TestData/seed.db")],
+            [new BddDependency("backend", "http", "replay", "https://api.example.com"), new BddDependency("maps", "http", "stub", "MapsStubs"), new BddDependency("db", "sqlite", "copy", "TestData/seed.db"), new BddDependency("model", "http", "replay", "https://*.openai.azure.com, preset model")],
             config.Dependencies);
         Assert.True(BddDependencies.IsHermetic(config));
         Assert.Equal("x-functions-key", config.Runtime[BddReplayFields.HttpRedact]);

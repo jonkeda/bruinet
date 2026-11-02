@@ -52,6 +52,7 @@ How this differs from the other trees:
 - [AD-031: A replayed test answers from the database it recorded, and the database judges the gate](decisions/ad-031-a-replayed-test-answers-from-the-database-it-recorded.md)
 - [AD-032: A MAUI suite runs without a device, and the device judges the gate](decisions/ad-032-a-maui-suite-runs-without-a-device.md)
 - [AD-033: The build is the first check](decisions/ad-033-the-build-is-the-first-check.md)
+- [AD-034: A dependency is replayed, stubbed or copied by its kind](decisions/ad-034-a-dependency-is-replayed-stubbed-or-copied-by-its-kind.md)
 
 ## Contracts
 

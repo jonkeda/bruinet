@@ -404,7 +404,7 @@ public static class BddConfigParser
                 row.Cells["Name"],
                 Cell(row, "Kind").ToLowerInvariant(),
                 Cell(row, "Mode").ToLowerInvariant(),
-                Cell(row, "Where").Trim('`')))];
+                Cell(row, "Where").Replace("`", string.Empty, StringComparison.Ordinal)))];
 
     private static string Cell(BddTableRow row, string column) => row.Cells.TryGetValue(column, out var value) ? value : string.Empty;
 

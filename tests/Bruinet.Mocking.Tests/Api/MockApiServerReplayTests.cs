@@ -33,7 +33,10 @@ public sealed class MockApiServerReplayTests : IDisposable
         using (var proxy = MockApiServer.Start())
         using (var app = new HttpClient { BaseAddress = new Uri(proxy.BaseUrl) })
         {
+            proxy.Record("http://localhost:1");
             proxy.Record(_service.BaseUrl);
+            proxy.Get("/health").ReturnsText("ok");
+            Assert.Equal("ok", await app.GetStringAsync("/health"));
             Assert.Equal("""[{"id":1}]""", await app.GetStringAsync("/todos?done=false"));
             using var created = await app.PostAsync("/todos", new StringContent("""{"title":"Milk"}""", Encoding.UTF8, "application/json"));
             Assert.Equal(HttpStatusCode.Created, created.StatusCode);
@@ -52,6 +55,7 @@ public sealed class MockApiServerReplayTests : IDisposable
         using var again = await client.PostAsync("/todos", new StringContent("""{"title":"Milk"}""", Encoding.UTF8, "application/json"));
         Assert.Equal(HttpStatusCode.Created, again.StatusCode);
         Assert.Empty(replay.ReplayMisses());
+        Assert.DoesNotContain(HttpRecording.Load(Recording)!.Exchanges, exchange => exchange.Url.EndsWith("/health", StringComparison.Ordinal));
     }
 
     [Fact]

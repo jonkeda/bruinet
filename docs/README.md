@@ -50,6 +50,8 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   run, `bruinet tests affected`, what runs the suite whole, and what selection misses
 - [SQL Replay](guides/sql-replay.md) - a UI test without its database: the SQL log, recording and
   replaying, the app's wiring (EF, ADO.NET, an app in its own process), stale recordings and re-records
+- [HTTP Replay](guides/http-replay.md) - a test without the services its app calls: record once, replay with none,
+  a mode per dependency and the hermetic run
 - [BDD Glossary](guides/bdd-glossary.md) - Bruinet's words beside Cucumber's and Reqnroll's
 - [Coming From Reqnroll](guides/coming-from-reqnroll.md) - one scenario in both forms, the attributes
   side by side, what works differently and what is not there, and why

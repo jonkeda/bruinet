@@ -25,6 +25,7 @@ public sealed partial class MockApiServer
 
     private readonly Lock _replayGate = new();
     private string? _recordTarget;
+    private Guid _recordMapping = Guid.NewGuid();
 
     /// <summary>
     /// Records: every call no stub answers goes on to <paramref name="target"/> (the real service) and its answer comes back;
@@ -34,27 +35,35 @@ public sealed partial class MockApiServer
     public void Record(string target)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(target);
+        Guid mapping;
         lock (_replayGate)
         {
+            // Recording again replaces the proxy: one catch-all, to the newest target.
+            _server.DeleteMapping(_recordMapping);
             _recordTarget = target.TrimEnd('/');
+            _recordMapping = mapping = Guid.NewGuid();
         }
 
         _server.Given(Request.Create().UsingAnyMethod().WithPath(new WildcardMatcher("*")))
+            .WithGuid(mapping)
             .AtPriority(CatchAllPriority)
-            .RespondWith(Response.Create().WithProxy(_recordTarget));
+            .RespondWith(Response.Create().WithProxy(target.TrimEnd('/')));
     }
 
-    /// <summary>The calls recorded since <see cref="Record"/>, in order, added to <paramref name="session"/>; then call its <c>Finish</c>.</summary>
+    /// <summary>The calls the proxy answered since <see cref="Record"/>, in order, added to <paramref name="session"/>; then call its <c>Finish</c>.</summary>
     public void CopyRecordedTo(HttpReplaySession session)
     {
         ArgumentNullException.ThrowIfNull(session);
         string target;
+        Guid mapping;
         lock (_replayGate)
         {
             target = _recordTarget ?? throw new InvalidOperationException("Nothing was recorded: call Record(target) first.");
+            mapping = _recordMapping;
         }
 
-        foreach (var entry in _server.LogEntries.Where(entry => entry.RequestMessage is not null && entry.ResponseMessage is not null)
+        // Only what the proxy answered: a call a hand-written stub answered is the test's, not the service's.
+        foreach (var entry in _server.LogEntries.Where(entry => entry.RequestMessage is not null && entry.ResponseMessage is not null && entry.MappingGuid == mapping)
                      .OrderBy(entry => entry.RequestMessage!.DateTime))
         {
             var request = entry.RequestMessage!;

@@ -100,7 +100,7 @@ internal static partial class HttpRedaction
         }
     }
 
-    private static string RedactQuery(string url, ISet<string> fields)
+    public static string RedactQuery(string url, ISet<string> fields)
     {
         var question = url.IndexOf('?', StringComparison.Ordinal);
         if (question < 0)

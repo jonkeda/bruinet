@@ -229,7 +229,8 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI8 | open | | |
 | AI9 | open | | |
 | AI10 | open | | |
-| AI11 | open | | |
+| AI11 | done (library) | branch ai11-http-replay, not pushed | HTTP replay in and out of process, the Dependencies table, SQLite copy, `bruinet http`, `http_calls`; the Todo app's sync replays hermetic; a host making sessions from the table is AI11b (AI11-review.md) |
+| AI11b | open | | the Todo UAT hosts make a session per scenario from `## Dependencies` and fail it on misses; the backend phrases read the session's calls; the AI11 agent check; the Azure OpenAI spike |
 | AI12 | open | | |
 | AI13 | open | | |
 | AI14 | open | | |

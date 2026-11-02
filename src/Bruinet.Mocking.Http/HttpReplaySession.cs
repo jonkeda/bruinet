@@ -198,7 +198,7 @@ public sealed class HttpReplaySession
         {
             live.Index = _recording.Exchanges.Count;
             _recording.Exchanges.Add(live);
-            _calls.Add(new HttpCall(live.Method, live.Url, live.Status, "recorded", live.Index));
+            _calls.Add(new HttpCall(live.Method, Logged(live.Url), live.Status, "recorded", live.Index));
         }
 
         return Respond(live, request, HttpReplayPace.None);
@@ -217,7 +217,7 @@ public sealed class HttpReplaySession
         {
             exchange.Index = _recording.Exchanges.Count;
             _recording.Exchanges.Add(exchange);
-            _calls.Add(new HttpCall(exchange.Method, exchange.Url, exchange.Status, "recorded", exchange.Index));
+            _calls.Add(new HttpCall(exchange.Method, Logged(exchange.Url), exchange.Status, "recorded", exchange.Index));
         }
     }
 
@@ -237,13 +237,16 @@ public sealed class HttpReplaySession
                     HttpRedaction.Redact(exchange, Options);
                 }
 
-                if (_previous is not null)
+                if (_previous is not null && Mode == HttpReplayMode.Record)
                 {
                     _recording.MarkVolatile(_previous);
-                    if (Mode == HttpReplayMode.Refresh)
-                    {
-                        _changes.AddRange(HttpRecordingDiff.Compare(_previous, _recording));
-                    }
+                }
+                else if (_previous is not null)
+                {
+                    // A refresh keeps the volatile values it had and reports a changed request, never makes it volatile:
+                    // a request the app now sends differently is a change to read, not a value to ignore.
+                    _recording.KeepVolatile(_previous);
+                    _changes.AddRange(HttpRecordingDiff.Compare(_previous, _recording, (IReadOnlyCollection<string>)Options.IgnoredFields));
                 }
 
                 HttpRedaction.Scan(_recording, Path);
@@ -280,7 +283,7 @@ public sealed class HttpReplaySession
         {
             if (Options.Hermetic && request.RequestUri is { IsAbsoluteUri: true } uri && !_hosts.Contains(uri.Host))
             {
-                throw Miss(live, $"Hermetic: {live.Method} {live.Url} goes to {uri.Host}, which the recording never called.");
+                throw Miss(live, $"Hermetic: {live.Method} {Logged(live.Url)} goes to {uri.Host}, which the recording never called.");
             }
 
             var matching = Enumerable.Range(0, _recording.Exchanges.Count)
@@ -294,15 +297,18 @@ public sealed class HttpReplaySession
             var chosen = matching.FirstOrDefault(index => !_used[index], matching[^1]);
             _used[chosen] = true;
             var exchange = _recording.Exchanges[chosen];
-            _calls.Add(new HttpCall(live.Method, live.Url, exchange.Status, "matched", chosen));
+            _calls.Add(new HttpCall(live.Method, Logged(live.Url), exchange.Status, "matched", chosen));
             return Respond(exchange, request, Options.Pace);
         }
     }
 
+    // A URL as the call log and a miss show it: its named query values never written, as in the recording.
+    private string Logged(string url) => HttpRedaction.RedactQuery(url, Options.RedactedFields);
+
     private HttpReplayMissException Miss(HttpExchange live, string message)
     {
         _misses.Add(message);
-        _calls.Add(new HttpCall(live.Method, live.Url, 0, "missed", -1));
+        _calls.Add(new HttpCall(live.Method, Logged(live.Url), 0, "missed", -1));
         return new HttpReplayMissException(message);
     }
 
@@ -315,8 +321,8 @@ public sealed class HttpReplaySession
             ?? _recording.Exchanges.FirstOrDefault(exchange => string.Equals(exchange.Method, live.Method, StringComparison.OrdinalIgnoreCase));
         var name = System.IO.Path.GetFileName(Path);
         return nearest is null
-            ? $"HTTP replay miss in {name}: {live.Method} {live.PathAndQuery} was never recorded ({_recording.Exchanges.Count.ToString(CultureInfo.InvariantCulture)} calls are)."
-            : $"HTTP replay miss in {name}: {live.Method} {live.PathAndQuery}; nearest recorded is exchange {nearest.Index.ToString(CultureInfo.InvariantCulture)} {nearest.Method} {nearest.PathAndQuery}: {HttpMatching.Difference(live, nearest, (IReadOnlyCollection<string>)Options.IgnoredFields) ?? "the same call, every recorded answer already given"}.";
+            ? $"HTTP replay miss in {name}: {live.Method} {Logged(live.PathAndQuery)} was never recorded ({_recording.Exchanges.Count.ToString(CultureInfo.InvariantCulture)} calls are)."
+            : $"HTTP replay miss in {name}: {live.Method} {Logged(live.PathAndQuery)}; nearest recorded is exchange {nearest.Index.ToString(CultureInfo.InvariantCulture)} {nearest.Method} {nearest.PathAndQuery}: {HttpMatching.Difference(live, nearest, (IReadOnlyCollection<string>)Options.IgnoredFields) ?? "the same call, every recorded answer already given"}.";
     }
 
     private async Task<HttpExchange> ToExchangeAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -364,11 +370,15 @@ public sealed class HttpReplaySession
             exchange.Chunks = [];
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
             var buffer = new byte[8192];
+            var characters = new char[Encoding.UTF8.GetMaxCharCount(buffer.Length)];
+            // One decoder for the stream: a character split between two reads stays whole.
+            var decoder = Encoding.UTF8.GetDecoder();
             var clock = Stopwatch.StartNew();
             int read;
             while ((read = await stream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false)) > 0)
             {
-                exchange.Chunks.Add(new HttpChunk { DelayMs = (int)clock.ElapsedMilliseconds, Data = Encoding.UTF8.GetString(buffer, 0, read) });
+                var count = decoder.GetChars(buffer, 0, read, characters, 0);
+                exchange.Chunks.Add(new HttpChunk { DelayMs = (int)clock.ElapsedMilliseconds, Data = new string(characters, 0, count) });
                 clock.Restart();
             }
 

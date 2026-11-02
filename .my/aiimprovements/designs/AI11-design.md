@@ -1,6 +1,6 @@
 # AI11 design: HTTP replay, for hermetic integration and UI tests
 
-Status: **design**, 2026-11-02. Open questions at the end, each with a proposal.
+Status: **built** (library, tools, docs), 2026-11-02, on branch `ai11-http-replay`; step 5 (the Todo UAT suites hermetic) is AI11b. What changed from this design: no `HttpReplayTransport` (an Azure client takes `HttpClientTransport`), volatile values are ignored not bound, out of process repeated calls are ordered by a counter not WireMock's scenarios, and the hermetic check compares hosts not ports. See `AI11-review.md` and AD-034. Open questions answered by their proposals.
 
 ## Outcome
 

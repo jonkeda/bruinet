@@ -57,6 +57,9 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet scenario results delete [file] [--line N \| --suite <name>]` | Deletes old results of a scenario, a file or a suite from every run | |
 | `bruinet tests touch-map <timings>… [--suite <folder>]` | From a full run's timings (`BRUINET_TIMINGS`), writes the suite's `touch-map.json`: which test and scenario used which page objects and controls | [test selection](../guides/test-selection.md) |
 | `bruinet tests affected [--suite <folder>] [--base <rev> \| --files <paths>]` | The suite's tests a change reaches, each with why, as one `--filter` (`--app`, `--map`, `--always`, `--json`); the suite's libraries, test base and the app's shared code run it whole; `tools/Scripts/select-tests.ps1` runs it for the Html and Blazor suites | [test selection](../guides/test-selection.md) |
+| `bruinet http stale --recordings <folder>` | The HTTP recordings whose newest replay missed a call or left recorded calls unused; exit 1 when any | [HTTP Replay](../guides/http-replay.md) |
+| `bruinet http diff --recordings <folder> [--base <rev>] [--accept]` | What each re-recorded test's calls changed against git: calls added and gone, statuses and answers; `--accept` marks them read | |
+| `bruinet http reviewed --recordings <folder>` | The gate: HTTP recordings that went in unread; exit 1 when any | |
 | `bruinet controls generate --input <paths>` | Each `.tpl.cs` to its `.gen.cs` (`--members all\|actions\|state`) | [generator contract](../../.github/skills/maui-control/references/generator-contract.md) |
 | `bruinet version` | The version | |
 

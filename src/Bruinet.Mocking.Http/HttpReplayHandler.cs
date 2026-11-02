@@ -32,7 +32,10 @@ public sealed class HttpReplayHandler : DelegatingHandler
     public static HttpReplayHandler Create(HttpReplaySession session)
     {
         ArgumentNullException.ThrowIfNull(session);
-        return new HttpReplayHandler(session, session.Mode == HttpReplayMode.Replay && session.Options.Hermetic ? HermeticGuard.Handler() : new SocketsHttpHandler());
+        // Decompressed, so a gzipped answer is recorded as text: redacted and scanned like any other.
+        return new HttpReplayHandler(session, session.Mode == HttpReplayMode.Replay && session.Options.Hermetic
+            ? HermeticGuard.Handler()
+            : new SocketsHttpHandler { AutomaticDecompression = System.Net.DecompressionMethods.All });
     }
 
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)

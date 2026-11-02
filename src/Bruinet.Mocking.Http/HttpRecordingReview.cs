@@ -10,6 +10,13 @@ public static class HttpRecordingDiff
 {
     /// <summary>One line per change, <c>+</c>, <c>-</c> or <c>~</c> and the call; empty when the answers are the same.</summary>
     public static IReadOnlyList<string> Compare(HttpRecording? before, HttpRecording? after)
+        => Compare(before, after, []);
+
+    /// <summary>
+    /// The changes, a changed request among them (<c>~ call: request ...</c>), its volatile values and
+    /// <paramref name="ignoredFields"/> left out.
+    /// </summary>
+    public static IReadOnlyList<string> Compare(HttpRecording? before, HttpRecording? after, IReadOnlyCollection<string> ignoredFields)
     {
         var old = HttpRecording.Occurrences(before?.Exchanges ?? []);
         var now = HttpRecording.Occurrences(after?.Exchanges ?? []);
@@ -24,6 +31,10 @@ public static class HttpRecordingDiff
             else if (!now.TryGetValue(key, out var answer))
             {
                 lines.Add($"- {call}: no longer made");
+            }
+            else if (HttpMatching.Difference(answer, then, ignoredFields) is { } request)
+            {
+                lines.Add($"~ {call}: request {request}");
             }
             else if (then.Status != answer.Status)
             {
@@ -70,7 +81,8 @@ public static class HttpRecordingDiff
 /// </summary>
 public static class HttpRecordingReview
 {
-    public const string FileName = "reviewed.json";
+    /// <summary>Its own name, so SQL replay's <c>reviewed.json</c> in the same folder is not overwritten.</summary>
+    public const string FileName = "reviewed.http.json";
 
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
 
@@ -93,6 +105,7 @@ public static class HttpRecordingReview
             using var document = JsonDocument.Parse(json);
             return document.RootElement.ValueKind == JsonValueKind.Object
                    && document.RootElement.TryGetProperty("Exchanges", out var exchanges)
+                   && exchanges.ValueKind == JsonValueKind.Array
                    && (exchanges.GetArrayLength() == 0 || exchanges[0].TryGetProperty("Url", out _));
         }
         catch (JsonException)

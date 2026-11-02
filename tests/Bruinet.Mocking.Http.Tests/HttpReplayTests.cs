@@ -124,8 +124,15 @@ public sealed class HttpReplayTests : IDisposable
         Assert.DoesNotContain("real-token-456", text, StringComparison.Ordinal);
         Assert.Contains("api-key=***", text, StringComparison.Ordinal);
 
-        var (_, client) = Replaying();
+        Assert.DoesNotContain("real-key-123", File.ReadAllText(HttpCallLog.PathFor(Recording)), StringComparison.Ordinal);
+
+        var (session, client) = Replaying();
         Assert.Equal("tile", await client.GetStringAsync("http://x.test/maps?api-key=another-key&z=3"));
+        await Assert.ThrowsAsync<HttpReplayMissException>(() => client.GetStringAsync("http://x.test/other?api-key=third-key"));
+        session.Finish();
+        var log = File.ReadAllText(HttpCallLog.PathFor(Recording));
+        Assert.DoesNotContain("another-key", log, StringComparison.Ordinal);
+        Assert.DoesNotContain("third-key", log, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -264,6 +271,23 @@ public sealed class HttpReplayTests : IDisposable
     }
 
     [Fact]
+    public async Task Refresh_reports_a_changed_request_and_does_not_make_it_volatile()
+    {
+        _service.Given(Request.Create().WithPath("/todos").UsingPost()).RespondWith(Response.Create().WithBody("{}"));
+        await RecordAsync(client => client.PostAsync(_service.Url + "/todos", Json("""{"title":"Milk"}""")));
+
+        var session = new HttpReplaySession(HttpReplayMode.Refresh, Recording);
+        using (var client = new HttpClient(HttpReplayHandler.Create(session)))
+        {
+            using var answer = await client.PostAsync(_service.Url + "/todos", Json("""{"title":"Milk","due":"today"}"""));
+        }
+
+        session.Finish();
+        Assert.Contains("request $.due", Assert.Single(session.Changes), StringComparison.Ordinal);
+        Assert.Empty(Assert.Single(HttpRecording.Load(Recording)!.Exchanges).Volatile);
+    }
+
+    [Fact]
     public async Task Review_names_new_and_changed_recordings_and_stale_ones_after_a_replay()
     {
         _service.Given(Request.Create().WithPath("/a").UsingGet()).RespondWith(Response.Create().WithBody("1"));
@@ -275,6 +299,7 @@ public sealed class HttpReplayTests : IDisposable
         });
 
         Assert.Equal(["new http/A test.json"], HttpRecordingReview.Unreviewed(_folder));
+        Assert.Equal("reviewed.http.json", HttpRecordingReview.FileName);
         HttpRecordingReview.Accept(_folder);
         Assert.Empty(HttpRecordingReview.Unreviewed(_folder));
 

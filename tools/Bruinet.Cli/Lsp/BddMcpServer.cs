@@ -137,7 +137,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; to look at a failure as it happens, step through it with step_start and step_move; a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -397,7 +397,8 @@ public sealed class BddMcpServer : IDisposable
             ?? throw new ToolProblem("No suite holds or links this feature file.");
         var file = Path.GetFileName(Bruinet.Mocking.Http.HttpCallLog.PathFor(Bruinet.Mocking.Http.HttpReplaySession.PathFor(project, name)));
         var path = Directory.EnumerateFiles(project, file, SearchOption.AllDirectories)
-            .Where(found => !found.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+            .Where(found => !found.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+                            && !found.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(File.GetLastWriteTimeUtc)
             .FirstOrDefault()
             ?? throw new ToolProblem($"No HTTP calls of '{name}' yet: run it with run_scenario and replay set, in a suite whose host gives the app an HttpReplaySession.");
@@ -410,7 +411,7 @@ public sealed class BddMcpServer : IDisposable
             Calls = log.Calls.Take(50).Select(call => new { call.Method, Url = Cap(call.Url, 200), call.Status, call.Outcome }),
             More = Math.Max(0, log.Calls.Count - 50),
             Misses = log.Misses.Take(5).Select(miss => Cap(miss, 500)),
-            UnusedExchanges = log.Unused,
+            UnusedExchanges = log.Unused.Take(20),
         };
     }
 
