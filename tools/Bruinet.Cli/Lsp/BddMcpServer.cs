@@ -76,13 +76,13 @@ public sealed class BddMcpServer : IDisposable
         ("update_scraper_config", "Makes one change to a scraped project's scraper.config.md, keeping the rest of the file: 'set' a field (values: field, value; in 'Danger words': category, true or false), 'add' a row (values: its cells: Explore hosts [Host], Never click and Always click [Match: 'text: ...' or 'selector: ...'], Never visit [Url], Allow requests [Method, Url], Aliases [Url]) or 'remove' one (values: its first cell). Asks first: without 'confirm' it says what it would write; call again with confirm: true once the person agrees.", Schema(("project", "string", "The project; the only one when left out."), ("action", "string", "set, add or remove; required."), ("section", "string", "The section without ##, e.g. Explore, Never click; required."), ("values", "array", "The values, as strings; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("list_states", "The states the suite's app can be put in, declared with [BddState] in its test project: each state's phrase, its parameters and the method that sets it (through test data or the service head). A Given may name one; set_state puts the app in one.", Schema(("suite", "string", "The suite; its only one when left out."))),
-        ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("page", "string", "The page the app is on in that state (list_pages): checked, and the page step_state then reads; none when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
+        ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, its parameters filled in, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("page", "string", "The page the app is on in that state (list_pages): checked, and the page step_state then reads; none when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
         ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."), ("trace", "string", "all: read the page after every step for the trace, not only after a failed one (get_trace); off: no trace; each scenario is traced when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text). Read without a screenshot; where to look when a step is about to fail.", Schema()),
-        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
+        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path in the solution's TestResults/step-screenshots, to look at; a head without pixels gives the screen's element tree, inline as tree.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
         ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -182,7 +182,7 @@ public sealed class BddMcpServer : IDisposable
                 "list_states" => ListStates(Suite(arguments)),
                 "set_state" => SetState(arguments),
                 "list_pages" => ListPages(Suite(arguments)),
-                "list_test_sets" => Suite(arguments).TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Distinct().ToList(),
+                "list_test_sets" => TestSets(Suite(arguments)),
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
@@ -192,7 +192,7 @@ public sealed class BddMcpServer : IDisposable
                 "step_state" => _server.StepReadPageAsync().GetAwaiter().GetResult() is var read && read.State is { } state
                     ? new { state.Page, state.Reason, Controls = state.Controls.Take(60).Select(control => new { control.Name, control.Kind, control.Shown, control.Value, control.Unreadable }), More = state.Controls.Count > 60 ? state.Controls.Count - 60 : (int?)null }
                     : throw new ToolProblem($"No page state: {read.Reason}"),
-                "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? new { Screenshot = taken } : throw new ToolProblem($"No screenshot: {shot.Reason}"),
+                "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? Screenshot(taken) : throw new ToolProblem($"No screenshot: {shot.Reason}"),
                 "last_runs" => LastRuns(arguments),
                 "get_failure" => GetFailure(arguments),
                 "where_is" => WhereIs(arguments),
@@ -475,9 +475,16 @@ public sealed class BddMcpServer : IDisposable
 
         var page = (string?)arguments["page"] is { Length: > 0 } named ? OneLine(named, "page") : null;
         var testData = (string?)arguments["testData"] is { Length: > 0 } set ? OneLine(set, "testData") : null;
-        if (testData is not null && !suite.TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Contains(testData, StringComparer.Ordinal))
+        if (testData is not null && !TestSets(suite).Contains(testData, StringComparer.Ordinal))
         {
             throw new ToolProblem($"'{testData}' is not a test set of {suite.Name}: list_test_sets names them.");
+        }
+
+        // A placeholder left in (the state as list_states writes it) would be the parameter's value: '{testSet}'.
+        if (System.Text.RegularExpressions.Regex.Match(state, @"\{[^{}]+\}") is { Success: true } placeholder)
+        {
+            throw new ToolProblem($"'{state}' still has {placeholder.Value}: write the state with its parameters filled in, as a Given "
+                + "says it (list_states gives each one's type). testData is the scenario's test data, not a parameter of the state.");
         }
 
         var catalog = Catalogs(suite).Default;
@@ -551,6 +558,18 @@ public sealed class BddMcpServer : IDisposable
         return paused is not JsonObject { } after || after["lastStepFailed"] is not null || after["paused"] is null
             ? paused
             : StepMove(new JsonObject { ["move"] = "over", ["timeoutMinutes"] = timeout });
+    }
+
+    // A paused app's screenshot, copied beside the solution (the runner saves it under its shadow copy, in the temp folder,
+    // which an agent may not read); a head without pixels saves the element tree as text, given inline too.
+    private object Screenshot(string taken)
+    {
+        var folder = Path.Combine(_solutionDir, "TestResults", "step-screenshots");
+        Directory.CreateDirectory(folder);
+        var copy = Path.Combine(folder, Path.GetFileName(taken));
+        File.Copy(taken, copy, overwrite: true);
+        var tree = copy.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? Cap(File.ReadAllText(copy), 6000) : null;
+        return new { Screenshot = copy, Tree = tree };
     }
 
     // A value written into a scenario: one line, no table bar or backtick, so it adds no step, cell or code fence.
@@ -1599,6 +1618,14 @@ public sealed class BddMcpServer : IDisposable
     }
 
     private BddSuite SuiteNamed(string name) => _server.SuiteNamed(name) ?? throw new ToolProblem($"No suite '{name}'.");
+
+    // The suite's test sets, with the suite loaded first: its test data is read from the assemblies a load opens, so a
+    // fresh server would otherwise answer none (and set_state would refuse every name).
+    private static List<string> TestSets(BddSuite suite)
+    {
+        Catalogs(suite);
+        return [.. suite.TestDataDefinitions().SelectMany(definition => definition.TestSetNames).Distinct()];
+    }
 
     private static BddCatalogSet Catalogs(BddSuite suite)
         => suite.TryGetCatalogs(out var reason) ?? throw new ToolProblem($"{suite.Name} is not bound: {reason}");

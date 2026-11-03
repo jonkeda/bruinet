@@ -148,6 +148,8 @@ def instructions_without(text):
 
 
 def main():
+    # Answers carry any text (a screen's element tree has symbols): the Windows console's code page cannot print them all.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     process = start()
     try:
         init = request(process, 1, "initialize", {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "check", "version": "1"}})

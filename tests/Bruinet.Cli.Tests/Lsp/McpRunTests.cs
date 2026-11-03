@@ -308,6 +308,8 @@ public sealed class McpRunTests : IDisposable
         Assert.Contains("must be one line", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["page"] = "Home\nWhen the counter counts" }), StringComparison.Ordinal);
         Assert.Contains("is not a test set", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["testData"] = "nothing-like-it" }), StringComparison.Ordinal);
         Assert.Contains("HasAlreadyCountedNine", Refused(new JsonObject { ["state"] = "the counter has already counted 9 times" }), StringComparison.Ordinal);
+        // The state as list_states writes it, its placeholder not filled in (the benchmark's T4 runs passed it so).
+        Assert.Contains("still has {times}", Refused(new JsonObject { ["state"] = "the counter has already counted {times} times" }), StringComparison.Ordinal);
         Assert.False(Directory.Exists(Path.Combine(Suite, ".bruinet")) && Directory.EnumerateFiles(Path.Combine(Suite, ".bruinet")).Any());
     }
 

@@ -68,13 +68,19 @@ internal static class UatPageState
         return new BddRunnerPageState(page.Name, controls, null);
     }
 
-    private static BddRunnerControlState ReadControl(string name, object control)
+    // rows: whether a collection's rows are read; not for a row's own controls, which may lead back to the list.
+    private static BddRunnerControlState ReadControl(string name, object control, bool rows = true)
     {
         var type = control.GetType();
         var kind = Plain(type.Name);
         try
         {
             var shown = Invoke(control, "IsVisible", takesTimeout: false) as bool?;
+            if (rows && shown != false && Rows(control) is { } shownRows)
+            {
+                return new BddRunnerControlState(name, kind, shown, shownRows, null);
+            }
+
             var interfaces = type.GetInterfaces().Where(face => face.IsGenericType).Select(face => face.GetGenericTypeDefinition().Name).ToHashSet(StringComparer.Ordinal);
             var reader = Readers.FirstOrDefault(candidate => interfaces.Contains(candidate.Interface));
             // No Core interface reads it (Maui's Label): its own GetText, when it has one.
@@ -88,6 +94,58 @@ internal static class UatPageState
             return new BddRunnerControlState(name, kind, null, null, Unreadable(exception));
         }
     }
+
+    // A collection's rows, as its row objects' own controls show them: "3 rows: [Title 'Buy milk', Status 'Open'], ...";
+    // ten rows and six controls a row at most. Null for a control that is no collection (no Items of row objects).
+    internal static string? Rows(object control)
+    {
+        if (control.GetType().GetProperty("Items")?.GetValue(control) is not System.Collections.IEnumerable items || items is string)
+        {
+            return null;
+        }
+
+        var all = items.Cast<object>().ToList();
+        var rows = all.Take(RowsKept).Select(row => "[" + string.Join(", ", RowControls(row)) + "]").ToList();
+        var text = $"{all.Count} rows" + (rows.Count > 0 ? ": " + string.Join(", ", rows) : string.Empty) + (all.Count > RowsKept ? ", ..." : string.Empty);
+        return text.Length > RowsValueKept ? text[..RowsValueKept] + "…" : text;
+    }
+
+    private static IEnumerable<string> RowControls(object row)
+    {
+        foreach (var property in row.GetType().GetProperties().Where(property => property.GetIndexParameters().Length == 0 && !property.PropertyType.IsValueType && property.PropertyType != typeof(string)))
+        {
+            object? control;
+            try
+            {
+                control = property.GetValue(row);
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+                continue;
+            }
+
+            if (control is null || control.GetType().GetMethod("IsVisible", Type.EmptyTypes) is null)
+            {
+                continue;
+            }
+
+            // A row's control that is a list itself (or leads back to its own) is not read: the rows stay one level deep.
+            if (control.GetType().GetProperty("Items") is not null)
+            {
+                continue;
+            }
+
+            var state = ReadControl(property.Name, control, rows: false);
+            if (state.Shown != false && state.Value is { Length: > 0 } value)
+            {
+                yield return $"{property.Name} '{value}'";
+            }
+        }
+    }
+
+    private const int RowsKept = 10;
+
+    private const int RowsValueKept = 1500;
 
     private static object? Invoke(object control, string member, bool takesTimeout)
     {

@@ -21,13 +21,16 @@ public sealed class AppLifecyclePhrases(TodoUatFixture fixture) : BddStepDefinit
     }
 
     /// <summary>
-    /// A state (AI10): the app restarted on a test set's seeded data and backend, the list showing it. What a scenario or
-    /// an agent (set_state) starts from without adding the todos by hand.
+    /// A state (AI10): the app restarted on a test set's seeded data and backend, the list showing it once its start-up
+    /// sync is done, as a scenario's start leaves it. What a scenario or an agent (set_state) starts from without adding
+    /// the todos by hand.
     /// </summary>
     [BddState("the app starts from the {testSet} test set")]
     public void StartFrom(string testSet, BddExecutionContext context)
     {
         fixture.UseTestSet(testSet);
+        // Started over as BeforeScenario does: the restart's own start-up sync would still be running.
+        fixture.StartOver();
         fixture.RescopeAfterRestart(context);
     }
 
