@@ -1,0 +1,1 @@
+Find out, from the running Todo MAUI app (suite Bruinet.Samples.Todo.Uat), what its Todo list screen shows when the app holds the three-todos test data: the titles of the todos, the Last Sync label, and the filter. Change no files. End your answer with a line "ANSWER:" followed by the titles, the label and the filter.

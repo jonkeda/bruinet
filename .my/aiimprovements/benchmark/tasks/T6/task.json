@@ -1,0 +1,26 @@
+{
+  "id": "T6",
+  "kind": "exception",
+  "heldOut": true,
+  "project": "samples/Todo/tests/Bruinet.Samples.Todo.Uat",
+  "suite": "Bruinet.Samples.Todo.Uat",
+  "env": {},
+  "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.02-create-a-todo.feature.md",
+  "green": false,
+  "base": "a5203d47",
+  "fails": [
+    {
+      "scenario": "TOD.02.2 Saving a valid title returns to the list, which shows the new todo",
+      "line": 36
+    },
+    {
+      "scenario": "TOD.02.5 A due date is optional; switching it off clears it",
+      "line": 82
+    }
+  ],
+  "passes": [
+    "TOD.02.1 Add opens an empty edit form with status Open",
+    "TOD.02.3 An empty or whitespace title shows \"Title is required\" and does not save [1]",
+    "TOD.02.3 An empty or whitespace title shows \"Title is required\" and does not save [2]"
+  ]
+}

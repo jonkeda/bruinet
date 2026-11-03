@@ -1,0 +1,27 @@
+diff --git a/samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md b/samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md
+index 803261b4..67d3cef4 100644
+--- a/samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md
++++ b/samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md
+@@ -94,3 +94,22 @@ And the todo "Clean gutter" should be synced
+ When I tap Sync
+ Then the todo "Oil the hinges" should be synced
+ ```
++
++@TOD.01.7 @maui @web @list
++## Scenario: TOD.01.7 Filtering by In progress shows only the rows in progress
++
++```gherkin
++Given I am on the Todo List page
++And the server also has todos
++  | Title         | Status     |
++  | ------------- | ---------- |
++  | Mow the lawn  | Open       |
++  | Sand the door | InProgress |
++  | Return books  | Done       |
++When I tap Sync
++Then Todos should have todo "Sand the door"
++When I select "In progress" from Filter
++Then Todos should have todo "Sand the door"
++And Todos should not have todo "Mow the lawn"
++And Todos should not have todo "Return books"
++```

@@ -1,0 +1,1 @@
+In the Todo MAUI app's acceptance suite (suite Bruinet.Samples.Todo.Uat), the scenario "TOD.02.2 Saving a valid title returns to the list, which shows the new todo" in samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.02-create-a-todo.feature.md fails. Fix the app (not the tests, feature files or page objects) so it passes, and confirm all TOD.02 scenarios pass.

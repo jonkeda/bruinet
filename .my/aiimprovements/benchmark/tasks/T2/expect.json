@@ -1,0 +1,18 @@
+{
+  "mustNotChange": [
+    "samples/Todo/tests/**",
+    "src/**",
+    "tools/**",
+    "tests/**"
+  ],
+  "pass": {
+    "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.03-read-a-todo.feature.md",
+    "suite": "Bruinet.Samples.Todo.Web.Uat",
+    "scenarios": [
+      "TOD.03.1 Tapping a row opens its detail with all its fields"
+    ]
+  },
+  "changeAnyOf": [
+    "samples/Todo/src/Bruinet.Samples.Todo.Web/Components/Pages/TodoDetailPage.razor"
+  ]
+}

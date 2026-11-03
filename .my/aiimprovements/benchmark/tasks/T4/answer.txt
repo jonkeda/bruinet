@@ -1,0 +1,2 @@
+The list shows Buy milk, Book dentist and File taxes; Last Sync says "Synced 10:00"; the filter is All.
+ANSWER: Buy milk, Book dentist, File taxes; Synced 10:00; All

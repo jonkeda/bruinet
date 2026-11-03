@@ -1,0 +1,18 @@
+{
+  "mustNotChange": [
+    "samples/Todo/src/**",
+    "src/**",
+    "tools/**",
+    "**/*.cs"
+  ],
+  "pass": {
+    "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md",
+    "suite": "Bruinet.Samples.Todo.Web.Uat",
+    "scenarios": [
+      "TOD.01.7 Filtering by In progress shows only the rows in progress"
+    ]
+  },
+  "changeAnyOf": [
+    "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md"
+  ]
+}

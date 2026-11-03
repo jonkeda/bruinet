@@ -1,0 +1,18 @@
+{
+  "mustNotChange": [
+    "samples/Todo/tests/**",
+    "src/**",
+    "tools/**",
+    "tests/**"
+  ],
+  "pass": {
+    "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.02-create-a-todo.feature.md",
+    "suite": "Bruinet.Samples.Todo.Uat",
+    "scenarios": [
+      "TOD.02.2 Saving a valid title returns to the list, which shows the new todo"
+    ]
+  },
+  "changeAnyOf": [
+    "samples/Todo/src/Bruinet.Samples.Todo.Core/Services/TodoService.cs"
+  ]
+}

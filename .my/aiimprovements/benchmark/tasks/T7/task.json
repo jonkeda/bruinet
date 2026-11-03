@@ -1,0 +1,23 @@
+{
+  "id": "T7",
+  "kind": "regression in a bigger change",
+  "heldOut": true,
+  "project": "samples/Todo/tests/Bruinet.Samples.Todo.Uat",
+  "suite": "Bruinet.Samples.Todo.Uat",
+  "env": {},
+  "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md",
+  "green": true,
+  "base": "a5203d47",
+  "fails": [
+    {
+      "scenario": "TOD.01.4 Filtering by status shows only the matching rows",
+      "line": 76
+    }
+  ],
+  "passes": [
+    "TOD.01.1 Opening the app shows the list; a loading state shows first, then the content",
+    "TOD.01.2 Each row shows its title, due date and status",
+    "TOD.01.3 With no todos the list shows \"Nothing to do\" and Add stays reachable",
+    "TOD.01.6 A row with unsynced changes shows the pending marker"
+  ]
+}

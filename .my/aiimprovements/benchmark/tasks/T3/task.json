@@ -1,0 +1,21 @@
+{
+  "id": "T3",
+  "kind": "backend answer",
+  "heldOut": false,
+  "project": "samples/Todo/tests/Bruinet.Samples.Todo.Uat",
+  "suite": "Bruinet.Samples.Todo.Uat",
+  "env": {},
+  "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.03-read-a-todo.feature.md",
+  "green": false,
+  "base": "a5203d47",
+  "fails": [
+    {
+      "scenario": "TOD.03.1 Tapping a row opens its detail with all its fields",
+      "line": 29
+    }
+  ],
+  "passes": [
+    "TOD.03.3 The Sync card shows \"Synced\", \"Waiting to sync\" or \"Local only\"",
+    "TOD.03.4 Back returns to the list at the same filter"
+  ]
+}

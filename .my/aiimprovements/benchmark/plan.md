@@ -58,12 +58,12 @@ The first eight, four of them held out (never used while changing a tool):
 | Id | Kind | The cause | Suite | Tools it is for | Held out |
 | --- | --- | --- | --- | --- | --- |
 | T1 | regression after changes | confirm buttons swapped, four comment-only edits | Todo MAUI | AI9 | no |
-| T2 | locator after a UI change | a test id renamed in the web app's razor | Todo web | AI7, AI2 | no |
-| T3 | backend answer | the sync client drops a field the stub sends | Todo MAUI | AI11, AI6 | no |
+| T2 | locator after a UI change | the detail title's test id renamed in the web app's razor | Todo web (bUnit) | AI7, AI2 | no |
+| T3 | backend answer | the server todo's notes dropped in `TodoMapping.ToItem` | Todo MAUI | AI11, AI6 | no |
 | T4 | look at a screen | "what does the list show with the three-todos test set" | Todo MAUI | AI10, AI4 | no |
-| T5 | timing | a stub delay longer than a wait's budget | Todo web | AI8 | yes |
-| T6 | exception | a view model throws on an empty title; the step only times out | Todo MAUI | AI6 | yes |
-| T7 | regression in a bigger change | a service refactor across eight files, one of them wrong | Todo MAUI | AI9 | yes |
+| T5 | timing | the list shows Loading only for a sync over 3 s, so the 2-second slow server never shows it | Todo web (bUnit) | AI8 | yes |
+| T6 | exception | `TodoService.Normalize` capitalizes notes and throws on empty ones; saving fails | Todo MAUI | AI6 | yes |
+| T7 | regression in a bigger change | renames in four files, and the Done filter matches In progress too | Todo MAUI | AI9 | yes |
 | T8 | write a scenario | a new scenario for an existing feature, from existing phrases | Todo web | AI1, AI3 | yes |
 
 Later tasks add Tomorrow itself, where a grep does not find the cause.
@@ -127,3 +127,4 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | 2 | done | (this commit) | `MCP_PROFILE=all|before|without-<item>` from one table of each item's tools, fields, arguments and instruction phrases; `before` lists 37 of 56 tools and keeps the instructions' sentences about them only; `MCP_HIDE` hides a tool's whole item |
 | 3 | done | (this commit) | `make_copy.py` and task T1 (`task.json` in place of `base.md`); T1's copy in 1.5 minutes: one commit, no `.my`, `.claude` or skills, green 3 of 3, five files seeded, `--check` fails TOD.06.2 at 49 and TOD.06.3 at 71 |
 | 4 | done | (this commit) | `score.py`: solved from a fresh run of `expect.json`'s scenarios and the changes against `refs/bench/seeded` (kept by `make_copy.py`), counts from the bridge log; T1 scored unsolved unfixed, solved fixed, unsolved with a test file touched |
+| 5 | done | (this commit) | T2-T8 from `make_tasks.py` (each task's edits, its seed and its known fix); `check_task.py` passed all eight: each seeded copy fails (recorded in `task.json`), scores unsolved as it is and solved fixed. T5's first bug (an HTTP timeout) did not fail, because the stub's delay is not on the real clock; its bug is now the Loading state's |

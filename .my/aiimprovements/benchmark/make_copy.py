@@ -1,7 +1,7 @@
 """
 Makes a benchmark task's copy (benchmark/plan.md, step 3).
 
-  python make_copy.py <task folder> <out folder> [--check]
+  python make_copy.py <task folder> <out folder> [--check | --record]
 
 <out>/repo is a git archive of the task's base commit without .my, .claude or the skills, committed once on its own (the
 scorer and `why` diff against it; the agent may not use git). The suite's project is built; when the task asks for a
@@ -9,8 +9,11 @@ green run, the feature runs green on the copy first, through the bridge, so its 
 the seed patch is applied, uncommitted (and kept as refs/bench/seeded for the scorer), and the bridge is copied to
 <out>/mcp.py.
 
---check runs the feature once more on the seeded copy and says whether it fails as task.json says. Use it on a copy made
-for checking only: its failing run would be the agent's first.
+--check runs the feature once more on the seeded copy and says whether it fails as task.json says; --record writes what
+it saw into task.json (fails and passes) instead. Use either on a copy made for checking only: its failing run would be
+the agent's first. A task without a seed (a question, a scenario to write) is copied and built only.
+
+task.json's env (BRUINET_HEAD=bunit for the web suite) and suite go to every run, as they go to the agent.
 """
 import io
 import json
@@ -54,9 +57,12 @@ def bridge_run(out, task, build):
     """The feature run once through the bridge (all tools); each scenario's name and status, and its failed step's line."""
     calls = os.path.join(out, "make-copy-run.json")
     feature = os.path.join(out, "repo", task["feature"]).replace("\\", "/")
+    arguments = {"path": feature, "build": build}
+    if task.get("suite"):
+        arguments["suite"] = task["suite"]
     with open(calls, "w", encoding="utf-8") as file:
-        json.dump([{"tool": "run_scenario", "arguments": {"path": feature, "build": build}}], file)
-    env = dict(os.environ, MCP_SOLUTION=os.path.join(out, "repo"), MCP_PROFILE="all")
+        json.dump([{"tool": "run_scenario", "arguments": arguments}], file)
+    env = dict(os.environ, MCP_SOLUTION=os.path.join(out, "repo"), MCP_PROFILE="all", **task.get("env", {}))
     env.pop("MCP_LOG", None)
     done = subprocess.run([sys.executable, os.path.join(out, "mcp.py"), "calls", calls], capture_output=True, text=True,
                           encoding="utf-8", errors="replace", env=env)
@@ -74,6 +80,7 @@ def main():
         raise SystemExit(__doc__)
     task_folder, out = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
     check = "--check" in sys.argv[3:]
+    record = "--record" in sys.argv[3:]
     with open(os.path.join(task_folder, "task.json"), encoding="utf-8") as file:
         task = json.load(file)
 
@@ -111,12 +118,29 @@ def main():
             raise SystemExit(f"The green run did not pass: {green}")
         print(f"green run: {len(green)} scenarios passed")
 
-    run(GIT + ["apply", "--whitespace=nowarn", os.path.join(task_folder, "seed.patch")], repo)
+    seed = os.path.join(task_folder, "seed.patch")
+    if not os.path.exists(seed):
+        run(GIT + ["update-ref", "refs/bench/seeded", "HEAD"], repo)
+        print("no seed: the copy is the base")
+        return
+
+    run(GIT + ["apply", "--whitespace=nowarn", seed], repo)
     print(f"seeded: {run(GIT + ['status', '--short'], repo).stdout.strip().count(chr(10)) + 1} files changed")
 
     # The seeded tree kept as a commit outside the branch (HEAD stays the base): the scorer diffs the agent's work against it.
     seeded = run(GIT + ["stash", "create"], repo).stdout.strip()
     run(GIT + ["update-ref", "refs/bench/seeded", seeded], repo)
+
+    if record:
+        seeded = bridge_run(out, task, build=True)
+        task["fails"] = [{"scenario": name, "line": line} for name, (status, line) in seeded.items() if status == "failed"]
+        task["passes"] = [name for name, (status, _) in seeded.items() if status == "passed"]
+        with open(os.path.join(task_folder, "task.json"), "w", encoding="utf-8") as file:
+            json.dump(task, file, indent=2)
+            file.write("\n")
+        print(f"recorded: {len(task['fails'])} fail, {len(task['passes'])} pass, {len(seeded) - len(task['fails']) - len(task['passes'])} other")
+        for name, (status, line) in seeded.items():
+            print(f"  {status:8} {line or '':>4}  {name}")
 
     if check:
         seeded = bridge_run(out, task, build=True)

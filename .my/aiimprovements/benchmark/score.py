@@ -2,10 +2,11 @@
 Scores one benchmark run (benchmark/plan.md, step 4).
 
   python score.py <task folder> <copy folder> <call log> --setup <all|before|...> --run <label>
-                  [--tokens N] [--tool-uses N] [--seconds N] [--results <file>]
+                  [--tokens N] [--tool-uses N] [--seconds N] [--answer <file>] [--results <file>]
 
 Solved when the expected scenarios pass on a fresh build of the copy, a file of changeAnyOf changed since the seed, and
-nothing under mustNotChange did (expect.json). The changes are the copy's working tree against refs/bench/seeded (the
+nothing under mustNotChange did (expect.json); each part only when expect.json has it. A question task (answer) is
+solved when every expected text is in the agent's answer (--answer, its final message), case aside. The changes are the copy's working tree against refs/bench/seeded (the
 seeded tree make_copy.py kept), new files included. The tool calls come from the bridge's log (MCP_LOG), not from the
 agent; tokens, the agent's own tool uses and seconds come from the run's notification, passed in.
 
@@ -60,6 +61,7 @@ def main():
     parser.add_argument("--tokens", type=int)
     parser.add_argument("--tool-uses", type=int)
     parser.add_argument("--seconds", type=int)
+    parser.add_argument("--answer")
     parser.add_argument("--results", default=os.path.join(HERE, "results.jsonl"))
     args = parser.parse_args()
 
@@ -73,10 +75,19 @@ def main():
     changed = changed_since_seed(repo)
     forbidden = [path for path in changed if any(fnmatch.fnmatch(path, pattern) for pattern in expect.get("mustNotChange", []))]
     fixed = [path for path in changed if path in expect.get("changeAnyOf", [])]
+    fixed_ok = bool(fixed) or "changeAnyOf" not in expect
 
     # The scenarios on a fresh build, through the bridge, as the agent's own runs went.
-    ran = make_copy.bridge_run(out, {"feature": expect["pass"]["feature"]}, build=True)
-    failing = [name for name in expect["pass"]["scenarios"] if (ran.get(name) or ("missing",))[0] != "passed"]
+    failing = []
+    if "pass" in expect:
+        ran = make_copy.bridge_run(out, {"feature": expect["pass"]["feature"], "suite": expect["pass"].get("suite"), "env": task.get("env", {})}, build=True)
+        failing = [name for name in expect["pass"]["scenarios"] if (ran.get(name) or ("missing",))[0] != "passed"]
+
+    # A question's answer: every expected text in the agent's final message.
+    missing = []
+    if "answer" in expect:
+        answer = open(args.answer, encoding="utf-8").read().lower() if args.answer and os.path.exists(args.answer) else ""
+        missing = [text for text in expect["answer"] if text.lower() not in answer]
 
     result = {
         "at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
@@ -84,9 +95,10 @@ def main():
         "heldOut": task.get("heldOut", False),
         "setup": args.setup,
         "run": args.run,
-        "solved": not failing and bool(fixed) and not forbidden,
+        "solved": not failing and fixed_ok and not forbidden and not missing,
         "scenariosFailing": failing,
-        "fixedFile": bool(fixed),
+        "fixedFile": fixed_ok,
+        "answerMissing": missing,
         "forbiddenChanged": forbidden,
         "changed": changed,
         **calls_of(args.log),

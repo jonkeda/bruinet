@@ -1,0 +1,25 @@
+diff --git b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoListViewModel.cs a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoListViewModel.cs
+index 54223bdf..eb3f66f5 100644
+--- b/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoListViewModel.cs
++++ a/samples/Todo/src/Bruinet.Samples.Todo.Core/ViewModels/TodoListViewModel.cs
+@@ -218,18 +218,11 @@ public sealed partial class TodoListViewModel : ParentViewModel
+     private async Task SyncAsync()
+     {
+         _isLoading = true;
++        UpdateState();
+ 
+         try
+         {
+-            // Loading only for a sync that takes long: a quick one would flicker.
+-            var slow = Task.Delay(TimeSpan.FromSeconds(3));
+-            var syncing = _sync.SyncAsync();
+-            if (await Task.WhenAny(syncing, slow) == slow)
+-            {
+-                UpdateState();
+-            }
+-
+-            var result = await syncing;
++            var result = await _sync.SyncAsync();
+             _lastSyncError = result.Error;
+             if (!result.Succeeded)
+             {

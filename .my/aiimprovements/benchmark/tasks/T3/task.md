@@ -1,0 +1,1 @@
+In the Todo MAUI app's acceptance suite (suite Bruinet.Samples.Todo.Uat), the scenario "TOD.03.1 Tapping a row opens its detail with all its fields" in samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.03-read-a-todo.feature.md fails. Fix the app (not the tests, feature files or page objects) so it passes, and confirm all TOD.03 scenarios pass.
