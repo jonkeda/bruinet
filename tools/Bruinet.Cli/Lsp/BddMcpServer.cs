@@ -84,7 +84,7 @@ public sealed class BddMcpServer : IDisposable
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text). Read without a screenshot; where to look when a step is about to fail.", Schema()),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
-        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("where_is", "Where a page object's control is made: the page object member's file and line, the locator value it finds by, and the lines of the app's sources (.razor, .cshtml, XAML, code) that render an element with that value, test-id attributes first. Where to change the app or the page object when a control is not found or wrong.", Schema(("page", "string", "The page, as list_pages names it; required."), ("control", "string", "The control, as list_pages names it; required."), ("suite", "string", "The suite; its only one when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, the message, and the app source lines that make the element its locator names (appSource; where_is gives one control's). run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -886,6 +886,7 @@ public sealed class BddMcpServer : IDisposable
             throw new ToolProblem("No failed run of it has a trace: run it with run_scenario (a run with trace: off keeps none).");
         }
 
+        var newest = _server.NewestRuns(uri, suite).GetValueOrDefault(name);
         var green = Bruinet.Uat.UatTraceDiff.LastGreen(failing.TracePath!)
             ?? throw new ToolProblem($"No run of it passed before the failure of {failing.At:u}: there is no green run to compare with. get_trace gives what the failing run did.");
         var (now, then) = (Bruinet.Uat.UatTraceDiff.Read(failing.TracePath!), Bruinet.Uat.UatTraceDiff.Read(green));
@@ -896,8 +897,11 @@ public sealed class BddMcpServer : IDisposable
 
         var difference = Bruinet.Uat.UatTraceDiff.Compare(now, then);
         var at = Math.Max(difference.Index, 0);
-        var (touching, earlier, other, gitNote) = ChangedFiles(
+        var suiteFolder = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } config ? Path.GetDirectoryName(config)! : _solutionDir;
+        var files = ChangedFiles(
+            suiteFolder,
             (string?)then["commit"],
+            (string?)now["commit"],
             StepNames(now, at, at).Concat(StepNames(then, at, at)).ToList(),
             StepNames(now, 0, at - 1).ToList());
         return new
@@ -909,13 +913,14 @@ public sealed class BddMcpServer : IDisposable
             Step = difference.Index < 0 ? null : new { difference.Line, difference.Text, difference.Index },
             difference.Differences,
             Slower = difference.Slower.Count == 0 ? null : difference.Slower,
-            Files = new { Touching = touching, Earlier = earlier, Other = other.Count, First = other.Take(10) },
+            Files = files.Answer,
             Note = string.Join(" ", new[]
             {
-                difference.Kind == "none" ? "The failing run's steps match the green one's: get_failure gives the failure." : null,
-                gitNote,
-                "SQL is not compared: the trace does not keep it.",
-            }.OfType<string>()),
+                newest is { Status: "passed" } && newest.At > failing.At ? $"Its newest run passed ({newest.At:u}): this is an older failure." : null,
+                difference.Kind == Bruinet.Uat.UatTraceDiff.None ? "The failing run's steps match the green one's: get_failure gives the failure." : null,
+                Bruinet.Uat.UatTraceDiff.ReadPages(then) ? null : "Page values were not compared: the green run did not read pages (run_scenario's trace: all).",
+                files.Note,
+            }.OfType<string>()) is { Length: > 0 } note ? note : null,
         };
 
         static string? Short(string? commit) => commit is { Length: > 8 } ? commit[..8] : commit;
@@ -938,66 +943,45 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // The files changed since a commit (the working tree's too, new ones included): those that touch the step where the
-    // runs part, those that touch an earlier step of the scenario (a cause can come before its symptom), and the others. A
-    // file touches a step when its name has every word of a page the step drove (TodoDetailViewModel.cs for
-    // TodoDetailPage), or its text names a control the step drove, quoted.
-    private (List<string> Touching, List<string> Earlier, List<string> Other, string? Note) ChangedFiles(
-        string? commit, IReadOnlyList<(string Name, bool IsPage)> step, IReadOnlyList<(string Name, bool IsPage)> before)
+    // The files changed since the green run's commit (to the failing run's when HEAD moved on since, else to the working tree,
+    // new files too), in the repository the suite is in: those that touch the step where the runs part, those that touch an
+    // earlier step of the scenario (a cause can come before its symptom), and how many others. Bounded: 2000 files read
+    // at most, 20 named in each list.
+    private static WhyFiles ChangedFiles(string folder, string? green, string? failing, IReadOnlyList<(string Name, bool IsPage)> step, IReadOnlyList<(string Name, bool IsPage)> before)
     {
-        if (commit is null)
+        if (green is null)
         {
-            return ([], [], [], "The green run's commit is not known (not a git checkout): no files compared.");
+            return new WhyFiles([], [], [], "The green run's commit is not known (not a git checkout): no files compared.");
         }
 
-        var shortCommit = commit[..Math.Min(8, commit.Length)];
+        var since = green[..Math.Min(8, green.Length)];
         List<string> changed;
         string root;
         try
         {
-            root = Bruinet.Cli.Sql.SqlCommands.GitText(_solutionDir, "rev-parse", "--show-toplevel").Trim();
-            changed = [.. Lines(Bruinet.Cli.Sql.SqlCommands.GitText(root, "diff", "--name-only", commit))
-                .Concat(Lines(Bruinet.Cli.Sql.SqlCommands.GitText(root, "ls-files", "--others", "--exclude-standard")))
-                .Distinct(StringComparer.Ordinal)];
+            root = Bruinet.Cli.Sql.SqlCommands.GitText(folder, "rev-parse", "--show-toplevel").Trim();
+            var head = Bruinet.Cli.Sql.SqlCommands.GitText(root, "rev-parse", "HEAD").Trim();
+            var toFailing = failing is not null && !string.Equals(head, failing, StringComparison.OrdinalIgnoreCase);
+            changed = [.. Lines(toFailing
+                    ? Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "diff", "--name-only", green, failing!, "--")
+                    : Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "diff", "--name-only", green, "--"))
+                .Concat(toFailing ? [] : Lines(Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "ls-files", "--others", "--exclude-standard")))
+                .Distinct(StringComparer.Ordinal)
+                .Take(2000)];
         }
         catch (Exception exception) when (exception is InvalidOperationException or System.ComponentModel.Win32Exception)
         {
-            return ([], [], [], $"The files since {shortCommit} could not be listed ({exception.Message}).");
+            return new WhyFiles([], [], [], $"The files since {since} could not be listed ({exception.Message}).");
         }
 
-        var touching = changed.Where(file => Touches(file, step)).ToList();
-        var earlier = changed.Except(touching).Where(file => Touches(file, before)).ToList();
-        return (touching, earlier, [.. changed.Except(touching).Except(earlier)],
-            changed.Count == 0 ? $"No file changed since {shortCommit}: the difference is in data, timing or the environment." : null);
-
-        bool Touches(string file, IReadOnlyList<(string Name, bool IsPage)> names)
-        {
-            var words = Words(Path.GetFileNameWithoutExtension(file));
-            return names.Any(name => name.IsPage && Words(name.Name) is { Count: > 0 } page && page.IsSubsetOf(words))
-                || Names(Path.Combine(root, file), [.. names.Where(name => !name.IsPage && IdLike(name.Name)).Select(name => name.Name).Distinct(StringComparer.Ordinal)]);
-        }
+        var (touching, earlier, other) = WhyFiles.Sort(changed, file => Path.Combine(root, file), step, before);
+        return new WhyFiles(touching, earlier, other, changed.Count == 0 ? $"No file changed since {since}: the difference is in data, timing or the environment." : null);
 
         static IEnumerable<string> Lines(string text) => text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-
-        // A control's test id, not a word any code may quote ("Delete", "Back"): TodoDetail_Delete, counter-title, SaveButton.
-        static bool IdLike(string name) => name.Contains('_', StringComparison.Ordinal) || name.Contains('-', StringComparison.Ordinal) || Words(name).Count > 1;
-
-        static bool Names(string path, IReadOnlyList<string> names)
-        {
-            try
-            {
-                return names.Count > 0 && File.Exists(path) && new FileInfo(path).Length < 1_000_000 && File.ReadAllText(path) is var text
-                    && names.Any(name => text.Contains($"\"{name}\"", StringComparison.Ordinal) || text.Contains($"'{name}'", StringComparison.Ordinal));
-            }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
-            {
-                return false;
-            }
-        }
     }
 
     // A name's words, lower case, without the ones every page has: "TodoDetailPage" and "Todo Detail" give todo, detail.
-    private static HashSet<string> Words(string name)
+    internal static HashSet<string> Words(string name)
         => [.. System.Text.RegularExpressions.Regex.Matches(name, "[A-Z]?[a-z]+|[A-Z]+(?![a-z])|[0-9]+")
             .Select(word => word.Value.ToLowerInvariant())
             .Where(word => word is not ("page" or "view" or "test" or "tests" or "control"))];

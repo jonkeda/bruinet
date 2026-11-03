@@ -11,7 +11,7 @@ namespace Bruinet.Bdd.Preview;
 /// <param name="At">When the report was written.</param>
 public sealed record BddScenarioRun(string Scenario, string Status, long DurationMs, string? EvidencePath, IReadOnlyList<BddStepRun> Steps, DateTimeOffset At)
 {
-    /// <summary>The step trace written for it (AI8): a failed run's, every run's with <c>BRUINET_TRACE=all</c>; null when none.</summary>
+    /// <summary>The step trace written for it (AI8): a passed or failed run's, unless <c>BRUINET_TRACE=off</c>; null when none.</summary>
     public string? TracePath { get; init; }
 
     /// <summary>Reads a report; null when it is not one this version can read (no step lines).</summary>

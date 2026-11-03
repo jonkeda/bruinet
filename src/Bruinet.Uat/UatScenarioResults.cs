@@ -74,7 +74,7 @@ public static class UatScenarioResults
                     ["file"] = file is null ? null : Path.GetRelativePath(runtime.ConfigDirectory, Path.GetFullPath(file)).Replace('\\', '/'),
                     ["line"] = scenario.Source.Source.LineNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     ["mode"] = mode,
-                    ["why"] = why,
+                    ["detail"] = why,
                 });
             return reportPath;
         }
@@ -85,8 +85,9 @@ public static class UatScenarioResults
         }
     }
 
-    // The step trace (AI8): every scenario that passed or failed (a pass is the next failure's last green, AI9); none with
-    // BRUINET_TRACE=off, or for a skipped one. Whatever stops it leaves the report to be written: null then.
+    // The step trace (AI8): every scenario that passed or failed; a pass's file is its green one (AI9), which a later failure
+    // in the same run folder does not overwrite, and a failure's is __trace.json. None with BRUINET_TRACE=off, or for a
+    // skipped one. Whatever stops it leaves the report to be written: null then.
     private static string? WriteTrace(string path, BddBoundScenario scenario, BddScenarioExecutionResult execution, string status, string configDirectory)
     {
         try
@@ -98,14 +99,14 @@ public static class UatScenarioResults
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            var text = UatScenarioTrace.Build(scenario, execution, status, configDirectory);
-            File.WriteAllText(path, text);
-            if (status == "passed")
+            var written = status == "passed" ? UatTraceDiff.GreenOf(path) : path;
+            File.WriteAllText(written, UatScenarioTrace.Build(scenario, execution, status, configDirectory));
+            if (written != path)
             {
-                File.WriteAllText(UatTraceDiff.GreenOf(path), text);
+                File.Delete(path);
             }
 
-            return path;
+            return written;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
         {

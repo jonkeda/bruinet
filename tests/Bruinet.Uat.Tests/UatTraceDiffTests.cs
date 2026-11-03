@@ -19,17 +19,34 @@ public sealed class UatTraceDiffTests
     }
 
     [Fact]
-    public void TheSameCalls_WithAWaitThatErrored_IsTimingOnly()
+    public void TheSameCalls_WithAWaitThatWasNearItsBudgetWhenGreen_IsTimingOnly()
     {
-        var green = Trace("passed", Step(28, "the dialog asks", "Todo Detail", "Dialog.Exists"));
-        var failing = Trace("failed", Step(28, "the dialog asks", "Todo Detail", "Dialog.Exists", status: "Failed", attempts: 160, result: "error"));
-        failing["steps"]![0]!["message"] = "Timed out after 5 s waiting for the dialog.";
+        var green = Trace("passed", Step(28, "the dialog asks", "Todo Detail", "Dialog.Exists", callMs: 4200));
+        var failing = Trace("failed", Step(28, "the dialog asks", "Todo Detail", "Dialog.Exists", status: "Failed", attempts: 160, result: "error", callMs: 5010));
+        failing["steps"]![0]!["message"] = "No item matched the predicate in collection within 5000 ms.";
 
         Assert.Equal("timing-only", UatTraceDiff.Compare(failing, green).Kind);
+    }
 
-        // The same wait failing on what it found, not on time, is data.
-        failing["steps"]![0]!["message"] = "Expected a row titled 'Keep the piano'. Rows shown: 'Buy milk'.";
+    [Fact]
+    public void AWaitThatWasQuickWhenGreen_AndNowRunsOut_IsDataChanged_WhateverItsMessageSays()
+    {
+        var green = Trace("passed", Step(75, "Todos have Keep the piano", "Todo List", "Todos.WaitRow", callMs: 80));
+        var failing = Trace("failed", Step(75, "Todos have Keep the piano", "Todo List", "Todos.WaitRow", status: "Failed", attempts: 160, result: "error", callMs: 5010));
+        failing["steps"]![0]!["message"] = "No item matched the predicate in collection within 5000 ms.";
+
         Assert.Equal("data-changed", UatTraceDiff.Compare(failing, green).Kind);
+    }
+
+    [Fact]
+    public void LinesMovedByAnEditAbove_AreTheSameSteps()
+    {
+        var green = Trace("passed", Step(24, "I tap Delete", "Todo Detail", "Delete.Tap"), Step(25, "the dialog asks", "Todo Detail", "Dialog.Exists"));
+        var failing = Trace("failed", Step(31, "I tap Delete", "Todo Detail", "Delete.Tap"), Step(32, "the dialog asks", "Todo Detail", "Dialog.Exists", status: "Failed"));
+
+        var difference = UatTraceDiff.Compare(failing, green);
+
+        Assert.Equal(("data-changed", 1, 32), (difference.Kind, difference.Index, difference.Line));
     }
 
     [Fact]
@@ -68,7 +85,7 @@ public sealed class UatTraceDiffTests
     }
 
     [Fact]
-    public void LastGreen_IsTheNewestGreenCopyWrittenBeforeTheFailure_InAnyRun()
+    public void LastGreen_IsTheNewestGreenFileWrittenBeforeTheFailure_InThisRunOrAnEarlierOne()
     {
         var root = Path.Combine(Path.GetTempPath(), "Bruinet", nameof(UatTraceDiffTests), Guid.NewGuid().ToString("N"));
         try
@@ -77,23 +94,20 @@ public sealed class UatTraceDiffTests
             string Write(string run, string status, int minutesAgo)
             {
                 var path = Path.Combine(root, run, relative);
+                path = status == "passed" ? UatTraceDiff.GreenOf(path) : path;
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                 File.WriteAllText(path, Trace(status).ToJsonString());
                 File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddMinutes(-minutesAgo));
-                if (status == "passed")
-                {
-                    path = UatTraceDiff.GreenOf(path);
-                    File.WriteAllText(path, Trace(status).ToJsonString());
-                    File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddMinutes(-minutesAgo));
-                }
-
                 return path;
             }
 
             Write("run1", "passed", 30);
             var green = Write("run2", "passed", 20);
             var now = Write("run2", "failed", 10);
+            Write("run3", "passed", 5);
 
+            // run3 passed after the failure, and run2 is older than run1 by its folder's time: neither matters.
+            Directory.SetLastWriteTimeUtc(Path.Combine(root, "run2"), DateTime.UtcNow.AddDays(-1));
             Assert.Equal(green, UatTraceDiff.LastGreen(now));
         }
         finally
@@ -105,7 +119,7 @@ public sealed class UatTraceDiffTests
     private static JsonObject Trace(string status, params JsonObject[] steps)
         => new() { ["status"] = status, ["steps"] = new JsonArray([.. steps]) };
 
-    private static JsonObject Step(int line, string text, string page, string call, string status = "Passed", long ms = 100, int attempts = 1, string result = "success", string? value = null)
+    private static JsonObject Step(int line, string text, string page, string call, string status = "Passed", long ms = 100, int attempts = 1, string result = "success", string? value = null, int callMs = 50)
     {
         var (control, action) = (call.Split('.')[0], call.Split('.')[1]);
         var step = new JsonObject
@@ -116,7 +130,7 @@ public sealed class UatTraceDiffTests
             ["status"] = status,
             ["durationMs"] = ms,
             ["page"] = page,
-            ["calls"] = new JsonArray(new JsonObject { ["page"] = page, ["control"] = control, ["action"] = action, ["ms"] = 50, ["attempts"] = attempts, ["result"] = result }),
+            ["calls"] = new JsonArray(new JsonObject { ["page"] = page, ["control"] = control, ["action"] = action, ["ms"] = callMs, ["attempts"] = attempts, ["result"] = result }),
         };
         if (value is not null)
         {

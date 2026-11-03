@@ -16,12 +16,12 @@ public sealed record StepTraceCall(string Page, string Control, string Action, l
 /// <summary>
 /// The control calls of each step (AI8): kept with the step's scope, so a scenario's trace can say what each of its steps
 /// drove, however many other tests run beside it. A call made outside a step (a fixture's start, a page read for the
-/// trace) is no step's and is not kept. <c>BRUINET_TRACE=off</c> keeps none; <c>all</c> asks for a trace of every
-/// scenario, a pass too.
+/// trace) is no step's and is not kept. Every scenario that passes or fails is traced; <c>BRUINET_TRACE=off</c> keeps
+/// none; <c>all</c> also reads the page after every step.
 /// </summary>
 public static class StepTrace
 {
-    /// <summary><c>off</c> keeps nothing; <c>all</c> traces passes too; anything else traces failures.</summary>
+    /// <summary><c>off</c> keeps nothing; <c>all</c> reads the page after every step; anything else after a failed one.</summary>
     public const string Variable = "BRUINET_TRACE";
 
     private const int KeptPerStep = 500;
@@ -32,7 +32,7 @@ public static class StepTrace
     /// <summary>Whether calls are kept: not with <c>BRUINET_TRACE=off</c>.</summary>
     public static bool Enabled => !string.Equals(_mode, "off", StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>Whether every scenario is traced, a pass too, with the page read after each step.</summary>
+    /// <summary>Whether the page is read after every step for the trace, not only after a failed one.</summary>
     public static bool All => string.Equals(_mode, "all", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The calls made in <paramref name="step"/> (the very scope, not one alike), oldest first; the first 500.</summary>

@@ -173,10 +173,10 @@ public static class TestArtifactManifestWriter
             {
                 builder.AppendLine(CultureInfo.InvariantCulture, $"- {artifact.Kind}: {artifact.Name} ({artifact.Reason}) - {artifact.Path}");
 
-                // A failure since a green run (AI9): where it first went another way.
-                if (artifact.Metadata.GetValueOrDefault("why") is { Length: > 0 } why)
+                // A line more about it, when its writer gave one (a UAT failure: where it parted from its last green run).
+                if (artifact.Metadata.GetValueOrDefault("detail") is { Length: > 0 } detail)
                 {
-                    builder.AppendLine(CultureInfo.InvariantCulture, $"  - why: {why}");
+                    builder.AppendLine(CultureInfo.InvariantCulture, $"  - {detail.ReplaceLineEndings(" ")}");
                 }
             }
 

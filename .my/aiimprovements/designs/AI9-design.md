@@ -1,6 +1,6 @@
 # AI9 design: since last green
 
-Status: **design**, 2026-11-03, branch `ai9-why` off `move`. Open questions are decided by their proposals.
+Status: **built**, 2026-11-03, branch `ai9-why` off `move`. Open questions are decided by their proposals.
 
 ## Outcome
 
@@ -31,12 +31,12 @@ instead of the symptom.
 
 | Piece | Project | What |
 | --- | --- | --- |
-| Pass traces | `Bruinet.Uat` `UatScenarioResults` | every scenario is traced (results are per run folder, so a pass does not overwrite a failure); `all` only adds the page after each step; `off` none |
+| Pass traces | `Bruinet.Uat` `UatScenarioResults` | every scenario that passed or failed is traced; a pass also writes `__trace.green.json` (a warm runner reuses one run folder, so a later failure would overwrite the pass); `all` only adds the page after each step; `off` none |
 | Commit | `Bruinet.Uat` `UatScenarioTrace` | `commit`: the checkout's HEAD when it ran, read from `.git` (no process) |
 | Compare | `Bruinet.Uat` `UatTraceDiff` (new, public) | steps aligned by file, line, call line and text; per pair: page, the controls and actions driven, app events, page values, status; durations only as `slower` |
-| Kind | same | `scenario-changed` (steps differ), `page-changed` (page or controls driven differ), `timing-only` (the same calls, the failing one waited and errored where it passed), else `data-changed` |
+| Kind | same | `scenario-changed` (steps differ), `page-changed` (another page, or a control the green run never drove), `timing-only` (the same calls, a wait that errored and a message that says it timed out), else `data-changed` |
 | Runs | `Bruinet.Cli` `BddRunResults.For(..., accept)` | the newest run of each scenario that passes a filter: the newest failed, the newest passed, each with a trace |
-| Files | `Bruinet.Cli` `BddMcpServer.Why` | `git diff --name-only <green commit>` and untracked files; a file touches the step when its name has every word of a page the step drove (`TodoDetailViewModel.cs` for `TodoDetailPage`) or its text has a control the step drove, quoted |
+| Files | `Bruinet.Cli` `BddMcpServer.Why` | `git diff --name-only <green commit>` and untracked files; a file touches a step when its name has every word of a page the step drove (`TodoDetailViewModel.cs` for `TodoDetailPage`) or its text has an id-like control the step drove, quoted; `touching` for the step where the runs part, `earlier` for the steps before it |
 | Summary | `Bruinet.Uat` `UatScenarioResults`, `Bruinet.Core` `TestArtifactManifestWriter` | a failed scenario's record gets `why` (step and kind against the newest green trace of earlier runs, 20 at most); `summary.md` prints it under the failure |
 
 ## Tests

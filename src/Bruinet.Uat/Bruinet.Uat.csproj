@@ -22,6 +22,8 @@
     <PackageReference Include="xunit.extensibility.core" PrivateAssets="all" />
     <PackageReference Include="xunit.extensibility.execution" PrivateAssets="all" />
     <InternalsVisibleTo Include="Bruinet.Uat.Tests" />
+    <InternalsVisibleTo Include="bruinet" />
+    <InternalsVisibleTo Include="Bruinet.Cli.Tests" />
   </ItemGroup>
 
 </Project>

@@ -22,13 +22,20 @@ internal static class WhyCommand
         {
             var text = parsed.GetValue(at)!;
             var colon = text.LastIndexOf(':');
-            if (colon <= 1 || !int.TryParse(text[(colon + 1)..], NumberStyles.None, CultureInfo.InvariantCulture, out var line))
+            // The last colon: a drive letter's (C:) is the first, and no line follows it.
+            if (colon <= 0 || (colon == 1 && char.IsLetter(text[0])) || !int.TryParse(text[(colon + 1)..], NumberStyles.None, CultureInfo.InvariantCulture, out var line))
+            {
                 throw new ArgumentException($"'{text}': give the feature file and the scenario's line, file:line.");
+            }
+
             var path = Path.GetFullPath(text[..colon], io.CurrentDirectory);
             using var server = new BddMcpServer(SolutionFolder(parsed.GetValue(solution), Path.GetDirectoryName(path)!));
             var arguments = new JsonObject { ["path"] = path, ["line"] = line };
             if (parsed.GetValue(suite) is { } name)
+            {
                 arguments["suite"] = name;
+            }
+
             var result = server.Handle(new JsonObject
             {
                 ["jsonrpc"] = "2.0",
@@ -62,9 +69,14 @@ internal static class WhyCommand
         lines.AddRange(why["files"]?["touching"]?.AsArray().Select(item => $"  touches the step: {(string?)item}") ?? []);
         lines.AddRange(why["files"]?["earlier"]?.AsArray().Select(item => $"  touches an earlier step: {(string?)item}") ?? []);
         if ((int?)why["files"]?["other"] is > 0 and var other)
+        {
             lines.Add($"  {other} other files changed");
+        }
+
         if ((string?)why["note"] is { Length: > 0 } note)
+        {
             lines.Add($"  {note}");
+        }
         return string.Join(Environment.NewLine, lines);
     }
 }

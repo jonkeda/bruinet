@@ -55,6 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - MauiUnit is renamed MauiHeadless (`src/MauiHeadless`, package `MauiHeadless`), and Bruinet's head `Bruinet.Maui.MauiUnit` is `Bruinet.Maui.Headless`: `BRUINET_HEAD=headless`, `MauiPlatform.Headless`, `MauiHeads.IsHeadless`, `CreateHeadlessOptions`, `HeadlessPreferences` and `HeadlessSecureStorage`. No release shipped the old names.
 
 ### Added
+- Since last green (AI9): the MCP server's `why` and `bruinet why <file>:<line>` compare a scenario's newest failing run
+  with its last green one, step by step: the first step where they part, a kind (`page-changed`, `data-changed`,
+  `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green run's commit that
+  touch that step or an earlier one. `summary.md` gives the step and kind under a failure. Every scenario that passes or
+  fails is now traced, with its commit, and a pass keeps a green copy.
 - A per-step trace (AI8): a failed scenario writes `step-traces/<feature>__<scenario>__trace.json` beside its report, with
   each step's control calls (duration, attempts), what the app said, and the page's controls after the failed step. The
   MCP server's `get_trace` reads it, a row per step or one step in full. `BRUINET_TRACE=all` (`run_scenario`'s

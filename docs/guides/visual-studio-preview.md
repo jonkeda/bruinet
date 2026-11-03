@@ -270,10 +270,14 @@ VS Code) and any other MCP client:
   where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it
   ended; a step still running after the wait (2 minutes) answers Waiting, and `wait` waits again;
   `step_state` reads the paused page: each control, whether it is shown, and what it shows;
-- `get_trace` gives what a scenario's newest failed run did, step by step: the page, each control call with its
+- `get_trace` gives what a scenario's newest run did, step by step: the page, each control call with its
   duration and attempts (a long call or many attempts is a wait), what the app said, and the page's controls after the
-  failed step; `step` gives one step in full. `run_scenario`'s `trace: all` (`BRUINET_TRACE=all`) traces passes too
-  and reads the page after every step, `off` traces nothing;
+  failed step; `step` gives one step in full. `run_scenario`'s `trace: all` (`BRUINET_TRACE=all`) reads the page after
+  every step, `off` traces nothing;
+- `why` compares a scenario's newest failing run with its last green one, step by step: the first step where they
+  part (its page, the controls it drove, what the app said, what a page showed, its status), a kind (`page-changed`,
+  `data-changed`, `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green
+  run's commit that touch that step or an earlier one; `bruinet why <file>:<line>` prints the same;
 - `where_is` gives where a page's control is made: the page object member's file and line, the test id it finds by,
   and the app lines (`.razor`, `.cshtml`, XAML, code) that render an element with it, the suite's own app first; a
   failure from `get_failure` or `run_scenario` gives the same lines for its locator as `appSource`;

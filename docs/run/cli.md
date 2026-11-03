@@ -60,6 +60,7 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet http stale --recordings <folder>` | The HTTP recordings whose newest replay missed a call or left recorded calls unused; exit 1 when any | [HTTP Replay](../guides/http-replay.md) |
 | `bruinet http diff --recordings <folder> [--base <rev>] [--accept]` | What each re-recorded test's calls changed against git: calls added and gone, statuses and answers; `--accept` marks them read | |
 | `bruinet http reviewed --recordings <folder>` | The gate: HTTP recordings that went in unread; exit 1 when any | |
+| `bruinet why <file>:<line> [--suite <name>] [--json]` | Where a scenario's newest failure first parted from its last green run: the step, the kind of change, and the files changed since that touch it; exit 2 when there is no failure or green run to compare | [Visual Studio Preview](../guides/visual-studio-preview.md) |
 | `bruinet controls generate --input <paths>` | Each `.tpl.cs` to its `.gen.cs` (`--members all\|actions\|state`) | [generator contract](../../.github/skills/maui-control/references/generator-contract.md) |
 | `bruinet version` | The version | |
 

@@ -5,7 +5,7 @@ using Bruinet.Core.Logging;
 namespace Bruinet.Uat;
 
 /// <summary>
-/// A scenario's step trace (AI8), <c>step-traces/&lt;feature&gt;__&lt;scenario&gt;__trace.json</c> beside its report: per step,
+/// A scenario's step trace (AI8; every pass and failure since AI9, with its commit), <c>step-traces/&lt;feature&gt;__&lt;scenario&gt;__trace.json</c> beside its report: per step,
 /// the control calls it made (a wait shows as a long call or many attempts), what the app said, and the page's controls
 /// after it, read after a failed step and, with <c>BRUINET_TRACE=all</c>, after each. Text for an agent; a viewer for
 /// people reads the same file.
@@ -110,31 +110,40 @@ internal static class UatScenarioTrace
                 var head = File.ReadAllText(Path.Combine(gitDir, "HEAD")).Trim();
                 if (!head.StartsWith("ref: ", StringComparison.Ordinal))
                 {
-                    return head;
+                    return Commit(head);
                 }
 
+                // A reftable repository points HEAD at refs/heads/.invalid: its refs are not files to read.
                 var name = head[5..];
+                if (name.EndsWith("/.invalid", StringComparison.Ordinal))
+                {
+                    return null;
+                }
+
                 var common = File.Exists(Path.Combine(gitDir, "commondir")) ? Path.GetFullPath(File.ReadAllText(Path.Combine(gitDir, "commondir")).Trim(), gitDir) : gitDir;
                 foreach (var refs in new[] { gitDir, common })
                 {
                     if (File.Exists(Path.Combine(refs, name)))
                     {
-                        return File.ReadAllText(Path.Combine(refs, name)).Trim();
+                        return Commit(File.ReadAllText(Path.Combine(refs, name)).Trim());
                     }
                 }
 
                 var packed = Path.Combine(common, "packed-refs");
                 return File.Exists(packed)
-                    ? File.ReadLines(packed).Select(line => line.Split(' ')).FirstOrDefault(parts => parts.Length == 2 && parts[1] == name)?[0]
+                    ? Commit(File.ReadLines(packed).Select(line => line.Split(' ')).FirstOrDefault(parts => parts.Length == 2 && parts[1] == name)?[0])
                     : null;
             }
         }
-        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or NotSupportedException or ArgumentException)
         {
             return null;
         }
 
         return null;
+
+        // Only a commit's hex: what was read goes to git as an argument later.
+        static string? Commit(string? text) => text is { Length: >= 7 and <= 64 } && text.All(char.IsAsciiHexDigit) ? text : null;
     }
 
     // Without its empty fields: a smaller file for an agent to read.

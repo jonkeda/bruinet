@@ -101,6 +101,29 @@ public sealed class TestArtifactPathProviderTests
         Directory.Delete(root, recursive: true);
     }
 
+    [Fact]
+    public void ARecordsDetail_IsALineUnderItInTheSummary_OnOneLine()
+    {
+        var run = Path.Combine(Path.GetTempPath(), $"bruinet-results-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(run);
+        var manifest = new TestArtifactManifest { RunId = "run-1" };
+        var suite = new TestArtifactSuite { Name = "Todo.Uat" };
+        suite.Artifacts.Add(new TestArtifactRecord
+        {
+            Kind = "uat-scenario",
+            Name = "TOD.06.3",
+            Path = "uat/TOD.06.3__result.json",
+            Reason = "failed",
+            Metadata = new() { ["detail"] = "first differs from the last green run at line 75 (data-changed):\nstatus: Passed then Failed" },
+        });
+        manifest.Suites.Add(suite);
+
+        TestArtifactManifestWriter.Save(run, manifest);
+
+        Assert.Contains("  - first differs from the last green run at line 75 (data-changed): status: Passed then Failed", File.ReadAllText(Path.Combine(run, "summary.md")));
+        Directory.Delete(run, recursive: true);
+    }
+
     private sealed class ArtifactEnvironment : IDisposable
     {
         private readonly string? _rootDirectory;
