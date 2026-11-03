@@ -5,15 +5,47 @@ across calls.
   python mcp.py tools                      -> the server's instructions and its tools (name, description, arguments)
   python mcp.py calls <file.json>          -> runs [{"tool": "...", "arguments": {...}}, ...] in order on one server,
                                               printing each answer
+
+MCP_LOG=<file> appends one JSON line per call (and one per tools listing), for the benchmark (benchmark/plan.md, step 1):
+  {"at", "bridge", "label", "tool", "argumentBytes", "ms", "error", "hidden", "answerBytes"}
+"bridge" is one id per invocation of this script; "label" is MCP_LABEL (a run's name), when set.
 """
+import datetime
 import json
 import os
 import subprocess
 import sys
+import time
+import uuid
 
 SOLUTION = os.environ.get("MCP_SOLUTION", r"E:\repos\Private\tomorrow")
 SERVER = os.path.join(r"E:\repos\Private\tomorrow", ".bruinet", "mcp", "bruinet.dll")
 HIDDEN = {name for name in os.environ.get("MCP_HIDE", "").split(",") if name}
+LOG = os.environ.get("MCP_LOG")
+LABEL = os.environ.get("MCP_LABEL")
+BRIDGE = uuid.uuid4().hex[:12]
+
+
+def log(tool, arguments, started, error=False, hidden=False, answer=""):
+    """One line of the call log, when MCP_LOG names a file; never fails the call."""
+    if not LOG:
+        return
+    line = {
+        "at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="milliseconds"),
+        "bridge": BRIDGE,
+        "label": LABEL,
+        "tool": tool,
+        "argumentBytes": len(json.dumps(arguments, ensure_ascii=False).encode("utf-8")),
+        "ms": round((time.perf_counter() - started) * 1000),
+        "error": error,
+        "hidden": hidden,
+        "answerBytes": len(answer.encode("utf-8")),
+    }
+    try:
+        with open(LOG, "a", encoding="utf-8") as file:
+            file.write(json.dumps(line) + "\n")
+    except OSError:
+        pass
 
 
 def start():
@@ -65,6 +97,7 @@ def main():
     try:
         init = request(process, 1, "initialize", {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "check", "version": "1"}})
         if sys.argv[1] == "tools":
+            started = time.perf_counter()
             instructions = init["result"].get("instructions", "")
             if HIDDEN:
                 instructions = instructions.replace(" to look at a screen without clicking to it, set_state puts the app in a declared state (list_states);", "")
@@ -73,15 +106,20 @@ def main():
                 instructions = instructions.replace(" for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since;", "")
             print("INSTRUCTIONS:", instructions)
             tools = request(process, 2, "tools/list", {})["result"]["tools"]
+            listing = [f"INSTRUCTIONS: {instructions}"]
             for tool in [tool for tool in tools if tool["name"] not in HIDDEN]:
                 arguments = ", ".join(tool.get("inputSchema", {}).get("properties", {}).keys())
-                print(f"\n- {tool['name']}({arguments}): {tool['description']}")
+                listing.append(f"\n- {tool['name']}({arguments}): {tool['description']}")
+            print("\n".join(listing[1:]))
+            log("(tools)", {}, started, answer="\n".join(listing))
             return
 
         calls = json.load(open(sys.argv[2], encoding="utf-8"))
         for index, call in enumerate(calls, start=3):
+            started = time.perf_counter()
             if call["tool"] in HIDDEN:
                 print(f"== {call['tool']} (error)\nUnknown tool.\n")
+                log(call["tool"], call.get("arguments", {}), started, error=True, hidden=True, answer="Unknown tool.")
                 continue
             answer = request(process, index, "tools/call", {"name": call["tool"], "arguments": call.get("arguments", {})})
             result = answer.get("result", {})
@@ -92,6 +130,7 @@ def main():
                 text = without_key(text, "sinceGreen")
             flag = " (error)" if result.get("isError") else ""
             print(f"== {call['tool']}{flag}\n{text}\n")
+            log(call["tool"], call.get("arguments", {}), started, error=bool(result.get("isError")), answer=text)
     finally:
         process.stdin.close()
         process.terminate()

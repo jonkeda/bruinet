@@ -118,3 +118,9 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 - A task found broken (it fails in both setups for a reason outside the app, or passes unseeded) is fixed in step 5's
   way and all its runs are run again.
 - Results are reported as they are, failures included.
+
+## Progress
+
+| Step | State | Commit | Note |
+| --- | --- | --- | --- |
+| 1 | done | (this commit) | `MCP_LOG` and `MCP_LABEL` in `checks/mcp-bridge.py`; a check run logged its tools listing, a call, a hidden tool and an error, one line each |
