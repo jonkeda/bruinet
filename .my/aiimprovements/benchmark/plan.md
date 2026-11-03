@@ -48,9 +48,9 @@ A task is a folder in `benchmark/tasks/<id>/`:
 
 | File | What |
 | --- | --- |
-| `task.md` | the prompt (the symptom only, names no tool), the app, the suite, the scenario |
-| `seed.patch` | the change that makes it fail, applied on top of the base |
-| `base.md` | the base commit of `move`, and whether the copy gets a green run first (for regressions) |
+| `task.md` | the prompt (the symptom only, names no tool) |
+| `task.json` | the base commit of `move`, the suite's project and feature, whether the copy gets a green run first (for regressions), and which scenarios fail at which line once seeded |
+| `seed.patch` | the change that makes it fail, applied on top of the base, uncommitted |
 | `expect.json` | success: the scenarios that must pass, the files that must change (any of), the files that must not change |
 
 The first eight, four of them held out (never used while changing a tool):
@@ -101,7 +101,7 @@ Each step ends with its output committed and a stop for the owner.
 | --- | --- | --- |
 | 1 | Bridge logging: `MCP_LOG=<file>` writes one JSON line per call (tool, arguments' size, ms, error, answer size) | a run's log has every call it made |
 | 2 | Bridge profiles: `MCP_PROFILE=before|all|without-<item>` from the table above | `before` lists none of the AI tools and strips their fields; `all` changes nothing |
-| 3 | `benchmark/make_copy.py <task> <folder>`: copy, commit, build, green run when `base.md` asks, seed | T1's copy fails as `task.md` says |
+| 3 | `benchmark/make_copy.py <task> <folder> [--check]`: copy, commit, build, green run when `task.json` asks, seed | T1's copy fails as `task.json` says |
 | 4 | `benchmark/score.py <task> <folder> <log>`: solved, counts, a JSON line in `results.jsonl` | T1 scored right for a fixed copy and for an unfixed one |
 | 5 | The eight tasks, each with its patch, prompt and `expect.json`, each checked to fail as described | every task's copy fails as described, and its known fix passes |
 | 6 | Pilot: T1-T4 × `before`, `all` × 1 run | the harness runs end to end; fixes to it only, not to the tools |
@@ -125,3 +125,4 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | --- | --- | --- | --- |
 | 1 | done | (this commit) | `MCP_LOG` and `MCP_LABEL` in `checks/mcp-bridge.py`; a check run logged its tools listing, a call, a hidden tool and an error, one line each |
 | 2 | done | (this commit) | `MCP_PROFILE=all|before|without-<item>` from one table of each item's tools, fields, arguments and instruction phrases; `before` lists 37 of 56 tools and keeps the instructions' sentences about them only; `MCP_HIDE` hides a tool's whole item |
+| 3 | done | (this commit) | `make_copy.py` and task T1 (`task.json` in place of `base.md`); T1's copy in 1.5 minutes: one commit, no `.my`, `.claude` or skills, green 3 of 3, five files seeded, `--check` fails TOD.06.2 at 49 and TOD.06.3 at 71 |
