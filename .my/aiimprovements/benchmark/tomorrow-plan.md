@@ -74,7 +74,8 @@ green run and of `expect.json`, and the prompt says so.
 | --- | --- | --- | --- |
 | 0 | done | 3d9e0b6a | this plan |
 | 1 | done | 314f117c | see "Step 1" below |
-| 2 | done | (this commit) | see "Step 2" below |
+| 2 | done | 7081506f | see "Step 2" below |
+| 3 | done | (this commit) | see "Pilot (step 3)" below |
 
 ## Step 1: the harness on Tomorrow
 
@@ -113,3 +114,26 @@ Findings for step 2:
   writes `.html`), and now inlines the markup's visible text; `WebAppHost.FindBuiltApp` looked above the runner's temp
   copy, so no browser-head scenario ran under `run_scenario` (fixed after the base; the tasks run on bUnit).
 - Disk: a check copy is about 2.5 GB, and four at once left 9 GB free; run at most three at a time.
+
+## Pilot (step 3)
+
+TT1-TT4 × `before`, `all` × 1, three copies at a time (`tomorrow-pilot-results.jsonl`). All eight solved. The harness
+ran end to end with one change (`round.py` writes round 2's runs to their own files); no tool was changed.
+
+| Task | `before` tokens | `all` tokens | `before` s | `all` s | `all`'s tools |
+| --- | --- | --- | --- | --- | --- |
+| TT1 | 103.2k | 93.5k | 231 | 214 | `why` 5, `run_scenario` 2 |
+| TT2 | 86.8k | 82.1k | 132 | 120 | `run_scenario` 2 |
+| TT3 | 87.8k | 80.9k | 146 | 126 | `why` 3, `run_scenario` 1 |
+| TT4 | 101.3k | 94.5k | 192 | 56 | `step_move` 9, `step_state` 2, `step_screenshot` 2, `step_start` 1 |
+
+- `all` was cheaper on every task, by 5-10%, and faster on every one; TT4 three times as fast.
+- `why` was the first move on both regressions (TT1, TT3) and named the changed files; `run_scenario` replaced
+  `dotnet test` everywhere.
+- Without the tools, TT4's agent wrote a probe feature into the build output that fails on purpose, so the suite
+  saved the page. The same trick as round 1's T4.
+- The tasks are still not hard: the Game unit tests fail on TT1 and TT2's causes, and the doc comments of
+  `Shelves.Toggle` and `CompareItems` state the rule each seed breaks. That is Tomorrow as it is; the main round keeps
+  the tasks, and the report says so.
+- Bruinet: `run_scenario` runs an `@browser` scenario on bUnit, where it fails (PLT.30.2), while `dotnet test` skips
+  it. Two agents spent a call on it. To fix after the round.

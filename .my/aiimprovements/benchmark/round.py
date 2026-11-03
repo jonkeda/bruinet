@@ -43,6 +43,13 @@ def bench(task):
         return TOMORROW_BENCH if json.load(file).get("repo") == "tomorrow" else BENCH
 
 
+def results_file(run, task):
+    """Round 1's main round, its T4 rerun (R...), and round 2 on Tomorrow: its pilot (P...) and its main round."""
+    if bench(task) == TOMORROW_BENCH:
+        return "tomorrow-pilot-results.jsonl" if run.startswith("P") else "tomorrow-results.jsonl"
+    return "rerun-results.jsonl" if run.startswith("R") else "results.jsonl"
+
+
 def prepare(run):
     task, setup = parts(run)
     out = os.path.join(bench(task), run)
@@ -63,7 +70,7 @@ def score(run, tokens, tool_uses, ms):
     report = os.path.join(out, "report.txt")
     command = [sys.executable, os.path.join(HERE, "score.py"), os.path.join(HERE, "tasks", task), out, os.path.join(out, "calls.jsonl"),
                "--setup", setup, "--run", run, "--tokens", tokens, "--tool-uses", tool_uses, "--seconds", str(round(int(ms) / 1000)),
-               "--answer", report, "--results", os.path.join(HERE, "rerun-results.jsonl" if run.startswith("R") else "results.jsonl")]
+               "--answer", report, "--results", os.path.join(HERE, results_file(run, task))]
     done = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if done.returncode != 0:
         raise SystemExit(f"{run}: scoring failed\n{done.stdout[-800:]}\n{done.stderr[-800:]}")
