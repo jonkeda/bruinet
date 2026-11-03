@@ -14,3 +14,4 @@ You may read, search and edit files, and run dotnet (build, test){env_note}. Do 
 anything outside the two folders above. Keep to about 40 tool calls in all.
 
 At the end, report what was wrong and what you changed (file and line), and whether the scenarios now pass.
+Also write that final report to report.txt in {client}.
