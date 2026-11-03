@@ -14,7 +14,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 BASE = "a5203d47"
 TODO = "samples/Todo"
-MAUI = {"project": f"{TODO}/tests/Bruinet.Samples.Todo.Uat", "suite": "Bruinet.Samples.Todo.Uat", "env": {}}
+# The head goes to the agent's own dotnet test too, not only to the tool server's runs (the pilot ran the Windows app).
+MAUI = {"project": f"{TODO}/tests/Bruinet.Samples.Todo.Uat", "suite": "Bruinet.Samples.Todo.Uat", "env": {"BRUINET_HEAD": "headless"}}
 WEB = {"project": f"{TODO}/tests/Bruinet.Samples.Todo.Web.Uat", "suite": "Bruinet.Samples.Todo.Web.Uat", "env": {"BRUINET_HEAD": "bunit"}}
 FEATURES = f"{TODO}/tests/Bruinet.Samples.Todo.Uat/Features"
 APP_ONLY = ["samples/Todo/tests/**", "src/**", "tools/**", "tests/**"]

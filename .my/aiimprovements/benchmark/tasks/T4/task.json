@@ -4,7 +4,9 @@
   "heldOut": false,
   "project": "samples/Todo/tests/Bruinet.Samples.Todo.Uat",
   "suite": "Bruinet.Samples.Todo.Uat",
-  "env": {},
+  "env": {
+    "BRUINET_HEAD": "headless"
+  },
   "feature": "samples/Todo/tests/Bruinet.Samples.Todo.Uat/Features/TOD.01-see-my-todos.feature.md",
   "green": false,
   "base": "a5203d47",

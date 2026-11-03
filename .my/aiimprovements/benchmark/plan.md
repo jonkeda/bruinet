@@ -128,3 +128,37 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | 3 | done | (this commit) | `make_copy.py` and task T1 (`task.json` in place of `base.md`); T1's copy in 1.5 minutes: one commit, no `.my`, `.claude` or skills, green 3 of 3, five files seeded, `--check` fails TOD.06.2 at 49 and TOD.06.3 at 71 |
 | 4 | done | (this commit) | `score.py`: solved from a fresh run of `expect.json`'s scenarios and the changes against `refs/bench/seeded` (kept by `make_copy.py`), counts from the bridge log; T1 scored unsolved unfixed, solved fixed, unsolved with a test file touched |
 | 5 | done | (this commit) | T2-T8 from `make_tasks.py` (each task's edits, its seed and its known fix); `check_task.py` passed all seven (T1 was checked in steps 3 and 4): each seeded copy fails (recorded in `task.json`), scores unsolved as it is and solved fixed. T5's first bug (an HTTP timeout) did not fail, because the stub's delay is not on the real clock; its bug is now the Loading state's |
+| 6 | done | (this commit) | Pilot, T1-T4 × `before`, `all` × 1 (8 runs, about 0.7M tokens): all eight solved; the numbers are in `pilot-results.jsonl` and below. The harness ran end to end after two fixes (below). No tool was changed |
+
+## Pilot (step 6)
+
+One run each, so these numbers decide nothing (see Measures).
+
+| Task | Setup | Solved | Tool calls | Agent's tool uses | Tokens | Seconds |
+| --- | --- | --- | --- | --- | --- | --- |
+| T1 | before | yes | 0 | 25 | 105,626 | 302 |
+| T1 | all | yes | 2 (`why`, `run_scenario`) | 7 | 76,070 | 148 |
+| T2 | before | yes | 0 | 7 | 77,900 | 52 |
+| T2 | all | yes | 2 (`run_scenario`) | 8 | 76,376 | 75 |
+| T3 | before | yes | 0 | 9 | 84,381 | 88 |
+| T3 | all | yes | 2 (`run_scenario`) | 9 | 80,213 | 70 |
+| T4 | before | yes | 3 (listings) | 24 | 112,814 | 153 |
+| T4 | all | yes | 17 (4 `set_state`, 4 `step_move`, 3 `step_state`, ...) | 15 | 85,152 | 84 |
+
+Harness faults found and fixed (allowed in the pilot):
+
+- The agent's own `dotnet test` had no head, so `before` ran the Windows app; every MAUI task's `env` now names
+  `BRUINET_HEAD=headless`, which the prompt passes on.
+- The copies' paths were too long for the Windows app's build and SQLite (T1 `before` got round it with `subst`); copies
+  now go to `TestResults/bench/` in this checkout, which git ignores. T1's runs were made before both fixes.
+
+Tool faults seen, for after the report (rule: no tool changes in steps 6-8):
+
+- `set_state`'s `testData` refused "three-todos", which `list_test_sets` names; it worked with the set in the state's
+  phrase (T4 `all`, 4 tries).
+- `step_screenshot` writes its tree outside the solution's folders, where the agent may not read.
+- `step_state` gives no rows of a list (known since AI10).
+
+What the pilot suggests, to be tested by the main round: every task was solvable without the tools; `all` cost less
+where `before` had to find its own way to run or see the app (T1, T4), and the same where a test run was the obvious
+first move (T2, T3).
