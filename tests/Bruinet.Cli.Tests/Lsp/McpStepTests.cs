@@ -130,6 +130,15 @@ public sealed class McpStepTests : IDisposable
             ["params"] = new JsonObject { ["name"] = tool, ["arguments"] = arguments },
         }.ToJsonString())!["result"]!.AsObject();
 
+    // A head without pixels (bUnit) saves the page's markup: step_screenshot gives the text it shows, not 100 KB of attributes.
+    [Fact]
+    public void AScreenshotsMarkup_IsGivenAsTheTextItShows()
+    {
+        var text = BddMcpServer.VisibleText("<div class=\"x\"><style>.a{}</style><span>45</span> &amp; <b>% to hit</b><script>var a=1;</script></div>");
+
+        Assert.Equal("45\n&\n% to hit", text);
+    }
+
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;
 
     private static JsonNode Answer(JsonObject result) => JsonNode.Parse(Text(result))!;

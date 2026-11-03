@@ -82,7 +82,7 @@ public sealed class BddMcpServer : IDisposable
         ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text); with no page current, the page that says it is loaded. Read without a screenshot; where to look when a step is about to fail.", Schema()),
-        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path in the solution's TestResults/step-screenshots, to look at; a head without pixels gives the screen's element tree, inline as tree.", Schema()),
+        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path in the solution's TestResults/step-screenshots, to look at; a head without pixels gives the screen's element tree or markup, inline as tree.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
         ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -561,15 +561,26 @@ public sealed class BddMcpServer : IDisposable
     }
 
     // A paused app's screenshot, copied beside the solution (the runner saves it under its shadow copy, in the temp folder,
-    // which an agent may not read); a head without pixels saves the element tree as text, given inline too.
+    // which an agent may not read); a head without pixels saves the element tree as text or its markup (bUnit), given inline too.
     private object Screenshot(string taken)
     {
         var folder = Path.Combine(_solutionDir, "TestResults", "step-screenshots");
         Directory.CreateDirectory(folder);
         var copy = Path.Combine(folder, Path.GetFileName(taken));
         File.Copy(taken, copy, overwrite: true);
-        var tree = copy.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? Cap(File.ReadAllText(copy), 6000) : null;
+        var tree = copy.EndsWith(".txt", StringComparison.OrdinalIgnoreCase) ? Cap(File.ReadAllText(copy), 6000)
+            : copy.EndsWith(".html", StringComparison.OrdinalIgnoreCase) ? Cap(VisibleText(File.ReadAllText(copy)), 6000)
+            : null;
         return new { Screenshot = copy, Tree = tree };
+    }
+
+    // A page's markup as the text it shows, one piece a line: a bench's markup is mostly attributes (100 KB for 5 KB of text).
+    internal static string VisibleText(string markup)
+    {
+        var shown = System.Text.RegularExpressions.Regex.Replace(markup, @"<(script|style)\b.*?</\1>", string.Empty,
+            System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        shown = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(shown, "<[^>]+>", "\n"));
+        return string.Join("\n", shown.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0));
     }
 
     // A value written into a scenario: one line, no table bar or backtick, so it adds no step, cell or code fence.

@@ -102,10 +102,12 @@ public class ScreenshotService : IScreenshotService
             var path = Path.Combine(_settings.OutputDirectory, filename);
             _save(path);
 
-            // A context with no pixels saved its tree as text beside it (TreePathFor): that file is the evidence.
-            if (!File.Exists(path) && File.Exists(TreePathFor(path)))
+            // A context with no pixels saved its tree as text beside it (TreePathFor), or its markup (bUnit's .html): that
+            // file is the evidence.
+            if (!File.Exists(path))
             {
-                path = TreePathFor(path);
+                path = File.Exists(TreePathFor(path)) ? TreePathFor(path)
+                    : Directory.GetFiles(Path.GetDirectoryName(path)!, Path.GetFileNameWithoutExtension(path) + ".*").FirstOrDefault() ?? path;
             }
             _logger.LogScreenshot(testMethod, testClass, path, reason);
             TestArtifactManifestWriter.RecordArtifact(

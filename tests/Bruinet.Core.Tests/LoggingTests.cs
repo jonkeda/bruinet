@@ -152,4 +152,20 @@ public sealed class ScreenshotServiceTests : IDisposable
         Assert.EndsWith(".tree.txt", saved);
         Assert.Contains("Button #Save", File.ReadAllText(saved));
     }
+
+    // bUnit's context saves the page's markup under the screenshot's name (the benchmark's Tomorrow round: a .png path
+    // given that was never written).
+    [Fact]
+    public void AContextThatSavesMarkup_GivesThatFile()
+    {
+        var service = new Bruinet.Core.Services.ScreenshotService(
+            path => File.WriteAllText(Path.ChangeExtension(path, ".html"), "<button>Save</button>"),
+            NullTestLogger.Instance,
+            new Bruinet.Core.Configuration.ScreenshotSettings { OutputDirectory = _folder, IncludeTimestamp = false });
+
+        var saved = service.Capture("Tests", "Saves", "paused");
+
+        Assert.EndsWith(".html", saved);
+        Assert.True(File.Exists(saved));
+    }
 }
