@@ -128,7 +128,8 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | 3 | done | (this commit) | `make_copy.py` and task T1 (`task.json` in place of `base.md`); T1's copy in 1.5 minutes: one commit, no `.my`, `.claude` or skills, green 3 of 3, five files seeded, `--check` fails TOD.06.2 at 49 and TOD.06.3 at 71 |
 | 4 | done | (this commit) | `score.py`: solved from a fresh run of `expect.json`'s scenarios and the changes against `refs/bench/seeded` (kept by `make_copy.py`), counts from the bridge log; T1 scored unsolved unfixed, solved fixed, unsolved with a test file touched |
 | 5 | done | (this commit) | T2-T8 from `make_tasks.py` (each task's edits, its seed and its known fix); `check_task.py` passed all seven (T1 was checked in steps 3 and 4): each seeded copy fails (recorded in `task.json`), scores unsolved as it is and solved fixed. T5's first bug (an HTTP timeout) did not fail, because the stub's delay is not on the real clock; its bug is now the Loading state's |
-| 6 | done | (this commit) | Pilot, T1-T4 × `before`, `all` × 1 (8 runs, about 0.7M tokens): all eight solved; the numbers are in `pilot-results.jsonl` and below. The harness ran end to end after two fixes (below). No tool was changed |
+| 6 | done | 239bb4af | Pilot, T1-T4 × `before`, `all` × 1 (8 runs, about 0.7M tokens): all eight solved; the numbers are in `pilot-results.jsonl` and below. The harness ran end to end after two fixes (below). No tool was changed |
+| 7 | done | (this commit) | Main round, 48 runs: `before` solved 24/24, `all` 22/24 (both misses T4); `all` used fewer tokens on every task (median 74.7k against 81.1k), time mixed. See "Main round" below |
 
 ## Pilot (step 6)
 
@@ -162,3 +163,27 @@ Tool faults seen, for after the report (rule: no tool changes in steps 6-8):
 What the pilot suggests, to be tested by the main round: every task was solvable without the tools; `all` cost less
 where `before` had to find its own way to run or see the app (T1, T4), and the same where a test run was the obvious
 first move (T2, T3).
+
+## Main round (step 7)
+
+48 runs (T1-T8 × `before`, `all` × 3), in `results.jsonl`; each run's call log, prompt and report kept in
+`TestResults/bench/kept/<run>` (not in git). Medians per task and setup:
+
+| Task | `before` solved | `all` solved | `before` tokens | `all` tokens | `before` s | `all` s |
+| --- | --- | --- | --- | --- | --- | --- |
+| T1 | 3/3 | 3/3 | 83,971 | 74,778 | 67 | 84 |
+| T2 | 3/3 | 3/3 | 80,705 | 73,412 | 62 | 93 |
+| T3 | 3/3 | 3/3 | 81,745 | 75,436 | 104 | 77 |
+| T4 | 3/3 | 1/3 | 106,280 | 84,250 | 169 | 87 |
+| T5 | 3/3 | 3/3 | 79,915 | 76,481 | 82 | 127 |
+| T6 | 3/3 | 3/3 | 80,525 | 71,905 | 121 | 103 |
+| T7 | 3/3 | 3/3 | 76,842 | 72,867 | 68 | 86 |
+| T8 | 3/3 | 3/3 | 82,461 | 74,679 | 85 | 71 |
+| All | 24/24 | 22/24 | 81,082 | 74,728 | 95 | 86 |
+
+Notes for the report (step 8):
+
+- `all`'s two misses are T4: `set_state` pauses before the app's start-up sync, so the Last Sync label read
+  "Not synced yet"; the third T4 `all` run read it later and was right.
+- Batch 6 of repeat 2 first ran without copies (the copy step failed silently); those four runs were void, not
+  counted, and run again. The copy step now checks each copy.
