@@ -124,3 +124,4 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | Step | State | Commit | Note |
 | --- | --- | --- | --- |
 | 1 | done | (this commit) | `MCP_LOG` and `MCP_LABEL` in `checks/mcp-bridge.py`; a check run logged its tools listing, a call, a hidden tool and an error, one line each |
+| 2 | done | (this commit) | `MCP_PROFILE=all|before|without-<item>` from one table of each item's tools, fields, arguments and instruction phrases; `before` lists 37 of 56 tools and keeps the instructions' sentences about them only; `MCP_HIDE` hides a tool's whole item |
