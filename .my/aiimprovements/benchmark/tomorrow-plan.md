@@ -75,7 +75,8 @@ green run and of `expect.json`, and the prompt says so.
 | 0 | done | 3d9e0b6a | this plan |
 | 1 | done | 314f117c | see "Step 1" below |
 | 2 | done | 7081506f | see "Step 2" below |
-| 3 | done | (this commit) | see "Pilot (step 3)" below |
+| 3 | done | e2dff300 | see "Pilot (step 3)" below |
+| 4 | done | (this commit) | see "Main round (step 4)" below |
 
 ## Step 1: the harness on Tomorrow
 
@@ -137,3 +138,31 @@ ran end to end with one change (`round.py` writes round 2's runs to their own fi
   the tasks, and the report says so.
 - Bruinet: `run_scenario` runs an `@browser` scenario on bUnit, where it fails (PLT.30.2), while `dotnet test` skips
   it. Two agents spent a call on it. To fix after the round.
+
+## Main round (step 4)
+
+TT1-TT4 × `before`, `all` × 3 = 24 runs, three at a time, the setup that goes first alternating
+(`tomorrow-results.jsonl`). No tool or task was changed during the round.
+
+| Task | `before` tokens | `all` tokens | `before` s | `all` s | agent tool calls, `before` / `all` |
+| --- | --- | --- | --- | --- | --- |
+| TT1 | 101.3k | 103.9k | 255 | 228 | 22, 14, 19 / 16, 14, 24 |
+| TT2 | 89.3k | 82.9k | 131 | 120 | 12, 11, 11 / 11, 11, 10 |
+| TT3 | 87.9k | 81.6k | 149 | 121 | 15, 14, 13 / 12, 10, 10 |
+| TT4 | 122.3k | 83.9k | 274 | 63 | 46, 36, 36 / 8, 11, 9 |
+
+(medians of three)
+
+- Solved: `all` 12 of 12; `before` 12 of 12 by the scorer, 11 of 12 by the plan's 40-call limit (M1-TT4-before made
+  46). The scorer records the calls but does not apply the limit; the report applies it to both rounds.
+- Cost: `all` used fewer tokens in 11 of 12 pairs; median 83.4k against 96.2k (13% fewer), and 120 s against 175 s.
+- Only TT4 meets the plan's 30% bar: 31% fewer tokens and a quarter of the time. Without the tools, every TT4 agent
+  built a probe that fails on purpose to get the page saved.
+- TT1 saved nothing (103.9k against 101.3k): `why` named four changed files, and the agents then read them, as the
+  `before` agents read the failing test's area. TT2 and TT3 saved about 7%.
+- Tools used by `all`: `step_move` 45, `why` 19, `run_scenario` 18, `step_screenshot` 8, `step_state` 6,
+  `step_start` 5, `failing` 2, `get_trace` 1, `last_runs` 1. `coverage`, `where_is` and `tests_affected` were never
+  called.
+- Findings for after the round: `run_scenario` runs `@browser` scenarios on bUnit (PLT.30.2 failed in every TT2 and
+  TT3 run with the tools); `step_screenshot`'s text holds Blazor's hidden error banner ("An unhandled error has
+  occurred"), which one agent questioned; Bruinet's runner copies in the temp folder grew to 42 GB.
