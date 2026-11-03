@@ -6,7 +6,8 @@ Makes a benchmark task's copy (benchmark/plan.md, step 3).
 <out>/repo is a git archive of the task's base commit without .my, .claude or the skills, committed once on its own (the
 scorer and `why` diff against it; the agent may not use git). The suite's project is built; when the task asks for a
 green run, the feature runs green on the copy first, through the bridge, so its traces are the last green run's. Then
-the seed patch is applied, uncommitted, and the bridge is copied to <out>/mcp.py.
+the seed patch is applied, uncommitted (and kept as refs/bench/seeded for the scorer), and the bridge is copied to
+<out>/mcp.py.
 
 --check runs the feature once more on the seeded copy and says whether it fails as task.json says. Use it on a copy made
 for checking only: its failing run would be the agent's first.
@@ -15,6 +16,7 @@ import io
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 import tarfile
@@ -30,6 +32,15 @@ def long(path):
     """A Windows path that may pass 260 characters."""
     full = os.path.abspath(path)
     return "\\\\?\\" + full if os.name == "nt" and not full.startswith("\\\\?\\") else full
+
+
+def remove(path):
+    """A folder gone, git's read-only object files too."""
+    def writable(function, failed, _):
+        os.chmod(failed, stat.S_IWRITE)
+        function(failed)
+
+    shutil.rmtree(long(path), onexc=writable)
 
 
 def run(command, cwd, check=True):
@@ -67,7 +78,7 @@ def main():
         task = json.load(file)
 
     if os.path.exists(out):
-        shutil.rmtree(long(out))
+        remove(out)
     repo = os.path.join(out, "repo")
     os.makedirs(repo)
     archive = subprocess.run(["git", "archive", "--format=tar", task["base"]], cwd=REPO, capture_output=True, check=True).stdout
@@ -83,7 +94,7 @@ def main():
                     shutil.copyfileobj(source, copy)
     for gone in LEFT_OUT:
         if os.path.exists(os.path.join(repo, gone)):
-            shutil.rmtree(long(os.path.join(repo, gone)))
+            remove(os.path.join(repo, gone))
     run(GIT + ["init", "-q"], repo)
     run(GIT + ["config", "core.longpaths", "true"], repo)
     run(GIT + ["add", "-A"], repo)
@@ -102,6 +113,10 @@ def main():
 
     run(GIT + ["apply", "--whitespace=nowarn", os.path.join(task_folder, "seed.patch")], repo)
     print(f"seeded: {run(GIT + ['status', '--short'], repo).stdout.strip().count(chr(10)) + 1} files changed")
+
+    # The seeded tree kept as a commit outside the branch (HEAD stays the base): the scorer diffs the agent's work against it.
+    seeded = run(GIT + ["stash", "create"], repo).stdout.strip()
+    run(GIT + ["update-ref", "refs/bench/seeded", seeded], repo)
 
     if check:
         seeded = bridge_run(out, task, build=True)
