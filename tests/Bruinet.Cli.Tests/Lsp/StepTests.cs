@@ -366,6 +366,15 @@ public sealed class StepCounterFixture : IAsyncLifetime
     [BddWhen("the counter taps {control}")]
     public void Taps(string control) => Bruinet.Core.Logging.Timing.Call("Counter", control, "Tap", Bruinet.Core.Logging.Timing.NowMs, 1200, 3, "success");
 
+    /// <summary>A flag a test raises between two runs, so the same scenario passes, then fails another way (AI9).</summary>
+    public static string WhyFlag => Path.Combine(Path.GetTempPath(), "Bruinet", "McpWhyFlag");
+
+    [BddWhen("the counter taps the key the flag says")]
+    public void TapsAsTheFlagSays() => Taps(File.Exists(WhyFlag) ? "Minus" : "Plus");
+
+    [BddThen("the flag is down")]
+    public void FlagIsDown() => Assert.False(File.Exists(WhyFlag), "The flag is up.");
+
     [BddThen("the counter was started")]
     public void WasStarted() => Assert.True(_started, "The fixture's InitializeAsync did not run.");
 

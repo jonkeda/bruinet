@@ -36,6 +36,7 @@ internal static class UatScenarioTrace
             ["file"] = UatScenarioReport.Relative(configDirectory, scenario.Source.Source.FilePath),
             ["line"] = scenario.Source.Source.LineNumber,
             ["status"] = status,
+            ["commit"] = GitHead(configDirectory),
             ["steps"] = new JsonArray([.. execution.Result.Steps.Select(step => (JsonNode?)Step(step, configDirectory))]),
         };
         return Pruned(trace).ToJsonString(Json);
@@ -86,6 +87,54 @@ internal static class UatScenarioTrace
         }
 
         return node;
+    }
+
+    // The commit the checkout was on (AI9 diffs the files since a green run's): .git's HEAD, followed to its ref, read
+    // without running git; null outside a repository.
+    internal static string? GitHead(string folder)
+    {
+        try
+        {
+            for (var at = Path.GetFullPath(folder); at is not null; at = Path.GetDirectoryName(at))
+            {
+                var dotGit = Path.Combine(at, ".git");
+                var gitDir = Directory.Exists(dotGit) ? dotGit
+                    : File.Exists(dotGit) && File.ReadAllText(dotGit).Trim() is var link && link.StartsWith("gitdir:", StringComparison.Ordinal)
+                        ? Path.GetFullPath(link["gitdir:".Length..].Trim(), at)
+                        : null;
+                if (gitDir is null)
+                {
+                    continue;
+                }
+
+                var head = File.ReadAllText(Path.Combine(gitDir, "HEAD")).Trim();
+                if (!head.StartsWith("ref: ", StringComparison.Ordinal))
+                {
+                    return head;
+                }
+
+                var name = head[5..];
+                var common = File.Exists(Path.Combine(gitDir, "commondir")) ? Path.GetFullPath(File.ReadAllText(Path.Combine(gitDir, "commondir")).Trim(), gitDir) : gitDir;
+                foreach (var refs in new[] { gitDir, common })
+                {
+                    if (File.Exists(Path.Combine(refs, name)))
+                    {
+                        return File.ReadAllText(Path.Combine(refs, name)).Trim();
+                    }
+                }
+
+                var packed = Path.Combine(common, "packed-refs");
+                return File.Exists(packed)
+                    ? File.ReadLines(packed).Select(line => line.Split(' ')).FirstOrDefault(parts => parts.Length == 2 && parts[1] == name)?[0]
+                    : null;
+            }
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            return null;
+        }
+
+        return null;
     }
 
     // Without its empty fields: a smaller file for an agent to read.

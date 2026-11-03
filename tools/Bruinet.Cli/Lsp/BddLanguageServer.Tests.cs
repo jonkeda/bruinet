@@ -54,8 +54,9 @@ public sealed partial class BddLanguageServer
     /// <summary>The newest run of each of a feature file's scenarios, by name, as its report has it: for a host that reads the steps.</summary>
     /// <param name="uri">The feature file.</param>
     /// <param name="suite">The suite a linked file runs in; its own when null.</param>
-    internal IReadOnlyDictionary<string, Bruinet.Bdd.Preview.BddScenarioRun> NewestRuns(string uri, string? suite)
-        => RunsOf(Context(Key(uri), suite));
+    /// <param name="accept">Only the runs it takes (the newest that failed, the newest that passed); every run when null.</param>
+    internal IReadOnlyDictionary<string, Bruinet.Bdd.Preview.BddScenarioRun> NewestRuns(string uri, string? suite, Func<Bruinet.Bdd.Preview.BddScenarioRun, bool>? accept = null)
+        => RunsOf(Context(Key(uri), suite), accept);
 
     /// <summary>The scenarios whose heading is at <paramref name="line"/> (an outline's every row), or every one of the file.</summary>
     internal IReadOnlyList<string> ScenarioNames(string uri, int? line)

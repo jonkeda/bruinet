@@ -73,6 +73,14 @@ public sealed class McpRunTests : IDisposable
             When the counter taps Plus
             Then the counter has counted 5 times
             ```
+
+            ## Scenario: Parts
+
+            ```gherkin
+            Given the counter counts
+            When the counter taps the key the flag says
+            Then the flag is down
+            ```
             """);
         _server = new BddMcpServer(_solution);
     }
@@ -143,7 +151,7 @@ public sealed class McpRunTests : IDisposable
 
         var runs = Answer(Call("last_runs", new JsonObject { ["path"] = Feature })).AsArray();
 
-        Assert.Equal(["Complains", "Counts", "Fails", "Starts", "Traces"], runs.Select(run => (string?)run!["scenario"]));
+        Assert.Equal(["Complains", "Counts", "Fails", "Parts", "Starts", "Traces"], runs.Select(run => (string?)run!["scenario"]));
         Assert.Equal("Failed", (string?)runs[2]!["status"], ignoreCase: true);
     }
 
@@ -382,14 +390,53 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void GetTrace_APass_HasNoTrace_AndSaysHowToGetOne()
+    public void GetTrace_ARunWithTraceOff_HasNoTrace_AndSaysWhy()
     {
-        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3, ["trace"] = "off" });
 
         var result = Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 3 });
 
         Assert.True((bool)result["isError"]!);
-        Assert.Contains("trace: all", Text(result), StringComparison.Ordinal);
+        Assert.Contains("trace: off", Text(result), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task Why_AfterAPassThenAFailure_NamesTheFirstStepWhereTheyPart_AndItsKind()
+    {
+        File.Delete(StepCounterFixture.WhyFlag);
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 41 });
+        Directory.CreateDirectory(Path.GetDirectoryName(StepCounterFixture.WhyFlag)!);
+        File.WriteAllText(StepCounterFixture.WhyFlag, "up");
+        try
+        {
+            Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 41 });
+
+            var why = Answer(Call("why", new JsonObject { ["path"] = Feature, ["line"] = 41 }));
+
+            Assert.Equal(("page-changed", 45), ((string)why["kind"]!, (int)why["step"]!["line"]!));
+            Assert.Contains("drove: Minus.Tap, which the green run did not", why["differences"]!.AsArray().Select(item => (string)item!));
+
+            // The command line gives the same, as text.
+            var output = new StringWriter();
+            var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["why", $"{Feature}:41", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
+            Assert.Equal(0, exit);
+            Assert.StartsWith("Parts: page-changed at line 45", output.ToString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            File.Delete(StepCounterFixture.WhyFlag);
+        }
+    }
+
+    [Fact]
+    public void Why_WithNoGreenRunBefore_SaysSo()
+    {
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 11 });
+
+        var result = Call("why", new JsonObject { ["path"] = Feature, ["line"] = 11 });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("no green run", Text(result), StringComparison.Ordinal);
     }
 
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;

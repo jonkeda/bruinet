@@ -32,7 +32,8 @@ internal sealed class BddRunResults
     /// <param name="root">The suite's results folder (<see cref="RootFor"/>).</param>
     /// <param name="suite">The suite's name (its project's).</param>
     /// <param name="filePath">The feature file.</param>
-    public IReadOnlyDictionary<string, BddScenarioRun> For(string root, string suite, string filePath)
+    /// <param name="accept">Only runs this accepts count (AI9: the newest that failed, the newest that passed); every run when null.</param>
+    public IReadOnlyDictionary<string, BddScenarioRun> For(string root, string suite, string filePath, Func<BddScenarioRun, bool>? accept = null)
     {
         Dictionary<string, BddScenarioRun> runs = new(StringComparer.Ordinal);
         if (!Directory.Exists(root))
@@ -66,7 +67,7 @@ internal sealed class BddRunResults
                 }
 
                 var reportPath = Path.IsPathRooted(record.Path) ? record.Path : Path.Combine(runDirectory, record.Path);
-                if (File.Exists(reportPath) && BddScenarioRun.Parse(File.ReadAllText(reportPath), record.CreatedAtUtc) is { } run)
+                if (File.Exists(reportPath) && BddScenarioRun.Parse(File.ReadAllText(reportPath), record.CreatedAtUtc) is { } run && accept?.Invoke(run) != false)
                 {
                     runs[record.Name] = run;
                 }

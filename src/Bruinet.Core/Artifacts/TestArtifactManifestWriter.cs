@@ -172,6 +172,12 @@ public static class TestArtifactManifestWriter
             foreach (var artifact in suite.Artifacts)
             {
                 builder.AppendLine(CultureInfo.InvariantCulture, $"- {artifact.Kind}: {artifact.Name} ({artifact.Reason}) - {artifact.Path}");
+
+                // A failure since a green run (AI9): where it first went another way.
+                if (artifact.Metadata.GetValueOrDefault("why") is { Length: > 0 } why)
+                {
+                    builder.AppendLine(CultureInfo.InvariantCulture, $"  - why: {why}");
+                }
             }
 
             builder.AppendLine();

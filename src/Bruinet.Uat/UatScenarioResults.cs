@@ -56,6 +56,9 @@ public static class UatScenarioResults
 
             File.WriteAllText(reportPath, UatScenarioReport.Build(scenario, execution, status, duration, runtime.ConfigDirectory, trace, tracePath));
 
+            // Since last green (AI9): where a failure first went another way than the newest earlier pass, for summary.md.
+            var why = status == "failed" && tracePath is not null ? Why(tracePath) : null;
+
             // The suite, file and line let a tool find the newest run of a file's scenarios (P5, AD-007).
             TestArtifactManifestWriter.RecordArtifact(
                 reportPath,
@@ -71,6 +74,7 @@ public static class UatScenarioResults
                     ["file"] = file is null ? null : Path.GetRelativePath(runtime.ConfigDirectory, Path.GetFullPath(file)).Replace('\\', '/'),
                     ["line"] = scenario.Source.Source.LineNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     ["mode"] = mode,
+                    ["why"] = why,
                 });
             return reportPath;
         }
@@ -81,23 +85,44 @@ public static class UatScenarioResults
         }
     }
 
-    // The step trace (AI8): a failed scenario's, every one's with BRUINET_TRACE=all; an older run's is removed when this
-    // one has none. Whatever stops it leaves the report to be written: null then.
+    // The step trace (AI8): every scenario that passed or failed (a pass is the next failure's last green, AI9); none with
+    // BRUINET_TRACE=off, or for a skipped one. Whatever stops it leaves the report to be written: null then.
     private static string? WriteTrace(string path, BddBoundScenario scenario, BddScenarioExecutionResult execution, string status, string configDirectory)
     {
         try
         {
-            if (!Bruinet.Core.Logging.StepTrace.Enabled || (status != "failed" && !Bruinet.Core.Logging.StepTrace.All))
+            if (!Bruinet.Core.Logging.StepTrace.Enabled || status is not ("failed" or "passed"))
             {
                 File.Delete(path);
                 return null;
             }
 
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-            File.WriteAllText(path, UatScenarioTrace.Build(scenario, execution, status, configDirectory));
+            var text = UatScenarioTrace.Build(scenario, execution, status, configDirectory);
+            File.WriteAllText(path, text);
+            if (status == "passed")
+            {
+                File.WriteAllText(UatTraceDiff.GreenOf(path), text);
+            }
+
             return path;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException or ArgumentException)
+        {
+            return null;
+        }
+    }
+
+    // The failure against the newest green run's trace: one line; null when no earlier run passed, or it cannot be read.
+    private static string? Why(string tracePath)
+    {
+        try
+        {
+            return UatTraceDiff.LastGreen(tracePath) is { } green && UatTraceDiff.Read(green) is { } passed && UatTraceDiff.Read(tracePath) is { } failed
+                ? UatTraceDiff.Compare(failed, passed).Summary
+                : null;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException)
         {
             return null;
         }
