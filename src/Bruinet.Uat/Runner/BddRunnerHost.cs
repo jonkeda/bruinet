@@ -531,8 +531,8 @@ public sealed class BddRunnerHost
                 _mode);
         }
 
-        // The current page's controls, read between steps.
-        public BddRunnerPageState ReadPage() => _runtime.Reflection.ReadCurrentPage(Runner.Context);
+        // The current page's controls, read between steps; with none current, the page that shows.
+        public BddRunnerPageState ReadPage() => _runtime.Reflection.ReadCurrentPage(Runner.Context, findShowing: true);
 
         // The suite's fixture, made as an open makes it: for a prepare ahead of the first open.
         public static object MakeFixture(string config, string pages) => CreateFixture(BddConfigParser.ParseFile(config), LoadPages(pages));

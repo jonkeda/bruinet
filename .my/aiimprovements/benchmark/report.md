@@ -63,11 +63,11 @@ fewer) and 36 seconds against 195 (median).
 - `set_state` now waits for the start-up sync, so every answer had "Synced 10:00".
 - Without the tools, agents built their own probes (a feature file, a console app) and took up to six minutes.
 - One run first left `{testSet}` in the state; the new refusal said why, and the next call worked.
-- Still open: right after `set_state`, `step_state` can answer an empty page before a page is current; the agent fell
-  back to `step_screenshot`'s tree.
+- Right after `set_state`, `step_state` once answered no page, as none was current; the agent fell back to
+  `step_screenshot`'s tree. Fixed since: with no page current, `step_state` reads the one page that says it is loaded.
 
 ## Next
 
-Make `step_state` wait for the current page after `set_state`. Then a round on Tomorrow
+A round on Tomorrow
 with three or four tasks the source does not give away, and `without-AI9` and `without-AI10` runs to price those
 two items on their own.

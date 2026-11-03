@@ -786,11 +786,27 @@ public sealed class UatReflectionRuntime
     /// <param name="context">The scenario's context.</param>
     /// <param name="most">The most controls read.</param>
     /// <param name="budget">How long the reads may take in all.</param>
-    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context, int most = int.MaxValue, TimeSpan? budget = null)
+    /// <param name="findShowing">With no page current, the one page that says it is loaded is read instead.</param>
+    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context, int most = int.MaxValue, TimeSpan? budget = null, bool findShowing = false)
     {
         var page = context.AppItems.TryGetValue(CurrentPageItemKey, out var value) && value is UatRuntimePage current ? current
             : context.CurrentPageName is { } name && _pages.TryGetValue(name, out var named) ? named
             : null;
+        if (page is null && findShowing)
+        {
+            var loaded = UatPageState.Loaded(_pages.Values.Distinct().Select(each => (each, GetPageInstance(context, each))));
+            if (loaded is [var showing])
+            {
+                var read = UatPageState.Read(showing, GetPageInstance(context, showing), most, budget);
+                return read with { Reason = $"No step made a page current: {showing.Name} is the page that says it is loaded." + (read.Reason is { } more ? " " + more : string.Empty) };
+            }
+
+            if (loaded.Count > 1)
+            {
+                return new Bruinet.Bdd.Runner.BddRunnerPageState(null, [], $"No step made a page current, and {string.Join(", ", loaded.Select(each => each.Name))} each say they are loaded: name the page (set_state's page, or a step that opens it).");
+            }
+        }
+
         return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page), most, budget);
     }
 

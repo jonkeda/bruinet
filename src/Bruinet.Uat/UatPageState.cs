@@ -68,6 +68,31 @@ internal static class UatPageState
         return new BddRunnerPageState(page.Name, controls, null);
     }
 
+    // The pages that say they are loaded, each asked for a moment only: what shows when no step made a page current
+    // (a set_state's state starts the app but names no page).
+    internal static List<UatRuntimePage> Loaded(IEnumerable<(UatRuntimePage Page, object? Instance)> pages)
+    {
+        List<UatRuntimePage> loaded = [];
+        foreach (var (page, instance) in pages)
+        {
+            try
+            {
+                // IsLoaded(timeoutMs) on a MAUI page, IsLoaded() on a web one.
+                if (instance is not null
+                    && (Bruinet.Bdd.BddInvoker.TryInvokeBool(instance, "IsLoaded", ReadTimeoutMs, out var shown) || Bruinet.Bdd.BddInvoker.TryInvokeBool(instance, "IsLoaded", null, out shown))
+                    && shown)
+                {
+                    loaded.Add(page);
+                }
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+            }
+        }
+
+        return loaded;
+    }
+
     // rows: whether a collection's rows are read; not for a row's own controls, which may lead back to the list.
     private static BddRunnerControlState ReadControl(string name, object control, bool rows = true)
     {
