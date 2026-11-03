@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   left in and knows the test sets on a fresh server.
 - `ScreenshotService.Capture` gives the file a context with no pixels wrote under the screenshot's name (bUnit's
   `.html`), not the `.png` path it never wrote.
+- `WebAppHost.FindBuiltApp` looks above the folder the tests were built into (`AssemblyFile.FolderOf`), not the
+  process's: under a runner's temp copy, no browser-head scenario found its app.
 - MauiHeadless: a back with a dialog open dismisses the dialog (`TestDialog.Dismiss`) instead of popping
   the page under it, which left the dialog open for the next test. `ResetAppState` no longer throws
   `DeviceOnlyException`: it clears the window (`MauiHeadlessDriver.ClearWindow`, focus, dialogs, modals,

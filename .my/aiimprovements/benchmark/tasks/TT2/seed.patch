@@ -1,0 +1,13 @@
+diff --git a/src/Tomorrow.Studio.Core/Items/CompareItems.cs b/src/Tomorrow.Studio.Core/Items/CompareItems.cs
+index d2bef4e..89070dd 100644
+--- a/src/Tomorrow.Studio.Core/Items/CompareItems.cs
++++ b/src/Tomorrow.Studio.Core/Items/CompareItems.cs
+@@ -195,7 +195,7 @@ public sealed class CompareItems(IItemBook items)
+             }
+ 
+             var better = peers.Where(p => p.Item.Grade > row.Item.Grade && Cell(p, column.Key).Number is not null)
+-                .OrderBy(p => Cell(p, column.Key).Number).FirstOrDefault();
++                .OrderByDescending(p => Cell(p, column.Key).Number).FirstOrDefault();
+             if (better is not null && mine > Cell(better, column.Key).Number)
+             {
+                 yield return $"{column.Label} {Cell(row, column.Key).Text} passes {Said(better)}'s {Cell(better, column.Key).Text}";

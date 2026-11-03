@@ -29,15 +29,15 @@ price is taken on Todo's T4b instead.
 Each a seeded fault in code the failing step does not name. A grep of the failure's text finds the page, not the
 cause. Causes below are proposals; step 2 fixes each one and checks it.
 
-| Id | Kind | Symptom (failing scenario) | Proposed cause | Tools it is for |
+| Id | Kind | Symptom (failing scenario) | Cause (seeded) | Tools it is for |
 | --- | --- | --- | --- | --- |
-| TT1 | rule deep below a page | PLT.35.1: a thug's brain step takes another move than "close in" | a weight in the fight brain's scoring (`Tomorrow.Game`, Fights), two calls below the bench | `get_trace`, `coverage`, `where_is` |
-| TT2 | data, not code | PLT.30.1: 56 items show, not 57 | an item book row in the seed (`SeedSetup` or its JSON) that the loader now skips, from a field renamed in one place | `coverage`, `get_trace` |
-| TT3 | regression in a bigger change | PLT.18.1: a lane shows a wrong cap | renames in five files of the studio's Jobs page and lanes, with one cap read from the wrong setting | `why` (`sinceGreen`) |
-| TT4 | look at a screen | (none fails) "On the Fights bench, walker against thug*2, seed 17: what chance does the attack on thug 1 show, and what does thug's first brain step take?" | none: the answer is only on the screen, computed by the rules | `step_start`, `step_state`, `step_screenshot` |
+| TT1 | rule deep below a page, after a tidy-up (green run first) | PLT.35.1 and PLT.35.13: the thugs' brain steps change | `Brain.AttackField`'s search stops at once (`cost >= field[at]`), so closing in is flat; renames in four fight files beside it | `why`, `get_trace`, `coverage` |
+| TT2 | rule below a page, no earlier green run | PLT.30.3: the shotgun is not marked out of line | `CompareItems.Marks` takes the dearest better-graded peer, not the cheapest (`OrderByDescending`) | `get_trace`, `coverage`, `where_is` |
+| TT3 | regression in a bigger change (green run first) | PLT.30.1: after unticking "green", no item shows, not 57 | `Shelves.Toggle` keeps a facet with no values ticked; renames in five shelf files beside it | `why` (`sinceGreen`) |
+| TT4 | look at a screen | (none fails) the Fights bench's chance to hit thug 1, its attack and defence, and thug 1's first brain step's score | none: 45 %, defence 25 and 752.9 are only on the screen | `step_start`, `step_screenshot`, `step_state` |
 
-TT3's copy gets a green run first, as round 1's regressions did. TT4 is scored on its answer only; the copy must
-not change.
+All four run on bUnit. PLT.30.2 needs a browser and fails there, so `task.json`'s `notOnHead` leaves it out of the
+green run and of `expect.json`, and the prompt says so.
 
 ## Runs
 
@@ -73,7 +73,8 @@ not change.
 | Step | State | Commit | Note |
 | --- | --- | --- | --- |
 | 0 | done | 3d9e0b6a | this plan |
-| 1 | done | (this commit) | see "Step 1" below |
+| 1 | done | 314f117c | see "Step 1" below |
+| 2 | done | (this commit) | see "Step 2" below |
 
 ## Step 1: the harness on Tomorrow
 
@@ -97,3 +98,18 @@ Findings for step 2:
 - The Fights bench's page object shows three controls to `step_state` (the rest is in methods), so TT4's answer comes
   from `step_screenshot`'s tree, or TT4 moves to a page whose object exposes its values.
 - `run_scenario`'s `sinceGreen.first` showed "…" as mojibake (`â€¦`); `why` showed it right. To look at after the round.
+
+## Step 2: the tasks
+
+- TT1-TT4 in `tasks/`, base `de88f536d` (Tomorrow `game`); `check_task.py` passed each: the seeded copy fails as
+  `task.json` records, scores unsolved unfixed and solved with `fix.patch` (TT4: with `answer.txt`).
+- `prompt-tomorrow.md` is the template (named by `task.json`'s `prompt`); it says the tests make their own databases.
+- `check_task.py` fills an empty `expect.json` pass list from the seeded run (fails and passes, less `notOnHead`).
+- Changed from the plan: TT2's data cause could not be seeded (a seed change needs a migration, and EF 10 refuses to
+  migrate with pending model changes, which would fail every scenario loudly), so TT2 became a rule with no green run.
+  TT3 left the Jobs page: PLT.18.1 fails on bUnit (its input pop-up needs a browser) and, in the browser under the
+  runner, on a job list that changes under it.
+- Bruinet fixes found on the way, in the base: `step_screenshot` on bUnit gave a `.png` path never written (bUnit
+  writes `.html`), and now inlines the markup's visible text; `WebAppHost.FindBuiltApp` looked above the runner's temp
+  copy, so no browser-head scenario ran under `run_scenario` (fixed after the base; the tasks run on bUnit).
+- Disk: a check copy is about 2.5 GB, and four at once left 9 GB free; run at most three at a time.

@@ -24,7 +24,8 @@ def main():
     variables = {"MCP_SOLUTION": win(os.path.join(out, "repo")), "MCP_PROFILE": setup,
                  "MCP_LOG": win(os.path.join(out, "calls.jsonl")), "MCP_LABEL": label, **task.get("env", {})}
     env = task.get("env", {})
-    with open(os.path.join(HERE, "prompt.md"), encoding="utf-8") as file:
+    # Tomorrow's tasks (tomorrow-plan.md) name their own template.
+    with open(os.path.join(HERE, task.get("prompt", "prompt.md")), encoding="utf-8") as file:
         prompt = file.read()
     print(prompt.format(
         repo=win(os.path.join(out, "repo")),

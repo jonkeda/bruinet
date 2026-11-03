@@ -1,0 +1,15 @@
+{
+  "id": "TT4",
+  "kind": "look at a screen (computed values)",
+  "repo": "tomorrow",
+  "base": "de88f536d",
+  "project": "tests/Tomorrow.Studio.UITests",
+  "suite": "Tomorrow.Studio.UITests",
+  "prompt": "prompt-tomorrow.md",
+  "env": {
+    "BRUINET_HEAD": "bunit"
+  },
+  "heldOut": true,
+  "feature": "tests/Tomorrow.Studio.UITests/Features/PLT.35-fights-bench.feature.md",
+  "green": false
+}

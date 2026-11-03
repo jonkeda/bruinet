@@ -1,0 +1,1 @@
+In Tomorrow's studio suite (suite Tomorrow.Studio.UITests), the scenarios in tests/Tomorrow.Studio.UITests/Features/PLT.35-fights-bench.feature.md passed earlier today, and some fail now, after a tidy-up of the fight code. Fix the game (not the tests, feature files or page objects) so they pass, and confirm all PLT.35 scenarios pass.

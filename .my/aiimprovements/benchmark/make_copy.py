@@ -128,6 +128,8 @@ def main():
 
     if task.get("green"):
         green = bridge_run(out, task, build=False)
+        # notOnHead: scenarios the task's head cannot run (a browser-only one on bUnit), left out of every check.
+        green = {name: result for name, result in green.items() if name not in task.get("notOnHead", [])}
         if not green or any(status != "passed" for status, _ in green.values()):
             raise SystemExit(f"The green run did not pass: {green}")
         print(f"green run: {len(green)} scenarios passed")

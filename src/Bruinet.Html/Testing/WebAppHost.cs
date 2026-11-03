@@ -132,7 +132,9 @@ public sealed class WebAppHost : IDisposable
     /// The built assembly of a web app in the repository: the first
     /// <c>&lt;projectDirectory&gt;/bin/&lt;configuration&gt;/&lt;framework&gt;/&lt;project&gt;.dll</c> found above the
     /// test's own directory, in the test's own configuration. A project reference with
-    /// <c>ReferenceOutputAssembly="false"</c> builds it with the tests.
+    /// <c>ReferenceOutputAssembly="false"</c> builds it with the tests. The test's directory is the one it was built
+    /// into (<see cref="Bruinet.Core.Composition.AssemblyFile.FolderOf"/>): a runner's copy of the output in the temp
+    /// folder has nothing above it.
     /// </summary>
     /// <param name="projectDirectory">The project's folder, relative to the repository root (<c>samples/My.App</c>).</param>
     /// <param name="framework">The target framework folder.</param>
@@ -141,11 +143,12 @@ public sealed class WebAppHost : IDisposable
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectDirectory);
         var project = Path.GetFileName(projectDirectory.TrimEnd('/', '\\'));
-        var configuration = AppContext.BaseDirectory.Contains($"{Path.DirectorySeparatorChar}Release{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+        var built = Bruinet.Core.Composition.AssemblyFile.FolderOf(typeof(WebAppHost).Assembly);
+        var configuration = built.Contains($"{Path.DirectorySeparatorChar}Release{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
             ? "Release"
             : "Debug";
 
-        for (var directory = new DirectoryInfo(AppContext.BaseDirectory); directory != null; directory = directory.Parent)
+        for (var directory = new DirectoryInfo(built); directory != null; directory = directory.Parent)
         {
             var candidate = Path.Combine(directory.FullName, projectDirectory, "bin", configuration, framework, project + ".dll");
             if (File.Exists(candidate))
@@ -154,7 +157,7 @@ public sealed class WebAppHost : IDisposable
             }
         }
 
-        throw new FileNotFoundException($"{project}.dll ({configuration}, {framework}) was not found above {AppContext.BaseDirectory}. Build it first.");
+        throw new FileNotFoundException($"{project}.dll ({configuration}, {framework}) was not found above {built}. Build it first.");
     }
 
     /// <summary>Stops the app.</summary>

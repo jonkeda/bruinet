@@ -3,11 +3,11 @@
   "kind": "harness check (tomorrow-plan.md, step 1): a Tomorrow copy built and run green, no seed",
   "heldOut": true,
   "repo": "tomorrow",
-  "base": "b1b1d8690",
+  "base": "a84d19719",
   "project": "tests/Tomorrow.Studio.UITests",
   "suite": "Tomorrow.Studio.UITests",
   "feature": "tests/Tomorrow.Studio.UITests/Features/PLT.35-fights-bench.feature.md",
-  "green": true,
+  "green": false,
   "env": {
     "BRUINET_HEAD": "bunit"
   }

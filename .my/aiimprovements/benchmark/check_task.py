@@ -36,6 +36,19 @@ def main():
     if done.returncode != 0:
         raise SystemExit(f"{name}: make_copy failed\n{done.stderr[-1500:]}")
 
+    # An empty pass list (round 2's tasks) is the seeded run's scenarios: what failed must pass, what passed must still.
+    expect_file = os.path.join(task, "expect.json")
+    with open(expect_file, encoding="utf-8") as file:
+        expect = json.load(file)
+    if "pass" in expect and not expect["pass"]["scenarios"]:
+        with open(os.path.join(task, "task.json"), encoding="utf-8") as file:
+            seen = json.load(file)
+        expect["pass"]["scenarios"] = [name for name in [item["scenario"] for item in seen.get("fails", [])] + seen.get("passes", [])
+                                       if name not in seen.get("notOnHead", [])]
+        with open(expect_file, "w", encoding="utf-8") as file:
+            json.dump(expect, file, indent=2)
+            file.write("\n")
+
     question = os.path.join(task, "answer.txt")
     unfixed = score(task, out, "unfixed", answer=os.path.join(out, "empty-answer.txt"))
     fix = os.path.join(task, "fix.patch")
