@@ -54,8 +54,20 @@ without them. By the plan's own bar (a 30% saving, or more solved), neither setu
 - 48 runs cost about 3.8M tokens. One batch first ran without copies and was run again; its void runs are not
   counted.
 
+## After the fixes
+
+The four faults are fixed (commit `8563ab84`) and T4 was run again as `T4b`, three times each way
+(`rerun-results.jsonl`). Both setups solved all six. With the tools the agent used 75.4k tokens against 106.3k (29%
+fewer) and 36 seconds against 195 (median).
+
+- `set_state` now waits for the start-up sync, so every answer had "Synced 10:00".
+- Without the tools, agents built their own probes (a feature file, a console app) and took up to six minutes.
+- One run first left `{testSet}` in the state; the new refusal said why, and the next call worked.
+- Still open: right after `set_state`, `step_state` can answer an empty page before a page is current; the agent fell
+  back to `step_screenshot`'s tree.
+
 ## Next
 
-Fix the four `set_state` and screen faults above, then run T4 again in both setups. After that, a round on Tomorrow
+Make `step_state` wait for the current page after `set_state`. Then a round on Tomorrow
 with three or four tasks the source does not give away, and `without-AI9` and `without-AI10` runs to price those
 two items on their own.

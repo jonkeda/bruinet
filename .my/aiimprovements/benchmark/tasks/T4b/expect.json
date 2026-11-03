@@ -1,0 +1,12 @@
+{
+  "mustNotChange": [
+    "**"
+  ],
+  "answer": [
+    "Buy milk",
+    "Book dentist",
+    "File taxes",
+    "Synced 10:00",
+    "All"
+  ]
+}

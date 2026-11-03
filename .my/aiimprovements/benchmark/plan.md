@@ -130,7 +130,8 @@ Cost: the main round is 48 runs at about 80k tokens each, about 4M tokens; the p
 | 5 | done | (this commit) | T2-T8 from `make_tasks.py` (each task's edits, its seed and its known fix); `check_task.py` passed all seven (T1 was checked in steps 3 and 4): each seeded copy fails (recorded in `task.json`), scores unsolved as it is and solved fixed. T5's first bug (an HTTP timeout) did not fail, because the stub's delay is not on the real clock; its bug is now the Loading state's |
 | 6 | done | 239bb4af | Pilot, T1-T4 × `before`, `all` × 1 (8 runs, about 0.7M tokens): all eight solved; the numbers are in `pilot-results.jsonl` and below. The harness ran end to end after two fixes (below). No tool was changed |
 | 7 | done | c7a94bba | Main round, 48 runs: `before` solved 24/24, `all` 22/24 (both misses T4); `all` used fewer tokens on every task (median 74.7k against 81.1k), time mixed. See "Main round" below |
-| 8 | done | (this commit) | `report.md`: the tools make an agent about 8% cheaper (23 of 24 paired runs) and no more successful; `run_scenario`, `why` and the state tools carried it; four `set_state` and screen faults to fix |
+| 8 | done | 302c1f0d | `report.md`: the tools make an agent about 8% cheaper (23 of 24 paired runs) and no more successful; `run_scenario`, `why` and the state tools carried it; four `set_state` and screen faults to fix |
+| 8b | done | 8563ab84, (this commit) | the four faults fixed; T4 again as `T4b`, three runs each way (`rerun-results.jsonl`): 6 of 6 solved, `all` 29% cheaper |
 
 ## Pilot (step 6)
 

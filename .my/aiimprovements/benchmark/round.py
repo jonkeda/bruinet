@@ -56,7 +56,7 @@ def score(run, tokens, tool_uses, ms):
     report = os.path.join(out, "report.txt")
     command = [sys.executable, os.path.join(HERE, "score.py"), os.path.join(HERE, "tasks", task), out, os.path.join(out, "calls.jsonl"),
                "--setup", setup, "--run", run, "--tokens", tokens, "--tool-uses", tool_uses, "--seconds", str(round(int(ms) / 1000)),
-               "--answer", report, "--results", os.path.join(HERE, "results.jsonl")]
+               "--answer", report, "--results", os.path.join(HERE, "rerun-results.jsonl" if run.startswith("R") else "results.jsonl")]
     done = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if done.returncode != 0:
         raise SystemExit(f"{run}: scoring failed\n{done.stdout[-800:]}\n{done.stderr[-800:]}")
