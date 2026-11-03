@@ -786,15 +786,24 @@ public sealed class UatReflectionRuntime
     /// <param name="context">The scenario's context.</param>
     /// <param name="most">The most controls read.</param>
     /// <param name="budget">How long the reads may take in all.</param>
-    /// <param name="findShowing">With no page current, the one page that says it is loaded is read instead.</param>
-    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context, int most = int.MaxValue, TimeSpan? budget = null, bool findShowing = false)
+    /// <param name="findShowing">With no page current, the page <paramref name="drivenLast"/> names, else the one page that says it is loaded, is read instead.</param>
+    /// <param name="drivenLast">The page the last control call went to, as a call names it (its name or its type's).</param>
+    internal Bruinet.Bdd.Runner.BddRunnerPageState ReadCurrentPage(BddExecutionContext context, int most = int.MaxValue, TimeSpan? budget = null, bool findShowing = false, string? drivenLast = null)
     {
         var page = context.AppItems.TryGetValue(CurrentPageItemKey, out var value) && value is UatRuntimePage current ? current
             : context.CurrentPageName is { } name && _pages.TryGetValue(name, out var named) ? named
             : null;
+        if (page is null && findShowing && drivenLast is not null
+            && _pages.Values.FirstOrDefault(each => string.Equals(each.PageType.Name, drivenLast, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(each.Name.Replace(" ", string.Empty, StringComparison.Ordinal), drivenLast.Replace(" ", string.Empty, StringComparison.Ordinal), StringComparison.OrdinalIgnoreCase)) is { } driven)
+        {
+            var read = UatPageState.Read(driven, GetPageInstance(context, driven), most, budget);
+            return read with { Reason = $"No step made a page current: {driven.Name} is the page the last step drove." + (read.Reason is { } more ? " " + more : string.Empty) };
+        }
+
         if (page is null && findShowing)
         {
-            var loaded = UatPageState.Loaded(_pages.Values.Distinct().Select(each => (each, GetPageInstance(context, each))));
+            var loaded = UatPageState.Loaded(_pages.Values.Distinct().Select(each => (each, (Func<object?>)(() => GetPageInstance(context, each)))));
             if (loaded is [var showing])
             {
                 var read = UatPageState.Read(showing, GetPageInstance(context, showing), most, budget);

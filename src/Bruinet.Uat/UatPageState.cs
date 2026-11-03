@@ -70,13 +70,15 @@ internal static class UatPageState
 
     // The pages that say they are loaded, each asked for a moment only: what shows when no step made a page current
     // (a set_state's state starts the app but names no page).
-    internal static List<UatRuntimePage> Loaded(IEnumerable<(UatRuntimePage Page, object? Instance)> pages)
+    // A page object made here may fail (a page whose constructor wants what the container lacks): that page is not loaded.
+    internal static List<UatRuntimePage> Loaded(IEnumerable<(UatRuntimePage Page, Func<object?> Instance)> pages)
     {
         List<UatRuntimePage> loaded = [];
-        foreach (var (page, instance) in pages)
+        foreach (var (page, make) in pages)
         {
             try
             {
+                var instance = make();
                 // IsLoaded(timeoutMs) on a MAUI page, IsLoaded() on a web one.
                 if (instance is not null
                     && (Bruinet.Bdd.BddInvoker.TryInvokeBool(instance, "IsLoaded", ReadTimeoutMs, out var shown) || Bruinet.Bdd.BddInvoker.TryInvokeBool(instance, "IsLoaded", null, out shown))

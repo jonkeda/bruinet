@@ -11,19 +11,23 @@ public sealed class UatPageStateLoadedTests
     {
         var loaded = UatPageState.Loaded(
         [
-            (Page("Todos"), new MauiPage(loaded: true)),
-            (Page("Detail"), new MauiPage(loaded: false)),
-            (Page("Settings"), new WebPage(loaded: true)),
-            (Page("About"), null),
+            (Page("Todos"), () => new MauiPage(loaded: true)),
+            (Page("Detail"), () => new MauiPage(loaded: false)),
+            (Page("Settings"), () => new WebPage(loaded: true)),
+            (Page("About"), () => null),
         ]);
 
         Assert.Equal(["Todos", "Settings"], loaded.Select(page => page.Name));
     }
 
     [Fact]
-    public void APageWhoseCheckThrows_IsNotLoaded()
+    public void APageWhoseCheckOrMakingThrows_IsNotLoaded()
     {
-        Assert.Empty(UatPageState.Loaded([(Page("Todos"), new ThrowingPage())]));
+        Assert.Empty(UatPageState.Loaded(
+        [
+            (Page("Todos"), () => new ThrowingPage()),
+            (Page("Frame"), () => throw new InvalidOperationException("Unable to resolve service for type 'System.String'")),
+        ]));
     }
 
     private static UatRuntimePage Page(string name) => new(name, typeof(object), null, [], null);

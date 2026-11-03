@@ -8,8 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- MCP: `step_state` with no page current reads the one page that says it is loaded, so after a `set_state`
-  without `page` it still shows the screen. `step_state` also reads a list's rows, `step_screenshot` copies to the
+- MCP: `step_state` with no page current reads the page the last step drove (as the trace names it), else the one
+  page that says it is loaded, so after a `set_state` without `page` it still shows the screen. `step_state` also reads a list's rows, `step_screenshot` copies to the
   solution's `TestResults/step-screenshots` (a tree inline), and `set_state` refuses a state with `{placeholder}`
   left in and knows the test sets on a fresh server.
 - MauiHeadless: a back with a dialog open dismisses the dialog (`TestDialog.Dismiss`) instead of popping

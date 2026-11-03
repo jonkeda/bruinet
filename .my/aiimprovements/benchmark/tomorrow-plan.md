@@ -14,7 +14,7 @@ below the symptom, as in Tomorrow?
 | | Round 1 | Round 2 |
 | --- | --- | --- |
 | App | the Todo sample in Bruinet | Tomorrow's studio (`tests/Tomorrow.Studio.UITests`, 158 scenarios, Blazor) |
-| Base | a commit of `move` | a commit of `game` (`64c461628`) with its submodule at `0a3ca68f` |
+| Base | a commit of `move` | a commit of `game` with the submodule it records (step 1: `b1b1d8690`) |
 | Head | MAUI headless or bUnit | bUnit (`BRUINET_HEAD=bunit`), the browser only where a task needs a screen |
 | Database | none | one per run on `.\MSSQLSERVER01`, already unique per run (`tests/Shared/TestDatabase.cs`) |
 | Tasks | T1-T8 | TT1-TT4, all held out: none ever drives a tool change |
@@ -72,4 +72,28 @@ not change.
 
 | Step | State | Commit | Note |
 | --- | --- | --- | --- |
-| 0 | done | (this commit) | this plan |
+| 0 | done | 3d9e0b6a | this plan |
+| 1 | done | (this commit) | see "Step 1" below |
+
+## Step 1: the harness on Tomorrow
+
+- `make_copy.py`: `"repo": "tomorrow"` archives Tomorrow's commit and the submodule commit it records; `round.py` puts
+  such copies in `tomorrow/TestResults/bench`. Inside Bruinet's folder, MSBuild took Bruinet's `Directory.Build.props`
+  and the build failed.
+- A copy (task `TT0`, PLT.35 on bUnit, no seed): 75 seconds made, built and run green (16 scenarios); 2.3 GB.
+- Tomorrow fix (`b1b1d8690` on `game`): the studio suite never ran under Bruinet's runner (`run_scenario`, the step
+  tools). Its host looked for `src/Tomorrow.Studio` above `AppContext.BaseDirectory`, which is the runner's copy in the
+  temp folder; it now looks above `AssemblyFile.FolderOf`.
+- With a hand-made fault in the fight brain: `run_scenario` failed PLT.35.13 and its `sinceGreen` named `Brain.cs`;
+  `why` and `get_trace` answered in full.
+- `step_state` failed on the studio: today's fallback (the page that says it is loaded) made every page object, and one
+  cannot be made from the container. It now reads the page the last step drove, as the trace names it, then the
+  loaded page; a page that cannot be made counts as not loaded.
+
+Findings for step 2:
+
+- A single-file fault is given away by `sinceGreen`'s changed files: TT1 and TT2 need noise edits beside the cause, as
+  round 1's T7 had.
+- The Fights bench's page object shows three controls to `step_state` (the rest is in methods), so TT4's answer comes
+  from `step_screenshot`'s tree, or TT4 moves to a page whose object exposes its values.
+- `run_scenario`'s `sinceGreen.first` showed "…" as mojibake (`â€¦`); `why` showed it right. To look at after the round.

@@ -13,7 +13,9 @@ the seed patch is applied, uncommitted (and kept as refs/bench/seeded for the sc
 it saw into task.json (fails and passes) instead. Use either on a copy made for checking only: its failing run would be
 the agent's first. A task without a seed (a question, a scenario to write) is copied and built only.
 
-task.json's env (BRUINET_HEAD=bunit for the web suite) and suite go to every run, as they go to the agent.
+task.json's env (BRUINET_HEAD=bunit for the web suite) and suite go to every run, as they go to the agent. With
+"repo": "tomorrow" (round 2, tomorrow-plan.md) the base is a commit of Tomorrow's game, and its submodule
+external/test-tooling (Bruinet, built from source) is archived at the commit that base records.
 """
 import io
 import json
@@ -26,6 +28,8 @@ import tarfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+TOMORROW = os.path.abspath(os.path.join(REPO, "..", ".."))
+SUBMODULE = os.path.join("external", "test-tooling")
 BRIDGE = os.path.join(HERE, "..", "checks", "mcp-bridge.py")
 LEFT_OUT = [".my", ".claude", os.path.join(".github", "skills")]
 GIT = ["git", "-c", "core.longpaths=true", "-c", "user.name=Owner", "-c", "user.email=owner@example.test"]
@@ -75,6 +79,24 @@ def bridge_run(out, task, build):
     return {item["scenario"]: (item["status"], (item.get("failedStep") or {}).get("line")) for item in answer.get("scenarios", [])}
 
 
+def extract(source, commit, into):
+    """A commit's tree written into a folder, without what LEFT_OUT names."""
+    archive = subprocess.run(["git", "archive", "--format=tar", commit], cwd=source, capture_output=True, check=True).stdout
+    # Member by member: the long-path form takes back slashes only, which extractall does not give.
+    with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
+        for member in tar:
+            target = long(os.path.normpath(os.path.join(into, member.name)))
+            if member.isdir():
+                os.makedirs(target, exist_ok=True)
+            elif member.isfile():
+                os.makedirs(os.path.dirname(target), exist_ok=True)
+                with tar.extractfile(member) as source_file, open(target, "wb") as copy:
+                    shutil.copyfileobj(source_file, copy)
+    for gone in LEFT_OUT:
+        if os.path.exists(os.path.join(into, gone)):
+            remove(os.path.join(into, gone))
+
+
 def main():
     if len(sys.argv) < 3:
         raise SystemExit(__doc__)
@@ -88,20 +110,12 @@ def main():
         remove(out)
     repo = os.path.join(out, "repo")
     os.makedirs(repo)
-    archive = subprocess.run(["git", "archive", "--format=tar", task["base"]], cwd=REPO, capture_output=True, check=True).stdout
-    # Member by member: the long-path form takes back slashes only, which extractall does not give.
-    with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-        for member in tar:
-            target = long(os.path.normpath(os.path.join(repo, member.name)))
-            if member.isdir():
-                os.makedirs(target, exist_ok=True)
-            elif member.isfile():
-                os.makedirs(os.path.dirname(target), exist_ok=True)
-                with tar.extractfile(member) as source, open(target, "wb") as copy:
-                    shutil.copyfileobj(source, copy)
-    for gone in LEFT_OUT:
-        if os.path.exists(os.path.join(repo, gone)):
-            remove(os.path.join(repo, gone))
+    if task.get("repo") == "tomorrow":
+        extract(TOMORROW, task["base"], repo)
+        pinned = run(["git", "ls-tree", task["base"], SUBMODULE.replace(os.sep, "/")], TOMORROW).stdout.split()[2]
+        extract(REPO, pinned, os.path.join(repo, SUBMODULE))
+    else:
+        extract(REPO, task["base"], repo)
     run(GIT + ["init", "-q"], repo)
     run(GIT + ["config", "core.longpaths", "true"], repo)
     run(GIT + ["add", "-A"], repo)

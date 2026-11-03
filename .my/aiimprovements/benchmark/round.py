@@ -18,6 +18,8 @@ import make_copy
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BENCH = os.path.abspath(os.path.join(HERE, "..", "..", "..", "TestResults", "bench"))
+# A Tomorrow copy outside Bruinet's tree: inside it, MSBuild would take Bruinet's Directory.Build.props (round 2).
+TOMORROW_BENCH = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", "..", "TestResults", "bench"))
 TASKS = [f"T{number}" for number in range(1, 9)]
 
 
@@ -36,9 +38,14 @@ def parts(run):
     return task, setup
 
 
+def bench(task):
+    with open(os.path.join(HERE, "tasks", task, "task.json"), encoding="utf-8") as file:
+        return TOMORROW_BENCH if json.load(file).get("repo") == "tomorrow" else BENCH
+
+
 def prepare(run):
     task, setup = parts(run)
-    out = os.path.join(BENCH, run)
+    out = os.path.join(bench(task), run)
     done = subprocess.run([sys.executable, os.path.join(HERE, "make_copy.py"), os.path.join(HERE, "tasks", task), out],
                           capture_output=True, text=True, encoding="utf-8", errors="replace")
     if done.returncode != 0:
@@ -52,7 +59,7 @@ def prepare(run):
 
 def score(run, tokens, tool_uses, ms):
     task, setup = parts(run)
-    out = os.path.join(BENCH, run)
+    out = os.path.join(bench(task), run)
     report = os.path.join(out, "report.txt")
     command = [sys.executable, os.path.join(HERE, "score.py"), os.path.join(HERE, "tasks", task), out, os.path.join(out, "calls.jsonl"),
                "--setup", setup, "--run", run, "--tokens", tokens, "--tool-uses", tool_uses, "--seconds", str(round(int(ms) / 1000)),

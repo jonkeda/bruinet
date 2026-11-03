@@ -531,8 +531,10 @@ public sealed class BddRunnerHost
                 _mode);
         }
 
-        // The current page's controls, read between steps; with none current, the page that shows.
-        public BddRunnerPageState ReadPage() => _runtime.Reflection.ReadCurrentPage(Runner.Context, findShowing: true);
+        // The current page's controls, read between steps. With none current (a phrase of the fixture's drove the page, or
+        // a state started the app), the page the steps so far drove last, as the trace names it; else the page that shows.
+        public BddRunnerPageState ReadPage()
+            => _runtime.Reflection.ReadCurrentPage(Runner.Context, findShowing: true, drivenLast: Session.Results.SelectMany(step => step.Calls).LastOrDefault()?.Page);
 
         // The suite's fixture, made as an open makes it: for a prepare ahead of the first open.
         public static object MakeFixture(string config, string pages) => CreateFixture(BddConfigParser.ParseFile(config), LoadPages(pages));
