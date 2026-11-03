@@ -37,6 +37,8 @@ instead of the symptom.
 | Kind | same | `scenario-changed` (steps differ), `page-changed` (another page, or a control the green run never drove), `timing-only` (the same calls, a wait that errored and a message that says it timed out), else `data-changed` |
 | Runs | `Bruinet.Cli` `BddRunResults.For(..., accept)` | the newest run of each scenario that passes a filter: the newest failed, the newest passed, each with a trace |
 | Files | `Bruinet.Cli` `BddMcpServer.Why` | `git diff --name-only <green commit>` and untracked files; a file touches a step when its name has every word of a page the step drove (`TodoDetailViewModel.cs` for `TodoDetailPage`) or its text has an id-like control the step drove, quoted; `touching` for the step where the runs part, `earlier` for the steps before it |
+| Comments | `Bruinet.Cli` `WhyFiles.CommentsOnlyIn` | files whose diff since green is comments or blank lines only are set apart (`commentsOnly`), not sorted: the agent check's first round followed one |
+| In failures | `Bruinet.Cli` `BddMcpServer.SinceGreen` | `run_scenario`'s and `get_failure`'s failures carry `sinceGreen` (kind, line, the first difference, five code files); `why` builds and runs the scenario when no failure is traced, so one call answers |
 | Summary | `Bruinet.Uat` `UatScenarioResults`, `Bruinet.Core` `TestArtifactManifestWriter` | a failed scenario's record gets `why` (step and kind against the newest green trace of earlier runs, 20 at most); `summary.md` prints it under the failure |
 
 ## Tests

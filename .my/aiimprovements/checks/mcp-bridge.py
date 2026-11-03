@@ -40,6 +40,11 @@ def request(process, ident, method, params):
 
 def without_app_source(text):
     """The answer as a server without AI7 gives it: no appSource."""
+    return without_key(text, "appSource")
+
+
+def without_key(text, hidden):
+    """The answer without one key, wherever it is: as a server without the item that added it."""
     try:
         node = json.loads(text)
     except ValueError:
@@ -47,7 +52,7 @@ def without_app_source(text):
 
     def strip(value):
         if isinstance(value, dict):
-            return {key: strip(item) for key, item in value.items() if key != "appSource"}
+            return {key: strip(item) for key, item in value.items() if key != hidden}
         if isinstance(value, list):
             return [strip(item) for item in value]
         return value
@@ -65,6 +70,7 @@ def main():
                 instructions = instructions.replace(" to look at a screen without clicking to it, set_state puts the app in a declared state (list_states);", "")
                 instructions = instructions.replace(" where_is gives the page object line of a control and the app line (razor, XAML) that makes it;", "")
                 instructions = instructions.replace(" get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure);", "")
+                instructions = instructions.replace(" for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since;", "")
             print("INSTRUCTIONS:", instructions)
             tools = request(process, 2, "tools/list", {})["result"]["tools"]
             for tool in [tool for tool in tools if tool["name"] not in HIDDEN]:
@@ -82,6 +88,8 @@ def main():
             text = "".join(part.get("text", "") for part in result.get("content", []))
             if "where_is" in HIDDEN:
                 text = without_app_source(text)
+            if "why" in HIDDEN:
+                text = without_key(text, "sinceGreen")
             flag = " (error)" if result.get("isError") else ""
             print(f"== {call['tool']}{flag}\n{text}\n")
     finally:

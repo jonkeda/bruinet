@@ -409,8 +409,10 @@ public sealed class McpRunTests : IDisposable
         File.WriteAllText(StepCounterFixture.WhyFlag, "up");
         try
         {
-            Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 41 });
+            var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 41 }));
 
+            // The failure carries its short why already: no call more.
+            Assert.Equal("page-changed", (string)run["scenarios"]![0]!["sinceGreen"]!["kind"]!);
             var why = Answer(Call("why", new JsonObject { ["path"] = Feature, ["line"] = 41 }));
 
             Assert.Equal(("page-changed", 45), ((string)why["kind"]!, (int)why["step"]!["line"]!));
@@ -429,10 +431,8 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void Why_WithNoGreenRunBefore_SaysSo()
+    public void Why_WithNoFailureYet_RunsItFirst_AndWithNoGreenRunBefore_SaysSo()
     {
-        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 11 });
-
         var result = Call("why", new JsonObject { ["path"] = Feature, ["line"] = 11 });
 
         Assert.True((bool)result["isError"]!);

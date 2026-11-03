@@ -30,6 +30,28 @@ public sealed class WhyFilesTests : IDisposable
         Assert.Equal(["src/Tools/Helper.cs", "README.md"], other);
     }
 
+    [Fact]
+    public void AChangeOfCommentsOnly_IsSetApart_ACodeChangeIsNot()
+    {
+        var diff = """
+            diff --git a/src/TodoDetailViewModel.cs b/src/TodoDetailViewModel.cs
+            index 1..2 100644
+            --- a/src/TodoDetailViewModel.cs
+            +++ b/src/TodoDetailViewModel.cs
+            @@ -140,0 +141 @@
+            +    // Shows a todo, or none.
+            diff --git a/src/PlatformServices.cs b/src/PlatformServices.cs
+            index 3..4 100644
+            --- a/src/PlatformServices.cs
+            +++ b/src/PlatformServices.cs
+            @@ -23 +23 @@
+            -        => CurrentPage.DisplayAlertAsync(title, message, accept, cancel);
+            +        => CurrentPage.DisplayAlertAsync(title, message, cancel, accept);
+            """;
+
+        Assert.Equal(["src/TodoDetailViewModel.cs"], WhyFiles.CommentsOnlyIn(diff));
+    }
+
     [Theory]
     [InlineData("TodoDetail_Delete", true)]
     [InlineData("counter-title", true)]

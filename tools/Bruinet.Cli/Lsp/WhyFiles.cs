@@ -8,9 +8,10 @@ namespace Bruinet.Bdd.LanguageServer;
 /// </summary>
 /// <param name="Touching">The ones that touch the step.</param>
 /// <param name="Earlier">The ones that touch an earlier step.</param>
-/// <param name="Other">The rest.</param>
+/// <param name="Other">The rest of the code changed.</param>
+/// <param name="CommentsOnly">Files whose change is comments or blank lines only: not sorted, since they change no run.</param>
 /// <param name="Note">Why there are none, when there are none to sort.</param>
-internal sealed record WhyFiles(IReadOnlyList<string> Touching, IReadOnlyList<string> Earlier, IReadOnlyList<string> Other, string? Note)
+internal sealed record WhyFiles(IReadOnlyList<string> Touching, IReadOnlyList<string> Earlier, IReadOnlyList<string> Other, IReadOnlyList<string> CommentsOnly, string? Note)
 {
     private const int Named = 20;
 
@@ -27,7 +28,46 @@ internal sealed record WhyFiles(IReadOnlyList<string> Touching, IReadOnlyList<st
         EarlierMore = Earlier.Count > Named ? Earlier.Count - Named : (int?)null,
         Other = Other.Count,
         First = Other.Take(10),
+        CommentsOnly = CommentsOnly.Count == 0 ? null : CommentsOnly.Take(10),
     };
+
+    /// <summary>
+    /// The files of a <c>git diff -U0</c> whose every added and removed line is a comment or blank (<c>//</c>, <c>/*</c>,
+    /// <c>*</c>, <c>#</c>, <c>&lt;!--</c>, <c>@*</c>): a change that cannot make a run go another way.
+    /// </summary>
+    /// <param name="diff">The diff's text.</param>
+    public static HashSet<string> CommentsOnlyIn(string diff)
+    {
+        ArgumentNullException.ThrowIfNull(diff);
+        var code = new HashSet<string>(StringComparer.Ordinal);
+        var all = new HashSet<string>(StringComparer.Ordinal);
+        string? file = null;
+        foreach (var line in diff.Split('\n'))
+        {
+            if (line.StartsWith("diff --git ", StringComparison.Ordinal))
+            {
+                file = line[(line.LastIndexOf(" b/", StringComparison.Ordinal) + 3)..].TrimEnd('\r');
+                all.Add(file);
+            }
+            else if (file is not null && line.Length > 0 && (line[0] is '+' or '-') && !line.StartsWith("+++", StringComparison.Ordinal) && !line.StartsWith("---", StringComparison.Ordinal)
+                && !IsComment(line[1..].Trim()))
+            {
+                code.Add(file);
+            }
+            else if (file is not null && line.StartsWith("Binary files", StringComparison.Ordinal))
+            {
+                code.Add(file);
+            }
+        }
+
+        all.ExceptWith(code);
+        return all;
+
+        static bool IsComment(string text)
+            => text.Length == 0 || text.StartsWith("//", StringComparison.Ordinal) || text.StartsWith("/*", StringComparison.Ordinal)
+               || text.StartsWith('*') || text.StartsWith('#') || text.StartsWith("<!--", StringComparison.Ordinal)
+               || text.StartsWith("-->", StringComparison.Ordinal) || text.StartsWith("@*", StringComparison.Ordinal);
+    }
 
     /// <summary>Sorts <paramref name="changed"/>, reading each file's text once, and only for an id-like control.</summary>
     /// <param name="changed">The changed files, as git names them.</param>

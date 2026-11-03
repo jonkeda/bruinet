@@ -19,7 +19,9 @@
 - Cli: 394 passed; the 8 generator and data validator tests fail under `--artifacts-path`, as before.
 - The Todo UAT suites, before the review fixes: MAUI headless 42 passed, 1 skipped; web on bUnit 32 passed, 2 skipped,
   and TOD.08.8 failed (the known bUnit flake).
-- Agent check: not run yet.
+- Agent check (checks/AI9.md): passed in the fifth round, 2 tool calls as the baseline's, 2 file reads against 3. The
+  rounds before it changed `why`: comment-only changes set apart, `sinceGreen` in failures, `why` builds and runs the
+  scenario when no failure is traced.
 
 ## Review
 

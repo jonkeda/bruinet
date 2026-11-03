@@ -277,7 +277,9 @@ VS Code) and any other MCP client:
 - `why` compares a scenario's newest failing run with its last green one, step by step: the first step where they
   part (its page, the controls it drove, what the app said, what a page showed, its status), a kind (`page-changed`,
   `data-changed`, `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green
-  run's commit that touch that step or an earlier one; `bruinet why <file>:<line>` prints the same;
+  run's commit that touch that step or an earlier one, with changes of comments only set apart; it builds and runs the
+  scenario first when no failure of it is traced. A failure in `run_scenario` and `get_failure` carries the short form,
+  `sinceGreen`. `bruinet why <file>:<line>` prints the same;
 - `where_is` gives where a page's control is made: the page object member's file and line, the test id it finds by,
   and the app lines (`.razor`, `.cshtml`, XAML, code) that render an element with it, the suite's own app first; a
   failure from `get_failure` or `run_scenario` gives the same lines for its locator as `appSource`;

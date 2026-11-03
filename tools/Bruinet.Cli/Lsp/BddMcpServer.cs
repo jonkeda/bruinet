@@ -84,7 +84,7 @@ public sealed class BddMcpServer : IDisposable
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text). Read without a screenshot; where to look when a step is about to fail.", Schema()),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path, to look at.", Schema()),
         ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
-        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("where_is", "Where a page object's control is made: the page object member's file and line, the locator value it finds by, and the lines of the app's sources (.razor, .cshtml, XAML, code) that render an element with that value, test-id attributes first. Where to change the app or the page object when a control is not found or wrong.", Schema(("page", "string", "The page, as list_pages names it; required."), ("control", "string", "The control, as list_pages names it; required."), ("suite", "string", "The suite; its only one when left out."))),
         ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, the message, and the app source lines that make the element its locator names (appSource; where_is gives one control's). run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
@@ -144,7 +144,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in), get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; where_is gives the page object line of a control and the app line (razor, XAML) that makes it; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before, why gives where its failing run first parted from the last green one and the files changed since that touch it; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; where_is gives the page object line of a control and the app line (razor, XAML) that makes it; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -384,6 +384,7 @@ public sealed class BddMcpServer : IDisposable
                 FailedStep = result.FailedStep is { } step ? new { File = step.File is null ? null : Path.GetRelativePath(_solutionDir, step.File), step.Line, step.Text } : null,
                 Failure = runs?.GetValueOrDefault(result.Scenario) is { } run ? Failure(run) : null,
                 AppSource = runs?.GetValueOrDefault(result.Scenario) is { } failedRun ? AppSource(Failure(failedRun), SuiteFolder(uri, suite)) : null,
+                SinceGreen = runs?.GetValueOrDefault(result.Scenario) is { Status: "failed" } traced ? SinceGreen(traced, SuiteFolder(uri, suite)) : null,
                 Message = Cap(result.Message, 2000),
             }),
         };
@@ -808,6 +809,7 @@ public sealed class BddMcpServer : IDisposable
             FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
             Failure = failure,
             AppSource = AppSource(failure, config),
+            SinceGreen = SinceGreen(failed, config),
             AppEvents = step?.AppEvents is { } said ? JsonNode.Parse(said) : null,
             Screenshot = failed.EvidencePath,
             Message = Cap(step?.Message, 2000),
@@ -866,6 +868,38 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
+    // A failure's short why (AI9), beside it in run_scenario and get_failure: where it parted from the last green run and the
+    // code changed since that touches it, so the agent needs no call more. Null without a trace or a green run before it.
+    private static object? SinceGreen(Bruinet.Bdd.Preview.BddScenarioRun failing, string suiteFolder)
+    {
+        try
+        {
+            if (failing.TracePath is not { } path || Bruinet.Uat.UatTraceDiff.LastGreen(path) is not { } green
+                || Bruinet.Uat.UatTraceDiff.Read(path) is not { } now || Bruinet.Uat.UatTraceDiff.Read(green) is not { } then)
+            {
+                return null;
+            }
+
+            var difference = Bruinet.Uat.UatTraceDiff.Compare(now, then);
+            var at = Math.Max(difference.Index, 0);
+            var files = ChangedFiles(suiteFolder, (string?)then["commit"], (string?)now["commit"],
+                [.. StepNames(now, at, at).Concat(StepNames(then, at, at))], [.. StepNames(now, 0, at - 1)]);
+            return new
+            {
+                difference.Kind,
+                difference.Line,
+                First = difference.Differences.FirstOrDefault(),
+                CodeChanged = files.Touching.Concat(files.Earlier).Concat(files.Other).Take(5),
+                CodeChangedMore = files.Touching.Count + files.Earlier.Count + files.Other.Count > 5 ? files.Touching.Count + files.Earlier.Count + files.Other.Count - 5 : (int?)null,
+                Note = files.Note ?? "why gives it in full.",
+            };
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
     // Since last green (AI9): the newest failing run's trace against the newest earlier passing one's, and the files
     // changed since that run's commit that touch the step where they part.
     private object Why(JsonObject arguments)
@@ -879,11 +913,37 @@ public sealed class BddMcpServer : IDisposable
         }
 
         static bool Traced(Bruinet.Bdd.Preview.BddScenarioRun run) => run.TracePath is { } path && File.Exists(path);
-        var failed = _server.NewestRuns(uri, suite, run => run.Status == "failed" && Traced(run));
-        var (name, failing) = names.Select(name => (name, Run: failed.GetValueOrDefault(name))).Where(found => found.Run is not null).OrderByDescending(found => found.Run!.At).FirstOrDefault();
+        (string Name, Bruinet.Bdd.Preview.BddScenarioRun? Run) NewestFailure()
+        {
+            var failed = _server.NewestRuns(uri, suite, run => run.Status == "failed" && Traced(run));
+            return names.Select(name => (name, Run: failed.GetValueOrDefault(name))).Where(found => found.Run is not null).OrderByDescending(found => found.Run!.At).FirstOrDefault();
+        }
+
+        // No failure traced yet: it is built and run first, as run_scenario with build: true runs it (the app may have changed
+        // since its last build), so one call answers.
+        var ran = false;
+        var (name, failing) = NewestFailure();
         if (failing is null)
         {
-            throw new ToolProblem("No failed run of it has a trace: run it with run_scenario (a run with trace: off keeps none).");
+            var run = new JsonObject
+            {
+                ["path"] = (string?)arguments["path"],
+                ["line"] = (int?)arguments["line"],
+                ["build"] = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ProjectFile is not null,
+            };
+            if (suite is not null)
+            {
+                run["suite"] = suite;
+            }
+
+            RunScenario(run);
+            (name, failing) = NewestFailure();
+            ran = true;
+        }
+
+        if (failing is null)
+        {
+            throw new ToolProblem("It passed when built and run now, or its run kept no trace (trace: off): there is no failure to explain.");
         }
 
         var newest = _server.NewestRuns(uri, suite).GetValueOrDefault(name);
@@ -916,6 +976,7 @@ public sealed class BddMcpServer : IDisposable
             Files = files.Answer,
             Note = string.Join(" ", new[]
             {
+                ran ? "It was built and run first: no failure of it was traced yet." : null,
                 newest is { Status: "passed" } && newest.At > failing.At ? $"Its newest run passed ({newest.At:u}): this is an older failure." : null,
                 difference.Kind == Bruinet.Uat.UatTraceDiff.None ? "The failing run's steps match the green one's: get_failure gives the failure." : null,
                 Bruinet.Uat.UatTraceDiff.ReadPages(then) ? null : "Page values were not compared: the green run did not read pages (run_scenario's trace: all).",
@@ -951,12 +1012,13 @@ public sealed class BddMcpServer : IDisposable
     {
         if (green is null)
         {
-            return new WhyFiles([], [], [], "The green run's commit is not known (not a git checkout): no files compared.");
+            return new WhyFiles([], [], [], [], "The green run's commit is not known (not a git checkout): no files compared.");
         }
 
         var since = green[..Math.Min(8, green.Length)];
         List<string> changed;
         string root;
+        HashSet<string> commentsOnly;
         try
         {
             root = Bruinet.Cli.Sql.SqlCommands.GitText(folder, "rev-parse", "--show-toplevel").Trim();
@@ -968,14 +1030,21 @@ public sealed class BddMcpServer : IDisposable
                 .Concat(toFailing ? [] : Lines(Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "ls-files", "--others", "--exclude-standard")))
                 .Distinct(StringComparer.Ordinal)
                 .Take(2000)];
+
+            // A change of comments or blank lines only cannot have made the run go another way: set apart (AI9's check).
+            commentsOnly = WhyFiles.CommentsOnlyIn(toFailing
+                ? Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "diff", "-U0", "--no-color", green, failing!, "--")
+                : Bruinet.Cli.Sql.SqlCommands.GitText(root, "-c", "core.quotePath=false", "diff", "-U0", "--no-color", green, "--"));
         }
         catch (Exception exception) when (exception is InvalidOperationException or System.ComponentModel.Win32Exception)
         {
-            return new WhyFiles([], [], [], $"The files since {since} could not be listed ({exception.Message}).");
+            return new WhyFiles([], [], [], [], $"The files since {since} could not be listed ({exception.Message}).");
         }
 
-        var (touching, earlier, other) = WhyFiles.Sort(changed, file => Path.Combine(root, file), step, before);
-        return new WhyFiles(touching, earlier, other, changed.Count == 0 ? $"No file changed since {since}: the difference is in data, timing or the environment." : null);
+        var code = changed.Where(file => !commentsOnly.Contains(file)).ToList();
+        var (touching, earlier, other) = WhyFiles.Sort(code, file => Path.Combine(root, file), step, before);
+        return new WhyFiles(touching, earlier, other, [.. changed.Where(commentsOnly.Contains)],
+            code.Count == 0 ? $"No code changed since {since}{(changed.Count > 0 ? " (comments only)" : string.Empty)}: the difference is in data, timing or the environment." : null);
 
         static IEnumerable<string> Lines(string text) => text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
