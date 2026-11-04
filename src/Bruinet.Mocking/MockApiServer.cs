@@ -64,7 +64,7 @@ public sealed partial class MockApiServer : IDisposable
     /// <summary>The port the server listens on.</summary>
     public int Port => _server.Ports[0];
 
-    /// <summary>The address to give the app, e.g. <c>http://localhost:51234</c>, without a trailing slash.</summary>
+    /// <summary>The address to give the app, e.g. <c>http://127.0.0.1:51234</c>, without a trailing slash.</summary>
     public string BaseUrl => _server.Urls[0].TrimEnd('/');
 
     /// <summary>
@@ -299,9 +299,11 @@ public sealed partial class MockApiServer : IDisposable
 
     private static WireMockServer StartWireMock(MockApiServerOptions options)
     {
+        // Loopback only: WireMock's default "*" binding triggers the Windows Firewall prompt. The Android
+        // emulator (10.0.2.2) and adb reverse both reach the host loopback, see AndroidHost.
         var settings = new WireMockServerSettings
         {
-            Port = options.Port,
+            Urls = [$"http://127.0.0.1:{options.Port}"],
             StartAdminInterface = false,
             ReadStaticMappings = false,
         };

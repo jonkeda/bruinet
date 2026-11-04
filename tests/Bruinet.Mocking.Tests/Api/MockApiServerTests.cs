@@ -26,7 +26,7 @@ public sealed class MockApiServerTests : IDisposable
     {
         Assert.True(_server.IsStarted);
         Assert.True(_server.Port > 0);
-        Assert.Equal($"http://localhost:{_server.Port}", _server.BaseUrl);
+        Assert.Equal($"http://127.0.0.1:{_server.Port}", _server.BaseUrl);
     }
 
     [Fact]

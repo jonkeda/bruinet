@@ -12,7 +12,8 @@ namespace Bruinet.Mocking.Http.Tests;
 public sealed class HttpReplayTests : IDisposable
 {
     private readonly string _folder = Path.Combine(Path.GetTempPath(), "Bruinet.Mocking.Http.Tests", Guid.NewGuid().ToString("N"));
-    private readonly WireMockServer _service = WireMockServer.Start();
+    // Loopback only, so Windows Firewall does not prompt for testhost.
+    private readonly WireMockServer _service = WireMockServer.Start(new WireMock.Settings.WireMockServerSettings { Urls = ["http://127.0.0.1:0"] });
 
     private string Recording => HttpReplaySession.PathFor(_folder, "A test");
 
