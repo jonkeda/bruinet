@@ -153,7 +153,10 @@ public abstract class MauiTestFixtureBase : IDisposable
             IncludeTimestamp = true,
             Format = ScreenshotFormat.Png
         };
-        var service = new ScreenshotService(context, context.Logger, screenshotSettings);
+        var service = new ScreenshotService(context, context.Logger, screenshotSettings)
+        {
+            ReadFailureTree = context.Driver.GetPageSource
+        };
         ScreenshotTestAttribute.SetService(service);
         return service;
     }

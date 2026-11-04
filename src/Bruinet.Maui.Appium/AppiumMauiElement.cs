@@ -112,7 +112,8 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// An empty Android text field reports its placeholder as its text: UiAutomator2 gives an empty
     /// <c>EditText</c> with <c>hint="Title"</c> the text "Title" as well (probed 2026-09-19 in the
     /// Todo sample). Such a field reads as empty here, as it does on Windows, where the placeholder
-    /// is a separate property. The limit: a field whose value is exactly its own placeholder reads
+    /// is a separate property. iOS does the same: XCUITest reports an empty <c>UITextField</c>'s
+    /// value as its <c>placeholderValue</c> (probed 2026-11-04 on iOS 27). The limit: a field whose value is exactly its own placeholder reads
     /// as empty too. UiAutomator2 lists <c>showing-hint</c>, which would say so directly, but refuses
     /// to read it ("attribute is unknown" on Android 16). A non-empty Android text read costs one
     /// class read more, and a text field's one hint read on top.
@@ -121,15 +122,17 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     {
         var text = _element.Text;
 
-        if (_driver.Platform == MauiPlatform.Android
-            && !string.IsNullOrEmpty(text)
-            && TagName == "android.widget.EditText"
-            && text == Hint)
-        {
-            return string.Empty;
-        }
+        if (string.IsNullOrEmpty(text))
+            return text;
 
-        return text;
+        var isTextField = _driver.Platform switch
+        {
+            MauiPlatform.Android => TagName == "android.widget.EditText",
+            MauiPlatform.iOS => TagName is "XCUIElementTypeTextField" or "XCUIElementTypeSecureTextField" or "XCUIElementTypeSearchField",
+            _ => false
+        };
+
+        return isTextField && text == Hint ? string.Empty : text;
     });
 
     /// <inheritdoc />
@@ -721,6 +724,14 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </summary>
     private void ScrollIntoViewiOS(int budgetMs)
     {
+        // The keyboard covers the lower half of the screen and scrolling does not move content out
+        // from under it; a user closes it first. Probed 2026-11-04: a form footer and the last
+        // inputs read visible=false until the keyboard went away.
+        if (_driver.HideKeyboardIfShown() && IsDisplayedNow())
+        {
+            return;
+        }
+
         var clock = System.Diagnostics.Stopwatch.StartNew();
         TryInOrder(
             [
@@ -854,13 +865,17 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 });
                 break;
             case MauiPlatform.iOS:
-                _driver.Driver.ExecuteScript("mobile: swipe", new Dictionary<string, object>
+                // XCUITest's "mobile: swipe" only takes a direction; this is its coordinate-based swipe.
+                var distance = Math.Sqrt(Math.Pow(endX - startX, 2) + Math.Pow(endY - startY, 2));
+                _driver.Driver.ExecuteScript("mobile: dragFromToWithVelocity", new Dictionary<string, object>
                 {
-                    { "startX", startX },
-                    { "startY", startY },
-                    { "endX", endX },
-                    { "endY", endY },
-                    { "duration", durationMs / 1000.0 }
+                    { "fromX", startX },
+                    { "fromY", startY },
+                    { "toX", endX },
+                    { "toY", endY },
+                    { "pressDuration", 0.05 },
+                    { "holdDuration", 0.05 },
+                    { "velocity", Math.Max(100, distance / Math.Max(0.05, durationMs / 1000.0)) }
                 });
                 break;
             default:

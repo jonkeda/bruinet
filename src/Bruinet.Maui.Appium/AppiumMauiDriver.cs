@@ -321,6 +321,40 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     private bool IsKeyboardShown()
         => _driver.ExecuteScript("mobile: isKeyboardShown", new Dictionary<string, object>()) is true;
 
+    /// <summary>Closes the soft keyboard when it is up.</summary>
+    /// <returns>Whether a keyboard was shown and a close was attempted.</returns>
+    internal bool HideKeyboardIfShown()
+    {
+        try
+        {
+            if (!IsKeyboardShown())
+                return false;
+
+            // iOS: XCUITest taps the first of these keys the keyboard has; a MAUI Entry's Return
+            // key resigns the field. A numeric pad has no such key: MAUI gives it a toolbar above
+            // the keyboard, DoneAccessory, whose Done button does it instead.
+            if (_platform == MauiPlatform.iOS)
+            {
+                var done = _driver.FindElements(MobileBy.AccessibilityId("Done")).FirstOrDefault(button => button.Displayed);
+                if (done != null)
+                {
+                    done.Click();
+                    return true;
+                }
+            }
+
+            var arguments = _platform == MauiPlatform.iOS
+                ? new Dictionary<string, object> { { "keys", new[] { "return", "Return", "done", "Done" } } }
+                : new Dictionary<string, object>();
+            _driver.ExecuteScript("mobile: hideKeyboard", arguments);
+            return true;
+        }
+        catch (WebDriverException)
+        {
+            return false;
+        }
+    }
+
     private static readonly By IosNavigationBar = MobileBy.ClassName("XCUIElementTypeNavigationBar");
 
     /// <summary>

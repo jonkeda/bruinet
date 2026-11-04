@@ -1154,3 +1154,6 @@ static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Core.Utilities.WaitHelper.Pause(int milliseconds) -> void
+Bruinet.Core.Services.ScreenshotService.ReadFailureTree.get -> System.Func<string!>?
+Bruinet.Core.Services.ScreenshotService.ReadFailureTree.init -> void
+static Bruinet.Core.Services.ScreenshotService.FailureTreePathFor(string! path) -> string!

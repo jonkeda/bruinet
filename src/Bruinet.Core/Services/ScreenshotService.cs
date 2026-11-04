@@ -71,7 +71,35 @@ public class ScreenshotService : IScreenshotService
 
         var (description, reason) = GetFailureInfo(exception);
         var filename = GenerateFilename(testClass, testMethod, description);
-        return CaptureAndSave(filename, testClass, testMethod, reason);
+        var path = CaptureAndSave(filename, testClass, testMethod, reason);
+        SaveFailureTree(path, testClass, testMethod);
+        return path;
+    }
+
+    /// <summary>
+    /// Reads the app's element tree, saved beside a failure screenshot as <see cref="FailureTreePathFor"/>:
+    /// what a locator could and could not see, which the pixels do not show. Null saves none.
+    /// </summary>
+    public Func<string>? ReadFailureTree { get; init; }
+
+    /// <summary>Where the element tree of the failure screenshot at <paramref name="path"/> is saved.</summary>
+    /// <param name="path">The screenshot's path.</param>
+    public static string FailureTreePathFor(string path) => Path.ChangeExtension(path, ".source.xml");
+
+    private void SaveFailureTree(string screenshotPath, string testClass, string testMethod)
+    {
+        // Only beside pixels: a head with no pixels already saved its tree in place of the screenshot.
+        if (ReadFailureTree is null || !File.Exists(screenshotPath) || screenshotPath == TreePathFor(screenshotPath))
+            return;
+
+        try
+        {
+            File.WriteAllText(FailureTreePathFor(screenshotPath), ReadFailureTree());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(testMethod, testClass, "", "CaptureFailureTree", ex);
+        }
     }
 
     /// <summary>Where a context with no pixels saves its tree instead of the screenshot at <paramref name="path"/>.</summary>
