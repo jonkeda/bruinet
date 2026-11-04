@@ -34,6 +34,30 @@ public abstract class ComponentObjectBase<TParent, TSelf>
     {
     }
 
+    private IMauiElement? _foundRoot;
+    private string? _foundAutomationId;
+
+    /// <inheritdoc />
+    // A recycling list hands a live element to another row; see call-model.md, Scopes.
+    protected override bool IsCachedRootValid(IMauiElement root)
+        => base.IsCachedRootValid(root) && StillCarriesItsId(root);
+
+    /// <inheritdoc />
+    protected override IMauiElement FindContainerRootElement()
+    {
+        var root = base.FindContainerRootElement();
+        _foundRoot = root;
+        _foundAutomationId = root.AutomationId;
+        return root;
+    }
+
+    // A root found by an override (a stand-in part) or without an id has nothing to compare with.
+    private bool StillCarriesItsId(IMauiElement root)
+        => !ReferenceEquals(root, _foundRoot)
+           || string.IsNullOrEmpty(_foundAutomationId)
+           || Bruinet.Core.Calls.AttemptMemo.Remember(root, nameof(IMauiElement.AutomationId), () => root.AutomationId)
+               == _foundAutomationId;
+
     /// <summary>
     /// Gets a typed child <see cref="ActivityIndicator{TSelf}"/> scoped to this component.
     /// </summary>

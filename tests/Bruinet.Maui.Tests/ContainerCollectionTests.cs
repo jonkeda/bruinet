@@ -255,6 +255,47 @@ public class ContainerCollectionTests
         Assert.True(form.FormButton.IsExists());
     }
 
+    /// <summary>
+    /// A recycling list hands a component's live root to another row: the component finds its own
+    /// row again by its id instead of reading the row now in its old element.
+    /// </summary>
+    [Fact]
+    [Trait("Pattern", "RootCaching")]
+    public void Component_RefindsItsRoot_WhenTheListRecyclesIt()
+    {
+        var page = new TestPage(_context.Object);
+        var recycled = SetupRootElement("Row_5");
+        var recycledId = "Row_5";
+        recycled.Setup(e => e.AutomationId).Returns(() => recycledId);
+        var recycledName = SetupChild(recycled, "RowName", "Five");
+        var row = page.Row(5);
+        Assert.Equal("Five", row.Name.GetText());
+
+        recycledId = "Row_7";
+        recycledName.Setup(e => e.Text).Returns("Seven");
+        var current = SetupRootElement("Row_5");
+        current.Setup(e => e.AutomationId).Returns("Row_5");
+        SetupChild(current, "RowName", "Five");
+
+        Assert.Equal("Five", row.Name.GetText());
+    }
+
+    [Fact]
+    [Trait("Pattern", "RootCaching")]
+    public void Component_KeepsItsRoot_WhileItCarriesItsId()
+    {
+        var page = new TestPage(_context.Object);
+        var root = SetupRootElement("Row_5");
+        root.Setup(e => e.AutomationId).Returns("Row_5");
+        SetupChild(root, "RowName", "Five");
+        var row = page.Row(5);
+
+        _ = row.Name.GetText();
+        _ = row.Name.GetText();
+
+        _context.Verify(c => c.FindElement(It.Is<Locator>(l => l.Value == "Row_5")), Times.Once);
+    }
+
     #endregion
 
     #region Collection item scoping
@@ -837,6 +878,8 @@ public class ContainerCollectionTests
         public FormContainer Form { get; }
         public RowCollection Rows { get; }
         public SlowContainer Slow { get; }
+
+        public RowComponent Row(int id) => new(this, $"Row_{id}");
     }
 
     private class FormContainer : ContainerObjectBase<TestPage, FormContainer>
@@ -866,6 +909,15 @@ public class ContainerCollectionTests
 
         protected override ScopeReadiness ProbeContentReadiness(IMauiElement root)
             => ContentIsReady ? ContentReady() : ContentNotReady("still loading");
+    }
+
+    /// <summary>A row of a recycling list, found by an id of its own rather than as an item.</summary>
+    private class RowComponent : ComponentObjectBase<TestPage, RowComponent>
+    {
+        public RowComponent(IMauiScope<TestPage> scope, string automationId)
+            : base(scope, automationId) { }
+
+        public Label<RowComponent> Name => new(this, "RowName");
     }
 
     private class RowCollection : CollectionObjectBase<TestPage, RowCollection, RowContainer>

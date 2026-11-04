@@ -1047,6 +1047,8 @@ override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.ProbeParent
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.RootNotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.ScrollingRoot.get -> Bruinet.Maui.Interfaces.IMauiElement?
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.SetResult.get -> TParent
+override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
+override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.IsCachedRootValid(Bruinet.Maui.Interfaces.IMauiElement! root) -> bool
 override Bruinet.Maui.Containers.ItemKey.ToString() -> string!
 override Bruinet.Maui.Containers.ItemObjectBase<TCollection, TSelf>.AllowsScrollLookup.get -> bool
 override Bruinet.Maui.Containers.ItemObjectBase<TCollection, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!

@@ -64,6 +64,10 @@ and the native Android slice (`.my/androidnative/`, 2026-10). Enforces
   A `Logical` key (`PositionInSet`) or `AutomationId` key can tell; a `Position` key cannot. A
   collection whose platform publishes no `PositionInSet` and whose rows carry no distinguishing
   id cannot detect recycling: give such an item template an id per row (`Task_0`, `Task_1`).
+- **A component stands for the element its locator found.** A recycling list keeps a row's
+  element alive and hands it to another row, so a component found by an id (`Row_5`) reads its
+  cached root's automation id on every use and finds its root again when the id has changed. A
+  root found by an override (a stand-in part) or without an id is not checked.
 
 ## Broken when
 
