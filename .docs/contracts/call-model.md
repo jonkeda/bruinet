@@ -50,6 +50,10 @@ and the native Android slice (`.my/androidnative/`, 2026-10). Enforces
 - **Who asks its parent (R4).** A page asks nobody: its root is present and shown, then
   `IsLoaded()`, then its busy signal. A container, collection and row ask their parent first.
   A scope shown over its parent (a popup, a dialog) does not (`AsksParent => false`).
+- **A busy signal missing beneath a hidden root means not loaded, not misconfigured.** Headless,
+  each read first runs the app's queued work, so a loading view can hide the page during one
+  attempt. When the signal is not found, the root's shown state is read again rather than taken
+  from the attempt's memo; only a root still shown makes a missing signal a configuration error.
 - **A root is cached for the object's life and checked on every use (R6).** A property declared
   as `=> new` or `{ get; }` differs only in cost. A stale root is re-found once, in one place.
 - **A page root is checked as attached, not only as shown.** An element that can outlive its place

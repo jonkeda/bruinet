@@ -305,6 +305,24 @@ public class ReadinessTests
     }
 
     [Fact]
+    public void Click_WaitsForThePage_WhenALoadingViewHidesItDuringTheAttempt()
+    {
+        // The root reads shown, then a loading view hides it, signal included, before the busy search.
+        var visibleReads = 0;
+        _pageRoot.Setup(e => e.Visible).Returns(() => ++visibleReads != 2);
+        var signal = new Mock<IMauiElement>();
+        signal.Setup(e => e.Text).Returns("False");
+        var busySearches = 0;
+        _pageRoot.Setup(e => e.TryFindElement(It.Is<Locator>(l => l.Value == "Busy")))
+            .Returns(() => ++busySearches == 1 ? null : signal.Object);
+        var element = GivenElement();
+
+        new BusyGatedPage(_context.Object).Target.Click();
+
+        element.Verify(e => e.Invoke(), Times.Once);
+    }
+
+    [Fact]
     public void WaitLoadedFalse_BypassesBusyReadinessGate()
     {
         var signal = GivenBusySignal(() => "True");

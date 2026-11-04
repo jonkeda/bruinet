@@ -62,6 +62,17 @@ public static class MauiElementExtensions
         }
     }
 
+    /// <summary>
+    /// Whether the element is shown with a non-empty size now, read afresh rather than taken from
+    /// this attempt's earlier answer.
+    /// </summary>
+    /// <remarks>
+    /// For a re-check after reads that may have let the app move on: headless, every read first runs
+    /// the app's queued work, which can put a loading view over the page within one attempt.
+    /// </remarks>
+    internal static bool HasUsableBoundsNow(this IMauiElement? element)
+        => element is not null && ReadUsableBounds(element);
+
     /// <summary>Whether the centre of <paramref name="child"/> lies inside <paramref name="parent"/>.</summary>
     public static bool ContainsCenter(this IMauiElement parent, IMauiElement child)
     {
