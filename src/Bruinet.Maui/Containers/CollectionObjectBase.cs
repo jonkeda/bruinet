@@ -656,6 +656,11 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                 return done;
             }
 
+            if (FirstRowAtTheTopIos(ScrollTarget ?? root))
+            {
+                return Observation.Missing(EndOfList);
+            }
+
             state.Rows ??= RealizedRows();
             if ((ScrollTarget ?? root).ScrollContent(-1) is ScrollStep.Moved or ScrollStep.Unconfirmed
                 && RealizedRows() is var rows
@@ -864,6 +869,24 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         public string? Rows { get; set; }
     }
 
+    /// <summary>
+    /// iOS: whether the list already shows its top, its first realized row starting at or below
+    /// the list's top edge. A step up there is a pull-to-refresh: the list reloads, its rows are
+    /// new elements, and the scroll took every reload for a move and never ended. iOS reports a
+    /// row's full frame, so a row cut off by the top edge starts above it; Android clips a row's
+    /// bounds to what is shown and cannot tell, so it is not asked.
+    /// </summary>
+    private bool FirstRowAtTheTopIos(IMauiElement scrollRoot)
+    {
+        if (Context.Driver?.Platform != MauiPlatform.iOS)
+        {
+            return false;
+        }
+
+        var roots = TryGetItemRoots();
+        return roots.Count > 0 && roots[0].Location.Y >= scrollRoot.Location.Y;
+    }
+
     // At the top the first realized row is the first row: brought fully into view.
     private Observation AtTheTop(ScrollUp state)
     {
@@ -876,6 +899,11 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private Func<AttemptContext, Observation> ScrollUpAttempt(ScrollUp state)
         => _ => RootAttempt(root =>
         {
+            if (state.Rows is null && FirstRowAtTheTopIos(ScrollTarget ?? root))
+            {
+                return AtTheTop(state);
+            }
+
             state.Rows ??= RealizedRows();
             switch ((ScrollTarget ?? root).ScrollContent(-1))
             {
