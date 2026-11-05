@@ -22,7 +22,7 @@ namespace Bruinet.Maui.Containers;
 /// <typeparam name="TSelf">The container type itself (self-referencing for fluent returns).</typeparam>
 /// <typeparam name="TSetResult">The scope returned by generated set operations.</typeparam>
 public abstract class RootedScopeBase<TSelf, TSetResult>
-    : ObjectBase, IMauiScope<TSelf>, IControlHost<IMauiElement>
+    : ObjectBase, IMauiScope<TSelf>, IControlHost<IMauiElement>, IRootCache
     where TSelf : RootedScopeBase<TSelf, TSetResult>
 {
     private IMauiElement? _cachedRoot;

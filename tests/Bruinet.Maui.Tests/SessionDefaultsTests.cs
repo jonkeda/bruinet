@@ -20,12 +20,12 @@ public class SessionDefaultsTests
     }
 
     [Fact]
-    public void iOS_TurnsQuiescenceOff_AndBoundsItsIdleWait()
+    public void iOS_TurnsQuiescenceOff_AndSkipsTheIdleWait()
     {
         var capabilities = MauiDriverFactory.SessionCapabilities(new MauiDriverOptions { Platform = MauiPlatform.iOS });
 
         Assert.Equal(false, capabilities["waitForQuiescence"]);
-        Assert.Equal(1, capabilities["settings[waitForIdleTimeout]"]);
+        Assert.Equal(0, capabilities["settings[waitForIdleTimeout]"]);
         Assert.False(capabilities.ContainsKey("disableWindowAnimation"));
     }
 

@@ -1,4 +1,5 @@
 using Bruinet.Core.Interfaces;
+using Bruinet.Maui.Containers;
 using Bruinet.Maui.Interfaces;
 
 namespace Bruinet.Maui.Testing;
@@ -63,6 +64,14 @@ public class NavigationRecovery
     /// <returns>True when root state is reached.</returns>
     public bool TryReturnToRoot(int maxAttempts = 5)
     {
+        // A page's root kept from an earlier test is usually gone. On iOS, asking a removed element
+        // anything takes XCTest about 2.2 s before it answers "stale"; a fresh lookup that finds
+        // nothing takes about 0.2 s.
+        foreach (var page in _navigablePages)
+        {
+            ForgetRoot(page);
+        }
+
         INavigablePage? departed = null;
         var settleMs = 0;
         for (var attempt = 0; attempt < maxAttempts; attempt++)
@@ -106,6 +115,12 @@ public class NavigationRecovery
         var deadline = Environment.TickCount64 + Bruinet.Core.Calls.CallBudget.Within(budgetMs);
         while (true)
         {
+            if (departed != null)
+            {
+                // The page being left is removed during this wait: its kept root would turn stale.
+                ForgetRoot(departed);
+            }
+
             if (departed == null || !departed.IsLoaded(0))
             {
                 if (IsAtRoot())
@@ -126,6 +141,14 @@ public class NavigationRecovery
             }
 
             Thread.Sleep(ProbeIntervalMs);
+        }
+    }
+
+    private static void ForgetRoot(INavigablePage page)
+    {
+        if (page is IRootCache cache)
+        {
+            cache.InvalidateCache();
         }
     }
 

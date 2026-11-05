@@ -139,11 +139,12 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <remarks>
     /// On Android the widget class, <c>android.widget.EditText</c>: UiAutomator2 answers the tag
     /// name request with null (probed 2026-09-19), so every Android type check - an EditText's
-    /// placeholder, a control-type item key - silently failed.
+    /// placeholder, a control-type item key - silently failed. Read once per element id on both
+    /// platforms: every text read asks it, and on iOS it was one round trip in seven of a list scan.
     /// </remarks>
     public string? TagName => Live(() => _driver.Platform == MauiPlatform.Android
         ? _driver.ElementFact(_element.Id, "class", () => GetAttribute("class"))
-        : _element.TagName);
+        : _driver.ElementFact(_element.Id, "type", () => _element.TagName));
 
     /// <inheritdoc />
     /// <remarks>
@@ -161,7 +162,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     /// <remarks>One request: <c>Location</c> and <c>Size</c> each fetch the element's rect, so building
     /// it from them cost two, and bounds are read on every readiness check (.my/android-performance, P2).</remarks>
-    public Rectangle Rect => Live(() => _element.Rect);
+    public Rectangle Rect => Live(() => _driver.ElementRect(_element.Id));
 
     // A recorded video's touch mark (AD-024): the target as it is, before the action runs.
     private Interactions.Scope Report(InteractionKind kind, string? key = null, TimeSpan duration = default)
@@ -222,8 +223,8 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         if (nested.Count == 0)
             return false;
 
-        var rect = _element.Rect;
-        var covered = nested.Select(child => child.Rect)
+        var rect = _driver.ElementRect(_element.Id);
+        var covered = nested.Select(child => _driver.ElementRect(child.Id))
             .Where(child => child.Width > 0 && child.Height > 0 && child != rect)
             .ToList();
         var centre = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);

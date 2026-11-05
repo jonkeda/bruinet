@@ -200,9 +200,11 @@ public static class MauiDriverFactory
     /// transition.
     /// </para>
     /// <para>
-    /// <b>iOS</b>, not yet run on a simulator (<c>.my/ios/README.md</c>): XCUITest waits for the
-    /// app to be quiescent before each command by default, the same trap on an animating page, so
-    /// quiescence is off and its idle wait (in seconds there) is bounded to one.
+    /// <b>iOS.</b> XCUITest waits for the app to be quiescent before each command by default, the
+    /// same trap on an animating page, so quiescence is off. With the idle wait still at 1 s, a tap
+    /// that opened a page took 15-20 s (an iPhone 17 simulator, a raw Appium probe, no Bruinet); at
+    /// 0 it took under 2 s. The animation cool-off stays at its default: at 0 a drag returned while
+    /// the list still coasted, and rows read then were recycled under the reader.
     /// </para>
     /// </remarks>
     internal static IReadOnlyDictionary<string, object> SessionDefaults(MauiPlatform platform) => platform switch
@@ -215,7 +217,7 @@ public static class MauiDriverFactory
         MauiPlatform.iOS => new Dictionary<string, object>
         {
             ["waitForQuiescence"] = false,
-            ["settings[waitForIdleTimeout]"] = 1,
+            ["settings[waitForIdleTimeout]"] = 0,
         },
         _ => new Dictionary<string, object>(),
     };

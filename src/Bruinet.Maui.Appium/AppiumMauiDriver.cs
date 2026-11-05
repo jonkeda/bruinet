@@ -628,6 +628,31 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     }
 
     /// <summary>
+    /// An element's position and size in one round trip. The Appium client's <c>Rect</c> reads
+    /// <c>Location</c> and then <c>Size</c>, two requests for the same W3C rect, and a row check
+    /// reads it often: on iOS each request costs about 100 ms on a list page.
+    /// </summary>
+    internal System.Drawing.Rectangle ElementRect(string elementId)
+    {
+        if (!_rectCommandRegistered)
+        {
+            _driver.RegisterCustomDriverCommand(
+                ElementRectCommand,
+                new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/rect"));
+            _rectCommandRegistered = true;
+        }
+
+        var rect = (Dictionary<string, object>)_driver.ExecuteCustomDriverCommand(
+            ElementRectCommand, new Dictionary<string, object> { ["id"] = elementId });
+        return new System.Drawing.Rectangle(Whole(rect["x"]), Whole(rect["y"]), Whole(rect["width"]), Whole(rect["height"]));
+
+        static int Whole(object value) => (int)Math.Round(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    private const string ElementRectCommand = "bruinetElementRect";
+    private bool _rectCommandRegistered;
+
+    /// <summary>
     /// Whether an element this session finds is necessarily on screen: Android, where UiAutomator2
     /// leaves invisible elements out of its tree unless <c>allowInvisibleElements</c> is set.
     /// </summary>
