@@ -125,12 +125,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         if (string.IsNullOrEmpty(text))
             return text;
 
-        var isTextField = _driver.Platform switch
-        {
-            MauiPlatform.Android => TagName == "android.widget.EditText",
-            MauiPlatform.iOS => TagName is "XCUIElementTypeTextField" or "XCUIElementTypeSecureTextField" or "XCUIElementTypeSearchField",
-            _ => false
-        };
+        var isTextField = _driver.Appium.IsTextField(TagName);
 
         return isTextField && text == Hint ? string.Empty : text;
     });
@@ -142,9 +137,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// placeholder, a control-type item key - silently failed. Read once per element id on both
     /// platforms: every text read asks it, and on iOS it was one round trip in seven of a list scan.
     /// </remarks>
-    public string? TagName => Live(() => _driver.Platform == MauiPlatform.Android
-        ? _driver.ElementFact(_element.Id, "class", () => GetAttribute("class"))
-        : _driver.ElementFact(_element.Id, "type", () => _element.TagName));
+    public string? TagName => Live(() => _driver.Appium.ReadTagName(this));
 
     /// <inheritdoc />
     /// <remarks>
@@ -491,7 +484,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 return;
 
             case MauiGesture.DoubleTap:
-                Mobile(_driver.Platform == MauiPlatform.Android ? "mobile: doubleClickGesture" : "mobile: doubleTap",
+                Mobile(_driver.Appium.DoubleTapScript,
                     new Dictionary<string, object> { { "elementId", _element.Id } });
                 return;
 
@@ -536,47 +529,14 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         var (fromX, fromY) = (rect.Left + (rect.Width / 2), rect.Top + (rect.Height / 2));
         var (toX, toY) = (fromX + (int)Math.Round(deltaX * scale), fromY + (int)Math.Round(deltaY * scale));
 
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                Mobile("mobile: dragGesture", new Dictionary<string, object>
-                {
-                    { "startX", fromX }, { "startY", fromY }, { "endX", toX }, { "endY", toY },
-                });
-                return;
-            case MauiPlatform.iOS:
-                Mobile("mobile: dragFromToForDuration", new Dictionary<string, object>
-                {
-                    { "fromX", fromX }, { "fromY", fromY }, { "toX", toX }, { "toY", toY }, { "duration", 0.5 },
-                });
-                return;
-            default:
-                throw NotAMobilePlatform(nameof(Pan));
-        }
+        _driver.Appium.Drag(this, fromX, fromY, toX, toY);
     }
 
     /// <summary>A pinch on the element: positive opens, negative closes, by that many percent (50 when 0).</summary>
     private void Pinch(int percent)
     {
         var size = Math.Clamp(percent == 0 ? 50 : Math.Abs(percent), 1, 100) / 100.0;
-
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                Mobile(percent < 0 ? "mobile: pinchCloseGesture" : "mobile: pinchOpenGesture",
-                    new Dictionary<string, object> { { "elementId", _element.Id }, { "percent", size } });
-                return;
-            case MauiPlatform.iOS:
-                Mobile("mobile: pinch", new Dictionary<string, object>
-                {
-                    { "elementId", _element.Id },
-                    { "scale", percent < 0 ? 1 - size : 1 + size },
-                    { "velocity", percent < 0 ? -1.0 : 1.0 },
-                });
-                return;
-            default:
-                throw NotAMobilePlatform(nameof(Pinch));
-        }
+        _driver.Appium.Pinch(this, percent, size);
     }
 
     private void Mobile(string command, Dictionary<string, object> arguments)
@@ -614,31 +574,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <summary>
     /// Sets an element's value directly, bypassing the keyboard.
     /// </summary>
-    private void SetValueDirectly(string text)
-    {
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                _driver.Driver.ExecuteScript("mobile: replaceElementValue", new Dictionary<string, object>
-                {
-                    { "elementId", _element.Id },
-                    { "text", text }
-                });
-                break;
-
-            case MauiPlatform.iOS:
-                // XCUITest has no "mobile: setValue" extension; its element value endpoint is the
-                // direct route. An empty value has nothing to type: callers clear first.
-                if (text.Length > 0)
-                {
-                    _element.SendKeys(text);
-                }
-                break;
-
-            default:
-                throw NotAMobilePlatform(nameof(SetValueDirectly));
-        }
-    }
+    private void SetValueDirectly(string text) => _driver.Appium.SetValue(this, text);
 
     /// <summary>
     /// The exception for a branch this driver cannot reach: a platform other than Android or iOS.
@@ -680,27 +616,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     /// <inheritdoc />
     public void LongPress(int durationMs = 1000) => Marked(InteractionKind.LongPress, TimeSpan.FromMilliseconds(durationMs), () => Live(() =>
-    {
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                _driver.Driver.ExecuteScript("mobile: longClickGesture", new Dictionary<string, object>
-                {
-                    { "elementId", _element.Id },
-                    { "duration", durationMs }
-                });
-                break;
-            case MauiPlatform.iOS:
-                _driver.Driver.ExecuteScript("mobile: touchAndHold", new Dictionary<string, object>
-                {
-                    { "elementId", _element.Id },
-                    { "duration", durationMs / 1000.0 } // iOS uses seconds
-                });
-                break;
-            default:
-                throw NotAMobilePlatform(nameof(LongPress));
-        }
-    }));
+        _driver.Appium.LongPress(this, durationMs)));
 
     /// <inheritdoc />
     public void ScrollIntoView(int timeoutMs) => Live(() =>
@@ -899,51 +815,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     /// <inheritdoc />
     public void Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) => Marked(new Point(startX, startY), new Point(endX, endY), TimeSpan.FromMilliseconds(durationMs), () => Live(() =>
-    {
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                _driver.Driver.ExecuteScript("mobile: swipeGesture", new Dictionary<string, object>
-                {
-                    { "left", Math.Min(startX, endX) },
-                    { "top", Math.Min(startY, endY) },
-                    { "width", Math.Abs(endX - startX) + 1 },
-                    { "height", Math.Abs(endY - startY) + 1 },
-                    { "direction", GetSwipeDirection(startX, startY, endX, endY) },
-                    { "percent", 1.0 },
-                    { "speed", (int)(1000.0 / durationMs * 1000) }
-                });
-                break;
-            case MauiPlatform.iOS:
-                // XCUITest's "mobile: swipe" only takes a direction; this is its coordinate-based swipe.
-                var distance = Math.Sqrt(Math.Pow(endX - startX, 2) + Math.Pow(endY - startY, 2));
-                _driver.Driver.ExecuteScript("mobile: dragFromToWithVelocity", new Dictionary<string, object>
-                {
-                    { "fromX", startX },
-                    { "fromY", startY },
-                    { "toX", endX },
-                    { "toY", endY },
-                    { "pressDuration", 0.05 },
-                    { "holdDuration", 0.05 },
-                    { "velocity", Math.Max(100, distance / Math.Max(0.05, durationMs / 1000.0)) }
-                });
-                break;
-            default:
-                throw NotAMobilePlatform(nameof(Swipe));
-        }
-    }));
-
-    private static string GetSwipeDirection(int startX, int startY, int endX, int endY)
-    {
-        var deltaX = endX - startX;
-        var deltaY = endY - startY;
-
-        if (Math.Abs(deltaX) > Math.Abs(deltaY))
-        {
-            return deltaX > 0 ? "right" : "left";
-        }
-        return deltaY > 0 ? "down" : "up";
-    }
+        _driver.Appium.Swipe(this, startX, startY, endX, endY, durationMs)));
 
     #endregion
 
@@ -952,7 +824,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     public IMauiElement? TryFindElement(Locator locator) => Live<IMauiElement?>(() =>
     {
-        var by = locator.ToChildBy(_driver.Platform);
+        var by = _driver.Appium.ToChildBy(locator);
 
         try
         {
@@ -967,7 +839,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator) => Live<IReadOnlyList<IMauiElement>>(() =>
     {
-        var by = locator.ToChildBy(_driver.Platform);
+        var by = _driver.Appium.ToChildBy(locator);
 
         return _element.FindElements(by).Select(e => new AppiumMauiElement(e, _driver)).ToList();
     });
@@ -983,32 +855,15 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// caller gets back what the app author wrote. iOS carries the accessibility identifier,
     /// which the driver reports as <c>name</c>.
     /// </remarks>
-    public string? AutomationId => _driver.Platform switch
-    {
-        // The template's id never changes for a native view (D1); iOS's name can follow the label.
-        MauiPlatform.Android => _driver.ElementFact(_element.Id, "resource-id", () => WithoutResourcePackage(Present(GetAttribute("resource-id")))),
-        MauiPlatform.iOS => Present(GetAttribute("name")),
-        _ => null
-    };
+    public string? AutomationId => _driver.Appium.ReadAutomationId(this);
 
     /// <inheritdoc />
-    public string? Hint => _driver.Platform switch
-    {
-        MauiPlatform.Android => Present(GetAttribute("hint")),
-        MauiPlatform.iOS => Present(GetAttribute("placeholderValue")),
-        _ => null
-    };
+    public string? Hint => Present(GetAttribute(_driver.Appium.HintAttribute));
 
     /// <inheritdoc />
-    public bool Focused => _driver.Platform switch
-    {
-        MauiPlatform.Android => IsTrue(GetAttribute("focused")),
-        // WDA's 'focused' is focus-engine focus; keyboard focus is only visible as the active element.
-        MauiPlatform.iOS => IsActiveElement(),
-        _ => false
-    };
+    public bool Focused => _driver.Appium.ReadFocused(this);
 
-    private bool IsActiveElement() => Live(() =>
+    internal bool IsActiveElement() => Live(() =>
     {
         IWebElement active;
         try
@@ -1023,7 +878,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         return _element.Equals(active);
     });
 
-    private static bool IsTrue(string? value)
+    internal static bool IsTrue(string? value)
         => string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
 
     /// <inheritdoc />
@@ -1031,31 +886,19 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// Android's accessible name is the content description; an element without one is named by
     /// its text, which is what a screen reader falls back to as well.
     /// </remarks>
-    public string? Name => Live<string?>(() => _driver.Platform switch
-    {
-        MauiPlatform.Android => Present(GetAttribute("content-desc")) ?? Present(_element.Text),
-        // iOS reports the AutomationId as name when one is set; the accessible name is the label.
-        MauiPlatform.iOS => Present(GetAttribute("label")) ?? Present(GetAttribute("name")),
-        _ => null
-    });
+    public string? Name => Live(() => _driver.Appium.ReadName(this));
 
     /// <summary>
     /// An attribute value, or null when there is none.
     /// </summary>
-    private static string? Present(string? value)
+    internal static string? Present(string? value)
         => string.IsNullOrEmpty(value) || value == "null" ? null : value;
 
-    /// <summary>
-    /// Takes the identifier out of an Android resource id.
-    /// </summary>
-    private static string? WithoutResourcePackage(string? resourceId)
-    {
-        if (string.IsNullOrEmpty(resourceId))
-            return resourceId;
+    /// <summary>The Appium element, for the platform's reads.</summary>
+    internal AppiumElement Native => _element;
 
-        var separator = resourceId.LastIndexOf('/');
-        return separator >= 0 ? resourceId[(separator + 1)..] : resourceId;
-    }
+    /// <summary>The driver that owns this element.</summary>
+    internal AppiumMauiDriver Driver => _driver;
 
     /// <inheritdoc />
     /// <remarks>
@@ -1067,7 +910,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// own <c>name</c> is the AutomationId, and it has no attribute spelled <c>Name</c>.
     /// </remarks>
     public string? GetAttribute(string attributeName)
-        => attributeName == "Name" && _driver.Platform is MauiPlatform.iOS or MauiPlatform.Android
+        => attributeName == "Name"
         ? Name
         : Live<string?>(() =>
     {
@@ -1105,12 +948,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <summary>
     /// The attribute carrying checked state, per platform.
     /// </summary>
-    private string? ToggleStateAttribute => _driver.Platform switch
-    {
-        MauiPlatform.Android => "checked",
-        MauiPlatform.iOS => "value",
-        _ => null
-    };
+    private string? ToggleStateAttribute => _driver.Appium.ToggleStateAttribute;
 
     /// <inheritdoc />
     /// <remarks>
@@ -1128,7 +966,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         try
         {
-            if (_driver.Platform == MauiPlatform.Android && !IsAttributeTrue("checkable"))
+            if (_driver.Appium.CheckedNeedsCheckable && !IsAttributeTrue("checkable"))
             {
                 return null;
             }

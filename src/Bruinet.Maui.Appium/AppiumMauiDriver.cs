@@ -42,7 +42,13 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         }
 
         _platform = platform;
+        _appium = AppiumPlatform.For(platform);
     }
+
+    /// <summary>What this session does differently on its platform.</summary>
+    internal AppiumPlatform Appium => _appium;
+
+    private readonly AppiumPlatform _appium;
 
     #region Platform
 
@@ -66,7 +72,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator)
     {
-        var by = locator.ToBy(_platform);
+        var by = _appium.ToBy(locator);
 
         return AppiumErrors.Live(() => _driver.FindElements(by).Select(e => new AppiumMauiElement(e, this)).ToList());
     }
@@ -138,71 +144,27 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     public bool OmitsOffscreenElements => true;
 
     /// <inheritdoc />
-    public bool FoundMeansVisible => _platform == MauiPlatform.Android;
+    public bool FoundMeansVisible => _appium.FoundMeansVisible;
 
     /// <inheritdoc />
-    /// <remarks>Measured on UiAutomator2: "./*" walked the element itself; XCUITest's "./*" is the children.</remarks>
-    public Locator ChildrenPath => Locator.ByXPath(_platform == MauiPlatform.Android ? "./*/*" : "./*");
+    public Locator ChildrenPath => _appium.ChildrenPath;
 
     /// <inheritdoc />
-    /// <remarks>Android's alert buttons, whichever package their ids carry.</remarks>
-    public IReadOnlyList<Locator> AlertButtons => _platform == MauiPlatform.Android ? AndroidAlertButtons : [];
-
-    private static readonly Locator[] AndroidAlertButtons =
-    [
-        Locator.ByXPath(".//*[contains(@resource-id, ':id/button1')]"),
-        Locator.ByXPath(".//*[contains(@resource-id, ':id/button2')]"),
-        Locator.ByXPath(".//*[contains(@resource-id, ':id/button3')]"),
-    ];
+    public IReadOnlyList<Locator> AlertButtons => _appium.AlertButtons;
 
     /// <inheritdoc />
-    public bool DrawsRatingStars => _platform == MauiPlatform.Android;
+    public bool DrawsRatingStars => _appium.DrawsRatingStars;
 
     /// <inheritdoc />
-    public Locator? IndicatorDots => _platform == MauiPlatform.Android ? Locator.ByXPath("./*/*") : null;
+    public Locator? IndicatorDots => _appium.IndicatorDots;
 
     /// <inheritdoc />
-    /// <remarks>UIKit's <c>UIPageControl</c>; not yet run on a simulator.</remarks>
-    public (Locator Within, string Type)? PageControl
-        => _platform == MauiPlatform.iOS
-            ? (Locator.ByXPath(".//XCUIElementTypePageIndicator"), "XCUIElementTypePageIndicator")
-            : null;
+    public (Locator Within, string Type)? PageControl => _appium.PageControl;
 
-    public ShellChromeLocators ShellChrome => _platform switch
-    {
-        MauiPlatform.Android => AndroidShellChrome,
-        MauiPlatform.iOS => IosShellChrome,
-        _ => throw new PlatformNotSupportedException(
-            $"Shell chrome on {_platform} has not been mapped. Dump the tree and add it to "
-            + $"{nameof(AppiumMauiDriver)}."),
-    };
-
-    /// <summary>
-    /// UIKit's tab bar and the table MAUI draws its flyout with. Not yet run on a simulator; a page
-    /// of its own with a table may pass for the flyout.
-    /// </summary>
-    private static readonly ShellChromeLocators IosShellChrome = new(
-        TabHost: Locator.ByXPath("//XCUIElementTypeTabBar"),
-        Tab: Locator.ByXPath("//XCUIElementTypeTabBar/XCUIElementTypeButton"),
-        FlyoutHost: Locator.ByXPath("//XCUIElementTypeTable[XCUIElementTypeCell]"),
-        FlyoutItem: Locator.ByXPath("//XCUIElementTypeCell"));
-
-    private static readonly ShellChromeLocators AndroidShellChrome = new(
-        TabHost: Locator.ByXPath("//android.view.ViewGroup[android.widget.FrameLayout[@content-desc!='']]"),
-        Tab: Locator.ByXPath("//android.widget.FrameLayout[@content-desc!='']"),
-        FlyoutHost: Locator.ByXPath(
-            "//androidx.recyclerview.widget.RecyclerView[.//android.view.ViewGroup[@content-desc!='']]"),
-        FlyoutItem: Locator.ByXPath("//android.view.ViewGroup[@content-desc!='']"));
+    public ShellChromeLocators ShellChrome => _appium.ShellChrome;
 
     /// <summary>The hierarchy's root node, for the app element's members that need a node.</summary>
-    internal AppiumElement FindRootNode()
-    {
-        var by = _platform == MauiPlatform.Android
-            ? By.XPath("/hierarchy/*[1]")
-            : MobileBy.ClassName("XCUIElementTypeApplication");
-
-        return (AppiumElement)_driver.FindElement(by);
-    }
+    internal AppiumElement FindRootNode() => (AppiumElement)_driver.FindElement(_appium.RootNode);
 
     #endregion
 
