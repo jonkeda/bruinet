@@ -85,27 +85,46 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         return true;
     });
 
-    /// <inheritdoc />
-    /// <remarks>The WebDriver element id; read live, so it doubles as the "still there" check.</remarks>
-    public string InstanceKey => Live(() =>
+    /// <summary>
+    /// A read of the element that went to the driver: one that did not throw also proves the
+    /// element alive for the rest of the attempt (<see cref="InstanceKey"/>).
+    /// </summary>
+    private T Read<T>(Func<T> read)
     {
-        // A cheap round trip that fails on a replaced element; the id alone is held client-side.
-        _ = _element.Enabled;
-        return _element.Id;
-    });
+        var value = Live(read);
+        _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, AliveQuestion, () => true);
+        return value;
+    }
+
+    private const string AliveQuestion = "alive";
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The WebDriver element id; read live, so it doubles as the "still there" check. A read of
+    /// this element earlier in the same attempt already proved that, so it is not asked again: the
+    /// key after a polled read was an extra round trip on every attempt.
+    /// </remarks>
+    public string InstanceKey => Bruinet.Core.Calls.AttemptMemo.Knows(this, AliveQuestion)
+        ? _element.Id
+        : Read(() =>
+        {
+            // A cheap round trip that fails on a replaced element; the id alone is held client-side.
+            _ = _element.Enabled;
+            return _element.Id;
+        });
 
     #endregion
 
     #region State Properties
 
     /// <inheritdoc />
-    public bool Visible => Live(() => _element.Displayed);
+    public bool Visible => Read(() => _element.Displayed);
 
     /// <inheritdoc />
-    public bool Enabled => Live(() => _element.Enabled);
+    public bool Enabled => Read(() => _element.Enabled);
 
     /// <inheritdoc />
-    public bool Selected => Live(() => _element.Selected);
+    public bool Selected => Read(() => _element.Selected);
 
     /// <inheritdoc />
     /// <remarks>
@@ -118,7 +137,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// to read it ("attribute is unknown" on Android 16). A non-empty Android text read costs one
     /// class read more, and a text field's one hint read on top.
     /// </remarks>
-    public string? Text => Live(() =>
+    public string? Text => Read(() =>
     {
         var text = _element.Text;
 
@@ -155,7 +174,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     /// <remarks>One request: <c>Location</c> and <c>Size</c> each fetch the element's rect, so building
     /// it from them cost two, and bounds are read on every readiness check (.my/android-performance, P2).</remarks>
-    public Rectangle Rect => Live(() => _driver.ElementRect(_element.Id));
+    public Rectangle Rect => Read(() => _driver.ElementRect(_element.Id));
 
     // A recorded video's touch mark (AD-024): the target as it is, before the action runs.
     private Interactions.Scope Report(InteractionKind kind, string? key = null, TimeSpan duration = default)
@@ -912,7 +931,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public string? GetAttribute(string attributeName)
         => attributeName == "Name"
         ? Name
-        : Live<string?>(() =>
+        : Read<string?>(() =>
     {
         try
         {
