@@ -872,9 +872,11 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// Android reports the resource id fully qualified - <c>com.example.app:id/SaveButton</c> -
     /// where MAUI put only the <c>AutomationId</c>, so the package prefix is stripped and the
     /// caller gets back what the app author wrote. iOS carries the accessibility identifier,
-    /// which the driver reports as <c>name</c>.
+    /// which the driver reports as <c>name</c>. Kept for the attempt: a list scan read each row's
+    /// id for its duplicate check and again for its key, one round trip in six of a scan on iOS.
     /// </remarks>
-    public string? AutomationId => _driver.Appium.ReadAutomationId(this);
+    public string? AutomationId
+        => Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(AutomationId), () => _driver.Appium.ReadAutomationId(this));
 
     /// <inheritdoc />
     public string? Hint => Present(GetAttribute(_driver.Appium.HintAttribute));
