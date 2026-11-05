@@ -24,6 +24,8 @@ internal static class TabMenuMarkup
     /// <summary>The caption label inside a tab, or null when the tab has none.</summary>
     internal static IMauiElement? CaptionWithin(IMauiElement tabRoot) => Within(tabRoot, CaptionId);
 
+    // Kept for the attempt: a tab lookup by id, then by caption, found every tab's caption and
+    // button twice. A tab bar does not scroll, so a part found once in an attempt is still there.
     private static IMauiElement? Within(IMauiElement tabRoot, string automationId)
     {
         if (tabRoot == null)
@@ -31,7 +33,8 @@ internal static class TabMenuMarkup
 
         try
         {
-            return tabRoot.TryFindElement(Locator.ByAutomationId(automationId));
+            return Bruinet.Core.Calls.AttemptMemo.Remember(
+                tabRoot, automationId, () => tabRoot.TryFindElement(Locator.ByAutomationId(automationId)));
         }
         catch (StaleElementException)
         {

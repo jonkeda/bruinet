@@ -18,6 +18,11 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     private readonly IMauiTestContext _context;
     private const string DefaultBusyAutomationId = "Busy";
 
+    // The busy label found under the page root, kept while that root is: each call re-found it,
+    // one request in every page check. Its value is read live; a stale label is found again.
+    private IMauiElement? _busyRoot;
+    private IMauiElement? _busySignal;
+
     /// <summary>
     /// Creates a new page object with the specified context.
     /// </summary>
@@ -93,6 +98,19 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
         if (BusySignalPolicy == BusySignalPolicy.Disabled)
             return ContentReady();
 
+        if (ReferenceEquals(root, _busyRoot) && _busySignal is { } kept)
+        {
+            try
+            {
+                return BusyAnswer(kept.Text);
+            }
+            catch (StaleElementException)
+            {
+                _busyRoot = null;
+                _busySignal = null;
+            }
+        }
+
         var signal = root.TryFindElement(Locator.ByAutomationId(BusyAutomationId));
         // A full-screen loading view can hide the whole page, signal included, between the root
         // check and the search: that page is not loaded yet, which a later probe sees. The root is
@@ -106,6 +124,13 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
                 $"Page '{Name}' requires a page-local busy signal with AutomationId:{BusyAutomationId}, but it was not found beneath the current page root.");
 
         var value = signal.Text;
+        _busyRoot = root;
+        _busySignal = signal;
+        return BusyAnswer(value);
+    }
+
+    private ScopeReadiness BusyAnswer(string? value)
+    {
         if (!bool.TryParse(value, out var busy))
             return new ScopeReadiness(
                 Name,
