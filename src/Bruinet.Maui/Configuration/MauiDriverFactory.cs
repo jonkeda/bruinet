@@ -206,7 +206,9 @@ public static class MauiDriverFactory
     /// same trap on an animating page, so quiescence is off. With the idle wait still at 1 s, a tap
     /// that opened a page took 15-20 s (an iPhone 17 simulator, a raw Appium probe, no Bruinet); at
     /// 0 it took under 2 s. The animation cool-off stays at its default: at 0 a drag returned while
-    /// the list still coasted, and rows read then were recycled under the reader.
+    /// the list still coasted, and rows read then were recycled under the reader. The idle wait is
+    /// also a capability: WDA's own session start launches the app and waits for it to be idle,
+    /// which the setting, applied after the session starts, did not bound (10-23 s per session).
     /// </para>
     /// </remarks>
     internal static IReadOnlyDictionary<string, object> SessionDefaults(MauiPlatform platform) => platform switch
@@ -219,6 +221,7 @@ public static class MauiDriverFactory
         MauiPlatform.iOS => new Dictionary<string, object>
         {
             ["waitForQuiescence"] = false,
+            ["waitForIdleTimeout"] = 0,
             ["settings[waitForIdleTimeout]"] = 0,
         },
         _ => new Dictionary<string, object>(),
