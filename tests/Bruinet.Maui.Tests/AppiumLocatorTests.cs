@@ -49,4 +49,20 @@ public class AppiumLocatorTests
         => Assert.Equal(
             Locator.ByAutomationId("Row").ToBy(MauiPlatform.iOS).ToString(),
             Locator.ByAutomationId("Row").ToChildBy(MauiPlatform.iOS).ToString());
+
+    [Fact]
+    public void AControlTypeAndName_OnIos_MatchesTheTypeAndItsName()
+    {
+        var by = new Locator("Button", "Ok").ToBy(MauiPlatform.iOS);
+
+        Assert.Contains("type == 'XCUIElementTypeButton' AND (name == 'Ok' OR label == 'Ok')", by.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AControlTypeAndName_UnderAnElement_OnAndroid_IsRelative()
+    {
+        var by = new Locator("Button", "Ok").ToChildBy(MauiPlatform.Android);
+
+        Assert.Equal(".//android.widget.Button[@content-desc='Ok' or @text='Ok']", by.Criteria);
+    }
 }

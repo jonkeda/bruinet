@@ -199,7 +199,56 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     #region Actions
 
     /// <inheritdoc />
-    public void Click() => Marked(InteractionKind.Tap, () => Live(() => _element.Click()));
+    public void Click() => Marked(InteractionKind.Tap, () => Live(() =>
+    {
+        if (_driver.Platform == MauiPlatform.iOS && TryTapFreePointIos())
+            return;
+        _element.Click();
+    }));
+
+    private static readonly By IosNestedControls = MobileBy.IosNSPredicate(
+        "visible == 1 AND type IN {'XCUIElementTypeButton', 'XCUIElementTypeSwitch', 'XCUIElementTypeTextField', " +
+        "'XCUIElementTypeSecureTextField', 'XCUIElementTypeTextView', 'XCUIElementTypeLink', 'XCUIElementTypeSlider'}");
+
+    private static readonly double[] FreePointRows = [0.5, 0.25, 0.75, 0.1, 0.9];
+    private static readonly double[] FreePointColumns = [0.1, 0.05, 0.25, 0.5, 0.75, 0.9, 0.95];
+
+    // XCUITest taps an element at its centre. When a tappable row holds its own buttons, the
+    // centre can sit on one of them, and the tap runs that button instead of the row. A user
+    // taps the row where it is free, so the driver does the same.
+    private bool TryTapFreePointIos()
+    {
+        var nested = _element.FindElements(IosNestedControls);
+        if (nested.Count == 0)
+            return false;
+
+        var rect = _element.Rect;
+        var covered = nested.Select(child => child.Rect)
+            .Where(child => child.Width > 0 && child.Height > 0 && child != rect)
+            .ToList();
+        var centre = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+        if (!covered.Any(child => child.Contains(centre)))
+            return false;
+
+        foreach (var fy in FreePointRows)
+        {
+            foreach (var fx in FreePointColumns)
+            {
+                var point = new Point(rect.X + (int)(rect.Width * fx), rect.Y + (int)(rect.Height * fy));
+                if (covered.Any(child => child.Contains(point)))
+                    continue;
+
+                _driver.Driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
+                {
+                    ["x"] = point.X,
+                    ["y"] = point.Y,
+                });
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     #region Activation
 
@@ -1013,8 +1062,13 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// raises <c>NotImplementedException</c> for anything outside its fixed list, so a control
     /// probing several candidate names — as the progress and placeholder readers do — would abort
     /// on the first miss, while the same probe returns null on Windows.
+    /// UI Automation's <c>Name</c> reads as <see cref="Name"/>, the accessible name: XCUITest's
+    /// own <c>name</c> is the AutomationId, and it has no attribute spelled <c>Name</c>.
     /// </remarks>
-    public string? GetAttribute(string attributeName) => Live<string?>(() =>
+    public string? GetAttribute(string attributeName)
+        => attributeName == "Name" && _driver.Platform is MauiPlatform.iOS or MauiPlatform.Android
+        ? Name
+        : Live<string?>(() =>
     {
         try
         {

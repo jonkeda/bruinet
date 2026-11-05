@@ -288,6 +288,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
     private void GoBack()
     {
+        // iOS: a popup lives in a window of its own and neither the back button nor the edge
+        // swipe reaches it. A failed test that left one open made recovery swipe the page under
+        // it, and every later test in the class failed "Tab 'Projects' was not found".
+        if (_platform == MauiPlatform.iOS && TryDismissIosPopup())
+            return;
 
         // iOS: XCUITest's back taps the navigation bar's back button and silently does nothing
         // when the app hides that bar behind its own title bar. The system's left-edge swipe is
@@ -460,7 +465,8 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             // (probed 2026-09-19 in the Todo sample: com.bruinet.samples.todo:id/parentPanel).
             // Looking for the framework id only never found a MAUI alert at all.
             MauiPlatform.Android => MobileBy.AndroidUIAutomator("new UiSelector().resourceIdMatches(\".*:id/parentPanel\")"),
-            MauiPlatform.iOS => MobileBy.ClassName("XCUIElementTypeAlert"),
+            // DisplayActionSheet is a UIAlertController too, but with the sheet style.
+            MauiPlatform.iOS => MobileBy.IosNSPredicate("type == 'XCUIElementTypeAlert' OR type == 'XCUIElementTypeSheet'"),
             _ => null
         };
 
@@ -468,7 +474,78 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             return null;
 
         var root = _driver.FindElements(by).LastOrDefault();
+        if (root == null && _platform == MauiPlatform.iOS)
+            root = TryFindIosPopupWindow();
+
         return root == null ? null : new AppiumMauiElement(root, this);
+    }
+
+    /// <summary>
+    /// A popup the app draws itself: Mopups (MAUI's common popup library) puts each popup in a
+    /// UIWindow of its own above the app's. iOS lists the keyboard and its input accessory as
+    /// windows too, so those are skipped. Probed 2026-11-04 on iOS 27: a Core.Apps drawer was
+    /// the second window, the main window read visible=false under it.
+    /// </summary>
+    /// <summary>
+    /// Closes the alert, sheet or popup window on top of an iOS app, the way a user would.
+    /// </summary>
+    /// <returns>Whether there was one to close.</returns>
+    /// <remarks>
+    /// A system alert takes its cancel action. A popup window takes its own cancel or close
+    /// control when it has one, and a tap on the dimmed backdrop above it otherwise, which a
+    /// Mopups popup closes on by default.
+    /// </remarks>
+    private bool TryDismissIosPopup()
+    {
+        if (_driver.FindElements(IosAlertOrSheet).Count > 0)
+        {
+            _driver.ExecuteScript("mobile: alert", new Dictionary<string, object> { { "action", "dismiss" } });
+            return true;
+        }
+
+        if (TryFindIosPopupWindow() is not { } popup)
+            return false;
+
+        var close = popup.FindElements(IosCloseControl).FirstOrDefault(element => element.Displayed);
+        if (close is not null)
+        {
+            close.Click();
+            return true;
+        }
+
+        var size = _driver.Manage().Window.Size;
+        _driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
+        {
+            { "x", size.Width / 2 },
+            { "y", size.Height / 10 },
+        });
+        return true;
+    }
+
+    private static readonly By IosAlertOrSheet = MobileBy.IosNSPredicate(
+        "type == 'XCUIElementTypeAlert' OR type == 'XCUIElementTypeSheet'");
+
+    private static readonly By IosCloseControl = MobileBy.IosNSPredicate(
+        "name ENDSWITH '_Cancel' OR name ENDSWITH '_Close' OR name == 'Cancel' OR name == 'Close'");
+
+    private AppiumElement? TryFindIosPopupWindow()
+    {
+        var windows = _driver.FindElements(MobileBy.IosClassChain("XCUIElementTypeWindow"));
+        for (var i = windows.Count - 1; i > 0; i--)
+        {
+            var window = windows[i];
+            if (window.FindElements(MobileBy.ClassName("XCUIElementTypeKeyboard")).Count > 0
+                || window.FindElements(MobileBy.AccessibilityId("DoneAccessory")).Count > 0
+                || window.FindElements(MobileBy.ClassName("XCUIElementTypeOther")).Count == 0)
+            {
+                continue;
+            }
+
+            if (window.Displayed)
+                return window;
+        }
+
+        return null;
     }
 
     /// <inheritdoc />
@@ -512,11 +589,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             {
                 if (_driver.ExecuteScript("mobile: deviceInfo", new Dictionary<string, object>())
                         is IDictionary<string, object> info
-                    && info.TryGetValue("locale", out var locale)
-                    && locale is string name
-                    && name.Length > 0)
+                    && DeviceLocaleName(info) is { } name)
                 {
-                    return System.Globalization.CultureInfo.GetCultureInfo(name.Replace('_', '-'));
+                    return System.Globalization.CultureInfo.GetCultureInfo(name);
                 }
             }
             catch (System.Globalization.CultureNotFoundException)
@@ -526,6 +601,30 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
             return null;
         }
+    }
+
+    /// <summary>
+    /// The culture name in a <c>mobile: deviceInfo</c> answer: UiAutomator2 says <c>locale</c>
+    /// (<c>en_US</c>), XCUITest says <c>currentLocale</c> with any region override after an
+    /// <c>@</c> (<c>en_US@rg=nlzzzz</c>). The override is dropped: an app that honours it formats
+    /// with Apple's regional data, which this machine's culture data does not match, so a test
+    /// device should run without one.
+    /// </summary>
+    internal static string? DeviceLocaleName(IDictionary<string, object> info)
+    {
+        foreach (var key in new[] { "locale", "currentLocale" })
+        {
+            if (info.TryGetValue(key, out var value) && value is string raw)
+            {
+                var name = raw.Split('@')[0].Replace('_', '-');
+                if (name.Length > 0)
+                {
+                    return name;
+                }
+            }
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -675,6 +774,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
     private IMauiElement? FindByScrolling(IMauiElement? container, Locator locator)
     {
+        if (_platform == MauiPlatform.iOS)
+        {
+            return FindByScrollingIos(container, locator);
+        }
+
         if (_platform != MauiPlatform.Android)
         {
             return null;
@@ -756,6 +860,123 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// iOS scroll-to-find. A UICollectionView only has cells for its visible rows, so a row below
+    /// the fold is not in the XCUITest tree and XCUITest's own scroll-to-element cannot reach it.
+    /// The scroller is scrolled a page at a time, down then up, with a lookup after each page.
+    /// </summary>
+    /// <remarks>
+    /// XCUITest's <c>mobile: scroll</c> does not say whether the scroller moved, so the visible
+    /// rows' names and positions are compared before and after: unchanged means that end is
+    /// reached. Without a container, the tallest scroller on screen is taken, not the first: a
+    /// project page's first is its horizontal tab strip.
+    /// </remarks>
+    private IMauiElement? FindByScrollingIos(IMauiElement? container, Locator locator)
+    {
+        if (FindOnScreenIos(locator) is { } already)
+        {
+            return already;
+        }
+
+        var scroller = IosScroller(container);
+        if (scroller is null)
+        {
+            return null;
+        }
+
+        var budgetMs = Bruinet.Core.Calls.CallBudget.RemainingOr(int.MaxValue);
+        var clock = System.Diagnostics.Stopwatch.StartNew();
+        foreach (var direction in ScrollDirections)
+        {
+            var before = IosScrollSignature(scroller);
+            for (var swipe = 0; swipe < MaxScrollSwipes && clock.ElapsedMilliseconds < budgetMs; swipe++)
+            {
+                try
+                {
+                    _driver.ExecuteScript("mobile: scroll", new Dictionary<string, object>
+                    {
+                        ["elementId"] = scroller.Id,
+                        ["direction"] = direction,
+                    });
+                }
+                catch (Exception error) when (!AppiumErrors.IsGone(error))
+                {
+                    return null;
+                }
+
+                if (FindOnScreenIos(locator) is { } found)
+                {
+                    return found;
+                }
+
+                var after = IosScrollSignature(scroller);
+                if (after == before)
+                {
+                    break;
+                }
+
+                before = after;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>The element if it is in the tree now, by the locator or an AutomationId's accessibility id.</summary>
+    private IMauiElement? FindOnScreenIos(Locator locator)
+    {
+        var found = FindElements(locator).FirstOrDefault();
+        if (found is null && locator.Strategy == LocatorStrategy.AutomationId)
+        {
+            found = FindElements(Locator.ByAccessibilityId(locator.Value)).FirstOrDefault();
+        }
+
+        return found;
+    }
+
+    private const string IosScrollerTypes =
+        "type IN {'XCUIElementTypeCollectionView', 'XCUIElementTypeScrollView', 'XCUIElementTypeTable'}";
+
+    /// <summary>The scroller in or at <paramref name="container"/>, or the tallest visible one on screen.</summary>
+    private AppiumElement? IosScroller(IMauiElement? container)
+    {
+        try
+        {
+            if (container is AppiumMauiElement scope)
+            {
+                if (scope.Element.TagName is "XCUIElementTypeCollectionView" or "XCUIElementTypeScrollView" or "XCUIElementTypeTable")
+                {
+                    return scope.Element;
+                }
+
+                return scope.Element.FindElements(MobileBy.IosNSPredicate(IosScrollerTypes)).FirstOrDefault() as AppiumElement;
+            }
+
+            return _driver.FindElements(MobileBy.IosNSPredicate(IosScrollerTypes + " AND visible == 1"))
+                .OrderByDescending(element => element.Size.Height)
+                .FirstOrDefault();
+        }
+        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        {
+            return null;
+        }
+    }
+
+    /// <summary>What the scroller shows now: its children's names and positions, in one lookup.</summary>
+    private static string IosScrollSignature(AppiumElement scroller)
+    {
+        try
+        {
+            return string.Join(";", scroller.FindElements(MobileBy.XPath("./*"))
+                .Take(3)
+                .Select(child => $"{child.GetAttribute("name")}@{child.Location.Y}"));
+        }
+        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        {
+            return string.Empty;
+        }
     }
 
     /// <summary>Down first: a page opens at its top, and most lookups are for what follows.</summary>

@@ -60,6 +60,8 @@ internal static class LocatorExtensions
             LocatorStrategy.LinkText => By.LinkText(locator.Value),
             LocatorStrategy.PartialLinkText => By.PartialLinkText(locator.Value),
             LocatorStrategy.ControlType => ToControlTypeBy(locator.Value, platform),
+            LocatorStrategy.ControlTypeAndName when locator.TypeName is { } typeName
+                => ToControlTypeAndNameBy(typeName, locator.Value, platform),
             _ => throw new ArgumentOutOfRangeException(
                 nameof(locator),
                 locator.Strategy,
@@ -89,6 +91,8 @@ internal static class LocatorExtensions
         {
             LocatorStrategy.Name => By.XPath("." + AndroidNamePath(locator.Value)),
             LocatorStrategy.Text => By.XPath("." + AndroidTextPath(locator.Value)),
+            LocatorStrategy.ControlTypeAndName when locator.TypeName is { } typeName
+                => By.XPath("." + ToControlTypeAndNameBy(typeName, locator.Value, platform).Criteria),
             _ => locator.ToBy(platform)
         };
     }
@@ -163,6 +167,28 @@ internal static class LocatorExtensions
             return MobileBy.IosNSPredicate("type == 'XCUIElementTypeTable' OR type == 'XCUIElementTypeCollectionView'");
         }
 
+        return MobileBy.ClassName(ControlTypeClassName(controlType, platform));
+    }
+
+    /// <summary>
+    /// A control of a type with an accessible name, as Windows matches a control type and a Name:
+    /// a dialog's "Ok" button rather than the text inside it.
+    /// </summary>
+    private static By ToControlTypeAndNameBy(string controlType, string name, MauiPlatform platform)
+    {
+        var className = ControlTypeClassName(controlType, platform);
+        if (platform == MauiPlatform.iOS)
+        {
+            var literal = "'" + name.Replace("\\", "\\\\").Replace("'", "\\'") + "'";
+            return MobileBy.IosNSPredicate($"type == '{className}' AND (name == {literal} OR label == {literal})");
+        }
+
+        var value = XPathLiteral(name, name);
+        return By.XPath($"//{className}[@content-desc={value} or @text={value}]");
+    }
+
+    private static string ControlTypeClassName(string controlType, MauiPlatform platform)
+    {
         var className = (platform, controlType.ToLowerInvariant()) switch
         {
             (MauiPlatform.Android, "entry") => "android.widget.EditText",
@@ -178,11 +204,14 @@ internal static class LocatorExtensions
             (MauiPlatform.Android, "image") => "android.widget.ImageView",
             (MauiPlatform.iOS, "image") => "XCUIElementTypeImage",
             (MauiPlatform.iOS, "listitem") => "XCUIElementTypeCell",
+            // UI Automation's generic containers. A MAUI layout is a plain view on both platforms.
+            (MauiPlatform.Android, "group" or "pane" or "custom") => "android.view.ViewGroup",
+            (MauiPlatform.iOS, "group" or "pane" or "custom") => "XCUIElementTypeOther",
             _ => throw new ArgumentOutOfRangeException(
                 nameof(controlType), controlType,
                 $"Control type '{controlType}' is not supported on {platform}.")
         };
 
-        return MobileBy.ClassName(className);
+        return className;
     }
 }

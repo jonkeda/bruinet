@@ -116,7 +116,8 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
     /// The button texts in the order MAUI was given them - accept, then cancel - which is tree
     /// order on Windows. Android lays an alert's buttons out the other way round, so there they
     /// are read by role: positive (<c>button1</c>), negative (<c>button2</c>), neutral
-    /// (<c>button3</c>).
+    /// (<c>button3</c>). iOS shows the cancel action of a two-button alert first, so there the
+    /// pair is read right to left.
     /// </returns>
     [GenerateComparisons(Comparison.SequenceEquals | Comparison.HasItem | Comparison.Count)]
     protected virtual IReadOnlyList<string>? GetButtonTextsCore(IMauiElement? element)
@@ -131,10 +132,22 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
             .OfType<string>()
             .ToList();
 
-        return byRole.Count > 0
-            ? byRole
-            : [.. element.FindElements(Locator.ByControlType("button"))
-                .Select(button => button.Name ?? string.Empty)];
+        if (byRole.Count > 0)
+        {
+            return byRole;
+        }
+
+        var texts = element.FindElements(Locator.ByControlType("button"))
+            .Select(button => button.Name ?? string.Empty)
+            .ToList();
+
+        // UIKit always puts the cancel action of a two-button alert on the left.
+        if (Context.Driver?.Platform == MauiPlatform.iOS && texts.Count == 2)
+        {
+            texts.Reverse();
+        }
+
+        return texts;
     }
 
     /// <summary>
