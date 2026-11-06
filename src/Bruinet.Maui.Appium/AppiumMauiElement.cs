@@ -73,6 +73,35 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     #region Live: how a removed element is reported
 
     /// <summary>
+    /// Runs an action no interaction report covers (a scroll): what the attempt read before it is
+    /// forgotten once it ran (<see cref="Bruinet.Core.Calls.AttemptMemo.Forget"/>).
+    /// </summary>
+    private static void Acting(Action act)
+    {
+        try
+        {
+            act();
+        }
+        finally
+        {
+            Bruinet.Core.Calls.AttemptMemo.Forget();
+        }
+    }
+
+    /// <inheritdoc cref="Acting(Action)"/>
+    private static T Acting<T>(Func<T> act)
+    {
+        try
+        {
+            return act();
+        }
+        finally
+        {
+            Bruinet.Core.Calls.AttemptMemo.Forget();
+        }
+    }
+
+    /// <summary>
     /// Runs a WebDriver read or action, reporting a replaced element as
     /// <see cref="StaleElementException"/> and an ended session as <see cref="AppUnavailableException"/>.
     /// </summary>
@@ -98,6 +127,44 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     private const string AliveQuestion = "alive";
 
+    // The text as the driver reports it, before an empty field's placeholder is told apart.
+    private const string TextQuestion = "text";
+
+    /// <summary>
+    /// A read the find already answered in this attempt (<see cref="Know"/>), or else the driver's.
+    /// Only a find's facts are kept: a read that went to the driver is asked again next time, as before.
+    /// </summary>
+    private T Fact<T>(string question, Func<T> read)
+        => Bruinet.Core.Calls.AttemptMemo.Knows(this, question)
+            ? Bruinet.Core.Calls.AttemptMemo.Remember(this, question, read)
+            : Read(read);
+
+    /// <summary>
+    /// Keeps the facts a find returned with this element for the running attempt: iOS sends the
+    /// element's shown and enabled state, text, bounds and AutomationId with the find, each of which
+    /// was a WebDriverAgent request of 90 ms or more of its own. Outside an attempt nothing is kept.
+    /// An action ends them (<see cref="Bruinet.Core.Calls.AttemptMemo.Forget"/>).
+    /// </summary>
+    internal void Know(IDictionary<string, object> facts)
+    {
+        _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, AliveQuestion, () => true);
+
+        if (facts.TryGetValue("displayed", out var displayed) && displayed is bool shown)
+            _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(Visible), () => shown);
+
+        if (facts.TryGetValue("enabled", out var enabled) && enabled is bool usable)
+            _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(Enabled), () => usable);
+
+        if (facts.TryGetValue("text", out var text) && text is null or string)
+            _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, TextQuestion, () => (string?)text);
+
+        if (facts.TryGetValue("rect", out var rect) && rect is IDictionary<string, object> bounds)
+            _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(Rect), () => AppiumMauiDriver.Rectangle(bounds));
+
+        if (facts.TryGetValue("attribute/name", out var name) && name is null or string)
+            _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(AutomationId), () => Present((string?)name));
+    }
+
     /// <inheritdoc />
     /// <remarks>
     /// The WebDriver element id; read live, so it doubles as the "still there" check. A read of
@@ -118,10 +185,10 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     #region State Properties
 
     /// <inheritdoc />
-    public bool Visible => Read(() => _element.Displayed);
+    public bool Visible => Fact(nameof(Visible), () => _element.Displayed);
 
     /// <inheritdoc />
-    public bool Enabled => Read(() => _element.Enabled);
+    public bool Enabled => Fact(nameof(Enabled), () => _element.Enabled);
 
     /// <inheritdoc />
     public bool Selected => Read(() => _element.Selected);
@@ -139,7 +206,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </remarks>
     public string? Text => Read(() =>
     {
-        var text = _element.Text;
+        var text = Fact(TextQuestion, () => _element.Text);
 
         if (string.IsNullOrEmpty(text))
             return text;
@@ -174,7 +241,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     /// <remarks>One request: <c>Location</c> and <c>Size</c> each fetch the element's rect, so building
     /// it from them cost two, and bounds are read on every readiness check (.my/android-performance, P2).</remarks>
-    public Rectangle Rect => Read(() => _driver.ElementRect(_element.Id));
+    public Rectangle Rect => Fact(nameof(Rect), () => _driver.ElementRect(_element.Id));
 
     // A recorded video's touch mark (AD-024): the target as it is, before the action runs.
     private Interactions.Scope Report(InteractionKind kind, string? key = null, TimeSpan duration = default)
@@ -638,7 +705,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         _driver.Appium.LongPress(this, durationMs)));
 
     /// <inheritdoc />
-    public void ScrollIntoView(int timeoutMs) => Live(() =>
+    public void ScrollIntoView(int timeoutMs) => Acting(() => Live(() =>
     {
         try
         {
@@ -664,7 +731,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             default:
                 throw NotAMobilePlatform(nameof(ScrollIntoView));
         }
-    });
+    }));
 
     private void ScrollIntoViewAndroid(DateTime startTime, TimeSpan timeout)
     {
@@ -847,7 +914,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         try
         {
-            return new AppiumMauiElement(_element.FindElement(by), _driver);
+            return _driver.FindOne(by, _element);
         }
         catch (NoSuchElementException)
         {
@@ -860,7 +927,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     {
         var by = _driver.Appium.ToChildBy(locator);
 
-        return _element.FindElements(by).Select(e => new AppiumMauiElement(e, _driver)).ToList();
+        return _driver.FindAll(by, _element);
     });
 
     #endregion
@@ -1062,7 +1129,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <c>SupportsScrollContent</c> question this platform always answered false.
     /// </para>
     /// </remarks>
-    public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0) => Live<ScrollStep>(() =>
+    public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0) => Acting(() => Live<ScrollStep>(() =>
     {
         if (verticalSteps == 0 && horizontalSteps == 0)
             return ScrollStep.NotMoved;
@@ -1116,7 +1183,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         }
 
         return ScrollStep.Unconfirmed;
-    });
+    }));
 
     // Android draws edge to edge: a list can reach the gesture navigation bar, and a swipe that
     // starts next to it goes home (or back, at a side). A tenth of the extent keeps it clear.
@@ -1134,7 +1201,11 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// container on screen. Android only; iOS answers null until it is written and run on a device.
     /// </remarks>
     public IMauiElement? TryFindByScrolling(Locator locator)
-        => _driver.TryFindByScrollingWithin(IsApp ? null : this, locator);
+    {
+        // What was read before the scroll is wrong after it; the element found is read afresh.
+        Bruinet.Core.Calls.AttemptMemo.Forget();
+        return _driver.TryFindByScrollingWithin(IsApp ? null : this, locator);
+    }
 
     #endregion
 

@@ -209,6 +209,8 @@ public static class MauiDriverFactory
     /// the list still coasted, and rows read then were recycled under the reader. The idle wait is
     /// also a capability: WDA's own session start launches the app and waits for it to be idle,
     /// which the setting, applied after the session starts, did not bound (10-23 s per session).
+    /// Finds return each element's facts (<see cref="IosFindFacts"/>): a read of one is a
+    /// WebDriverAgent request of 90 ms or more, and the facts cost a tenth of that per element.
     /// </para>
     /// </remarks>
     internal static IReadOnlyDictionary<string, object> SessionDefaults(MauiPlatform platform) => platform switch
@@ -223,9 +225,18 @@ public static class MauiDriverFactory
             ["waitForQuiescence"] = false,
             ["waitForIdleTimeout"] = 0,
             ["settings[waitForIdleTimeout]"] = 0,
+            ["settings[shouldUseCompactResponses]"] = false,
+            ["settings[elementResponseAttributes]"] = IosFindFacts,
         },
         _ => new Dictionary<string, object>(),
     };
+
+    /// <summary>
+    /// What an iOS find returns with each element, under these keys: the AutomationId (XCUITest's
+    /// <c>name</c> attribute; the plain <c>name</c> key is the element type), text, bounds, enabled
+    /// and shown. The Appium element reads them from the find in the same attempt.
+    /// </summary>
+    internal const string IosFindFacts = "attribute/name,text,rect,enabled,displayed";
 
     /// <summary>
     /// The simulator an iOS session asks for when the suite names none: the one

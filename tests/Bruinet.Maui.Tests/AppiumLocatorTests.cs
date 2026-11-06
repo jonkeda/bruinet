@@ -6,6 +6,19 @@ namespace Bruinet.Maui.Tests;
 /// <summary>How Bruinet locators become Appium selectors.</summary>
 public class AppiumLocatorTests
 {
+    [Theory]
+    [InlineData("AutomationId")]
+    [InlineData("XPath")]
+    public void AFindSentAsACommand_UsesTheStrategyTheClientWouldSend(string kind)
+    {
+        // Appium's MobileBy leaves Mechanism and Criteria empty: sent as they were, every iOS find was refused.
+        var (by, expected) = kind == "AutomationId"
+            ? (Locator.ByAutomationId("Save").ToBy(MauiPlatform.iOS), ("accessibility id", "Save"))
+            : (Locator.ByXPath("//a").ToBy(MauiPlatform.iOS), ("xpath", "//a"));
+
+        Assert.Equal(expected, AppiumMauiDriver.Strategy(by));
+    }
+
     [Fact]
     public void ByName_OnAndroid_MatchesTheAccessibleName_NotACssName()
     {

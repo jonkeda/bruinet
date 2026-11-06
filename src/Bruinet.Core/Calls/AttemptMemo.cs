@@ -55,6 +55,12 @@ public static class AttemptMemo
     public static bool Knows(object subject, string question)
         => _answers is { } answers && answers.ContainsKey((subject, question));
 
+    /// <summary>
+    /// Drops every answer kept in this attempt: an action ran, and what was read before it may be
+    /// wrong after it (a scroll moves bounds, a tap enables a button). Outside an attempt it does nothing.
+    /// </summary>
+    public static void Forget() => _answers?.Clear();
+
     /// <summary>Starts an attempt's memo; the enclosing attempt's comes back when it ends.</summary>
     internal static IDisposable Begin()
     {

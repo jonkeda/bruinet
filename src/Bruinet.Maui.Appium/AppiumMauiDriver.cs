@@ -74,8 +74,135 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         var by = _appium.ToBy(locator);
 
-        return AppiumErrors.Live(() => _driver.FindElements(by).Select(e => new AppiumMauiElement(e, this)).ToList());
+        return AppiumErrors.Live(() => FindAll(by, null));
     }
+
+    #region Finds that bring facts
+
+    private const string FindElementCommand = "bruinetFindElement";
+    private const string FindElementsCommand = "bruinetFindElements";
+    private const string FindChildElementCommand = "bruinetFindChildElement";
+    private const string FindChildElementsCommand = "bruinetFindChildElements";
+    private bool _findCommandsRegistered;
+
+    /// <summary>
+    /// Whether finds bring each element's facts with them: iOS, whose session asks WebDriverAgent
+    /// for them (<c>elementResponseAttributes</c>). There a read is a request of 90 ms or more, and
+    /// the facts cost about a tenth of that per element. UiAutomator2 reads in about 12 ms, so the
+    /// facts would cost Android about what they save (.my/performance, step 7).
+    /// </summary>
+    internal bool FindsWithFacts => _platform == MauiPlatform.iOS;
+
+    /// <summary>The first element <paramref name="by"/> matches, in the page or under <paramref name="parent"/>.</summary>
+    /// <exception cref="NoSuchElementException">Nothing matches.</exception>
+    internal AppiumMauiElement FindOne(By by, AppiumElement? parent)
+    {
+        if (!FindsWithFacts)
+        {
+            return new AppiumMauiElement((AppiumElement)(parent is null ? _driver.FindElement(by) : parent.FindElement(by)), this);
+        }
+
+        return Wrap(Find(parent is null ? FindElementCommand : FindChildElementCommand, by, parent))
+            ?? throw new NoSuchElementException($"No element matches {by}.");
+    }
+
+    /// <summary>Every element <paramref name="by"/> matches, in the page or under <paramref name="parent"/>.</summary>
+    internal IReadOnlyList<AppiumMauiElement> FindAll(By by, AppiumElement? parent)
+    {
+        if (!FindsWithFacts)
+        {
+            return (parent is null ? _driver.FindElements(by) : parent.FindElements(by))
+                .Select(e => new AppiumMauiElement(e, this)).ToList();
+        }
+
+        return Find(parent is null ? FindElementsCommand : FindChildElementsCommand, by, parent) is System.Collections.IEnumerable found
+               and not IDictionary<string, object>
+            ? found.Cast<object?>().Select(Wrap).OfType<AppiumMauiElement>().ToList()
+            : [];
+    }
+
+    // The client's own find keeps only each element's id; the same request sent as a command of
+    // ours returns the whole answer, facts included. Errors are the client's: no such element,
+    // stale parent, ended session.
+    private object? Find(string command, By by, AppiumElement? parent)
+    {
+        if (!_findCommandsRegistered)
+        {
+            _driver.RegisterCustomDriverCommand(FindElementCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element"));
+            _driver.RegisterCustomDriverCommand(FindElementsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/elements"));
+            _driver.RegisterCustomDriverCommand(FindChildElementCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/element"));
+            _driver.RegisterCustomDriverCommand(FindChildElementsCommand, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/element/{id}/elements"));
+            _findCommandsRegistered = true;
+        }
+
+        var (strategy, value) = Strategy(by);
+        var parameters = new Dictionary<string, object> { ["using"] = strategy, ["value"] = value };
+        if (parent is not null)
+        {
+            parameters["id"] = parent.Id;
+        }
+
+        return _driver.ExecuteCustomDriverCommand(command, parameters);
+    }
+
+    private const string ElementKey = "element-6066-11e4-a52e-4f735466cecf";
+
+    /// <summary>
+    /// The locator strategy and value the client sends for <paramref name="by"/>. Appium's
+    /// <c>MobileBy</c> leaves <see cref="By.Mechanism"/> and <see cref="By.Criteria"/> empty and hands
+    /// them only to the context it searches, so they are taken from a context that keeps them.
+    /// </summary>
+    internal static (string Using, string Value) Strategy(By by)
+    {
+        var capture = new StrategyCapture();
+        _ = by.FindElements(capture);
+        return capture.Found ?? throw new InvalidOperationException($"{by} named no locator strategy.");
+    }
+
+    private sealed class StrategyCapture : ISearchContext, OpenQA.Selenium.Internal.IFindsElement,
+        OpenQA.Selenium.Appium.Interfaces.IFindsByFluentSelector<IWebElement>
+    {
+        public (string Using, string Value)? Found { get; private set; }
+
+        public IWebElement FindElement(By by) => throw new NotSupportedException();
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> FindElements(By by) => throw new NotSupportedException();
+
+        public IWebElement FindElement(string mechanism, string value) => throw new NotSupportedException();
+
+        public System.Collections.ObjectModel.ReadOnlyCollection<IWebElement> FindElements(string mechanism, string value)
+        {
+            Found = (mechanism, value);
+            return new([]);
+        }
+
+        IWebElement OpenQA.Selenium.Appium.Interfaces.IFindsByFluentSelector<IWebElement>.FindElement(string selector, string selectorValue)
+            => throw new NotSupportedException();
+
+        IReadOnlyCollection<IWebElement> OpenQA.Selenium.Appium.Interfaces.IFindsByFluentSelector<IWebElement>.FindElements(string selector, string selectorValue)
+        {
+            Found = (selector, selectorValue);
+            return [];
+        }
+    }
+
+    private AppiumMauiElement? Wrap(object? found)
+    {
+        switch (found)
+        {
+            case AppiumElement element:
+                return new AppiumMauiElement(element, this);
+            case IDictionary<string, object> answer
+                when (answer.TryGetValue(ElementKey, out var id) || answer.TryGetValue("ELEMENT", out id)) && id is string elementId:
+                var wrapped = new AppiumMauiElement(new AppiumElement(_driver, elementId), this);
+                wrapped.Know(answer);
+                return wrapped;
+            default:
+                return null;
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// Finds a piece of app chrome the driver acts on itself, waiting for it to appear.
@@ -214,7 +341,15 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <inheritdoc />
     public object? ExecuteScript(string script, params object[] args)
     {
-        return AppiumErrors.Live(() => _driver.ExecuteScript(script, args));
+        try
+        {
+            return AppiumErrors.Live(() => _driver.ExecuteScript(script, args));
+        }
+        finally
+        {
+            // A script can act (a mobile: gesture); what the attempt read before it may be wrong now.
+            Bruinet.Core.Calls.AttemptMemo.Forget();
+        }
     }
 
     #endregion
@@ -306,6 +441,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 if (done != null)
                 {
                     done.Click();
+                    Bruinet.Core.Calls.AttemptMemo.Forget();
                     return true;
                 }
             }
@@ -314,6 +450,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 ? new Dictionary<string, object> { { "keys", new[] { "return", "Return", "done", "Done" } } }
                 : new Dictionary<string, object>();
             _driver.ExecuteScript("mobile: hideKeyboard", arguments);
+            Bruinet.Core.Calls.AttemptMemo.Forget();
             return true;
         }
         catch (WebDriverException)
@@ -399,7 +536,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     public byte[] TakeScreenshot() => GetScreenshot();
 
     /// <inheritdoc />
-    public void ResetAppState() => AppiumErrors.Live(ResetApp);
+    public void ResetAppState()
+    {
+        Bruinet.Core.Calls.AttemptMemo.Forget();
+        AppiumErrors.Live(ResetApp);
+    }
 
     private void ResetApp() => _appium.Relaunch(_driver);
 
@@ -594,8 +735,13 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             _rectCommandRegistered = true;
         }
 
-        var rect = (Dictionary<string, object>)_driver.ExecuteCustomDriverCommand(
-            ElementRectCommand, new Dictionary<string, object> { ["id"] = elementId });
+        return Rectangle((Dictionary<string, object>)_driver.ExecuteCustomDriverCommand(
+            ElementRectCommand, new Dictionary<string, object> { ["id"] = elementId }));
+    }
+
+    /// <summary>A WebDriver rect, <c>x</c>, <c>y</c>, <c>width</c> and <c>height</c>, in whole pixels.</summary>
+    internal static System.Drawing.Rectangle Rectangle(IDictionary<string, object> rect)
+    {
         return new System.Drawing.Rectangle(Whole(rect["x"]), Whole(rect["y"]), Whole(rect["width"]), Whole(rect["height"]));
 
         static int Whole(object value) => (int)Math.Round(Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture));

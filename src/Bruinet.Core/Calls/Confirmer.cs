@@ -36,7 +36,12 @@ internal static class Confirmer
         {
             try
             {
-                last = read();
+                // Each poll asks afresh: an answer kept by the enclosing attempt would hide the change waited for.
+                using (AttemptMemo.Begin())
+                {
+                    last = read();
+                }
+
                 lastError = null;
                 if (done(last))
                 {

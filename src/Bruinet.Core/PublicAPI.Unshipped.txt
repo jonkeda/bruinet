@@ -1048,6 +1048,7 @@ static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(string! 
 static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Save(string! runDirectory, Bruinet.Core.Artifacts.TestArtifactManifest! manifest) -> void
 static Bruinet.Core.Artifacts.TestArtifactOptions.RootFor(string! directory) -> string!
 static Bruinet.Core.Calls.AttemptMemo.Knows(object! subject, string! question) -> bool
+static Bruinet.Core.Calls.AttemptMemo.Forget() -> void
 static Bruinet.Core.Calls.AttemptMemo.Remember<T>(object! subject, string! question, System.Func<T>! read) -> T
 static Bruinet.Core.Calls.CallBudget.RemainingOr(int outsideACallMs) -> int
 static Bruinet.Core.Calls.CallBudget.Within(int windowMs) -> int

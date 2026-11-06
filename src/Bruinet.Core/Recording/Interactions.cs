@@ -190,7 +190,10 @@ public static class Interactions
         }
     }
 
-    /// <summary>An action being reported; dispose it once the action has run.</summary>
+    /// <summary>
+    /// An action being reported; dispose it once the action has run. Disposing it also ends what the
+    /// running attempt knew about the app (<see cref="Calls.AttemptMemo.Forget"/>), recorded or not.
+    /// </summary>
     public readonly struct Scope : IDisposable
     {
         private readonly bool _counted;
@@ -200,6 +203,8 @@ public static class Interactions
         /// <inheritdoc />
         public void Dispose()
         {
+            Calls.AttemptMemo.Forget();
+
             if (_counted)
             {
                 _depth--;
