@@ -569,9 +569,10 @@ public sealed class BddMcpServer : IDisposable
     }
 
     // A page's markup as the text it shows, one piece a line: a bench's markup is mostly attributes (100 KB for 5 KB of text).
+    // Blazor's error banner is in every page's markup and hidden by a stylesheet: an agent read it as an error.
     internal static string VisibleText(string markup)
     {
-        var shown = System.Text.RegularExpressions.Regex.Replace(markup, @"<(script|style)\b.*?</\1>", string.Empty,
+        var shown = System.Text.RegularExpressions.Regex.Replace(markup, @"<(script|style)\b.*?</\1>|<div\b[^>]*\bid=""blazor-error-ui""[^>]*>.*?</div>", string.Empty,
             System.Text.RegularExpressions.RegexOptions.Singleline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         shown = System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(shown, "<[^>]+>", "\n"));
         return string.Join("\n", shown.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0));

@@ -872,13 +872,15 @@ Bruinet.Bdd.Runner.BddRunnerOpen.Pages.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpen.Scenario.get -> string!
 Bruinet.Bdd.Runner.BddRunnerOpen.Scenario.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpened
-Bruinet.Bdd.Runner.BddRunnerOpened.BddRunnerOpened(int Steps, string! Discovery, string! Catalog, Bruinet.Bdd.Runner.BddRunnerPosition? Next = null) -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.BddRunnerOpened(int Steps, string! Discovery, string! Catalog, Bruinet.Bdd.Runner.BddRunnerPosition? Next = null, string? Skip = null) -> void
 Bruinet.Bdd.Runner.BddRunnerOpened.Catalog.get -> string!
 Bruinet.Bdd.Runner.BddRunnerOpened.Catalog.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpened.Discovery.get -> string!
 Bruinet.Bdd.Runner.BddRunnerOpened.Discovery.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpened.Next.get -> Bruinet.Bdd.Runner.BddRunnerPosition?
 Bruinet.Bdd.Runner.BddRunnerOpened.Next.init -> void
+Bruinet.Bdd.Runner.BddRunnerOpened.Skip.get -> string?
+Bruinet.Bdd.Runner.BddRunnerOpened.Skip.init -> void
 Bruinet.Bdd.Runner.BddRunnerOpened.Steps.get -> int
 Bruinet.Bdd.Runner.BddRunnerOpened.Steps.init -> void
 Bruinet.Bdd.Runner.BddRunnerPageState
@@ -1206,6 +1208,7 @@ static Bruinet.Bdd.Runner.BddRunnerChannel.Write(Bruinet.Bdd.Runner.BddRunnerMes
 static Bruinet.Bdd.Runner.BddRunnerClient.StartAsync(Bruinet.Bdd.Runner.BddRunnerStart! start, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Bdd.Runner.BddRunnerClient!>!
 static Bruinet.Bdd.Runner.BddRunnerProtocol.Mismatch(int runner) -> string?
 static Bruinet.Bdd.Runner.BddShadowCopy.Clean(string! output, System.Collections.Generic.IEnumerable<string!>! inUse, string? root = null, string? owner = null) -> void
+static Bruinet.Bdd.Runner.BddShadowCopy.CleanEnded(string? root = null) -> void
 static Bruinet.Bdd.Runner.BddShadowCopy.DefaultRoot.get -> string!
 static Bruinet.Bdd.Runner.BddShadowCopy.Fingerprint(string! output) -> string!
 static Bruinet.Bdd.Runner.BddShadowCopy.Into(Bruinet.Bdd.Runner.BddRunnerStart! start, string! copy) -> Bruinet.Bdd.Runner.BddRunnerStart!

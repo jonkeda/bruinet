@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- `run_scenario` and the IDE's run on the runner leave out what the suite skips here (a head, `@browser` on bUnit, a skip
+  rule), each `skipped` with the reason, as `dotnet test` does; such a scenario used to run and fail. A Step-through still
+  opens it.
+- A runner's copy of a suite's output is cleaned up after a host that was killed: making a copy now removes every ended
+  process's copies, of every output (`BddShadowCopy.CleanEnded`). They stayed in the temp folder for good (42 GB after a
+  benchmark). `step_screenshot`'s page text leaves out Blazor's error banner.
 - MCP: a scenario tool's `line` (`run_scenario`, `step_start`, `why`, `get_trace`, `coverage`, `http_calls`) is any line of
   the scenario: its heading, a tag or a step. Agents passed the line a failure names, and half of `why`'s calls failed.
 - MCP: `get_failure`, `where_is` and `step_log` are gone: no benchmark run called them, and their answers are in

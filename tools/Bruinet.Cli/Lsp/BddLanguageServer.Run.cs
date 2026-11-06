@@ -174,7 +174,8 @@ public sealed partial class BddLanguageServer
             // Always ended: a host waiting for it (RunToEndAsync) never hangs on a runner that would not close.
             var status = run.Cancel.IsCancellationRequested ? "canceled"
                 : error is not null ? "error"
-                : run.Results.All(result => result.Status == "passed") ? "passed" : "failed";
+                : run.Results.Count > 0 && run.Results.All(result => result.Status == "skipped") ? "skipped"
+                : run.Results.All(result => result.Status is "passed" or "skipped") ? "passed" : "failed";
             var ended = new RunEndedParams(run.Uri, status, error, run.Results);
             run.Ended.TrySetResult(ended);
             _ = _rpc?.NotifyWithParameterObjectAsync("bruinet/run/ended", ended);
@@ -185,13 +186,18 @@ public sealed partial class BddLanguageServer
     {
         var runner = run.Runner!;
         var opened = await runner.RequestAsync(new BddRunnerOpen(config, pages, feature, name, "run"), run.Cancel.Token).ConfigureAwait(false);
-        if (opened is not BddRunnerOpened)
+        if (opened is not BddRunnerOpened open)
         {
             return new RunScenarioResult(name, "error", opened is BddRunnerFailed failed ? failed.Message : $"The runner answered {opened.GetType().Name}.");
         }
 
         try
         {
+            if (open.Skip is { } why)
+            {
+                return new RunScenarioResult(name, "skipped", why);
+            }
+
             while (true)
             {
                 var answer = await runner.RequestAsync(new BddRunnerNext(), run.Cancel.Token).ConfigureAwait(false);

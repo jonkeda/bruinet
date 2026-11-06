@@ -143,7 +143,8 @@ public sealed class McpStepTests : IDisposable
     [Fact]
     public void AScreenshotsMarkup_IsGivenAsTheTextItShows()
     {
-        var text = BddMcpServer.VisibleText("<div class=\"x\"><style>.a{}</style><span>45</span> &amp; <b>% to hit</b><script>var a=1;</script></div>");
+        var text = BddMcpServer.VisibleText("<div class=\"x\"><style>.a{}</style><span>45</span> &amp; <b>% to hit</b><script>var a=1;</script></div>"
+            + "<div id=\"blazor-error-ui\" data-nosnippet>An unhandled error has occurred. <a href=\".\">Reload</a></div>");
 
         Assert.Equal("45\n&\n% to hit", text);
     }

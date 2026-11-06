@@ -49,7 +49,8 @@ public sealed record BddRunnerOpen(string Config, string Pages, string Feature, 
 /// <param name="Discovery">The discovery report.</param>
 /// <param name="Catalog">The command catalog report.</param>
 /// <param name="Next">Where its first step is; null when it has none.</param>
-public sealed record BddRunnerOpened(int Steps, string Discovery, string Catalog, BddRunnerPosition? Next = null) : BddRunnerMessage;
+/// <param name="Skip">Why a run leaves this scenario out here (a head, <c>@browser</c>, a skip rule); null when it runs.</param>
+public sealed record BddRunnerOpened(int Steps, string Discovery, string Catalog, BddRunnerPosition? Next = null, string? Skip = null) : BddRunnerMessage;
 
 /// <summary>Runs the next step. Answered by <see cref="BddRunnerStep"/>.</summary>
 public sealed record BddRunnerNext : BddRunnerMessage;

@@ -32,6 +32,12 @@ public sealed class McpRunTests : IDisposable
             | Kind | Assembly |
             | --- | --- |
             | Pages | {typeof(StepCounterFixture).Assembly.Location} |
+
+            ## Skip Rules
+
+            | Tag | EnvironmentVariable |
+            | --- | --- |
+            | needs-the-lab | BRUINET_TEST_LAB_NOT_SET |
             """);
         File.WriteAllText(Feature, """
             # Feature: Counter
@@ -187,6 +193,30 @@ public sealed class McpRunTests : IDisposable
 
         var said = Assert.Single(step["appEvents"]!.AsArray())!;
         Assert.Equal(("warning", "counter", "Counted too often"), ((string?)said["level"], (string?)said["source"], (string?)said["message"]));
+    }
+
+    [Fact]
+    public void RunScenario_OfAScenarioTheSuiteSkipsHere_SaysSkipped_WithWhy_AsTheGateDoes()
+    {
+        var feature = Path.Combine(Suite, "Features", "lab.feature.md");
+        File.WriteAllText(feature, """
+            # Feature: Lab
+
+            @needs-the-lab
+            ## Scenario: In the lab
+
+            ```gherkin
+            Given the counter counts
+            Then the counter has counted 9 times
+            ```
+            """);
+
+        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = feature }));
+
+        Assert.Equal("skipped", (string?)run["status"]);
+        var skipped = Assert.Single(run["scenarios"]!.AsArray())!;
+        Assert.Equal("skipped", (string?)skipped["status"]);
+        Assert.Contains("BRUINET_TEST_LAB_NOT_SET", (string?)skipped["message"]);
     }
 
     [Fact]

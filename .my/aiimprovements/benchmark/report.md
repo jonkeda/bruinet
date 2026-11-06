@@ -124,5 +124,6 @@ measured that yet.
 ## Next
 
 Log what agents call in real sessions on Tomorrow, the one thing no seeded task can show, and read it after a few weeks.
-Before that, three small Bruinet faults from these runs: `run_scenario` runs `@browser` scenarios on bUnit, where they
-fail; `step_screenshot`'s text holds Blazor's hidden error banner; and the runners' temp copies grew to 42 GB.
+The three small Bruinet faults from these runs are fixed: `run_scenario` skips what the suite skips here, as `dotnet test`
+does; `step_screenshot`'s text leaves out Blazor's hidden error banner; and a killed host's temp copies are removed when
+the next copy is made.

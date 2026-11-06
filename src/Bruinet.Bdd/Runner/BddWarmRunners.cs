@@ -200,6 +200,7 @@ public sealed class BddWarmRunners : IAsyncDisposable
         _live.Add(entry);
         entry.Ready = Task.Run(async () =>
         {
+            BddShadowCopy.CleanEnded(_root);
             BddShadowCopy.Make(entry.Key, entry.Copy);
             var runner = await BddRunnerClient.StartAsync(BddShadowCopy.Into(start, entry.Copy)).ConfigureAwait(false);
             _started?.Invoke(runner.Process);

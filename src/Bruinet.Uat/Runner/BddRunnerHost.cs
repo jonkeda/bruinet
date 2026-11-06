@@ -103,7 +103,7 @@ public sealed class BddRunnerHost
                 await DropRecordingAsync().ConfigureAwait(false);
                 Close(keep: true);
                 _open = OpenScenario.Open(open, TakeKept(open.Config, open.Pages));
-                return new BddRunnerOpened(_open.Scenario.Invocations.Count, _open.Discovery, _open.Catalog, Position(_open.Session.Next, _open.Runner.Context));
+                return new BddRunnerOpened(_open.Scenario.Invocations.Count, _open.Discovery, _open.Catalog, Position(_open.Session.Next, _open.Runner.Context), _open.WhySkipped);
 
             case BddRunnerNext:
                 return await StepAsync(Opened(), number).ConfigureAwait(false);
@@ -530,6 +530,11 @@ public sealed class BddRunnerHost
                 UatScenarioResults.EvidenceName(Scenario),
                 _mode);
         }
+
+        // Why a run leaves this scenario out, as the xUnit gate does; a Step-through is someone looking at it, so it goes on.
+        public string? WhySkipped => _mode == "run" && _runtime.Config.EvaluateSkip(Scenario.Source.Tags) is { ShouldSkip: true } skip
+            ? skip.Reason ?? "Skipped by the suite's config."
+            : null;
 
         // The current page's controls, read between steps. With none current (a phrase of the fixture's drove the page, or
         // a state started the app), the page the steps so far drove last, as the trace names it; else the page that shows.

@@ -70,7 +70,7 @@ public static class BddShadowCopy
         return copy;
     }
 
-    /// <summary>Removes the owner's copies of an output but those runners use, and every copy of a process that has ended.</summary>
+    /// <summary>Removes the owner's copies of an output but those runners use, and every copy, of any output, of a process that has ended.</summary>
     /// <param name="output">The suite's output folder.</param>
     /// <param name="inUse">The copies runners run from.</param>
     /// <param name="root">Where the copies go; <see cref="DefaultRoot"/> by default.</param>
@@ -87,11 +87,31 @@ public static class BddShadowCopy
             }
         }
 
-        foreach (var other in Directory.Exists(Path.GetDirectoryName(mine)) ? Directory.EnumerateDirectories(Path.GetDirectoryName(mine)!) : [])
+        CleanEnded(root);
+    }
+
+    /// <summary>
+    /// Removes every copy, of any output, of a process that has ended. Run as a copy is made too: a host that is killed (an MCP
+    /// session closing) never reaches <see cref="Clean"/>, and an output that never runs again (a checkout since removed) has
+    /// no other clean.
+    /// </summary>
+    /// <param name="root">Where the copies go; <see cref="DefaultRoot"/> by default.</param>
+    public static void CleanEnded(string? root = null)
+    {
+        var all = root ?? DefaultRoot;
+        foreach (var outputFolder in Directory.Exists(all) ? Directory.EnumerateDirectories(all) : [])
         {
-            if (int.TryParse(Path.GetFileName(other).Split('-')[0], out var process) && process != Environment.ProcessId && !Running(process))
+            foreach (var other in Directory.EnumerateDirectories(outputFolder))
             {
-                TryDelete(other);
+                if (int.TryParse(Path.GetFileName(other).Split('-')[0], out var process) && process != Environment.ProcessId && !Running(process))
+                {
+                    TryDelete(other);
+                }
+            }
+
+            if (!Directory.EnumerateFileSystemEntries(outputFolder).Any())
+            {
+                TryDelete(outputFolder);
             }
         }
     }

@@ -139,6 +139,21 @@ public sealed class BddWarmRunnersTests : IAsyncLifetime
         Assert.True(Directory.Exists(second));
     }
 
+    [Fact]
+    public void Cleaning_RemovesEndedProcessesCopies_OfEveryOutput_AndKeepsARunningOnes()
+    {
+        var copies = Path.Combine(_root, "others");
+        var ended = Path.Combine(copies, "GONEOUTPUT", $"{int.MaxValue}-1", "copy");
+        var running = Path.Combine(copies, "OTHEROUTPUT", $"{Environment.ProcessId}-9", "copy");
+        Directory.CreateDirectory(ended);
+        Directory.CreateDirectory(running);
+
+        BddShadowCopy.CleanEnded(copies);
+
+        Assert.False(Directory.Exists(Path.Combine(copies, "GONEOUTPUT")));
+        Assert.True(Directory.Exists(running));
+    }
+
     private static async Task WaitForExitAsync(int process)
     {
         try
