@@ -66,8 +66,63 @@ fewer) and 36 seconds against 195 (median).
 - Right after `set_state`, `step_state` once answered no page, as none was current; the agent fell back to
   `step_screenshot`'s tree. Fixed since: with no page current, `step_state` reads the one page that says it is loaded.
 
+## Round 2: Tomorrow
+
+2026-11-03 to 11-06. 24 scored runs of four seeded tasks on Tomorrow's studio suite, three times each way, then 12 runs
+with the unused tools hidden. The plan and every number are in `tomorrow-plan.md`.
+
+On a real app the tools save more, and it is one kind of task that gains. With them an agent used 13% fewer tokens and
+a third less time, in 11 of 12 pairs, and the gap held in all three repeats. Both setups found every cause. By the
+plan's bar only looking at a screen is a clear win: the rest saved about 7%, or nothing.
+
+| | `before` | `all` |
+| --- | --- | --- |
+| Solved | 12 of 12 (11 inside 40 calls) | 12 of 12 |
+| Median tokens | 96.2k | 83.4k |
+| Median seconds | 175 | 120 |
+
+| Task | Tokens, `before` | Tokens, `all` |
+| --- | --- | --- |
+| TT1, a rule deep in the fight code, after a tidy-up | 101.3k | 103.9k |
+| TT2, a rule below a page, no earlier green run | 89.3k | 82.9k |
+| TT3, a regression among renames in five files | 87.9k | 81.6k |
+| TT4, what a screen shows | 122.3k | 83.9k |
+
+- TT4 is the win: 31% fewer tokens, and 63 seconds against 274. Without the tools every agent wrote a scenario that
+  fails on purpose, to get the page saved. One of those runs made 46 tool calls, over the limit of 40, the only run in
+  either round to pass it.
+- Without TT4 the saving is 8% in tokens and 11% in time, much as in round 1. So the larger app did not change what the
+  tools do for fixing a fault; the tasks did not hide the cause well enough to tell.
+- TT1 saved nothing. `why` named the four changed files, and the agents then read them all. It says what changed, not
+  which change matters.
+- `why`, `run_scenario` and the step tools carried the work again.
+
+## Which tools to keep
+
+Six tools were called in none of the 72 runs of the two rounds. Hiding them for 12 more runs lost nothing: all 12
+solved, and no agent asked for one. It saved nothing that shows either: 85.6k tokens against 83.4k, inside the spread.
+Those runs were about 45% slower on every task, but three days later on a machine in other use, so that is not read as
+their doing.
+
+So `get_failure`, `where_is` and `step_log` are gone, for `run_scenario` and `get_trace` give the same. `coverage`,
+`tests_affected` and `http_calls` stay, out of the server's instructions, for they answer questions these tasks never
+asked. The cost is that nothing now says where a control is made unless a failure names it.
+
+The larger find came from the logs: about half of all `why` calls failed, because the tools took only a scenario's
+exact heading line and agents pass the line a failure gives them. They now take any line of the scenario. No run has
+measured that yet.
+
+## What round 2 cannot say
+
+- The tasks stayed easy. Every cause was one change, a unit test failed on TT1's and TT2's, and a comment states the
+  rule that TT2's and TT3's break.
+- Only the studio suite ran, on bUnit. Browser runs did not work under the runner until step 2's fix, and the Jobs
+  page's scenario still does not pass there.
+- Three runs a task cannot show a small difference. The lean round's time was not measured side by side.
+- Round 2 cost about 4M tokens: pilot 0.7M, main round 2.3M, lean round 1.1M.
+
 ## Next
 
-A round on Tomorrow
-with three or four tasks the source does not give away, and `without-AI9` and `without-AI10` runs to price those
-two items on their own.
+Log what agents call in real sessions on Tomorrow, the one thing no seeded task can show, and read it after a few weeks.
+Before that, three small Bruinet faults from these runs: `run_scenario` runs `@browser` scenarios on bUnit, where they
+fail; `step_screenshot`'s text holds Blazor's hidden error banner; and the runners' temp copies grew to 42 GB.

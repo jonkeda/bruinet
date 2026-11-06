@@ -78,7 +78,8 @@ green run and of `expect.json`, and the prompt says so.
 | 3 | done | e2dff300 | see "Pilot (step 3)" below |
 | 4 | done | e2675c0f | see "Main round (step 4)" below |
 | 5 | done | b55dfeda | see "Lean round (step 5)" below |
-| 5b | done | (this commit) | see "Tools changed after the rounds" below |
+| 5b | done | a70985de | see "Tools changed after the rounds" below |
+| 6 | done | (this commit) | `report.md`: "Round 2: Tomorrow", "Which tools to keep" |
 
 ## Step 1: the harness on Tomorrow
 
