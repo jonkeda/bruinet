@@ -156,18 +156,13 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void GetFailure_AfterAFailedRun_GivesTheKind_TheBinding_AndTheFrame_InFewWords()
+    public void RunScenario_OfAFailure_GivesTheKind_TheBinding_AndTheFrame()
     {
-        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature }));
-        var text = Text(Call("get_failure", new JsonObject { ["path"] = Feature, ["line"] = 11 }));
-        var failure = JsonNode.Parse(text)!;
+        var failed = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature }))["scenarios"]![1]!;
 
-        Assert.True(run["scenarios"]![1]!["failure"] is not null, run.ToJsonString());
-        Assert.Equal("assertion", (string?)run["scenarios"]![1]!["failure"]!["kind"]);
-        Assert.Equal(("Fails", 15), ((string?)failure["scenario"], (int?)failure["failedStep"]!["line"]));
-        Assert.Equal("assertion", (string?)failure["failure"]!["kind"]);
-        Assert.Contains(failure["failure"]!["frames"]!.AsArray(), frame => ((string?)frame)!.StartsWith("StepCounterFixture.HasCounted", StringComparison.Ordinal));
-        Assert.True(text.Length < 2000, $"{text.Length} characters: {text}");
+        Assert.Equal(("Fails", 15), ((string?)failed["scenario"], (int?)failed["failedStep"]!["line"]));
+        Assert.Equal("assertion", (string?)failed["failure"]!["kind"]);
+        Assert.Contains(failed["failure"]!["frames"]!.AsArray(), frame => ((string?)frame)!.StartsWith("StepCounterFixture.HasCounted", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -183,37 +178,49 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void StepLog_GivesWhatTheAppSaidAtItsStep_OnlyFromTheNewestRun()
+    public void GetTrace_GivesWhatTheAppSaidAtItsStep_OnlyFromTheNewestRun()
     {
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 19 });
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 19 });
 
-        var log = Answer(Call("step_log", new JsonObject { ["path"] = Feature, ["line"] = 19 }));
+        var step = Answer(Call("get_trace", new JsonObject { ["path"] = Feature, ["line"] = 19, ["step"] = 23 }));
 
-        var step = Assert.Single(log["steps"]!.AsArray())!;
-        Assert.Equal(23, (int)step["line"]!);
-        var said = Assert.Single(step["events"]!.AsArray())!;
+        var said = Assert.Single(step["appEvents"]!.AsArray())!;
         Assert.Equal(("warning", "counter", "Counted too often"), ((string?)said["level"], (string?)said["source"], (string?)said["message"]));
     }
 
     [Fact]
-    public void GetFailure_OfAScenarioThatPassed_IsAToolError_SayingSo()
+    public void RunScenario_AtAStepsLine_RunsItsScenario()
     {
-        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 3 });
+        var run = Answer(Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 6 }));
 
-        var result = Call("get_failure", new JsonObject { ["path"] = Feature, ["line"] = 3 });
-
-        Assert.True((bool)result["isError"]!);
-        Assert.Contains("passed", Text(result));
+        Assert.Equal("Counts", (string?)Assert.Single(run["scenarios"]!.AsArray())!["scenario"]);
     }
 
     [Fact]
-    public void RunScenario_AtALineWithNoHeading_IsAToolError_SayingSo()
+    public void RunScenario_AboveTheFirstScenario_IsAToolError_SayingSo()
     {
-        var result = Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 6 });
+        var result = Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 1 });
 
         Assert.True((bool)result["isError"]!);
-        Assert.Contains("no scenario heading at line 6", Text(result));
+        Assert.Contains("no scenario at line 1", Text(result));
+    }
+
+    [Theory]
+    [InlineData(1, null)]
+    [InlineData(3, 4)]
+    [InlineData(4, 4)]
+    [InlineData(5, 4)]
+    [InlineData(6, 4)]
+    [InlineData(7, 9)]
+    [InlineData(8, 9)]
+    [InlineData(9, 9)]
+    [InlineData(10, 9)]
+    public void AScenariosLines_AreItsHeading_ItsTags_AndWhatFollows(int line, int? heading)
+    {
+        string[] lines = ["# Feature", "", "@one", "## Scenario: One", "Given a step", "", "@two", "@three", "## Scenario: Two", "Given a step"];
+
+        Assert.Equal(heading, Bruinet.Bdd.LanguageServer.BddLanguageServer.HeadingOf(lines, new HashSet<int> { 4, 9 }, line));
     }
 
     [Fact]

@@ -68,6 +68,28 @@ public sealed partial class BddLanguageServer
             .ToList() ?? [];
     }
 
+    /// <summary>The heading line of the scenario <paramref name="line"/> is in; null above the first scenario.</summary>
+    internal int? HeadingOf(string uri, int line)
+    {
+        var path = Key(uri);
+        var text = Context(path).Text;
+        return HeadingOf(text.Split('\n'), BddMarkdownParser.Parse(text, path).Document?.Scenarios.Select(scenario => scenario.Source.LineNumber).ToHashSet() ?? [], line);
+    }
+
+    /// <summary>A scenario's lines are its heading, the tags right above it and all that follows, up to the next one's tags.</summary>
+    internal static int? HeadingOf(IReadOnlyList<string> lines, IReadOnlySet<int> headings, int line)
+    {
+        for (var below = line; below <= lines.Count && lines[below - 1].TrimStart().StartsWith('@'); below++)
+        {
+            if (headings.Contains(below + 1))
+            {
+                return below + 1;
+            }
+        }
+
+        return headings.Where(heading => heading <= line).Select(heading => (int?)heading).Max();
+    }
+
     /// <summary><c>bruinet/lastRuns</c>: the newest run of each of a feature file's scenarios, with its failed step.</summary>
     [JsonRpcMethod("bruinet/lastRuns")]
     public IReadOnlyList<ScenarioResult> LastRuns(PreviewParams request)

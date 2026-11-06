@@ -278,20 +278,17 @@ VS Code) and any other MCP client:
   part (its page, the controls it drove, what the app said, what a page showed, its status), a kind (`page-changed`,
   `data-changed`, `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green
   run's commit that touch that step or an earlier one, with changes of comments only set apart; it builds and runs the
-  scenario first when no failure of it is traced. A failure in `run_scenario` and `get_failure` carries the short form,
-  `sinceGreen`. `bruinet why <file>:<line>` prints the same;
-- `where_is` gives where a page's control is made: the page object member's file and line, the test id it finds by,
-  and the app lines (`.razor`, `.cshtml`, XAML, code) that render an element with it, the suite's own app first; a
-  failure from `get_failure` or `run_scenario` gives the same lines for its locator as `appSource`;
+  scenario first when no failure of it is traced. A failure in `run_scenario` carries the short form, `sinceGreen`. `bruinet why <file>:<line>` prints the same;
+- a failure from `run_scenario` gives, as `appSource`, the app lines (`.razor`, `.cshtml`, XAML, code) that render the
+  element its locator names, the suite's own app first;
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
   it ran and missed (for the given files, or the working tree's changed ones);
-- `step_log` gives what the app said during each step of a scenario's newest run: its log's warnings and
-  errors (with `AddBruinetStepLog`, which the MauiHeadless head adds), and the browser's console errors and
-  warnings;
 - `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;
-- `get_failure` says why a scenario failed in its newest run: the step, the kind of failure
-  (assertion, locator-not-found, timeout, ...), expected and actual, the locator, the binding, and
-  the suite's and the app's frames it came through; `run_scenario` gives it for each failed scenario;
+- `run_scenario` says why each scenario failed: the step, the kind of failure (assertion, locator-not-found,
+  timeout, ...), expected and actual, the locator, the binding, and the suite's and the app's frames it came through;
+  `get_trace` gives a step of the newest run in full, what the app said included: its log's warnings and errors
+  (with `AddBruinetStepLog`, which the MauiHeadless head adds), and the browser's console errors and warnings;
+- the tools that take a scenario's `line` take any line of it: its heading, a tag or a step;
 - `http_calls` gives a scenario's HTTP calls in its newest replayed run: each matched, recorded or missed, the misses
   and the recorded calls it no longer makes ([HTTP Replay](http-replay.md));
 - `tests_affected` gives the tests and scenarios of a UI suite a change reaches, with why and one

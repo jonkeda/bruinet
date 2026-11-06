@@ -77,7 +77,8 @@ green run and of `expect.json`, and the prompt says so.
 | 2 | done | 7081506f | see "Step 2" below |
 | 3 | done | e2dff300 | see "Pilot (step 3)" below |
 | 4 | done | e2675c0f | see "Main round (step 4)" below |
-| 5 | done | (this commit) | see "Lean round (step 5)" below |
+| 5 | done | b55dfeda | see "Lean round (step 5)" below |
+| 5b | done | (this commit) | see "Tools changed after the rounds" below |
 
 ## Step 1: the harness on Tomorrow
 
@@ -205,3 +206,16 @@ line, and agents pass the tag's or a step's line, the one a failure gives them. 
 would remove these calls; it is likely worth more than removing the six tools.
 
 One scoring build failed on `SkipGeneration` under load (L1-TT1-lean), built clean at once after and scored solved.
+
+## Tools changed after the rounds
+
+The owner's call on the lean round, 2026-11-06:
+
+- `get_failure`, `where_is` and `step_log` are gone from the server (56 tools to 53). Their fields stay in `run_scenario`,
+  and `get_trace` gives a step's failure and app events.
+- `coverage`, `tests_affected` and `http_calls` stay, out of the server's instructions: their descriptions remain.
+- A scenario tool's `line` is any line of the scenario. `record_video` and `delete_results` still take the heading.
+- The listing is 18,417 bytes, from 20,053.
+
+The rounds' numbers were measured before this, so they stand for the tools as they were. The bridge's `ITEMS` and `LEAN`
+still name the three tools, for running those setups; a hidden tool that no longer exists changes nothing.

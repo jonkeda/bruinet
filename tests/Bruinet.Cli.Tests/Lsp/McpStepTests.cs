@@ -104,12 +104,21 @@ public sealed class McpStepTests : IDisposable
     }
 
     [Fact]
-    public void AStart_AtALineWithNoHeading_IsAToolError()
+    public void AStart_AtAStepsLine_OpensItsScenario()
     {
-        var result = Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 6 });
+        var paused = Answer(Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 6 }));
+        Call("step_move", new JsonObject { ["move"] = "stop" });
+
+        Assert.True((bool)paused["paused"]!);
+    }
+
+    [Fact]
+    public void AStart_AboveTheFirstScenario_IsAToolError()
+    {
+        var result = Call("step_start", new JsonObject { ["path"] = Feature, ["line"] = 1 });
 
         Assert.True((bool)result["isError"]!);
-        Assert.Contains("no scenario heading at line 6", Text(result));
+        Assert.Contains("no scenario at line 1", Text(result));
     }
 
     [Fact]

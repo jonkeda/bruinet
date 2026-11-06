@@ -77,20 +77,17 @@ public sealed class BddMcpServer : IDisposable
         ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
         ("list_states", "The states the suite's app can be put in, declared with [BddState] in its test project: each state's phrase, its parameters and the method that sets it (through test data or the service head). A Given may name one; set_state puts the app in one.", Schema(("suite", "string", "The suite; its only one when left out."))),
         ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, its parameters filled in, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("page", "string", "The page the app is on in that state (list_pages): checked, and the page step_state then reads; none when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
-        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A scenario heading's line; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."), ("trace", "string", "all: read the page after every step for the trace, not only after a failed one (get_trace); off: no trace; each scenario is traced when left out."))),
+        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."), ("trace", "string", "all: read the page after every step for the trace, not only after a failed one (get_trace); off: no trace; each scenario is traced when left out."))),
         ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
         ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
         ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text); with no page current, the page that says it is loaded. Read without a screenshot; where to look when a step is about to fail.", Schema()),
         ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path in the solution's TestResults/step-screenshots, to look at; a head without pixels gives the screen's element tree or markup, inline as tree.", Schema()),
-        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
-        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("where_is", "Where a page object's control is made: the page object member's file and line, the locator value it finds by, and the lines of the app's sources (.razor, .cshtml, XAML, code) that render an element with that value, test-id attributes first. Where to change the app or the page object when a control is not found or wrong.", Schema(("page", "string", "The page, as list_pages names it; required."), ("control", "string", "The control, as list_pages names it; required."), ("suite", "string", "The suite; its only one when left out."))),
-        ("get_failure", "Why a scenario failed in its newest run (any run: run_scenario, the IDE, the xUnit gate): the failed step (file, line, text, duration), the kind (assertion, locator-not-found, timeout, app-unavailable, bind, app-exception, error), expected and actual, the locator, the step's binding, the suite's and app's code frames it came through, the screenshot, the message, and the app source lines that make the element its locator names (appSource; where_is gives one control's). run_scenario gives it for each failed scenario already.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; the file's newest failed scenario when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("http_calls", "The HTTP calls a scenario made in its newest run that recorded or replayed them (AI11): method, URL, status and whether the recording answered it (recorded, matched, missed), the misses, and the recorded calls it no longer makes. Shows why a replayed scenario failed on its backend.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_failure gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
-        ("step_log", "What the app said during each step of a scenario's newest run (any run): its log's warnings and errors, the browser's console errors and warnings, by step (file and line; at most 20 steps). Where to look when a step passed but the app complained, or failed for a reason the UI does not show.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "The scenario heading's line; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
+        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("http_calls", "The HTTP calls a scenario made in its newest run that recorded or replayed them (AI11): method, URL, status and whether the recording answered it (recorded, matched, missed), the misses, and the recorded calls it no longer makes. Shows why a replayed scenario failed on its backend.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
+        ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_trace gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
         ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
         ("rename_step", "Renames a callable step (a '## Step:' heading in a steps file) and every call of it across the suites, each call keeping its values. Give the heading's or a call's line. Without apply: true it only gives the edits (file, line, before, after); with it, it writes them, then checks every changed file as validate_scenario does and puts all back when one fails.", Schema(("path", "string", "The steps file or a feature file with a call; required."), ("line", "integer", "The heading's or the call's line; required."), ("newPhrase", "string", "The new phrase, with the same {placeholders}; required."), ("apply", "boolean", "Write the edits; false when left out."))),
         ("rename_page_object", "Renames a scraped project's page object for a recorded page: its class, its draft and the person's part, in the files that declare it. Files that only use it are listed, not changed: fix them, then check_code. Asks first: without 'confirm' it only says what it would do.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("newName", "string", "The new class name; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
@@ -144,7 +141,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; get_failure gives it again; last_runs gives the newest results; coverage shows which lines of the app one scenario runs; where_is gives the page object line of a control and the app line (razor, XAML) that makes it; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states); a suite that replays its dependencies runs with run_scenario's replay, and http_calls shows the HTTP calls a replayed scenario made and missed; after a change, tests_affected names the tests it reaches. Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; last_runs gives the newest results; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states). Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -194,13 +191,10 @@ public sealed class BddMcpServer : IDisposable
                     : throw new ToolProblem($"No page state: {read.Reason}"),
                 "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? Screenshot(taken) : throw new ToolProblem($"No screenshot: {shot.Reason}"),
                 "last_runs" => LastRuns(arguments),
-                "get_failure" => GetFailure(arguments),
-                "where_is" => WhereIs(arguments),
                 "get_trace" => GetTrace(arguments),
                 "why" => Why(arguments),
                 "http_calls" => HttpCalls(arguments),
                 "failing" => Failing(arguments),
-                "step_log" => StepLogOf(arguments),
                 "tests_affected" => TestsAffected(arguments),
                 "rename_step" => RenameStep(arguments),
                 "rename_page_object" => Scraper(() => RenamePageObject(arguments)),
@@ -362,7 +356,7 @@ public sealed class BddMcpServer : IDisposable
         }
 
         using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10));
-        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, Whole(arguments, "line", 1, int.MaxValue), suite, RunEnvironment(arguments)), timeout.Token).GetAwaiter().GetResult();
+        var (started, ended) = _server.RunToEndAsync(new RunStartParams(uri, ScenarioLine(arguments, uri), suite, RunEnvironment(arguments)), timeout.Token).GetAwaiter().GetResult();
         if (ended is null)
         {
             throw new ToolProblem(started.Reason ?? "The run did not start.");
@@ -424,7 +418,7 @@ public sealed class BddMcpServer : IDisposable
     private object HttpCalls(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));
-        var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
+        var line = ScenarioLine(arguments, uri) ?? throw new ToolProblem("'line' is required.");
         var name = _server.ScenarioNames(uri, line).FirstOrDefault() ?? throw new ToolProblem("There is no scenario heading at that line.");
         var project = _server.Context(new Uri(uri).LocalPath, (string?)arguments["suite"]).Suite?.ProjectDirectory
             ?? throw new ToolProblem("No suite holds or links this feature file.");
@@ -593,7 +587,7 @@ public sealed class BddMcpServer : IDisposable
     private object StepStart(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));
-        var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
+        var line = ScenarioLine(arguments, uri) ?? throw new ToolProblem("'line' is required.");
         var upcoming = TakeStepEvent();
         var started = _server.StepStartAsync(new StepStartParams(uri, line, (string?)arguments["suite"], null)).GetAwaiter().GetResult();
         return started.Started ? StepEvent(upcoming, TimeSpan.FromMinutes(2), untilEnded: false) : throw new ToolProblem(started.Reason ?? "The Step-through did not start.");
@@ -687,7 +681,7 @@ public sealed class BddMcpServer : IDisposable
     {
         const int FilesShown = 20;
         var uri = FileUri(Required(arguments, "path"));
-        var line = Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required.");
+        var line = ScenarioLine(arguments, uri) ?? throw new ToolProblem("'line' is required.");
         var timeout = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10);
         var path = new Uri(uri).LocalPath;
         var file = _server.Context(path, (string?)arguments["suite"]);
@@ -801,51 +795,6 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // The newest failed run of the scenario at a heading (or of the file), as an agent acts on it.
-    private object GetFailure(JsonObject arguments)
-    {
-        var uri = FileUri(Required(arguments, "path"));
-        var suite = (string?)arguments["suite"];
-        var names = _server.ScenarioNames(uri, Whole(arguments, "line", 1, int.MaxValue));
-        if (names.Count == 0)
-        {
-            throw new ToolProblem("There is no scenario heading at that line.");
-        }
-
-        var runs = _server.NewestRuns(uri, suite);
-        var failed = names.Select(name => runs.GetValueOrDefault(name))
-            .OfType<Bruinet.Bdd.Preview.BddScenarioRun>()
-            .Where(run => run.Status == "failed")
-            .OrderByDescending(run => run.At)
-            .FirstOrDefault();
-        if (failed is null)
-        {
-            var newest = names.Select(name => runs.GetValueOrDefault(name)).OfType<Bruinet.Bdd.Preview.BddScenarioRun>().OrderByDescending(run => run.At).FirstOrDefault();
-            throw new ToolProblem(newest is null ? "No run of it has a result yet: run it with run_scenario." : $"Its newest run {newest.Status} ({newest.At:u}): nothing failed.");
-        }
-
-        var step = failed.Steps.FirstOrDefault(candidate => candidate.Status == "Failed");
-
-        // The report's file is relative to the suite's config: relative to the solution here, as run_scenario's, with the step's text.
-        var config = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } configPath ? Path.GetDirectoryName(configPath)! : _solutionDir;
-        var file = step?.File is { } written ? Path.GetFullPath(written, config) : new Uri(uri).LocalPath;
-        var text = step is not null && File.Exists(file) && File.ReadLines(file).Skip(step.Line - 1).FirstOrDefault() is { } line ? line.Trim() : null;
-        var failure = Failure(failed);
-        return new
-        {
-            failed.Scenario,
-            failed.Status,
-            At = failed.At.ToString("u", CultureInfo.InvariantCulture),
-            FailedStep = step is null ? null : new { File = Path.GetRelativePath(_solutionDir, file), step.Line, Text = text, step.CallLine, step.DurationMs },
-            Failure = failure,
-            AppSource = AppSource(failure, config),
-            SinceGreen = SinceGreen(failed, config),
-            AppEvents = step?.AppEvents is { } said ? JsonNode.Parse(said) : null,
-            Screenshot = failed.EvidencePath,
-            Message = Cap(step?.Message, 2000),
-        };
-    }
-
     // Each suite's feature files, and of each the scenarios whose newest run failed: the newest first.
     private object Failing(JsonObject arguments)
     {
@@ -880,25 +829,7 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    // The newest run of the scenario at a heading: each step that has app events, with them.
-    private object StepLogOf(JsonObject arguments)
-    {
-        var uri = FileUri(Required(arguments, "path"));
-        var names = _server.ScenarioNames(uri, Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("'line' is required."));
-        var runs = _server.NewestRuns(uri, (string?)arguments["suite"]);
-        var run = names.Select(name => runs.GetValueOrDefault(name)).OfType<Bruinet.Bdd.Preview.BddScenarioRun>().OrderByDescending(candidate => candidate.At).FirstOrDefault()
-            ?? throw new ToolProblem("No run of it has a result yet: run it with run_scenario.");
-        return new
-        {
-            run.Scenario,
-            run.Status,
-            At = run.At.ToString("u", CultureInfo.InvariantCulture),
-            Steps = run.Steps.Where(step => step.AppEvents is not null).Take(20).Select(step => new { step.File, step.Line, step.CallLine, step.Status, Events = JsonNode.Parse(step.AppEvents!) }),
-            Note = run.Steps.Any(step => step.AppEvents is not null) ? null : "The app said nothing at warning level or up (BRUINET_STEP_LOG=all keeps information too), or its log is not wired (AddBruinetStepLog).",
-        };
-    }
-
-    // A failure's short why (AI9), beside it in run_scenario and get_failure: where it parted from the last green run and the
+    // A failure's short why (AI9), beside it in run_scenario: where it parted from the last green run and the
     // code changed since that touches it, so the agent needs no call more. Null without a trace or a green run before it.
     private static object? SinceGreen(Bruinet.Bdd.Preview.BddScenarioRun failing, string suiteFolder)
     {
@@ -936,7 +867,7 @@ public sealed class BddMcpServer : IDisposable
     {
         var uri = FileUri(Required(arguments, "path"));
         var suite = (string?)arguments["suite"];
-        var names = _server.ScenarioNames(uri, Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("line is required: the scenario heading's line."));
+        var names = _server.ScenarioNames(uri, ScenarioLine(arguments, uri) ?? throw new ToolProblem("line is required: a line of the scenario."));
         if (names.Count == 0)
         {
             throw new ToolProblem("There is no scenario heading at that line.");
@@ -1008,7 +939,7 @@ public sealed class BddMcpServer : IDisposable
             {
                 ran ? "It was built and run first: no failure of it was traced yet." : null,
                 newest is { Status: "passed" } && newest.At > failing.At ? $"Its newest run passed ({newest.At:u}): this is an older failure." : null,
-                difference.Kind == Bruinet.Uat.UatTraceDiff.None ? "The failing run's steps match the green one's: get_failure gives the failure." : null,
+                difference.Kind == Bruinet.Uat.UatTraceDiff.None ? "The failing run's steps match the green one's: get_trace gives the failure." : null,
                 Bruinet.Uat.UatTraceDiff.ReadPages(then) ? null : "Page values were not compared: the green run did not read pages (run_scenario's trace: all).",
                 files.Note,
             }.OfType<string>()) is { Length: > 0 } note ? note : null,
@@ -1089,7 +1020,7 @@ public sealed class BddMcpServer : IDisposable
     private object GetTrace(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));
-        var names = _server.ScenarioNames(uri, Whole(arguments, "line", 1, int.MaxValue) ?? throw new ToolProblem("line is required: the scenario heading's line."));
+        var names = _server.ScenarioNames(uri, ScenarioLine(arguments, uri) ?? throw new ToolProblem("line is required: a line of the scenario."));
         if (names.Count == 0)
         {
             throw new ToolProblem("There is no scenario heading at that line.");
@@ -1166,55 +1097,12 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    // A page object control: its member's line, the locator value it declares, and where the app makes that element.
-    private object WhereIs(JsonObject arguments)
+    // A scenario tool's 'line' as its heading's: agents give the line a failure names, a step's or the tag's, more often than
+    // the heading's (half of the benchmark's why calls failed on it).
+    private int? ScenarioLine(JsonObject arguments, string uri)
     {
-        var suite = Suite(arguments);
-        var pageName = Required(arguments, "page");
-        var controlName = Required(arguments, "control");
-        var pages = UatPageSet.Of(Catalogs(suite).Default);
-        var page = pages.Values.FirstOrDefault(model => string.Equals(model.Key, pageName, StringComparison.OrdinalIgnoreCase) || string.Equals(model.Name, pageName, StringComparison.OrdinalIgnoreCase))
-            ?? throw new ToolProblem($"{suite.Name} has no page '{pageName}': list_pages names them.");
-        var control = page.Controls.FirstOrDefault(model => string.Equals(Compact(model.Name), Compact(controlName), StringComparison.OrdinalIgnoreCase))
-            ?? throw new ToolProblem($"The page {page.Name} has no control '{controlName}': list_pages names its controls.");
-
-        var at = BddSourceLocator.Of(page.PageType, control.MemberName ?? Compact(control.Name));
-        var value = at is { FilePath: { } file } ? BddAppSources.ValueAt(file, at.LineNumber) : null;
-        var app = value is null ? [] : AppSources().Find(value, hint: new BddAppSourceHint(at?.FilePath, page.PageType.Name, IsXaml(control.ControlType)));
-        return new
-        {
-            Page = page.Name,
-            Control = control.Name,
-            PageObject = at is { FilePath: { } declared } ? $"{Path.GetRelativePath(_solutionDir, declared)}:{at.LineNumber}" : null,
-            Locator = value is null ? null : value.IsPrefix ? value.Value + "…" : value.Value,
-            App = app.Select(hit => new { File = $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}", hit.Text, TestId = hit.IsAttribute }),
-            Note = at?.FilePath is null ? "The page object's source was not found: build the suite with its PDB (Debug)."
-                : value is null ? "The member declares no string to find by (a constant or nameof): look for it in the page object."
-                : app.Count == 0 ? "No app source has this value: the app may build it some other way, or the element is gone." : null,
-        };
-
-        static string Compact(string name) => name.Replace(" ", string.Empty, StringComparison.Ordinal);
-
-    }
-
-    // A MAUI, Avalonia or WPF control's app is XAML, an Html or Blazor one's web markup: by the first Bruinet assembly in
-    // its bases (a suite's own control derives from one); null for neither.
-    private static bool? IsXaml(Type? controlType)
-    {
-        for (var type = controlType; type is not null; type = type.BaseType)
-        {
-            var name = type.Assembly.GetName().Name ?? string.Empty;
-            if (!name.StartsWith("Bruinet.", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            return name.Contains("Maui", StringComparison.Ordinal) || name.Contains("Avalonia", StringComparison.Ordinal) || name.Contains("Wpf", StringComparison.Ordinal) ? true
-                : name.Contains("Html", StringComparison.Ordinal) || name.Contains("Blazor", StringComparison.Ordinal) ? false
-                : null;
-        }
-
-        return null;
+        var line = Whole(arguments, "line", 1, int.MaxValue);
+        return line is { } at ? _server.HeadingOf(uri, at) ?? throw new ToolProblem($"There is no scenario at line {at}: scenarios start lower in the file.") : null;
     }
 
     // The app's sources, their file list kept a minute rather than walked again per call.

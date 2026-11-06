@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- MCP: a scenario tool's `line` (`run_scenario`, `step_start`, `why`, `get_trace`, `coverage`, `http_calls`) is any line of
+  the scenario: its heading, a tag or a step. Agents passed the line a failure names, and half of `why`'s calls failed.
+- MCP: `get_failure`, `where_is` and `step_log` are gone: no benchmark run called them, and their answers are in
+  `run_scenario` (`failure`, `appSource`, `appEvents`) and `get_trace`. The server's instructions no longer name
+  `coverage`, `tests_affected` or `http_calls`; those tools stay, with their descriptions.
 - MCP: `step_state` with no page current reads the page the last step drove (as the trace names it), else the one
   page that says it is loaded, so after a `set_state` without `page` it still shows the screen. `step_state` also reads a list's rows, `step_screenshot` copies to the
   solution's `TestResults/step-screenshots` (a tree inline, or bUnit's markup as the text it shows), and `set_state` refuses a state with `{placeholder}`
