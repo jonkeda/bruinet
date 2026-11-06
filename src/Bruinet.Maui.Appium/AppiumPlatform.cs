@@ -134,6 +134,16 @@ internal abstract class AppiumPlatform
     /// </summary>
     public abstract bool CheckedNeedsCheckable { get; }
 
+    /// <summary>
+    /// Stops the app and starts it again with the launch settings its session started it with,
+    /// which a plain <c>activateApp</c> leaves out. Does nothing when the session names no app.
+    /// </summary>
+    public abstract void Relaunch(AppiumDriver driver);
+
+    /// <summary>A session capability as text, or null.</summary>
+    protected static string? CapabilityText(AppiumDriver driver, string name)
+        => driver.Capabilities.GetCapability(name)?.ToString() is { Length: > 0 } text ? text : null;
+
     /// <summary>The script that double-taps an element.</summary>
     public abstract string DoubleTapScript { get; }
 

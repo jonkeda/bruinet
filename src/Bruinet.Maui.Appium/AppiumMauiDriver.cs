@@ -401,17 +401,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <inheritdoc />
     public void ResetAppState() => AppiumErrors.Live(ResetApp);
 
-    private void ResetApp()
-    {
-        var bundleId = _driver.Capabilities.GetCapability("appPackage")?.ToString()
-                    ?? _driver.Capabilities.GetCapability("bundleId")?.ToString();
-
-        if (!string.IsNullOrEmpty(bundleId))
-        {
-            _driver.TerminateApp(bundleId);
-            _driver.ActivateApp(bundleId);
-        }
-    }
+    private void ResetApp() => _appium.Relaunch(_driver);
 
     #endregion
 

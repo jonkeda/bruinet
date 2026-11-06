@@ -13,6 +13,34 @@ internal sealed class IosPlatform : AppiumPlatform
     {
     }
 
+    public override void Relaunch(AppiumDriver driver)
+    {
+        // A session started from an app path has no bundleId capability; the app in front is ours.
+        var bundleId = CapabilityText(driver, "bundleId")
+                       ?? (driver.ExecuteScript("mobile: activeAppInfo") as IDictionary<string, object>)?["bundleId"]?.ToString();
+        if (string.IsNullOrEmpty(bundleId))
+        {
+            return;
+        }
+
+        driver.TerminateApp(bundleId);
+        var launch = new Dictionary<string, object> { ["bundleId"] = bundleId };
+        if (driver.Capabilities.GetCapability("processArguments") is IDictionary<string, object> process)
+        {
+            if (process.TryGetValue("env", out var environment))
+            {
+                launch["environment"] = environment;
+            }
+
+            if (process.TryGetValue("args", out var arguments))
+            {
+                launch["arguments"] = arguments;
+            }
+        }
+
+        driver.ExecuteScript("mobile: launchApp", launch);
+    }
+
     public override MauiPlatform Platform => MauiPlatform.iOS;
 
     // MAUI surfaces an AutomationId as the accessibility identifier.

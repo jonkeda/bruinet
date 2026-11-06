@@ -74,4 +74,13 @@ public class AppiumLocatorTests
 
         Assert.Equal(".//android.widget.Button[@content-desc='Ok' or @text='Ok']", by.Criteria);
     }
+
+    [Fact]
+    public void LaunchExtras_ReadsTheStringExtrasBruinetWrites()
+    {
+        var extras = AndroidPlatform.LaunchExtras("--es MOCK_SERVER_PORT 9090 --es CONSTRUCTION_USE_MOCK_BACKEND true");
+
+        Assert.Equal([["s", "MOCK_SERVER_PORT", "9090"], ["s", "CONSTRUCTION_USE_MOCK_BACKEND", "true"]], extras);
+        Assert.Empty(AndroidPlatform.LaunchExtras(null));
+    }
 }

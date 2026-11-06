@@ -13,6 +13,59 @@ internal sealed class AndroidPlatform : AppiumPlatform
     {
     }
 
+    public override void Relaunch(AppiumDriver driver)
+    {
+        if (CapabilityText(driver, "appPackage") is not { } package)
+        {
+            return;
+        }
+
+        // A session started from an APK has no appActivity capability; read it while the app is in front.
+        var activity = CapabilityText(driver, "appActivity")
+                       ?? driver.ExecuteScript("mobile: getCurrentActivity")?.ToString();
+        driver.TerminateApp(package);
+        if (string.IsNullOrEmpty(activity))
+        {
+            driver.ActivateApp(package);
+            return;
+        }
+
+        var start = new Dictionary<string, object>
+        {
+            // As component (-n): am start reads a positional intent as the target and drops the extras after it.
+            ["component"] = $"{package}/{activity}",
+            ["action"] = "android.intent.action.MAIN",
+            ["categories"] = "android.intent.category.LAUNCHER",
+            ["wait"] = true
+        };
+        if (LaunchExtras(CapabilityText(driver, "optionalIntentArguments")) is { Count: > 0 } extras)
+        {
+            start["extras"] = extras;
+        }
+
+        driver.ExecuteScript("mobile: startActivity", start);
+    }
+
+    /// <summary>
+    /// The string extras of <c>optionalIntentArguments</c> as <c>mobile: startActivity</c> takes
+    /// them. Bruinet writes that capability as <c>--es name value</c> pairs without whitespace.
+    /// </summary>
+    internal static List<string[]> LaunchExtras(string? intentArguments)
+    {
+        var extras = new List<string[]>();
+        var parts = (intentArguments ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i + 2 < parts.Length; i++)
+        {
+            if (parts[i] == "--es")
+            {
+                extras.Add(["s", parts[i + 1], parts[i + 2]]);
+                i += 2;
+            }
+        }
+
+        return extras;
+    }
+
     public override MauiPlatform Platform => MauiPlatform.Android;
 
     /// <summary>
