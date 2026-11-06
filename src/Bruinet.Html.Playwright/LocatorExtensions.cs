@@ -16,7 +16,9 @@ internal static class LocatorExtensions
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(locator);
 
-        var root = Scope(page, frame, "*");
+        // One root, not "*": a chain runs its next selector from every match of the last, and "*" took 800 ms a call on
+        // a page of a few thousand elements, past a read's cap on a slow machine.
+        var root = Scope(page, frame, ":root");
 
         if (locator.Parent != null)
         {
