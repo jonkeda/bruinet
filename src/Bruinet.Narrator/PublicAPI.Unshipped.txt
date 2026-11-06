@@ -564,7 +564,7 @@ static Bruinet.Narrator.Pronunciations.Parse(string! text, string! path) -> Brui
 static Bruinet.Narrator.Speech.ClipAsync(Bruinet.Narrator.ISpeechSynthesizer? synthesizer, string! text, string? voice, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<Bruinet.Narrator.SpeechClip!>!
 static Bruinet.Narrator.Speech.Discover() -> Bruinet.Narrator.ISpeechSynthesizer?
 static Bruinet.Narrator.Speech.Estimate(string! text) -> System.TimeSpan
-static Bruinet.Narrator.Speech.Find(string? voice, string? instructions = null, string? folder = null, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.ISpeechSynthesizer?
+static Bruinet.Narrator.Speech.Find(string? voice, string? instructions = null, string? folder = null, System.Func<string!, string?>? read = null, string? home = null, Bruinet.Narrator.ClipLibrary? library = null) -> Bruinet.Narrator.ISpeechSynthesizer?
 static Bruinet.Narrator.Speech.WavDuration(string! path) -> System.TimeSpan
 static Bruinet.Narrator.SpeechSecrets.Delete(string! path) -> void
 static Bruinet.Narrator.SpeechSecrets.Describe(string? folder, System.Func<string!, string?>? read = null, string? home = null) -> Bruinet.Narrator.SpeechSecretsDescription!
@@ -594,3 +594,46 @@ static readonly Bruinet.Narrator.SsmlSupport.AzureSpeech -> System.Collections.G
 static readonly Bruinet.Narrator.SsmlSupport.AzureSpeechMai -> System.Collections.Generic.IReadOnlySet<string!>!
 static readonly Bruinet.Narrator.SsmlSupport.None -> System.Collections.Generic.IReadOnlySet<string!>!
 static readonly Bruinet.Narrator.SsmlSupport.Windows -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Narrator.AzureOpenAiSpeech.Library.get -> Bruinet.Narrator.ClipLibrary?
+Bruinet.Narrator.AzureOpenAiSpeech.Library.init -> void
+Bruinet.Narrator.AzureSpeech.Library.get -> Bruinet.Narrator.ClipLibrary?
+Bruinet.Narrator.AzureSpeech.Library.init -> void
+Bruinet.Narrator.BddRecordingSession.Library.get -> Bruinet.Narrator.ClipLibrary?
+Bruinet.Narrator.BddRecordingSession.Library.init -> void
+Bruinet.Narrator.BddSpeechUse
+Bruinet.Narrator.BddSpeechUse.Asked.get -> int
+Bruinet.Narrator.BddSpeechUse.Asked.init -> void
+Bruinet.Narrator.BddSpeechUse.BddSpeechUse(int Reused, int Asked, int Characters) -> void
+Bruinet.Narrator.BddSpeechUse.Characters.get -> int
+Bruinet.Narrator.BddSpeechUse.Characters.init -> void
+Bruinet.Narrator.BddSpeechUse.Lines.get -> int
+Bruinet.Narrator.BddSpeechUse.Reused.get -> int
+Bruinet.Narrator.BddSpeechUse.Reused.init -> void
+Bruinet.Narrator.BddSpeechUse.Summary.get -> string!
+Bruinet.Narrator.BddVideoTimeline.Speech.get -> Bruinet.Narrator.BddSpeechUse?
+Bruinet.Narrator.BddVideoTimeline.Speech.init -> void
+Bruinet.Narrator.ClipLibrary
+Bruinet.Narrator.ClipLibrary.AddAsync(string! key, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.ClipLibrary.ClipLibrary(string! folder) -> void
+Bruinet.Narrator.ClipLibrary.CopyToAsync(string! key, string! wavPath, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task!
+Bruinet.Narrator.ClipLibrary.Folder.get -> string!
+Bruinet.Narrator.ClipLibrary.Has(string! key) -> bool
+Bruinet.Narrator.ClipLibrary.Missing.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Narrator.ClipLibrary.Mode.get -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibrary.Mode.set -> void
+Bruinet.Narrator.ClipLibrary.PathOf(string! key) -> string!
+Bruinet.Narrator.ClipLibrary.Prune() -> int
+Bruinet.Narrator.ClipLibrary.Use.get -> Bruinet.Narrator.BddSpeechUse?
+Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibraryMode.Ask = 0 -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibraryMode.Buy = 4 -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibraryMode.Count = 2 -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibraryMode.Fill = 3 -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.ClipLibraryMode.ReuseOnly = 1 -> Bruinet.Narrator.ClipLibraryMode
+Bruinet.Narrator.VoiceLineMissingException
+Bruinet.Narrator.VoiceLineMissingException.VoiceLineMissingException(string! line) -> void
+const Bruinet.Narrator.ClipLibrary.Extension = ".opus" -> string!
+const Bruinet.Narrator.ClipLibrary.FolderName = "speech" -> string!
+const Bruinet.Narrator.ClipLibrary.ReuseVariable = "BRUINET_VOICE_REUSE" -> string!
+const Bruinet.Narrator.ClipLibrary.Variable = "BRUINET_VOICE_LIBRARY" -> string!
+static Bruinet.Narrator.ClipLibrary.Find(string? configDirectory, System.Func<string!, string?>? read = null) -> Bruinet.Narrator.ClipLibrary?

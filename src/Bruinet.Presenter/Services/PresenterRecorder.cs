@@ -67,7 +67,8 @@ public interface IPresenterRecorder
     /// <param name="voice">The voice, by (part of) its name; null for the default.</param>
     /// <param name="beat">The wait after a step.</param>
     /// <param name="cancellationToken">Cancels the speech.</param>
-    Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken);
+    /// <param name="instructions">How a cloud voice says the lines, as the recording will; null for its own way.</param>
+    Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken, string? instructions = null);
 
     /// <summary>
     /// Starts recording one scene of a script into its kept folder: its lines are spoken, and the
@@ -138,6 +139,10 @@ public sealed class PresenterRecorder : IPresenterRecorder
     /// <inheritdoc />
     public string? Unavailable => Ffmpeg.Find() is null ? Ffmpeg.HowToGet : null;
 
+    // A scene's voice, with the clips of the suite its feature file is in.
+    private static ISpeechSynthesizer? VoiceOf(BddVideoScenePlan scene, string? voice, string? instructions, string? folder)
+        => Speech.Find(voice, instructions, folder, library: ClipLibrary.Find(Path.GetDirectoryName(scene.FeatureFile)));
+
     /// <inheritdoc />
     public async Task StartAsync(PresenterBddExecutionSession session, string workspacePath, string featureFile, string scenarioName, PresenterRecordingSettings settings, CancellationToken cancellationToken)
     {
@@ -163,7 +168,7 @@ public sealed class PresenterRecorder : IPresenterRecorder
         {
             _touches = BddTouchMarks.For(found.Script, setting: settings.TouchColor);
             var voice = found.Script.Voice ?? settings.Voice;
-            clips = await BddSceneClips.SpeakAsync(found.Scene, Speech.Find(voice, found.Script.Instructions, workspacePath), voice, sceneFolder, cancellationToken).ConfigureAwait(false);
+            clips = await BddSceneClips.SpeakAsync(found.Scene, VoiceOf(found.Scene, voice, found.Script.Instructions, workspacePath), voice, sceneFolder, cancellationToken).ConfigureAwait(false);
             name = found.Scene.Scene.Name;
             beat = found.Script.Beat ?? beat;
             pacing = BddScenePacing.Of(found.Script);
@@ -178,10 +183,13 @@ public sealed class PresenterRecorder : IPresenterRecorder
     }
 
     /// <inheritdoc />
-    public async Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken)
+    public async Task<bool> RehearseAsync(PresenterBddExecutionSession session, BddVideoScenePlan scene, string? voice, TimeSpan beat, CancellationToken cancellationToken, string? instructions = null)
     {
         ArgumentNullException.ThrowIfNull(session);
-        if (Speech.Find(voice) is not { } speech)
+        ArgumentNullException.ThrowIfNull(scene);
+
+        // The script's tone and the suite's settings and clips: what is heard here is what gets recorded, and the same clips.
+        if (VoiceOf(scene, voice, instructions, Path.GetDirectoryName(scene.FeatureFile)) is not { } speech)
         {
             return false;
         }
@@ -207,7 +215,7 @@ public sealed class PresenterRecorder : IPresenterRecorder
 
         // A scene recorded again replaces its earlier recording, whatever this one comes to.
         TryDelete(scene.Folder);
-        var speech = Speech.Find(scene.Voice, scene.Instructions, scene.Folder);
+        var speech = VoiceOf(scene.Plan, scene.Voice, scene.Instructions, scene.Folder);
         var clips = await BddSceneClips.SpeakAsync(scene.Plan, speech, scene.Voice, scene.Folder, cancellationToken).ConfigureAwait(false);
         session.Said = Play;
         await session.RecordAsync(new BddRunnerRecord(scene.Number, scene.Plan.Scene.Name, scene.Plan.Address, scene.Folder, scene.Hash, Clips(clips), scene.Beat.TotalMilliseconds, scene.SpeakAloud, (scene.Pacing ?? BddScenePacing.Default).Pause.TotalMilliseconds, scene.Pacing?.Say == BddSayMode.Before)).ConfigureAwait(false);

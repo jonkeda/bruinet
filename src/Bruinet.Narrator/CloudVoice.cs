@@ -5,6 +5,12 @@ using System.Text;
 
 namespace Bruinet.Narrator;
 
+/// <summary>A clip's names.</summary>
+/// <param name="Cache">In the local cache: everything that changes what is said, the endpoint included.</param>
+/// <param name="Library">In the <see cref="ClipLibrary"/>: the same without the endpoint, so another region finds it.</param>
+/// <param name="Said">What is said, for the tally and the messages.</param>
+internal sealed record ClipNames(string Cache, string Library, string Said);
+
 /// <summary>
 /// What the cloud voices (<see cref="AzureOpenAiSpeech"/>, <see cref="AzureSpeech"/>) share: the clip cache
 /// (<c>%LOCALAPPDATA%\Bruinet\speech-cache</c>), a streaming WAV's header, the retry on a busy service.
@@ -25,12 +31,40 @@ internal static class CloudVoice
     internal static string Hash(params string[] parts)
         => Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", parts))))[..32];
 
-    /// <summary>Copies the clip called <paramref name="name"/> to <paramref name="wavPath"/>, making it with <paramref name="make"/> when the cache has none.</summary>
-    internal static async Task<TimeSpan> ClipAsync(string cache, string name, string wavPath, Func<Task<byte[]>> make, CancellationToken cancellationToken)
+    /// <summary>
+    /// Puts a line's clip at <paramref name="wavPath"/>: from the library, else from the local cache
+    /// (and into the library), else made with <paramref name="make"/>, the only step that costs.
+    /// </summary>
+    internal static async Task<TimeSpan> ClipAsync(string cache, ClipNames names, ClipLibrary? library, string wavPath, Func<Task<byte[]>> make, CancellationToken cancellationToken)
     {
-        var cached = Path.Combine(cache, name + ".wav");
-        if (!File.Exists(cached))
+        if (library?.Has(names.Library) == true)
         {
+            library.Reused(names.Library);
+            if (!library.MakesWavs)
+            {
+                return TimeSpan.Zero;
+            }
+
+            await library.CopyToAsync(names.Library, wavPath, cancellationToken).ConfigureAwait(false);
+            return Speech.WavDuration(wavPath);
+        }
+
+        var cached = Path.Combine(cache, names.Cache + ".wav");
+        if (File.Exists(cached))
+        {
+            library?.Reused(names.Library);
+        }
+        else
+        {
+            switch (library?.Mode)
+            {
+                case ClipLibraryMode.ReuseOnly:
+                    throw new VoiceLineMissingException(names.Said);
+                case ClipLibraryMode.Count or ClipLibraryMode.Fill:
+                    library.NotFound(names.Said);
+                    return TimeSpan.Zero;
+            }
+
             var wav = FixHeader(await make().ConfigureAwait(false));
             Directory.CreateDirectory(cache);
 
@@ -38,6 +72,17 @@ internal static class CloudVoice
             var partial = cached + "." + Guid.NewGuid().ToString("N") + ".part";
             await File.WriteAllBytesAsync(partial, wav, cancellationToken).ConfigureAwait(false);
             File.Move(partial, cached, overwrite: true);
+            library?.Asked(names.Library, names.Said);
+        }
+
+        if (library is not null && library.Mode != ClipLibraryMode.Count)
+        {
+            await library.AddAsync(names.Library, cached, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (library?.MakesWavs == false)
+        {
+            return TimeSpan.Zero;
         }
 
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(wavPath))!);

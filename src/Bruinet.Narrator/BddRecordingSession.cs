@@ -94,6 +94,9 @@ public sealed class BddRecordingSession
     /// <summary>The pause of each action and when a line is said: the script's, else the settings'.</summary>
     public BddScenePacing Pacing { get; init; } = BddScenePacing.Default;
 
+    /// <summary>The suite's voice clips; null when the session has no script.</summary>
+    public ClipLibrary? Library { get; init; }
+
     /// <summary>The composed video's touch marks: the script's, with <see cref="BddTouchMarks.ColorVariable"/>'s accent when it names none.</summary>
     public BddTouchMarks Touches { get; init; } = BddTouchMarks.Default;
 
@@ -154,8 +157,9 @@ public sealed class BddRecordingSession
         var pacing = new BddScenePacing(pause, script?.Script?.Say ?? BddSayMode.While);
         var voice = script?.Script?.Voice ?? read(VoiceVariable);
         var instructions = script?.Script?.Instructions ?? read(InstructionsVariable);
-        var synthesizer = Speech.Find(voice, instructions, configDirectory, read);
-        return new BddRecordingSession(configDirectory, script, scenes, synthesizer, voice, beat, instructions) { KeepScenes = keep, Touches = BddTouchMarks.For(script?.Script, read), Pacing = pacing };
+        var library = script is null ? null : ClipLibrary.Find(configDirectory, read);
+        var synthesizer = Speech.Find(voice, instructions, configDirectory, read, library: library);
+        return new BddRecordingSession(configDirectory, script, scenes, synthesizer, voice, beat, instructions) { KeepScenes = keep, Touches = BddTouchMarks.For(script?.Script, read), Pacing = pacing, Library = library };
     }
 
     /// <summary>
@@ -223,15 +227,27 @@ public sealed class BddRecordingSession
             if (KeepScenes)
             {
                 var video = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(ScenesFolder))!, $"{BddKeptScenes.NameOf(Script.Script.FilePath)}.mp4");
-                return await BddVideoComposer.StitchAsync(Script.Script.Title, ScenesFolder, video, Script.Script.Scenes.Count, cancellationToken, Touches).ConfigureAwait(false);
+                return Reported(await BddVideoComposer.StitchAsync(Script.Script.Title, ScenesFolder, video, Script.Script.Scenes.Count, cancellationToken, Touches).ConfigureAwait(false));
             }
 
-            return await BddVideoComposer.ComposeAsync(Script.Script.Title, ScenesFolder, cancellationToken, Touches).ConfigureAwait(false);
+            return Reported(await BddVideoComposer.ComposeAsync(Script.Script.Title, ScenesFolder, cancellationToken, Touches).ConfigureAwait(false));
         }
         finally
         {
             _composing.Release();
         }
+    }
+
+    // What the lines cost, in the video's timeline, where a host that ran the test process reads it.
+    private BddComposedVideo Reported(BddComposedVideo video)
+    {
+        if (Library?.Use is { } use)
+        {
+            (BddVideoTimeline.Load(video.Timeline) with { Speech = use }).Save(video.Timeline);
+            Console.WriteLine(use.Summary);
+        }
+
+        return video;
     }
 
     private string SceneFolder(int number) => Path.Combine(ScenesFolder, $"scene-{number:00}");

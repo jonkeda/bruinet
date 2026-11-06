@@ -25,6 +25,10 @@
 # The narrator's cloud voice: its key (voice.secrets.example.json shows the shape)
 **/voice.secrets.json
 
+# A recording's scene folders: the voice clips are kept in a suite's speech folder
+**/*.run/
+**/*.scenes/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

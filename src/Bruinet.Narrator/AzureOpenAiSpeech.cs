@@ -44,6 +44,9 @@ public sealed class AzureOpenAiSpeech : ISpeechSynthesizer
     /// <summary>How the lines are said, e.g. "calm and friendly, a product demo"; null for the voice's own way.</summary>
     public string? Instructions { get; init; }
 
+    /// <summary>The suite's clips, looked in first; null for the local cache only.</summary>
+    public ClipLibrary? Library { get; init; }
+
     /// <inheritdoc />
     public bool IsAvailable => true;
 
@@ -57,7 +60,8 @@ public sealed class AzureOpenAiSpeech : ISpeechSynthesizer
         ArgumentNullException.ThrowIfNull(text);
         ArgumentNullException.ThrowIfNull(wavPath);
         var name = Owns(voice) ? voice![Prefix.Length..] : voice ?? _secrets.Voice ?? DefaultVoice;
-        return await CloudVoice.ClipAsync(_cache, Hash(name, text), wavPath, () => RequestAsync(text, name, cancellationToken), cancellationToken).ConfigureAwait(false);
+        var names = new ClipNames(Hash(name, text), CloudVoice.Hash("azure-openai", _secrets.Deployment, name, Instructions ?? string.Empty, text), text);
+        return await CloudVoice.ClipAsync(_cache, names, Library, wavPath, () => RequestAsync(text, name, cancellationToken), cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>

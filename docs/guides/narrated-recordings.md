@@ -167,6 +167,8 @@ dotnet test --filter "BddScenario~Features/TOD.01-see-my-todos.feature.md#TOD.01
 | `BRUINET_RECORD_KEEP` | with a script: its scenes are kept in `<Recordings>\<script>.scenes` when the video is made, so a scene can be recorded again on its own, here or in Presenter's Narrator mode, and the video stitched again |
 | `BRUINET_VOICE`, `BRUINET_BEAT`, `BRUINET_PAUSE` | the voice, the beat (ms) and the action pause (ms), when the script does not say |
 | `BRUINET_VOICE_INSTRUCTIONS` | a cloud voice's tone, when the script does not say |
+| `BRUINET_VOICE_LIBRARY` | the folder of a suite's [voice clips](#voice-clips), when it is not `speech` beside its project |
+| `BRUINET_VOICE_REUSE` | `1`: a line with no clip fails the recording instead of being paid for |
 | `BRUINET_TOUCH_COLOR` | the touch marks' colour (`#RRGGBB`), when the script does not say |
 | `BRUINET_VOICE_KEY`, `BRUINET_VOICE_ENDPOINT` | a cloud voice's key and endpoint, over the file's `azureFoundry` object ([Cloud Voice](#cloud-voice)) |
 | `BRUINET_SPEECH_ENDPOINT`, `BRUINET_SPEECH_KEY`, `BRUINET_SPEECH_VOICE`, `BRUINET_SPEECH_SAMPLE_RATE` | Azure Speech's settings, over the file's `azureSpeech` object ([Azure Speech](#azure-speech)) |
@@ -227,11 +229,47 @@ The first of these that has an endpoint and a key is used:
    `.gitignore` says so: `**/voice.secrets.json`.)
 
 The key goes only into the request's `api-key` header; it is never in a log, a timeline or a
-message. A line is asked for once: clips are kept in `%LOCALAPPDATA%\Bruinet\speech-cache` by
-their voice, instructions and text, so recording a scene again costs nothing. A recording that
+message. A line is asked for once, on every machine: see [Voice clips](#voice-clips). A recording that
 names a cloud voice fails when none is set up, or when the service refuses (the message says
 why); it never falls back to another voice. `BRUINET_VOICE_INSTRUCTIONS` gives the tone when the
 script does not.
+
+## Voice clips
+
+A cloud line is paid for once. Its clip goes into the suite's `speech` folder, `<key>.opus`, which you commit; the mp4 stays
+out of git. Recording a video again records the UI only: the clips set the pace, and the voice is laid in afterwards.
+
+A voice looks for a line in three places:
+
+1. the suite's `speech` folder, which costs nothing;
+2. `%LOCALAPPDATA%\Bruinet\speech-cache`, which costs nothing, and the clip is added to the folder;
+3. the service, the only step that costs; the clip goes into both.
+
+A clip is named by the service, the voice, the tone, the sample rate (Azure Speech) or deployment (Azure OpenAI) and the
+words, after pronunciations. The endpoint is not in the name, so another region or machine finds it. One reworded line costs
+one clip, and a line moved to another step or script costs nothing. A changed line still makes its scene out of date,
+because its length sets the scene's timing. A Windows voice is free and keeps no clips.
+
+The folder is `speech` beside the suite's project file, whichever folder the run starts in; `BRUINET_VOICE_LIBRARY` names
+another. A clip is Opus at 32 kbit/s, about a twelfth of its WAV, because each one stays in the repository's history;
+ffmpeg needs libopus for it.
+
+A recording's `.timeline.json` and `record_video` say what it did:
+
+```text
+Speech: 46 lines, 45 reused, 1 asked (38 characters)
+```
+
+With `BRUINET_VOICE_REUSE=1` a line found nowhere fails the recording instead of being paid for.
+
+`bruinet voice --suite <folder>` goes through the lines of a suite's scripts without recording:
+
+| Command | What it does |
+| --- | --- |
+| `bruinet voice` | lists the lines with no clip and their characters; exit 1 when there are any |
+| `bruinet voice --fill` | adds what the local cache holds, for free |
+| `bruinet voice --ask` | as `--fill`, and buys the rest |
+| `bruinet voice --prune` | deletes the clips no script says any more; refused when a script has errors |
 
 ## Azure Speech
 

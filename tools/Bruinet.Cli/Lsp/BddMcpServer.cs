@@ -1335,6 +1335,7 @@ public sealed class BddMcpServer : IDisposable
             Video = video.Path,
             video.Captions,
             Timeline = File.Exists(timeline) ? timeline : null,
+            Speech = File.Exists(timeline) ? BddVideoTimeline.Load(timeline).Speech?.Summary : null,
             Passed = test.Code == 0,
             Output = test.Code == 0 ? null : test.Tail,
         };

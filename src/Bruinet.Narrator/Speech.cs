@@ -77,21 +77,22 @@ public static class Speech
     /// <param name="folder">The suite's folder, where the cloud voice's settings are looked for first.</param>
     /// <param name="read">Reads an environment variable; the process's by default.</param>
     /// <param name="home">The user's folder; <c>%USERPROFILE%</c> by default.</param>
+    /// <param name="library">The suite's clips, which a cloud voice looks in first; null for its local cache only.</param>
     /// <exception cref="VoiceNotConfiguredException">A cloud voice is named, and no settings were found for it.</exception>
-    public static ISpeechSynthesizer? Find(string? voice, string? instructions = null, string? folder = null, Func<string, string?>? read = null, string? home = null)
+    public static ISpeechSynthesizer? Find(string? voice, string? instructions = null, string? folder = null, Func<string, string?>? read = null, string? home = null, ClipLibrary? library = null)
     {
         // A named cloud voice never quietly becomes another voice: the scene would differ for the wrong reason.
         if (AzureSpeech.Owns(voice))
         {
             return SpeechSecrets.Find(folder, read, home) is { } named
-                ? new AzureSpeech(named) { Instructions = instructions }
+                ? new AzureSpeech(named) { Instructions = instructions, Library = library }
                 : throw VoiceNotConfiguredException.ForSpeech(voice!, VoiceSecrets.Places(folder, home));
         }
 
         var secrets = voice is null || AzureOpenAiSpeech.Owns(voice) ? VoiceSecrets.Find(folder, read, home) : null;
         if (secrets is not null)
         {
-            return new AzureOpenAiSpeech(secrets) { Instructions = instructions };
+            return new AzureOpenAiSpeech(secrets) { Instructions = instructions, Library = library };
         }
 
         if (AzureOpenAiSpeech.Owns(voice))
@@ -100,7 +101,7 @@ public static class Speech
         }
 
         return voice is null && SpeechSecrets.Find(folder, read, home) is { } only
-            ? new AzureSpeech(only) { Instructions = instructions }
+            ? new AzureSpeech(only) { Instructions = instructions, Library = library }
             : Discover();
     }
 

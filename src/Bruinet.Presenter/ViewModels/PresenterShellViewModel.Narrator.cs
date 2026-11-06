@@ -312,7 +312,7 @@ public sealed partial class PresenterShellViewModel
         try
         {
             _sceneRehearsal = await _recorder
-                .RehearseAsync(session, plan, script.Voice ?? _voice, script.Beat ?? TimeSpan.FromMilliseconds(_beat), _executionCancellation?.Token ?? CancellationToken.None)
+                .RehearseAsync(session, plan, script.Voice ?? _voice, script.Beat ?? TimeSpan.FromMilliseconds(_beat), _executionCancellation?.Token ?? CancellationToken.None, script.Instructions)
                 .ConfigureAwait(true);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)

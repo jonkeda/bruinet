@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A cloud voice's line is paid for once, on every machine: clips are kept in the suite's `speech` folder (`ClipLibrary`, Opus
+  at 32 kbit/s), to commit, on top of the local cache. The name leaves out the endpoint, so another region finds a clip.
+  A recording says what it reused and paid for, in its `.timeline.json` and `record_video`'s answer; `BRUINET_VOICE_REUSE=1`
+  fails on a missing line instead of spending. `bruinet voice` lists the lines with no clip, `--fill` takes what the local
+  cache holds, `--ask` buys the rest, `--prune` deletes what no script says.
+
 ### Changed
+- Presenter's rehearsal speaks in the script's tone with the suite's settings; it used other clips than the recording.
 - `run_scenario` and the IDE's run on the runner leave out what the suite skips here (a head, `@browser` on bUnit, a skip
   rule), each `skipped` with the reason, as `dotnet test` does; such a scenario used to run and fail. A Step-through still
   opens it.

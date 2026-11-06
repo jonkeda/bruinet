@@ -41,6 +41,9 @@ public sealed class AzureSpeech : ISsmlSynthesizer
     /// <summary>The style the lines are said in, e.g. <c>narrator</c>; null for the voice's own way.</summary>
     public string? Instructions { get; init; }
 
+    /// <summary>The suite's clips, looked in first; null for the local cache only.</summary>
+    public ClipLibrary? Library { get; init; }
+
     /// <inheritdoc />
     public bool IsAvailable => true;
 
@@ -122,8 +125,12 @@ public sealed class AzureSpeech : ISsmlSynthesizer
     // The clip's name holds the service, the voice, the style, the sample rate and what is said (the SSML of a line with markup).
     private Task<TimeSpan> ClipAsync(string ssml, string voice, string? style, string said, string wavPath, CancellationToken cancellationToken)
     {
-        var hash = CloudVoice.Hash("azure-speech-service", _secrets.Host, voice, style ?? string.Empty, _secrets.SampleRate.ToString(System.Globalization.CultureInfo.InvariantCulture), said);
-        return CloudVoice.ClipAsync(_cache, hash, wavPath, () => RequestAsync(ssml, cancellationToken), cancellationToken);
+        var rate = _secrets.SampleRate.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var names = new ClipNames(
+            CloudVoice.Hash("azure-speech-service", _secrets.Host, voice, style ?? string.Empty, rate, said),
+            CloudVoice.Hash("azure-speech-service", voice, style ?? string.Empty, rate, said),
+            said);
+        return CloudVoice.ClipAsync(_cache, names, Library, wavPath, () => RequestAsync(ssml, cancellationToken), cancellationToken);
     }
 
     private Task<byte[]> RequestAsync(string ssml, CancellationToken cancellationToken)

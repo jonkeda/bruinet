@@ -12,6 +12,9 @@ namespace Bruinet.Narrator;
 /// <param name="Scenes">The scenes, in the order they play.</param>
 public sealed record BddVideoTimeline(string Title, IReadOnlyList<BddSceneTimeline> Scenes)
 {
+    /// <summary>What the recording reused of its lines and what it paid for; null without a cloud voice.</summary>
+    public BddSpeechUse? Speech { get; init; }
+
     private static readonly JsonSerializerOptions Json = new()
     {
         WriteIndented = true,
