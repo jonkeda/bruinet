@@ -1,6 +1,7 @@
 using Bruinet.Core.Locators;
 using Bruinet.Maui.Enums;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Appium;
 
 namespace Bruinet.Maui.Appium;
 
@@ -12,6 +13,145 @@ internal sealed class AndroidPlatform : AppiumPlatform
     private AndroidPlatform()
     {
     }
+
+    public override void GoBack(AppiumDriver driver)
+    {
+        // With the soft keyboard up, the system's back only hides the keyboard. A prompt left open
+        // by a failed test showed it - one back hid the keyboard, the dialog stayed, and every later
+        // test in the class failed "could not get back to the hub". Hiding it first makes this one
+        // back mean what the caller asked for.
+        if (IsKeyboardShown(driver))
+        {
+            driver.ExecuteScript("mobile: hideKeyboard", new Dictionary<string, object>());
+        }
+
+        driver.Navigate().Back();
+    }
+
+    /// <summary>
+    /// True when the toolbar shows no "Navigate up" button. Without this the interface default
+    /// answered true on every page, so <c>MauiFixture</c> never went back and every test after the
+    /// first failed to reach the hub.
+    /// </summary>
+    public override bool IsAtNavigationRoot(AppiumDriver driver) => driver.FindElements(NavigateUp).Count == 0;
+
+    /// <summary>The toolbar's up button, which a <c>NavigationPage</c> shows on every page above its root.</summary>
+    private static readonly By NavigateUp = By.XPath("//android.widget.ImageButton[@content-desc='Navigate up']");
+
+    public override void HideKeyboard(AppiumDriver driver)
+        => driver.ExecuteScript("mobile: hideKeyboard", new Dictionary<string, object>());
+
+    // Any package: the framework AlertDialog's root is android:id/parentPanel, but MAUI's
+    // DisplayAlert is AndroidX AppCompat's, whose ids carry the app's package
+    // (probed 2026-09-19 in the Todo sample: com.bruinet.samples.todo:id/parentPanel).
+    // Looking for the framework id only never found a MAUI alert at all.
+    public override By ActiveDialog { get; } =
+        MobileBy.AndroidUIAutomator("new UiSelector().resourceIdMatches(\".*:id/parentPanel\")");
+
+    /// <summary>
+    /// The serial UiAutomator2 reports (<c>deviceUDID</c>), else the <c>udid</c> asked for.
+    /// </summary>
+    public override Bruinet.Core.Recording.RecordingTarget? RecordingTarget(AppiumDriver driver)
+        => (driver.Capabilities.GetCapability("deviceUDID") ?? driver.Capabilities.GetCapability("udid"))?.ToString() is { Length: > 0 } serial
+            ? new Bruinet.Core.Recording.RecordingTarget.AndroidDevice(serial)
+            : null;
+
+    public override bool FindsWithFacts => false;
+
+    public override bool FindsOnlyVisible(AppiumDriver driver)
+        => !string.Equals(
+            Convert.ToString(driver.Capabilities.GetCapability("settings[allowInvisibleElements]"),
+                System.Globalization.CultureInfo.InvariantCulture),
+            "true",
+            StringComparison.OrdinalIgnoreCase);
+
+    public override double PixelsPerUnit(AppiumDriver driver)
+        => driver.ExecuteScript("mobile: deviceInfo", new Dictionary<string, object>())
+               is IDictionary<string, object> info
+           && info.TryGetValue("displayDensity", out var dpi)
+           && double.TryParse(
+               Convert.ToString(dpi, System.Globalization.CultureInfo.InvariantCulture),
+               System.Globalization.NumberStyles.Float,
+               System.Globalization.CultureInfo.InvariantCulture,
+               out var density)
+           && density > 0
+            ? density / 160.0
+            : 1.0;
+
+    /// <remarks>
+    /// AppCompat's alert keeps its title, message and both buttons inside <c>parentPanel</c>, by
+    /// ids that carry the app's package (see <see cref="ActiveDialog"/>). MAUI sets the accept as
+    /// the positive button (<c>button1</c>) and the cancel as the negative one (<c>button2</c>), so
+    /// an alert with one button has only <c>button2</c> and reads with an empty accept, as on Windows.
+    /// </remarks>
+    public override AlertContents? ReadAlert(AppiumDriver driver)
+    {
+        var root = driver.FindElements(ActiveDialog).LastOrDefault();
+        if (root == null)
+        {
+            return null;
+        }
+
+        string Part(string id)
+            => root.FindElements(MobileBy.AndroidUIAutomator(
+                    $"new UiSelector().resourceIdMatches(\".*:id/{id}\")"))
+                .FirstOrDefault()?.Text ?? string.Empty;
+
+        return new AlertContents(Part("alertTitle"), Part("message"), Part("button1"), Part("button2"));
+    }
+
+    public override bool PublishesAppRange => true;
+
+    // Android draws edge to edge: a list can reach the gesture navigation bar, and a swipe that
+    // starts next to it goes home (or back, at a side).
+    public override bool ScrollsEdgeToEdge => true;
+
+    public override void ScrollIntoView(AppiumMauiElement element, DateTime startTime, TimeSpan timeout)
+    {
+        try
+        {
+            var windowSize = element.Driver.Driver.Manage().Window.Size;
+            var region = new Dictionary<string, object>
+            {
+                { "left", 50 },
+                { "top", 150 },
+                { "width", windowSize.Width - 100 },
+                { "height", windowSize.Height - 300 },
+            };
+
+            // Towards the element first, then back: the driver's one scroll routine, within what is
+            // left of the caller's budget.
+            string[] directions = element.Native.Location.Y < 0 ? ["up", "down"] : ["down", "up"];
+            var budgetMs = (int)Math.Max(0, (timeout - (DateTime.UtcNow - startTime)).TotalMilliseconds);
+            element.Driver.ScrollUntil(region, directions, element.IsDisplayedNow, budgetMs, atLeastOneSwipe: true);
+        }
+        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        {
+            // Scroll attempt failed: the caller's poll sees it still not visible.
+        }
+    }
+
+    // A MAUI Picker opens a dialog with one row per item.
+    public override void SelectByText(AppiumMauiElement element, string text) => element.SelectByTextInDialog(text);
+
+    public override void SelectIndex(AppiumMauiElement element, int index) => element.SelectIndexInDialog(index);
+
+    public override void SetDate(AppiumMauiElement element, DateTime date) => element.SetDateInDialog(date);
+
+    public override void SetTime(AppiumMauiElement element, TimeSpan time) => element.SetTimeInDialog(time);
+
+    public override Locator FlyoutOpener { get; } = Locator.ByAccessibilityId("Open navigation drawer");
+
+    // Back is how the drawer is dismissed. Its opener changes its content description once open,
+    // so it is not a handle for closing.
+    public override void CloseFlyout(AppiumDriver driver) => driver.Navigate().Back();
+
+    // The drawer's items leave the tree entirely while it is shut, so their presence is its state.
+    public override bool IsFlyoutOpen(AppiumMauiDriver driver)
+        => driver.FindElements(driver.ShellChrome.FlyoutHost).Count > 0;
+
+    public override IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator)
+        => driver.FindByScrollingAndroid(container, locator);
 
     public override void Relaunch(AppiumDriver driver)
     {

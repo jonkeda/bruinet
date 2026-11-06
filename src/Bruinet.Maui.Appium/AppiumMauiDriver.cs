@@ -60,10 +60,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// else the <c>udid</c> asked for); null on iOS, where a simulator and a device cannot be told apart here.
     /// </summary>
     public Bruinet.Core.Recording.RecordingTarget? RecordingTarget
-        => _platform == MauiPlatform.Android && !_disposed
-           && (_driver.Capabilities.GetCapability("deviceUDID") ?? _driver.Capabilities.GetCapability("udid"))?.ToString() is { Length: > 0 } serial
-            ? new Bruinet.Core.Recording.RecordingTarget.AndroidDevice(serial)
-            : null;
+        => _disposed ? null : _appium.RecordingTarget(_driver);
 
     #endregion
 
@@ -91,7 +88,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// the facts cost about a tenth of that per element. UiAutomator2 reads in about 12 ms, so the
     /// facts would cost Android about what they save (.my/performance, step 7).
     /// </summary>
-    internal bool FindsWithFacts => _platform == MauiPlatform.iOS;
+    internal bool FindsWithFacts => _appium.FindsWithFacts;
 
     /// <summary>The first element <paramref name="by"/> matches, in the page or under <paramref name="parent"/>.</summary>
     /// <exception cref="NoSuchElementException">Nothing matches.</exception>
@@ -383,45 +380,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         AppiumErrors.Live(GoBack);
     }
 
-    private void GoBack()
-    {
-        // iOS: a popup lives in a window of its own and neither the back button nor the edge
-        // swipe reaches it. A failed test that left one open made recovery swipe the page under
-        // it, and every later test in the class failed "Tab 'Projects' was not found".
-        if (_platform == MauiPlatform.iOS && TryDismissIosPopup())
-            return;
+    private void GoBack() => _appium.GoBack(_driver);
 
-        // iOS: XCUITest's back taps the navigation bar's back button and silently does nothing
-        // when the app hides that bar behind its own title bar. The system's left-edge swipe is
-        // the platform's other way back and does not depend on the bar.
-        if (_platform == MauiPlatform.iOS && _driver.FindElements(IosNavigationBar).Count == 0)
-        {
-            var size = _driver.Manage().Window.Size;
-            _driver.ExecuteScript("mobile: dragFromToForDuration", new Dictionary<string, object>
-            {
-                { "duration", 0.1 },
-                { "fromX", 1 },
-                { "fromY", size.Height / 2 },
-                { "toX", size.Width * 3 / 4 },
-                { "toY", size.Height / 2 },
-            });
-            return;
-        }
-
-        // Android: with the soft keyboard up, the system's back only hides the keyboard. A prompt
-        // left open by a failed test showed it - one back hid the keyboard, the dialog stayed, and
-        // every later test in the class failed "could not get back to the hub". Hiding it first
-        // makes this one back mean what the caller asked for.
-        if (_platform == MauiPlatform.Android && IsKeyboardShown())
-        {
-            _driver.ExecuteScript("mobile: hideKeyboard", new Dictionary<string, object>());
-        }
-
-        _driver.Navigate().Back();
-    }
-
-    private bool IsKeyboardShown()
-        => _driver.ExecuteScript("mobile: isKeyboardShown", new Dictionary<string, object>()) is true;
+    private bool IsKeyboardShown() => AppiumPlatform.IsKeyboardShown(_driver);
 
     /// <summary>Closes the soft keyboard when it is up.</summary>
     /// <returns>Whether a keyboard was shown and a close was attempted.</returns>
@@ -432,24 +393,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             if (!IsKeyboardShown())
                 return false;
 
-            // iOS: XCUITest taps the first of these keys the keyboard has; a MAUI Entry's Return
-            // key resigns the field. A numeric pad has no such key: MAUI gives it a toolbar above
-            // the keyboard, DoneAccessory, whose Done button does it instead.
-            if (_platform == MauiPlatform.iOS)
-            {
-                var done = _driver.FindElements(MobileBy.AccessibilityId("Done")).FirstOrDefault(button => button.Displayed);
-                if (done != null)
-                {
-                    done.Click();
-                    Bruinet.Core.Calls.AttemptMemo.Forget();
-                    return true;
-                }
-            }
-
-            var arguments = _platform == MauiPlatform.iOS
-                ? new Dictionary<string, object> { { "keys", new[] { "return", "Return", "done", "Done" } } }
-                : new Dictionary<string, object>();
-            _driver.ExecuteScript("mobile: hideKeyboard", arguments);
+            _appium.HideKeyboard(_driver);
             Bruinet.Core.Calls.AttemptMemo.Forget();
             return true;
         }
@@ -459,68 +403,9 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         }
     }
 
-    private static readonly By IosNavigationBar = MobileBy.ClassName("XCUIElementTypeNavigationBar");
-
-    /// <summary>
-    /// The toolbar's up button, which a <c>NavigationPage</c> shows on every page above its root.
-    /// </summary>
-    private static readonly By AndroidNavigateUp =
-        By.XPath("//android.widget.ImageButton[@content-desc='Navigate up']");
-
     /// <inheritdoc />
-    /// <remarks>
-    /// <para>
-    /// Android: true when the toolbar shows no "Navigate up" button. Without this override the
-    /// interface default answered true on every page, so <c>MauiFixture</c> never went back and every
-    /// test after the first failed to reach the hub.
-    /// </para>
-    /// <para>
-    /// iOS: true when no navigation bar starts with a back button (<see cref="IsIosBackButton"/>).
-    /// UIKit names that button after the previous page's title or "Back", so it is known by its
-    /// place, not its name. Not yet run on a simulator.
-    /// </para>
-    /// </remarks>
-    public bool IsAtNavigationRoot()
-        => AppiumErrors.Live(() => _platform switch
-        {
-            MauiPlatform.Android => _driver.FindElements(AndroidNavigateUp).Count == 0,
-            MauiPlatform.iOS => !IsIosBackButtonShown(),
-            _ => true,
-        });
-
-    private bool IsIosBackButtonShown()
-    {
-        foreach (var bar in _driver.FindElements(IosNavigationBar))
-        {
-            var first = bar.FindElements(IosBarButton).FirstOrDefault();
-            if (first is not null
-                && IsIosBackButton(first.GetAttribute("name"), first.Location.X - bar.Location.X, bar.Size.Width))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static readonly By IosBarButton = By.XPath("./XCUIElementTypeButton");
-
-    /// <summary>
-    /// The names MAUI's flyout opener has carried in the navigation bar. It sits where a back button
-    /// would, on a root page. Not measured yet.
-    /// </summary>
-    internal static readonly IReadOnlyList<string> IosFlyoutOpenerNames = ["OK", "Menu", "FlyoutIcon"];
-
-    /// <summary>
-    /// Whether a navigation bar's first button is UIKit's back button: in the bar's leading third
-    /// (toolbar items sit trailing) and not the flyout opener.
-    /// </summary>
-    /// <param name="name">The button's <c>name</c>.</param>
-    /// <param name="offsetInBar">The button's x, from the bar's left edge.</param>
-    /// <param name="barWidth">The bar's width.</param>
-    internal static bool IsIosBackButton(string? name, int offsetInBar, int barWidth)
-        => offsetInBar < barWidth / 3
-           && !(name is not null && IosFlyoutOpenerNames.Contains(name, StringComparer.Ordinal));
+    /// <remarks>See <see cref="AppiumPlatform.IsAtNavigationRoot"/> for how each platform tells.</remarks>
+    public bool IsAtNavigationRoot() => AppiumErrors.Live(() => _appium.IsAtNavigationRoot(_driver));
 
     /// <inheritdoc />
     /// <remarks>
@@ -551,100 +436,14 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <summary>The dialog on screen, or null. Answers <c>AppElement.TryFindActiveDialog</c>.</summary>
     internal IMauiElement? TryFindActiveDialogRoot()
     {
-        var by = _platform switch
-        {
-            // Any package: the framework AlertDialog's root is android:id/parentPanel, but MAUI's
-            // DisplayAlert is AndroidX AppCompat's, whose ids carry the app's package
-            // (probed 2026-09-19 in the Todo sample: com.bruinet.samples.todo:id/parentPanel).
-            // Looking for the framework id only never found a MAUI alert at all.
-            MauiPlatform.Android => MobileBy.AndroidUIAutomator("new UiSelector().resourceIdMatches(\".*:id/parentPanel\")"),
-            // DisplayActionSheet is a UIAlertController too, but with the sheet style.
-            MauiPlatform.iOS => MobileBy.IosNSPredicate("type == 'XCUIElementTypeAlert' OR type == 'XCUIElementTypeSheet'"),
-            _ => null
-        };
-
-        if (by == null)
-            return null;
-
-        var root = _driver.FindElements(by).LastOrDefault();
-        if (root == null && _platform == MauiPlatform.iOS)
-            root = TryFindIosPopupWindow();
-
+        var root = _driver.FindElements(_appium.ActiveDialog).LastOrDefault() ?? _appium.TryFindPopupWindow(_driver);
         return root == null ? null : new AppiumMauiElement(root, this);
-    }
-
-    /// <summary>
-    /// A popup the app draws itself: Mopups (MAUI's common popup library) puts each popup in a
-    /// UIWindow of its own above the app's. iOS lists the keyboard and its input accessory as
-    /// windows too, so those are skipped. Probed 2026-11-04 on iOS 27: a Core.Apps drawer was
-    /// the second window, the main window read visible=false under it.
-    /// </summary>
-    /// <summary>
-    /// Closes the alert, sheet or popup window on top of an iOS app, the way a user would.
-    /// </summary>
-    /// <returns>Whether there was one to close.</returns>
-    /// <remarks>
-    /// A system alert takes its cancel action. A popup window takes its own cancel or close
-    /// control when it has one, and a tap on the dimmed backdrop above it otherwise, which a
-    /// Mopups popup closes on by default.
-    /// </remarks>
-    private bool TryDismissIosPopup()
-    {
-        if (_driver.FindElements(IosAlertOrSheet).Count > 0)
-        {
-            _driver.ExecuteScript("mobile: alert", new Dictionary<string, object> { { "action", "dismiss" } });
-            return true;
-        }
-
-        if (TryFindIosPopupWindow() is not { } popup)
-            return false;
-
-        var close = popup.FindElements(IosCloseControl).FirstOrDefault(element => element.Displayed);
-        if (close is not null)
-        {
-            close.Click();
-            return true;
-        }
-
-        var size = _driver.Manage().Window.Size;
-        _driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
-        {
-            { "x", size.Width / 2 },
-            { "y", size.Height / 10 },
-        });
-        return true;
-    }
-
-    private static readonly By IosAlertOrSheet = MobileBy.IosNSPredicate(
-        "type == 'XCUIElementTypeAlert' OR type == 'XCUIElementTypeSheet'");
-
-    private static readonly By IosCloseControl = MobileBy.IosNSPredicate(
-        "name ENDSWITH '_Cancel' OR name ENDSWITH '_Close' OR name == 'Cancel' OR name == 'Close'");
-
-    private AppiumElement? TryFindIosPopupWindow()
-    {
-        var windows = _driver.FindElements(MobileBy.IosClassChain("XCUIElementTypeWindow"));
-        for (var i = windows.Count - 1; i > 0; i--)
-        {
-            var window = windows[i];
-            if (window.FindElements(MobileBy.ClassName("XCUIElementTypeKeyboard")).Count > 0
-                || window.FindElements(MobileBy.AccessibilityId("DoneAccessory")).Count > 0
-                || window.FindElements(MobileBy.ClassName("XCUIElementTypeOther")).Count == 0)
-            {
-                continue;
-            }
-
-            if (window.Displayed)
-                return window;
-        }
-
-        return null;
     }
 
     /// <inheritdoc />
     /// <remarks>Every gesture is touch input on Android and iOS; see <c>AppiumMauiElement.PerformGesture</c>.</remarks>
     public bool SupportsGesture(string automationId, MauiGesture gesture)
-        => _platform is MauiPlatform.Android or MauiPlatform.iOS;
+        => true;
 
     /// <inheritdoc />
     public void PerformGesture(string automationId, MauiGesture gesture)
@@ -768,13 +567,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             ? known
             : _elementFacts[(elementId, name)] = read();
 
-    internal bool FindsOnlyVisibleElements => _findsOnlyVisible ??=
-        _platform == MauiPlatform.Android
-        && !string.Equals(
-            Convert.ToString(_driver.Capabilities.GetCapability("settings[allowInvisibleElements]"),
-                System.Globalization.CultureInfo.InvariantCulture),
-            "true",
-            StringComparison.OrdinalIgnoreCase);
+    internal bool FindsOnlyVisibleElements => _findsOnlyVisible ??= _appium.FindsOnlyVisible(_driver);
 
     private bool? _findsOnlyVisible;
 
@@ -786,21 +579,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             return known;
         }
 
-        var scale = 1.0;
-        if (_platform == MauiPlatform.Android
-            && _driver.ExecuteScript("mobile: deviceInfo", new Dictionary<string, object>())
-                is IDictionary<string, object> info
-            && info.TryGetValue("displayDensity", out var dpi)
-            && double.TryParse(
-                Convert.ToString(dpi, System.Globalization.CultureInfo.InvariantCulture),
-                System.Globalization.NumberStyles.Float,
-                System.Globalization.CultureInfo.InvariantCulture,
-                out var density)
-            && density > 0)
-        {
-            scale = density / 160.0;
-        }
-
+        var scale = _appium.PixelsPerUnit(_driver);
         _pixelsPerUnit = scale;
         return scale;
     }
@@ -815,59 +594,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// (<c>button2</c>), so an alert with one button has only <c>button2</c> and reads with an empty
     /// accept, as on Windows.
     /// </remarks>
-    internal AlertContents? ReadActiveAlert()
-    {
-        if (_platform == MauiPlatform.iOS)
-        {
-            return ReadIosAlert();
-        }
-
-        if (_platform != MauiPlatform.Android)
-        {
-            return null;
-        }
-
-        var root = _driver.FindElements(AndroidDialogRoot).LastOrDefault();
-        if (root == null)
-        {
-            return null;
-        }
-
-        string Part(string id)
-            => root.FindElements(MobileBy.AndroidUIAutomator(
-                    $"new UiSelector().resourceIdMatches(\".*:id/{id}\")"))
-                .FirstOrDefault()?.Text ?? string.Empty;
-
-        return new AlertContents(Part("alertTitle"), Part("message"), Part("button1"), Part("button2"));
-    }
-
-    /// <summary>iOS: a <c>UIAlertController</c>, its title and message as static texts.</summary>
-    /// <remarks>
-    /// MAUI gives the cancel the cancel style, which UIKit puts first (left of two), so one button
-    /// reads as the cancel with an empty accept, as on Android. Not yet run on a simulator.
-    /// </remarks>
-    private AlertContents? ReadIosAlert()
-    {
-        var alert = _driver.FindElements(By.XPath("//XCUIElementTypeAlert")).LastOrDefault();
-        if (alert == null)
-        {
-            return null;
-        }
-
-        var texts = alert.FindElements(By.XPath(".//XCUIElementTypeStaticText"))
-            .Select(t => t.GetAttribute("label") ?? t.Text ?? string.Empty).ToList();
-        var buttons = alert.FindElements(By.XPath(".//XCUIElementTypeButton"))
-            .Select(b => b.GetAttribute("label") ?? b.Text ?? string.Empty).ToList();
-
-        return new AlertContents(
-            texts.ElementAtOrDefault(0) ?? string.Empty,
-            texts.ElementAtOrDefault(1) ?? string.Empty,
-            buttons.Count > 1 ? buttons[1] : string.Empty,
-            buttons.ElementAtOrDefault(0) ?? string.Empty);
-    }
-
-    private static readonly By AndroidDialogRoot =
-        MobileBy.AndroidUIAutomator("new UiSelector().resourceIdMatches(\".*:id/parentPanel\")");
+    internal AlertContents? ReadActiveAlert() => _appium.ReadAlert(_driver);
 
     #endregion
 
@@ -896,17 +623,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         => AppiumErrors.Live(() => FindByScrolling(container, locator));
 
     private IMauiElement? FindByScrolling(IMauiElement? container, Locator locator)
+        => _appium.FindByScrolling(this, container, locator);
+
+    /// <summary>Android: lookups and <c>mobile: scrollGesture</c> swipes, as described above.</summary>
+    internal IMauiElement? FindByScrollingAndroid(IMauiElement? container, Locator locator)
     {
-        if (_platform == MauiPlatform.iOS)
-        {
-            return FindByScrollingIos(container, locator);
-        }
-
-        if (_platform != MauiPlatform.Android)
-        {
-            return null;
-        }
-
         if (FindOnScreen(locator) is { } already)
         {
             return already;
@@ -997,7 +718,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// reached. Without a container, the tallest scroller on screen is taken, not the first: a
     /// project page's first is its horizontal tab strip.
     /// </remarks>
-    private IMauiElement? FindByScrollingIos(IMauiElement? container, Locator locator)
+    internal IMauiElement? FindByScrollingIos(IMauiElement? container, Locator locator)
     {
         if (FindOnScreenIos(locator) is { } already)
         {

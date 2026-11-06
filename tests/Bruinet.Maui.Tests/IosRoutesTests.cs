@@ -14,25 +14,25 @@ public class IosRoutesTests
     [InlineData("BackButton")]
     [InlineData(null)]
     public void ALeadingButton_IsTheBackButton_WhateverItsName(string? name)
-        => Assert.True(AppiumMauiDriver.IsIosBackButton(name, offsetInBar: 8, barWidth: 430));
+        => Assert.True(IosPlatform.IsBackButton(name, offsetInBar: 8, barWidth: 430));
 
     [Theory]
     [InlineData("OK")]
     [InlineData("Menu")]
     [InlineData("FlyoutIcon")]
     public void TheFlyoutOpener_IsNotTheBackButton(string name)
-        => Assert.False(AppiumMauiDriver.IsIosBackButton(name, offsetInBar: 8, barWidth: 430));
+        => Assert.False(IosPlatform.IsBackButton(name, offsetInBar: 8, barWidth: 430));
 
     [Fact]
     public void ATrailingToolbarItem_IsNotTheBackButton()
-        => Assert.False(AppiumMauiDriver.IsIosBackButton("Save", offsetInBar: 370, barWidth: 430));
+        => Assert.False(IosPlatform.IsBackButton("Save", offsetInBar: 370, barWidth: 430));
 
     [Theory]
     [InlineData("true", true)]
     [InlineData("false", false)]
     [InlineData(null, false)]
     public void TheFlyout_IsOpen_OnlyWhenItsTableIsVisible(string? visible, bool open)
-        => Assert.Equal(open, AppiumMauiElement.IsIosVisible(visible));
+        => Assert.Equal(open, IosPlatform.IsVisible(visible));
 
     [Fact]
     public void AWheel_IsTurnedBackToItsFirstRow_ThenOnToTheIndex()

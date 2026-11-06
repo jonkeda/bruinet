@@ -43,14 +43,13 @@ public sealed partial class AppiumMauiElement
     /// </exception>
     public void SetDate(DateTime date)
     {
-        RequireMappedPicker(nameof(SetDate));
         using var mark = Report(InteractionKind.Type);
-        if (_driver.Platform == MauiPlatform.iOS)
-        {
-            SetDateOnWheels(date);
-            return;
-        }
+        _driver.Appium.SetDate(this, date);
+    }
 
+    /// <summary>Android: chooses the day in the date dialog.</summary>
+    internal void SetDateInDialog(DateTime date)
+    {
         // Read before the dialog opens: the page under it, this field included, goes stale.
         var name = AutomationId;
         Live(() => _element.Click());
@@ -148,14 +147,13 @@ public sealed partial class AppiumMauiElement
     /// <inheritdoc />
     public void SetTime(TimeSpan time)
     {
-        RequireMappedPicker(nameof(SetTime));
         using var mark = Report(InteractionKind.Type);
-        if (_driver.Platform == MauiPlatform.iOS)
-        {
-            SetTimeOnWheels(time);
-            return;
-        }
+        _driver.Appium.SetTime(this, time);
+    }
 
+    /// <summary>Android: types the time into the time dialog.</summary>
+    internal void SetTimeInDialog(TimeSpan time)
+    {
         var name = AutomationId;
         Live(() => _element.Click());
         WaitForDialogPart("timePicker", name);
@@ -180,16 +178,6 @@ public sealed partial class AppiumMauiElement
         TypeInto("input_minute", time.Minutes.ToString("00", CultureInfo.InvariantCulture));
 
         DialogPart(AndroidId("button1"))!.Click();
-    }
-
-    private void RequireMappedPicker(string operation)
-    {
-        if (_driver.Platform is not (MauiPlatform.Android or MauiPlatform.iOS))
-        {
-            throw new RouteUnavailableException(
-                $"{nameof(AppiumMauiElement)} sets a picker through its dialog on Android and its wheels on iOS only; "
-                + $"{operation} on {_driver.Platform} has no route yet.");
-        }
     }
 
     /// <summary>Cancels the dialog and refuses, as Windows does for a clamped date.</summary>

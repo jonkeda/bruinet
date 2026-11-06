@@ -281,54 +281,10 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <inheritdoc />
     public void Click() => Marked(InteractionKind.Tap, () => Live(() =>
     {
-        if (_driver.Platform == MauiPlatform.iOS && TryTapFreePointIos())
+        if (_driver.Appium.TryTapFreePoint(this))
             return;
         _element.Click();
     }));
-
-    private static readonly By IosNestedControls = MobileBy.IosNSPredicate(
-        "visible == 1 AND type IN {'XCUIElementTypeButton', 'XCUIElementTypeSwitch', 'XCUIElementTypeTextField', " +
-        "'XCUIElementTypeSecureTextField', 'XCUIElementTypeTextView', 'XCUIElementTypeLink', 'XCUIElementTypeSlider'}");
-
-    private static readonly double[] FreePointRows = [0.5, 0.25, 0.75, 0.1, 0.9];
-    private static readonly double[] FreePointColumns = [0.1, 0.05, 0.25, 0.5, 0.75, 0.9, 0.95];
-
-    // XCUITest taps an element at its centre. When a tappable row holds its own buttons, the
-    // centre can sit on one of them, and the tap runs that button instead of the row. A user
-    // taps the row where it is free, so the driver does the same.
-    private bool TryTapFreePointIos()
-    {
-        var nested = _element.FindElements(IosNestedControls);
-        if (nested.Count == 0)
-            return false;
-
-        var rect = _driver.ElementRect(_element.Id);
-        var covered = nested.Select(child => _driver.ElementRect(child.Id))
-            .Where(child => child.Width > 0 && child.Height > 0 && child != rect)
-            .ToList();
-        var centre = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
-        if (!covered.Any(child => child.Contains(centre)))
-            return false;
-
-        foreach (var fy in FreePointRows)
-        {
-            foreach (var fx in FreePointColumns)
-            {
-                var point = new Point(rect.X + (int)(rect.Width * fx), rect.Y + (int)(rect.Height * fy));
-                if (covered.Any(child => child.Contains(point)))
-                    continue;
-
-                _driver.Driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
-                {
-                    ["x"] = point.X,
-                    ["y"] = point.Y,
-                });
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     #region Activation
 
@@ -465,7 +421,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <exception cref="NotSupportedException">The node does not publish its range in app units, or the platform is not Android.</exception>
     public void SetRangeValue(double value) => Marked(InteractionKind.Tap, () => Live(() =>
     {
-        if (_driver.Platform != MauiPlatform.Android)
+        if (!_driver.Appium.PublishesAppRange)
         {
             throw new NotSupportedException(
                 $"{nameof(AppiumMauiElement)}.{nameof(SetRangeValue)} has no route for {_driver.Platform} yet.");
@@ -485,7 +441,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <summary>The bounds AppSupport published on this node, or null when it published none.</summary>
     private (double Minimum, double Maximum)? ReadAppRange()
     {
-        if (_driver.Platform != MauiPlatform.Android)
+        if (!_driver.Appium.PublishesAppRange)
         {
             return null;
         }
@@ -662,16 +618,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </summary>
     private void SetValueDirectly(string text) => _driver.Appium.SetValue(this, text);
 
-    /// <summary>
-    /// The exception for a branch this driver cannot reach: a platform other than Android or iOS.
-    /// </summary>
-    /// <param name="operation">What was asked.</param>
-    /// <returns>The exception to throw.</returns>
-    private PlatformNotSupportedException NotAMobilePlatform(string operation)
-        => new(
-            $"{nameof(AppiumMauiElement)}.{operation} has no route for {_driver.Platform}. This "
-            + "driver serves Android and iOS; MAUI on Windows is driven by Bruinet.Maui.FlaUI.");
-
     /// <inheritdoc />
     public void Clear() => Marked(InteractionKind.Clear, () => Live(() => _element.Clear()));
 
@@ -720,45 +666,10 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         var startTime = DateTime.UtcNow;
         var timeout = TimeSpan.FromMilliseconds(timeoutMs);
 
-        switch (_driver.Platform)
-        {
-            case MauiPlatform.Android:
-                ScrollIntoViewAndroid(startTime, timeout);
-                break;
-            case MauiPlatform.iOS:
-                ScrollIntoViewiOS((int)Math.Max(0, (timeout - (DateTime.UtcNow - startTime)).TotalMilliseconds));
-                break;
-            default:
-                throw NotAMobilePlatform(nameof(ScrollIntoView));
-        }
+        _driver.Appium.ScrollIntoView(this, startTime, timeout);
     }));
 
-    private void ScrollIntoViewAndroid(DateTime startTime, TimeSpan timeout)
-    {
-        try
-        {
-            var windowSize = _driver.Driver.Manage().Window.Size;
-            var region = new Dictionary<string, object>
-            {
-                { "left", 50 },
-                { "top", 150 },
-                { "width", windowSize.Width - 100 },
-                { "height", windowSize.Height - 300 },
-            };
-
-            // Towards the element first, then back: the driver's one scroll routine, within what is
-            // left of the caller's budget.
-            string[] directions = _element.Location.Y < 0 ? ["up", "down"] : ["down", "up"];
-            var budgetMs = (int)Math.Max(0, (timeout - (DateTime.UtcNow - startTime)).TotalMilliseconds);
-            _driver.ScrollUntil(region, directions, IsDisplayedNow, budgetMs, atLeastOneSwipe: true);
-        }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
-        {
-            // Scroll attempt failed: the caller's poll sees it still not visible.
-        }
-    }
-
-    private bool IsDisplayedNow()
+    internal bool IsDisplayedNow()
     {
         try
         {
@@ -768,31 +679,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         {
             return false;
         }
-    }
-
-    /// <summary>
-    /// XCUITest's own scroll to the element, then its scroll to visible, then one swipe down; each
-    /// after the first only while <paramref name="budgetMs"/> lasts. Not yet run on a simulator.
-    /// </summary>
-    private void ScrollIntoViewiOS(int budgetMs)
-    {
-        // The keyboard covers the lower half of the screen and scrolling does not move content out
-        // from under it; a user closes it first. Probed 2026-11-04: a form footer and the last
-        // inputs read visible=false until the keyboard went away.
-        if (_driver.HideKeyboardIfShown() && IsDisplayedNow())
-        {
-            return;
-        }
-
-        var clock = System.Diagnostics.Stopwatch.StartNew();
-        TryInOrder(
-            [
-                () => TryScript("mobile: scrollToElement", new() { ["elementId"] = _element.Id }),
-                () => TryScript("mobile: scroll", new() { ["elementId"] = _element.Id, ["toVisible"] = true }),
-                () => TryScript("mobile: scroll", new() { ["direction"] = "down" }),
-            ],
-            budgetMs,
-            () => clock.ElapsedMilliseconds);
     }
 
     /// <summary>
@@ -820,7 +706,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     }
 
     /// <summary>Runs one <c>mobile:</c> script; false when the driver refused it.</summary>
-    private bool TryScript(string script, Dictionary<string, object> arguments)
+    internal bool TryScript(string script, Dictionary<string, object> arguments)
     {
         try
         {
@@ -1134,7 +1020,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         if (verticalSteps == 0 && horizontalSteps == 0)
             return ScrollStep.NotMoved;
 
-        var android = _driver.Platform == MauiPlatform.Android;
+        var android = _driver.Appium.ScrollsEdgeToEdge;
 
         // Android says when content fits: nothing at or in the element is scrollable. A swipe there
         // moved nothing: a step up was a pull-to-refresh, whose reloaded rows looked like a move,
@@ -1243,13 +1129,12 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </remarks>
     public void SelectByText(string text) => Marked(InteractionKind.Tap, () => Live(() =>
     {
-        if (_driver.Platform == MauiPlatform.iOS)
-        {
-            OnTheWheel(nameof(SelectByText), wheel => TurnTo(wheel, text));
-            return;
-        }
+        _driver.Appium.SelectByText(this, text);
+    }));
 
-        WithOpenPicker(nameof(SelectByText), items =>
+    /// <summary>Android: picks the dialog row showing <paramref name="text"/>.</summary>
+    internal void SelectByTextInDialog(string text)
+        => WithOpenPicker(nameof(SelectByText), items =>
         {
             var item = items.FirstOrDefault(i => i.Text == text)
                 ?? throw new InvalidOperationException(
@@ -1257,19 +1142,17 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
             item.Click();
         });
-    }));
 
     /// <inheritdoc />
     /// <remarks>See <see cref="SelectByText"/>: the same route and the same caveats.</remarks>
     public void SelectIndex(int index) => Marked(InteractionKind.Tap, () => Live(() =>
     {
-        if (_driver.Platform == MauiPlatform.iOS)
-        {
-            OnTheWheel(nameof(SelectIndex), wheel => TurnToIndex(wheel, index));
-            return;
-        }
+        _driver.Appium.SelectIndex(this, index);
+    }));
 
-        WithOpenPicker(nameof(SelectIndex), items =>
+    /// <summary>Android: picks the dialog row at <paramref name="index"/>.</summary>
+    internal void SelectIndexInDialog(int index)
+        => WithOpenPicker(nameof(SelectIndex), items =>
         {
             if (index < 0 || index >= items.Count)
             {
@@ -1279,7 +1162,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
             items[index].Click();
         });
-    }));
 
     /// <summary>
     /// Taps the picker open, hands its rows to <paramref name="choose"/>, and closes the dialog
@@ -1287,13 +1169,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// </summary>
     private void WithOpenPicker(string operation, Action<IReadOnlyList<IMauiElement>> choose)
     {
-        if (_driver.Platform != MauiPlatform.Android)
-        {
-            throw new PlatformNotSupportedException(
-                $"{nameof(AppiumMauiElement)}.{operation} has no route for {_driver.Platform}: its "
-                + "picker has not been mapped. Dump the tree and add it here.");
-        }
-
         Click();
 
         var chosen = false;
@@ -1333,15 +1208,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     #region The app
 
-    /// <summary>
-    /// The flyout button MAUI puts left in the navigation bar; its name is not measured yet, so the
-    /// names it has carried are all tried.
-    /// </summary>
-    private static readonly string IosFlyoutOpener =
-        "//XCUIElementTypeNavigationBar/XCUIElementTypeButton["
-        + string.Join(" or ", AppiumMauiDriver.IosFlyoutOpenerNames.Select(name => $"@name='{name}'"))
-        + " or @label='Menu']";
-
     /// <summary>How long Shell's chrome gets to appear.</summary>
     private const int ChromeFindTimeoutMs = 5000;
 
@@ -1357,17 +1223,12 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         using var mark = Report(InteractionKind.Key, "Menu");
 
         RequireApp(nameof(OpenFlyout));
-        RequireMappedShell("the flyout opener");
-
         if (IsFlyoutOpen == true)
         {
             return;
         }
 
-        var opener = _driver.Platform == MauiPlatform.iOS
-            ? Locator.ByXPath(IosFlyoutOpener)
-            : Locator.ByAccessibilityId("Open navigation drawer");
-        _driver.FindChrome(opener, ChromeFindTimeoutMs).Click();
+        _driver.FindChrome(_driver.Appium.FlyoutOpener, ChromeFindTimeoutMs).Click();
         WaitForFlyout(open: true);
     }
 
@@ -1383,26 +1244,12 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         using var mark = Report(InteractionKind.Key, "Menu");
 
         RequireApp(nameof(CloseFlyout));
-        RequireMappedShell("dismissing the flyout");
-
         if (IsFlyoutOpen != true)
         {
             return;
         }
 
-        if (_driver.Platform == MauiPlatform.iOS)
-        {
-            var size = _driver.Driver.Manage().Window.Size;
-            _driver.Driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
-            {
-                ["x"] = size.Width - 10,
-                ["y"] = size.Height / 2,
-            });
-        }
-        else
-        {
-            _driver.Driver.Navigate().Back();
-        }
+        _driver.Appium.CloseFlyout(_driver.Driver);
         WaitForFlyout(open: false);
     }
 
@@ -1419,19 +1266,9 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         {
             RequireApp(nameof(IsFlyoutOpen));
 
-            return _driver.Platform switch
-            {
-                MauiPlatform.Android => _driver.FindElements(_driver.ShellChrome.FlyoutHost).Count > 0,
-                MauiPlatform.iOS => _driver.FindElements(_driver.ShellChrome.FlyoutHost)
-                    .Any(host => IsIosVisible(host.GetAttribute("visible"))),
-                _ => null,
-            };
+            return _driver.Appium.IsFlyoutOpen(_driver);
         }
     }
-
-    /// <summary>Reads XCUITest's <c>visible</c> attribute; a missing one is not visible.</summary>
-    internal static bool IsIosVisible(string? visible)
-        => string.Equals(visible, "true", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Waits for the drawer to finish opening or closing, bounded by the chrome timeout.</summary>
     private void WaitForFlyout(bool open)
@@ -1487,19 +1324,6 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             throw new NotSupportedException(
                 $"{operation} is a question about the app, not about one element. "
                 + "Ask IMauiTestContext.AppElement.");
-        }
-    }
-
-    /// <summary>
-    /// Refuses rather than guesses on a platform whose Shell chrome nobody has mapped.
-    /// </summary>
-    private void RequireMappedShell(string what)
-    {
-        if (_driver.Platform is not (MauiPlatform.Android or MauiPlatform.iOS))
-        {
-            throw new PlatformNotSupportedException(
-                $"Shell chrome on {_driver.Platform} has not been mapped: nothing is known about {what}. "
-                + "Dump the tree and add it to AppiumMauiDriver.ShellChrome.");
         }
     }
 

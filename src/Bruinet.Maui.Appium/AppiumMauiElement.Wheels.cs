@@ -31,7 +31,7 @@ public sealed partial class AppiumMauiElement
     private const int MaxWheelRows = 500;
 
     /// <summary>Taps the field open, hands its one wheel to <paramref name="choose"/>, presses Done.</summary>
-    private void OnTheWheel(string operation, Action<IWebElement> choose)
+    internal void OnTheWheel(string operation, Action<IWebElement> choose)
     {
         var wheels = OpenWheels(operation);
         if (wheels.Count != 1)
@@ -52,7 +52,7 @@ public sealed partial class AppiumMauiElement
     }
 
     /// <summary>Turns a picker's wheel to the row with the text.</summary>
-    private void TurnTo(IWebElement wheel, string text)
+    internal void TurnTo(IWebElement wheel, string text)
     {
         try
         {
@@ -68,7 +68,7 @@ public sealed partial class AppiumMauiElement
     /// Turns a picker's wheel to its first row, then <paramref name="index"/> rows on. A wheel
     /// names only its current row, so there is no list to index.
     /// </summary>
-    private void TurnToIndex(IWebElement wheel, int index)
+    internal void TurnToIndex(IWebElement wheel, int index)
     {
         // Inside a call, what the call has left: each row is a round trip, and up to 500 of them
         // back used to run past any budget.
@@ -141,7 +141,7 @@ public sealed partial class AppiumMauiElement
         return wheel.GetAttribute("value") != before;
     }
 
-    private void SetDateOnWheels(DateTime date)
+    internal void SetDateOnWheels(DateTime date)
     {
         var name = AutomationId;
         var wheels = OpenWheels(nameof(SetDate));
@@ -194,7 +194,7 @@ public sealed partial class AppiumMauiElement
         PressDone();
     }
 
-    private void SetTimeOnWheels(TimeSpan time)
+    internal void SetTimeOnWheels(TimeSpan time)
     {
         var wheels = OpenWheels(nameof(SetTime));
 

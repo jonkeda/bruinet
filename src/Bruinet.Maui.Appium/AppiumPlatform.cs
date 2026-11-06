@@ -140,6 +140,82 @@ internal abstract class AppiumPlatform
     /// </summary>
     public abstract void Relaunch(AppiumDriver driver);
 
+    /// <summary>One step back, the way a user of the platform would take it.</summary>
+    public abstract void GoBack(AppiumDriver driver);
+
+    /// <summary>Whether the page on screen offers no way back.</summary>
+    public abstract bool IsAtNavigationRoot(AppiumDriver driver);
+
+    /// <summary>Closes the soft keyboard, which the caller has seen is up.</summary>
+    public abstract void HideKeyboard(AppiumDriver driver);
+
+    /// <summary>Whether the soft keyboard is up.</summary>
+    public static bool IsKeyboardShown(AppiumDriver driver)
+        => driver.ExecuteScript("mobile: isKeyboardShown", new Dictionary<string, object>()) is true;
+
+    /// <summary>The root of a platform alert or sheet.</summary>
+    public abstract By ActiveDialog { get; }
+
+    /// <summary>A popup the app draws in a window of its own, or null.</summary>
+    public virtual AppiumElement? TryFindPopupWindow(AppiumDriver driver) => null;
+
+    /// <summary>The device to record the screen of, or null when it cannot be told.</summary>
+    public virtual Bruinet.Core.Recording.RecordingTarget? RecordingTarget(AppiumDriver driver) => null;
+
+    /// <summary>Whether a find asks the driver to send each element's facts with it.</summary>
+    public abstract bool FindsWithFacts { get; }
+
+    /// <summary>Whether a find leaves out elements that are not on screen.</summary>
+    public virtual bool FindsOnlyVisible(AppiumDriver driver) => false;
+
+    /// <summary>Screen pixels per device-independent unit.</summary>
+    public virtual double PixelsPerUnit(AppiumDriver driver) => 1.0;
+
+    /// <summary>The alert on screen as MAUI was asked for it, or null.</summary>
+    public abstract AlertContents? ReadAlert(AppiumDriver driver);
+
+    /// <summary>
+    /// Taps the element at a point none of its own controls covers, when its centre is covered.
+    /// </summary>
+    /// <returns>Whether it tapped; false leaves the plain tap to the caller.</returns>
+    public virtual bool TryTapFreePoint(AppiumMauiElement element) => false;
+
+    /// <summary>Whether AppSupport publishes a range control's bounds in app units here.</summary>
+    public abstract bool PublishesAppRange { get; }
+
+    /// <summary>
+    /// Whether the app draws edge to edge, so a swipe keeps clear of the system gesture bar and
+    /// first checks that something can scroll.
+    /// </summary>
+    public abstract bool ScrollsEdgeToEdge { get; }
+
+    /// <summary>Scrolls until the element is shown, within what is left of the timeout.</summary>
+    public abstract void ScrollIntoView(AppiumMauiElement element, DateTime startTime, TimeSpan timeout);
+
+    /// <summary>Picks a picker's item by its text.</summary>
+    public abstract void SelectByText(AppiumMauiElement element, string text);
+
+    /// <summary>Picks a picker's item by its position.</summary>
+    public abstract void SelectIndex(AppiumMauiElement element, int index);
+
+    /// <summary>Sets a date picker.</summary>
+    public abstract void SetDate(AppiumMauiElement element, DateTime date);
+
+    /// <summary>Sets a time picker.</summary>
+    public abstract void SetTime(AppiumMauiElement element, TimeSpan time);
+
+    /// <summary>The Shell flyout's opener.</summary>
+    public abstract Locator FlyoutOpener { get; }
+
+    /// <summary>Dismisses the open Shell flyout.</summary>
+    public abstract void CloseFlyout(AppiumDriver driver);
+
+    /// <summary>Whether the Shell flyout is open.</summary>
+    public abstract bool IsFlyoutOpen(AppiumMauiDriver driver);
+
+    /// <summary>Finds an element by scrolling a container until it enters the tree.</summary>
+    public abstract IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator);
+
     /// <summary>A session capability as text, or null.</summary>
     protected static string? CapabilityText(AppiumDriver driver, string name)
         => driver.Capabilities.GetCapability(name)?.ToString() is { Length: > 0 } text ? text : null;
