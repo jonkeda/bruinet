@@ -1067,6 +1067,14 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         if (verticalSteps == 0 && horizontalSteps == 0)
             return ScrollStep.NotMoved;
 
+        var android = _driver.Platform == MauiPlatform.Android;
+
+        // Android says when content fits: nothing at or in the element is scrollable. A swipe there
+        // moved nothing: a step up was a pull-to-refresh, whose reloaded rows looked like a move,
+        // so a scroll to the top never ended.
+        if (android && !CanScrollOnAndroid())
+            return ScrollStep.NotMoved;
+
         var rect = Rect;
 
         if (verticalSteps != 0)
@@ -1075,8 +1083,9 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 return ScrollStep.NotMoved;
 
             var centerX = rect.X + (rect.Width / 2);
-            var near = rect.Y + EdgeInset;
-            var far = rect.Y + rect.Height - EdgeInset;
+            var inset = SwipeInset(rect.Height, android);
+            var near = rect.Y + inset;
+            var far = rect.Y + rect.Height - inset;
 
             for (var step = 0; step < Math.Abs(verticalSteps); step++)
             {
@@ -1093,8 +1102,9 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 return ScrollStep.NotMoved;
 
             var centerY = rect.Y + (rect.Height / 2);
-            var near = rect.X + EdgeInset;
-            var far = rect.X + rect.Width - EdgeInset;
+            var inset = SwipeInset(rect.Width, android);
+            var near = rect.X + inset;
+            var far = rect.X + rect.Width - inset;
 
             for (var step = 0; step < Math.Abs(horizontalSteps); step++)
             {
@@ -1107,6 +1117,16 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         return ScrollStep.Unconfirmed;
     });
+
+    // Android draws edge to edge: a list can reach the gesture navigation bar, and a swipe that
+    // starts next to it goes home (or back, at a side). A tenth of the extent keeps it clear.
+    private static readonly By ScrollableDescendant = MobileBy.AndroidUIAutomator("new UiSelector().scrollable(true)");
+
+    private bool CanScrollOnAndroid()
+        => _element.GetAttribute("scrollable") == "true" || _element.FindElements(ScrollableDescendant).Count > 0;
+
+    private static int SwipeInset(int extent, bool android)
+        => android ? Math.Max(EdgeInset, extent / 10) : EdgeInset;
 
     /// <inheritdoc />
     /// <remarks>
