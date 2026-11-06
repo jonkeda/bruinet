@@ -988,10 +988,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <summary>
     /// iOS scroll-to-find. A UICollectionView only has cells for its visible rows, so a row below
     /// the fold is not in the XCUITest tree and XCUITest's own scroll-to-element cannot reach it.
-    /// The scroller is scrolled a page at a time, down then up, with a lookup after each page.
+    /// The scroller is swiped as a list scan swipes it, down then up, with a lookup after each swipe.
     /// </summary>
     /// <remarks>
-    /// XCUITest's <c>mobile: scroll</c> does not say whether the scroller moved, so the visible
+    /// Not XCUITest's <c>mobile: scroll</c>, which waits for the page to settle and took 7.5 s a
+    /// page, against 1.7 s for the swipe (.my/performance, step 8). A swipe does not say whether the scroller moved, so the visible
     /// rows' names and positions are compared before and after: unchanged means that end is
     /// reached. Without a container, the tallest scroller on screen is taken, not the first: a
     /// project page's first is its horizontal tab strip.
@@ -1018,11 +1019,8 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             {
                 try
                 {
-                    _driver.ExecuteScript("mobile: scroll", new Dictionary<string, object>
-                    {
-                        ["elementId"] = scroller.Id,
-                        ["direction"] = direction,
-                    });
+                    // The list scan's own swipe, about 1.7 s; XCUITest's 'mobile: scroll' took 7.5 s a page.
+                    _ = new AppiumMauiElement(scroller, this).ScrollContent(direction == "down" ? 1 : -1);
                 }
                 catch (Exception error) when (!AppiumErrors.IsGone(error))
                 {
