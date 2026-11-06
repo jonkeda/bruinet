@@ -57,7 +57,7 @@ green run and of `expect.json`, and the prompt says so.
 | 2 | TT1-TT4: seed, prompt, `expect.json`, known fix; `check_task.py` on each | each seeded copy fails as described, its fix scores solved, unfixed scores unsolved |
 | 3 | Pilot: TT1-TT4 × `before`, `all` × 1 | the harness runs end to end; fixes to it only |
 | 4 | Main round: 24 runs into `tomorrow-results.jsonl` | complete |
-| 5 | The `without` runs: 9 runs into the same file | complete |
+| 5 | The lean round, in place of the `without` runs (the owner, 2026-11-06): TT1-TT4 × `lean` × 3 into `tomorrow-lean-results.jsonl` | complete |
 | 6 | `report.md` gets a "Round 2: Tomorrow" section: solved and cost per setup, which tools were called, what each `without` item cost | the owner reads it |
 
 ## Unknown
@@ -76,7 +76,8 @@ green run and of `expect.json`, and the prompt says so.
 | 1 | done | 314f117c | see "Step 1" below |
 | 2 | done | 7081506f | see "Step 2" below |
 | 3 | done | e2dff300 | see "Pilot (step 3)" below |
-| 4 | done | (this commit) | see "Main round (step 4)" below |
+| 4 | done | e2675c0f | see "Main round (step 4)" below |
+| 5 | done | (this commit) | see "Lean round (step 5)" below |
 
 ## Step 1: the harness on Tomorrow
 
@@ -166,3 +167,41 @@ TT1-TT4 × `before`, `all` × 3 = 24 runs, three at a time, the setup that goes 
 - Findings for after the round: `run_scenario` runs `@browser` scenarios on bUnit (PLT.30.2 failed in every TT2 and
   TT3 run with the tools); `step_screenshot`'s text holds Blazor's hidden error banner ("An unhandled error has
   occurred"), which one agent questioned; Bruinet's runner copies in the temp folder grew to 42 GB.
+
+## Lean round (step 5)
+
+Do the tools no run called cost anything? `lean` is `all` without `get_failure`, `where_is`, `step_log`, `coverage`,
+`tests_affected` and `http_calls`; their fields (`failure`, `appSource`, `appEvents`) stay, for those are what the
+agents read. The bridge cuts the clauses naming them from the instructions and the descriptions.
+
+- Certain: the listing goes from 20,053 to about 17,100 bytes, about 700 tokens, read once a run.
+- To see: whether agents solve as much without them, or reach for them and are told "Unknown tool".
+- The comparison is the main round's `all` runs, same base (`de88f536d`) and same server. Their spread within a task
+  is 2-20k tokens, so a 700-token saving cannot show in 12 runs; this round tests that nothing is lost.
+
+Results (`tomorrow-lean-results.jsonl`, 12 runs, three at a time, 2026-11-06):
+
+| Task | `all` tokens | `lean` tokens | `all` s | `lean` s | agent tool calls, `all` / `lean` |
+| --- | --- | --- | --- | --- | --- |
+| TT1 | 103.9k | 106.6k | 228 | 327 | 16, 14, 24 / 11, 14, 12 |
+| TT2 | 82.9k | 81.2k | 120 | 176 | 11, 11, 10 / 10, 9, 10 |
+| TT3 | 81.6k | 87.4k | 121 | 178 | 12, 10, 10 / 9, 12, 11 |
+| TT4 | 83.9k | 83.2k | 63 | 93 | 8, 11, 9 / 11, 10, 10 |
+
+(medians of three)
+
+- Solved: 12 of 12, none over the 40-call limit. No agent asked for a hidden tool.
+- Tokens: median 85.6k against 83.4k, inside the spread; the 700 tokens saved do not show, as expected.
+- Time: 177 s against 120 s, slower by the same share on every task, TT4 too, which builds nothing. The runs were three
+  days apart on a machine in other use, so this is not read as lean's doing; it was not measured side by side.
+- `get_trace` went from 1 call to 11. Three runs are too few to say why, and hiding `get_failure` is the only
+  neighbouring change.
+- So the six tools can go without loss on these tasks. What is gained is a shorter listing, not a measurable saving.
+
+A finding from the logs, in both rounds: of 19 `why` calls in the main round 10 failed, and 8 of 17 here, with "There
+is no scenario heading at that line." `why`, `get_trace`, `step_start` and `run_scenario` take only the exact heading
+line, and agents pass the tag's or a step's line, the one a failure gives them. Most `step_move`, `step_state` and
+`step_screenshot` errors follow from a failed start ("No Step-through run is going"). Taking any line of a scenario
+would remove these calls; it is likely worth more than removing the six tools.
+
+One scoring build failed on `SkipGeneration` under load (L1-TT1-lean), built clean at once after and scored solved.

@@ -46,7 +46,7 @@ def bench(task):
 def results_file(run, task):
     """Round 1's main round, its T4 rerun (R...), and round 2 on Tomorrow: its pilot (P...) and its main round."""
     if bench(task) == TOMORROW_BENCH:
-        return "tomorrow-pilot-results.jsonl" if run.startswith("P") else "tomorrow-results.jsonl"
+        return {"P": "tomorrow-pilot-results.jsonl", "L": "tomorrow-lean-results.jsonl"}.get(run[0], "tomorrow-results.jsonl")
     return "rerun-results.jsonl" if run.startswith("R") else "results.jsonl"
 
 

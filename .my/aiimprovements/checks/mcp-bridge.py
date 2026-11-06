@@ -12,7 +12,8 @@ MCP_LOG=<file> appends one JSON line per call (and one per tools listing), for t
 
 MCP_PROFILE picks a setup (benchmark/plan.md, step 2): "all" (the default) changes nothing; "before" is the server as
 before AI1: every AI item's tools hidden, its fields stripped from answers, its arguments dropped, and the instructions'
-sentences about them cut; "without-<item>" (without-AI9) is "all" but that one item. MCP_HIDE hides more tools; an
+sentences about them cut; "without-<item>" (without-AI9) is "all" but that one item; "lean" is "all" without the tools
+no benchmark run called (LEAN), their fields kept, for those are what the agents read. MCP_HIDE hides more tools; an
 item one of whose tools it hides goes whole.
 """
 import datetime
@@ -45,23 +46,26 @@ ITEMS = {
     "AI11": {"tools": ["http_calls"], "arguments": ["replay"]},
 }
 
+# The tools no run of either round called (benchmark/report.md, tomorrow-plan.md).
+LEAN = ["get_failure", "where_is", "step_log", "coverage", "tests_affected", "http_calls"]
+
 
 def hidden_items():
     profile = os.environ.get("MCP_PROFILE", "all")
-    if profile == "all":
+    if profile in ("all", "lean"):
         items = set()
     elif profile == "before":
         items = set(ITEMS)
     elif profile.startswith("without-") and profile[len("without-"):] in ITEMS:
         items = {profile[len("without-"):]}
     else:
-        raise SystemExit(f"MCP_PROFILE '{profile}': all, before, or without-<item> ({', '.join(ITEMS)}).")
+        raise SystemExit(f"MCP_PROFILE '{profile}': all, before, lean, or without-<item> ({', '.join(ITEMS)}).")
     asked = {name for name in os.environ.get("MCP_HIDE", "").split(",") if name}
     return items | {item for item, added in ITEMS.items() if asked & set(added["tools"])}, asked
 
 
 GONE, ASKED = hidden_items()
-HIDDEN = ASKED | {tool for item in GONE for tool in ITEMS[item]["tools"]}
+HIDDEN = ASKED | {tool for item in GONE for tool in ITEMS[item]["tools"]} | (set(LEAN) if os.environ.get("MCP_PROFILE") == "lean" else set())
 STRIPPED = {field for item in GONE for field in ITEMS[item].get("fields", [])}
 DROPPED = {argument for item in GONE for argument in ITEMS[item].get("arguments", [])}
 PHRASES = [phrase for item in GONE for phrase in ITEMS[item].get("phrases", [])]
@@ -162,7 +166,9 @@ def main():
             listing = [f"INSTRUCTIONS: {instructions}"]
             for tool in [tool for tool in tools if tool["name"] not in HIDDEN]:
                 arguments = ", ".join(name for name in tool.get("inputSchema", {}).get("properties", {}).keys() if name not in DROPPED)
-                listing.append(f"\n- {tool['name']}({arguments}): {tool['description']}")
+                # Lean: a description may send the agent to a hidden tool (failing to get_failure).
+                description = instructions_without(tool["description"]) if os.environ.get("MCP_PROFILE") == "lean" else tool["description"]
+                listing.append(f"\n- {tool['name']}({arguments}): {description}")
             print("\n".join(listing[1:]))
             log("(tools)", {}, started, answer="\n".join(listing))
             return
