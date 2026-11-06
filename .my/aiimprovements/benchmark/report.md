@@ -99,7 +99,7 @@ plan's bar only looking at a screen is a clear win: the rest saved about 7%, or 
 
 ## Which tools to keep
 
-Six tools were called in none of the 72 runs of the two rounds. Hiding them for 12 more runs lost nothing: all 12
+Six tools were called in none of the 36 main-round runs that had them (24 in round 1, 12 in round 2). Hiding them for 12 more runs lost nothing: all 12
 solved, and no agent asked for one. It saved nothing that shows either: 85.6k tokens against 83.4k, inside the spread.
 Those runs were about 45% slower on every task, but three days later on a machine in other use, so that is not read as
 their doing.
@@ -114,8 +114,8 @@ measured that yet.
 
 ## What round 2 cannot say
 
-- The tasks stayed easy. Every cause was one change, a unit test failed on TT1's and TT2's, and a comment states the
-  rule that TT2's and TT3's break.
+- The tasks stayed easy. Every cause was one change, two unit tests failed on TT1's, and a comment states the rule that
+  TT2's and TT3's break.
 - Only the studio suite ran, on bUnit. Browser runs did not work under the runner until step 2's fix, and the Jobs
   page's scenario still does not pass there.
 - Three runs a task cannot show a small difference. The lean round's time was not measured side by side.
