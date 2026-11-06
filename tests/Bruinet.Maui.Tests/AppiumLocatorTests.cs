@@ -27,13 +27,22 @@ public class AppiumLocatorTests
         => Assert.StartsWith("By.Name", Locator.ByName("Delete").ToBy(MauiPlatform.iOS).ToString(), StringComparison.Ordinal);
 
     [Fact]
-    public void AnAutomationId_OnAndroid_IsSentAsTheIdStrategy_NotAsCss()
+    public void AnAutomationId_OnAndroid_IsAUiSelector_NotCssOrTheIdStrategy()
     {
         // By.Id goes out as the CSS selector "#TodoRow_Due", which UiAutomator2 lets escape the
-        // element it is searched from.
+        // element it is searched from; the id strategy returns nested matches inner first.
         var by = Locator.ByAutomationId("TodoRow_Due").ToChildBy(MauiPlatform.Android);
 
-        Assert.Equal(("id", "TodoRow_Due"), (by.Mechanism, by.Criteria));
+        Assert.Contains(
+            "new UiSelector().resourceIdMatches(\".*:id/TodoRow_Due\")", by.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AListItem_UnderAnElement_OnAndroid_IsRelativeAndMayStartAtTheList()
+    {
+        var by = Locator.ByControlType("ListItem").ToChildBy(MauiPlatform.Android);
+
+        Assert.StartsWith("./descendant-or-self::*[", by.Criteria, StringComparison.Ordinal);
     }
 
     [Fact]

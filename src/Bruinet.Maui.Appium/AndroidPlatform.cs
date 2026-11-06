@@ -29,14 +29,48 @@ internal sealed class AndroidPlatform : AppiumPlatform
             LocatorStrategy.Text => By.XPath("." + TextPath(locator.Value)),
             LocatorStrategy.ControlTypeAndName when locator.TypeName is { } typeName
                 => By.XPath("." + ControlTypeAndName(typeName, locator.Value).Criteria),
+            LocatorStrategy.ControlType when IsListItem(locator.Value) => By.XPath("." + ListItemPath),
             _ => ToBy(locator)
         };
     }
 
-    // MAUI surfaces an AutomationId as the resource-id, so the id strategy.
-    protected override By AutomationId(string id) => new ResourceIdBy(id);
+    // MAUI surfaces an AutomationId as the resource-id.
+    protected override By AutomationId(string id) => ResourceId(id);
 
-    protected override By Id(string id) => new ResourceIdBy(id);
+    protected override By Id(string id) => ResourceId(id);
+
+    /// <summary>
+    /// A <c>UiSelector</c> where the id allows one, since it returns matches in tree order, as
+    /// Windows and iOS do. The <c>id</c> strategy does not: of a search slot and the search button
+    /// inside it, both <c>Search</c> (probed 2026-11-05 on API 36), it returned the button first,
+    /// and the slot's text field was "not found" in it.
+    /// </summary>
+    private static By ResourceId(string id)
+        => PlainId.IsMatch(id)
+            ? MobileBy.AndroidUIAutomator($"new UiSelector().resourceIdMatches(\".*:id/{id}\")")
+            : new ResourceIdBy(id);
+
+    private static readonly System.Text.RegularExpressions.Regex PlainId = new("^[A-Za-z0-9_]+$");
+
+    // A CollectionView renders as a RecyclerView and a ListView as a ListView.
+    private const string ListClasses = "@class='androidx.recyclerview.widget.RecyclerView' or @class='android.widget.ListView'";
+
+    /// <summary>
+    /// A list's rows: its children that have content. The list may be the element searched from.
+    /// A CollectionView's empty footer is a child too, but iOS has no cell for it.
+    /// </summary>
+    private const string ListItemPath = $"/descendant-or-self::*[{ListClasses}]/*[*]";
+
+    private static bool IsListItem(string controlType) => controlType.Equals("listitem", StringComparison.OrdinalIgnoreCase);
+
+    protected override By ControlType(string controlType)
+        => controlType.ToLowerInvariant() switch
+        {
+            "list" => MobileBy.AndroidUIAutomator(
+                "new UiSelector().classNameMatches(\"androidx\\\\.recyclerview\\\\.widget\\\\.RecyclerView|android\\\\.widget\\\\.ListView\")"),
+            "listitem" => By.XPath(ListItemPath),
+            _ => base.ControlType(controlType),
+        };
 
     /// <summary>
     /// The element's accessible name, which is its <c>content-desc</c> when it has one and its
