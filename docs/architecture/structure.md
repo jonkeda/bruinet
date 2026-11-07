@@ -26,6 +26,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - `Bruinet.Stride.Automation`
 - `Bruinet.Bdd` - feature files without a UI: parse, bind, values, tables, callable steps, namespaces, run
 - `Bruinet.Blazor`
+- `Bruinet.Contracts` - API contracts: a recorded call checked against the DTO the app reads and the request the reference client sends, and the run report
 - `Bruinet.Core`
 - `Bruinet.Html`
 - `Bruinet.Html.Playwright`

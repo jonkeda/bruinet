@@ -53,6 +53,7 @@ How this differs from the other trees:
 - [AD-032: A MAUI suite runs without a device, and the device judges the gate](decisions/ad-032-a-maui-suite-runs-without-a-device.md)
 - [AD-033: The build is the first check](decisions/ad-033-the-build-is-the-first-check.md)
 - [AD-034: A dependency is replayed, stubbed or copied by its kind](decisions/ad-034-a-dependency-is-replayed-stubbed-or-copied-by-its-kind.md)
+- [AD-035: An API contract is the DTO the app reads, and the real service judges it](decisions/ad-035-an-api-contract-is-the-dto-the-app-reads.md)
 
 ## Contracts
 
