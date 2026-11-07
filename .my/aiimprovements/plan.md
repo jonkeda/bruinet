@@ -38,6 +38,7 @@ failed. Wave 1 closes that loop, mostly by wrapping what exists.
 | AI18 | Accessibility on every head | P8 | M | MAUI's `accessibility-audit.md` |
 | AI19 | Agent-run exploratory testing | P10 | L | AI4, AI2, AI18, `explore_app` |
 | AI20 | Mutation testing for scenarios | P9 | L | bUnit, MauiHeadless, touch map |
+| AI21 | MCP runs on a head the config does not name | Construction (8G.3) | M | AI1, `test-maui-headless.ps1` |
 
 ## Scope: Html and MAUI first
 
@@ -196,6 +197,7 @@ safer. AI15-AI20 package it into workflows.
 - **AI18 Accessibility on every head:** axe-core on web and bUnit, UI Automation on Windows, ATF on Android; findings named by page object and control; a baseline file; `get_failure` kind `accessibility`.
 - **AI19 Exploratory agent:** `explore_app` extended to drive page objects through AI4, report crashes, console errors, hangs and AI18 findings, each with a draft scenario; budget in steps and minutes.
 - **AI20 Mutation testing:** mutations in bUnit and MauiHeadless only; the touch map limits scenarios per mutation; a report of controls no Then-step checks.
+- **AI21 Another head from MCP:** Construction's config names the windowed `maui` head and its Windows build, so `run_scenario`, `set_state` and `coverage` start the app in a window; its MauiHeadless head needs the plain `net10.0` build and `BRUINET_HEAD=headless`. A `head` argument (or a second config) that picks the build and the head, so an agent's run is headless as the night run is. Found 2026-11-07, with the runner's working-folder fix.
 
 ## Not in this plan
 
@@ -240,6 +242,7 @@ build. Agent checks live in `checks/`, reviews as `<id>-review.md`.
 | AI18 | open | | |
 | AI19 | open | | |
 | AI20 | open | | |
+| AI21 | open | | |
 | C4 | done | Blazor 84.2% on hand-written code (generated members marked and left out) | Blazor 45 to 58.3%; the rest is generated wrappers; NavMenu active item fixed |
 | C5 | built, target open | Maui 49 to 50.9%; the rest is platform code a device head runs; the sample slider started at 1 |
 | C6 | done | (this commit) | Html's selector and range bases at 78 and 81% after the survivors became tests; Maui's survivors are device paths |
