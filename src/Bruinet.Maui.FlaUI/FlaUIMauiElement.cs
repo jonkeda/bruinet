@@ -560,7 +560,10 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 // bridge earns its place on the elements the pattern refuses: a read-only
                 // wrapper, or a control that publishes no Value pattern at all.
                 if (TrySetTextValue(text))
+                {
+                    _driver.SettleAfterWrite();
                     return;
+                }
 
                 if (TryBridge(BruinetVerb.SetText, text, out _))
                     return;
@@ -577,7 +580,10 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     public void Clear() => Marked(InteractionKind.Clear, () => Live(() =>
     {
         if (TrySetTextValue(string.Empty))
+        {
+            _driver.SettleAfterWrite();
             return;
+        }
 
         if (TryBridge(BruinetVerb.ClearText))
             return;

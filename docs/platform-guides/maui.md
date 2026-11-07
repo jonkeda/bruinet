@@ -109,6 +109,12 @@ never try one and fall back to another.
 - **No Windows route at all:** `RightClick` (use `InvokeMenuItem` for the item you wanted),
   `Hover`, and typing key by key with `TextInputMethod.Keys` (use `SetValue`). A test of
   per-keystroke behaviour runs on the mobile head.
+- **A text write waits for the app on Windows.** A Value pattern write lands in the WinUI
+  `TextBox` at once, but MAUI's `Entry.Text` and its binding follow only on WinUI's later
+  `TextChanged`, so a Save invoked straight after it can run with the old value. After each
+  write the driver asks the app's `IsIdle` verb; declare it on the app's pages
+  (`GestureAutomation.SetVerbs(page, "NavigateBack,IsIdle")`). An app that never answers it is
+  asked three times and then not again.
 - **Control objects never see UI Automation.** They ask `IMauiElement` in terms of what they
   do (`Checked`, `SetRangeValue`, `OpenDropdown`, `Invoke`), and the Windows element answers
   from the patterns. The `*PatternElement` interfaces are gone from MAUI.

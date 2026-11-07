@@ -81,4 +81,23 @@ public sealed class ExpectedRequestCheckTests
         Assert.Equal("description=Kitchen%20%26%20bath&file=%5Bfile%20photo.jpg%3B%20image%2Fjpeg%3B%2011%20bytes%5D", body);
         Assert.True(result.Passed, result.ToMarkdown());
     }
+
+    [Theory]
+    [InlineData("relation_id=4&number_of=2.5", true)]
+    [InlineData("comment=A", true)]
+    [InlineData("relation_id=4&comment=A", false)]
+    public void MockCheck_TwoWritesToOnePath_PassWhenEitherContractAccepts(string form, bool passes)
+    {
+        DtoContract Patch(params ExpectedField[] fields) => new("PATCH booking/{id}", typeof(object))
+        {
+            Request = new(RequestBodyKind.Form, "test", fields)
+        };
+        var amount = Patch(new("relation_id", ExpectedValue.Integer), new("number_of", ExpectedValue.Decimal));
+        var comment = Patch(new ExpectedField("comment", ExpectedValue.Text));
+
+        var failures = ExpectedRequestMockCheck.Failures([amount, comment],
+            [new RecordedWrite("PATCH", "/booking/9", "application/x-www-form-urlencoded", form)]);
+
+        Assert.Equal(passes, failures.Count == 0);
+    }
 }

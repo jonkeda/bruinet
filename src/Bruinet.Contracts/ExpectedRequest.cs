@@ -276,21 +276,23 @@ public sealed record RecordedWrite(string Method, string Path, string? ContentTy
 /// </summary>
 public static class ExpectedRequestMockCheck
 {
-    /// <summary>The failed comparisons; a write that no contract with an expected request covers is not checked.</summary>
+    /// <summary>
+    /// The failed comparisons; a write that no contract with an expected request covers is not checked.
+    /// When several contracts cover the same endpoint, as separate writes that send different fields to
+    /// one path do, the write passes when one of them accepts it, and fails with the first one's result.
+    /// </summary>
     public static IReadOnlyList<ContractResult> Failures(IEnumerable<DtoContract> contracts, IEnumerable<RecordedWrite> writes)
     {
         var expectations = contracts.Where(contract => contract.Request is not null).Distinct().ToList();
         var failures = new List<ContractResult>();
         foreach (var write in writes)
         {
-            var contract = expectations.FirstOrDefault(candidate =>
-                candidate.Method.Equals(write.Method, StringComparison.OrdinalIgnoreCase) && candidate.MatchesPath(write.Path));
-            if (contract is null)
-                continue;
-
-            var result = ExpectedRequestCheck.Compare(contract, write.ContentType, write.Body);
-            if (!result.Passed)
-                failures.Add(result);
+            var results = expectations
+                .Where(candidate => candidate.Method.Equals(write.Method, StringComparison.OrdinalIgnoreCase) && candidate.MatchesPath(write.Path))
+                .Select(candidate => ExpectedRequestCheck.Compare(candidate, write.ContentType, write.Body))
+                .ToList();
+            if (results.Count > 0 && !results.Any(result => result.Passed))
+                failures.Add(results[0]);
         }
 
         return failures;

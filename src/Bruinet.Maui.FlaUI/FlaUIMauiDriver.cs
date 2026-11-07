@@ -557,6 +557,41 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         return bool.TryParse(answer.Value, out var idle) && idle;
     }
 
+    /// <summary>
+    /// Lets the app finish what a UI Automation write queued, where the app can say so.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// A Value pattern write lands in the WinUI <c>TextBox</c> at once, but WinUI raises
+    /// <c>TextChanged</c> later, and only that event carries the text to MAUI's <c>Entry.Text</c>
+    /// and its binding. A Save invoked straight after the write ran before it: the box showed the
+    /// new comment and the view model still had the old one (Construction's garbage editor). A
+    /// person typing never meets this, because each keystroke is followed by human time.
+    /// </para>
+    /// <para>
+    /// The app's <c>IsIdle</c> verb posts to the dispatcher and waits for that post to run, which
+    /// is "everything queued before now has finished". An app that never answers it is asked a
+    /// few times - a page between publications answers nothing either - and then not again.
+    /// </para>
+    /// </remarks>
+    internal void SettleAfterWrite()
+    {
+        if (!_settleAnswered && _settleUnanswered >= SettleAttemptsWithoutAnswer)
+            return;
+
+        var answer = Exchange(BruinetVerb.IsIdle,
+            Bruinet.Core.Calls.CallBudget.Within(2_000).ToString(System.Globalization.CultureInfo.InvariantCulture));
+
+        if (answer.Delivered)
+            _settleAnswered = true;
+        else
+            _settleUnanswered++;
+    }
+
+    private const int SettleAttemptsWithoutAnswer = 3;
+    private bool _settleAnswered;
+    private int _settleUnanswered;
+
     /// <inheritdoc />
     public int NavigationDepth()
     {
