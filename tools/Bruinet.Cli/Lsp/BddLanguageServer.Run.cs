@@ -95,7 +95,7 @@ public sealed partial class BddLanguageServer
                 environment[name] = value;
             }
 
-            run.Start = new BddRunnerStart(assemblies.Start, Environment: environment);
+            run.Start = new BddRunnerStart(assemblies.Start, suite.WorkingDirectory, environment);
             run.Runner = await Warm.TakeAsync(run.Start, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)

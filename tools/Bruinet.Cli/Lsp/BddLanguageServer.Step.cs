@@ -99,7 +99,7 @@ public sealed partial class BddLanguageServer
         try
         {
             // The suite's warm runner, or a new one from a copy of its output (AD-025).
-            run.Start = new BddRunnerStart(assemblies.Start, Environment: RunnerEnvironment(suite));
+            run.Start = new BddRunnerStart(assemblies.Start, suite.WorkingDirectory, RunnerEnvironment(suite));
             run.Runner = await Warm.TakeAsync(run.Start).ConfigureAwait(false);
             var opened = await run.Runner.RequestAsync(new BddRunnerOpen(suite.ConfigPath, assemblies.Pages, path, name, "step")).ConfigureAwait(false);
             if (opened is not BddRunnerOpened ready)

@@ -60,6 +60,21 @@ public sealed class BddSuiteTests : IDisposable
     }
 
     [Fact]
+    public void WorkingDirectory_IsTheConfigsFolder_ResolvedFromTheConfig_OrNullWhenItNamesNone()
+    {
+        var config = Path.Combine(_folder, "bdd.config.md");
+        using (var suite = BddSuite.Open(config))
+        {
+            Assert.Null(suite.WorkingDirectory);
+        }
+
+        File.WriteAllText(config, File.ReadAllText(config).Replace("| Head | service |", "| Head | service |\n| WorkingDirectory | .. |"));
+        using var moved = BddSuite.Open(config);
+
+        Assert.Equal(Path.GetFullPath(Path.Combine(_folder, "..")), moved.WorkingDirectory);
+    }
+
+    [Fact]
     public void ASuiteWithout_UatScenarioTheory_SaysSo_OnceLoaded()
     {
         using var suite = BddSuite.Open(Path.Combine(_folder, "bdd.config.md"));

@@ -33,6 +33,15 @@ public sealed class BddSuite : IDisposable
     /// <summary>The folder of the config: the suite's project.</summary>
     public string ProjectDirectory { get; }
 
+    /// <summary>
+    /// The config's <c>WorkingDirectory</c> as a full path, relative to the config, or null when it names none: the
+    /// folder a run starts in, so a fixture that looks up its app from there finds it rather than the runner's copy.
+    /// </summary>
+    public string? WorkingDirectory
+        => ReadConfig().Runtime.TryGetValue(BddConfigFields.WorkingDirectory, out var directory) && !string.IsNullOrWhiteSpace(directory)
+            ? Path.GetFullPath(Path.Combine(ProjectDirectory, directory))
+            : null;
+
     /// <summary>The project folder's name, which is the suite's name in pickers and messages.</summary>
     public string Name => Path.GetFileName(ProjectDirectory);
 

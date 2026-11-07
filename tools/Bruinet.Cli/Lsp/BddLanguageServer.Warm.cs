@@ -76,7 +76,7 @@ public sealed partial class BddLanguageServer
             _suiteFiles[assemblies.Start] = (suite.ConfigPath, assemblies.Pages);
         }
 
-        return new BddRunnerStart(assemblies.Start, Environment: RunnerEnvironment(suite));
+        return new BddRunnerStart(assemblies.Start, suite.WorkingDirectory, RunnerEnvironment(suite));
     }
 
     // I3: the warm runner makes the suite's fixture, and so starts its app, before the first run.
