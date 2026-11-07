@@ -31,30 +31,50 @@ public static class ExchangeLookup
         return (null, null);
     }
 
-    /// <summary>The list item with <paramref name="id"/>, also from the complete leading items of a truncated body.</summary>
+    /// <summary>
+    /// The list item with <paramref name="id"/>: from a root array, from the array properties of a page
+    /// object such as <c>{"items": [...]}</c>, or from the complete leading items of a truncated root array.
+    /// </summary>
     public static string? FindItem(string? body, int id)
     {
-        body = TruncatedJson.CompleteArrayItems(body)?.Json;
-        if (body is null)
+        if (string.IsNullOrWhiteSpace(body))
             return null;
         try
         {
             using var document = JsonDocument.Parse(body);
-            if (document.RootElement.ValueKind != JsonValueKind.Array)
-                return null;
-            return document.RootElement.EnumerateArray()
-                .Where(item => item.ValueKind == JsonValueKind.Object
-                    && item.TryGetProperty("id", out var itemId)
-                    && itemId.ValueKind == JsonValueKind.Number
-                    && itemId.TryGetInt32(out var value)
-                    && value == id)
-                .Select(item => item.GetRawText())
-                .FirstOrDefault();
+            return FindItem(document.RootElement, id);
         }
         catch (JsonException)
         {
-            return null;
         }
+
+        var complete = TruncatedJson.CompleteArrayItems(body)?.Json;
+        if (complete is null)
+            return null;
+        using var leading = JsonDocument.Parse(complete);
+        return FindItem(leading.RootElement, id);
+    }
+
+    private static string? FindItem(JsonElement root, int id)
+    {
+        List<JsonElement> arrays = root.ValueKind switch
+        {
+            JsonValueKind.Array => [root],
+            JsonValueKind.Object => root.EnumerateObject()
+                .Where(property => property.Value.ValueKind == JsonValueKind.Array)
+                .Select(property => property.Value)
+                .ToList(),
+            _ => []
+        };
+        return arrays
+            .SelectMany(array => array.EnumerateArray())
+            .Where(item => item.ValueKind == JsonValueKind.Object
+                && item.TryGetProperty("id", out var itemId)
+                && itemId.ValueKind == JsonValueKind.Number
+                && itemId.TryGetInt32(out var value)
+                && value == id)
+            .Select(item => item.GetRawText())
+            .FirstOrDefault();
     }
 
     public static int? ReadId(string? body)
