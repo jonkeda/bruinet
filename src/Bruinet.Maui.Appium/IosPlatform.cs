@@ -406,6 +406,12 @@ internal sealed class IosPlatform : AppiumPlatform
 
     public override bool DrawsRatingStars => false;
 
+    /// <summary>UIKit always puts the cancel action of a two-button alert on the left.</summary>
+    public override bool ListsCancelFirstInTwoButtonAlerts => true;
+
+    /// <summary>XCUITest reports a row's full frame, also where the list's top edge cuts it off.</summary>
+    public override bool ReportsFullRowFrames => true;
+
     public override Locator? IndicatorDots => null;
 
     // UIKit's UIPageControl; not yet run on a simulator.

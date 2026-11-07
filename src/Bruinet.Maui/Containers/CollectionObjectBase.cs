@@ -656,7 +656,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                 return done;
             }
 
-            if (FirstRowAtTheTopIos(ScrollTarget ?? root))
+            if (FirstRowAtTheTop(ScrollTarget ?? root))
             {
                 return Observation.Missing(EndOfList);
             }
@@ -870,15 +870,15 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     }
 
     /// <summary>
-    /// iOS: whether the list already shows its top, its first realized row starting at or below
-    /// the list's top edge. A step up there is a pull-to-refresh: the list reloads, its rows are
-    /// new elements, and the scroll took every reload for a move and never ended. iOS reports a
-    /// row's full frame, so a row cut off by the top edge starts above it; Android clips a row's
-    /// bounds to what is shown and cannot tell, so it is not asked.
+    /// Whether the list already shows its top, its first realized row starting at or below the
+    /// list's top edge. A step up there is a pull-to-refresh on iOS: the list reloads, its rows
+    /// are new elements, and the scroll took every reload for a move and never ended. Only a
+    /// driver that reports a row's full frame (<see cref="IMauiDriver.ReportsFullRowFrames"/>)
+    /// can tell, so only it is asked.
     /// </summary>
-    private bool FirstRowAtTheTopIos(IMauiElement scrollRoot)
+    private bool FirstRowAtTheTop(IMauiElement scrollRoot)
     {
-        if (Context.Driver?.Platform != MauiPlatform.iOS)
+        if (Context.Driver?.ReportsFullRowFrames != true)
         {
             return false;
         }
@@ -899,7 +899,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private Func<AttemptContext, Observation> ScrollUpAttempt(ScrollUp state)
         => _ => RootAttempt(root =>
         {
-            if (state.Rows is null && FirstRowAtTheTopIos(ScrollTarget ?? root))
+            if (state.Rows is null && FirstRowAtTheTop(ScrollTarget ?? root))
             {
                 return AtTheTop(state);
             }

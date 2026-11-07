@@ -285,6 +285,12 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <inheritdoc />
     public (Locator Within, string Type)? PageControl => _appium.PageControl;
 
+    /// <inheritdoc />
+    public bool ListsCancelFirstInTwoButtonAlerts => _appium.ListsCancelFirstInTwoButtonAlerts;
+
+    /// <inheritdoc />
+    public bool ReportsFullRowFrames => _appium.ReportsFullRowFrames;
+
     public ShellChromeLocators ShellChrome => _appium.ShellChrome;
 
     /// <summary>The hierarchy's root node, for the app element's members that need a node.</summary>

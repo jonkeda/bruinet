@@ -141,8 +141,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
             .Select(button => button.Name ?? string.Empty)
             .ToList();
 
-        // UIKit always puts the cancel action of a two-button alert on the left.
-        if (Context.Driver?.Platform == MauiPlatform.iOS && texts.Count == 2)
+        if (Context.Driver?.ListsCancelFirstInTwoButtonAlerts == true && texts.Count == 2)
         {
             texts.Reverse();
         }

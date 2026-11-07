@@ -139,6 +139,19 @@ public interface IMauiDriver : IDiagnosticDriver, IDisposable
     /// </summary>
     (Locator Within, string Type)? PageControl => null;
 
+    /// <summary>
+    /// Whether a two-button alert lists its cancel action first (UIKit puts it on the left), so its
+    /// buttons read negative to positive.
+    /// </summary>
+    bool ListsCancelFirstInTwoButtonAlerts => false;
+
+    /// <summary>
+    /// Whether a list row's bounds are its full frame, also where the list's top edge cuts it off
+    /// (iOS), so a first row starting at or below that edge means the list shows its top. Where a
+    /// row's bounds are clipped to what is shown (Android), that cannot be told.
+    /// </summary>
+    bool ReportsFullRowFrames => false;
+
     #endregion
 
     #region Context Switching (Hybrid Apps)

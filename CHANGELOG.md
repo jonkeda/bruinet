@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cache holds, `--ask` buys the rest, `--prune` deletes what no script says.
 
 ### Changed
+- The iOS alert button order and the full row frames are driver facts (`IMauiDriver.ListsCancelFirstInTwoButtonAlerts`,
+  `ReportsFullRowFrames`); `ContentDialog` and `CollectionObjectBase` no longer branch on `MauiPlatform.iOS` (AD-010).
+- The tests that record `Interactions` share one serial collection; a parallel report leaked into another test's log.
 - Presenter's rehearsal speaks in the script's tone with the suite's settings; it used other clips than the recording.
 - `run_scenario` and the IDE's run on the runner leave out what the suite skips here (a head, `@browser` on bUnit, a skip
   rule), each `skipped` with the reason, as `dotnet test` does; such a scenario used to run and fail. A Step-through still

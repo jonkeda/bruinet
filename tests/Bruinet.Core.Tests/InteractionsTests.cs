@@ -3,7 +3,15 @@ using Bruinet.Core.Recording;
 
 namespace Bruinet.Core.Tests;
 
+/// <summary>Tests that report to or record <see cref="Interactions"/>, whose logs are process-wide.</summary>
+[CollectionDefinition(Name, DisableParallelization = true)]
+public sealed class InteractionLog
+{
+    public const string Name = "Interaction log";
+}
+
 /// <summary>The interaction log a recording keeps: what a driver's element reports before it acts.</summary>
+[Collection(InteractionLog.Name)]
 public sealed class InteractionsTests
 {
     [Fact]

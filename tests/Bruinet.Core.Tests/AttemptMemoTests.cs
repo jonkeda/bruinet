@@ -5,6 +5,7 @@ using Bruinet.Core.Recording;
 namespace Bruinet.Core.Tests;
 
 /// <summary>What an attempt keeps, and what ends it before the attempt does.</summary>
+[Collection(InteractionLog.Name)]
 public sealed class AttemptMemoTests
 {
     private readonly object _element = new();

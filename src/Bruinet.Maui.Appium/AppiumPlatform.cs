@@ -105,6 +105,10 @@ internal abstract class AppiumPlatform
 
     public abstract (Locator Within, string Type)? PageControl { get; }
 
+    public virtual bool ListsCancelFirstInTwoButtonAlerts => false;
+
+    public virtual bool ReportsFullRowFrames => false;
+
     public abstract ShellChromeLocators ShellChrome { get; }
 
     /// <summary>The hierarchy's root node.</summary>
