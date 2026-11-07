@@ -97,6 +97,38 @@ public sealed class ConsoleTestLoggerTests
         Assert.Equal("[Success] [Saves][Edit] Save.WaitVisible Value=120", lines[4]);
         Assert.Contains("Screenshot (AssertionFailure): shot.png", lines[5]);
     }
+
+    [Fact]
+    public void TheShortcuts_WriteTheirResultAndWhatTheyNamed()
+    {
+        var output = new StringWriter();
+        var original = Console.Out;
+        Console.SetOut(output);
+        try
+        {
+            var logger = new ConsoleTestLogger();
+            logger.LogAction("T", "P", "Save", "Click");
+            logger.LogAssertPass("T", "P", "Title", "AssertText", "a", "a");
+            logger.LogNavigation("T", "List", "Edit");
+            logger.LogInfo("T", "P", "ready");
+            logger.LogError("T", "P", "Save", "Click", new InvalidOperationException("gone"));
+        }
+        finally
+        {
+            Console.SetOut(original);
+        }
+
+        var lines = output.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        Assert.Equal(
+        [
+            "[Success] [T][P] Save.Click",
+            "[Success] [T][P] Title.AssertText Value=a Expected=a",
+            "[Info] [T][List] .Navigate Value=Edit",
+            "[Info] [T][P] .Info (ready)",
+            "[Error] [T][P] Save.Click (gone)",
+        ], lines);
+    }
 }
 
 /// <summary>Tests that swap Console.Out run one at a time.</summary>

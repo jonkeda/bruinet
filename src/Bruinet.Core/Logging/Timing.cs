@@ -16,8 +16,6 @@ public static class Timing
     /// <summary>The environment variable naming the folder the timings go to.</summary>
     public const string Variable = "BRUINET_TIMINGS";
 
-    private const string Header = "Run;Head;Test;Scenario;Step;Kind;Name;Page;Control;Action;StartMs;DurationMs;Attempts;Result";
-
     private static readonly Stopwatch Clock = Stopwatch.StartNew();
 
     /// <summary>
@@ -26,8 +24,7 @@ public static class Timing
     /// Extended Events (<c>bruinet sql report</c>).
     /// </summary>
     public static DateTime ZeroUtc { get; } = DateTime.UtcNow - Clock.Elapsed;
-    private static readonly object Gate = new();
-    private static readonly Lazy<StreamWriter?> Writer = new(Open, LazyThreadSafetyMode.ExecutionAndPublication);
+    private static readonly Lazy<TimingFile?> File = new(Open, LazyThreadSafetyMode.ExecutionAndPublication);
     private static readonly string Run = $"{DateTime.Now:yyyyMMdd-HHmmss}-{Environment.ProcessId}";
 
     /// <summary>Whether this run writes timings.</summary>
@@ -38,7 +35,7 @@ public static class Timing
     /// <c>bind</c>, <c>lifecycle</c>, <c>step</c>, <c>navigate</c>, <c>arrange</c>, <c>test</c>), <paramref name="name"/> which one.
     /// </summary>
     public static IDisposable Span(string kind, string name)
-        => Enabled ? new SpanScope(kind, name, TestScope.Current, Clock.ElapsedMilliseconds) : NoSpan.Instance;
+        => Enabled && File.Value is { } file ? file.Span(kind, name, TestScope.Current, () => Clock.ElapsedMilliseconds) : NoSpan.Instance;
 
     /// <summary>One control call, as <c>ControlCall</c> ends it.</summary>
     public static void Call(string page, string control, string action, long startMs, int durationMs, int attempts, string result)
@@ -47,7 +44,7 @@ public static class Timing
         StepTrace.Add(page, control, action, startMs, durationMs, attempts, result);
         if (Enabled)
         {
-            Write(TestScope.Current, "call", action, page, control, action, startMs, durationMs, attempts, result);
+            File.Value?.Write(TestScope.Current, "call", action, page, control, action, startMs, durationMs, attempts, result);
         }
     }
 
@@ -59,37 +56,14 @@ public static class Timing
     {
         if (Enabled)
         {
-            Write(TestScope.Current, "query", name, page, control, name, Clock.ElapsedMilliseconds, 0, null, null);
+            File.Value?.Write(TestScope.Current, "query", name, page, control, name, Clock.ElapsedMilliseconds, 0, null, null);
         }
     }
 
     /// <summary>Milliseconds since the run began, the rows' <c>StartMs</c>.</summary>
     public static long NowMs => Clock.ElapsedMilliseconds;
 
-    private static void Write(TestScope scope, string kind, string name, string? page, string? control, string? action,
-        long startMs, long durationMs, int? attempts, string? result)
-    {
-        if (Writer.Value is not { } writer)
-        {
-            return;
-        }
-
-        var line = string.Join(';',
-            Run, WebHeads.Current.ToString().ToLowerInvariant(), Cell(scope.Test), Cell(scope.Scenario), Cell(scope.Step),
-            kind, Cell(name), Cell(page), Cell(control), Cell(action),
-            startMs.ToString(CultureInfo.InvariantCulture), durationMs.ToString(CultureInfo.InvariantCulture),
-            attempts?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, Cell(result));
-        lock (Gate)
-        {
-            writer.WriteLine(line);
-        }
-    }
-
-    // One field: no separator, no line break, inside it.
-    private static string Cell(string? value)
-        => value is null ? string.Empty : value.Replace(';', ',').Replace('\r', ' ').Replace('\n', ' ');
-
-    private static StreamWriter? Open()
+    private static TimingFile? Open()
     {
         var folder = Environment.GetEnvironmentVariable(Variable);
         if (string.IsNullOrWhiteSpace(folder))
@@ -99,30 +73,9 @@ public static class Timing
 
         Directory.CreateDirectory(folder);
         var writer = new StreamWriter(Path.Combine(folder, $"timings-{Run}.csv"), append: false) { AutoFlush = true };
-        writer.WriteLine(Header);
-        writer.WriteLine(string.Join(';', Run, WebHeads.Current.ToString().ToLowerInvariant(), string.Empty, string.Empty, string.Empty,
-            "clock", ZeroUtc.ToString("O", CultureInfo.InvariantCulture), string.Empty, string.Empty, string.Empty, "0", "0", string.Empty, string.Empty));
-        AppDomain.CurrentDomain.ProcessExit += (_, _) =>
-        {
-            lock (Gate)
-            {
-                writer.Dispose();
-            }
-        };
-        return writer;
-    }
-
-    private sealed class SpanScope(string kind, string name, TestScope scope, long startMs) : IDisposable
-    {
-        private int _done;
-
-        public void Dispose()
-        {
-            if (Interlocked.Exchange(ref _done, 1) == 0)
-            {
-                Write(scope, kind, name, null, null, null, startMs, Clock.ElapsedMilliseconds - startMs, null, null);
-            }
-        }
+        var file = new TimingFile(writer, Run, WebHeads.Current.ToString().ToLowerInvariant(), ZeroUtc);
+        AppDomain.CurrentDomain.ProcessExit += (_, _) => file.Dispose();
+        return file;
     }
 
     private sealed class NoSpan : IDisposable
@@ -131,6 +84,74 @@ public static class Timing
 
         public void Dispose()
         {
+        }
+    }
+}
+
+/// <summary>
+/// The rows of one timings file: a header and the clock row when made, then a line per <see cref="Write"/>. Each line
+/// is written whole, under a lock, so threads do not mix their rows.
+/// </summary>
+internal sealed class TimingFile : IDisposable
+{
+    internal const string Header = "Run;Head;Test;Scenario;Step;Kind;Name;Page;Control;Action;StartMs;DurationMs;Attempts;Result";
+
+    private readonly object _gate = new();
+    private readonly TextWriter _writer;
+    private readonly string _run;
+    private readonly string _head;
+
+    internal TimingFile(TextWriter writer, string run, string head, DateTime zeroUtc)
+    {
+        _writer = writer;
+        _run = run;
+        _head = head;
+        _writer.WriteLine(Header);
+        _writer.WriteLine(string.Join(';', run, head, string.Empty, string.Empty, string.Empty,
+            "clock", zeroUtc.ToString("O", CultureInfo.InvariantCulture), string.Empty, string.Empty, string.Empty, "0", "0", string.Empty, string.Empty));
+    }
+
+    internal void Write(TestScope scope, string kind, string name, string? page, string? control, string? action,
+        long startMs, long durationMs, int? attempts, string? result)
+    {
+        var line = string.Join(';',
+            _run, _head, Cell(scope.Test), Cell(scope.Scenario), Cell(scope.Step),
+            kind, Cell(name), Cell(page), Cell(control), Cell(action),
+            startMs.ToString(CultureInfo.InvariantCulture), durationMs.ToString(CultureInfo.InvariantCulture),
+            attempts?.ToString(CultureInfo.InvariantCulture) ?? string.Empty, Cell(result));
+        lock (_gate)
+        {
+            _writer.WriteLine(line);
+        }
+    }
+
+    // A span is written once, when first disposed; its duration is the clock's reading then, less its start.
+    internal IDisposable Span(string kind, string name, TestScope scope, Func<long> nowMs)
+        => new SpanScope(this, kind, name, scope, nowMs);
+
+    public void Dispose()
+    {
+        lock (_gate)
+        {
+            _writer.Dispose();
+        }
+    }
+
+    // One field: no separator, no line break, inside it.
+    private static string Cell(string? value)
+        => value is null ? string.Empty : value.Replace(';', ',').Replace('\r', ' ').Replace('\n', ' ');
+
+    private sealed class SpanScope(TimingFile file, string kind, string name, TestScope scope, Func<long> nowMs) : IDisposable
+    {
+        private readonly long _startMs = nowMs();
+        private int _done;
+
+        public void Dispose()
+        {
+            if (Interlocked.Exchange(ref _done, 1) == 0)
+            {
+                file.Write(scope, kind, name, null, null, null, _startMs, nowMs() - _startMs, null, null);
+            }
         }
     }
 }
