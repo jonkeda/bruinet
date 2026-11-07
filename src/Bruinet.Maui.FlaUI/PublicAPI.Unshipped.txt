@@ -85,6 +85,7 @@ Bruinet.Maui.FlaUI.FlaUIMauiDriver.TakeScreenshot() -> byte[]!
 Bruinet.Maui.FlaUI.FlaUIMauiDriver.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.FlaUI.FlaUIMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 Bruinet.Maui.FlaUI.FlaUIMauiElement
+Bruinet.Maui.FlaUI.FlaUIMauiElement.AnswerFileDialog(string! path, int timeoutMs) -> void
 Bruinet.Maui.FlaUI.FlaUIMauiElement.AppendText(string! text) -> void
 Bruinet.Maui.FlaUI.FlaUIMauiElement.AutomationId.get -> string?
 Bruinet.Maui.FlaUI.FlaUIMauiElement.Checked.get -> bool?

@@ -99,8 +99,13 @@ never try one and fall back to another.
   menu items through `IMauiDriver.InvokeMenuItem`. On Android and iOS a toolbar item is tapped.
 - **App-level questions go to `Context.AppElement`**: the Shell flyout (`OpenFlyout`,
   `CloseFlyout`, `IsFlyoutOpen`), the alert on screen (`ReadAlert`), the active dialog
-  (`TryFindActiveDialog`) and targets reached by id (`TryFindDeclared`). Control objects call
-  `IMauiElement` only, never the driver.
+  (`TryFindActiveDialog`), the open-file dialog (`AnswerFileDialog`) and targets reached by id
+  (`TryFindDeclared`). Control objects call `IMauiElement` only, never the driver.
+- **The open-file dialog** is native, outside the MAUI tree. `FileDialog<TScope>.Choose(path)`
+  answers it through `AnswerFileDialog`. On Windows the dialog is a UI Automation child of the
+  app's window: the path goes into its file-name box through the Value pattern and Open is
+  invoked through the Invoke pattern, so it needs no keyboard, mouse or foreground. Headless,
+  Android and iOS have no route yet and throw `RouteUnavailableException`.
 - **No Windows route at all:** `RightClick` (use `InvokeMenuItem` for the item you wanted),
   `Hover`, and typing key by key with `TextInputMethod.Keys` (use `SetValue`). A test of
   per-keystroke behaviour runs on the mobile head.

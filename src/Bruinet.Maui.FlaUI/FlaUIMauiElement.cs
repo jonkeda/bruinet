@@ -1955,6 +1955,13 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     }
 
     /// <inheritdoc />
+    public void AnswerFileDialog(string path, int timeoutMs)
+    {
+        RequireApp(nameof(AnswerFileDialog));
+        _driver.AnswerFileDialog(path, timeoutMs);
+    }
+
+    /// <inheritdoc />
     /// <remarks>
     /// The bridge target for that id, found with the same raw walk every verb uses. Null when the
     /// app publishes no bridge or declares nothing with that id.

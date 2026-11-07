@@ -524,6 +524,9 @@ Bruinet.Maui.Controls.Dialogs.ContentDialog<TParent>.WaitButtonTextsCount(int? e
 Bruinet.Maui.Controls.Dialogs.ContentDialog<TParent>.WaitButtonTextsHasItem(string! item, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Dialogs.ContentDialog<TParent>.WaitMessage(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Dialogs.ContentDialog<TParent>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Dialogs.FileDialog<TScope>
+Bruinet.Maui.Controls.Dialogs.FileDialog<TScope>.Choose(string! path, int? timeoutMs = null) -> TScope
+Bruinet.Maui.Controls.Dialogs.FileDialog<TScope>.FileDialog(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope) -> void
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.ActivityIndicator(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.ActivityIndicator(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
@@ -809,6 +812,7 @@ Bruinet.Maui.Interfaces.IMauiDriver.IndicatorDots.get -> Bruinet.Core.Locators.L
 Bruinet.Maui.Interfaces.IMauiDriver.InvokeMenuItem(string! automationId) -> void
 Bruinet.Maui.Interfaces.IMauiDriver.IsAtNavigationRoot() -> bool
 Bruinet.Maui.Interfaces.IMauiDriver.IsIdle(int timeoutMs = 2000) -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.ListsCancelFirstInTwoButtonAlerts.get -> bool
 Bruinet.Maui.Interfaces.IMauiDriver.NavigateBack() -> void
 Bruinet.Maui.Interfaces.IMauiDriver.NavigateTo(string! destination) -> void
 Bruinet.Maui.Interfaces.IMauiDriver.NavigationDepth() -> int
@@ -819,6 +823,7 @@ Bruinet.Maui.Interfaces.IMauiDriver.PerformGesture(string! automationId, Bruinet
 Bruinet.Maui.Interfaces.IMauiDriver.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
 Bruinet.Maui.Interfaces.IMauiDriver.Quit() -> void
 Bruinet.Maui.Interfaces.IMauiDriver.Refresh() -> void
+Bruinet.Maui.Interfaces.IMauiDriver.ReportsFullRowFrames.get -> bool
 Bruinet.Maui.Interfaces.IMauiDriver.ResetAppState() -> void
 Bruinet.Maui.Interfaces.IMauiDriver.ShellChrome.get -> Bruinet.Maui.Interfaces.ShellChromeLocators!
 Bruinet.Maui.Interfaces.IMauiDriver.SupportsGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> bool
@@ -826,6 +831,7 @@ Bruinet.Maui.Interfaces.IMauiDriver.TakeScreenshot() -> byte[]!
 Bruinet.Maui.Interfaces.IMauiDriver.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 Bruinet.Maui.Interfaces.IMauiElement
+Bruinet.Maui.Interfaces.IMauiElement.AnswerFileDialog(string! path, int timeoutMs) -> void
 Bruinet.Maui.Interfaces.IMauiElement.AppendText(string! text) -> void
 Bruinet.Maui.Interfaces.IMauiElement.AutomationId.get -> string?
 Bruinet.Maui.Interfaces.IMauiElement.Checked.get -> bool?
@@ -1038,6 +1044,8 @@ abstract Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Page.get -> 
 abstract Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.SetResult.get -> TSetResult
 abstract Bruinet.Maui.ObjectBase.Context.get -> Bruinet.Maui.Interfaces.IMauiTestContext!
 abstract Bruinet.Maui.Testing.MauiTestFixtureBase.GetDefaultAppPath(Bruinet.Maui.Enums.MauiPlatform platform) -> string!
+override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
+override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.IsCachedRootValid(Bruinet.Maui.Interfaces.IMauiElement! root) -> bool
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.AllowsScrollLookup.get -> bool
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.Context.get -> Bruinet.Maui.Interfaces.IMauiTestContext!
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
@@ -1047,8 +1055,6 @@ override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.ProbeParent
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.RootNotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.ScrollingRoot.get -> Bruinet.Maui.Interfaces.IMauiElement?
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.SetResult.get -> TParent
-override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
-override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.IsCachedRootValid(Bruinet.Maui.Interfaces.IMauiElement! root) -> bool
 override Bruinet.Maui.Containers.ItemKey.ToString() -> string!
 override Bruinet.Maui.Containers.ItemObjectBase<TCollection, TSelf>.AllowsScrollLookup.get -> bool
 override Bruinet.Maui.Containers.ItemObjectBase<TCollection, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
@@ -1310,5 +1316,3 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
-Bruinet.Maui.Interfaces.IMauiDriver.ListsCancelFirstInTwoButtonAlerts.get -> bool
-Bruinet.Maui.Interfaces.IMauiDriver.ReportsFullRowFrames.get -> bool

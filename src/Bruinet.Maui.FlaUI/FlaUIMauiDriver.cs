@@ -895,6 +895,72 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         return new AlertContents(title, message, accept, cancel);
     }
 
+    /// <summary>
+    /// Answers the app's open-file dialog with one file, for <see cref="FlaUIMauiElement.AnswerFileDialog"/>.
+    /// </summary>
+    /// <remarks>
+    /// The Windows open dialog (class <c>#32770</c>) is owned by the app's window, so UI
+    /// Automation lists it as that window's child. Its file-name box (id 1148) takes the path
+    /// through the Value pattern and its Open button (id 1) the Invoke pattern: no keyboard,
+    /// mouse or foreground is needed.
+    /// </remarks>
+    internal void AnswerFileDialog(string path, int timeoutMs)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        if (!File.Exists(path))
+            throw new FileNotFoundException("The file to answer the dialog with does not exist.", path);
+
+        timeoutMs = Bruinet.Core.Calls.CallBudget.Within(timeoutMs);
+        var stopwatch = Stopwatch.StartNew();
+        AutomationElement? dialog;
+        while ((dialog = TryFindFileDialog(stopwatch.ElapsedMilliseconds > FileDialogDesktopSearchAfterMs)) is null)
+        {
+            if (stopwatch.ElapsedMilliseconds >= timeoutMs)
+                throw new ElementNotFoundException(Locator.ByClassName(FileDialogClass), timeoutMs);
+            WaitHelper.Pause(100);
+        }
+
+        var nameBox = dialog.FindFirstDescendant(_conditionFactory.ByControlType(ControlType.Edit)
+                          .And(_conditionFactory.ByAutomationId(FileNameBoxId)))
+                      ?? throw new ElementNotFoundException(Locator.ByAutomationId(FileNameBoxId));
+        if (!nameBox.Patterns.Value.TryGetPattern(out var value))
+            throw new RouteUnavailableException("The file dialog's name box offers no Value pattern.");
+        value.SetValue(path);
+
+        var open = dialog.FindFirstChild(_conditionFactory.ByControlType(ControlType.Button)
+                       .And(_conditionFactory.ByAutomationId(OpenButtonId)))
+                   ?? throw new ElementNotFoundException(Locator.ByAutomationId(OpenButtonId));
+        if (!open.Patterns.Invoke.TryGetPattern(out var invoke))
+            throw new RouteUnavailableException("The file dialog's Open button offers no Invoke pattern.");
+        invoke.Invoke();
+
+        var closeBy = Math.Max(timeoutMs, stopwatch.ElapsedMilliseconds + 2_000);
+        while (TryFindFileDialog(searchDesktop: false) is not null)
+        {
+            if (stopwatch.ElapsedMilliseconds >= closeBy)
+                throw new BruinetException($"The file dialog did not close after choosing '{Path.GetFileName(path)}'.");
+            WaitHelper.Pause(100);
+        }
+    }
+
+    private const string FileDialogClass = "#32770";
+    private const string FileNameBoxId = "1148";
+    private const string OpenButtonId = "1";
+
+    // Searching the desktop walks every top-level window (seconds), so it only backs up the
+    // child search when the dialog is slow to show up there.
+    private const int FileDialogDesktopSearchAfterMs = 3_000;
+
+    private AutomationElement? TryFindFileDialog(bool searchDesktop)
+    {
+        var condition = _conditionFactory.ByClassName(FileDialogClass);
+        var dialog = RootElement.FindFirstChild(condition);
+        if (dialog is not null || !searchDesktop || _application is null)
+            return dialog;
+        return _application.GetAllTopLevelWindows(_automation)
+            .FirstOrDefault(window => window.Properties.ClassName.ValueOrDefault == FileDialogClass);
+    }
+
     /// <summary>The dialog on screen, or null.</summary>
     internal IMauiElement? TryFindActiveDialogRoot()
     {

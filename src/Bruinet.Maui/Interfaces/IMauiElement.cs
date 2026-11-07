@@ -462,6 +462,20 @@ public interface IMauiElement
             $"{GetType().Name} does not implement TryFindActiveDialog. Ask IMauiTestContext.AppElement.");
 
     /// <summary>
+    /// Answers the platform's open-file dialog, which the app showed through its file picker,
+    /// with one file, as a user who typed the path and chose Open. Waits for the dialog to
+    /// appear and to close.
+    /// </summary>
+    /// <param name="path">The full path of an existing file.</param>
+    /// <param name="timeoutMs">How long to wait for the dialog to appear and to close.</param>
+    /// <exception cref="RouteUnavailableException">
+    /// Not the app element, or this platform has no route to answer the dialog.
+    /// </exception>
+    void AnswerFileDialog(string path, int timeoutMs)
+        => throw new RouteUnavailableException(
+            $"{GetType().Name} does not implement AnswerFileDialog. Ask IMauiTestContext.AppElement.");
+
+    /// <summary>
     /// An element the app declared by <c>AutomationId</c>, whether or not the platform's tree
     /// shows it. Null when there is none.
     /// </summary>
