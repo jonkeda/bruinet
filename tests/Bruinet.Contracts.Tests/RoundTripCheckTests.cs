@@ -157,4 +157,24 @@ public sealed class RoundTripCheckTests
         Assert.Equal(new RoundTripField("a", "b", RoundTripKind.CalendarDay), RoundTripField.Day("a", "b"));
         Assert.Equal(RoundTripKind.IdsIncluded, RoundTripField.IdsKept("employees", "employee_ids").Kind);
     }
+
+    [Fact]
+    public void FormBody_ReadsAsText_AndMatchesNumbersReadBack()
+    {
+        var result = RoundTripCheck.Compare("rt",
+            "ticket_number=ZZ%201&contact_id=101&cost=12.5&ticket_date=2026-11-07",
+            """{"ticket_number":"ZZ 1","contact_id":101,"cost":12.50,"ticket_date":"2026-11-07 00:00:00"}""",
+            [RoundTripField.Same("ticket_number"), RoundTripField.Same("contact_id"), RoundTripField.Number("cost"), RoundTripField.Day("ticket_date")]);
+
+        Assert.Empty(result.Issues);
+        Assert.Equal(4, result.ItemCount);
+    }
+
+    [Fact]
+    public void FormBody_ChangedValue_Fails()
+    {
+        var result = RoundTripCheck.Compare("rt", "contact_id=101", """{"contact_id":102}""", ["contact_id"]);
+
+        Assert.Single(result.Failures);
+    }
 }

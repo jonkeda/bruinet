@@ -19,6 +19,10 @@ public static class RoundTripCheck
     /// Compares sent and read-back values whose paths differ, such as <c>contact.id</c> sent to
     /// Heimdall and <c>contact_id</c> read back from Bouw. Paths are dot-separated property names.
     /// </summary>
+    /// <remarks>
+    /// A form or multipart body, as the exchange log records it (<c>key=value&amp;...</c>), reads as an
+    /// object of text values. A form has no numbers, so a sent text read back as the same number matches.
+    /// </remarks>
     public static ContractResult Compare(string name, string? sentJson, string? readJson, IEnumerable<RoundTripField> fields)
     {
         var result = new ContractResult(name);
@@ -34,7 +38,8 @@ public static class RoundTripCheck
             return result;
         }
 
-        using var sent = JsonDocument.Parse(sentJson);
+        var sentForm = IsForm(sentJson);
+        using var sent = JsonDocument.Parse(sentForm ? FormAsJson(sentJson) : sentJson);
         using var read = JsonDocument.Parse(readJson);
         foreach (var field in fields)
         {
@@ -86,7 +91,7 @@ public static class RoundTripCheck
                         case ValueMatch.Different:
                             result.Add(ContractSeverity.Failure, location, $"Sent {sentValue.GetRawText()}, read back {readValue.GetRawText()}.");
                             break;
-                        case ValueMatch.SameValueOtherKind:
+                        case ValueMatch.SameValueOtherKind when !sentForm:
                             result.Add(ContractSeverity.Warning, location,
                                 $"Sent {sentValue.GetRawText()}, read back {readValue.GetRawText()}: same value, different JSON kind.");
                             break;
@@ -198,6 +203,20 @@ public static class RoundTripCheck
 
         return JsonElement.DeepEquals(sent, read) ? ValueMatch.Equal : ValueMatch.Different;
     }
+
+    private static bool IsForm(string body)
+        => body.TrimStart() is { Length: > 0 } text && text[0] is not ('{' or '[');
+
+    // The first value of a repeated key wins, as most form readers do.
+    private static string FormAsJson(string body)
+    {
+        var values = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var pair in body.Split('&', StringSplitOptions.RemoveEmptyEntries).Select(pair => pair.Split('=', 2)))
+            values.TryAdd(Decode(pair[0]), pair.Length > 1 ? Decode(pair[1]) : string.Empty);
+        return JsonSerializer.Serialize(values);
+    }
+
+    private static string Decode(string text) => Uri.UnescapeDataString(text.Replace('+', ' '));
 
     private static bool IsEmpty(JsonElement value)
         => value.ValueKind == JsonValueKind.Null
