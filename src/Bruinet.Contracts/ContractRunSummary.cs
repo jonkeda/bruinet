@@ -3,25 +3,29 @@ using System.Text;
 
 namespace Bruinet.Contracts;
 
+/// <summary>One endpoint's outcome in one report: <c>Validated</c>, <c>Mismatch</c> or <c>Blocked</c>.</summary>
+/// <param name="Module">The module the report belongs to.</param>
+/// <param name="Endpoint">The endpoint, or the name of a check such as a round trip.</param>
+/// <param name="Status">The outcome.</param>
+public sealed record ContractOutcome(string Module, string Endpoint, string Status)
+{
+    public static ContractOutcome From(string module, ContractResult result)
+        => new(module, result.Endpoint,
+            result.Failures.Any() ? ContractRunSummary.Mismatch
+            : result.Blocked.Any() ? ContractRunSummary.Blocked
+            : ContractRunSummary.Validated);
+}
+
 /// <summary>
 /// One summary per test run: every registered endpoint with read or write and Validated, Mismatch,
 /// Blocked or Skipped. An endpoint no report of this run covered is Skipped, which is not a pass.
 /// </summary>
-public sealed class ContractRunSummary
+public static class ContractRunSummary
 {
-    private readonly Lock _gate = new();
-    private readonly List<(string Module, ContractResult Result)> _recorded = [];
-
-    /// <summary>Records one module report's results and returns the summary of everything recorded so far.</summary>
-    public string Record(string reportName, IEnumerable<ContractResult> results, IReadOnlyList<IContractModule> modules)
-    {
-        lock (_gate)
-        {
-            var module = ModuleName(reportName);
-            _recorded.AddRange(results.Select(result => (module, result)));
-            return Render(modules.Select(registered => (registered.Name, registered.Contracts)).ToList(), _recorded);
-        }
-    }
+    public const string Validated = "Validated";
+    public const string Mismatch = "Mismatch";
+    public const string Blocked = "Blocked";
+    public const string Skipped = "Skipped";
 
     /// <summary>The module of a report name: <c>Contacts-Create</c> belongs to <c>Contacts</c>.</summary>
     public static string ModuleName(string reportName) => reportName.Split('-', 2)[0];
@@ -29,17 +33,21 @@ public sealed class ContractRunSummary
     public static string Render(
         IReadOnlyList<(string Name, IReadOnlyList<DtoContract> Contracts)> modules,
         IReadOnlyList<(string Module, ContractResult Result)> recorded)
+        => Render(modules, recorded.Select(entry => ContractOutcome.From(entry.Module, entry.Result)).ToList());
+
+    public static string Render(
+        IReadOnlyList<(string Name, IReadOnlyList<DtoContract> Contracts)> modules,
+        IReadOnlyList<ContractOutcome> outcomes)
     {
         var rows = modules
             .SelectMany(module => module.Contracts.Distinct().Select(contract => (
                 Module: module.Name,
                 contract.Endpoint,
                 Kind: contract.Method == "GET" ? "read" : "write",
-                Status: Status(recorded.Where(entry => entry.Module == module.Name && entry.Result.Endpoint == contract.Endpoint)
-                    .Select(entry => entry.Result)))))
+                Status: Worst(outcomes.Where(outcome => outcome.Module == module.Name && outcome.Endpoint == contract.Endpoint)))))
             .ToList();
         var registered = rows.Select(row => (row.Module, row.Endpoint)).ToHashSet();
-        var other = recorded.Where(entry => !registered.Contains((entry.Module, entry.Result.Endpoint))).ToList();
+        var other = outcomes.Where(outcome => !registered.Contains((outcome.Module, outcome.Endpoint))).ToList();
 
         var builder = new StringBuilder();
         builder.AppendLine("# Contract run summary");
@@ -63,21 +71,21 @@ public sealed class ContractRunSummary
             builder.AppendLine();
             builder.AppendLine("| Module | Check | Status |");
             builder.AppendLine("|---|---|---|");
-            foreach (var group in other.GroupBy(entry => (entry.Module, entry.Result.Endpoint)))
-                builder.AppendLine(CultureInfo.InvariantCulture, $"| {group.Key.Module} | {group.Key.Endpoint} | {Status(group.Select(entry => entry.Result))} |");
+            foreach (var group in other.GroupBy(outcome => (outcome.Module, outcome.Endpoint)))
+                builder.AppendLine(CultureInfo.InvariantCulture, $"| {group.Key.Module} | {group.Key.Endpoint} | {Worst(group)} |");
         }
 
         return builder.ToString();
     }
 
     // The worst outcome wins when several reports of one run checked the same endpoint.
-    private static string Status(IEnumerable<ContractResult> results)
+    private static string Worst(IEnumerable<ContractOutcome> outcomes)
     {
-        var list = results.ToList();
-        if (list.Count == 0)
-            return "Skipped";
-        if (list.Any(result => result.Failures.Any()))
-            return "Mismatch";
-        return list.Any(result => result.Blocked.Any()) ? "Blocked" : "Validated";
+        var statuses = outcomes.Select(outcome => outcome.Status).ToList();
+        if (statuses.Count == 0)
+            return Skipped;
+        if (statuses.Contains(Mismatch))
+            return Mismatch;
+        return statuses.Contains(Blocked) ? Blocked : Validated;
     }
 }

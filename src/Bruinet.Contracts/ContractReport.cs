@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text;
+using System.Text.Json;
 
 namespace Bruinet.Contracts;
 
@@ -10,7 +11,8 @@ namespace Bruinet.Contracts;
 public sealed class ContractRunFolder
 {
     private readonly Func<IReadOnlyList<IContractModule>> _modules;
-    private readonly ContractRunSummary _summary = new();
+    private const string OutcomesFile = "outcomes.json";
+    private static readonly Lock Gate = new();
 
     /// <param name="directory">The run folder; see <see cref="DirectoryFor"/>.</param>
     /// <param name="modules">The registered modules, read when the summary is written.</param>
@@ -38,7 +40,11 @@ public sealed class ContractRunFolder
         return start;
     }
 
-    /// <summary>Writes <c>{report}/report.md</c> and rewrites the run's <c>summary.md</c>. Returns the report path.</summary>
+    /// <summary>
+    /// Writes <c>{report}/report.md</c> and <c>{report}/outcomes.json</c>, then rewrites the run's <c>summary.md</c>
+    /// from every report's outcomes in the folder, so separate test processes of one run share one summary.
+    /// Writing a report again replaces its earlier outcomes. Returns the report path.
+    /// </summary>
     public string Write(
         string report,
         string environment,
@@ -51,8 +57,29 @@ public sealed class ContractRunFolder
         System.IO.Directory.CreateDirectory(directory);
         var path = Path.Combine(directory, "report.md");
         File.WriteAllText(path, ContractReport.Render(report, environment, list, note, unregistered));
-        File.WriteAllText(Path.Combine(Directory, "summary.md"), _summary.Record(report, list, _modules()));
+
+        var module = ContractRunSummary.ModuleName(report);
+        lock (Gate)
+        {
+            File.WriteAllText(Path.Combine(directory, OutcomesFile),
+                JsonSerializer.Serialize(list.Select(result => ContractOutcome.From(module, result)).ToList()));
+            File.WriteAllText(Path.Combine(Directory, "summary.md"),
+                ContractRunSummary.Render(_modules().Select(registered => (registered.Name, registered.Contracts)).ToList(), ReadOutcomes()));
+        }
+
         return path;
+    }
+
+    /// <summary>The outcomes of every report written to this run folder so far, by any process.</summary>
+    public IReadOnlyList<ContractOutcome> ReadOutcomes()
+    {
+        if (!System.IO.Directory.Exists(Directory))
+            return [];
+
+        return System.IO.Directory.EnumerateFiles(Directory, OutcomesFile, SearchOption.AllDirectories)
+            .OrderBy(file => file, StringComparer.Ordinal)
+            .SelectMany(file => JsonSerializer.Deserialize<List<ContractOutcome>>(File.ReadAllText(file)) ?? [])
+            .ToList();
     }
 }
 

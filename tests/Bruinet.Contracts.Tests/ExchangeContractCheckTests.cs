@@ -167,6 +167,29 @@ public sealed class ExchangeContractCheckTests
         }
     }
 
+    [Fact]
+    public void RunFolder_SummaryKeepsReportsFromEarlierProcessesAndTheirLatestOutcome()
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "bruinet-contracts-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            var blocked = new ContractResult(ItemDetail.Endpoint);
+            blocked.Add(ContractSeverity.Blocked, "$", "no call");
+            new ContractRunFolder(directory, () => [new ItemModule()]).Write("Items", "Acceptance", [new ContractResult("GET item")]);
+            new ContractRunFolder(directory, () => [new ItemModule()]).Write("Items-Create", "Acceptance", [blocked]);
+            new ContractRunFolder(directory, () => [new ItemModule()]).Write("Items-Create", "Acceptance", [new ContractResult(ItemDetail.Endpoint)]);
+
+            var summary = File.ReadAllText(Path.Combine(directory, "summary.md"));
+            Assert.Contains("| Items | `GET item` | read | Validated |", summary, StringComparison.Ordinal);
+            Assert.Contains("| Items | `GET item/{id}` | read | Validated |", summary, StringComparison.Ordinal);
+        }
+        finally
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+        }
+    }
+
     private static ContractResult Run(ContractExchange? exchange)
         => ExchangeContractCheck.Check(exchange, ItemDetail, DtoContractValidatorTests.Options, Acceptance);
 

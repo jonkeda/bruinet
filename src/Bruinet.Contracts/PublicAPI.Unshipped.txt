@@ -47,6 +47,14 @@ Bruinet.Contracts.ContractIssue.Path.init -> void
 Bruinet.Contracts.ContractIssue.Severity.get -> Bruinet.Contracts.ContractSeverity
 Bruinet.Contracts.ContractIssue.Severity.init -> void
 Bruinet.Contracts.ContractModules
+Bruinet.Contracts.ContractOutcome
+Bruinet.Contracts.ContractOutcome.ContractOutcome(string! Module, string! Endpoint, string! Status) -> void
+Bruinet.Contracts.ContractOutcome.Endpoint.get -> string!
+Bruinet.Contracts.ContractOutcome.Endpoint.init -> void
+Bruinet.Contracts.ContractOutcome.Module.get -> string!
+Bruinet.Contracts.ContractOutcome.Module.init -> void
+Bruinet.Contracts.ContractOutcome.Status.get -> string!
+Bruinet.Contracts.ContractOutcome.Status.init -> void
 Bruinet.Contracts.ContractReport
 Bruinet.Contracts.ContractResult
 Bruinet.Contracts.ContractResult.Add(Bruinet.Contracts.ContractSeverity severity, string! location, string! message) -> void
@@ -63,10 +71,9 @@ Bruinet.Contracts.ContractResult.Warnings.get -> System.Collections.Generic.IEnu
 Bruinet.Contracts.ContractRunFolder
 Bruinet.Contracts.ContractRunFolder.ContractRunFolder(string! directory, System.Func<System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.IContractModule!>!>! modules) -> void
 Bruinet.Contracts.ContractRunFolder.Directory.get -> string!
+Bruinet.Contracts.ContractRunFolder.ReadOutcomes() -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.ContractOutcome!>!
 Bruinet.Contracts.ContractRunFolder.Write(string! report, string! environment, System.Collections.Generic.IEnumerable<Bruinet.Contracts.ContractResult!>! results, string? note = null, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.UnregisteredEndpoint!>? unregistered = null) -> string!
 Bruinet.Contracts.ContractRunSummary
-Bruinet.Contracts.ContractRunSummary.ContractRunSummary() -> void
-Bruinet.Contracts.ContractRunSummary.Record(string! reportName, System.Collections.Generic.IEnumerable<Bruinet.Contracts.ContractResult!>! results, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.IContractModule!>! modules) -> string!
 Bruinet.Contracts.ContractSeverity
 Bruinet.Contracts.ContractSeverity.Blocked = 2 -> Bruinet.Contracts.ContractSeverity
 Bruinet.Contracts.ContractSeverity.Failure = 0 -> Bruinet.Contracts.ContractSeverity
@@ -181,6 +188,10 @@ Bruinet.Contracts.UnregisteredEndpoint.Path.get -> string!
 Bruinet.Contracts.UnregisteredEndpoint.Path.init -> void
 Bruinet.Contracts.UnregisteredEndpoint.UnregisteredEndpoint(string! Method, string? Host, string! Path, int Count) -> void
 Bruinet.Contracts.UnregisteredEndpoints
+const Bruinet.Contracts.ContractRunSummary.Blocked = "Blocked" -> string!
+const Bruinet.Contracts.ContractRunSummary.Mismatch = "Mismatch" -> string!
+const Bruinet.Contracts.ContractRunSummary.Skipped = "Skipped" -> string!
+const Bruinet.Contracts.ContractRunSummary.Validated = "Validated" -> string!
 override Bruinet.Contracts.ContractResult.ToString() -> string!
 static Bruinet.Contracts.ContractExchanges.AbsolutePath(string! path) -> string!
 static Bruinet.Contracts.ContractExchanges.HasData(string? body) -> bool
@@ -189,11 +200,13 @@ static Bruinet.Contracts.ContractExchanges.Matching(System.Collections.Generic.I
 static Bruinet.Contracts.ContractExchanges.Newest(System.Collections.Generic.IEnumerable<Bruinet.Contracts.ContractExchange!>! exchanges, Bruinet.Contracts.DtoContract! contract, System.DateTimeOffset since) -> Bruinet.Contracts.ContractExchange?
 static Bruinet.Contracts.ContractModules.AllContracts(System.Collections.Generic.IEnumerable<Bruinet.Contracts.IContractModule!>! modules) -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.DtoContract!>!
 static Bruinet.Contracts.ContractModules.FromAssembly(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.IContractModule!>!
+static Bruinet.Contracts.ContractOutcome.From(string! module, Bruinet.Contracts.ContractResult! result) -> Bruinet.Contracts.ContractOutcome!
 static Bruinet.Contracts.ContractReport.Render(string! module, string! environment, System.Collections.Generic.IEnumerable<Bruinet.Contracts.ContractResult!>! results, string? note = null, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.UnregisteredEndpoint!>? unregistered = null) -> string!
 static Bruinet.Contracts.ContractRunFolder.DirectoryFor(string! root, string? runName) -> string!
 static Bruinet.Contracts.ContractRunFolder.FindRepositoryRoot(string! start) -> string!
 static Bruinet.Contracts.ContractRunSummary.ModuleName(string! reportName) -> string!
 static Bruinet.Contracts.ContractRunSummary.Render(System.Collections.Generic.IReadOnlyList<(string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.DtoContract!>! Contracts)>! modules, System.Collections.Generic.IReadOnlyList<(string! Module, Bruinet.Contracts.ContractResult! Result)>! recorded) -> string!
+static Bruinet.Contracts.ContractRunSummary.Render(System.Collections.Generic.IReadOnlyList<(string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.DtoContract!>! Contracts)>! modules, System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.ContractOutcome!>! outcomes) -> string!
 static Bruinet.Contracts.DtoContractValidator.HasOffset(string! text) -> bool
 static Bruinet.Contracts.DtoContractValidator.IsDateOnly(string? text) -> bool
 static Bruinet.Contracts.DtoContractValidator.Validate(string? json, Bruinet.Contracts.DtoContract! contract, System.Text.Json.JsonSerializerOptions! options) -> Bruinet.Contracts.ContractResult!

@@ -35,8 +35,9 @@ status, the response and request bodies, whether the body was truncated, and the
 2. For each contract, take `ContractExchanges.Newest(exchanges, contract, started)`.
 3. Check it with `ExchangeContractCheck.Check(exchange, contract, options, evidence)`. `ContractEvidence` names the
    environment the run targets and the ones it never accepts; a call a local host answered is blocked.
-4. Write the results with `ContractRunFolder.Write`. It writes `{report}/report.md` and rewrites the run's
-   `summary.md`; `UnregisteredEndpoints.Find` lists the calls no contract covers.
+4. Write the results with `ContractRunFolder.Write`. It writes `{report}/report.md` and `{report}/outcomes.json`,
+   then rewrites the run's `summary.md` from every report in the folder, so several test processes with the same
+   run folder share one summary. `UnregisteredEndpoints.Find` lists the calls no contract covers.
 
 For a create or update, `RoundTripCheck` compares what the app sent with what the service returned when read back.
 
