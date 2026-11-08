@@ -160,6 +160,10 @@ public static class RoundTripCheck
             var id = item.ValueKind == JsonValueKind.Object && item.TryGetProperty("id", out var nested) ? nested : item;
             if (id.ValueKind == JsonValueKind.Number && id.TryGetInt64(out var number))
                 ids.Add(number);
+            // A form sends ids as text, and an empty value for no ids.
+            else if (id.ValueKind == JsonValueKind.String
+                && long.TryParse(id.GetString(), System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var text))
+                ids.Add(text);
         }
 
         return ids;
@@ -207,13 +211,41 @@ public static class RoundTripCheck
     private static bool IsForm(string body)
         => body.TrimStart() is { Length: > 0 } text && text[0] is not ('{' or '[');
 
-    // The first value of a repeated key wins, as most form readers do.
+    // The first value of a repeated key wins, as most form readers do. Indexed keys (ids[0], ids[1] or ids[])
+    // are also gathered into an array under the base name, so a field can compare the whole list.
     private static string FormAsJson(string body)
     {
         var values = new Dictionary<string, string>(StringComparer.Ordinal);
+        var lists = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (var pair in body.Split('&', StringSplitOptions.RemoveEmptyEntries).Select(pair => pair.Split('=', 2)))
-            values.TryAdd(Decode(pair[0]), pair.Length > 1 ? Decode(pair[1]) : string.Empty);
-        return JsonSerializer.Serialize(values);
+        {
+            var key = Decode(pair[0]);
+            var value = pair.Length > 1 ? Decode(pair[1]) : string.Empty;
+            values.TryAdd(key, value);
+            if (ListName(key) is { } name)
+            {
+                if (!lists.TryGetValue(name, out var list))
+                    lists[name] = list = [];
+                list.Add(value);
+            }
+        }
+
+        var json = new Dictionary<string, object>(StringComparer.Ordinal);
+        foreach (var (key, value) in values)
+            json[key] = value;
+        foreach (var (name, list) in lists)
+            json.TryAdd(name, list);
+        return JsonSerializer.Serialize(json);
+    }
+
+    // "ids[0]" and "ids[]" name the list "ids"; a nested key such as "a[0][b]" is not a list of values.
+    private static string? ListName(string key)
+    {
+        var open = key.IndexOf('[');
+        if (open <= 0 || !key.EndsWith(']') || key.IndexOf('[', open + 1) >= 0)
+            return null;
+        var index = key[(open + 1)..^1];
+        return index.Length == 0 || index.All(char.IsAsciiDigit) ? key[..open] : null;
     }
 
     private static string Decode(string text) => Uri.UnescapeDataString(text.Replace('+', ' '));

@@ -89,7 +89,43 @@ public sealed class RoundTripCheckTests
     }
 
     [Theory]
-    [InlineData("""[1,2,3]""", true, ContractSeverity.Warning)]
+    [InlineData("employee_ids[0]=42", "[42]", true)]
+    [InlineData("employee_ids=", "[]", true)]
+    [InlineData("employee_ids[0]=42", "[]", false)]
+    public void IdList_ReadsFormTextIds(string form, string readIds, bool passes)
+    {
+        var sentPath = form[..form.IndexOf('=')];
+        var result = RoundTripCheck.Compare("rt", form, $$"""{"employee_ids":{{readIds}}}""",
+            [new RoundTripField(sentPath, "employee_ids", RoundTripKind.IdList)]);
+
+        Assert.Equal(passes, result.Passed);
+    }
+
+    [Theory]
+    [InlineData("employee_ids%5B0%5D=42&employee_ids%5B1%5D=43", "[42,43]", true)]
+    [InlineData("employee_ids[0]=42&employee_ids[1]=43", "[\"42\",\"43\"]", true)]
+    [InlineData("employee_ids[]=42&employee_ids[]=43", "[42]", false)]
+    [InlineData("employee_ids[0]=42&employee_ids[1]=43", "[42]", false)]
+    public void IdList_GathersIndexedFormKeys(string form, string readIds, bool passes)
+    {
+        var result = RoundTripCheck.Compare("rt", form, $$"""{"employee_ids":{{readIds}}}""",
+            [RoundTripField.Ids("employee_ids")]);
+
+        Assert.Equal(1, result.ItemCount);
+        Assert.Equal(passes, result.Passed);
+    }
+
+    [Fact]
+    public void IndexedFormKeys_StayReadableOneByOne()
+    {
+        var result = RoundTripCheck.Compare("rt", "lines[1]=b&lines[0]=a", """{"first":"a"}""",
+            [new RoundTripField("lines[0]", "first")]);
+
+        Assert.True(result.Passed);
+        Assert.Equal(1, result.ItemCount);
+    }
+
+    [Theory]
     [InlineData("""[2]""", true, null)]
     [InlineData("""[1]""", false, ContractSeverity.Failure)]
     public void IdsIncluded_AllowsIdsTheServiceAdds(string readIds, bool passes, ContractSeverity? severity)
