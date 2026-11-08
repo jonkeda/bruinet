@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   A recording says what it reused and paid for, in its `.timeline.json` and `record_video`'s answer; `BRUINET_VOICE_REUSE=1`
   fails on a missing line instead of spending. `bruinet voice` lists the lines with no clip, `--fill` takes what the local
   cache holds, `--ask` buys the rest, `--prune` deletes what no script says.
+- `bruinet voice --index` writes `speech-clips.md` beside a suite's video scripts: each line, where it is said and its
+  clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Changed
 - The iOS alert button order and the full row frames are driver facts (`IMauiDriver.ListsCancelFirstInTwoButtonAlerts`,
