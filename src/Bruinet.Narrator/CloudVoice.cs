@@ -37,6 +37,7 @@ internal static class CloudVoice
     /// </summary>
     internal static async Task<TimeSpan> ClipAsync(string cache, ClipNames names, ClipLibrary? library, string wavPath, Func<Task<byte[]>> make, CancellationToken cancellationToken)
     {
+        library?.Saw(names.Library, names.Said);
         if (library?.Has(names.Library) == true)
         {
             library.Reused(names.Library);

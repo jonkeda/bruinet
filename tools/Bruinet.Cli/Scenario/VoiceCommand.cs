@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.CommandLine;
 using Bruinet.Narrator;
 
@@ -12,28 +13,34 @@ internal static class VoiceCommand
         var fill = new Option<bool>("--fill") { Description = "Add what the local speech cache holds to the library. Costs nothing." };
         var ask = new Option<bool>("--ask") { Description = "As --fill, and buy the lines found nowhere from the voice's service." };
         var prune = new Option<bool>("--prune") { Description = "Delete the clips no script says any more." };
+        var index = new Option<bool>("--index") { Description = $"Write {IndexFile} beside the video scripts: which clip says which line." };
         var command = new Command("voice", "List the lines of a suite's video scripts that have no clip in its speech folder, and what they would cost.")
         {
             suite,
             fill,
             ask,
             prune,
+            index,
         };
         command.Action(io, (parsed, cancellationToken) =>
         {
             var folder = Path.GetFullPath(parsed.GetValue(suite) ?? ".", io.CurrentDirectory);
             var mode = parsed.GetValue(ask) ? ClipLibraryMode.Buy : parsed.GetValue(fill) ? ClipLibraryMode.Fill : ClipLibraryMode.Count;
-            return RunAsync(io, folder, mode, parsed.GetValue(prune), Environment.GetEnvironmentVariable, cancellationToken);
+            return RunAsync(io, folder, mode, parsed.GetValue(prune), Environment.GetEnvironmentVariable, cancellationToken, parsed.GetValue(index));
         });
         return command;
     }
 
+    /// <summary>The list of a folder's clips, beside its video scripts.</summary>
+    internal const string IndexFile = "speech-clips.md";
+
     /// <summary>Goes through every line of the suite's scripts. Exit 0 when every line has a clip, 1 when some have none, 2 when a script could not be read.</summary>
-    internal static async Task<int> RunAsync(CliIo io, string folder, ClipLibraryMode mode, bool prune, Func<string, string?> read, CancellationToken cancellationToken)
+    internal static async Task<int> RunAsync(CliIo io, string folder, ClipLibraryMode mode, bool prune, Func<string, string?> read, CancellationToken cancellationToken, bool index = false)
     {
         var library = ClipLibrary.Find(folder, read)!;
         library.Mode = mode;
         var problems = 0;
+        var indexed = new List<(string Script, string Title, IReadOnlyList<IndexRow> Rows)>();
         var scratch = Directory.CreateTempSubdirectory("bruinet-voice-").FullName;
         try
         {
@@ -55,10 +62,15 @@ internal static class VoiceCommand
                     var synthesizer = Speech.Find(voice, instructions, folder, read, library: library);
                     if (synthesizer is AzureSpeech or AzureOpenAiSpeech)
                     {
+                        var rows = new List<IndexRow>();
                         foreach (var scene in check.Scenes)
                         {
+                            var before = library.Lines.Count;
                             await BddSceneClips.SpeakAsync(scene, synthesizer, voice, scratch, cancellationToken).ConfigureAwait(false);
+                            rows.AddRange(RowsOf(scene, library.Lines.Skip(before).ToList()));
                         }
+
+                        indexed.Add((path, check.Script.Title, rows));
                     }
                 }
                 catch (VoiceNotConfiguredException exception)
@@ -73,8 +85,66 @@ internal static class VoiceCommand
             Directory.Delete(scratch, recursive: true);
         }
 
-        return await ReportAsync(io, library, prune, problems).ConfigureAwait(false);
+        var exit = await ReportAsync(io, library, prune, problems).ConfigureAwait(false);
+        if (index)
+        {
+            foreach (var group in indexed.GroupBy(script => Path.GetDirectoryName(script.Script)!, StringComparer.OrdinalIgnoreCase))
+            {
+                var file = Path.Combine(group.Key, IndexFile);
+                await File.WriteAllTextAsync(file, Index(group.Key, group.ToList(), library), cancellationToken).ConfigureAwait(false);
+                await io.Out.WriteLineAsync($"Wrote {Path.GetRelativePath(folder, file)}.").ConfigureAwait(false);
+            }
+        }
+
+        return exit;
     }
+
+    /// <summary>A line of the index: where in the video it is said, and its clip.</summary>
+    internal sealed record IndexRow(string Scene, string Where, string Line, string Key);
+
+    // The voice is asked for the intro, each step's line in step order, then the outro: the same order as SpeakAsync.
+    private static IEnumerable<IndexRow> RowsOf(BddVideoScenePlan scene, IReadOnlyList<ClipLine> lines)
+    {
+        var places = new List<(string Where, string Text)>();
+        if (scene.Scene.Intro is { } intro)
+        {
+            places.Add(("Intro", intro));
+        }
+
+        places.AddRange(scene.Says.OrderBy(pair => pair.Key).Select(pair => (pair.Value.Step, pair.Value.Say)));
+        if (scene.Scene.Outro is { } outro)
+        {
+            places.Add(("Outro", outro));
+        }
+
+        for (var i = 0; i < Math.Min(places.Count, lines.Count); i++)
+        {
+            yield return new IndexRow(scene.Scene.Name, places[i].Where, SpokenLine.Parse(places[i].Text).Plain, lines[i].Key);
+        }
+    }
+
+    private static string Index(string folder, IReadOnlyList<(string Script, string Title, IReadOnlyList<IndexRow> Rows)> scripts, ClipLibrary library)
+    {
+        var clips = Path.GetRelativePath(folder, library.Folder).Replace('\\', '/');
+        var text = new System.Text.StringBuilder();
+        text.Append("# Speech clips\n\n");
+        text.Append(CultureInfo.InvariantCulture, $"Written by `bruinet voice --index`; do not edit it by hand. The clips are in [{clips}]({clips}), one `.opus` per spoken line. ");
+        text.Append("A clip is named by a hash of the voice and the words, so a reworded line gets a new clip and the old one goes with `bruinet voice --prune`.\n");
+        foreach (var (script, title, rows) in scripts.OrderBy(script => script.Script, StringComparer.Ordinal))
+        {
+            text.Append(CultureInfo.InvariantCulture, $"\n## {title}\n\nScript: [{Path.GetFileName(script)}]({Path.GetFileName(script)})\n\n");
+            text.Append("| Clip | Where | Line |\n| --- | --- | --- |\n");
+            foreach (var row in rows)
+            {
+                var clip = library.Has(row.Key) ? $"[{row.Key}{ClipLibrary.Extension}]({clips}/{row.Key}{ClipLibrary.Extension})" : $"no clip yet (`{row.Key}`)";
+                text.Append(CultureInfo.InvariantCulture, $"| {clip} | {Cell(row.Scene)}: {Cell(row.Where)} | {Cell(row.Line)} |\n");
+            }
+        }
+
+        return text.ToString();
+    }
+
+    private static string Cell(string text) => string.Join(' ', text.Split((char[])['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)).Replace("|", "\\|", StringComparison.Ordinal);
 
     private static async Task<int> ReportAsync(CliIo io, ClipLibrary library, bool prune, int problems)
     {

@@ -270,6 +270,10 @@ With `BRUINET_VOICE_REUSE=1` a line found nowhere fails the recording instead of
 | `bruinet voice --fill` | adds what the local cache holds, for free |
 | `bruinet voice --ask` | as `--fill`, and buys the rest |
 | `bruinet voice --prune` | deletes the clips no script says any more; refused when a script has errors |
+| `bruinet voice --index` | writes `speech-clips.md` beside the scripts: per video, each line, where it is said, and its clip |
+
+The clip names are hashes, so `--index` is how a person sees which clip says what. Run it with
+`--fill` after recording and commit the lists with the clips; a reworded line changes its row.
 
 ## Azure Speech
 

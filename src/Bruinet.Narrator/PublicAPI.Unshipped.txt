@@ -637,3 +637,10 @@ const Bruinet.Narrator.ClipLibrary.FolderName = "speech" -> string!
 const Bruinet.Narrator.ClipLibrary.ReuseVariable = "BRUINET_VOICE_REUSE" -> string!
 const Bruinet.Narrator.ClipLibrary.Variable = "BRUINET_VOICE_LIBRARY" -> string!
 static Bruinet.Narrator.ClipLibrary.Find(string? configDirectory, System.Func<string!, string?>? read = null) -> Bruinet.Narrator.ClipLibrary?
+Bruinet.Narrator.ClipLibrary.Lines.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Narrator.ClipLine!>!
+Bruinet.Narrator.ClipLine
+Bruinet.Narrator.ClipLine.ClipLine(string! Key, string! Said) -> void
+Bruinet.Narrator.ClipLine.Key.get -> string!
+Bruinet.Narrator.ClipLine.Key.init -> void
+Bruinet.Narrator.ClipLine.Said.get -> string!
+Bruinet.Narrator.ClipLine.Said.init -> void

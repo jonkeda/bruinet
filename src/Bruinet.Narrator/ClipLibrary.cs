@@ -37,6 +37,11 @@ public sealed record BddSpeechUse(int Reused, int Asked, int Characters)
     public string Summary => $"Speech: {Lines} lines, {Reused} reused, {Asked} asked ({Characters} characters)";
 }
 
+/// <summary>A line a cloud voice was asked for, and the clip that holds it.</summary>
+/// <param name="Key">The clip's name in the library.</param>
+/// <param name="Said">What is said: the line, or its SSML when it has markup.</param>
+public sealed record ClipLine(string Key, string Said);
+
 /// <summary>A line no clip was found for, in a recording that may not spend.</summary>
 /// <param name="line">What is said.</param>
 public sealed class VoiceLineMissingException(string line)
@@ -74,6 +79,7 @@ public sealed class ClipLibrary
     private readonly object _gate = new();
     private readonly HashSet<string> _reached = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<string> _missing = [];
+    private readonly List<ClipLine> _lines = [];
     private int _reused;
     private int _asked;
     private int _characters;
@@ -117,6 +123,18 @@ public sealed class ClipLibrary
             lock (_gate)
             {
                 return [.. _missing];
+            }
+        }
+    }
+
+    /// <summary>Every line a voice was asked for so far, in order, found or not.</summary>
+    public IReadOnlyList<ClipLine> Lines
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return [.. _lines];
             }
         }
     }
@@ -198,6 +216,14 @@ public sealed class ClipLibrary
             .ToList();
         left.ForEach(File.Delete);
         return left.Count;
+    }
+
+    internal void Saw(string key, string said)
+    {
+        lock (_gate)
+        {
+            _lines.Add(new ClipLine(key, said));
+        }
     }
 
     internal void Reused(string key)

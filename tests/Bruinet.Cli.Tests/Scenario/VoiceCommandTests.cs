@@ -77,6 +77,20 @@ public sealed class VoiceCommandTests : IDisposable
         Assert.Equal(0, exit);
     }
 
+    [Fact]
+    public async Task TheIndex_ListsEachLine_BesideItsScript()
+    {
+        var line = "A line no cache holds " + Guid.NewGuid().ToString("N");
+        Script(line);
+
+        await Run(ClipLibraryMode.Count, prune: false, index: true);
+
+        var index = File.ReadAllText(Path.Combine(_root, "Features", VoiceCommand.IndexFile));
+        Assert.Contains("## Todo", index, StringComparison.Ordinal);
+        Assert.Contains($"| no clip yet (`", index, StringComparison.Ordinal);
+        Assert.Contains($"| Opening: When I tap Sync | {line} |", index, StringComparison.Ordinal);
+    }
+
     private void Script(string line) => File.WriteAllText(Path.Combine(_root, "Features", "todo.video.md"), $"""
         # Video: Todo
 
@@ -101,11 +115,11 @@ public sealed class VoiceCommandTests : IDisposable
         return path;
     }
 
-    private async Task<(int Exit, string Output, string Errors)> Run(ClipLibraryMode mode, bool prune)
+    private async Task<(int Exit, string Output, string Errors)> Run(ClipLibraryMode mode, bool prune, bool index = false)
     {
         using var output = new StringWriter();
         using var errors = new StringWriter();
-        var exit = await VoiceCommand.RunAsync(new CliIo(TextReader.Null, output, errors, _root, false), _root, mode, prune, Variable, CancellationToken.None);
+        var exit = await VoiceCommand.RunAsync(new CliIo(TextReader.Null, output, errors, _root, false), _root, mode, prune, Variable, CancellationToken.None, index);
         return (exit, output.ToString(), errors.ToString());
     }
 
