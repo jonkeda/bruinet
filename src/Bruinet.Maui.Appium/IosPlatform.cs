@@ -200,50 +200,16 @@ internal sealed class IosPlatform : AppiumPlatform
             buttons.ElementAtOrDefault(0) ?? string.Empty);
     }
 
-    // XCUITest taps an element at its centre. When a tappable row holds its own buttons, the
-    // centre can sit on one of them, and the tap runs that button instead of the row. A user
-    // taps the row where it is free, so the driver does the same.
-    public override bool TryTapFreePoint(AppiumMauiElement element)
-    {
-        var nested = element.Native.FindElements(NestedControls);
-        if (nested.Count == 0)
-            return false;
-
-        var driver = element.Driver;
-        var rect = driver.ElementRect(element.Native.Id);
-        var covered = nested.Select(child => driver.ElementRect(child.Id))
-            .Where(child => child.Width > 0 && child.Height > 0 && child != rect)
-            .ToList();
-        var centre = new System.Drawing.Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
-        if (!covered.Any(child => child.Contains(centre)))
-            return false;
-
-        foreach (var fy in FreePointRows)
-        {
-            foreach (var fx in FreePointColumns)
-            {
-                var point = new System.Drawing.Point(rect.X + (int)(rect.Width * fx), rect.Y + (int)(rect.Height * fy));
-                if (covered.Any(child => child.Contains(point)))
-                    continue;
-
-                driver.Driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
-                {
-                    ["x"] = point.X,
-                    ["y"] = point.Y,
-                });
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static readonly By NestedControls = MobileBy.IosNSPredicate(
+    protected override By NestedControls { get; } = MobileBy.IosNSPredicate(
         "visible == 1 AND type IN {'XCUIElementTypeButton', 'XCUIElementTypeSwitch', 'XCUIElementTypeTextField', " +
         "'XCUIElementTypeSecureTextField', 'XCUIElementTypeTextView', 'XCUIElementTypeLink', 'XCUIElementTypeSlider'}");
 
-    private static readonly double[] FreePointRows = [0.5, 0.25, 0.75, 0.1, 0.9];
-    private static readonly double[] FreePointColumns = [0.1, 0.05, 0.25, 0.5, 0.75, 0.9, 0.95];
+    protected override void TapAt(AppiumDriver driver, System.Drawing.Point point)
+        => driver.ExecuteScript("mobile: tap", new Dictionary<string, object>
+        {
+            ["x"] = point.X,
+            ["y"] = point.Y,
+        });
 
     public override bool PublishesAppRange => false;
 

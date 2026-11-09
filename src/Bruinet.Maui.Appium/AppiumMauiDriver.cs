@@ -676,7 +676,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
             return already;
         }
 
-        var scroller = _driver.FindElements(MobileBy.AndroidUIAutomator(ScrollableSelector(container))).FirstOrDefault();
+        var scroller = AndroidScroller(container);
         if (scroller is null)
         {
             return null;
@@ -685,13 +685,64 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         // Inside a call, what the call has left: a miss used to cost 24 swipes and 25 lookups,
         // near nine seconds, inside one attempt of a 5 s call. Outside a call, the swipes' cap alone.
         var budgetMs = Bruinet.Core.Calls.CallBudget.RemainingOr(int.MaxValue);
-        var gesture = new Dictionary<string, object> { { "elementId", ((AppiumElement)scroller).Id } };
+        var gesture = new Dictionary<string, object> { { "elementId", scroller.Id } };
+        var horizontal = IsHorizontalScroller(scroller);
+        var strip = horizontal ? TryGetResourceId(container) ?? string.Empty : null;
+        var directions = !horizontal ? ScrollDirections
+            : _lastSideDirection.TryGetValue(strip!, out var last) && last == "right" ? ["left", "right"] : SideScrollDirections;
 
-        return ScrollUntil(gesture, ScrollDirections, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false,
-                scroller.Rect)
-            ? ReResolveAfterScrolling(locator) ?? FindOnScreen(locator)
-            : null;
+        var found = ScrollUntil(gesture, directions, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false,
+            scroller.Rect, horizontal ? () => ScrollPosition(scroller) : null,
+            horizontal ? direction => _lastSideDirection[strip!] = direction : null);
+        return found ? ReResolveAfterScrolling(locator) ?? FindOnScreen(locator) : null;
     }
+
+    /// <summary>
+    /// The view to swipe: the container when it scrolls, else the first scroller inside it. Without
+    /// a container, the first scroller that is not a horizontal strip, or none: a project page's
+    /// first is its tab strip, and a lookup that names no container is a lookup down the page.
+    /// </summary>
+    /// <remarks>
+    /// A MAUI horizontal ScrollView is an <c>android.widget.ScrollView</c> that carries the
+    /// AutomationId and does not scroll, around an <c>android.widget.HorizontalScrollView</c> that does.
+    /// </remarks>
+    private AppiumElement? AndroidScroller(IMauiElement? container)
+    {
+        if (TryGetResourceId(container) is not null)
+        {
+            var root = _driver.FindElements(MobileBy.AndroidUIAutomator(ScrollableSelector(container))).FirstOrDefault();
+            if (root is null || root.GetAttribute("scrollable") == "true")
+            {
+                return root;
+            }
+
+            return root.FindElements(MobileBy.AndroidUIAutomator(AnyScrollable)).OfType<AppiumElement>().FirstOrDefault() ?? root;
+        }
+
+        return _driver.FindElements(MobileBy.AndroidUIAutomator(AnyScrollable))
+            .FirstOrDefault(scroller => !IsHorizontalScroller(scroller));
+    }
+
+    /// <summary>
+    /// Where a scroller stands: its first descendant on screen with an id or a text, and that view's
+    /// clipped bounds. Either changes when the content moves. A MAUI tab button is not clickable.
+    /// </summary>
+    private static string? ScrollPosition(AppiumElement scroller)
+    {
+        var first = scroller.FindElements(MobileBy.AndroidUIAutomator(NamedView)).FirstOrDefault();
+        return first is null ? null : first.Id + first.GetAttribute("bounds");
+    }
+
+    private const string NamedView = "new UiSelector().resourceIdMatches(\".+\"); new UiSelector().textMatches(\".+\")";
+
+    // The way each horizontal strip last moved to show a view: the next search looks back that way
+    // first. Tabs are opened back and forth, and the wrong way first cost the whole call's budget.
+    private readonly Dictionary<string, string> _lastSideDirection = new(StringComparer.Ordinal);
+
+    private static bool IsHorizontalScroller(IWebElement scroller)
+        => scroller.GetAttribute("className") == "android.widget.HorizontalScrollView";
+
+    private const string AnyScrollable = "new UiSelector().scrollable(true)";
 
     /// <summary>
     /// The one scroll routine (scroll-to-find and an element's scroll into view): swipes one
@@ -710,10 +761,18 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// swipe is tried again from further along it (<see cref="LaterStarts"/>) before a direction is
     /// given up; a start that moves the page is kept.
     /// </param>
+    /// <param name="position">
+    /// Where the scroller stands, or null to trust the gesture's answer. UiAutomator2 answers false
+    /// for every swipe of a <c>HorizontalScrollView</c>, also one that moved it, so with a position
+    /// a swipe that left it unchanged ends the direction, without the later starts.
+    /// </param>
+    /// <param name="foundIn">Told the direction whose swipe made <paramref name="found"/> hold.</param>
     /// <returns>Whether <paramref name="found"/> held after a swipe.</returns>
     internal bool ScrollUntil(IReadOnlyDictionary<string, object> gesture, IReadOnlyList<string> directions,
-        Func<bool> found, int budgetMs, bool atLeastOneSwipe, System.Drawing.Rectangle? bounds = null)
+        Func<bool> found, int budgetMs, bool atLeastOneSwipe, System.Drawing.Rectangle? bounds = null,
+        Func<string?>? position = null, Action<string>? foundIn = null)
     {
+        var where = position?.Invoke();
         var clock = System.Diagnostics.Stopwatch.StartNew();
         var swiped = false;
         foreach (var direction in directions)
@@ -751,7 +810,20 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 swiped = true;
                 if (found())
                 {
+                    foundIn?.Invoke(direction);
                     return true;
+                }
+
+                if (position is not null)
+                {
+                    var now = position();
+                    if (now == where)
+                    {
+                        break;
+                    }
+
+                    where = now;
+                    continue;
                 }
 
                 if (more)
@@ -779,8 +851,22 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// </summary>
     internal static IEnumerable<IReadOnlyDictionary<string, object>> LaterStarts(System.Drawing.Rectangle area, string direction)
     {
+        var sideways = direction is "left" or "right";
         foreach (var share in new[] { 0.5, 0.25 })
         {
+            if (sideways)
+            {
+                var width = Math.Max(1, (int)(area.Width * share));
+                yield return new Dictionary<string, object>
+                {
+                    { "left", direction == "left" ? area.Right - width : area.Left },
+                    { "top", area.Top },
+                    { "width", width },
+                    { "height", area.Height },
+                };
+                continue;
+            }
+
             var height = Math.Max(1, (int)(area.Height * share));
             var top = direction == "up" ? area.Bottom - height : area.Top;
             yield return new Dictionary<string, object>
@@ -910,6 +996,8 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
     /// <summary>Down first: a page opens at its top, and most lookups are for what follows.</summary>
     private static readonly string[] ScrollDirections = ["down", "up"];
+
+    private static readonly string[] SideScrollDirections = ["right", "left"];
 
     /// <summary>Swipes each way before giving up; the sample's longest page is a few screens.</summary>
     private const int MaxScrollSwipes = 12;

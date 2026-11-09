@@ -182,7 +182,50 @@ internal abstract class AppiumPlatform
     /// Taps the element at a point none of its own controls covers, when its centre is covered.
     /// </summary>
     /// <returns>Whether it tapped; false leaves the plain tap to the caller.</returns>
-    public virtual bool TryTapFreePoint(AppiumMauiElement element) => false;
+    /// <remarks>
+    /// Appium taps an element at its centre. When a tappable row holds its own buttons, the centre
+    /// can sit on one of them, and the tap runs that button instead of the row. A user taps the row
+    /// where it is free, so the driver does the same.
+    /// </remarks>
+    public bool TryTapFreePoint(AppiumMauiElement element)
+    {
+        var nested = element.Native.FindElements(NestedControls);
+        if (nested.Count == 0)
+            return false;
+
+        var driver = element.Driver;
+        var rect = driver.ElementRect(element.Native.Id);
+        var covered = nested.Select(child => driver.ElementRect(child.Id))
+            .Where(child => child.Width > 0 && child.Height > 0 && child != rect)
+            .ToList();
+        var centre = new System.Drawing.Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
+        if (!covered.Any(child => child.Contains(centre)))
+            return false;
+
+        foreach (var fy in FreePointRows)
+        {
+            foreach (var fx in FreePointColumns)
+            {
+                var point = new System.Drawing.Point(rect.X + (int)(rect.Width * fx), rect.Y + (int)(rect.Height * fy));
+                if (covered.Any(child => child.Contains(point)))
+                    continue;
+
+                TapAt(driver.Driver, point);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>The controls a tappable element can hold, found below it.</summary>
+    protected abstract By NestedControls { get; }
+
+    /// <summary>One tap at a point on screen, in the device's pixels.</summary>
+    protected abstract void TapAt(AppiumDriver driver, System.Drawing.Point point);
+
+    private static readonly double[] FreePointRows = [0.5, 0.25, 0.75, 0.1, 0.9];
+    private static readonly double[] FreePointColumns = [0.1, 0.05, 0.25, 0.5, 0.75, 0.9, 0.95];
 
     /// <summary>Whether AppSupport publishes a range control's bounds in app units here.</summary>
     public abstract bool PublishesAppRange { get; }

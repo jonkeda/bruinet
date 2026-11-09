@@ -56,6 +56,16 @@ internal sealed class AndroidPlatform : AppiumPlatform
             ? new Bruinet.Core.Recording.RecordingTarget.AndroidDevice(serial)
             : null;
 
+    /// <summary>
+    /// A popup the app draws itself: a view added to the decor view above the app's content. Probed
+    /// 2026-11-05 on API 36: a Core.Apps drawer was the decor's second child, a full-screen
+    /// ViewGroup; the childless status-bar background came after it and is skipped.
+    /// </summary>
+    public override AppiumElement? TryFindPopupWindow(AppiumDriver driver)
+        => driver.FindElements(PopupOverlay).LastOrDefault(element => element.Displayed);
+
+    private static readonly By PopupOverlay = By.XPath("/hierarchy/*[1]/*[position()>1][*]");
+
     public override bool FindsWithFacts => false;
 
     public override bool FindsOnlyVisible(AppiumDriver driver)
@@ -101,6 +111,17 @@ internal sealed class AndroidPlatform : AppiumPlatform
     }
 
     public override bool PublishesAppRange => true;
+
+    // UiAutomator2 joins the statements: anything below the element a finger can press.
+    protected override By NestedControls { get; } = MobileBy.AndroidUIAutomator(
+        "new UiSelector().clickable(true); new UiSelector().checkable(true)");
+
+    protected override void TapAt(AppiumDriver driver, System.Drawing.Point point)
+        => driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
+        {
+            ["x"] = point.X,
+            ["y"] = point.Y,
+        });
 
     // Android draws edge to edge: a list can reach the gesture navigation bar, and a swipe that
     // starts next to it goes home (or back, at a side).

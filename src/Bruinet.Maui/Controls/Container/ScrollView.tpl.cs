@@ -35,6 +35,13 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
     /// <remarks>A scroll view is the element that scrolls for everything inside it.</remarks>
     public override IMauiElement? ScrollingRoot => TryGetContainerRoot();
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// A scroll view on screen in full still holds content past its edges: a child it misses is
+    /// reached by scrolling it, as a flyout's is.
+    /// </remarks>
+    public override bool AllowsScrollLookup => true;
+
     #region Core Methods (Element-Aware, No Logging)
 
     /// <summary>
