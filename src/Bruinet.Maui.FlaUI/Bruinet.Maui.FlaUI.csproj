@@ -11,6 +11,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Bruinet.Maui.UITests" />
     <ProjectReference Include="..\Bruinet.Maui\Bruinet.Maui.csproj" />
+    <!-- The desktop session, element identity and lookups the FlaUI stacks share (AD-026 R4). -->
+    <ProjectReference Include="..\Bruinet.FlaUI\Bruinet.FlaUI.csproj" />
 
     <!--
       The wire contract for the UI Automation bridge. Referenced here rather than linked,

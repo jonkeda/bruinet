@@ -80,23 +80,24 @@ public sealed class ArchitectureTests
         Assert.True(offenders.Count == 0, $"Name these Bdd, not Uat (AD-021): {string.Join(", ", offenders)}");
     }
 
-    /// <summary>AD-005: MAUI on Windows uses no physical input.</summary>
+    /// <summary>AD-005: MAUI on Windows, and the FlaUI layer it shares with WPF and WinForms, use no physical input.</summary>
     [Fact]
     public void MauiFlaUI_UsesNoPhysicalInput()
     {
         var root = Root();
         var input = new Regex(@"FlaUI\.Core\.Input|\bMouse\.|\bKeyboard\.|Clipboard|SendInput|SetForegroundWindow|SetCursorPos");
         // The quiet window hands the foreground back to the person's window; it takes nothing.
-        string[] allowed = ["src/Bruinet.Maui.FlaUI/Windowing/QuietWindow.cs", "src/Bruinet.Maui.FlaUI/Windowing/NativeMethods.cs"];
+        string[] allowed = ["src/Bruinet.FlaUI/Windowing/QuietWindow.cs", "src/Bruinet.FlaUI/Windowing/NativeMethods.cs"];
 
-        var offenders = Sources(Path.Combine(root, "src", "Bruinet.Maui.FlaUI"))
+        var offenders = new[] { "Bruinet.Maui.FlaUI", "Bruinet.FlaUI" }
+            .SelectMany(project => Sources(Path.Combine(root, "src", project)))
             .Where(file => !allowed.Contains(Relative(root, file)))
             .SelectMany(file => Lines(root, file))
             .Where(entry => input.IsMatch(entry.line))
             .Select(entry => entry.where)
             .ToList();
 
-        Assert.True(offenders.Count == 0, $"No physical input in Bruinet.Maui.FlaUI (AD-005): {string.Join(", ", offenders)}");
+        Assert.True(offenders.Count == 0, $"No physical input in Bruinet.Maui.FlaUI or Bruinet.FlaUI (AD-005): {string.Join(", ", offenders)}");
     }
 
     /// <summary>AD-013: the call-model controls have MAUI's shape, with no async members.</summary>

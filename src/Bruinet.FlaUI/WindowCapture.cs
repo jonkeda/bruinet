@@ -2,7 +2,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace Bruinet.Maui.FlaUI;
+namespace Bruinet.FlaUI;
 
 /// <summary>
 /// Captures a window's own rendered content, including while it is behind other windows.

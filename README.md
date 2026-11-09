@@ -102,7 +102,7 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 | `Bruinet.Wpf`, `Bruinet.WinForms` | Desktop automation through FlaUI |
 | `Bruinet.NativeAndroid` | Native Android apps through Appium |
 | `Bruinet.Stride`, `Bruinet.Stride.Automation` | Stride game UI testing: the client, and the server inside the game |
-| `Bruinet.Appium`, `Bruinet.Uia.Contracts` | What the Appium stacks share, and the wire contract of the custom UI Automation pattern |
+| `Bruinet.Appium`, `Bruinet.FlaUI`, `Bruinet.Uia.Contracts` | What the Appium stacks share, what the FlaUI stacks share (MAUI on Windows, WPF, WinForms), and the wire contract of the custom UI Automation pattern |
 
 **Data**
 

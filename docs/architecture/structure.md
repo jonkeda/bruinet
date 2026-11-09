@@ -23,6 +23,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 `src/` contains package-producing projects:
 
 - `Bruinet.Appium` - what the Appium stacks share: Appium's error mapping, `AndroidHost`, `AndroidRecorder`
+- `Bruinet.FlaUI` - what the FlaUI stacks share (MAUI on Windows, WPF, WinForms): `DesktopApp` (launch, attach, the quiet foreground, window placement, screenshots), `UiaElements` (a removed element as stale, the runtime id as identity, one-attempt lookups), `FlaUIErrors`, locators
 - `Bruinet.Stride.Automation`
 - `Bruinet.Bdd` - feature files without a UI: parse, bind, values, tables, callable steps, namespaces, run
 - `Bruinet.Blazor`

@@ -10,6 +10,8 @@ using Bruinet.Maui.Configuration;
 using Bruinet.Maui.FlaUI.Bridge;
 using Bruinet.Maui.Interfaces;
 using Bruinet.Uia;
+using Bruinet.FlaUI;
+using Bruinet.FlaUI.Windowing;
 
 namespace Bruinet.Maui.FlaUI;
 
@@ -55,33 +57,11 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
 
     #region Live: how a removed element is reported
 
-    /// <summary>
-    /// Runs a UI Automation read or action, reporting a removed element as
-    /// <see cref="StaleElementException"/> and a closed app as <see cref="AppUnavailableException"/>.
-    /// </summary>
-    private T Live<T>(Func<T> touch)
-    {
-        try
-        {
-            return touch();
-        }
-        catch (Exception error) when (FlaUIErrors.IsElementGone(error))
-        {
-            if (_driver.AppHasExited)
-            {
-                throw new AppUnavailableException("the application process has exited.", error);
-            }
-
-            throw new StaleElementException(platformError: error);
-        }
-    }
+    /// <summary>Reports a removed element as stale and a closed app as unavailable: <see cref="UiaElements.Live{T}(DesktopApp, Func{T})"/>.</summary>
+    private T Live<T>(Func<T> touch) => UiaElements.Live(_driver.App, touch);
 
     /// <inheritdoc cref="Live{T}(Func{T})"/>
-    private void Live(Action touch) => Live(() =>
-    {
-        touch();
-        return true;
-    });
+    private void Live(Action touch) => UiaElements.Live(_driver.App, touch);
 
     /// <inheritdoc />
     /// <remarks>
@@ -89,7 +69,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// toolbar item replaced when its command's CanExecute changes goes <c>…4.30</c> to
     /// <c>…4.65</c>). Read live, so it doubles as the "is this element still there" check.
     /// </remarks>
-    public string InstanceKey => Live(() => string.Join('.', _element.Properties.RuntimeId.Value));
+    public string InstanceKey => Live(() => UiaElements.InstanceKey(_element));
 
     /// <inheritdoc />
     /// <remarks>
@@ -97,32 +77,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// tree before its element stops answering: for about a second it reads as present, on
     /// screen and full size, and only its missing way up to the window gives it away.
     /// </remarks>
-    public bool IsAttached => Live(() =>
-    {
-        var walker = _driver.Automation.TreeWalkerFactory.GetControlViewWalker();
-        var window = _driver.RootElement;
-        var node = _element;
-
-        // Deep MAUI trees are tens of levels, not hundreds; the bound only stops a cycle.
-        for (var depth = 0; depth < MaxAttachedDepth; depth++)
-        {
-            if (node.Equals(window))
-            {
-                return true;
-            }
-
-            if (walker.GetParent(node) is not { } parent)
-            {
-                return false;
-            }
-
-            node = parent;
-        }
-
-        return true;
-    });
-
-    private const int MaxAttachedDepth = 256;
+    public bool IsAttached => Live(() => UiaElements.IsAttached(_driver.App, _element));
 
     #endregion
 
@@ -400,7 +355,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     private Interactions.Scope Report(InteractionKind kind, string? key = null)
         => Interactions.Report(kind, PhysicalRect, () => AutomationId, key: key);
 
-    private Rectangle PhysicalRect() => Windowing.PhysicalPixels.Read(() => Rect);
+    private Rectangle PhysicalRect() => PhysicalPixels.Read(() => Rect);
 
     private void Marked(InteractionKind kind, Action action)
     {
@@ -880,8 +835,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// <inheritdoc />
     public IMauiElement? TryFindElement(Locator locator) => Live<IMauiElement?>(() =>
     {
-        var condition = locator.ToCondition(_driver.ConditionFactory);
-        var found = _element.FindFirstDescendant(condition);
+        var found = UiaElements.FindFirst(_driver.App, _element, locator);
 
         return found == null ? null : new FlaUIMauiElement(found, _driver);
     });
@@ -889,9 +843,7 @@ public sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator) => Live<IReadOnlyList<IMauiElement>>(() =>
     {
-        var condition = locator.ToCondition(_driver.ConditionFactory);
-
-        return _element.FindAllDescendants(condition)
+        return UiaElements.FindAll(_driver.App, _element, locator)
             .Select(e => new FlaUIMauiElement(e, _driver))
             .ToList();
     });

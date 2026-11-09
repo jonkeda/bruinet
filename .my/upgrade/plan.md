@@ -110,7 +110,7 @@ what MAUI's Windows head, WPF and WinForms all need from FlaUI, taken out of `Br
 | --- | --- |
 | `FlaUIErrors`, the one-attempt lookup over an `AutomationElement`, `InstanceKey` from the runtime id, `LocatorExtensions` (AutomationId, Name, ClassName, XPath) | The UIA bridge (`Bridge/`, `Bruinet.Uia.Contracts`), `FlaUIDeclaredElement`, MAUI's Shell chrome and verbs |
 | `WindowCapture`, `Windowing/` (`AppWindow`, `QuietWindow`, `WindowPlacement`, physical pixels) | |
-| Launch and attach of a desktop app, the idle check | |
+| Launch and attach of a desktop app (`DesktopApp`) | The idle check: MAUI asks its bridge; WPF and WinForms get their own in U3 and U4 |
 
 WPF and WinForms then keep a thin element each (their patterns: `ExpandCollapse`, `Value`,
 `RangeValue`, `SelectionItem`, `Toggle`, the WinForms `DataGridView` grid pattern).
@@ -204,4 +204,14 @@ gone from their PublicAPI); pages found by `ITestPage`; the calls layer public, 
 `InternalsVisibleTo` for the stacks removed. CI's set run locally (`coverage.ps1 -Headless -Browser`):
 29 projects, 0 failures. Not run: the native Android UI suite (emulator) and MAUI on a device.
 
-Expected next action: U2, `Bruinet.FlaUI` taken out of `Bruinet.Maui.FlaUI`.
+U2 done 2026-11-09: `Bruinet.FlaUI` (`DesktopApp`, `UiaElements`, `FlaUIErrors`, `LocatorExtensions`,
+`PhysicalPixels`, the windowing) with `Bruinet.FlaUI.Tests`; `FlaUIMauiDriver` holds a `DesktopApp`,
+`FlaUIMauiElement` calls `UiaElements`, their members unchanged. Public, as the calls layer is (Q5);
+`AppWindow`, `QuietWindow`, `WindowPlacement`, `WindowCapture` and `NativeMethods` stay internal.
+The MAUI suite on Windows: 417 of 434 pass. The 13 collection failures (`ProductCollectionTests`,
+`PagedListTests.RowOnPageThree`, `RowTapTests`: no rows materialized, rows without Invoke) fail on
+the code before U2 too, and `PagedListTests.ScrollToEnd_LoadsEveryPage` and
+`ExpanderTests.Expander_ExpandThenCollapse_HidesContent` are flaky on both (3 runs each). Not
+looked into: they are MAUIs, not this plans.
+
+Expected next action: U3, WPF on the call model.

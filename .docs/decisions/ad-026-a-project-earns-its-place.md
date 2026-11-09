@@ -7,7 +7,7 @@ Bruinet has many projects (84). A project is separate only when one of these hol
 | R1 | **Another target framework** | `net48` for the Visual Studio extension; a Windows 10 SDK framework for `Bruinet.Narrator.Windows`; `netstandard2.0` for an analyzer |
 | R2 | **Another process or loader** | An executable (one with a command line is `bruinet`, AD-028); an assembly an app under test loads (`Bruinet.Uia.Contracts`); one Visual Studio loads out of process (the CodeLens provider); one found at run time in a `recorders` folder |
 | R3 | **A dependency its users should not get** | Appium, FlaUI, Playwright, xUnit, Markdig |
-| R4 | **A layer others build on without the rest** | `Bruinet.Core` under everything; `Bruinet.Bdd` without xUnit (AD-021); `Bruinet.TestData` with no dependency at all; `Bruinet.Appium` under the MAUI and native Android Appium stacks, so neither takes the other |
+| R4 | **A layer others build on without the rest** | `Bruinet.Core` under everything; `Bruinet.Bdd` without xUnit (AD-021); `Bruinet.TestData` with no dependency at all; `Bruinet.Appium` under the MAUI and native Android Appium stacks, so neither takes the other; `Bruinet.FlaUI` under MAUI on Windows, WPF and WinForms, likewise |
 | R5 | **A sample that teaches a structure** | The Todo sample's tiers |
 
 What follows from it:

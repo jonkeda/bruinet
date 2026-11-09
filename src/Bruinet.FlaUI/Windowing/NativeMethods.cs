@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Bruinet.Maui.FlaUI.Windowing;
+namespace Bruinet.FlaUI.Windowing;
 
 /// <summary>
 /// The Win32 calls the driver makes about the app's window, in one place.

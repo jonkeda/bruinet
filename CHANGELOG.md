@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `Bruinet.FlaUI`: what the FlaUI stacks share, taken out of `Bruinet.Maui.FlaUI` for WPF and WinForms to stand on.
+  `DesktopApp` is the app session (launch with its own environment, attach by handle or process, the foreground
+  handed back, `BRUINET_AUT_PLACE`, a root window attached again when UI Automation retires it, screenshots of the
+  window's own content, the automation tree); `UiaElements` reports a removed element as stale and a closed app as
+  unavailable, names an element by its runtime id, and looks up in one attempt. `FlaUIErrors`, `LocatorExtensions`
+  and `PhysicalPixels` moved with it (namespace `Bruinet.FlaUI`). `FlaUIMauiDriver` and `FlaUIMauiElement` keep
+  their members.
 - Core's `IScope` and `ITestPage` (`Bruinet.Core.Scopes`): the element-free half of every stack's scope and page
   (readiness, `WaitReady`, `WaitFirst`; load, busy, title, screenshot). Html's, MAUI's and native Android's scope and
   page interfaces derive from them and keep only their typed lookups and extras (AD-010, amended). Test composition

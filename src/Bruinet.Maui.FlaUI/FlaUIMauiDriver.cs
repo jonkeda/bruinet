@@ -5,10 +5,9 @@ using Bruinet.Core.Exceptions;
 using Bruinet.Core.Utilities;
 using Bruinet.Maui.Configuration;
 using Bruinet.Maui.FlaUI.Bridge;
-using Bruinet.Maui.FlaUI.Windowing;
+using Bruinet.FlaUI;
 using Bruinet.Uia;
 using Bruinet.Maui.Enums;
-using FlaUI.Core.Capturing;
 using FlaUI.Core.Definitions;
 using System.Globalization;
 
@@ -20,11 +19,7 @@ namespace Bruinet.Maui.FlaUI;
 /// </summary>
 public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 {
-    private readonly UIA3Automation _automation;
-    private readonly Application? _application;
-    private readonly AppWindow _window;
-    private readonly QuietWindow? _quiet;
-    private readonly ConditionFactory _conditionFactory;
+    private readonly DesktopApp _app;
     private bool _disposed;
 
     /// <summary>
@@ -33,9 +28,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <param name="windowHandle">The window handle to attach to.</param>
     public FlaUIMauiDriver(IntPtr windowHandle)
     {
-        _automation = new UIA3Automation();
-        _window = AppWindow.FromHandle(_automation, windowHandle);
-        _conditionFactory = new ConditionFactory(_automation.PropertyLibrary);
+        _app = DesktopApp.Attach(windowHandle);
     }
 
     /// <summary>
@@ -55,60 +48,20 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <param name="arguments">Optional command line arguments.</param>
     /// <param name="environment">
     /// Variables set on the launched process only (<c>MauiDriverOptions.LaunchSettings</c>): the
-    /// test process's own environment is not changed, so each launch carries its own settings.
+    /// test processs own environment is not changed, so each launch carries its own settings.
     /// </param>
     public FlaUIMauiDriver(string executablePath, string? arguments, IReadOnlyDictionary<string, string>? environment)
     {
-        _automation = new UIA3Automation();
-
-        var processStartInfo = new ProcessStartInfo(executablePath)
-        {
-            Arguments = arguments ?? string.Empty,
-
-            // FALSE, AND THIS MATTERS MORE THAN IT LOOKS.
-            //
-            // With UseShellExecute the launch goes through the shell, and what the child
-            // inherits is not reliably this process's environment. Measured: roughly one run in
-            // six came up with no bridge at all - every test failing with "no element published
-            // on the app's bridge", for seventeen seconds at a time, against an app that was
-            // running perfectly well and had simply never been told to instrument itself.
-            UseShellExecute = false,
-        };
-
         // Ask the app to turn its gesture bridge on. Asking is all this is: an app that was not
-        // built with a bridge has nothing to turn on - see BruinetBridgeGate.
-        processStartInfo.Environment[BruinetBridgeGate.EnableVariable] = "1";
-
+        // built with a bridge has nothing to turn on - see BruinetBridgeGate. The callers
+        // variables come after, so a launch setting may still turn it off.
+        var launchEnvironment = new Dictionary<string, string> { [BruinetBridgeGate.EnableVariable] = "1" };
         foreach (var (name, value) in environment ?? new Dictionary<string, string>())
         {
-            processStartInfo.Environment[name] = value;
+            launchEnvironment[name] = value;
         }
 
-        // Whoever the user was working in before the run. Windows hands a freshly launched
-        // process the foreground; QuietWindow hands it back.
-        var previousForeground = NativeMethods.GetForegroundWindow();
-
-        var process = Process.Start(processStartInfo)
-            ?? throw new InvalidOperationException($"Failed to start process: {executablePath}");
-
-        // Before anything waits on the app - see QuietWindow.ForLaunch. An app someone is watching
-        // (BRUINET_AUT_WINDOW=shown, the Presenter) is left where it can be seen.
-        _quiet = Bruinet.Core.Diagnostics.AutWindow.IsShown(environment) ? null : QuietWindow.ForLaunch(process.Id, previousForeground);
-
-        // A test being debugged: the IDE attaches to the app too.
-        Bruinet.Core.Diagnostics.DebuggedApps.Announce(process, Path.GetFileNameWithoutExtension(executablePath));
-
-        process.WaitForInputIdle();
-
-        _application = Application.Attach(process);
-
-        var window = _application.GetMainWindow(_automation, TimeSpan.FromSeconds(30))
-            ?? throw new InvalidOperationException("Failed to get main window");
-        _window = new AppWindow(_automation, window);
-        _conditionFactory = new ConditionFactory(_automation.PropertyLibrary);
-
-        WindowPlacement.ApplyRequested(_window, environment);
-        _quiet?.Settle(_window.Handle);
+        _app = DesktopApp.Launch(executablePath, arguments, launchEnvironment);
     }
 
     /// <summary>
@@ -117,13 +70,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <param name="process">The process to attach to.</param>
     public FlaUIMauiDriver(Process process)
     {
-        _automation = new UIA3Automation();
-        _application = Application.Attach(process);
-
-        var window = _application.GetMainWindow(_automation, TimeSpan.FromSeconds(30))
-            ?? throw new InvalidOperationException("Failed to get main window");
-        _window = new AppWindow(_automation, window);
-        _conditionFactory = new ConditionFactory(_automation.PropertyLibrary);
+        _app = DesktopApp.Attach(process);
     }
 
     #region Platform
@@ -155,42 +102,31 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <summary>
     /// Gets the condition factory for building search conditions.
     /// </summary>
-    internal ConditionFactory ConditionFactory => _conditionFactory;
+    internal ConditionFactory ConditionFactory => _app.ConditionFactory;
 
     /// <summary>
     /// Gets the underlying automation instance.
     /// </summary>
-    internal UIA3Automation Automation => _automation;
+    internal UIA3Automation Automation => _app.Automation;
 
     /// <summary>The app's top-level window. Where a bridge lookup starts.</summary>
-    internal AutomationElement RootElement => _window.Element;
+    internal AutomationElement RootElement => _app.RootElement;
 
     /// <summary>
     /// Whether the app this driver launched has exited.
     /// </summary>
-    internal bool AppHasExited
-    {
-        get
-        {
-            try
-            {
-                return _application?.HasExited == true;
-            }
-            catch (InvalidOperationException)
-            {
-                // The process object no longer answers; it is gone.
-                return true;
-            }
-        }
-    }
+    internal bool AppHasExited => _app.HasExited;
+
+    /// <summary>The desktop app session the driver reads.</summary>
+    internal DesktopApp App => _app;
 
     /// <summary>How many times the root element had gone stale and was attached again.</summary>
-    public int RootReattachments => _window.Reattachments;
+    public int RootReattachments => _app.RootReattachments;
 
     /// <summary>
     /// How many times the app under test took the foreground and had to be put back.
     /// </summary>
-    public int ForegroundGrabs => _quiet?.ForegroundGrabs ?? 0;
+    public int ForegroundGrabs => _app.ForegroundGrabs;
 
     #endregion
 
@@ -213,7 +149,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator)
     {
-        var condition = locator.ToCondition(_conditionFactory);
+        var condition = locator.ToCondition(ConditionFactory);
 
         try
         {
@@ -231,7 +167,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <remarks>Stops at the first match rather than collecting the whole tree.</remarks>
     public IMauiElement? TryFindElement(Locator locator)
     {
-        var condition = locator.ToCondition(_conditionFactory);
+        var condition = locator.ToCondition(ConditionFactory);
 
         try
         {
@@ -253,7 +189,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <exception cref="ElementNotFoundException">It did not appear in time.</exception>
     internal IMauiElement FindChrome(Locator locator, int timeoutMs)
     {
-        var condition = locator.ToCondition(_conditionFactory);
+        var condition = locator.ToCondition(ConditionFactory);
         timeoutMs = Bruinet.Core.Calls.CallBudget.Within(timeoutMs);
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -280,19 +216,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     public string CurrentWindowHandle => RootElement.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture);
 
     /// <inheritdoc />
-    public IReadOnlyCollection<string> WindowHandles
-    {
-        get
-        {
-            if (_application != null)
-            {
-                return _application.GetAllTopLevelWindows(_automation)
-                    .Select(w => w.Properties.NativeWindowHandle.Value.ToString(CultureInfo.InvariantCulture))
-                    .ToList();
-            }
-            return new[] { CurrentWindowHandle };
-        }
-    }
+    public IReadOnlyCollection<string> WindowHandles => _app.WindowHandles();
 
     #endregion
 
@@ -301,60 +225,18 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <inheritdoc />
     public void Quit()
     {
-        _application?.Close();
+        _app.CloseApp();
     }
 
     /// <inheritdoc />
-    public void Close()
-    {
-        if (RootElement.Patterns.Window.IsSupported)
-        {
-            RootElement.Patterns.Window.Pattern.Close();
-        }
-    }
+    public void Close() => _app.CloseWindow();
 
     #endregion
 
     #region Screenshots
 
     /// <inheritdoc />
-    public byte[] GetScreenshot()
-    {
-        var windowContent = TryCaptureWindowContent();
-        if (windowContent != null)
-        {
-            using (windowContent)
-                return ToPng(windowContent);
-        }
-
-        using var capture = Capture.Element(RootElement);
-        return ToPng(capture.Bitmap);
-    }
-
-    /// <summary>
-    /// Captures the app window's own content, or null when it declined to render.
-    /// </summary>
-    private System.Drawing.Bitmap? TryCaptureWindowContent()
-    {
-        var bitmap = WindowCapture.TryCapture(_window.Handle);
-        if (bitmap == null)
-            return null;
-
-        if (!WindowCapture.LooksBlank(bitmap))
-            return bitmap;
-
-        // Rendered, but empty: the GPU-composition failure mode. Reading the screen is the
-        // better answer even though it may catch an overlapping window.
-        bitmap.Dispose();
-        return null;
-    }
-
-    private static byte[] ToPng(System.Drawing.Bitmap bitmap)
-    {
-        using var stream = new MemoryStream();
-        bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-        return stream.ToArray();
-    }
+    public byte[] GetScreenshot() => _app.Screenshot();
 
     #endregion
 
@@ -386,58 +268,10 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     #region IDiagnosticDriver
 
     /// <inheritdoc />
-    public string GetPageSource()
-    {
-        return BuildAutomationTree(RootElement);
-    }
+    public string GetPageSource() => _app.AutomationTree();
 
     /// <inheritdoc />
-    public string GetAutomationTree()
-    {
-        return BuildAutomationTree(RootElement);
-    }
-
-    private static string BuildAutomationTree(AutomationElement element, int depth = 0)
-    {
-        var indent = new string(' ', depth * 2);
-        var sb = new System.Text.StringBuilder();
-
-        // Use safe property access - some elements don't support all properties
-        string automationId = "";
-        string name = "";
-        string className = "";
-        string controlType = "Unknown";
-
-        try
-        { automationId = element.Properties.AutomationId.ValueOrDefault ?? ""; }
-        catch { }
-        try
-        { name = element.Properties.Name.ValueOrDefault ?? ""; }
-        catch { }
-        try
-        { className = element.Properties.ClassName.ValueOrDefault ?? ""; }
-        catch { }
-        try
-        { controlType = element.ControlType.ToString(); }
-        catch { }
-
-        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}<{controlType} AutomationId=\"{automationId}\" Name=\"{name}\" ClassName=\"{className}\">");
-
-        try
-        {
-            foreach (var child in element.FindAllChildren())
-            {
-                sb.Append(BuildAutomationTree(child, depth + 1));
-            }
-        }
-        catch
-        {
-            // Ignore errors traversing children
-        }
-
-        sb.AppendLine(CultureInfo.InvariantCulture, $"{indent}</{controlType}>");
-        return sb.ToString();
-    }
+    public string GetAutomationTree() => _app.AutomationTree();
 
     #endregion
 
@@ -738,12 +572,9 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <inheritdoc />
     public void ResetAppState()
     {
-        // For desktop apps, close and relaunch
-        if (_application != null)
-        {
-            // Note: This doesn't fully reset - caller may need to recreate the driver
-            _application.Close();
-        }
+        // For desktop apps, close and relaunch.
+        // Note: This doesn't fully reset - caller may need to recreate the driver.
+        _app.CloseApp();
     }
 
     #endregion
@@ -955,15 +786,15 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             WaitHelper.Pause(100);
         }
 
-        var nameBox = dialog.FindFirstDescendant(_conditionFactory.ByControlType(ControlType.Edit)
-                          .And(_conditionFactory.ByAutomationId(FileNameBoxId)))
+        var nameBox = dialog.FindFirstDescendant(ConditionFactory.ByControlType(ControlType.Edit)
+                          .And(ConditionFactory.ByAutomationId(FileNameBoxId)))
                       ?? throw new ElementNotFoundException(Locator.ByAutomationId(FileNameBoxId));
         if (!nameBox.Patterns.Value.TryGetPattern(out var value))
             throw new RouteUnavailableException("The file dialog's name box offers no Value pattern.");
         value.SetValue(path);
 
-        var open = dialog.FindFirstChild(_conditionFactory.ByControlType(ControlType.Button)
-                       .And(_conditionFactory.ByAutomationId(OpenButtonId)))
+        var open = dialog.FindFirstChild(ConditionFactory.ByControlType(ControlType.Button)
+                       .And(ConditionFactory.ByAutomationId(OpenButtonId)))
                    ?? throw new ElementNotFoundException(Locator.ByAutomationId(OpenButtonId));
         if (!open.Patterns.Invoke.TryGetPattern(out var invoke))
             throw new RouteUnavailableException("The file dialog's Open button offers no Invoke pattern.");
@@ -988,21 +819,21 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 
     private AutomationElement? TryFindFileDialog(bool searchDesktop)
     {
-        var condition = _conditionFactory.ByClassName(FileDialogClass);
+        var condition = ConditionFactory.ByClassName(FileDialogClass);
         var dialog = RootElement.FindFirstChild(condition);
-        if (dialog is not null || !searchDesktop || _application is null)
+        if (dialog is not null || !searchDesktop || !_app.HasProcess)
             return dialog;
-        return _application.GetAllTopLevelWindows(_automation)
+        return _app.TopLevelWindows()
             .FirstOrDefault(window => window.Properties.ClassName.ValueOrDefault == FileDialogClass);
     }
 
     /// <summary>The dialog on screen, or null.</summary>
     internal IMauiElement? TryFindActiveDialogRoot()
     {
-        var popupCondition = _conditionFactory.ByControlType(ControlType.Window)
-            .And(_conditionFactory.ByClassName("Popup"));
-        var contentDialogCondition = _conditionFactory.ByClassName("ContentDialog");
-        var buttonCondition = _conditionFactory.ByControlType(ControlType.Button);
+        var popupCondition = ConditionFactory.ByControlType(ControlType.Window)
+            .And(ConditionFactory.ByClassName("Popup"));
+        var contentDialogCondition = ConditionFactory.ByClassName("ContentDialog");
+        var buttonCondition = ConditionFactory.ByControlType(ControlType.Button);
 
         // Searched inside the app's own window: a WinUI ContentDialog renders as a Popup
         // descendant of it, not as the sibling top-level window one might expect. Enumerating
@@ -1038,7 +869,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             if (dialog != null)
                 return dialog;
 
-            return window.Properties.NativeWindowHandle.ValueOrDefault == _window.Handle
+            return window.Properties.NativeWindowHandle.ValueOrDefault == _app.WindowHandle
                 ? null
                 : window;
         }
@@ -1057,9 +888,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     {
         if (!_disposed)
         {
-            _quiet?.Dispose();
-            _application?.Close();
-            _automation.Dispose();
+            _app.Dispose();
             _disposed = true;
         }
     }

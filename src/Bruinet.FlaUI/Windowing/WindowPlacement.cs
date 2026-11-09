@@ -1,12 +1,13 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
-using static Bruinet.Maui.FlaUI.Windowing.NativeMethods;
+using static Bruinet.FlaUI.Windowing.NativeMethods;
 
-namespace Bruinet.Maui.FlaUI.Windowing;
+namespace Bruinet.FlaUI.Windowing;
 
 /// <summary>
 /// Puts the app under test where the harness asked: <c>BRUINET_AUT_PLACE</c> in the app's launch
-/// environment (<c>MauiDriverOptions.Placement</c>), or else in the test process's.
+/// environment (a stack's driver options set it, as <c>MauiDriverOptions.Placement</c> does), or else in
+/// the test process's.
 /// </summary>
 internal static class WindowPlacement
 {

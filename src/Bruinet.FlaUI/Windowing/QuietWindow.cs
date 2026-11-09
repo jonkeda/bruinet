@@ -1,6 +1,6 @@
-using static Bruinet.Maui.FlaUI.Windowing.NativeMethods;
+using static Bruinet.FlaUI.Windowing.NativeMethods;
 
-namespace Bruinet.Maui.FlaUI.Windowing;
+namespace Bruinet.FlaUI.Windowing;
 
 /// <summary>
 /// Keeps the app under test behind whatever the person at the machine is using.

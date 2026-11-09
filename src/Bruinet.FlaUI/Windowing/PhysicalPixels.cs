@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace Bruinet.Maui.FlaUI.Windowing;
+namespace Bruinet.FlaUI.Windowing;
 
 /// <summary>
 /// Reads UI Automation coordinates in physical screen pixels, whatever the test process's DPI
@@ -8,7 +8,7 @@ namespace Bruinet.Maui.FlaUI.Windowing;
 /// them to the process's DPI. A recorded video's frames are physical, and so are the bridge's
 /// <c>GetBounds</c> answers.
 /// </summary>
-internal static class PhysicalPixels
+public static class PhysicalPixels
 {
     // DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2.
     private static readonly nint PerMonitorAwareV2 = -4;

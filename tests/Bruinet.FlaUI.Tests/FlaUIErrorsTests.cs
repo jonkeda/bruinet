@@ -1,16 +1,16 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Bruinet.Maui.FlaUI;
+using Bruinet.FlaUI;
 
-namespace Bruinet.Maui.UITests.Tests.Diagnostics;
+namespace Bruinet.FlaUI.Tests;
 
 /// <summary>
-/// How the Windows driver recognizes an element that UI Automation has removed.
+/// How the FlaUI stacks recognize an element that UI Automation has removed.
 /// </summary>
 /// <remarks>
 /// No app and no fixture: these pin the classification that turns UIA's
-/// <c>UIA_E_ELEMENTNOTAVAILABLE</c> into <c>StaleElementException</c> (stale-readiness plan, step
-/// 3). They live here because the driver targets Windows and the unit test project does not.
+/// <c>UIA_E_ELEMENTNOTAVAILABLE</c> into <c>StaleElementException</c> (<c>UiaElements.Live</c>), for
+/// MAUI on Windows, WPF and WinForms alike.
 /// </remarks>
 public class FlaUIErrorsTests
 {

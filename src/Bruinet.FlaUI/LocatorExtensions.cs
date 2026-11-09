@@ -4,7 +4,7 @@ using Bruinet.Core.Locators;
 using FlaUI.Core.Conditions;
 using FlaUI.Core.Definitions;
 
-namespace Bruinet.Maui.FlaUI;
+namespace Bruinet.FlaUI;
 
 /// <summary>
 /// Extension methods for converting Bruinet Locator to FlaUI PropertyConditions.

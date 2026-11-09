@@ -158,6 +158,4 @@ Bruinet.Maui.FlaUI.FlaUIMauiElement.TryFindDeclared(string! automationId) -> Bru
 Bruinet.Maui.FlaUI.FlaUIMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.FlaUI.FlaUIMauiElement.Value.get -> string?
 Bruinet.Maui.FlaUI.FlaUIMauiElement.Visible.get -> bool
-Bruinet.Maui.FlaUI.LocatorExtensions
 static Bruinet.Maui.FlaUI.Bridge.AccessibilityAudit.Run(FlaUI.Core.AutomationElements.AutomationElement! root, FlaUI.UIA3.UIA3Automation! automation, string! page) -> Bruinet.Maui.FlaUI.Bridge.AccessibilityAuditReport!
-static Bruinet.Maui.FlaUI.LocatorExtensions.ToCondition(this Bruinet.Core.Locators.Locator! locator, FlaUI.Core.Conditions.ConditionFactory! conditionFactory) -> FlaUI.Core.Conditions.ConditionBase!

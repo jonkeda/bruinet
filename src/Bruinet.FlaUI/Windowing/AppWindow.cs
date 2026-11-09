@@ -1,4 +1,4 @@
-namespace Bruinet.Maui.FlaUI.Windowing;
+namespace Bruinet.FlaUI.Windowing;
 
 /// <summary>
 /// The app's top-level window, as UI Automation hands it out - and handed out again when it goes stale.
