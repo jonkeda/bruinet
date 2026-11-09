@@ -337,6 +337,10 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
             timeoutMs ?? DefaultReadyTimeoutMs);
 
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes)
+        => FirstOutcome.Wait(Call, Context.ProbeReadiness, outcomes, Budget(timeoutMs), AnimationMs, PollingIntervalMs);
+
     /// <summary>
     /// A member of the scope itself as one call: polls <paramref name="probe"/> with no readiness
     /// step in front, because the probe is about the scope's own state.

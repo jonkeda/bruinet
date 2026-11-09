@@ -195,6 +195,9 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             ? throw new AppUnavailableException("the browser page has closed.")
             : ScopeReadiness.Ready(nameof(PlaywrightTestContext));
 
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new Bruinet.Html.Pages.AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
     /// <summary>The page is either open or gone; there is nothing to wait for.</summary>
     public bool WaitReady(int? timeoutMs = null) => ProbeReadiness().IsReady;
 

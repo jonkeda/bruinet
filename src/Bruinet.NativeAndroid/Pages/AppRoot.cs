@@ -33,6 +33,9 @@ public sealed class AppRoot : ObjectBase, INativeAndroidScope<AppRoot>
     /// <inheritdoc />
     public bool IsReady() => ProbeReadiness().IsReady;
 
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
+
     /// <summary>Waits for the app to be in front, as one call with its own budget.</summary>
     public bool WaitReady(int? timeoutMs = null)
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);

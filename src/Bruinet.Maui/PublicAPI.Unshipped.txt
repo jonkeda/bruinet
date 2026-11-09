@@ -181,6 +181,7 @@ Bruinet.Maui.Context.MauiTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMiss
 Bruinet.Maui.Context.MauiTestContext.Page.get -> Bruinet.Maui.Interfaces.IMauiPage?
 Bruinet.Maui.Context.MauiTestContext.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
 Bruinet.Maui.Context.MauiTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Maui.Context.MauiTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Maui.Context.MauiTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.Maui.Context.MauiTestContext.Refresh() -> void
 Bruinet.Maui.Context.MauiTestContext.ResetAppState() -> void
@@ -913,6 +914,7 @@ Bruinet.Maui.Interfaces.IMauiElementScope.FindElements(Bruinet.Core.Locators.Loc
 Bruinet.Maui.Interfaces.IMauiElementScope.IsReady() -> bool
 Bruinet.Maui.Interfaces.IMauiElementScope.Page.get -> Bruinet.Maui.Interfaces.IMauiPage?
 Bruinet.Maui.Interfaces.IMauiElementScope.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Maui.Interfaces.IMauiElementScope.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Maui.Interfaces.IMauiElementScope.ScrollingRoot.get -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElementScope.WaitReady(int? timeoutMs = null) -> bool
@@ -1183,6 +1185,7 @@ virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ProbeCallRead
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ProbeContentReadiness(Bruinet.Maui.Interfaces.IMauiElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ProbeParentReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.RootNotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ScopeName.get -> string!
 virtual Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ScrollingRoot.get -> Bruinet.Maui.Interfaces.IMauiElement?

@@ -47,44 +47,11 @@ public sealed class AppRoot : ObjectBase, IMauiScope<AppRoot>
             PollingIntervalMs);
     }
 
-    /// <summary>
-    /// Waits, as one call, until one of <paramref name="outcomes"/> holds, and returns its index;
-    /// the earlier outcome wins when several hold.
-    /// </summary>
-    /// <param name="timeoutMs">The whole budget; the default wait when null.</param>
-    /// <param name="outcomes">Answers about now, such as <c>page.IsReady</c> or <c>control.IsExists</c>; none may wait itself.</param>
-    /// <returns>The index of the outcome that held, or -1 when none did within the budget.</returns>
+    /// <inheritdoc />
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes)
-    {
-        ArgumentNullException.ThrowIfNull(outcomes);
-        if (outcomes.Length == 0)
-            throw new ArgumentException("Give at least one outcome.", nameof(outcomes));
-
-        var budget = timeoutMs ?? DefaultTimeoutMs;
-        var call = new ControlCall(Context.Logger, Context.Name, Context.NearMiss, nameof(AppRoot), nameof(AppRoot));
-        return call.Run(nameof(WaitFirst), $"{outcomes.Length} outcomes", budget, Context.Timeouts.Animation, context =>
-        {
-            var held = -1;
-            var met = Poller.Until(_ =>
-            {
-                if (ScopeGate.Check(ProbeReadiness()) is { } notReady)
-                    return notReady;
-
-                held = Array.FindIndex(outcomes, outcome => outcome());
-                return held >= 0 ? Observation.Done() : Observation.Pending("no outcome held");
-            }, context, PollingIntervalMs);
-
-            if (!met && context.Log.Last is { Kind: ObservationKind.Failed, Error: { } error })
-            {
-                var failure = context.Log.Unexpected(error, nameof(WaitFirst), budget);
-                if (ReferenceEquals(failure, error))
-                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(error).Throw();
-                throw failure;
-            }
-
-            return met ? held : -1;
-        }, succeeded: index => index >= 0);
-    }
+        => FirstOutcome.Wait(
+            new ControlCall(Context.Logger, Context.Name, Context.NearMiss, nameof(AppRoot), nameof(AppRoot)),
+            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation, PollingIntervalMs);
 
     /// <inheritdoc />
     public bool AllowsScrollLookup => false;

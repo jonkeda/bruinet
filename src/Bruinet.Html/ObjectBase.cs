@@ -49,4 +49,13 @@ public abstract class ObjectBase
                 : false;
         }, succeeded: ok => ok);
     }
+
+    /// <summary>
+    /// A scope's <c>WaitFirst</c> as one call: polls <paramref name="outcomes"/> and answers the
+    /// index of the first that holds, or -1. Each attempt checks only that the app is reachable.
+    /// </summary>
+    private protected int RunFirst(int? timeoutMs, Func<bool>[] outcomes)
+        => FirstOutcome.Wait(
+            new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName),
+            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation, PollingIntervalMs);
 }

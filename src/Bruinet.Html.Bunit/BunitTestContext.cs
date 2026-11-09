@@ -97,6 +97,9 @@ public sealed class BunitTestContext : IHtmlTestContext, IHtmlPageProbe, Bruinet
         return ScopeReadiness.Ready(nameof(BunitTestContext));
     }
 
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new Bruinet.Html.Pages.AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
     public bool WaitReady(int? timeoutMs = null) => ProbeReadiness().IsReady;
 
     public bool IsIdle() => true;

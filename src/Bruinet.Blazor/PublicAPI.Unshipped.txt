@@ -34,6 +34,7 @@ Bruinet.Blazor.Context.BlazorTestContext.PageTitle.get -> string!
 Bruinet.Blazor.Context.BlazorTestContext.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Blazor.Context.BlazorTestContext.ProbePageWhenReady(string! busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Blazor.Context.BlazorTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Blazor.Context.BlazorTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Blazor.Context.BlazorTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.Blazor.Context.BlazorTestContext.Refresh() -> void
 Bruinet.Blazor.Context.BlazorTestContext.ResetAppState() -> void

@@ -39,6 +39,9 @@ public sealed class BlazorTestContext : IHtmlTestContext, IHtmlPageProbe, IAsync
     public PageProbe ProbePage(string busyAttribute) => _inner.ProbePage(busyAttribute);
     public PageProbe ProbePageWhenReady(string busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs)
         => _inner.ProbePageWhenReady(busyAttribute, signal, timeoutMs);
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new Bruinet.Html.Pages.AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
     public bool WaitReady(int? timeoutMs = null) => _inner.WaitReady(timeoutMs);
     public IHtmlElement? TryFindElement(Locator locator) => _inner.TryFindElement(locator);
     public IHtmlElement FindElement(Locator locator) => _inner.FindElement(locator);

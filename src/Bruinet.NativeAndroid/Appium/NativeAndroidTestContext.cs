@@ -83,6 +83,9 @@ public sealed class NativeAndroidTestContext : INativeAndroidTestContext, IRecor
     }
 
     /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
+    /// <inheritdoc />
     public bool WaitReady(int? timeoutMs = null) => new AppRoot(this).WaitReady(timeoutMs);
 
     /// <inheritdoc />

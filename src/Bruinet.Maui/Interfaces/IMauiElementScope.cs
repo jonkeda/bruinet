@@ -38,6 +38,16 @@ public interface IMauiElementScope
     bool WaitReady(int? timeoutMs = null);
 
     /// <summary>
+    /// Waits, as one call, until one of <paramref name="outcomes"/> holds, and returns its index;
+    /// the earlier outcome wins when several hold. Each attempt checks only that the app is
+    /// reachable, so an outcome may be that this scope, or its parent, is gone.
+    /// </summary>
+    /// <param name="timeoutMs">The whole budget; the default wait when null.</param>
+    /// <param name="outcomes">Answers about now, such as <c>page.IsReady</c> or <c>control.IsExists</c>; none may wait itself.</param>
+    /// <returns>The index of the outcome that held, or -1 when none did within the budget.</returns>
+    int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes);
+
+    /// <summary>
     /// Finds the first element in this scope matching <paramref name="locator"/>, in one attempt.
     /// </summary>
     /// <returns>The element, or null when none matches now.</returns>

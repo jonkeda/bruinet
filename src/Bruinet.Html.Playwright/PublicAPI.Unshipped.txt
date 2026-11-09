@@ -89,6 +89,7 @@ Bruinet.Html.Playwright.PlaywrightTestContext.PageTitle.get -> string!
 Bruinet.Html.Playwright.PlaywrightTestContext.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Html.Playwright.PlaywrightTestContext.ProbePageWhenReady(string! busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Html.Playwright.PlaywrightTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Html.Playwright.PlaywrightTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Playwright.PlaywrightTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.Html.Playwright.PlaywrightTestContext.Refresh() -> void
 Bruinet.Html.Playwright.PlaywrightTestContext.ResetAppState() -> void

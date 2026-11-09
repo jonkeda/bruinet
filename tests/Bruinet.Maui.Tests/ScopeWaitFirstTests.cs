@@ -1,15 +1,16 @@
 using Bruinet.Core.Logging;
+using Bruinet.Maui.Containers;
 
 namespace Bruinet.Maui.Tests;
 
-/// <summary><c>AppRoot.WaitFirst</c>: one call that polls several answers about now and names the first that holds.</summary>
-public sealed class AppRootWaitFirstTests
+/// <summary><c>WaitFirst</c> on a scope: one call that polls several answers about now and names the first that holds.</summary>
+public sealed class ScopeWaitFirstTests
 {
     private readonly Mock<IMauiTestContext> _context = new();
     private readonly Mock<ITestLogger> _logger = new();
     private readonly AppRoot _root;
 
-    public AppRootWaitFirstTests()
+    public ScopeWaitFirstTests()
     {
         _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 100, PollingInterval = 1 });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
@@ -50,4 +51,16 @@ public sealed class AppRootWaitFirstTests
         Assert.Equal(0, index);
         Assert.Equal(2, reads);
     }
+
+    [Fact]
+    public void WaitFirst_OnAContainer_HoldsWhenTheContainerItselfIsGone()
+    {
+        var sheet = new Sheet(_root, "Sheet");
+        Assert.False(sheet.IsReady());
+
+        Assert.Equal(1, sheet.WaitFirst(1000, () => false, () => !sheet.IsExists()));
+    }
+
+    private sealed class Sheet(IMauiScope<AppRoot> scope, string automationId)
+        : ContainerObjectBase<AppRoot, Sheet>(scope, automationId);
 }

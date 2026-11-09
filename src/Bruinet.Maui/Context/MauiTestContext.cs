@@ -107,6 +107,9 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
             : ScopeReadiness.Ready(nameof(MauiTestContext));
 
     /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new Bruinet.Maui.Pages.AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
+    /// <inheritdoc />
     /// <remarks>
     /// Test context root is always ready (driver is connected).
     /// </remarks>

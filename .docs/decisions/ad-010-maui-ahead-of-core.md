@@ -15,7 +15,8 @@ shape moves down to Core, one layer at a time, as its own step
 It names no element, driver or scope type, so it needed none of the interfaces:
 
 - `Bruinet.Core.Calls`: `Deadline`, `AttemptContext`, `Observation`, `ObservationLog`,
-  `Poller`, `Confirmer`, `ControlCall`, `ScopeGate` (internal, visible to `Bruinet.Maui`,
+  `Poller`, `Confirmer`, `ControlCall`, `ScopeGate`, `FirstOutcome` (the body of every
+  scope's `WaitFirst`) (internal, visible to `Bruinet.Maui`,
   `Bruinet.Html`, `Bruinet.NativeAndroid` and their test projects), and `Confirmation<T>`, `CallBudget`,
   `NearMissSettings` (public);
 - `Bruinet.Core.Exceptions`: `StaleElementException`, `ElementNotReadyException` with
