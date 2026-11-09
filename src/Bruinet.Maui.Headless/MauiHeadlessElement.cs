@@ -442,7 +442,7 @@ public sealed class MauiHeadlessElement : IMauiElement
     public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0) => Element switch
     {
         ItemsView items when verticalSteps > 0 => LoadedMore(items) ? ScrollStep.Moved : ScrollStep.NotMoved,
-        ScrollView or ItemsView => ScrollStep.NotMoved,
+        ScrollView or ItemsView or Layout => ScrollStep.NotMoved,
         _ => throw new BruinetException($"{TagName} #{AutomationId} does not scroll."),
     };
 
@@ -458,9 +458,15 @@ public sealed class MauiHeadlessElement : IMauiElement
 
     public ScrollStep ScrollTowards(int index)
     {
+        // A layout realizes all its rows at once, so past them is the end of the list.
+        if (Element is Layout)
+            return ScrollStep.NotMoved;
+        if (Element is not ItemsView items)
+            throw new BruinetException($"{TagName} #{AutomationId} has no items to scroll to.");
+
         // Past the last row is where a device's list asks for more: wait for the app's loading,
         // then raise its threshold. Rows that came are a step forward.
-        if (Element is ItemsView items && index >= CountOf(items) && LoadedMore(items))
+        if (index >= CountOf(items) && LoadedMore(items))
             return ScrollStep.Jumped;
 
         ScrollToIndex(index);

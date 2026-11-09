@@ -1006,6 +1006,7 @@ Bruinet.Maui.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! locator) 
 Bruinet.Maui.Pages.AppRoot.IsReady() -> bool
 Bruinet.Maui.Pages.AppRoot.Page.get -> Bruinet.Maui.Interfaces.IMauiPage?
 Bruinet.Maui.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Maui.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Maui.Pages.AppRoot.Self.get -> Bruinet.Maui.Pages.AppRoot!
 Bruinet.Maui.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
