@@ -195,4 +195,7 @@ one `Query`), and the rest is the per-stack list above. The context also names i
 | Q4 | Order: WPF or WinForms first? | **Decided 2026-11-09: WPF first.** Its suite is smaller (25 facts), it has a known baseline, and it shares XAML habits with MAUI's Windows head; WinForms then reuses everything but the controls. |
 | Q5 | Calls layer public? | **Decided 2026-11-09: public**, against the proposal to keep it internal: every stack is written against Core's published surface, and Core stops listing each stack. Section 3 point 5; AD-010 amended. |
 
-Expected next action: U0 runs the three baselines.
+U0 done 2026-11-09: [baseline.md](baseline.md). WPF 2 of 16 fail, WinForms 34 of 65, Stride 3 of 30,
+the same on both runs; every UAT scenario passes.
+
+Expected next action: U1, Core's `IScope` and `IPage` and the calls layer made public.
