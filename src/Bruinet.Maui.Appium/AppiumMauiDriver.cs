@@ -268,6 +268,43 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     public bool OmitsOffscreenElements => true;
 
     /// <inheritdoc />
+    /// <remarks>
+    /// UiAutomator2 reports a clipped element's visible part, so an element cut by a scroller ends
+    /// on that scroller's edge; XCUITest reports the whole frame, which then reaches past it. Either
+    /// way an element whose top and bottom are inside every scroller it overlaps is shown whole.
+    /// One lookup of the scrollers, asked only when a control in the element missed: a sweep it
+    /// saves costs seconds (a form input's absent error label swept its form for 5 s).
+    /// </remarks>
+    public bool IsWhollyInView(IMauiElement element)
+    {
+        try
+        {
+            var own = element.Rect;
+            if (own.Height <= 0)
+            {
+                return false;
+            }
+
+            foreach (var scroller in _appium.Scrollers(_driver))
+            {
+                var area = new System.Drawing.Rectangle(scroller.Location, scroller.Size);
+                var overlaps = own.Left < area.Right && own.Right > area.Left
+                               && own.Top < area.Bottom && own.Bottom > area.Top;
+                if (overlaps && (own.Top <= area.Top || own.Bottom >= area.Bottom))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        {
+            return false;
+        }
+    }
+
+    /// <inheritdoc />
     public bool FoundMeansVisible => _appium.FoundMeansVisible;
 
     /// <inheritdoc />
@@ -650,7 +687,8 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         var budgetMs = Bruinet.Core.Calls.CallBudget.RemainingOr(int.MaxValue);
         var gesture = new Dictionary<string, object> { { "elementId", ((AppiumElement)scroller).Id } };
 
-        return ScrollUntil(gesture, ScrollDirections, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false)
+        return ScrollUntil(gesture, ScrollDirections, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false,
+                scroller.Rect)
             ? ReResolveAfterScrolling(locator) ?? FindOnScreen(locator)
             : null;
     }
@@ -666,14 +704,28 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     /// <param name="found">One look after each swipe.</param>
     /// <param name="budgetMs">How long the swipes may take in all.</param>
     /// <param name="atLeastOneSwipe">Swipe once even on a spent budget: the caller's poll decides whether to try again, and a zero budget must not mean "never scrolls".</param>
+    /// <param name="bounds">
+    /// The scrolled area, or null. A swipe that starts on a view that keeps drags for itself (a
+    /// signature pad) does not move the page and reads as the end. With the area known, such a
+    /// swipe is tried again from further along it (<see cref="LaterStarts"/>) before a direction is
+    /// given up; a start that moves the page is kept.
+    /// </param>
     /// <returns>Whether <paramref name="found"/> held after a swipe.</returns>
     internal bool ScrollUntil(IReadOnlyDictionary<string, object> gesture, IReadOnlyList<string> directions,
-        Func<bool> found, int budgetMs, bool atLeastOneSwipe)
+        Func<bool> found, int budgetMs, bool atLeastOneSwipe, System.Drawing.Rectangle? bounds = null)
     {
         var clock = System.Diagnostics.Stopwatch.StartNew();
         var swiped = false;
         foreach (var direction in directions)
         {
+            var starts = new List<IReadOnlyDictionary<string, object>> { gesture };
+            if (bounds is { } area)
+            {
+                starts.AddRange(LaterStarts(area, direction));
+            }
+
+            var start = 0;
+            var blocked = 0;
             for (var swipe = 0; swipe < MaxScrollSwipes; swipe++)
             {
                 if ((swiped || !atLeastOneSwipe) && clock.ElapsedMilliseconds >= budgetMs)
@@ -684,7 +736,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 bool more;
                 try
                 {
-                    var parameters = new Dictionary<string, object>(gesture)
+                    var parameters = new Dictionary<string, object>(starts[start])
                     {
                         ["direction"] = direction,
                         ["percent"] = ScrollPercent,
@@ -702,14 +754,43 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                     return true;
                 }
 
-                if (!more)
+                if (more)
+                {
+                    blocked = 0;
+                    continue;
+                }
+
+                if (++blocked >= starts.Count)
                 {
                     break;
                 }
+
+                start = (start + 1) % starts.Count;
             }
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Regions of <paramref name="area"/> whose <c>mobile: scrollGesture</c> swipe starts half and
+    /// three quarters of the way from where a swipe over the whole area starts. A swipe "down"
+    /// starts at a region's bottom and "up" at its top, so the regions shrink from that end.
+    /// </summary>
+    internal static IEnumerable<IReadOnlyDictionary<string, object>> LaterStarts(System.Drawing.Rectangle area, string direction)
+    {
+        foreach (var share in new[] { 0.5, 0.25 })
+        {
+            var height = Math.Max(1, (int)(area.Height * share));
+            var top = direction == "up" ? area.Bottom - height : area.Top;
+            yield return new Dictionary<string, object>
+            {
+                { "left", area.Left },
+                { "top", top },
+                { "width", area.Width },
+                { "height", height },
+            };
+        }
     }
 
     /// <summary>
@@ -784,7 +865,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         return found;
     }
 
-    private const string IosScrollerTypes =
+    internal const string IosScrollerTypes =
         "type IN {'XCUIElementTypeCollectionView', 'XCUIElementTypeScrollView', 'XCUIElementTypeTable'}";
 
     /// <summary>The scroller in or at <paramref name="container"/>, or the tallest visible one on screen.</summary>

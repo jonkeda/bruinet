@@ -123,7 +123,8 @@ internal sealed class AndroidPlatform : AppiumPlatform
             // left of the caller's budget.
             string[] directions = element.Native.Location.Y < 0 ? ["up", "down"] : ["down", "up"];
             var budgetMs = (int)Math.Max(0, (timeout - (DateTime.UtcNow - startTime)).TotalMilliseconds);
-            element.Driver.ScrollUntil(region, directions, element.IsDisplayedNow, budgetMs, atLeastOneSwipe: true);
+            element.Driver.ScrollUntil(region, directions, element.IsDisplayedNow, budgetMs, atLeastOneSwipe: true,
+                new System.Drawing.Rectangle(50, 150, windowSize.Width - 100, windowSize.Height - 300));
         }
         catch (Exception error) when (!AppiumErrors.IsGone(error))
         {
@@ -149,6 +150,9 @@ internal sealed class AndroidPlatform : AppiumPlatform
     // The drawer's items leave the tree entirely while it is shut, so their presence is its state.
     public override bool IsFlyoutOpen(AppiumMauiDriver driver)
         => driver.FindElements(driver.ShellChrome.FlyoutHost).Count > 0;
+
+    public override IReadOnlyCollection<OpenQA.Selenium.IWebElement> Scrollers(AppiumDriver driver)
+        => driver.FindElements(MobileBy.AndroidUIAutomator("new UiSelector().scrollable(true)"));
 
     public override IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator)
         => driver.FindByScrollingAndroid(container, locator);

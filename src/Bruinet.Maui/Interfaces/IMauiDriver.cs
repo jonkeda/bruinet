@@ -98,6 +98,14 @@ public interface IMauiDriver : IDiagnosticDriver, IDisposable
     bool OmitsOffscreenElements => false;
 
     /// <summary>
+    /// Whether <paramref name="element"/> is shown whole: on a platform that leaves out what is off
+    /// screen, its edges are clear of every scroller it sits in. Then its own children are in the
+    /// tree, and a child that is missing is missing, with nothing to scroll to.
+    /// </summary>
+    /// <param name="element">The element, already found.</param>
+    bool IsWhollyInView(IMauiElement element) => true;
+
+    /// <summary>
     /// Whether a found element counts as visible, also under a dialog (UiAutomator2), so an action
     /// asks whether a dialog covers it.
     /// </summary>

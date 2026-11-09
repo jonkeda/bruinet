@@ -220,6 +220,9 @@ internal abstract class AppiumPlatform
     /// <summary>Finds an element by scrolling a container until it enters the tree.</summary>
     public abstract IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator);
 
+    /// <summary>The scrollers on screen, for <see cref="AppiumMauiDriver.IsWhollyInView"/>.</summary>
+    public abstract IReadOnlyCollection<OpenQA.Selenium.IWebElement> Scrollers(AppiumDriver driver);
+
     /// <summary>A session capability as text, or null.</summary>
     protected static string? CapabilityText(AppiumDriver driver, string name)
         => driver.Capabilities.GetCapability(name)?.ToString() is { Length: > 0 } text ? text : null;

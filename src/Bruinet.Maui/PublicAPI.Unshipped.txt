@@ -819,6 +819,7 @@ Bruinet.Maui.Interfaces.IMauiDriver.NavigateBack() -> void
 Bruinet.Maui.Interfaces.IMauiDriver.NavigateTo(string! destination) -> void
 Bruinet.Maui.Interfaces.IMauiDriver.NavigationDepth() -> int
 Bruinet.Maui.Interfaces.IMauiDriver.OmitsOffscreenElements.get -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.IsWhollyInView(Bruinet.Maui.Interfaces.IMauiElement! element) -> bool
 Bruinet.Maui.Interfaces.IMauiDriver.PageControl.get -> (Bruinet.Core.Locators.Locator! Within, string! Type)?
 Bruinet.Maui.Interfaces.IMauiDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> void
 Bruinet.Maui.Interfaces.IMauiDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture, int arg1, int arg2) -> void

@@ -317,6 +317,9 @@ internal sealed class IosPlatform : AppiumPlatform
     internal static bool IsVisible(string? visible)
         => string.Equals(visible, "true", StringComparison.OrdinalIgnoreCase);
 
+    public override IReadOnlyCollection<OpenQA.Selenium.IWebElement> Scrollers(AppiumDriver driver)
+        => driver.FindElements(MobileBy.IosNSPredicate(AppiumMauiDriver.IosScrollerTypes + " AND visible == 1"));
+
     public override IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator)
         => driver.FindByScrollingIos(container, locator);
 

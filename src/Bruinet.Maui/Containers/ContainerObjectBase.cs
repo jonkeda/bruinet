@@ -703,8 +703,14 @@ public abstract class ContainerObjectBase<TParent, TSelf>
     public override IMauiElement? ScrollingRoot => _parentScope.ScrollingRoot;
 
     /// <inheritdoc />
-    /// <remarks>A container inside a row is confined as the row is.</remarks>
-    public override bool AllowsScrollLookup => _parentScope.AllowsScrollLookup;
+    /// <remarks>
+    /// A container inside a row is confined as the row is. A container shown whole holds all its
+    /// children in the tree, so a child it misses is not below the fold: no sweep, which would
+    /// also leave the page scrolled away from it.
+    /// </remarks>
+    public override bool AllowsScrollLookup
+        => _parentScope.AllowsScrollLookup
+           && !(OnATouchPlatform && TryGetContainerRoot() is { } root && Context.Driver!.IsWhollyInView(root));
 
     /// <remarks>
     /// On Android and iOS a container below the fold is not in the tree at all - UiAutomator2 leaves
