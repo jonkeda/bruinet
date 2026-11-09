@@ -11,8 +11,6 @@ Bruinet.Stride.Communication.AutomationCommand.Method.get -> string!
 Bruinet.Stride.Communication.AutomationCommand.Method.set -> void
 Bruinet.Stride.Communication.AutomationCommand.Target.get -> string?
 Bruinet.Stride.Communication.AutomationCommand.Target.set -> void
-Bruinet.Stride.Communication.AutomationCommand.TimeoutMs.get -> int
-Bruinet.Stride.Communication.AutomationCommand.TimeoutMs.set -> void
 Bruinet.Stride.Communication.AutomationCommand.Type.get -> string!
 Bruinet.Stride.Communication.AutomationCommand.Type.set -> void
 Bruinet.Stride.Communication.AutomationResponse
@@ -49,6 +47,8 @@ Bruinet.Stride.Communication.ElementState.ControlType.set -> void
 Bruinet.Stride.Communication.ElementState.ElementState() -> void
 Bruinet.Stride.Communication.ElementState.Exists.get -> bool
 Bruinet.Stride.Communication.ElementState.Exists.set -> void
+Bruinet.Stride.Communication.ElementState.InstanceKey.get -> string?
+Bruinet.Stride.Communication.ElementState.InstanceKey.set -> void
 Bruinet.Stride.Communication.ElementState.IsChecked.get -> bool?
 Bruinet.Stride.Communication.ElementState.IsChecked.set -> void
 Bruinet.Stride.Communication.ElementState.IsEnabled.get -> bool
@@ -469,7 +469,6 @@ static Bruinet.Stride.BruinetStrideConfiguration.Load(string? configPath = null)
 static Bruinet.Stride.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.GameQuery(string! method, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.Query(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
-static Bruinet.Stride.Communication.AutomationCommand.Wait(string! method, string? target = null, int timeoutMs = 10000, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationResponse.Fail(string! error, string? stackTrace = null) -> Bruinet.Stride.Communication.AutomationResponse!
 static Bruinet.Stride.Communication.AutomationResponse.Ok(object? result = null) -> Bruinet.Stride.Communication.AutomationResponse!
 static Bruinet.Stride.Testing.StrideTestFixtureBase.FindSolutionDirectory() -> string!

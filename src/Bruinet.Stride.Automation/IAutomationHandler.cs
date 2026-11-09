@@ -1,4 +1,4 @@
-using Bruinet.Stride.Automation.Communication;
+using Bruinet.Stride.Communication;
 
 namespace Bruinet.Stride.Automation;
 

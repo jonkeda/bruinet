@@ -258,4 +258,18 @@ Results: unit tests 48 of 48; UI suite 62 of 65 twice (1 m 43 s, 1 m 49 s; basel
 some text. R0: Clear no longer reset the port, `Form_Clear_ResetsAllFields` failed on it (8080 vs 9000),
 restored.
 
-Expected next action: U5, the Stride protocol.
+U5 done 2026-11-10. The Stride protocol, for the call model:
+
+- One protocol: the server's copy of the wire types (`Bruinet.Stride.Automation.Communication`) is gone;
+  it uses the client's `Bruinet.Stride.Communication` (it already referenced the client).
+- Identity: `ElementState.InstanceKey` is Stride's `UIElement.Id`; a command's target `#key` addresses an
+  element by it, so an unnamed row can be acted on. `ElementState` also carries the name and control type.
+- Lookups inside a scope: `Find` (first named descendant), `FindAll`, `GetChildren`; every read stays
+  one attempt.
+- No waits in the game: the client's `AutomationCommand.Wait` (which the server never handled) and
+  the command's unused `TimeoutMs` are gone.
+
+Checks: `StrideUIHandlerTests`, 7 new tests over a Stride UI tree built in the test (no engine); the Stride
+suite unchanged against the rebuilt game (27 of 30, the baseline's 3 failing).
+
+Expected next action: U6, Stride on the call model.

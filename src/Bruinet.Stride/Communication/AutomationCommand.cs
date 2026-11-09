@@ -19,9 +19,6 @@ public class AutomationCommand
     [JsonPropertyName("args")]
     public object[]? Args { get; set; }
 
-    [JsonPropertyName("timeoutMs")]
-    public int TimeoutMs { get; set; } = 10000;
-
     public static AutomationCommand Query(string method, string? target = null, params object[] args) => new()
     {
         Type = "Query",
@@ -35,15 +32,6 @@ public class AutomationCommand
         Type = "Action",
         Method = method,
         Target = target,
-        Args = args.Length > 0 ? args : null
-    };
-
-    public static AutomationCommand Wait(string method, string? target = null, int timeoutMs = 10000, params object[] args) => new()
-    {
-        Type = "Wait",
-        Method = method,
-        Target = target,
-        TimeoutMs = timeoutMs,
         Args = args.Length > 0 ? args : null
     };
 

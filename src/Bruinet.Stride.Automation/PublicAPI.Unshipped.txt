@@ -16,113 +16,20 @@ Bruinet.Stride.Automation.AutomationServerOptions.PipeName.get -> string!
 Bruinet.Stride.Automation.AutomationServerOptions.PipeName.set -> void
 Bruinet.Stride.Automation.AutomationServerOptions.VerboseLogging.get -> bool
 Bruinet.Stride.Automation.AutomationServerOptions.VerboseLogging.set -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand
-Bruinet.Stride.Automation.Communication.AutomationCommand.Args.get -> object![]?
-Bruinet.Stride.Automation.Communication.AutomationCommand.Args.set -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand.AutomationCommand() -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand.Method.get -> string!
-Bruinet.Stride.Automation.Communication.AutomationCommand.Method.set -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand.Target.get -> string?
-Bruinet.Stride.Automation.Communication.AutomationCommand.Target.set -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand.TimeoutMs.get -> int
-Bruinet.Stride.Automation.Communication.AutomationCommand.TimeoutMs.set -> void
-Bruinet.Stride.Automation.Communication.AutomationCommand.Type.get -> string!
-Bruinet.Stride.Automation.Communication.AutomationCommand.Type.set -> void
-Bruinet.Stride.Automation.Communication.AutomationResponse
-Bruinet.Stride.Automation.Communication.AutomationResponse.AutomationResponse() -> void
-Bruinet.Stride.Automation.Communication.AutomationResponse.Error.get -> string?
-Bruinet.Stride.Automation.Communication.AutomationResponse.Error.set -> void
-Bruinet.Stride.Automation.Communication.AutomationResponse.Result.get -> object?
-Bruinet.Stride.Automation.Communication.AutomationResponse.Result.set -> void
-Bruinet.Stride.Automation.Communication.AutomationResponse.StackTrace.get -> string?
-Bruinet.Stride.Automation.Communication.AutomationResponse.StackTrace.set -> void
-Bruinet.Stride.Automation.Communication.AutomationResponse.Success.get -> bool
-Bruinet.Stride.Automation.Communication.AutomationResponse.Success.set -> void
-Bruinet.Stride.Automation.Communication.ElementBounds
-Bruinet.Stride.Automation.Communication.ElementBounds.CenterX.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.CenterY.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.Contains(int x, int y) -> bool
-Bruinet.Stride.Automation.Communication.ElementBounds.ElementBounds() -> void
-Bruinet.Stride.Automation.Communication.ElementBounds.Height.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.Height.set -> void
-Bruinet.Stride.Automation.Communication.ElementBounds.IsEmpty.get -> bool
-Bruinet.Stride.Automation.Communication.ElementBounds.Width.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.Width.set -> void
-Bruinet.Stride.Automation.Communication.ElementBounds.X.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.X.set -> void
-Bruinet.Stride.Automation.Communication.ElementBounds.Y.get -> int
-Bruinet.Stride.Automation.Communication.ElementBounds.Y.set -> void
-Bruinet.Stride.Automation.Communication.ElementState
-Bruinet.Stride.Automation.Communication.ElementState.AutomationId.get -> string?
-Bruinet.Stride.Automation.Communication.ElementState.AutomationId.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Bounds.get -> Bruinet.Stride.Automation.Communication.ElementBounds!
-Bruinet.Stride.Automation.Communication.ElementState.Bounds.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.ControlType.get -> string?
-Bruinet.Stride.Automation.Communication.ElementState.ControlType.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.ElementState() -> void
-Bruinet.Stride.Automation.Communication.ElementState.Exists.get -> bool
-Bruinet.Stride.Automation.Communication.ElementState.Exists.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsChecked.get -> bool?
-Bruinet.Stride.Automation.Communication.ElementState.IsChecked.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsEnabled.get -> bool
-Bruinet.Stride.Automation.Communication.ElementState.IsEnabled.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsFocused.get -> bool
-Bruinet.Stride.Automation.Communication.ElementState.IsFocused.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsHitTestVisible.get -> bool
-Bruinet.Stride.Automation.Communication.ElementState.IsHitTestVisible.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsOpen.get -> bool?
-Bruinet.Stride.Automation.Communication.ElementState.IsOpen.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.IsVisible.get -> bool
-Bruinet.Stride.Automation.Communication.ElementState.IsVisible.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Items.get -> System.Collections.Generic.List<string!>?
-Bruinet.Stride.Automation.Communication.ElementState.Items.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Maximum.get -> double?
-Bruinet.Stride.Automation.Communication.ElementState.Maximum.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Minimum.get -> double?
-Bruinet.Stride.Automation.Communication.ElementState.Minimum.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Name.get -> string?
-Bruinet.Stride.Automation.Communication.ElementState.Name.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Opacity.get -> float
-Bruinet.Stride.Automation.Communication.ElementState.Opacity.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.SelectedIndex.get -> int
-Bruinet.Stride.Automation.Communication.ElementState.SelectedIndex.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.SelectedText.get -> string?
-Bruinet.Stride.Automation.Communication.ElementState.SelectedText.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Text.get -> string?
-Bruinet.Stride.Automation.Communication.ElementState.Text.set -> void
-Bruinet.Stride.Automation.Communication.ElementState.Value.get -> double?
-Bruinet.Stride.Automation.Communication.ElementState.Value.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo
-Bruinet.Stride.Automation.Communication.WindowInfo.UiResolutionX.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.UiResolutionX.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.UiResolutionY.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.UiResolutionY.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowHeight.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowHeight.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowInfo() -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowWidth.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowWidth.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowX.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowX.set -> void
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowY.get -> int
-Bruinet.Stride.Automation.Communication.WindowInfo.WindowY.set -> void
 Bruinet.Stride.Automation.IAutomationHandler
-Bruinet.Stride.Automation.IAutomationHandler.HandleCommandAsync(Bruinet.Stride.Automation.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Automation.Communication.AutomationResponse!>!
+Bruinet.Stride.Automation.IAutomationHandler.HandleCommandAsync(Bruinet.Stride.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Communication.AutomationResponse!>!
 Bruinet.Stride.Automation.StrideAutomationExtensions
 Bruinet.Stride.Automation.StrideUIHandler
-Bruinet.Stride.Automation.StrideUIHandler.HandleCommandAsync(Bruinet.Stride.Automation.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Automation.Communication.AutomationResponse!>!
+Bruinet.Stride.Automation.StrideUIHandler.HandleCommandAsync(Bruinet.Stride.Communication.AutomationCommand! command, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Stride.Communication.AutomationResponse!>!
 Bruinet.Stride.Automation.StrideUIHandler.StrideUIHandler(System.Func<Stride.UI.UIElement?>! rootProvider, System.Func<bool>? isReadyProvider = null, System.Func<bool>? isBusyProvider = null, Stride.Games.IGame? game = null) -> void
+const Bruinet.Stride.Automation.StrideUIHandler.KeyPrefix = "#" -> string!
 override Bruinet.Stride.Automation.AutomationGameSystem.Destroy() -> void
 override Bruinet.Stride.Automation.AutomationGameSystem.Initialize() -> void
 override Bruinet.Stride.Automation.AutomationGameSystem.Update(Stride.Games.GameTime! gameTime) -> void
 static Bruinet.Stride.Automation.AutomationServerOptions.FromCommandLine(string![]? args = null) -> Bruinet.Stride.Automation.AutomationServerOptions!
-static Bruinet.Stride.Automation.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Automation.Communication.AutomationCommand!
-static Bruinet.Stride.Automation.Communication.AutomationCommand.GameQuery(string! method, params object![]! args) -> Bruinet.Stride.Automation.Communication.AutomationCommand!
-static Bruinet.Stride.Automation.Communication.AutomationCommand.Query(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Automation.Communication.AutomationCommand!
-static Bruinet.Stride.Automation.Communication.AutomationResponse.Fail(string! error, string? stackTrace = null) -> Bruinet.Stride.Automation.Communication.AutomationResponse!
-static Bruinet.Stride.Automation.Communication.AutomationResponse.Ok(object? result = null) -> Bruinet.Stride.Automation.Communication.AutomationResponse!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.IsAutomationEnabled(Bruinet.Stride.BruinetStrideConfiguration? config = null) -> bool
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomation(this Stride.Engine.Game! game, Bruinet.Stride.Automation.IAutomationHandler! handler, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomation(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomationIfEnabled(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomationIfEnabled(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.BruinetStrideConfiguration? config, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
+static Bruinet.Stride.Automation.StrideUIHandler.KeyOf(Stride.UI.UIElement! element) -> string!

@@ -1,4 +1,4 @@
-using Bruinet.Stride.Automation.Communication;
+using Bruinet.Stride.Communication;
 using Stride.Core;
 using Stride.Engine;
 using Stride.Games;

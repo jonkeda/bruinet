@@ -1,4 +1,4 @@
-using Bruinet.Stride.Automation.Communication;
+using Bruinet.Stride.Communication;
 using System.IO.Pipes;
 using System.Text.Json;
 

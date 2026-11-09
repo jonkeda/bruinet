@@ -1,4 +1,4 @@
-using Bruinet.Stride.Automation.Communication;
+using Bruinet.Stride.Communication;
 using Stride.Core.Mathematics;
 using Stride.Engine;
 using Stride.Games;
@@ -62,6 +62,10 @@ public class StrideUIHandler : IAutomationHandler
         return command.Method switch
         {
             "GetState" => GetElementState(target),
+            // One-attempt lookups inside a scope (the target: an AutomationId, "#key", or "" for the root).
+            "Find" => Find(target, GetArgString(command.Args, 0) ?? ""),
+            "FindAll" => FindAll(target, GetArgString(command.Args, 0) ?? ""),
+            "GetChildren" => GetChildren(target),
             "Exists" => CheckExists(target),
             "IsVisible" => CheckVisible(target),
             "IsEnabled" => CheckEnabled(target),
@@ -170,52 +174,84 @@ public class StrideUIHandler : IAutomationHandler
 
     #region Element Finding
 
-    private UIElement? FindElement(string automationId)
+    /// <summary>The prefix of a target that names an element by its identity (<c>UIElement.Id</c>) rather than its name.</summary>
+    public const string KeyPrefix = "#";
+
+    /// <summary>
+    /// The element a target names: <c>#key</c> by its identity, anything else by its name; the root
+    /// for an empty target. One walk of the tree, no waiting.
+    /// </summary>
+    private UIElement? FindElement(string target)
     {
         var root = _rootProvider();
         if (root == null)
             return null;
-        return FindElementRecursive(root, automationId);
+        if (string.IsNullOrEmpty(target))
+            return root;
+        return Descendants(root, includeSelf: true).FirstOrDefault(element => Matches(element, target));
     }
 
-    private UIElement? FindElementRecursive(UIElement element, string automationId)
+    private static bool Matches(UIElement element, string target)
+        => target.StartsWith(KeyPrefix, StringComparison.Ordinal)
+            ? KeyOf(element) == target[KeyPrefix.Length..]
+            : element.Name == target;
+
+    /// <summary>An element's identity, as a command's <c>#key</c> target names it.</summary>
+    public static string KeyOf(UIElement element) => element.Id.ToString("N");
+
+    /// <summary>
+    /// The element's children as automation sees them: a panel's children, a content control's or
+    /// scroll viewer's content.
+    /// </summary>
+    private static IEnumerable<UIElement> ChildrenOf(UIElement element) => element switch
     {
-        if (element.Name == automationId)
-            return element;
+        Panel panel => panel.Children,
+        ContentControl { Content: UIElement content } => [content],
+        ScrollViewer { Content: UIElement scrollContent } => [scrollContent],
+        _ => [],
+    };
 
-        if (element is Panel panel)
-        {
-            foreach (var child in panel.Children)
-            {
-                var found = FindElementRecursive(child, automationId);
-                if (found != null)
-                    return found;
-            }
-        }
-        else if (element is ContentControl contentControl && contentControl.Content is UIElement content)
-        {
-            var found = FindElementRecursive(content, automationId);
-            if (found != null)
-                return found;
-        }
-        else if (element is ScrollViewer scrollViewer && scrollViewer.Content is UIElement scrollContent)
-        {
-            var found = FindElementRecursive(scrollContent, automationId);
-            if (found != null)
-                return found;
-        }
+    private static IEnumerable<UIElement> Descendants(UIElement element, bool includeSelf)
+    {
+        if (includeSelf)
+            yield return element;
 
-        return null;
+        foreach (var child in ChildrenOf(element))
+        {
+            foreach (var descendant in Descendants(child, includeSelf: true))
+                yield return descendant;
+        }
+    }
+
+    private AutomationResponse Find(string scope, string target)
+    {
+        var within = FindElement(scope);
+        var found = within is null ? null : Descendants(within, includeSelf: false).FirstOrDefault(element => Matches(element, target));
+        return AutomationResponse.Ok(CreateElementState(found, target));
+    }
+
+    private AutomationResponse FindAll(string scope, string target)
+    {
+        var within = FindElement(scope);
+        var found = within is null ? [] : Descendants(within, includeSelf: false).Where(element => Matches(element, target));
+        return AutomationResponse.Ok(found.Select(element => CreateElementState(element, element.Name)).ToList());
+    }
+
+    private AutomationResponse GetChildren(string scope)
+    {
+        var within = FindElement(scope);
+        var children = within is null ? [] : ChildrenOf(within);
+        return AutomationResponse.Ok(children.Select(element => CreateElementState(element, element.Name)).ToList());
     }
 
     #endregion
 
     #region Element State
 
-    private AutomationResponse GetElementState(string automationId)
+    private AutomationResponse GetElementState(string target)
     {
-        var element = FindElement(automationId);
-        var state = CreateElementState(element, automationId);
+        var element = FindElement(target);
+        var state = CreateElementState(element, target);
         return AutomationResponse.Ok(state);
     }
 
@@ -235,7 +271,10 @@ public class StrideUIHandler : IAutomationHandler
 
         return new ElementState
         {
-            AutomationId = automationId,
+            AutomationId = element.Name ?? automationId,
+            Name = element.Name,
+            InstanceKey = KeyOf(element),
+            ControlType = element.GetType().Name,
             Exists = true,
             IsVisible = IsElementActuallyVisible(element),
             IsEnabled = IsElementActuallyEnabled(element),

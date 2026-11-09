@@ -34,6 +34,13 @@ public class ElementState
     [JsonPropertyName("controlType")]
     public string? ControlType { get; set; }
 
+    /// <summary>
+    /// The element's identity: its Stride <c>UIElement.Id</c>, the same for the same element and new
+    /// for a replaced one. A command addresses an element by it as the target <c>#key</c>.
+    /// </summary>
+    [JsonPropertyName("instanceKey")]
+    public string? InstanceKey { get; set; }
+
     [JsonPropertyName("bounds")]
     public ElementBounds Bounds { get; set; } = new();
 
