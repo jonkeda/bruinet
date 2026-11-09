@@ -11,7 +11,6 @@ namespace Bruinet.Maui.Pages;
 /// resolve strictly within that root.
 /// </summary>
 /// <typeparam name="TSelf">The concrete page type (CRTP pattern).</typeparam>
-[Bruinet.Core.Composition.TestPage]
 public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMauiPage<TSelf>
     where TSelf : PageObjectBase<TSelf>
 {

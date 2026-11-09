@@ -272,7 +272,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
         return parent.IsReady ? ProbeOwnReadiness(rootReacquired: false) : parent;
     }
 
-    /// <inheritdoc cref="IMauiElementScope.IsReady"/>
+    /// <inheritdoc cref="IScope.IsReady"/>
     public bool IsReady() => ProbeReadiness().IsReady;
 
     /// <summary>

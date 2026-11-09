@@ -73,17 +73,17 @@ the move down".
 
 1. **The element-free part of the scope, page and context moves down to Core now**, before any old
    stack moves, as the third layer. Core gets `IScope` (`DefaultLocatorStrategy`, `ProbeReadiness`,
-   `IsReady`, `WaitReady`, `WaitFirst`), `IPage : IScope` (the eleven page members) and the context
-   members that do not name an element. Names to settle in step U1; `IScope`/`IPage` are free once
-   Legacy's `IElementScope`/`IPageObject` are gone, and until then live in another namespace
-   (`Bruinet.Core.Scopes`).
+   `IsReady`, `WaitReady`, `WaitFirst`), `ITestPage : IScope` (the eleven page members) and the context
+   members that do not name an element. Named in U1: `IScope` and `ITestPage` (not `IPage`, Playwright's page interface), in
+   `Bruinet.Core.Scopes`; the context's element-free members are `Name` and `NearMiss`, on
+   `ITestContext`.
 2. **The typed half stays per stack**: each stack's scope interface derives from Core's and adds
    `Context`, `Page`, `TryFindElement`, `FindElement`, `FindElements` with its own element type.
    No generic `IElementScope<TElement, TContext, TPage>`: three type parameters on every page
    object read worse than one derived interface per stack.
 3. **The element and the driver are per stack for good.** AD-010's "until it moves down" no longer
    applies to them; the amendment says so.
-4. **Composition and UAT find pages by Core's `IPage`**, so `[TestPage]` on page bases and
+4. **Composition and UAT find pages by Core's `ITestPage`**, so `[TestPage]` on page bases and
    `TestPages.IsFirstModelPage` (finding a page by an interface's name) can go.
 5. **The calls layer becomes public** (Q5): `ControlCalls`, `IControlHost` and the leaf types they
    use go into Core's PublicAPI files, and Core's `InternalsVisibleTo` for the stacks goes. Every
@@ -125,7 +125,7 @@ suites fail before any change.
 | Step | What | Done when |
 | --- | --- | --- |
 | **U0** | Baselines: run the WPF, WinForms and Stride UI and UAT suites twice; record failures and tests over 5 s in `baseline.md`. The WPF login baseline had 2 failing tests in September. | `baseline.md` lists each suite's result and slow tests |
-| **U1** | AD-010's third layer: Core's `IScope`, `IPage`, context members; Html, MAUI, native Android derive from them; Composition and UAT find pages by `IPage`; the calls layer public (PublicAPI files, the stacks' `InternalsVisibleTo` removed, XML docs on every public member); AD-010 amended. | The three suites as green as before; `SolutionTests` and Architecture tests updated |
+| **U1** | AD-010's third layer: Core's `IScope`, `ITestPage`, context members; Html, MAUI, native Android derive from them; Composition and UAT find pages by `ITestPage`; the calls layer public (PublicAPI files, the stacks' `InternalsVisibleTo` removed, XML docs on every public member); AD-010 amended. | The three suites as green as before; `SolutionTests` and Architecture tests updated |
 | **U2** | `Bruinet.FlaUI` taken out of `Bruinet.Maui.FlaUI`; MAUI's Windows head runs on it. | MAUI Windows suite as green as before |
 | **U3** | WPF on the call model (below). | WPF suites at baseline or better; an R0 proof |
 | **U4** | WinForms on the call model, the same way. | WinForms suites at baseline or better; an R0 proof |
@@ -136,7 +136,7 @@ suites fail before any change.
 ### Per stack (U3, U4, U6): as native Android did
 
 1. **Interfaces**: `IWpfElement` (one attempt, `InstanceKey`, no `timeoutMs` on lookups),
-   `IWpfDriver : IDiagnosticDriver`, `IWpfElementScope : IScope`, `IWpfPage : IPage`,
+   `IWpfDriver : IDiagnosticDriver`, `IWpfElementScope : IScope`, `IWpfPage : ITestPage`,
    `IWpfTestContext : ITestContext`, `IWpfScope<TSelf>`, `IWpfContainer`.
 2. **Element adapter** on `Bruinet.FlaUI`: element-not-available is stale, a missing element is
    null, never a wait.
@@ -198,4 +198,10 @@ one `Query`), and the rest is the per-stack list above. The context also names i
 U0 done 2026-11-09: [baseline.md](baseline.md). WPF 2 of 16 fail, WinForms 34 of 65, Stride 3 of 30,
 the same on both runs; every UAT scenario passes.
 
-Expected next action: U1, Core's `IScope` and `IPage` and the calls layer made public.
+U1 done 2026-11-09: Core's `IScope` and `ITestPage` (`Bruinet.Core.Scopes`), `ITestContext.Name` and
+`NearMiss`; the Html, MAUI and native Android interfaces derive from them (18 declared members each
+gone from their PublicAPI); pages found by `ITestPage`; the calls layer public, Core's
+`InternalsVisibleTo` for the stacks removed. CI's set run locally (`coverage.ps1 -Headless -Browser`):
+29 projects, 0 failures. Not run: the native Android UI suite (emulator) and MAUI on a device.
+
+Expected next action: U2, `Bruinet.FlaUI` taken out of `Bruinet.Maui.FlaUI`.

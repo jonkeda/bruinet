@@ -118,7 +118,7 @@ public sealed class TestCompositionCatalog
             scannedTypes.Add(type);
 
             var pageAttribute = type.GetCustomAttribute<TestPageAttribute>();
-            if (pageAttribute is not null || TestPages.IsFirstModelPage(type))
+            if (pageAttribute is not null || TestPages.IsPage(type))
             {
                 pages.Add(new TestPageDescriptor(
                     ResolvePageName(type, pageAttribute),

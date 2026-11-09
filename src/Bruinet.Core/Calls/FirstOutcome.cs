@@ -10,7 +10,7 @@ namespace Bruinet.Core.Calls;
 /// Each attempt checks only that the app is reachable, never the scope the call stands in: an
 /// outcome such as "the sheet is gone" must be able to hold while that scope, or its parent, is not.
 /// </remarks>
-internal static class FirstOutcome
+public static class FirstOutcome
 {
     /// <summary>The member name every stack logs the call under.</summary>
     public const string Caller = "WaitFirst";

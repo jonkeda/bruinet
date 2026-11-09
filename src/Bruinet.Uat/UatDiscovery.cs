@@ -134,7 +134,7 @@ public static class UatDiscovery
             return true;
         }
 
-        if (TestPages.IsFirstModelPage(type))
+        if (TestPages.IsPage(type))
         {
             return true;
         }

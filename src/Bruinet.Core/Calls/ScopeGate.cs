@@ -6,7 +6,7 @@ namespace Bruinet.Core.Calls;
 /// <summary>
 /// The readiness step every attempt of a call starts with, and the failure it produces.
 /// </summary>
-internal static class ScopeGate
+public static class ScopeGate
 {
     /// <summary>
     /// One probe of a scope: null when it is ready, otherwise the observation to report.

@@ -6,7 +6,7 @@ namespace Bruinet.Core.Calls;
 /// <summary>
 /// The wait for an action's effect, behind <c>Confirm</c> on controls and scopes.
 /// </summary>
-internal static class Confirmer
+public static class Confirmer
 {
     public static Confirmation<T> Run<T>(Func<T?> read, Func<T?, bool> done, int budgetMs, int pollingIntervalMs)
     {

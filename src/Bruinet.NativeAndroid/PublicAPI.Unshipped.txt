@@ -64,7 +64,6 @@ Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NavigateTo(string! destina
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Refresh() -> void
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.ResetAppState() -> void
@@ -72,6 +71,7 @@ Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.SaveScreenshot(string! pat
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.TakeScreenshot() -> byte[]!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
@@ -112,8 +112,8 @@ Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Nativ
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Position.get -> int
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
@@ -132,9 +132,9 @@ Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Locator.ge
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Controls.Buttons.Button<TScope>
@@ -449,35 +449,17 @@ Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.TryFindElement(Bruinet.Co
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Visible.get -> bool
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.IsReady() -> bool
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.Activity.get -> string?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.GetTitle() -> string?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.IsBusy() -> bool
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.IsLoaded() -> bool
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.Name.get -> string!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.TakeScreenshot(string? filename = null) -> void
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage<TSelf>
 Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>
 Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>.Self.get -> TScope
 Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext
 Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Driver.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Name.get -> string?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
 Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions
 Bruinet.NativeAndroid.NativeAndroidDriverOptions
 Bruinet.NativeAndroid.NativeAndroidDriverOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
@@ -526,9 +508,9 @@ Bruinet.NativeAndroid.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! 
 Bruinet.NativeAndroid.Pages.AppRoot.IsReady() -> bool
 Bruinet.NativeAndroid.Pages.AppRoot.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
 Bruinet.NativeAndroid.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Pages.AppRoot.Self.get -> Bruinet.NativeAndroid.Pages.AppRoot!
 Bruinet.NativeAndroid.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+Bruinet.NativeAndroid.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
@@ -545,6 +527,7 @@ Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
@@ -678,7 +661,6 @@ virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator?
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TitleLocator.get -> Bruinet.Core.Locators.Locator?

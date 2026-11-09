@@ -6,7 +6,7 @@ namespace Bruinet.Core.Calls;
 /// <summary>
 /// The one retry loop of a call.
 /// </summary>
-internal static class Poller
+public static class Poller
 {
     /// <summary>How close to the end of the budget a driver's timeout still counts as the budget running out.</summary>
     private const int BudgetSlopMs = 10;

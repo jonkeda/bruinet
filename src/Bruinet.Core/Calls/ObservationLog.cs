@@ -6,7 +6,7 @@ namespace Bruinet.Core.Calls;
 /// <summary>
 /// Every observation of one phase of a call, and the failure built from them.
 /// </summary>
-internal sealed class ObservationLog
+public sealed class ObservationLog
 {
     private readonly List<(Observation Observation, long AtMs)> _entries = [];
     private readonly HashSet<string> _instanceKeys = new(StringComparer.Ordinal);

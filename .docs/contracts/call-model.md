@@ -21,7 +21,7 @@ and the native Android slice (`.my/androidnative/`, 2026-10). Enforces
 | **R6** | One check that a cached root is still alive, used by every scope that caches a root (`InstanceKey` read through the driver's `Live` helper). |
 | **R7** | Non-`Try` members wait; `Try*` members answer about now. |
 | **R8** | The generator does not change: same `Run*` names and signatures on every hierarchy. |
-| **R9** | MAUI, Html and native Android own the interfaces and bases they change. The calls layer, its exceptions and `ScopeReadiness` are one copy, in Core (`Bruinet.Core.Calls`, `.Exceptions`, `.Scopes`), and so are a control's calls (`ControlCalls<TElement>`, each control base its `IControlHost`). See [AD-010](../decisions/ad-010-maui-ahead-of-core.md). |
+| **R9** | Each stack owns its element, driver and bases. One copy, in Core: the calls layer (public), its exceptions, `ScopeReadiness`, a control's calls (`ControlCalls<TElement>`, each control base its `IControlHost`), and the element-free half of every scope and page (`IScope`, `ITestPage`), from which each stack's scope and page interfaces derive (`Bruinet.Core.Calls`, `.Exceptions`, `.Scopes`). See [AD-010](../decisions/ad-010-maui-ahead-of-core.md). |
 
 ## What a call may absorb, and what it must report (R0)
 

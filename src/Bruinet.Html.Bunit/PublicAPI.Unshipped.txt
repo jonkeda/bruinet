@@ -82,7 +82,6 @@ Bruinet.Html.Bunit.BunitTestContext.Page.get -> Bruinet.Html.Interfaces.IHtmlPag
 Bruinet.Html.Bunit.BunitTestContext.PageTitle.get -> string!
 Bruinet.Html.Bunit.BunitTestContext.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Html.Bunit.BunitTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Bunit.BunitTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Bunit.BunitTestContext.Refresh() -> void
 Bruinet.Html.Bunit.BunitTestContext.ResetAppState() -> void
 Bruinet.Html.Bunit.BunitTestContext.RestartApp(System.IServiceProvider! fallbackServices) -> void
@@ -94,6 +93,7 @@ Bruinet.Html.Bunit.BunitTestContext.SignOut() -> void
 Bruinet.Html.Bunit.BunitTestContext.TakeScreenshot() -> byte[]!
 Bruinet.Html.Bunit.BunitTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Html.Bunit.BunitTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Bunit.BunitTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Bunit.BunitTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Bunit.BunitTestContextOptions
 Bruinet.Html.Bunit.BunitTestContextOptions.BunitTestContextOptions() -> void

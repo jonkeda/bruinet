@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Core's `IScope` and `ITestPage` (`Bruinet.Core.Scopes`): the element-free half of every stack's scope and page
+  (readiness, `WaitReady`, `WaitFirst`; load, busy, title, screenshot). Html's, MAUI's and native Android's scope and
+  page interfaces derive from them and keep only their typed lookups and extras (AD-010, amended). Test composition
+  and UAT find a page by `ITestPage` (`TestPages.IsPage`); the page bases no longer carry `[TestPage]`.
+- The calls layer is public: `ControlCalls<TElement>`, `IControlHost<TElement>`, `ControlCall`, `AttemptContext`,
+  `Deadline`, `Poller`, `Confirmer`, `ScopeGate`, `FirstOutcome`, `Observation`, `ObservationLog`. A stack writes its
+  control bases against them; Core no longer lets the stacks see its internals. From now on a change to
+  `IControlHost` is a breaking change, listed here.
+- `ITestContext.Name` and `ITestContext.NearMiss`, with defaults (unnamed, `NearMissSettings.Default`); Html's, MAUI's
+  and native Android's contexts no longer declare them.
 - A cloud voice's line is paid for once, on every machine: clips are kept in the suite's `speech` folder (`ClipLibrary`, Opus
   at 32 kbit/s), to commit, on top of the local cache. The name leaves out the endpoint, so another region finds a clip.
   A recording says what it reused and paid for, in its `.timeline.json` and `record_video`'s answer; `BRUINET_VOICE_REUSE=1`

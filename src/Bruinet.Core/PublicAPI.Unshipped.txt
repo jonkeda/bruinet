@@ -79,6 +79,12 @@ Bruinet.Core.Artifacts.TestArtifactSuite.Target.get -> string?
 Bruinet.Core.Artifacts.TestArtifactSuite.Target.set -> void
 Bruinet.Core.Artifacts.TestArtifactSuite.TestArtifactSuite() -> void
 Bruinet.Core.Attributes.Placeholder
+Bruinet.Core.Calls.AttemptContext
+Bruinet.Core.Calls.AttemptContext.AttemptContext(Bruinet.Core.Calls.Deadline deadline, int animationMs) -> void
+Bruinet.Core.Calls.AttemptContext.Deadline.get -> Bruinet.Core.Calls.Deadline
+Bruinet.Core.Calls.AttemptContext.Log.get -> Bruinet.Core.Calls.ObservationLog!
+Bruinet.Core.Calls.AttemptContext.MayScrollIntoView(string! key) -> bool
+Bruinet.Core.Calls.AttemptContext.MaySweep() -> bool
 Bruinet.Core.Calls.AttemptMemo
 Bruinet.Core.Calls.CallBudget
 Bruinet.Core.Calls.Confirmation<T>
@@ -96,6 +102,52 @@ Bruinet.Core.Calls.ConfirmationResult
 Bruinet.Core.Calls.ConfirmationResult.Confirmed = 0 -> Bruinet.Core.Calls.ConfirmationResult
 Bruinet.Core.Calls.ConfirmationResult.NotConfirmed = 1 -> Bruinet.Core.Calls.ConfirmationResult
 Bruinet.Core.Calls.ConfirmationResult.Replaced = 2 -> Bruinet.Core.Calls.ConfirmationResult
+Bruinet.Core.Calls.Confirmer
+Bruinet.Core.Calls.ControlCall
+Bruinet.Core.Calls.ControlCall.ControlCall(Bruinet.Core.Logging.ITestLogger? logger, string? testName, Bruinet.Core.Calls.NearMissSettings? nearMiss, string! pageName, string! controlId) -> void
+Bruinet.Core.Calls.ControlCall.Run<T>(string! caller, string? value, int budgetMs, int animationMs, System.Func<Bruinet.Core.Calls.AttemptContext!, T>! body, System.Func<T, bool>? succeeded = null) -> T
+Bruinet.Core.Calls.ControlCalls<TElement>
+Bruinet.Core.Calls.ControlCalls<TElement>.Act(System.Action<TElement!>! act, bool ensureVisible, int? timeoutMs, string! caller, string? value = null) -> void
+Bruinet.Core.Calls.ControlCalls<TElement>.Assert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message, int? timeoutMs, string! caller) -> void
+Bruinet.Core.Calls.ControlCalls<TElement>.AssertWithElement<T>(T? expected, System.Func<TElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message, int? timeoutMs, string! caller) -> void
+Bruinet.Core.Calls.ControlCalls<TElement>.AssertWithOptionalElement<T>(T? expected, System.Func<TElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message, int? timeoutMs, string! caller, System.Func<TElement?>? resolve = null) -> void
+Bruinet.Core.Calls.ControlCalls<TElement>.Attempt(Bruinet.Core.Calls.AttemptContext! attempt, bool ensureVisible, System.Func<TElement!, Bruinet.Core.Calls.Observation>! body) -> Bruinet.Core.Calls.Observation
+Bruinet.Core.Calls.ControlCalls<TElement>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
+Bruinet.Core.Calls.ControlCalls<TElement>.ControlCalls(Bruinet.Core.Calls.IControlHost<TElement!>! host) -> void
+Bruinet.Core.Calls.ControlCalls<TElement>.Failure(Bruinet.Core.Calls.AttemptContext! attempt, string! caller, int budgetMs) -> System.Exception!
+Bruinet.Core.Calls.ControlCalls<TElement>.GetWithElement<T>(System.Func<TElement!, T>! operation, int? timeoutMs, string! caller, bool ensureVisible = true) -> T?
+Bruinet.Core.Calls.ControlCalls<TElement>.GetWithOptionalElement<T>(System.Func<TElement?, T>! operation, int? timeoutMs, string! caller) -> T?
+Bruinet.Core.Calls.ControlCalls<TElement>.Run<T>(string! caller, string? value, System.Func<T>! operation, int? timeoutMs) -> T
+Bruinet.Core.Calls.ControlCalls<TElement>.Wait(System.Func<bool>! operation, int? timeoutMs, string! caller) -> bool
+Bruinet.Core.Calls.ControlCalls<TElement>.WaitForValue(System.Func<TElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs, string! caller) -> bool
+Bruinet.Core.Calls.ControlCalls<TElement>.WaitWithElement(System.Func<TElement!, bool>! operation, int? timeoutMs, string! caller) -> bool
+Bruinet.Core.Calls.ControlCalls<TElement>.WaitWithOptionalElement(System.Func<TElement?, bool>! operation, int? timeoutMs, string! caller, System.Func<TElement?>? resolve = null) -> bool
+Bruinet.Core.Calls.Deadline
+Bruinet.Core.Calls.Deadline.BudgetMs.get -> int
+Bruinet.Core.Calls.Deadline.Deadline() -> void
+Bruinet.Core.Calls.Deadline.ElapsedMs.get -> long
+Bruinet.Core.Calls.Deadline.IsPassed.get -> bool
+Bruinet.Core.Calls.Deadline.RemainingMs.get -> int
+Bruinet.Core.Calls.FirstOutcome
+Bruinet.Core.Calls.IControlHost<TElement>
+Bruinet.Core.Calls.IControlHost<TElement>.AnimationMs.get -> int
+Bruinet.Core.Calls.IControlHost<TElement>.ChecksVisibility.get -> bool
+Bruinet.Core.Calls.IControlHost<TElement>.ChecksVisibilityBeforeAction(TElement! element) -> bool
+Bruinet.Core.Calls.IControlHost<TElement>.DefaultTimeoutMs.get -> int
+Bruinet.Core.Calls.IControlHost<TElement>.EnsureReadyForAction(TElement! element) -> void
+Bruinet.Core.Calls.IControlHost<TElement>.InstanceKey(TElement! element) -> string?
+Bruinet.Core.Calls.IControlHost<TElement>.IsVisible(TElement! element) -> bool?
+Bruinet.Core.Calls.IControlHost<TElement>.Locate(Bruinet.Core.Calls.AttemptContext! attempt) -> TElement?
+Bruinet.Core.Calls.IControlHost<TElement>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Calls.IControlHost<TElement>.NewCall() -> Bruinet.Core.Calls.ControlCall!
+Bruinet.Core.Calls.IControlHost<TElement>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+Bruinet.Core.Calls.IControlHost<TElement>.Noun.get -> string!
+Bruinet.Core.Calls.IControlHost<TElement>.OnStale() -> void
+Bruinet.Core.Calls.IControlHost<TElement>.PollingIntervalMs.get -> int
+Bruinet.Core.Calls.IControlHost<TElement>.ProbeScope() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Calls.IControlHost<TElement>.ScrollIntoView(TElement! element, int timeoutMs) -> void
+Bruinet.Core.Calls.IControlHost<TElement>.ScrollKey(TElement! element) -> string!
+Bruinet.Core.Calls.IControlHost<TElement>.TryFind() -> TElement?
 Bruinet.Core.Calls.NearMissSettings
 Bruinet.Core.Calls.NearMissSettings.BudgetShare.get -> double
 Bruinet.Core.Calls.NearMissSettings.BudgetShare.init -> void
@@ -120,6 +172,43 @@ Bruinet.Core.Calls.NearMisses.NearMiss.Page.init -> void
 Bruinet.Core.Calls.NearMisses.NearMiss.Share.get -> double
 Bruinet.Core.Calls.NearMisses.NearMiss.Test.get -> string!
 Bruinet.Core.Calls.NearMisses.NearMiss.Test.init -> void
+Bruinet.Core.Calls.Observation
+Bruinet.Core.Calls.Observation.Detail.get -> string?
+Bruinet.Core.Calls.Observation.Detail.init -> void
+Bruinet.Core.Calls.Observation.Error.get -> System.Exception?
+Bruinet.Core.Calls.Observation.Error.init -> void
+Bruinet.Core.Calls.Observation.InstanceKey.get -> string?
+Bruinet.Core.Calls.Observation.InstanceKey.init -> void
+Bruinet.Core.Calls.Observation.Kind.get -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.Observation.Kind.init -> void
+Bruinet.Core.Calls.Observation.Observation() -> void
+Bruinet.Core.Calls.Observation.Observation(Bruinet.Core.Calls.ObservationKind Kind, string? InstanceKey = null, Bruinet.Core.Exceptions.NotReadyReason? Reason = null, string? Detail = null, System.Exception? Error = null, Bruinet.Core.Scopes.ScopeReadiness? Scope = null) -> void
+Bruinet.Core.Calls.Observation.Reason.get -> Bruinet.Core.Exceptions.NotReadyReason?
+Bruinet.Core.Calls.Observation.Reason.init -> void
+Bruinet.Core.Calls.Observation.Scope.get -> Bruinet.Core.Scopes.ScopeReadiness?
+Bruinet.Core.Calls.Observation.Scope.init -> void
+Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Done = 0 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Failed = 8 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.ItemChanged = 5 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Mismatch = 6 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Missing = 2 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.NotReady = 3 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Pending = 7 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.ScopeNotReady = 1 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationKind.Stale = 4 -> Bruinet.Core.Calls.ObservationKind
+Bruinet.Core.Calls.ObservationLog
+Bruinet.Core.Calls.ObservationLog.Add(Bruinet.Core.Calls.Observation observation, long atMs) -> void
+Bruinet.Core.Calls.ObservationLog.Attempts.get -> int
+Bruinet.Core.Calls.ObservationLog.Last.get -> Bruinet.Core.Calls.Observation
+Bruinet.Core.Calls.ObservationLog.LastAtMs.get -> long
+Bruinet.Core.Calls.ObservationLog.ObservationLog() -> void
+Bruinet.Core.Calls.ObservationLog.Replacements.get -> int
+Bruinet.Core.Calls.ObservationLog.Summary() -> string!
+Bruinet.Core.Calls.ObservationLog.ToException(Bruinet.Core.Locators.Locator? locator, int budgetMs, System.Func<Bruinet.Core.Exceptions.ElementNotFoundException!>! notFound, System.Func<Bruinet.Core.Scopes.ScopeReadiness, System.Exception!>! scopeNotReady) -> System.Exception!
+Bruinet.Core.Calls.ObservationLog.Unexpected(System.Exception! error, string! subject, int budgetMs) -> System.Exception!
+Bruinet.Core.Calls.Poller
+Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
 Bruinet.Core.Composition.AssemblyFile
 Bruinet.Core.Composition.TestComposition
@@ -453,8 +542,10 @@ Bruinet.Core.Interfaces.ITabControlObject<TScope>.Title.get -> string!
 Bruinet.Core.Interfaces.ITabControlObject<TScope>.WaitSelected(bool? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITestContext
 Bruinet.Core.Interfaces.ITestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.Core.Interfaces.ITestContext.Name.get -> string?
 Bruinet.Core.Interfaces.ITestContext.NavigateBack() -> void
 Bruinet.Core.Interfaces.ITestContext.NavigateTo(string! destination) -> void
+Bruinet.Core.Interfaces.ITestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
 Bruinet.Core.Interfaces.ITestContext.Refresh() -> void
 Bruinet.Core.Interfaces.ITestContext.ResetAppState() -> void
 Bruinet.Core.Interfaces.ITestContext.SaveScreenshot(string! path) -> void
@@ -693,6 +784,24 @@ Bruinet.Core.Recording.RecordingTarget.Window
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.get -> nint
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.init -> void
 Bruinet.Core.Recording.RecordingTarget.Window.Window(nint Handle) -> void
+Bruinet.Core.Scopes.IScope
+Bruinet.Core.Scopes.IScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Scopes.IScope.IsReady() -> bool
+Bruinet.Core.Scopes.IScope.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.IScope.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.Core.Scopes.IScope.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ITestPage
+Bruinet.Core.Scopes.ITestPage.AssertIdle(string? message = null, int? timeoutMs = null) -> void
+Bruinet.Core.Scopes.ITestPage.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Core.Scopes.ITestPage.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Core.Scopes.ITestPage.GetTitle() -> string?
+Bruinet.Core.Scopes.ITestPage.IsBusy() -> bool
+Bruinet.Core.Scopes.ITestPage.IsLoaded() -> bool
+Bruinet.Core.Scopes.ITestPage.Name.get -> string!
+Bruinet.Core.Scopes.ITestPage.TakeScreenshot(string? filename = null) -> void
+Bruinet.Core.Scopes.ITestPage.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ITestPage.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ITestPage.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Core.Scopes.ScopeReadiness.Detail.get -> string?
 Bruinet.Core.Scopes.ScopeReadiness.Detail.init -> void
@@ -857,6 +966,8 @@ Bruinet.Core.Services.ScreenshotService
 Bruinet.Core.Services.ScreenshotService.Capture(string! testClass, string! testMethod, string! description) -> string!
 Bruinet.Core.Services.ScreenshotService.Capture(string? description = null) -> string!
 Bruinet.Core.Services.ScreenshotService.CaptureOnFailure(string! testClass, string! testMethod, System.Exception! exception) -> string!
+Bruinet.Core.Services.ScreenshotService.ReadFailureTree.get -> System.Func<string!>?
+Bruinet.Core.Services.ScreenshotService.ReadFailureTree.init -> void
 Bruinet.Core.Services.ScreenshotService.ScreenshotService(Bruinet.Core.Interfaces.ITestContext! context, Bruinet.Core.Logging.ITestLogger! logger, Bruinet.Core.Configuration.ScreenshotSettings? settings = null) -> void
 Bruinet.Core.Services.ScreenshotService.ScreenshotService(System.Action<string!>! saveScreenshot, Bruinet.Core.Logging.ITestLogger! logger, Bruinet.Core.Configuration.ScreenshotSettings? settings = null) -> void
 Bruinet.Core.Services.ScreenshotService.Settings.get -> Bruinet.Core.Configuration.ScreenshotSettings!
@@ -1009,6 +1120,7 @@ Bruinet.Core.Utilities.WaitHelper
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRUINET_TEST_SUITE" -> string!
+const Bruinet.Core.Calls.FirstOutcome.Caller = "WaitFirst" -> string!
 const Bruinet.Core.Calls.NearMisses.FileName = "near-misses.md" -> string!
 const Bruinet.Core.Composition.AssemblyFile.BuiltOutputEnvironmentVariable = "BRUINET_BUILT_OUTPUT" -> string!
 const Bruinet.Core.Composition.TestPages.FirstModelPageInterface = "Bruinet.Core.Interfaces.IPageObject" -> string!
@@ -1033,6 +1145,7 @@ const Bruinet.Core.Scraping.ScrapeCheck.Value = "value" -> string!
 const Bruinet.Core.Scraping.ScrapeCheck.Visible = "visible" -> string!
 const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
+override Bruinet.Core.Calls.Observation.ToString() -> string!
 override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
 override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
@@ -1047,16 +1160,34 @@ static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(string! 
 static Bruinet.Core.Artifacts.TestArtifactManifestWriter.RecordArtifact(string! path, string! kind, string! name, string! reason, System.Collections.Generic.Dictionary<string!, string?>? metadata = null) -> void
 static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Save(string! runDirectory, Bruinet.Core.Artifacts.TestArtifactManifest! manifest) -> void
 static Bruinet.Core.Artifacts.TestArtifactOptions.RootFor(string! directory) -> string!
-static Bruinet.Core.Calls.AttemptMemo.Knows(object! subject, string! question) -> bool
+static Bruinet.Core.Calls.AttemptContext.Current.get -> Bruinet.Core.Calls.AttemptContext?
+static Bruinet.Core.Calls.AttemptContext.Current.set -> void
 static Bruinet.Core.Calls.AttemptMemo.Forget() -> void
+static Bruinet.Core.Calls.AttemptMemo.Knows(object! subject, string! question) -> bool
 static Bruinet.Core.Calls.AttemptMemo.Remember<T>(object! subject, string! question, System.Func<T>! read) -> T
 static Bruinet.Core.Calls.CallBudget.RemainingOr(int outsideACallMs) -> int
 static Bruinet.Core.Calls.CallBudget.Within(int windowMs) -> int
+static Bruinet.Core.Calls.Confirmer.Run<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int budgetMs, int pollingIntervalMs) -> Bruinet.Core.Calls.Confirmation<T>
+static Bruinet.Core.Calls.Deadline.In(int milliseconds) -> Bruinet.Core.Calls.Deadline
+static Bruinet.Core.Calls.FirstOutcome.Wait(Bruinet.Core.Calls.ControlCall! call, System.Func<Bruinet.Core.Scopes.ScopeReadiness>! appReadiness, System.Func<bool>![]! outcomes, int budgetMs, int animationMs, int pollingIntervalMs) -> int
 static Bruinet.Core.Calls.NearMissSettings.Default.get -> Bruinet.Core.Calls.NearMissSettings!
 static Bruinet.Core.Calls.NearMisses.Add(Bruinet.Core.Calls.NearMisses.NearMiss! miss) -> void
 static Bruinet.Core.Calls.NearMisses.All.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Calls.NearMisses.NearMiss!>!
 static Bruinet.Core.Calls.NearMisses.Path.get -> string!
 static Bruinet.Core.Calls.NearMisses.Path.set -> void
+static Bruinet.Core.Calls.Observation.Done(string? instanceKey = null) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.Failed(System.Exception! error) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.Mismatch(System.Exception! error, string? instanceKey) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.Missing(string? detail = null) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.NotReady(Bruinet.Core.Exceptions.ElementNotReadyException! error, string? instanceKey) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.Pending(string? detail = null, string? instanceKey = null) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.ScopeNotReady(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Observation.Stale(Bruinet.Core.Exceptions.StaleElementException! error, string? instanceKey) -> Bruinet.Core.Calls.Observation
+static Bruinet.Core.Calls.Poller.IsFatal(System.Exception! error) -> bool
+static Bruinet.Core.Calls.Poller.Until(System.Func<Bruinet.Core.Calls.AttemptContext!, Bruinet.Core.Calls.Observation>! attempt, Bruinet.Core.Calls.AttemptContext! context, int pollingIntervalMs, System.Func<Bruinet.Core.Calls.Observation, bool>? stop = null) -> bool
+static Bruinet.Core.Calls.ScopeGate.Check(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Calls.Observation?
+static Bruinet.Core.Calls.ScopeGate.Misconfigured(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
+static Bruinet.Core.Calls.ScopeGate.NotReady(Bruinet.Core.Scopes.ScopeReadiness readiness, string! caller, string! subject, int budgetMs) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
 static Bruinet.Core.Calls.Settle.Until(System.Func<bool>! condition, int windowMs, int pollingIntervalMs = 50) -> bool
 static Bruinet.Core.Composition.AssemblyFile.FolderOf(System.Reflection.Assembly! assembly) -> string!
 static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, Bruinet.Core.Composition.TestCompositionDiscoveryOptions! options, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>? configureServices = null) -> Bruinet.Core.Composition.TestComposition!
@@ -1065,6 +1196,7 @@ static Bruinet.Core.Composition.TestCompositionCatalog.Discover(Bruinet.Core.Com
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromFixture(System.Type! fixtureType) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromScans(System.Collections.Generic.IEnumerable<Bruinet.Core.Composition.TestModuleScanAttribute!>! scans) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
 static Bruinet.Core.Composition.TestPages.IsFirstModelPage(System.Type! type) -> bool
+static Bruinet.Core.Composition.TestPages.IsPage(System.Type! type) -> bool
 static Bruinet.Core.Configuration.BruinetConfigurationBase.LoadFromJson<T>(string! configFileName) -> T
 static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!
 static Bruinet.Core.Configuration.TimeoutDefaults.Animation.get -> int
@@ -1125,6 +1257,7 @@ static Bruinet.Core.Recording.Interactions.Report(Bruinet.Core.Recording.Interac
 static Bruinet.Core.Recording.Interactions.ReportSwipe(System.Func<System.Drawing.Rectangle>! bounds, int dx, int dy, System.Func<string?>? label = null, System.Func<Bruinet.Core.Recording.RecordingTarget?>? target = null) -> Bruinet.Core.Recording.Interactions.Scope
 static Bruinet.Core.Recording.RecordingTarget.ForWindow(string? handle) -> Bruinet.Core.Recording.RecordingTarget?
 static Bruinet.Core.Scopes.ScopeReadiness.Ready(string! scopeName) -> Bruinet.Core.Scopes.ScopeReadiness
+static Bruinet.Core.Services.ScreenshotService.FailureTreePathFor(string! path) -> string!
 static Bruinet.Core.Services.ScreenshotService.TreePathFor(string! path) -> string!
 static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.TestSettings!
 static Bruinet.Core.Testing.BddNamespaceAttribute.Of(System.Type! type) -> string?
@@ -1155,6 +1288,3 @@ static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Core.Utilities.WaitHelper.Pause(int milliseconds) -> void
-Bruinet.Core.Services.ScreenshotService.ReadFailureTree.get -> System.Func<string!>?
-Bruinet.Core.Services.ScreenshotService.ReadFailureTree.init -> void
-static Bruinet.Core.Services.ScreenshotService.FailureTreePathFor(string! path) -> string!

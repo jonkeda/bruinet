@@ -17,8 +17,8 @@ It names no element, driver or scope type, so it needed none of the interfaces:
 
 - `Bruinet.Core.Calls`: `Deadline`, `AttemptContext`, `Observation`, `ObservationLog`,
   `Poller`, `Confirmer`, `ControlCall`, `ScopeGate`, `FirstOutcome` (the body of every
-  scope's `WaitFirst`) (internal, visible to `Bruinet.Maui`,
-  `Bruinet.Html`, `Bruinet.NativeAndroid` and their test projects, until they become public, below), and `Confirmation<T>`, `CallBudget`,
+  scope's `WaitFirst`) (internal until 2026-11-09, visible to `Bruinet.Maui`,
+  `Bruinet.Html`, `Bruinet.NativeAndroid` and their test projects; public since, below), and `Confirmation<T>`, `CallBudget`,
   `NearMissSettings` (public);
 - `Bruinet.Core.Exceptions`: `StaleElementException`, `ElementNotReadyException` with
   `NotReadyReason`, `ScopeNotReadyException`, `AppUnavailableException`,
@@ -32,7 +32,7 @@ MAUI, Html and native Android have no copies of these.
 (Html's `ControlBase`, MAUI's and native Android's `ViewBase`) had the same `Run*` family three
 times, and the copies had started to differ. Now `Bruinet.Core.Calls.ControlCalls<TElement>` runs
 every call once for all of them: the attempt, the visibility check, the action once, the waits,
-reads and asserts. Each base is its `IControlHost<TElement>` (internal like the leaf layer, until both become public, below): its
+reads and asserts. Each base is its `IControlHost<TElement>` (public, as the leaf layer is since 2026-11-09, below): its
 element lookup, scope probe, settings, and the few places a platform differs (MAUI's sweep and
 native Android's scroll to find, Playwright's own actionability, the scroll throttle's key). The
 bases keep the `Run*` names and signatures (R8) as one-line delegations, so the generator's
@@ -54,17 +54,21 @@ elements and drivers differ for real: MAUI's element carries some forty platform
 its view's fields, Html's the DOM. So:
 
 - **Core gets the element-free half** of the scope, page and context: `IScope` (`DefaultLocatorStrategy`,
-  `ProbeReadiness`, `IsReady`, `WaitReady`, `WaitFirst`), `IPage : IScope` (the eleven members), and
-  the context members that name no element. This is the plan's step U1, before any old stack moves,
-  so WPF, WinForms and Stride land on Core's contracts and are not copies four to six.
+  `ProbeReadiness`, `IsReady`, `WaitReady`, `WaitFirst`), `ITestPage : IScope` (the eleven members),
+  both in `Bruinet.Core.Scopes`, and on `ITestContext` the context's `Name` and `NearMiss`, the only
+  context members the three shared that name no element. Built as the plan's step U1, before any
+  old stack moves, so WPF, WinForms and Stride land on Core's contracts and are not copies four to
+  six. The page is `ITestPage`, not `IPage`: Playwright's page interface is `IPage` in every Html
+  suite, and the name matches Composition's `[TestPage]`, `TestPages` and `TestPageDescriptor`.
 - **Each stack's scope, page and context interface derives from Core's** and adds what is typed:
   `Context`, `Page`, `TryFindElement`, `FindElement`, `FindElements`, and its own extras (Html's
   `Url`, Android's `Activity`, MAUI's `DescribeMiss`). One derived interface per stack, not a
   Core `IElementScope<TElement, TContext, TPage>`: three type parameters on every page object read worse.
 - **The element and the driver stay per stack for good.** The first draft's "one element, one driver
   in Core" is dropped: a Core element would be the union of every platform's verbs, or too poor to use.
-- **Composition and UAT find pages by Core's `IPage`**, so `[TestPage]` on page bases and finding a
-  first-model page by an interface's name go once Legacy does.
+- **Composition and UAT find pages by Core's `ITestPage`** (`TestPages.IsPage`), so the page bases
+  no longer carry `[TestPage]`; the attribute stays for a suite that names a page or its lifetime.
+  Finding a first-model page by an interface's name goes once Legacy does.
 - **The calls layer becomes public** (decided 2026-11-09): `ControlCalls<TElement>`,
   `IControlHost<TElement>`, `ControlCall`, `AttemptContext`, `Deadline`, `Poller`, `Confirmer`,
   `ScopeGate`, `FirstOutcome`, `Observation` and `ObservationLog`, in Core's PublicAPI files, and
@@ -80,6 +84,6 @@ stack's interfaces and Core's: a stack's interface *derives* from Core's, it is 
 
 **Broken when:** an adapter is added between a stack's interfaces and Core's; Core is changed to
 match a stack's interfaces or bases outside a deliberate move-down step; a stack declares a scope or
-page member that Core's `IScope` or `IPage` already has (once U1 is built); an element or driver
+page member that Core's `IScope` or `ITestPage` already has; an element or driver
 interface is added to Core; or a stack grows its own copy of a leaf-layer type, or of a control call
 that `ControlCalls` runs, again.

@@ -32,7 +32,7 @@ public sealed class AppRoot : ObjectBase, IMauiScope<AppRoot>
     /// <inheritdoc />
     public ScopeReadiness ProbeReadiness() => _context.ProbeReadiness() with { ScopeName = nameof(AppRoot) };
 
-    /// <inheritdoc cref="IMauiElementScope.IsReady"/>
+    /// <inheritdoc cref="IScope.IsReady"/>
     public bool IsReady() => ProbeReadiness().IsReady;
 
     /// <inheritdoc />

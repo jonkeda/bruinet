@@ -11,7 +11,7 @@ namespace Bruinet.Core.Calls;
 /// settings. Each member is one attempt's worth; nothing here waits (R2).
 /// </summary>
 /// <typeparam name="TElement">The stack's element interface.</typeparam>
-internal interface IControlHost<TElement>
+public interface IControlHost<TElement>
     where TElement : class
 {
     /// <summary>The control's locator, for messages and the scroll throttle.</summary>
@@ -79,7 +79,7 @@ internal interface IControlHost<TElement>
 /// <c>Run*</c> members keep their names (R8) and call these.
 /// </summary>
 /// <typeparam name="TElement">The stack's element interface.</typeparam>
-internal sealed class ControlCalls<TElement>(IControlHost<TElement> host)
+public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
     where TElement : class
 {
     private int Budget(int? timeoutMs) => timeoutMs ?? host.DefaultTimeoutMs;

@@ -6,7 +6,7 @@ namespace Bruinet.Core.Calls;
 /// The point in time a phase of a call must finish by. Created once per phase and passed down,
 /// so nothing inside the phase starts a budget of its own.
 /// </summary>
-internal readonly struct Deadline
+public readonly struct Deadline
 {
     private readonly Stopwatch _clock;
     private readonly int _budgetMs;

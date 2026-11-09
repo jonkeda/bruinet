@@ -4,15 +4,14 @@ using Bruinet.Core.Scopes;
 
 namespace Bruinet.NativeAndroid.Pages;
 
-// Core's [TestPage], because NativeAndroid pages do not implement Core's IPageObject: test
-// composition and UAT find them by the attribute (the same step MAUI and Html took).
+// Test composition and UAT find NativeAndroid pages by Core's ITestPage, which INativeAndroidPage
+// derives from.
 
 /// <summary>
 /// One screen of the app. Its readiness (design 4): the app in front, then the page's activity and
 /// its ready view, then the busy signal.
 /// </summary>
 /// <typeparam name="TSelf">The page's own type.</typeparam>
-[TestPage]
 public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSelf>
     where TSelf : PageObjectBase<TSelf>
 {

@@ -4,8 +4,8 @@ using Bruinet.Html.Context;
 
 namespace Bruinet.Html.Interfaces;
 
-// R9: implements Core's non-generic ITestContext (unchanged by this work) and Html's own scope,
-// not Core's generic ITestContext<T>. See AD-010.
+// Core's ITestContext (its name and near-miss settings among them) and Html's own scope, which
+// derives from Core's IScope. See AD-010.
 
 /// <summary>
 /// One browser page under test: its driver, timeouts and logger, and the root scope for lookups.
@@ -14,15 +14,6 @@ public interface IHtmlTestContext : ITestContext, IHtmlElementScope
 {
     /// <summary>The driver that talks to the browser.</summary>
     IHtmlDriver Driver { get; }
-
-    /// <summary>
-    /// A name for this context in logs and messages, or <c>null</c>. Tells several apps in one
-    /// scenario apart (?A10).
-    /// </summary>
-    string? Name { get; }
-
-    /// <summary>When a call that passed is logged as a near-miss.</summary>
-    NearMissSettings NearMiss { get; }
 
     /// <summary>The page's URL now.</summary>
     string CurrentUrl { get; }

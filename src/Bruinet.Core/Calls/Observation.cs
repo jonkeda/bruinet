@@ -4,7 +4,7 @@ using Bruinet.Core.Scopes;
 namespace Bruinet.Core.Calls;
 
 /// <summary>What one attempt of a call saw.</summary>
-internal enum ObservationKind
+public enum ObservationKind
 {
     /// <summary>The attempt succeeded; the call is done.</summary>
     Done,
@@ -41,7 +41,7 @@ internal enum ObservationKind
 /// <param name="Detail">Anything a message should repeat, in words.</param>
 /// <param name="Error">The exception behind the observation, when there was one.</param>
 /// <param name="Scope">For <see cref="ObservationKind.ScopeNotReady"/>: which scope, and what it found.</param>
-internal readonly record struct Observation(
+public readonly record struct Observation(
     ObservationKind Kind,
     string? InstanceKey = null,
     NotReadyReason? Reason = null,

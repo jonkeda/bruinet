@@ -4,7 +4,7 @@ namespace Bruinet.Core.Calls;
 /// The state of one phase of one call: its deadline, what each attempt saw, and the scroll
 /// throttles.
 /// </summary>
-internal sealed class AttemptContext
+public sealed class AttemptContext
 {
     private static readonly AsyncLocal<AttemptContext?> CurrentContext = new();
 

@@ -42,8 +42,8 @@ Bruinet.Html.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Html.Collectio
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Position.get -> int
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Context.HtmlTestContextOptions
 Bruinet.Html.Context.HtmlTestContextOptions.BaseUrl.get -> string?
@@ -155,9 +155,9 @@ Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Locator.get -> Bruinet.Core
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Parent.get -> TParent
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ControlBase<TScope>
@@ -454,28 +454,12 @@ Bruinet.Html.Interfaces.IHtmlElement.Visible.get -> bool
 Bruinet.Html.Interfaces.IHtmlElement.WaitsForActionability.get -> bool
 Bruinet.Html.Interfaces.IHtmlElementScope
 Bruinet.Html.Interfaces.IHtmlElementScope.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-Bruinet.Html.Interfaces.IHtmlElementScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Html.Interfaces.IHtmlElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Interfaces.IHtmlElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Interfaces.IHtmlElementScope.IsReady() -> bool
 Bruinet.Html.Interfaces.IHtmlElementScope.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
-Bruinet.Html.Interfaces.IHtmlElementScope.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Interfaces.IHtmlElementScope.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Interfaces.IHtmlElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Interfaces.IHtmlElementScope.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Interfaces.IHtmlPage
-Bruinet.Html.Interfaces.IHtmlPage.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Interfaces.IHtmlPage.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Interfaces.IHtmlPage.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Interfaces.IHtmlPage.GetTitle() -> string?
-Bruinet.Html.Interfaces.IHtmlPage.IsBusy() -> bool
-Bruinet.Html.Interfaces.IHtmlPage.IsLoaded() -> bool
-Bruinet.Html.Interfaces.IHtmlPage.Name.get -> string!
-Bruinet.Html.Interfaces.IHtmlPage.TakeScreenshot(string? filename = null) -> void
 Bruinet.Html.Interfaces.IHtmlPage.Url.get -> string?
-Bruinet.Html.Interfaces.IHtmlPage.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Interfaces.IHtmlPage.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Interfaces.IHtmlPage.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Interfaces.IHtmlPage<TSelf>
 Bruinet.Html.Interfaces.IHtmlPageProbe
 Bruinet.Html.Interfaces.IHtmlPageProbe.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
@@ -487,8 +471,6 @@ Bruinet.Html.Interfaces.IHtmlTestContext.CurrentUrl.get -> string!
 Bruinet.Html.Interfaces.IHtmlTestContext.Driver.get -> Bruinet.Html.Interfaces.IHtmlDriver!
 Bruinet.Html.Interfaces.IHtmlTestContext.GoForward() -> void
 Bruinet.Html.Interfaces.IHtmlTestContext.IsIdle() -> bool
-Bruinet.Html.Interfaces.IHtmlTestContext.Name.get -> string?
-Bruinet.Html.Interfaces.IHtmlTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
 Bruinet.Html.Interfaces.IHtmlTestContext.PageTitle.get -> string!
 Bruinet.Html.Interfaces.PageProbe
 Bruinet.Html.Interfaces.PageProbe.Busy.get -> string?
@@ -511,9 +493,9 @@ Bruinet.Html.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! locator) 
 Bruinet.Html.Pages.AppRoot.IsReady() -> bool
 Bruinet.Html.Pages.AppRoot.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Pages.AppRoot.Self.get -> Bruinet.Html.Pages.AppRoot!
 Bruinet.Html.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
@@ -533,6 +515,7 @@ Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.TakeScreenshot(string? filename = n
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Url.get -> string?
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
@@ -678,7 +661,6 @@ virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.IsLoaded() -> bool
 virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateBunitContext() -> Bruinet.Html.Interfaces.IHtmlTestContext!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!

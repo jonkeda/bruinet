@@ -1,3 +1,4 @@
+using Bruinet.Core.Calls;
 using Bruinet.Core.Configuration;
 using Bruinet.Core.Logging;
 
@@ -9,6 +10,15 @@ namespace Bruinet.Core.Interfaces;
 /// </summary>
 public interface ITestContext : IDisposable
 {
+    /// <summary>
+    /// The context's name in call logs and messages, such as the app's name when a scenario runs
+    /// several apps (?A10); null when unnamed.
+    /// </summary>
+    string? Name => null;
+
+    /// <summary>When a call that succeeded is still logged as a near-miss; the defaults unless a stack sets them.</summary>
+    NearMissSettings NearMiss => NearMissSettings.Default;
+
     /// <summary>
     /// Timeout configuration for this test context.
     /// </summary>

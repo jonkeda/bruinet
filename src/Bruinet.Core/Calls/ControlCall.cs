@@ -7,7 +7,7 @@ namespace Bruinet.Core.Calls;
 /// One public call on a control or scope: one log entry/exit pair around the whole of it, the
 /// action included (R1). Every stack logs in the same format, so one log analyser reads them all.
 /// </summary>
-internal sealed class ControlCall
+public sealed class ControlCall
 {
     private readonly ITestLogger? _logger;
     private readonly string _testName;

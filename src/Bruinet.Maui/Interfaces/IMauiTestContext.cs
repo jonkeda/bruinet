@@ -2,17 +2,14 @@ using Bruinet.Maui.Enums;
 
 namespace Bruinet.Maui.Interfaces;
 
-// R9: implements Core's non-generic ITestContext (unchanged by this work) and MAUI's own scope,
-// not Core's generic ITestContext<T>. See .docs/decisions/ad-010-maui-ahead-of-core.md.
+// Core's ITestContext (its name and near-miss settings among them) and MAUI's own scope, which
+// derives from Core's IScope. See .docs/decisions/ad-010-maui-ahead-of-core.md.
 /// <summary>
 /// MAUI test context: the driver, timeouts, logging and navigation, and the app-wide lookup scope.
 /// As a scope, <see cref="IMauiElementScope.Context"/> returns the context itself.
 /// </summary>
 public interface IMauiTestContext : ITestContext, IMauiElementScope
 {
-    /// <summary>The context's name in call logs, such as the app's name when a test runs several; null when unnamed.</summary>
-    string? Name => null;
-
     /// <summary>
     /// Gets the wrapped driver.
     /// </summary>
@@ -36,7 +33,4 @@ public interface IMauiTestContext : ITestContext, IMauiElementScope
     /// <summary>Where this platform draws MAUI Shell's tabs and flyout.</summary>
     /// <exception cref="PlatformNotSupportedException">Shell has not been mapped on this platform.</exception>
     ShellChromeLocators ShellChrome { get; }
-
-    /// <summary>When a call that succeeded is still logged as a near-miss.</summary>
-    NearMissSettings NearMiss { get; }
 }

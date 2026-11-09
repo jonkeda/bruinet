@@ -34,7 +34,6 @@ Bruinet.Blazor.Context.BlazorTestContext.PageTitle.get -> string!
 Bruinet.Blazor.Context.BlazorTestContext.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Blazor.Context.BlazorTestContext.ProbePageWhenReady(string! busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs) -> Bruinet.Html.Interfaces.PageProbe!
 Bruinet.Blazor.Context.BlazorTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Blazor.Context.BlazorTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Blazor.Context.BlazorTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.Blazor.Context.BlazorTestContext.Refresh() -> void
 Bruinet.Blazor.Context.BlazorTestContext.ResetAppState() -> void
@@ -42,6 +41,7 @@ Bruinet.Blazor.Context.BlazorTestContext.SaveScreenshot(string! path) -> void
 Bruinet.Blazor.Context.BlazorTestContext.TakeScreenshot() -> byte[]!
 Bruinet.Blazor.Context.BlazorTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Blazor.Context.BlazorTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Blazor.Context.BlazorTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Blazor.Context.BlazorTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Blazor.Controls.AudioControl<TScope>
 Bruinet.Blazor.Controls.AudioControl<TScope>.AudioControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
