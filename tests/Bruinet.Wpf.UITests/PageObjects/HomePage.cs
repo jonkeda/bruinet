@@ -1,7 +1,7 @@
 namespace Bruinet.Wpf.UITests.PageObjects;
 
 /// <summary>
-/// Page object for the Home page.
+/// Page object for the Home page. It is loaded when its root, AutomationId <c>HomePage</c>, is shown.
 /// </summary>
 public class HomePage : PageObjectBase<HomePage>
 {
@@ -10,10 +10,4 @@ public class HomePage : PageObjectBase<HomePage>
     public Label<HomePage> FeaturesHeader => Label("FeaturesHeader");
 
     public HomePage(IWpfTestContext context) : base(context) { }
-
-    /// <summary>Checks if home page content is visible.</summary>
-    public override bool IsLoaded(int? timeoutMs = null)
-    {
-        return WelcomeText.IsVisible() == true;
-    }
 }

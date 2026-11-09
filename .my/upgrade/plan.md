@@ -214,4 +214,26 @@ the code before U2 too, and `PagedListTests.ScrollToEnd_LoadsEveryPage` and
 `ExpanderTests.Expander_ExpandThenCollapse_HidesContent` are flaky on both (3 runs each). Not
 looked into: they are MAUIs, not this plans.
 
-Expected next action: U3, WPF on the call model.
+U3 done 2026-11-10. `Bruinet.Wpf` on the call model, ported from native Android's shape; decisions made:
+
+- The pattern element is shared: `UiaElementBase` in `Bruinet.FlaUI` (Click through Invoke, Toggle,
+  SelectionItem or ExpandCollapse; text through Value; ranges through RangeValue; ScrollItem, Scroll). WPF's
+  element adds only its typed lookups; WinForms' will too. Pointer and keyboard only for DoubleClick,
+  RightClick, Hover, LongPress and `SendKeys`, through `PhysicalInput` (AD-005 unchanged); the
+  architecture test allows that one file and checks MAUI's element does not derive from it.
+- No scroll-to-find on a control: WPF keeps scrolled-away elements in the tree. Collections scroll a page
+  per attempt (Scroll pattern), rows are `ListItem` (or `DataItem`) by default, keyed by first text.
+- A page is known by `ReadyLocator` (default: AutomationId = page name); busy by `BruinetBusy` or
+  `BusyIndicators`. `NavigateTo`, `NavigateBack` and `Refresh` throw `NotSupportedException`.
+- Control set: `Button`, `CheckBox`, `ToggleButton`, `RadioButton`, `TextBox`, `PasswordBox` (written,
+  never read back), `Label`, `ComboBox`, `ListBox`, `TabItem` (`ITabControlObject`, `Title`),
+  `Slider`, `ProgressBar`, `ScrollView`, `Expander`, `TreeViewItem`. The old `TreeView` is gone.
+- Suite changes: `ShellPage` is known by `AppTitleText` (its old default, an AutomationId `ShellPage`
+  that does not exist, cost every test its 10 s page-load budget); `LoginPage.WaitNotBusy` is one
+  `WaitFirst`; the busy test asserts `AssertExists(false)`, since a collapsed element is not in the tree.
+
+Results: unit tests 37 of 37 (new: `FakeApp`, `CallModelTests`, `ControlTests`); UI suite 16 of 16
+twice, 17 s and 20 s (baseline 2 of 16 failed, 2 m 53 s); R0: username rule loosened to 2 characters,
+`Login_WithShortUsername_ShowsValidationError` failed on it, restored. Left: a `wpf-control` skill.
+
+Expected next action: U4, WinForms on the call model.

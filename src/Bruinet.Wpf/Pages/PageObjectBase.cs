@@ -1,20 +1,37 @@
+using Bruinet.Core.Calls;
+using Bruinet.Core.Scopes;
 using Bruinet.Wpf.Controls;
+using Bruinet.Wpf.Controls.Buttons;
+using Bruinet.Wpf.Controls.Container;
+using Bruinet.Wpf.Controls.Display;
+using Bruinet.Wpf.Controls.Range;
+using Bruinet.Wpf.Controls.Selection;
+using Bruinet.Wpf.Controls.Text;
+using Bruinet.Wpf.Controls.Toggle;
 
 namespace Bruinet.Wpf.Pages;
 
+// Test composition and UAT find WPF pages by Core's ITestPage, which IWpfPage derives from.
+
 /// <summary>
-/// Base class for WPF page objects with fluent method chaining support.
-/// Uses CRTP (Curiously Recurring Template Pattern) for strongly-typed fluent returns.
+/// One view of the WPF app. A WPF app usually has one window whose content changes, so a page is
+/// known by an element it shows (<see cref="ReadyLocator"/>). Its readiness (design 4): the app
+/// runs, then the page's ready element is shown, then no busy signal is shown.
 /// </summary>
-/// <typeparam name="TSelf">The concrete page type (CRTP pattern).</typeparam>
+/// <typeparam name="TSelf">The page's own type.</typeparam>
 public abstract class PageObjectBase<TSelf> : ObjectBase, IWpfPage<TSelf>
     where TSelf : PageObjectBase<TSelf>
 {
+    /// <summary>
+    /// The AutomationId of the element an app shows while it is busy (design 4): present and shown
+    /// is busy, absent or hidden is idle. Every page reads it; <see cref="BusyIndicators"/> adds more.
+    /// </summary>
+    public const string BusyAutomationId = "BruinetBusy";
+
+    private static readonly Locator BusyElement = Locator.ByAutomationId(BusyAutomationId);
+
     private readonly IWpfTestContext _context;
 
-    /// <summary>
-    /// Creates a new page object with the specified context.
-    /// </summary>
     protected PageObjectBase(IWpfTestContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -23,188 +40,219 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IWpfPage<TSelf>
     /// <inheritdoc />
     public override IWpfTestContext Context => _context;
 
-    /// <summary>
-    /// Gets this page as the typed page reference (for fluent chaining).
-    /// </summary>
+    /// <inheritdoc />
     public TSelf Self => (TSelf)this;
-
-    #region IPageObject Implementation
 
     /// <inheritdoc />
     public virtual string Name => GetType().Name;
 
     /// <inheritdoc />
+    protected override string ScopeName => Name;
+
+    /// <inheritdoc />
     public LocatorStrategy DefaultLocatorStrategy => _context.DefaultLocatorStrategy;
 
     /// <inheritdoc />
-    public virtual bool IsLoaded(int? timeoutMs = null)
+    public IWpfPage? Page => this;
+
+    /// <summary>
+    /// An element that shows the page is there; by default the one whose AutomationId is the
+    /// page's <see cref="Name"/>. A page that names none of its own declares one of its controls.
+    /// </summary>
+    protected virtual Locator ReadyLocator => Locator.ByAutomationId(Name);
+
+    /// <summary>Whether the page reads the app's busy element (<see cref="BusyAutomationId"/>).</summary>
+    protected virtual bool ReadsBusySignal => true;
+
+    /// <summary>More elements that mean the page is busy while shown: a spinner, a "Signing in..." text.</summary>
+    protected virtual IReadOnlyList<Locator> BusyIndicators => [];
+
+    /// <summary>Whether the page is shown now: its ready element is on screen. The override point.</summary>
+    public virtual bool IsLoaded() => _context.TryFindElement(ReadyLocator)?.Visible == true;
+
+    /// <summary>One probe of the page (design 4): the app runs, then loaded, then busy.</summary>
+    public virtual ScopeReadiness ProbeReadiness()
     {
-        return _context.TryFindElement(Locator.ByAutomationId(Name)) != null;
+        if (_context.ProbeReadiness() is { IsReady: false } app)
+        {
+            return app;
+        }
+
+        if (!IsLoaded())
+        {
+            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded, $"'{ReadyLocator}' is not shown");
+        }
+
+        if (ReadsBusySignal && _context.TryFindElement(BusyElement)?.Visible == true)
+        {
+            return new ScopeReadiness(Name, ScopeReadinessState.Busy, $"the app shows '{BusyAutomationId}'");
+        }
+
+        foreach (var indicator in BusyIndicators)
+        {
+            if (_context.TryFindElement(indicator)?.Visible == true)
+            {
+                return new ScopeReadiness(Name, ScopeReadinessState.Busy, $"'{indicator}' is shown");
+            }
+        }
+
+        return ScopeReadiness.Ready(Name);
     }
+
+    /// <inheritdoc />
+    public bool IsReady() => ProbeReadiness().IsReady;
+
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
+
+    /// <inheritdoc />
+    public bool WaitReady(int? timeoutMs = null)
+        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? _context.Timeouts.PageLoad);
 
     /// <inheritdoc />
     public bool WaitLoaded(bool? expected, int? timeoutMs = null)
     {
         if (expected == null)
+        {
             return true;
-        var timeout = timeoutMs ?? _context.Timeouts.PageLoad;
-        return Poll(() => IsLoaded() == expected.Value, timeout);
+        }
+
+        return RunProbe(
+            () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.PageLoad);
     }
 
     /// <inheritdoc />
     public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
-            return;
-        if (!WaitLoaded(expected, timeoutMs))
         {
-            var actual = IsLoaded();
-            throw new PageLoadException(
-                message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but loaded state is {actual}.");
+            return;
         }
+
+        RunProbe(
+            () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.PageLoad,
+            readiness => new ScopeNotReadyException(
+                readiness,
+                message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but it is {(expected.Value ? "not" : "still loaded")}."));
     }
 
     /// <inheritdoc />
-    public virtual string? GetTitle(int? timeoutMs = null)
+    public bool IsBusy() => ProbeReadiness().IsBusy;
+
+    /// <inheritdoc />
+    public bool WaitBusy(bool? expected, int? timeoutMs = null)
     {
-        return Name;
+        if (expected == null)
+        {
+            return true;
+        }
+
+        return RunProbe(() =>
+        {
+            var readiness = ProbeReadiness();
+            return readiness.IsLoaded && readiness.IsBusy == expected.Value
+                ? Observation.Done()
+                : Observation.ScopeNotReady(readiness);
+        }, timeoutMs ?? _context.Timeouts.PageLoad);
     }
+
+    /// <inheritdoc />
+    public void AssertIdle(string? message = null, int? timeoutMs = null)
+    {
+        var budget = timeoutMs ?? _context.Timeouts.PageLoad;
+        RunProbe(
+            () => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
+            budget,
+            readiness => new ScopeNotReadyException(
+                readiness,
+                message ?? $"Page '{Name}' did not become ready within {budget} ms. Last readiness state: {readiness.State}" +
+                    (readiness.Detail is null ? "." : $" ({readiness.Detail}).")));
+    }
+
+    /// <summary>The page's title: the app window's title by default.</summary>
+    public virtual string? GetTitle() => _context.Driver.Window.Name;
 
     /// <inheritdoc />
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         if (expected == null)
+        {
             return true;
-        var timeout = timeoutMs ?? _context.Timeouts.DefaultWait;
-        return Poll(() => GetTitle() == expected, timeout);
+        }
+
+        return RunProbe(
+            () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.DefaultWait);
     }
 
     /// <inheritdoc />
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
-            return;
-        if (!WaitTitle(expected, timeoutMs))
         {
-            var actual = GetTitle();
-            throw new PageLoadException(
-                message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.");
+            return;
         }
+
+        RunProbe(
+            () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.DefaultWait,
+            _ =>
+            {
+                var actual = GetTitle();
+                return new AssertionException(
+                    message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
+            });
     }
 
     /// <inheritdoc />
-    public void TakeScreenshot(string? filename = null, int? timeoutMs = null)
-    {
-        var path = filename ?? $"{Name}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-        _context.SaveScreenshot(path);
-    }
-
-    #endregion
-
-    #region IWpfElementScope Implementation
+    public void TakeScreenshot(string? filename = null)
+        => _context.SaveScreenshot(filename ?? $"{Name}_{DateTime.Now:yyyyMMdd_HHmmss}.png");
 
     /// <inheritdoc />
-    public IPageObject? Page => this;
+    public IWpfElement? TryFindElement(Locator locator) => _context.TryFindElement(locator);
 
     /// <inheritdoc />
-    public bool IsReady(int? timeoutMs = null) => IsLoaded(timeoutMs);
+    public IWpfElement FindElement(Locator locator) => _context.FindElement(locator);
 
     /// <inheritdoc />
-    public bool WaitReady(int? timeoutMs = null) => WaitLoaded(true, timeoutMs);
+    public IReadOnlyList<IWpfElement> FindElements(Locator locator) => _context.FindElements(locator);
 
-    /// <inheritdoc />
-    IWpfElement? IElementScope<IWpfElement>.TryFindElement(Locator locator)
-    {
-        return _context.TryFindElement(locator);
-    }
+    #region Factory methods
 
-    /// <inheritdoc />
-    IWpfElement IElementScope<IWpfElement>.FindElement(Locator locator)
-    {
-        return _context.FindElement(locator);
-    }
+    // A control declared by a plain string is found by its AutomationId.
 
-    /// <inheritdoc />
-    IReadOnlyList<IWpfElement> IElementScope<IWpfElement>.FindElements(Locator locator)
-    {
-        return _context.FindElements(locator);
-    }
-
-    #endregion
-
-    #region Factory Methods
-
-    /// <summary>Creates a Button control within this page scope.</summary>
     protected Button<TSelf> Button(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a Button control using the scope default locator.</summary>
-    protected Button<TSelf> Button(string locator) => new(this, locator);
-
-    /// <summary>Creates a CheckBox control within this page scope.</summary>
+    protected Button<TSelf> Button(string automationId) => new(this, automationId);
     protected CheckBox<TSelf> CheckBox(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a CheckBox control using the scope default locator.</summary>
-    protected CheckBox<TSelf> CheckBox(string locator) => new(this, locator);
-
-    /// <summary>Creates a ComboBox control within this page scope.</summary>
+    protected CheckBox<TSelf> CheckBox(string automationId) => new(this, automationId);
+    protected RadioButton<TSelf> RadioButton(Locator locator) => new(this, locator);
+    protected RadioButton<TSelf> RadioButton(string automationId) => new(this, automationId);
+    protected ToggleButton<TSelf> ToggleButton(Locator locator) => new(this, locator);
+    protected ToggleButton<TSelf> ToggleButton(string automationId) => new(this, automationId);
     protected ComboBox<TSelf> ComboBox(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a ComboBox control using the scope default locator.</summary>
-    protected ComboBox<TSelf> ComboBox(string locator) => new(this, locator);
-
-    /// <summary>Creates a Label control within this page scope.</summary>
-    protected Label<TSelf> Label(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a Label control using the scope default locator.</summary>
-    protected Label<TSelf> Label(string locator) => new(this, locator);
-
-    /// <summary>Creates a ListBox control within this page scope.</summary>
+    protected ComboBox<TSelf> ComboBox(string automationId) => new(this, automationId);
     protected ListBox<TSelf> ListBox(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a ListBox control using the scope default locator.</summary>
-    protected ListBox<TSelf> ListBox(string locator) => new(this, locator);
-
-    /// <summary>Creates a PasswordBox control within this page scope.</summary>
-    protected PasswordBox<TSelf> PasswordBox(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a PasswordBox control using the scope default locator.</summary>
-    protected PasswordBox<TSelf> PasswordBox(string locator) => new(this, locator);
-
-    /// <summary>Creates a ProgressBar control within this page scope.</summary>
-    protected ProgressBar<TSelf> ProgressBar(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a ProgressBar control using the scope default locator.</summary>
-    protected ProgressBar<TSelf> ProgressBar(string locator) => new(this, locator);
-
-    /// <summary>Creates a ScrollView control within this page scope.</summary>
-    protected ScrollView<TSelf> ScrollView(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a ScrollView control using the scope default locator.</summary>
-    protected ScrollView<TSelf> ScrollView(string locator) => new(this, locator);
-
-    /// <summary>Creates a Slider control within this page scope.</summary>
-    protected Slider<TSelf> Slider(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a Slider control using the scope default locator.</summary>
-    protected Slider<TSelf> Slider(string locator) => new(this, locator);
-
-    /// <summary>Creates a TabItem control within this page scope.</summary>
+    protected ListBox<TSelf> ListBox(string automationId) => new(this, automationId);
     protected TabItem<TSelf> TabItem(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a TabItem control using the scope default locator.</summary>
-    protected TabItem<TSelf> TabItem(string locator) => new(this, locator);
-
-    /// <summary>Creates a TextBox control within this page scope.</summary>
+    protected TabItem<TSelf> TabItem(string automationId) => new(this, automationId);
+    protected Label<TSelf> Label(Locator locator) => new(this, locator);
+    protected Label<TSelf> Label(string automationId) => new(this, automationId);
     protected TextBox<TSelf> TextBox(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a TextBox control using the scope default locator.</summary>
-    protected TextBox<TSelf> TextBox(string locator) => new(this, locator);
-
-    /// <summary>Creates a TreeView control within this page scope.</summary>
-    protected TreeView<TSelf> TreeView(Locator locator) => new(this, locator);
-
-    /// <summary>Creates a TreeView control using the scope default locator.</summary>
-    protected TreeView<TSelf> TreeView(string locator) => new(this, locator);
+    protected TextBox<TSelf> TextBox(string automationId) => new(this, automationId);
+    protected PasswordBox<TSelf> PasswordBox(Locator locator) => new(this, locator);
+    protected PasswordBox<TSelf> PasswordBox(string automationId) => new(this, automationId);
+    protected ProgressBar<TSelf> ProgressBar(Locator locator) => new(this, locator);
+    protected ProgressBar<TSelf> ProgressBar(string automationId) => new(this, automationId);
+    protected Slider<TSelf> Slider(Locator locator) => new(this, locator);
+    protected Slider<TSelf> Slider(string automationId) => new(this, automationId);
+    protected ScrollView<TSelf> ScrollView(Locator locator) => new(this, locator);
+    protected ScrollView<TSelf> ScrollView(string automationId) => new(this, automationId);
+    protected Expander<TSelf> Expander(Locator locator) => new(this, locator);
+    protected Expander<TSelf> Expander(string automationId) => new(this, automationId);
+    protected TreeViewItem<TSelf> TreeViewItem(Locator locator) => new(this, locator);
+    protected TreeViewItem<TSelf> TreeViewItem(string automationId) => new(this, automationId);
 
     #endregion
 }

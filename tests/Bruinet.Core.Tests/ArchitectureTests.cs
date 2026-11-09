@@ -80,14 +80,20 @@ public sealed class ArchitectureTests
         Assert.True(offenders.Count == 0, $"Name these Bdd, not Uat (AD-021): {string.Join(", ", offenders)}");
     }
 
-    /// <summary>AD-005: MAUI on Windows, and the FlaUI layer it shares with WPF and WinForms, use no physical input.</summary>
+    /// <summary>
+    /// AD-005: MAUI on Windows, and the FlaUI layer it shares with WPF and WinForms, use no physical
+    /// input. The one exception is WPF's and WinForms' fallback for a gesture with no pattern, in
+    /// <c>UiaElementBase</c>, behind <c>PhysicalInput</c>; MAUI's element does not derive from it.
+    /// </summary>
     [Fact]
     public void MauiFlaUI_UsesNoPhysicalInput()
     {
         var root = Root();
         var input = new Regex(@"FlaUI\.Core\.Input|\bMouse\.|\bKeyboard\.|Clipboard|SendInput|SetForegroundWindow|SetCursorPos");
         // The quiet window hands the foreground back to the person's window; it takes nothing.
-        string[] allowed = ["src/Bruinet.FlaUI/Windowing/QuietWindow.cs", "src/Bruinet.FlaUI/Windowing/NativeMethods.cs"];
+        string[] allowed = ["src/Bruinet.FlaUI/Windowing/QuietWindow.cs", "src/Bruinet.FlaUI/Windowing/NativeMethods.cs",
+            "src/Bruinet.FlaUI/UiaElementBase.cs"];
+        Assert.DoesNotContain("UiaElementBase", File.ReadAllText(Path.Combine(root, "src", "Bruinet.Maui.FlaUI", "FlaUIMauiElement.cs")), StringComparison.Ordinal);
 
         var offenders = new[] { "Bruinet.Maui.FlaUI", "Bruinet.FlaUI" }
             .SelectMany(project => Sources(Path.Combine(root, "src", project)))

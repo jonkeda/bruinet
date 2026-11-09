@@ -1,53 +1,32 @@
-using Bruinet.Core.Interfaces;
-
 namespace Bruinet.Wpf.Interfaces;
 
 /// <summary>
-/// WPF-specific driver interface extending <see cref="IDriver{TElement}"/> and <see cref="IDiagnosticDriver"/>.
-/// Provides window management, navigation, and screenshot capabilities for WPF desktop apps.
+/// The WPF app under test through UI Automation: its main window, the windows it opens, and its
+/// screen. Lookups make one attempt; the call around them is what waits (R2).
 /// </summary>
-public interface IWpfDriver : IDriver<IWpfElement>, IDiagnosticDriver
+public interface IWpfDriver : IDiagnosticDriver, IDisposable
 {
-    #region Window Management
+    /// <summary>The app's main window, as an element.</summary>
+    IWpfElement Window { get; }
 
-    /// <summary>
-    /// Gets the current window handle.
-    /// </summary>
+    /// <summary>The main window's native handle, as text.</summary>
     string CurrentWindowHandle { get; }
 
-    /// <summary>
-    /// Gets all window handles.
-    /// </summary>
-    IReadOnlyCollection<string> WindowHandles { get; }
+    /// <summary>Whether the app's process has exited; false when the process is not known.</summary>
+    bool HasExited { get; }
 
-    #endregion
+    /// <summary>The elements under the main window that match now. One attempt.</summary>
+    IReadOnlyList<IWpfElement> FindElements(Locator locator);
 
-    #region Navigation
+    /// <summary>The app's top-level windows now: the main window and any it opened (a dialog that is not owned by it).</summary>
+    IReadOnlyList<IWpfElement> TopLevelWindows();
 
-    /// <summary>
-    /// Navigates to the specified destination (not typically used in WPF).
-    /// </summary>
-    void NavigateTo(string destination);
+    /// <summary>Closes the main window through its Window pattern.</summary>
+    void Close();
 
-    /// <summary>
-    /// Navigates back (sends Alt+Left).
-    /// </summary>
-    void NavigateBack();
+    /// <summary>Closes the app.</summary>
+    void Quit();
 
-    /// <summary>
-    /// Refreshes the current view (sends F5).
-    /// </summary>
-    void Refresh();
-
-    /// <summary>
-    /// Takes a screenshot of the current state.
-    /// </summary>
+    /// <summary>The main window as PNG bytes.</summary>
     byte[] TakeScreenshot();
-
-    /// <summary>
-    /// Resets the application state (closes and relaunches).
-    /// </summary>
-    void ResetAppState();
-
-    #endregion
 }

@@ -17,9 +17,60 @@ Bruinet.FlaUI.DesktopApp.WindowHandle.get -> nint
 Bruinet.FlaUI.DesktopApp.WindowHandles() -> System.Collections.Generic.IReadOnlyCollection<string!>!
 Bruinet.FlaUI.FlaUIErrors
 Bruinet.FlaUI.LocatorExtensions
+Bruinet.FlaUI.UiaElementBase
+Bruinet.FlaUI.UiaElementBase.App.get -> Bruinet.FlaUI.DesktopApp!
+Bruinet.FlaUI.UiaElementBase.AutomationId.get -> string?
+Bruinet.FlaUI.UiaElementBase.Checked.get -> bool?
+Bruinet.FlaUI.UiaElementBase.ClassName.get -> string?
+Bruinet.FlaUI.UiaElementBase.Clear() -> void
+Bruinet.FlaUI.UiaElementBase.Click() -> void
+Bruinet.FlaUI.UiaElementBase.Collapse() -> void
+Bruinet.FlaUI.UiaElementBase.DoubleClick() -> void
+Bruinet.FlaUI.UiaElementBase.Element.get -> FlaUI.Core.AutomationElements.AutomationElement!
+Bruinet.FlaUI.UiaElementBase.Enabled.get -> bool
+Bruinet.FlaUI.UiaElementBase.Expand() -> void
+Bruinet.FlaUI.UiaElementBase.Focus() -> void
+Bruinet.FlaUI.UiaElementBase.Focused.get -> bool
+Bruinet.FlaUI.UiaElementBase.GetAttribute(string! name) -> string?
+Bruinet.FlaUI.UiaElementBase.HelpText.get -> string?
+Bruinet.FlaUI.UiaElementBase.Hover() -> void
+Bruinet.FlaUI.UiaElementBase.InstanceKey.get -> string!
+Bruinet.FlaUI.UiaElementBase.Invoke() -> void
+Bruinet.FlaUI.UiaElementBase.IsAttached.get -> bool
+Bruinet.FlaUI.UiaElementBase.IsExpanded.get -> bool?
+Bruinet.FlaUI.UiaElementBase.IsReadOnly.get -> bool?
+Bruinet.FlaUI.UiaElementBase.Live(System.Action! touch) -> void
+Bruinet.FlaUI.UiaElementBase.Live<T>(System.Func<T>! touch) -> T
+Bruinet.FlaUI.UiaElementBase.Location.get -> System.Drawing.Point
+Bruinet.FlaUI.UiaElementBase.LongPress(int durationMs = 1000) -> void
+Bruinet.FlaUI.UiaElementBase.Name.get -> string?
+Bruinet.FlaUI.UiaElementBase.RangeIsReadOnly.get -> bool?
+Bruinet.FlaUI.UiaElementBase.RangeMaximum.get -> double?
+Bruinet.FlaUI.UiaElementBase.RangeMinimum.get -> double?
+Bruinet.FlaUI.UiaElementBase.RangeSmallChange.get -> double?
+Bruinet.FlaUI.UiaElementBase.RangeValue.get -> double?
+Bruinet.FlaUI.UiaElementBase.Rect.get -> System.Drawing.Rectangle
+Bruinet.FlaUI.UiaElementBase.RightClick() -> void
+Bruinet.FlaUI.UiaElementBase.ScrollIntoView(int timeoutMs) -> void
+Bruinet.FlaUI.UiaElementBase.ScrollPage(bool down) -> bool
+Bruinet.FlaUI.UiaElementBase.Select() -> void
+Bruinet.FlaUI.UiaElementBase.Selected.get -> bool
+Bruinet.FlaUI.UiaElementBase.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.SetValue) -> void
+Bruinet.FlaUI.UiaElementBase.SetRangeValue(double value) -> void
+Bruinet.FlaUI.UiaElementBase.SetValue(string! value) -> void
+Bruinet.FlaUI.UiaElementBase.SetVerticalScrollPercent(double percent) -> void
+Bruinet.FlaUI.UiaElementBase.Size.get -> System.Drawing.Size
+Bruinet.FlaUI.UiaElementBase.TagName.get -> string?
+Bruinet.FlaUI.UiaElementBase.Text.get -> string?
+Bruinet.FlaUI.UiaElementBase.Toggle() -> void
+Bruinet.FlaUI.UiaElementBase.UiaElementBase(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.FlaUI.DesktopApp! app) -> void
+Bruinet.FlaUI.UiaElementBase.Value.get -> string?
+Bruinet.FlaUI.UiaElementBase.VerticalScrollPercent.get -> double?
+Bruinet.FlaUI.UiaElementBase.Visible.get -> bool
 Bruinet.FlaUI.UiaElements
 Bruinet.FlaUI.Windowing.PhysicalPixels
 const Bruinet.FlaUI.FlaUIErrors.ElementNotAvailable = -2147220991 -> int
+override Bruinet.FlaUI.UiaElementBase.ToString() -> string!
 static Bruinet.FlaUI.DesktopApp.Attach(System.Diagnostics.Process! process) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.DesktopApp.Attach(nint windowHandle) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.DesktopApp.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null) -> Bruinet.FlaUI.DesktopApp!

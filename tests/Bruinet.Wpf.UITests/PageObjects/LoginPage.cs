@@ -1,8 +1,8 @@
 namespace Bruinet.Wpf.UITests.PageObjects;
 
 /// <summary>
-/// Page object for the Login page with form validation and busy state handling.
-/// Demonstrates page-level wait patterns and form interaction helpers.
+/// Page object for the Login page with form validation and busy state handling. The page is busy
+/// while its busy indicator is shown, so its waits (<c>WaitReady</c>, <c>WaitBusy</c>) read it.
 /// </summary>
 public class LoginPage : PageObjectBase<LoginPage>
 {
@@ -19,30 +19,22 @@ public class LoginPage : PageObjectBase<LoginPage>
 
     public LoginPage(IWpfTestContext context) : base(context) { }
 
-    /// <summary>Checks whether the login header is visible.</summary>
-    public override bool IsLoaded(int? timeoutMs = null)
-    {
-        return LoginHeader.IsVisible() == true;
-    }
+    private static readonly Locator BusyIndicatorLocator = Locator.ByAutomationId("BusyIndicator");
+
+    /// <inheritdoc />
+    protected override IReadOnlyList<Locator> BusyIndicators => [BusyIndicatorLocator];
 
     #region Busy State
 
-    /// <summary>Whether the busy indicator is currently visible.</summary>
-    public bool IsBusy() => BusyIndicator.IsVisible() == true;
-
-    /// <summary>Wait until the busy indicator hides.</summary>
+    /// <summary>
+    /// Waits until the busy indicator is hidden or gone, as one call on the app's window: a valid
+    /// login leaves this page, and the indicator with it.
+    /// </summary>
     public bool WaitNotBusy(int? timeoutMs = null)
-    {
-        var timeout = timeoutMs ?? DefaultTimeoutMs;
-        return Poll(() => !IsBusy(), timeout);
-    }
+        => Context.WaitFirst(timeoutMs, () => Context.TryFindElement(BusyIndicatorLocator)?.Visible != true) >= 0;
 
-    /// <summary>Wait until the page is loaded and not busy.</summary>
-    public bool WaitPageReady(int? timeoutMs = null)
-    {
-        var timeout = timeoutMs ?? DefaultTimeoutMs;
-        return Poll(() => IsLoaded() && !IsBusy(), timeout);
-    }
+    /// <summary>Waits until the page is loaded and not busy.</summary>
+    public bool WaitPageReady(int? timeoutMs = null) => WaitReady(timeoutMs);
 
     #endregion
 
@@ -75,10 +67,9 @@ public class LoginPage : PageObjectBase<LoginPage>
     {
         EnterCredentials(username, password);
         ClickLogin();
-        WaitNotBusy();
 
         var homePage = new HomePage(Context);
-        homePage.WaitLoaded(true);
+        homePage.AssertLoaded(true);
         return homePage;
     }
 

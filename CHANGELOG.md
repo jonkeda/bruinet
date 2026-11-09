@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Breaking:** WPF is on the call model (AD-010, AD-013). `Bruinet.Wpf` has its own interfaces (`IWpfElement`,
+  `IWpfDriver`, `IWpfElementScope : IScope`, `IWpfPage : ITestPage`, `IWpfTestContext`), generated controls
+  (`tools/Scripts/CreateWpf.Bat`) in `Controls.Buttons`, `.Text`, `.Toggle`, `.Selection`, `.Range`, `.Container`
+  and `.Display`, containers, collections with item keys, and one call per member. Every action is a UI Automation
+  pattern of `Bruinet.FlaUI`'s `UiaElementBase`: a text box is written through its Value pattern, a combo box
+  expanded, its item selected and collapsed; nothing takes the foreground. A page is known by `ReadyLocator`
+  (the element whose AutomationId is its name, by default) and is busy while `BruinetBusy` or a `BusyIndicators`
+  element is shown. Gone: the first model's `IElement<T>`/`IDriver<T>` shapes, `TreeView`, waiting lookups and
+  setting the foreground before each click. The sample suite passes 16 of 16 in 20 s (2 of 16 failed in 2 m 53 s).
 - `Bruinet.FlaUI`: what the FlaUI stacks share, taken out of `Bruinet.Maui.FlaUI` for WPF and WinForms to stand on.
   `DesktopApp` is the app session (launch with its own environment, attach by handle or process, the foreground
   handed back, `BRUINET_AUT_PLACE`, a root window attached again when UI Automation retires it, screenshots of the

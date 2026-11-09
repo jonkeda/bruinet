@@ -1,19 +1,14 @@
 namespace Bruinet.Wpf.Interfaces;
 
-/// <summary>
-/// WPF test context interface with FlaUI driver access.
-/// Combines test context capabilities with WPF element scope.
-/// </summary>
-public interface IWpfTestContext : ITestContext<IWpfElement>, IWpfElementScope
-{
-    /// <summary>
-    /// Gets the WPF FlaUI driver for operations.
-    /// </summary>
-    IWpfDriver Driver { get; }
+// Core's ITestContext (its name and near-miss settings among them) and WPF's own scope, which
+// derives from Core's IScope. See AD-010.
 
-    /// <summary>
-    /// Gets this context as the element scope.
-    /// Implementation should return 'this'.
-    /// </summary>
-    new IWpfTestContext Context { get; }
+/// <summary>
+/// One WPF app under test: the driver, the timeouts and log every call uses, and the app's window
+/// as the outermost scope.
+/// </summary>
+public interface IWpfTestContext : ITestContext, IWpfElementScope
+{
+    /// <summary>The app's UI Automation driver.</summary>
+    IWpfDriver Driver { get; }
 }

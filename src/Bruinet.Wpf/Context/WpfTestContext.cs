@@ -1,191 +1,153 @@
+using Bruinet.Core.Calls;
+using Bruinet.Core.Recording;
+using Bruinet.Core.Scopes;
 using Bruinet.Wpf.FlaUI;
+using Bruinet.Wpf.Pages;
 
 namespace Bruinet.Wpf.Context;
 
 /// <summary>
-/// WPF test context implementation using FlaUI driver.
+/// One WPF app under test, and its main window as the outermost scope: ready while the app runs.
+/// A closed app is gone, not "not ready yet": the call ends with <see cref="AppUnavailableException"/> (R0).
 /// </summary>
-public class WpfTestContext : IWpfTestContext, IDisposable, Bruinet.Core.Recording.IRecordable
+public sealed class WpfTestContext : IWpfTestContext, IRecordable
 {
-    private readonly IWpfDriver _driver;
-    private readonly TimeoutSettings _timeouts;
-    private readonly ITestLogger _logger;
+    private readonly WpfTestContextOptions _options;
     private readonly bool _ownsDriver;
     private bool _disposed;
 
-    /// <summary>
-    /// Creates a new WPF test context with the specified options.
-    /// </summary>
+    /// <summary>The context for the app <paramref name="options"/> names.</summary>
+    /// <exception cref="ArgumentException">The options name no driver, window, process or executable.</exception>
     public WpfTestContext(WpfTestContextOptions options)
     {
-        ArgumentNullException.ThrowIfNull(options);
+        _options = options ?? throw new ArgumentNullException(nameof(options));
+        Timeouts = options.Timeouts ?? TimeoutSettings.Default;
+        Logger = options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance;
 
-        _timeouts = options.Timeouts ?? TimeoutSettings.Default;
-        _logger = options.Logger ?? NullTestLogger.Instance;
-
-        if (options.Driver != null)
+        if (options.Driver is { } driver)
         {
-            _driver = options.Driver;
-            _ownsDriver = false;
-        }
-        else if (options.WindowHandle is { } handle && handle != IntPtr.Zero)
-        {
-            _driver = new FlaUIWpfDriver(handle);
-            _ownsDriver = true;
-        }
-        else if (options.ProcessId is { } pid)
-        {
-            var process = System.Diagnostics.Process.GetProcessById(pid);
-            _driver = new FlaUIWpfDriver(process);
-            _ownsDriver = true;
-        }
-        else if (!string.IsNullOrEmpty(options.ExecutablePath))
-        {
-            _driver = new FlaUIWpfDriver(options.ExecutablePath, options.Arguments);
-            _ownsDriver = true;
+            Driver = driver;
         }
         else
         {
-            throw new ArgumentException(
-                "Either Driver, WindowHandle, ProcessId, or ExecutablePath must be provided.",
-                nameof(options));
+            Driver = options switch
+            {
+                { WindowHandle: { } handle } when handle != IntPtr.Zero => FlaUIWpfDriver.Attach(handle),
+                { ProcessId: { } pid } => FlaUIWpfDriver.Attach(Process.GetProcessById(pid)),
+                { ExecutablePath: { Length: > 0 } path } => FlaUIWpfDriver.Launch(path, options.Arguments, options.Environment),
+                _ => throw new ArgumentException("Either Driver, WindowHandle, ProcessId, or ExecutablePath must be provided.", nameof(options)),
+            };
+            _ownsDriver = true;
         }
     }
 
     /// <inheritdoc />
-    public IWpfDriver Driver => _driver;
+    public IWpfDriver Driver { get; }
+
+    /// <inheritdoc />
+    public string? Name => _options.Name;
+
+    /// <inheritdoc />
+    public NearMissSettings NearMiss => _options.NearMiss;
+
+    /// <inheritdoc />
+    public TimeoutSettings Timeouts { get; }
+
+    /// <inheritdoc />
+    public ITestLogger Logger { get; }
 
     /// <inheritdoc />
     public IWpfTestContext Context => this;
 
     /// <inheritdoc />
-    public TimeoutSettings Timeouts => _timeouts;
-
-    /// <inheritdoc />
-    public ITestLogger Logger => _logger;
-
-    /// <inheritdoc />
     public LocatorStrategy DefaultLocatorStrategy => LocatorStrategy.AutomationId;
 
-    /// <inheritdoc />
-    public IPageObject? Page => null;
-
-    /// <summary>The app's window.</summary>
-    public Bruinet.Core.Recording.RecordingTarget? RecordingTarget
-        => _disposed ? null : Bruinet.Core.Recording.RecordingTarget.ForWindow(_driver.CurrentWindowHandle);
+    /// <summary>None: the context is the app's window, not a page.</summary>
+    public IWpfPage? Page => null;
 
     /// <inheritdoc />
-    public bool IsReady(int? timeoutMs = null) => !_disposed;
+    public RecordingTarget? RecordingTarget
+        => _disposed ? null : Driver is IRecordable recordable ? recordable.RecordingTarget : RecordingTarget.ForWindow(Driver.CurrentWindowHandle);
+
+    /// <summary>Ready while the app runs.</summary>
+    /// <exception cref="AppUnavailableException">The app has exited.</exception>
+    public ScopeReadiness ProbeReadiness()
+        => Driver.HasExited
+            ? throw new AppUnavailableException("the application process has exited.")
+            : ScopeReadiness.Ready(nameof(WpfTestContext));
 
     /// <inheritdoc />
-    public bool WaitReady(int? timeoutMs = null) => !_disposed;
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new AppRoot(this).WaitFirst(timeoutMs, outcomes);
 
     /// <inheritdoc />
-    public IWpfElement? TryFindElement(Locator locator)
-    {
-        ArgumentNullException.ThrowIfNull(locator);
+    public bool WaitReady(int? timeoutMs = null) => new AppRoot(this).WaitReady(timeoutMs);
 
-        try
-        {
-            var elements = _driver.FindElements(locator);
-            return elements.Count > 0 ? elements[0] : null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    // One attempt (R2): the call around it is what waits.
+    /// <inheritdoc />
+    public IWpfElement? TryFindElement(Locator locator) => Driver.FindElements(locator).FirstOrDefault();
 
     /// <inheritdoc />
-    public IWpfElement FindElement(Locator locator)
-    {
-        ArgumentNullException.ThrowIfNull(locator);
-
-        var timeout = TimeSpan.FromMilliseconds(_timeouts.ElementFind);
-        var pollInterval = 100;
-        var stopwatch = Stopwatch.StartNew();
-
-        while (stopwatch.Elapsed < timeout)
-        {
-            var elements = _driver.FindElements(locator);
-            if (elements.Count > 0)
-                return elements[0];
-            Bruinet.Core.Utilities.WaitHelper.Pause(pollInterval);
-        }
-
-        throw new ElementNotFoundException(
-            $"Element not found with locator: {locator} after {_timeouts.ElementFind}ms");
-    }
+    public IWpfElement FindElement(Locator locator) => TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
 
     /// <inheritdoc />
-    public IReadOnlyList<IWpfElement> FindElements(Locator locator)
-    {
-        ArgumentNullException.ThrowIfNull(locator);
-        return _driver.FindElements(locator);
-    }
+    public IReadOnlyList<IWpfElement> FindElements(Locator locator) => Driver.FindElements(locator);
 
-    /// <inheritdoc />
+    /// <summary>A WPF app has no destinations to go to: its page objects navigate by its own controls.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public void NavigateTo(string destination)
-    {
-        ArgumentNullException.ThrowIfNull(destination);
-        _logger.LogNavigation("", "", destination);
-        _driver.NavigateTo(destination);
-    }
+        => throw new NotSupportedException("A WPF app has no destination to navigate to; navigate with its page objects' controls.");
 
-    /// <inheritdoc />
+    /// <summary>A WPF app has no history to go back in.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public void NavigateBack()
-    {
-        _driver.NavigateBack();
-    }
+        => throw new NotSupportedException("A WPF app has no history to go back in; navigate with its page objects' controls.");
 
-    /// <inheritdoc />
+    /// <summary>A WPF app has no page to reload.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public void Refresh()
-    {
-        _driver.Refresh();
-    }
+        => throw new NotSupportedException("A WPF app has no page to reload; start a new context for a fresh app.");
 
     /// <inheritdoc />
-    public byte[] TakeScreenshot()
-    {
-        return _driver.TakeScreenshot();
-    }
+    public byte[] TakeScreenshot() => Driver.TakeScreenshot();
 
     /// <inheritdoc />
     public void SaveScreenshot(string path)
     {
         ArgumentNullException.ThrowIfNull(path);
-        var screenshot = _driver.TakeScreenshot();
-        File.WriteAllBytes(path, screenshot);
+        File.WriteAllBytes(path, Driver.TakeScreenshot());
     }
 
-    /// <inheritdoc />
-    public void ResetAppState()
-    {
-        _driver.ResetAppState();
-    }
+    /// <summary>Closes the app; a new context starts it again.</summary>
+    public void ResetAppState() => Driver.Quit();
 
     /// <inheritdoc />
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Disposes managed and unmanaged resources.
-    /// </summary>
-    protected virtual void Dispose(bool disposing)
-    {
         if (_disposed)
-            return;
-
-        if (disposing && _ownsDriver && _driver is IDisposable disposable)
         {
-            try
-            { disposable.Dispose(); }
-            catch { /* Ignore errors during cleanup */ }
+            return;
         }
 
         _disposed = true;
+        if (_ownsDriver)
+        {
+            Driver.Dispose();
+        }
+
+        Logger.Flush();
+        Logger.Dispose();
+    }
+
+    /// <summary>
+    /// A call log in the folder <c>BRUINET_CALL_LOG</c> names, when it is set: the same switch as
+    /// the other stacks', and only when the options give no logger of their own.
+    /// </summary>
+    private static CsvTestLogger? OpenCallLog()
+    {
+        var folder = Environment.GetEnvironmentVariable("BRUINET_CALL_LOG");
+        return string.IsNullOrWhiteSpace(folder)
+            ? null
+            : new CsvTestLogger(Path.Combine(folder,
+                $"calls-wpf-{DateTime.Now:yyyyMMdd-HHmmss}-{Environment.ProcessId}-{Guid.NewGuid().ToString("N")[..8]}.csv"));
     }
 }

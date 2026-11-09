@@ -1,8 +1,9 @@
 namespace Bruinet.Wpf.UITests.PageObjects;
 
 /// <summary>
-/// Page object for the main shell window with navigation sidebar.
-/// Demonstrates CRTP page object pattern with factory methods.
+/// Page object for the main shell window with its navigation sidebar. The window itself is the
+/// lookup root, so the shell is known by its title in the sidebar: a WPF panel has no automation
+/// peer, so the sidebar itself is not in the tree.
 /// </summary>
 public class ShellPage : PageObjectBase<ShellPage>
 {
@@ -14,12 +15,15 @@ public class ShellPage : PageObjectBase<ShellPage>
 
     public ShellPage(IWpfTestContext context) : base(context) { }
 
+    /// <inheritdoc />
+    protected override Locator ReadyLocator => Locator.ByAutomationId("AppTitleText");
+
     /// <summary>Navigate to the Home page via sidebar button.</summary>
     public HomePage NavigateToHome()
     {
         NavHomeButton.Click();
         var page = new HomePage(Context);
-        page.WaitLoaded(true);
+        page.AssertLoaded(true);
         return page;
     }
 
@@ -28,7 +32,7 @@ public class ShellPage : PageObjectBase<ShellPage>
     {
         NavLoginButton.Click();
         var page = new LoginPage(Context);
-        page.WaitLoaded(true);
+        page.AssertLoaded(true);
         return page;
     }
 }

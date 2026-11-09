@@ -74,6 +74,8 @@ public class IsBusyTests
         var isReady = loginPage.WaitPageReady();
 
         Assert.True(isReady, "Page should be loaded and not busy");
-        loginPage.BusyIndicator.AssertVisible(false, "Page should not show busy indicator when ready");
+        // WPF leaves a collapsed element out of the automation tree: a hidden indicator does not
+        // exist, and an absent element has no visibility to assert (the same on every stack).
+        loginPage.BusyIndicator.AssertExists(false, "Page should not show busy indicator when ready");
     }
 }

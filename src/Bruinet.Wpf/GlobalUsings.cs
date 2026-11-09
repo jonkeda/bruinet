@@ -1,4 +1,5 @@
 global using System.Diagnostics;
+global using System.Globalization;
 global using Bruinet.Core;
 global using Bruinet.Core.Configuration;
 global using Bruinet.Core.Exceptions;
