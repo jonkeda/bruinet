@@ -24,8 +24,9 @@ build without.
 **Ruled out:**
 - marking the interfaces `[Obsolete]` in Core: the old stacks would build with warnings
   everywhere, and Core would still describe two models;
-- moving WPF, WinForms and Stride onto the call model first: a topic of its own, which nobody
-  has asked for, and this split does not wait on it.
+- moving WPF, WinForms and Stride onto the call model first: a topic of its own, and this split
+  did not wait on it. The owner asked for it on 2026-11-09 (`.my/upgrade/plan.md`); when the last
+  of the three moves, this project is deleted and this record superseded.
 
 **Broken when:** a call-model project (Html, Blazor, MAUI and its heads, native Android, Appium,
 UAT, Bdd) references `Bruinet.Core.Legacy` (`SolutionTests.NoCallModelStack_ReferencesTheFirstModel`);
