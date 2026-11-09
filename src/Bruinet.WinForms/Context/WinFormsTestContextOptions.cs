@@ -1,44 +1,40 @@
+using Bruinet.Core.Calls;
+
 namespace Bruinet.WinForms.Context;
 
 /// <summary>
-/// Configuration options for creating a WinForms test context.
+/// How a WinForms test context reaches its app: a driver it is given, a window or process to attach to,
+/// or an executable to launch (in that order).
 /// </summary>
 public class WinFormsTestContextOptions
 {
-    /// <summary>
-    /// Pre-created driver instance (for testing or custom drivers).
-    /// If set, factory properties are ignored.
-    /// </summary>
+    /// <summary>A driver made already (a test's own, or another head's). The context does not dispose it.</summary>
     public IWinFormsDriver? Driver { get; init; }
 
-    /// <summary>
-    /// Path to the WinForms application executable.
-    /// Used to launch the application if Driver is not provided.
-    /// </summary>
+    /// <summary>The app's executable, launched when no driver, window or process is given.</summary>
     public string? ExecutablePath { get; init; }
 
-    /// <summary>
-    /// Command line arguments for the application.
-    /// </summary>
+    /// <summary>The app's command line.</summary>
     public string? Arguments { get; init; }
 
-    /// <summary>
-    /// Process ID to attach to an existing running application.
-    /// </summary>
+    /// <summary>Variables for the launched app's process only (its launch settings, <c>BRUINET_AUT_PLACE</c>).</summary>
+    public IReadOnlyDictionary<string, string>? Environment { get; init; }
+
+    /// <summary>A running process to attach to.</summary>
     public int? ProcessId { get; init; }
 
-    /// <summary>
-    /// Window handle to attach to an existing window.
-    /// </summary>
+    /// <summary>A window to attach to.</summary>
     public IntPtr? WindowHandle { get; init; }
 
-    /// <summary>
-    /// Timeout configuration. If null, defaults are used.
-    /// </summary>
+    /// <summary>The timeouts every call uses; the defaults when null.</summary>
     public TimeoutSettings? Timeouts { get; init; }
 
-    /// <summary>
-    /// Test logger. If null, a no-op logger is used.
-    /// </summary>
+    /// <summary>The call log; <c>BRUINET_CALL_LOG</c>'s, or none, when null.</summary>
     public ITestLogger? Logger { get; init; }
+
+    /// <summary>The context's name in call logs, when a scenario runs several apps.</summary>
+    public string? Name { get; init; }
+
+    /// <summary>When a call that passed is logged as a near-miss.</summary>
+    public NearMissSettings NearMiss { get; init; } = NearMissSettings.Default;
 }

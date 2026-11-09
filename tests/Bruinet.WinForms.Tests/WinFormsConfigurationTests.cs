@@ -73,33 +73,49 @@ public class WinFormsTestContextOptionsTests
 }
 
 /// <summary>
-/// Unit tests verifying WinForms type structure compiles correctly.
+/// The WinForms stack's shape on the call model (AD-010): its scope, page and context derive from
+/// Core's, and its element and driver are its own.
 /// </summary>
 public class WinFormsTypeStructureTests
 {
     [Fact]
-    public void IWinFormsTestContext_InheritsTestContext()
+    public void IWinFormsTestContext_IsACoreTestContext_AndAScope()
     {
-        Assert.True(typeof(ITestContext<IWinFormsElement>).IsAssignableFrom(typeof(IWinFormsTestContext)));
+        Assert.True(typeof(ITestContext).IsAssignableFrom(typeof(IWinFormsTestContext)));
+        Assert.True(typeof(IScope).IsAssignableFrom(typeof(IWinFormsTestContext)));
     }
 
     [Fact]
-    public void IWinFormsTestContext_InheritsElementScope()
+    public void IWinFormsPage_IsACoreTestPage()
     {
-        Assert.True(typeof(IWinFormsElementScope).IsAssignableFrom(typeof(IWinFormsTestContext)));
+        Assert.True(typeof(ITestPage).IsAssignableFrom(typeof(IWinFormsPage)));
     }
 
     [Fact]
-    public void IWinFormsDriver_InheritsDriver()
+    public void IWinFormsDriver_IsADiagnosticDriver()
     {
-        Assert.True(typeof(IDriver<IWinFormsElement>).IsAssignableFrom(typeof(IWinFormsDriver)));
+        Assert.True(typeof(IDiagnosticDriver).IsAssignableFrom(typeof(IWinFormsDriver)));
     }
 
-    [Fact]
-    public void Locator_ByAutomationId_CreatesCorrectLocator()
+    [Theory]
+    [InlineData(typeof(TextBox<>), typeof(IEditableTextControlObject<>))]
+    [InlineData(typeof(RichTextBox<>), typeof(IEditableTextControlObject<>))]
+    [InlineData(typeof(PasswordBox<>), typeof(IEditableTextControlObject<>))]
+    [InlineData(typeof(Button<>), typeof(IClickableControlObject<>))]
+    [InlineData(typeof(CheckBox<>), typeof(IToggleControlObject<>))]
+    [InlineData(typeof(RadioButton<>), typeof(IToggleControlObject<>))]
+    [InlineData(typeof(ComboBox<>), typeof(ISelectorControlObject<>))]
+    [InlineData(typeof(ListBox<>), typeof(ISelectorControlObject<>))]
+    [InlineData(typeof(TrackBar<>), typeof(IRangeControlObject<>))]
+    [InlineData(typeof(NumericUpDown<>), typeof(IRangeControlObject<>))]
+    [InlineData(typeof(ProgressBar<>), typeof(IRangeControlObject<>))]
+    [InlineData(typeof(DateTimePicker<>), typeof(IDateControlObject<>))]
+    [InlineData(typeof(Label<>), typeof(ITextControlObject<>))]
+    [InlineData(typeof(TabPage<>), typeof(ITabControlObject<>))]
+    [InlineData(typeof(TreeNode<>), typeof(IExpandableControlObject<>))]
+    public void A_Control_ImplementsTheCoreInterface_ItsMembersPromise(Type control, Type coreInterface)
     {
-        var locator = Locator.ByAutomationId("MyControl");
-        Assert.Equal(LocatorStrategy.AutomationId, locator.Strategy);
-        Assert.Equal("MyControl", locator.Value);
+        var closed = control.MakeGenericType(typeof(TestPage));
+        Assert.Contains(closed.GetInterfaces(), i => i.IsGenericType && i.GetGenericTypeDefinition() == coreInterface);
     }
 }

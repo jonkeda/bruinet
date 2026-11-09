@@ -44,6 +44,7 @@ Bruinet.FlaUI.UiaElementBase.Live<T>(System.Func<T>! touch) -> T
 Bruinet.FlaUI.UiaElementBase.Location.get -> System.Drawing.Point
 Bruinet.FlaUI.UiaElementBase.LongPress(int durationMs = 1000) -> void
 Bruinet.FlaUI.UiaElementBase.Name.get -> string?
+Bruinet.FlaUI.UiaElementBase.PressKey(string! key) -> void
 Bruinet.FlaUI.UiaElementBase.RangeIsReadOnly.get -> bool?
 Bruinet.FlaUI.UiaElementBase.RangeMaximum.get -> double?
 Bruinet.FlaUI.UiaElementBase.RangeMinimum.get -> double?

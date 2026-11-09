@@ -234,6 +234,37 @@ public abstract class UiaElementBase
         Keyboard.Type(text);
     });
 
+    /// <summary>
+    /// Gives the element the focus and presses one key (<c>Home</c>, <c>Right</c>, <c>Tab</c>, a
+    /// digit), through <see cref="PhysicalInput"/>: for a control whose value has no pattern to
+    /// write it (a WinForms date picker).
+    /// </summary>
+    /// <param name="key">A <c>VirtualKeyShort</c> name (<c>HOME</c>, <c>RIGHT</c>) or a single character to type.</param>
+    /// <exception cref="ArgumentException"><paramref name="key"/> names no key.</exception>
+    public void PressKey(string key) => Live(() =>
+    {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        PhysicalInput.Used($"{GetType().Name}.PressKey", "a pattern that writes the control's value");
+        if (!Element.Properties.HasKeyboardFocus.ValueOrDefault)
+            Element.Focus();
+
+        try
+        {
+            if (key.Length == 1)
+                Keyboard.Type(key[0]);
+            else if (Enum.TryParse<global::FlaUI.Core.WindowsAPI.VirtualKeyShort>(key, ignoreCase: true, out var virtualKey))
+                Keyboard.Type(virtualKey);
+            else
+                throw new ArgumentException($"'{key}' names no key.", nameof(key));
+        }
+        catch (System.ComponentModel.Win32Exception refused)
+        {
+            throw new InvalidOperationException(
+                $"Windows refused the key '{key}' for {this} ({refused.Message}): synthetic input is refused while the "
+                + "desktop is locked, or when the app runs elevated and the test does not.", refused);
+        }
+    });
+
     /// <summary>Empties the element through the Value pattern, or else selects all and deletes with the keyboard.</summary>
     public void Clear() => Live(() =>
     {

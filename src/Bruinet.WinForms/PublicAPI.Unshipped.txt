@@ -3,6 +3,70 @@ Bruinet.WinForms.BruinetWinFormsConfiguration
 Bruinet.WinForms.BruinetWinFormsConfiguration.BruinetWinFormsConfiguration() -> void
 Bruinet.WinForms.BruinetWinFormsConfiguration.WinForms.get -> Bruinet.WinForms.WinFormsOptions!
 Bruinet.WinForms.BruinetWinFormsConfiguration.WinForms.set -> void
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TParent>! parent, string! automationId, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.GetItemCount() -> int
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int index, int? timeoutMs = null) -> TItem!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.WinForms.Interfaces.IWinFormsElement! row, int position) -> Bruinet.WinForms.Collections.ItemKey
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.WinForms.Collections.ItemKey key) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Collections.IWinFormsCollection
+Bruinet.WinForms.Collections.IWinFormsCollection.TryGetItemRoot(Bruinet.WinForms.Collections.ItemKey key) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Collections.ItemKey
+Bruinet.WinForms.Collections.ItemKey.ItemKey() -> void
+Bruinet.WinForms.Collections.ItemKey.ItemKey(Bruinet.WinForms.Collections.ItemKeyKind Kind, string! Value) -> void
+Bruinet.WinForms.Collections.ItemKey.Kind.get -> Bruinet.WinForms.Collections.ItemKeyKind
+Bruinet.WinForms.Collections.ItemKey.Kind.init -> void
+Bruinet.WinForms.Collections.ItemKey.Value.get -> string!
+Bruinet.WinForms.Collections.ItemKey.Value.init -> void
+Bruinet.WinForms.Collections.ItemKeyKind
+Bruinet.WinForms.Collections.ItemKeyKind.Logical = 0 -> Bruinet.WinForms.Collections.ItemKeyKind
+Bruinet.WinForms.Collections.ItemKeyKind.Position = 1 -> Bruinet.WinForms.Collections.ItemKeyKind
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.WinForms.Collections.IWinFormsCollection! collection, Bruinet.WinForms.Collections.ItemKey key, int position) -> void
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.WinForms.Collections.ItemKey
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Position.get -> int
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TParent>! parentScope, string! automationId) -> void
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsExists() -> bool
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Context.WinFormsTestContext
 Bruinet.WinForms.Context.WinFormsTestContext.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 Bruinet.WinForms.Context.WinFormsTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -10,11 +74,13 @@ Bruinet.WinForms.Context.WinFormsTestContext.Dispose() -> void
 Bruinet.WinForms.Context.WinFormsTestContext.Driver.get -> Bruinet.WinForms.Interfaces.IWinFormsDriver!
 Bruinet.WinForms.Context.WinFormsTestContext.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.Context.WinFormsTestContext.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.Context.WinFormsTestContext.IsReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Context.WinFormsTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.WinForms.Context.WinFormsTestContext.Name.get -> string?
 Bruinet.WinForms.Context.WinFormsTestContext.NavigateBack() -> void
 Bruinet.WinForms.Context.WinFormsTestContext.NavigateTo(string! destination) -> void
-Bruinet.WinForms.Context.WinFormsTestContext.Page.get -> Bruinet.Core.Interfaces.IPageObject?
+Bruinet.WinForms.Context.WinFormsTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.WinForms.Context.WinFormsTestContext.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
+Bruinet.WinForms.Context.WinFormsTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.WinForms.Context.WinFormsTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.WinForms.Context.WinFormsTestContext.Refresh() -> void
 Bruinet.WinForms.Context.WinFormsTestContext.ResetAppState() -> void
@@ -22,6 +88,7 @@ Bruinet.WinForms.Context.WinFormsTestContext.SaveScreenshot(string! path) -> voi
 Bruinet.WinForms.Context.WinFormsTestContext.TakeScreenshot() -> byte[]!
 Bruinet.WinForms.Context.WinFormsTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.WinForms.Context.WinFormsTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Context.WinFormsTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.WinForms.Context.WinFormsTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Context.WinFormsTestContext.WinFormsTestContext(Bruinet.WinForms.Context.WinFormsTestContextOptions! options) -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions
@@ -29,10 +96,16 @@ Bruinet.WinForms.Context.WinFormsTestContextOptions.Arguments.get -> string?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Arguments.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Driver.get -> Bruinet.WinForms.Interfaces.IWinFormsDriver?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Driver.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.get -> string?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Logger.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Name.get -> string?
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Name.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.WinForms.Context.WinFormsTestContextOptions.NearMiss.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.get -> int?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
@@ -40,288 +113,376 @@ Bruinet.WinForms.Context.WinFormsTestContextOptions.Timeouts.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WinFormsTestContextOptions() -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.get -> nint?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.init -> void
-Bruinet.WinForms.Controls.Button<TScope>
-Bruinet.WinForms.Controls.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.CheckBox<TScope>
-Bruinet.WinForms.Controls.CheckBox<TScope>.CheckBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.CheckBox<TScope>.CheckBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.Buttons.Button<TScope>
+Bruinet.WinForms.Controls.Buttons.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Buttons.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
 Bruinet.WinForms.Controls.ClickableControlBase<TScope>
-Bruinet.WinForms.Controls.ClickableControlBase<TScope>.AssertClickable(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.ComboBox<TScope>
-Bruinet.WinForms.Controls.ComboBox<TScope>.ComboBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ComboBox<TScope>.ComboBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ControlBase<TScope>
-Bruinet.WinForms.Controls.ControlBase<TScope>.AssertEnabled(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.AssertExists(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.AssertVisible(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.AutomationId.get -> string!
-Bruinet.WinForms.Controls.ControlBase<TScope>.ContainingScope.get -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
-Bruinet.WinForms.Controls.ControlBase<TScope>.ControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ControlBase<TScope>.ControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ControlBase<TScope>.DefaultTimeoutMs.get -> int
-Bruinet.WinForms.Controls.ControlBase<TScope>.FindElement(int? timeoutMs = null) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
-Bruinet.WinForms.Controls.ControlBase<TScope>.GetAttribute(string! name, int? timeoutMs) -> string?
-Bruinet.WinForms.Controls.ControlBase<TScope>.PageName.get -> string!
-Bruinet.WinForms.Controls.ControlBase<TScope>.Poll(System.Func<bool>! condition, int timeoutMs) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.PollWithElement(System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, bool>! condition, int timeoutMs) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.PollingIntervalMs.get -> int
-Bruinet.WinForms.Controls.ControlBase<TScope>.Run(string! action, System.Action<Bruinet.WinForms.Interfaces.IWinFormsElement!>! operation, string? value = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.RunAssert(string! assertType, string? expected, System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, bool>! check, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.ControlBase<TScope>.RunWithElement(System.Action<Bruinet.WinForms.Interfaces.IWinFormsElement!>! action, int? timeoutMs = null) -> void
-Bruinet.WinForms.Controls.ControlBase<TScope>.RunWithElement<T>(System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, T>! action, int? timeoutMs = null) -> T
-Bruinet.WinForms.Controls.ControlBase<TScope>.TryFindElement() -> Bruinet.WinForms.Interfaces.IWinFormsElement?
-Bruinet.WinForms.Controls.ControlBase<TScope>.WaitEnabled(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.WaitExists(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.WaitVisible(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.ControlBase<TScope>.WinFormsScope.get -> Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>!
-Bruinet.WinForms.Controls.DataGridView<TScope>
-Bruinet.WinForms.Controls.DataGridView<TScope>.AssertRowCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DataGridView<TScope>.ClickCell(int row, int column, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DataGridView<TScope>.DataGridView(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.DataGridView<TScope>.DataGridView(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.DataGridView<TScope>.GetCellValue(int row, int column, int? timeoutMs = null) -> string?
-Bruinet.WinForms.Controls.DataGridView<TScope>.GetColumnCount(int? timeoutMs = null) -> int?
-Bruinet.WinForms.Controls.DataGridView<TScope>.GetColumnHeaders(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
-Bruinet.WinForms.Controls.DataGridView<TScope>.GetRowCount(int? timeoutMs = null) -> int?
-Bruinet.WinForms.Controls.DataGridView<TScope>.SelectRow(int row, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DataGridView<TScope>.WaitRowCount(int? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.DateTimePicker<TScope>
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.CloseCalendar(int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.DateTimePicker(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.DateTimePicker(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.OpenCalendar(int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.SetDate(System.DateTime date, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.DateTimePicker<TScope>.SetValue(string? value, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.EditableTextControlBase<TScope>
-Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.EditableTextControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.EditableTextControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.GroupBox<TScope>
-Bruinet.WinForms.Controls.GroupBox<TScope>.FindChild(string! automationId, int? timeoutMs = null) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
-Bruinet.WinForms.Controls.GroupBox<TScope>.GetChildren(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>?
-Bruinet.WinForms.Controls.GroupBox<TScope>.GroupBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.GroupBox<TScope>.GroupBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.Label<TScope>
-Bruinet.WinForms.Controls.Label<TScope>.Label(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.Label<TScope>.Label(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ListBox<TScope>
-Bruinet.WinForms.Controls.ListBox<TScope>.ListBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ListBox<TScope>.ListBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.NumericUpDown<TScope>
-Bruinet.WinForms.Controls.NumericUpDown<TScope>.NumericUpDown(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.NumericUpDown<TScope>.NumericUpDown(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.PasswordBox<TScope>
-Bruinet.WinForms.Controls.PasswordBox<TScope>.PasswordBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.PasswordBox<TScope>.PasswordBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ProgressBar<TScope>
-Bruinet.WinForms.Controls.ProgressBar<TScope>.ProgressBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ProgressBar<TScope>.ProgressBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.RadioButton<TScope>
-Bruinet.WinForms.Controls.RadioButton<TScope>.RadioButton(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.RadioButton<TScope>.RadioButton(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Container.TreeNode<TScope>
+Bruinet.WinForms.Controls.Container.TreeNode<TScope>.TreeNode(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Container.TreeNode<TScope>.TreeNode(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.AssertDate(System.DateTime? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.DateTimePicker(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.DateTimePicker(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.GetDate(int? timeoutMs = null) -> System.DateTime?
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.SetDate(System.DateTime? date, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.WaitDate(System.DateTime? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Display.Label<TScope>
+Bruinet.WinForms.Controls.Display.Label<TScope>.Label(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Display.Label<TScope>.Label(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.AssertExpanded(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.Collapse(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.Expand(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.ExpandableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.ExpandableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.IsExpanded() -> bool?
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.ToggleExpanded(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.WaitExpanded(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.Blur(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.IsFocused() -> bool?
+Bruinet.WinForms.Controls.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Range.NumericUpDown<TScope>
+Bruinet.WinForms.Controls.Range.NumericUpDown<TScope>.NumericUpDown(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.WinForms.Controls.Range.NumericUpDown<TScope>.NumericUpDown(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.WinForms.Controls.Range.ProgressBar<TScope>
+Bruinet.WinForms.Controls.Range.ProgressBar<TScope>.ProgressBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Range.ProgressBar<TScope>.ProgressBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Range.TrackBar<TScope>
+Bruinet.WinForms.Controls.Range.TrackBar<TScope>.TrackBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = 10, double step = 1) -> void
+Bruinet.WinForms.Controls.Range.TrackBar<TScope>.TrackBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId, double minimum = 0, double? maximum = 10, double step = 1) -> void
 Bruinet.WinForms.Controls.RangeControlBase<TScope>
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertMaximum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertMinimum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertStep(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValue(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValueGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.RangeControlBase<TScope>.AssertValueWithin(double? expected, double tolerance, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.Decrement(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMaximum(int? timeoutMs = null) -> double?
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMinimum(int? timeoutMs = null) -> double?
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetStep(int? timeoutMs = null) -> double?
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetValue(int? timeoutMs = null) -> double?
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.Increment(int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.SetValue(double? value, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitMaximum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitMinimum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitStep(double? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValue(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValueAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValueAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValueGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValueLessThan(double? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.RangeControlBase<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.RichTextBox<TScope>
-Bruinet.WinForms.Controls.RichTextBox<TScope>.RichTextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.RichTextBox<TScope>.RichTextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.AssertScrollPosition(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.GetScrollPosition(int? timeoutMs = null) -> double?
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollPage(bool down, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollToEnd(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollToStart(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.WaitScrollPosition(double? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Selection.ComboBox<TScope>
+Bruinet.WinForms.Controls.Selection.ComboBox<TScope>.ComboBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Selection.ComboBox<TScope>.ComboBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Selection.ListBox<TScope>
+Bruinet.WinForms.Controls.Selection.ListBox<TScope>.ListBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Selection.ListBox<TScope>.ListBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.IsSelected() -> bool?
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.TabPage(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.TabPage(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.Title.get -> string!
+Bruinet.WinForms.Controls.Selection.TabPage<TScope>.WaitSelected(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertItemCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertItemTextsCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertItemTextsHasItem(string! item, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.AssertSelectedValue(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemCount(int? timeoutMs = null) -> int?
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedIndex(int? timeoutMs = null) -> int?
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedText(int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedValue(int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByIndex(int? index, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByValue(string? value, int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitItemCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitItemTextsCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitItemTextsHasItem(string! item, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitSelectedIndex(int? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitSelectedText(string? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.TabControl<TScope>
-Bruinet.WinForms.Controls.TabControl<TScope>.AssertSelectedTab(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.TabControl<TScope>.GetSelectedTabIndex(int? timeoutMs = null) -> int?
-Bruinet.WinForms.Controls.TabControl<TScope>.GetSelectedTabText(int? timeoutMs = null) -> string?
-Bruinet.WinForms.Controls.TabControl<TScope>.GetTabCount(int? timeoutMs = null) -> int?
-Bruinet.WinForms.Controls.TabControl<TScope>.GetTabTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
-Bruinet.WinForms.Controls.TabControl<TScope>.SelectTabByIndex(int index, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.TabControl<TScope>.SelectTabByText(string! text, int? timeoutMs = null) -> TScope
-Bruinet.WinForms.Controls.TabControl<TScope>.TabControl(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.TabControl<TScope>.TabControl(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.TabControl<TScope>.WaitSelectedTab(string? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.TextBox<TScope>
-Bruinet.WinForms.Controls.TextBox<TScope>.TextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.TextBox<TScope>.TextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.SelectorControlBase<TScope>.WaitSelectedValue(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Text.PasswordBox<TScope>
+Bruinet.WinForms.Controls.Text.PasswordBox<TScope>.PasswordBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Text.PasswordBox<TScope>.PasswordBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Text.RichTextBox<TScope>
+Bruinet.WinForms.Controls.Text.RichTextBox<TScope>.RichTextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Text.RichTextBox<TScope>.RichTextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Text.TextBox<TScope>
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.Append(string? text, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.Clear(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.IsReadOnly() -> bool?
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.TextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.TextBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Text.TextBox<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.Toggle.CheckBox<TScope>
+Bruinet.WinForms.Controls.Toggle.CheckBox<TScope>.CheckBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Toggle.CheckBox<TScope>.CheckBox(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.Toggle.RadioButton<TScope>
+Bruinet.WinForms.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
 Bruinet.WinForms.Controls.ToggleControlBase<TScope>
-Bruinet.WinForms.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
 Bruinet.WinForms.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.WinForms.Controls.ToggleControlBase<TScope>.WaitChecked(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.WinForms.Controls.TrackBar<TScope>
-Bruinet.WinForms.Controls.TrackBar<TScope>.TrackBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.WinForms.Controls.TrackBar<TScope>.TrackBar(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Uncheck(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ToggleControlBase<TScope>.WaitChecked(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>
+Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.ValueRangeControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.ValueRangeControlBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.WinForms.Controls.ViewBase<TScope>
+Bruinet.WinForms.Controls.ViewBase<TScope>.ActAndConfirm<T>(string! action, System.Action! act, System.Func<T?>! read, System.Func<T?, bool>! done, string! expected, int? timeoutMs) -> void
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertAttribute(string? name, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertHelpText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertHelpTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
+Bruinet.WinForms.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
+Bruinet.WinForms.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.FindElement() -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.ViewBase<TScope>.GetHelpText(int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
+Bruinet.WinForms.Controls.ViewBase<TScope>.IsEnabled() -> bool?
+Bruinet.WinForms.Controls.ViewBase<TScope>.IsExists() -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.WinForms.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunAssertWithOptionalElement<T>(T? expected, System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunDo(System.Action! operation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunDoWithElement(System.Action<Bruinet.WinForms.Interfaces.IWinFormsElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunGetWithElement<T>(System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunGetWithOptionalElement<T>(System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement?, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunSetWithElement<T>(T? value, System.Action<Bruinet.WinForms.Interfaces.IWinFormsElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunWait(System.Func<bool>! operation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunWaitForValue(System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunWaitWithElement<T>(T? expected, System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement!, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.WinForms.Interfaces.IWinFormsElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Controls.ViewBase<TScope>.TryGetText() -> string?
+Bruinet.WinForms.Controls.ViewBase<TScope>.ViewBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.WinForms.Controls.ViewBase<TScope>.ViewBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitAttribute(string! name, System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitAttribute(string? name, string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitHelpText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitHelpTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitText(System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.App.get -> Bruinet.FlaUI.DesktopApp!
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Close() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.CloseWindow() -> void
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.CurrentWindowHandle.get -> string!
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Dispose() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FindElement(Bruinet.Core.Locators.Locator! locator, int timeoutMs = 5000) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FindElements(Bruinet.Core.Locators.Locator! locator, int timeoutMs = 0) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FlaUIWinFormsDriver(System.Diagnostics.Process! process) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FlaUIWinFormsDriver(nint windowHandle) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FlaUIWinFormsDriver(string! executablePath, string? arguments = null) -> void
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FlaUIWinFormsDriver(Bruinet.FlaUI.DesktopApp! app) -> void
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetAutomationTree() -> string!
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetPageSource() -> string!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetScreenshot() -> byte[]!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetWindowPosition() -> System.Drawing.Point
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetWindowSize() -> System.Drawing.Size
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.MaximizeWindow() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.MinimizeWindow() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.NavigateBack() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.NavigateTo(string! destination) -> void
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.HasExited.get -> bool
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Quit() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Refresh() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.ResetAppState() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.RestoreWindow() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.SaveScreenshot(string! filePath) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.SetWindowPosition(int x, int y) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.SetWindowSize(int width, int height) -> void
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.TakeScreenshot() -> byte[]!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.TryFindElement(Bruinet.Core.Locators.Locator! locator, out Bruinet.WinForms.Interfaces.IWinFormsElement? element, int timeoutMs = 0) -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.WindowTitle.get -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.WindowTitle.set -> void
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.TopLevelWindows() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Window.get -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.FlaUI.FlaUIWinFormsElement
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Clear() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Click() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Collapse() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.DoubleClick() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Enabled.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Expand() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FindElement(Bruinet.Core.Locators.Locator! locator, int timeoutMs = 5000) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FindElements(Bruinet.Core.Locators.Locator! locator, int timeoutMs = 0) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FlaUIWinFormsElement(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver! driver) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetAttribute(string! attributeName) -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetCssValue(string! propertyName) -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetDomAttribute(string! attributeName) -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetDomProperty(string! propertyName) -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetExpandedItems() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetRangeMaximum() -> double?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetRangeMinimum() -> double?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetRangeSmallChange() -> double?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetRangeValue() -> double?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.GetSelectedItemText() -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Hover() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.IsExpanded.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Location.get -> System.Drawing.Point
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.LongPress(int durationMs = 1000) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Rect.get -> System.Drawing.Rectangle
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.RightClick() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.ScrollIntoView(int timeoutMs = 5000) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SelectItemByIndex(int index) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SelectItemByText(string! text) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Selected.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SetRangeValue(double value) -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Size.get -> System.Drawing.Size
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SupportsExpandCollapse.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.SupportsRangeValue.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.TagName.get -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Text.get -> string?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.TryFindElement(Bruinet.Core.Locators.Locator! locator, out Bruinet.WinForms.Interfaces.IWinFormsElement? element, int timeoutMs = 0) -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.Visible.get -> bool
-Bruinet.WinForms.FlaUI.LocatorExtensions
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.Collapse() -> void
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.Expand() -> void
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.GetExpandedItems() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>?
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.GetSelectedItemText() -> string?
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.IsExpanded.get -> bool
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.SelectItemByIndex(int index) -> void
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.SelectItemByText(string! text) -> void
-Bruinet.WinForms.Interfaces.IExpandCollapsePatternElement.SupportsExpandCollapse.get -> bool
+Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FlaUIWinFormsElement(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.FlaUI.DesktopApp! app) -> void
+Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Interfaces.IWinFormsContainer<TParent, TSelf>
+Bruinet.WinForms.Interfaces.IWinFormsContainer<TParent, TSelf>.Parent.get -> TParent
 Bruinet.WinForms.Interfaces.IWinFormsDriver
-Bruinet.WinForms.Interfaces.IWinFormsDriver.CloseWindow() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.GetWindowPosition() -> System.Drawing.Point
-Bruinet.WinForms.Interfaces.IWinFormsDriver.GetWindowSize() -> System.Drawing.Size
-Bruinet.WinForms.Interfaces.IWinFormsDriver.MaximizeWindow() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.MinimizeWindow() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.NavigateBack() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.NavigateTo(string! destination) -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.Refresh() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.ResetAppState() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.RestoreWindow() -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.SaveScreenshot(string! filePath) -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.SetWindowPosition(int x, int y) -> void
-Bruinet.WinForms.Interfaces.IWinFormsDriver.SetWindowSize(int width, int height) -> void
+Bruinet.WinForms.Interfaces.IWinFormsDriver.Close() -> void
+Bruinet.WinForms.Interfaces.IWinFormsDriver.CurrentWindowHandle.get -> string!
+Bruinet.WinForms.Interfaces.IWinFormsDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Interfaces.IWinFormsDriver.HasExited.get -> bool
+Bruinet.WinForms.Interfaces.IWinFormsDriver.Quit() -> void
 Bruinet.WinForms.Interfaces.IWinFormsDriver.TakeScreenshot() -> byte[]!
-Bruinet.WinForms.Interfaces.IWinFormsDriver.WindowTitle.get -> string?
-Bruinet.WinForms.Interfaces.IWinFormsDriver.WindowTitle.set -> void
+Bruinet.WinForms.Interfaces.IWinFormsDriver.TopLevelWindows() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Interfaces.IWinFormsDriver.Window.get -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.Interfaces.IWinFormsElement
-Bruinet.WinForms.Interfaces.IWinFormsElement.GetCssValue(string! propertyName) -> string?
-Bruinet.WinForms.Interfaces.IWinFormsElement.GetDomAttribute(string! attributeName) -> string?
-Bruinet.WinForms.Interfaces.IWinFormsElement.GetDomProperty(string! propertyName) -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.AutomationId.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Checked.get -> bool?
+Bruinet.WinForms.Interfaces.IWinFormsElement.ClassName.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Clear() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Click() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Collapse() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.DoubleClick() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Enabled.get -> bool
+Bruinet.WinForms.Interfaces.IWinFormsElement.Expand() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Interfaces.IWinFormsElement.Focus() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Focused.get -> bool
+Bruinet.WinForms.Interfaces.IWinFormsElement.GetAttribute(string! name) -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.HelpText.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Hover() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.InstanceKey.get -> string!
+Bruinet.WinForms.Interfaces.IWinFormsElement.IsExpanded.get -> bool?
+Bruinet.WinForms.Interfaces.IWinFormsElement.IsReadOnly.get -> bool?
+Bruinet.WinForms.Interfaces.IWinFormsElement.LongPress(int durationMs = 1000) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Name.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.PressKey(string! key) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.RangeMaximum.get -> double?
+Bruinet.WinForms.Interfaces.IWinFormsElement.RangeMinimum.get -> double?
+Bruinet.WinForms.Interfaces.IWinFormsElement.RangeSmallChange.get -> double?
+Bruinet.WinForms.Interfaces.IWinFormsElement.RangeValue.get -> double?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.WinForms.Interfaces.IWinFormsElement.RightClick() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.ScrollPage(bool down) -> bool
+Bruinet.WinForms.Interfaces.IWinFormsElement.Select() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.Selected.get -> bool
+Bruinet.WinForms.Interfaces.IWinFormsElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.SetValue) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.SetRangeValue(double value) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.SetValue(string! value) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.SetVerticalScrollPercent(double percent) -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.TagName.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Text.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Toggle() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Value.get -> string?
+Bruinet.WinForms.Interfaces.IWinFormsElement.VerticalScrollPercent.get -> double?
+Bruinet.WinForms.Interfaces.IWinFormsElement.Visible.get -> bool
 Bruinet.WinForms.Interfaces.IWinFormsElementScope
 Bruinet.WinForms.Interfaces.IWinFormsElementScope.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
+Bruinet.WinForms.Interfaces.IWinFormsElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Interfaces.IWinFormsElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Interfaces.IWinFormsElementScope.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
+Bruinet.WinForms.Interfaces.IWinFormsElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Interfaces.IWinFormsPage
 Bruinet.WinForms.Interfaces.IWinFormsPage<TSelf>
 Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>
 Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>.Self.get -> TScope
 Bruinet.WinForms.Interfaces.IWinFormsTestContext
 Bruinet.WinForms.Interfaces.IWinFormsTestContext.Driver.get -> Bruinet.WinForms.Interfaces.IWinFormsDriver!
+Bruinet.WinForms.Interfaces.WinFormsElementExtensions
 Bruinet.WinForms.ObjectBase
 Bruinet.WinForms.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.WinForms.ObjectBase.ObjectBase() -> void
-Bruinet.WinForms.ObjectBase.Poll(System.Func<bool>! condition, int timeoutMs) -> bool
 Bruinet.WinForms.ObjectBase.PollingIntervalMs.get -> int
+Bruinet.WinForms.Pages.AppRoot
+Bruinet.WinForms.Pages.AppRoot.AppRoot(Bruinet.WinForms.Interfaces.IWinFormsTestContext! context) -> void
+Bruinet.WinForms.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.WinForms.Pages.AppRoot.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Pages.AppRoot.IsReady() -> bool
+Bruinet.WinForms.Pages.AppRoot.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
+Bruinet.WinForms.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.WinForms.Pages.AppRoot.Self.get -> Bruinet.WinForms.Pages.AppRoot!
+Bruinet.WinForms.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.WinForms.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Button<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(string! locator) -> Bruinet.WinForms.Controls.Button<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.CheckBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.CheckBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.CheckBox(string! locator) -> Bruinet.WinForms.Controls.CheckBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ComboBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.ComboBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ComboBox(string! locator) -> Bruinet.WinForms.Controls.ComboBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DataGridView(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.DataGridView<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DataGridView(string! locator) -> Bruinet.WinForms.Controls.DataGridView<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DateTimePicker(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.DateTimePicker<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DateTimePicker(string! locator) -> Bruinet.WinForms.Controls.DateTimePicker<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Buttons.Button<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(string! automationId) -> Bruinet.WinForms.Controls.Buttons.Button<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.CheckBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Toggle.CheckBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.CheckBox(string! automationId) -> Bruinet.WinForms.Controls.Toggle.CheckBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ComboBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Selection.ComboBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ComboBox(string! automationId) -> Bruinet.WinForms.Controls.Selection.ComboBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DateTimePicker(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Date.DateTimePicker<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DateTimePicker(string! automationId) -> Bruinet.WinForms.Controls.Date.DateTimePicker<TSelf!>!
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.GroupBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.GroupBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.GroupBox(string! locator) -> Bruinet.WinForms.Controls.GroupBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsReady(int? timeoutMs = null) -> bool
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Label(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Label<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Label(string! locator) -> Bruinet.WinForms.Controls.Label<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ListBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.ListBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ListBox(string! locator) -> Bruinet.WinForms.Controls.ListBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.NumericUpDown(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.NumericUpDown<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.NumericUpDown(string! locator) -> Bruinet.WinForms.Controls.NumericUpDown<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.Core.Interfaces.IPageObject?
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsReady() -> bool
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Label(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Display.Label<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Label(string! automationId) -> Bruinet.WinForms.Controls.Display.Label<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ListBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Selection.ListBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ListBox(string! automationId) -> Bruinet.WinForms.Controls.Selection.ListBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.NumericUpDown(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Range.NumericUpDown<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.NumericUpDown(string! automationId) -> Bruinet.WinForms.Controls.Range.NumericUpDown<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.WinForms.Interfaces.IWinFormsTestContext! context) -> void
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.PasswordBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.PasswordBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.PasswordBox(string! locator) -> Bruinet.WinForms.Controls.PasswordBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProgressBar(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.ProgressBar<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProgressBar(string! locator) -> Bruinet.WinForms.Controls.ProgressBar<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RadioButton(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.RadioButton<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RadioButton(string! locator) -> Bruinet.WinForms.Controls.RadioButton<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RichTextBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.RichTextBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RichTextBox(string! locator) -> Bruinet.WinForms.Controls.RichTextBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.PasswordBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Text.PasswordBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.PasswordBox(string! automationId) -> Bruinet.WinForms.Controls.Text.PasswordBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProgressBar(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Range.ProgressBar<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProgressBar(string! automationId) -> Bruinet.WinForms.Controls.Range.ProgressBar<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RadioButton(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Toggle.RadioButton<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RadioButton(string! automationId) -> Bruinet.WinForms.Controls.Toggle.RadioButton<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RichTextBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Text.RichTextBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.RichTextBox(string! automationId) -> Bruinet.WinForms.Controls.Text.RichTextBox<TSelf!>!
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TabControl(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.TabControl<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TabControl(string! locator) -> Bruinet.WinForms.Controls.TabControl<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null, int? timeoutMs = null) -> void
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TextBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.TextBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TextBox(string! locator) -> Bruinet.WinForms.Controls.TextBox<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TrackBar(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.TrackBar<TSelf!>!
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TrackBar(string! locator) -> Bruinet.WinForms.Controls.TrackBar<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TabPage(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Selection.TabPage<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TabPage(string! automationId) -> Bruinet.WinForms.Controls.Selection.TabPage<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TextBox(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Text.TextBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TextBox(string! automationId) -> Bruinet.WinForms.Controls.Text.TextBox<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TrackBar(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Range.TrackBar<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TrackBar(string! automationId) -> Bruinet.WinForms.Controls.Range.TrackBar<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TreeNode(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Container.TreeNode<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TreeNode(string! automationId) -> Bruinet.WinForms.Controls.Container.TreeNode<TSelf!>!
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
@@ -341,61 +502,120 @@ Bruinet.WinForms.WinFormsOptions.ProcessName.set -> void
 Bruinet.WinForms.WinFormsOptions.WinFormsOptions() -> void
 Bruinet.WinForms.WinFormsOptions.WindowHandle.get -> string?
 Bruinet.WinForms.WinFormsOptions.WindowHandle.set -> void
+abstract Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.WinForms.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
+abstract Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.WinForms.ObjectBase.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 abstract Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetDefaultAppPath() -> string!
-override Bruinet.WinForms.Controls.RadioButton<TScope>.Uncheck(int? timeoutMs = null) -> TScope
-override Bruinet.WinForms.Controls.RichTextBox<TScope>.GetText(int? timeoutMs = null) -> string?
+const Bruinet.WinForms.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
+override Bruinet.WinForms.Collections.ItemKey.ToString() -> string!
+override Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
+override Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
+override Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
+override Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ScopeName.get -> string!
+override Bruinet.WinForms.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
+override Bruinet.WinForms.Controls.Range.NumericUpDown<TScope>.Commit(Bruinet.WinForms.Interfaces.IWinFormsElement! element, double target) -> void
+override Bruinet.WinForms.Controls.Range.NumericUpDown<TScope>.ValueElement(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+override Bruinet.WinForms.Controls.Selection.ComboBox<TScope>.ExpandsToShowItems.get -> bool
+override Bruinet.WinForms.Controls.Selection.ComboBox<TScope>.SelectByTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.WinForms.Controls.Text.PasswordBox<TScope>.AppendCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.WinForms.Controls.Text.PasswordBox<TScope>.ClearCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+override Bruinet.WinForms.Controls.Text.PasswordBox<TScope>.SetTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.WinForms.Controls.Text.RichTextBox<TScope>.GetTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> string?
+override Bruinet.WinForms.Controls.Text.RichTextBox<TScope>.ShownText(string? value) -> string?
+override Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.GetMaximumCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+override Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.GetMinimumCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+override Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.GetStepCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+override Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.GetValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+override Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.SetValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, double? value, int? timeoutMs = null) -> void
+override Bruinet.WinForms.Controls.ViewBase<TScope>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
+override Bruinet.WinForms.Pages.AppRoot.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
+override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.WinForms.BruinetWinFormsConfiguration.Load(string? configPath = null) -> Bruinet.WinForms.BruinetWinFormsConfiguration!
-static Bruinet.WinForms.FlaUI.LocatorExtensions.ToCondition(this Bruinet.Core.Locators.Locator! locator, FlaUI.Core.Conditions.ConditionFactory! conditionFactory) -> FlaUI.Core.Conditions.ConditionBase!
+static Bruinet.WinForms.Collections.ItemKey.Of(Bruinet.WinForms.Interfaces.IWinFormsElement! row, int position, Bruinet.Core.Locators.Locator? keyElement = null) -> Bruinet.WinForms.Collections.ItemKey
+static Bruinet.WinForms.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Attach(System.Diagnostics.Process! process) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
+static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Attach(nint windowHandle) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
+static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
+static Bruinet.WinForms.Interfaces.WinFormsElementExtensions.FindElement(this Bruinet.WinForms.Interfaces.IWinFormsElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 static Bruinet.WinForms.Testing.WinFormsTestFixtureBase.FindSolutionDirectory() -> string!
-virtual Bruinet.WinForms.Context.WinFormsTestContext.Dispose(bool disposing) -> void
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ControlBase<TScope>.EnsureVisible(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
-virtual Bruinet.WinForms.Controls.ControlBase<TScope>.GetText(int? timeoutMs = null) -> string?
-virtual Bruinet.WinForms.Controls.ControlBase<TScope>.IsEnabled() -> bool?
-virtual Bruinet.WinForms.Controls.ControlBase<TScope>.IsExists() -> bool
-virtual Bruinet.WinForms.Controls.ControlBase<TScope>.IsVisible() -> bool?
-virtual Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.Append(string? text, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.Clear(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.EditableTextControlBase<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.Decrement(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.DecrementCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMaximum(int? timeoutMs = null) -> double?
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMinimum(int? timeoutMs = null) -> double?
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetStep(int? timeoutMs = null) -> double?
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetValue(int? timeoutMs = null) -> double?
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.Increment(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.IncrementCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
-virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.SetValue(double? value, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemCount(int? timeoutMs = null) -> int?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemTextsCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> System.Collections.Generic.IReadOnlyList<string!>?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedIndex(int? timeoutMs = null) -> int?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedText(int? timeoutMs = null) -> string?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> string?
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByIndex(int? index, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByIndexCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int index) -> void
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByText(string? text, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string! text) -> void
-virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByValue(string? value, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> bool
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.SetChecked(bool? value, int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.ToggleCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
-virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.Uncheck(int? timeoutMs = null) -> TScope
-virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.GetTitle(int? timeoutMs = null) -> string?
-virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsLoaded(int? timeoutMs = null) -> bool
+static readonly Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DataItems -> Bruinet.Core.Locators.Locator!
+static readonly Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ListItems -> Bruinet.Core.Locators.Locator!
+virtual Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
+virtual Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.AsksParent.get -> bool
+virtual Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ProbeContentReadiness(Bruinet.WinForms.Interfaces.IWinFormsElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.TryFindRootElement() -> Bruinet.WinForms.Interfaces.IWinFormsElement?
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.IsClickableCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.LongPressCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? durationMs = null, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ClickableControlBase<TScope>.RightClickCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.GetDateCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> System.DateTime?
+virtual Bruinet.WinForms.Controls.Date.DateTimePicker<TScope>.SetDateCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, System.DateTime? date, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.CollapseCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.ExpandCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.IsExpandedCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.ExpandableControlBase<TScope>.ToggleExpandedCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.FocusableControlBase<TScope>.BlurCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.FocusableControlBase<TScope>.FocusCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.FocusableControlBase<TScope>.IsFocusedCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.DecrementCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMaximumCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetMinimumCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetStepCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.GetValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.IncrementCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.RangeControlBase<TScope>.SetValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, double? value, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.GetScrollPositionCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> double?
+virtual Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollPageCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, bool down, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollToEndCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ScrollableControlBase<TScope>.ScrollToStartCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Selection.TabPage<TScope>.IsSelectedCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.ExpandsToShowItems.get -> bool
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemCountCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> int?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetItemTextsCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedIndexCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> int?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> string?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.GetSelectedValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> string?
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.ItemLocator.get -> Bruinet.Core.Locators.Locator!
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.ItemText(Bruinet.WinForms.Interfaces.IWinFormsElement! item) -> string!
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByIndexCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? index, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.SelectorControlBase<TScope>.SelectByValueCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? value, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.AppendCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.ClearCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.EnterCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.GetPlaceholderCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> string?
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.IsReadOnlyCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.SetTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.Text.TextBox<TScope>.ShownText(string? value) -> string?
+virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.SetCheckedCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, bool? checked, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ToggleControlBase<TScope>.ToggleCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.Commit(Bruinet.WinForms.Interfaces.IWinFormsElement! element, double target) -> void
+virtual Bruinet.WinForms.Controls.ValueRangeControlBase<TScope>.ValueElement(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.EnsureEnabledCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.EnsureReadyForActionCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.GetAttributeCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string? name) -> string?
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.GetHelpTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> string?
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.GetTextCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> string?
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.IsEnabledCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.IsVisibleCore(Bruinet.WinForms.Interfaces.IWinFormsElement? element) -> bool?
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
+virtual Bruinet.WinForms.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string! keys, int? timeoutMs = null) -> void
+virtual Bruinet.WinForms.ObjectBase.ScopeName.get -> string!
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Name.get -> string!
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
+virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.CreateTestContextOptions() -> Bruinet.WinForms.Context.WinFormsTestContextOptions!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!

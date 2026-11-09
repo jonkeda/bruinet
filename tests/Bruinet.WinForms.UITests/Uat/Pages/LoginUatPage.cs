@@ -22,8 +22,6 @@ public sealed class LoginUatPage : PageObjectBase<LoginUatPage>
 
     public Label<LoginUatPage> StatusLabel => Label("lblStatus");
 
-    public override bool IsLoaded(int? timeoutMs = null)
-    {
-        return UsernameField.IsExists() && LoginButton.IsExists();
-    }
+    /// <summary>The form is the lookup root, so the page is known by its username field.</summary>
+    protected override Locator ReadyLocator => Locator.ByAutomationId("txtUsername");
 }

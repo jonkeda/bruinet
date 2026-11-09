@@ -3,19 +3,14 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0-windows</TargetFrameworks>
     <RootNamespace>Bruinet.WinForms</RootNamespace>
-    <Description>WinForms UI testing automation using FlaUI. Provides controls and page objects for WinForms application testing.</Description>
+    <Description>WinForms UI testing on the call model (AD-010), through UI Automation's patterns over Bruinet.FlaUI: generated controls with WinForms' names, pages, containers and collections, one call per member.</Description>
     <PackageId>Bruinet.WinForms</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
-    <ProjectReference Include="..\Bruinet.Core.Legacy\Bruinet.Core.Legacy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FlaUI.Core" />
-    <PackageReference Include="FlaUI.UIA3" />
+    <ProjectReference Include="..\Bruinet.FlaUI\Bruinet.FlaUI.csproj" />
   </ItemGroup>
 
 </Project>

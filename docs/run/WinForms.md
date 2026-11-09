@@ -12,11 +12,11 @@ dotnet build samples\Bruinet.Samples.WinForms.App\Bruinet.Samples.WinForms.App.c
 ## Unit Tests
 
 ```powershell
-dotnet test tests\Bruinet.WinForms.Tests\Bruinet.WinForms.Tests.csproj -f net10.0-windows7.0 -v:minimal /nr:false
+dotnet test tests\Bruinet.WinForms.Tests\Bruinet.WinForms.Tests.csproj -v:minimal /nr:false
 ```
 
 ## UI Tests
 
 ```powershell
-dotnet test tests\Bruinet.WinForms.UITests\Bruinet.WinForms.UITests.csproj -f net10.0-windows7.0 -v:minimal /nr:false
+dotnet test tests\Bruinet.WinForms.UITests\Bruinet.WinForms.UITests.csproj -v:minimal /nr:false
 ```

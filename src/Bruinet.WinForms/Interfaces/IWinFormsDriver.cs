@@ -1,101 +1,32 @@
-using Bruinet.Core.Interfaces;
-
 namespace Bruinet.WinForms.Interfaces;
 
 /// <summary>
-/// WinForms-specific driver interface.
-/// Provides FlaUI-based automation for WinForms desktop applications.
+/// The WinForms app under test through UI Automation: its main window, the windows it opens, and its
+/// screen. Lookups make one attempt; the call around them is what waits (R2).
 /// </summary>
-public interface IWinFormsDriver : IDriver<IWinFormsElement>, IDiagnosticDriver
+public interface IWinFormsDriver : IDiagnosticDriver, IDisposable
 {
-    #region Window Management
+    /// <summary>The app's main window, as an element.</summary>
+    IWinFormsElement Window { get; }
 
-    /// <summary>
-    /// Gets or sets the main window title.
-    /// </summary>
-    string? WindowTitle { get; set; }
+    /// <summary>The main window's native handle, as text.</summary>
+    string CurrentWindowHandle { get; }
 
-    /// <summary>
-    /// Maximizes the main window.
-    /// </summary>
-    void MaximizeWindow();
+    /// <summary>Whether the app's process has exited; false when the process is not known.</summary>
+    bool HasExited { get; }
 
-    /// <summary>
-    /// Minimizes the main window.
-    /// </summary>
-    void MinimizeWindow();
+    /// <summary>The elements under the main window that match now. One attempt.</summary>
+    IReadOnlyList<IWinFormsElement> FindElements(Locator locator);
 
-    /// <summary>
-    /// Restores the main window to normal size.
-    /// </summary>
-    void RestoreWindow();
+    /// <summary>The app's top-level windows now: the main window and any it opened (a dialog that is not owned by it).</summary>
+    IReadOnlyList<IWinFormsElement> TopLevelWindows();
 
-    /// <summary>
-    /// Closes the main window.
-    /// </summary>
-    void CloseWindow();
+    /// <summary>Closes the main window through its Window pattern.</summary>
+    void Close();
 
-    /// <summary>
-    /// Gets the current window size.
-    /// </summary>
-    System.Drawing.Size GetWindowSize();
+    /// <summary>Closes the app.</summary>
+    void Quit();
 
-    /// <summary>
-    /// Sets the window size.
-    /// </summary>
-    void SetWindowSize(int width, int height);
-
-    /// <summary>
-    /// Gets the current window position.
-    /// </summary>
-    System.Drawing.Point GetWindowPosition();
-
-    /// <summary>
-    /// Sets the window position.
-    /// </summary>
-    void SetWindowPosition(int x, int y);
-
-    #endregion
-
-    #region Navigation
-
-    /// <summary>
-    /// Navigates to the specified destination.
-    /// </summary>
-    void NavigateTo(string destination);
-
-    /// <summary>
-    /// Navigates back (sends Alt+Left).
-    /// </summary>
-    void NavigateBack();
-
-    /// <summary>
-    /// Refreshes the current view (sends F5).
-    /// </summary>
-    void Refresh();
-
-    #endregion
-
-    #region Screenshots
-
-    /// <summary>
-    /// Takes a screenshot of the main window.
-    /// </summary>
+    /// <summary>The main window as PNG bytes.</summary>
     byte[] TakeScreenshot();
-
-    /// <summary>
-    /// Saves a screenshot to the specified path.
-    /// </summary>
-    void SaveScreenshot(string filePath);
-
-    #endregion
-
-    #region Application State
-
-    /// <summary>
-    /// Resets the application state.
-    /// </summary>
-    void ResetAppState();
-
-    #endregion
 }

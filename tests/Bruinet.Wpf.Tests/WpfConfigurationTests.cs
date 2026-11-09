@@ -73,7 +73,6 @@ public class WpfTestContextOptionsTests
 }
 
 /// <summary>
-/// <summary>
 /// The WPF stack's shape on the call model (AD-010): its scope, page and context derive from
 /// Core's, and its element and driver are its own.
 /// </summary>

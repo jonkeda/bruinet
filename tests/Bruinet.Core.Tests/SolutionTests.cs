@@ -37,7 +37,7 @@ public sealed class SolutionTests
         var root = FindRepositoryRoot();
         Assert.NotNull(root);
         string[] callModel = ["Bruinet.Html", "Bruinet.Html.Playwright", "Bruinet.Blazor", "Bruinet.Maui", "Bruinet.Maui.Appium",
-            "Bruinet.Maui.FlaUI", "Bruinet.FlaUI", "Bruinet.Wpf", "Bruinet.Maui.CommunityToolkit", "Bruinet.NativeAndroid", "Bruinet.Appium", "Bruinet.Uat", "Bruinet.Bdd"];
+            "Bruinet.Maui.FlaUI", "Bruinet.FlaUI", "Bruinet.Wpf", "Bruinet.WinForms", "Bruinet.Maui.CommunityToolkit", "Bruinet.NativeAndroid", "Bruinet.Appium", "Bruinet.Uat", "Bruinet.Bdd"];
 
         var offenders = callModel
             .Select(name => Path.Combine(root, "src", name, $"{name}.csproj"))

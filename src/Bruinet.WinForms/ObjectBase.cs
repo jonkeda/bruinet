@@ -1,49 +1,61 @@
+using System.Runtime.CompilerServices;
+using Bruinet.Core.Calls;
+using Bruinet.Core.Scopes;
+
 namespace Bruinet.WinForms;
 
-using Bruinet.Core.Utilities;
-
 /// <summary>
-/// Base class for all WinForms objects providing shared utilities.
+/// Base class for WinForms page objects, containers, rows and controls.
 /// </summary>
 public abstract class ObjectBase
 {
-    /// <summary>
-    /// Gets the WinForms test context.
-    /// </summary>
+    /// <summary>The test context the object belongs to.</summary>
     public abstract IWinFormsTestContext Context { get; }
 
-    /// <summary>
-    /// Gets the default timeout in milliseconds.
-    /// </summary>
     protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait;
 
-    /// <summary>
-    /// Gets the polling interval in milliseconds.
-    /// </summary>
     protected int PollingIntervalMs => Context.Timeouts.PollingInterval;
 
+    /// <summary>The name this object's own calls are logged under.</summary>
+    protected virtual string ScopeName => GetType().Name;
+
     /// <summary>
-    /// Polls a condition until it returns true or timeout is reached.
+    /// A scope-level wait as one call (R1): polls <paramref name="probe"/> until it reports Done or
+    /// the budget runs out. Answers false when it ran out, or throws what
+    /// <paramref name="fail"/> builds from the last readiness seen.
     /// </summary>
-    protected bool Poll(Func<bool> condition, int timeoutMs)
+    private protected bool RunProbe(
+        Func<Observation> probe,
+        int budgetMs,
+        Func<ScopeReadiness, Exception>? fail = null,
+        [CallerMemberName] string? caller = null)
     {
-        var stopwatch = Stopwatch.StartNew();
-
-        while (stopwatch.ElapsedMilliseconds < timeoutMs)
+        caller ??= nameof(RunProbe);
+        return new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName).Run(caller, null, budgetMs, Context.Timeouts.Animation, attempt =>
         {
-            try
+            if (Poller.Until(_ => probe(), attempt, PollingIntervalMs))
             {
-                if (condition())
-                    return true;
-            }
-            catch
-            {
-                // Polling expects transient failures
+                return true;
             }
 
-            WaitHelper.Pause(PollingIntervalMs);
-        }
+            var last = attempt.Log.Last;
+            if (fail != null)
+            {
+                throw fail(last.Scope ?? new ScopeReadiness(ScopeName, ScopeReadinessState.NotLoaded, last.ToString()));
+            }
 
-        return condition();
+            return last.Kind == ObservationKind.Failed && last.Error is { } error
+                ? throw attempt.Log.Unexpected(error, $"'{ScopeName}'", budgetMs)
+                : false;
+        }, succeeded: ok => ok);
     }
+
+    /// <summary>
+    /// A scope's <c>WaitFirst</c> as one call: polls <paramref name="outcomes"/> and answers the
+    /// index of the first that holds, or -1. Each attempt checks only that the app is reachable.
+    /// </summary>
+    private protected int RunFirst(int? timeoutMs, Func<bool>[] outcomes)
+        => FirstOutcome.Wait(
+            new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName),
+            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation, PollingIntervalMs);
 }

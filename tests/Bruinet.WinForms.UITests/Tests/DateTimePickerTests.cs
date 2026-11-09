@@ -26,9 +26,7 @@ public class DateTimePickerTests
     {
         var page = GetPage();
         page.SetStartDate(new DateTime(2025, 06, 15));
-        // Verify via GetText since DTP doesn't expose a GetDate method
-        var text = page.StartDatePicker.GetText();
-        Assert.NotNull(text);
+        Assert.Equal(new DateTime(2025, 06, 15), page.StartDatePicker.GetDate());
     }
 
     [Fact]
@@ -36,8 +34,7 @@ public class DateTimePickerTests
     {
         var page = GetPage();
         page.SetStartDate(DateTime.Today);
-        var text = page.StartDatePicker.GetText();
-        Assert.NotNull(text);
+        Assert.Equal(DateTime.Today, page.StartDatePicker.GetDate());
     }
 }
 

@@ -1,14 +1,14 @@
-using Bruinet.Core.Interfaces;
-
 namespace Bruinet.WinForms.Interfaces;
 
+// Core's ITestContext (its name and near-miss settings among them) and WinForms's own scope, which
+// derives from Core's IScope. See AD-010.
+
 /// <summary>
-/// WinForms-specific test context interface.
+/// One WinForms app under test: the driver, the timeouts and log every call uses, and the app's window
+/// as the outermost scope.
 /// </summary>
-public interface IWinFormsTestContext : ITestContext<IWinFormsElement>, IWinFormsElementScope
+public interface IWinFormsTestContext : ITestContext, IWinFormsElementScope
 {
-    /// <summary>
-    /// Gets the WinForms driver.
-    /// </summary>
+    /// <summary>The app's UI Automation driver.</summary>
     IWinFormsDriver Driver { get; }
 }

@@ -236,4 +236,26 @@ Results: unit tests 37 of 37 (new: `FakeApp`, `CallModelTests`, `ControlTests`);
 twice, 17 s and 20 s (baseline 2 of 16 failed, 2 m 53 s); R0: username rule loosened to 2 characters,
 `Login_WithShortUsername_ShowsValidationError` failed on it, restored. Left: a `wpf-control` skill.
 
-Expected next action: U4, WinForms on the call model.
+U4 done 2026-11-10. `Bruinet.WinForms` ported from `Bruinet.Wpf` by renaming (Q1 holds: two packages; the
+shared element was already `UiaElementBase`, so no control moved into `Bruinet.FlaUI`). Measured on the sample
+app first (`dumpwf`, `probewf`, see below), then decided:
+
+- `TrackBar` and `NumericUpDown` have no RangeValue: their number is Value text (the numeric box's in its
+  child `Edit`), bounds and step from the page object (`ValueRangeControlBase`, as Android's ranges).
+- A Value write to a `NumericUpDown` is not committed until focus leaves it, and the app's own reset to the
+  old number then did not refresh the text (Clear showed 9000 over 8080). Committed with its spinner buttons:
+  Up then Down (Down then Up at the maximum). Pattern-only, works on a locked desktop.
+- `RichTextBox` reads back with a closing `\r`: trimmed (`ShownText`).
+- `ComboBox` selects by writing its Value: WinForms takes it as choosing the item (Login then reports the
+  role), ignores an unknown text, and each combo call blocks about 2 s, so one write instead of three.
+- `DateTimePicker`: the Value write is ignored and the calendar refuses Invoke on a locked desktop, so the
+  date is typed field by field in the culture's short date order (`dd-MMM-yy` here), two passes so a day is
+  not clamped, no Enter (it would press Login). Confirmed by parsing the shown date. **Not verified**: the
+  desktop was locked all night, and Windows refuses synthetic keys then; `PressKey` now says so.
+
+Results: unit tests 48 of 48; UI suite 62 of 65 twice (1 m 43 s, 1 m 49 s; baseline 31 of 65, 1 m 24 s). The
+3 left all set a date and fail only on the refused keys. The two date tests now assert the date, not just
+some text. R0: Clear no longer reset the port, `Form_Clear_ResetsAllFields` failed on it (8080 vs 9000),
+restored.
+
+Expected next action: U5, the Stride protocol.
