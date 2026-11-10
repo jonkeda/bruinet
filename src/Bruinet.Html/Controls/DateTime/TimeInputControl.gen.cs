@@ -1,3 +1,4 @@
+using Bruinet.Core.Interfaces;
 using System.Globalization;
 using Bruinet.Core.Locators;
 using Bruinet.Html.Interfaces;
@@ -14,7 +15,7 @@ namespace Bruinet.Html.Controls.DateTime;
 /// HTML time input control. Wraps &lt;input type="time"&gt;.
 /// </summary>
 
-public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>
+public partial class TimeInputControl<TScope> : FocusableControlBase<TScope>, ITimeControlObject<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region Time (GetTime / WaitTime / AssertTime)

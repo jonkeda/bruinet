@@ -10,7 +10,7 @@ public interface ITimeControlObject<TScope> : IControlObject<TScope>
     /// Gets the currently selected time.
     /// </summary>
     /// <returns>The selected time, or null if no time selected or element not found.</returns>
-    TimeSpan? GetTime();
+    TimeSpan? GetTime(int? timeoutMs = null);
 
     /// <summary>
     /// Sets the time value.

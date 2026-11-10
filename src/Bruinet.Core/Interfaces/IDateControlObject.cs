@@ -10,7 +10,7 @@ public interface IDateControlObject<TScope> : IControlObject<TScope>
     /// Gets the currently selected date.
     /// </summary>
     /// <returns>The selected date, or null if no date selected or element not found.</returns>
-    DateTime? GetDate();
+    DateTime? GetDate(int? timeoutMs = null);
 
     /// <summary>
     /// Sets the date value.

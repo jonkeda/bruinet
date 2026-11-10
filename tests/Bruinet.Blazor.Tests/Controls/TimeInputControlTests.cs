@@ -64,4 +64,14 @@ public class TimeInputControlTests
 
         public TimeInputControl<TestPage> TestTimeInput => new(this, "test-time");
     }
+
+    // Proposal 8, rule 1: Html's input implements Core's capability, converting at the boundary.
+    [Fact]
+    public void Through_the_core_time_capability_a_time_is_a_TimeSpan()
+    {
+        _mockElement.Setup(e => e.InputValue).Returns("14:30");
+        ITimeControlObject<TestPage> time = _page.TestTimeInput;
+
+        Assert.Equal(new TimeSpan(14, 30, 0), time.GetTime());
+    }
 }

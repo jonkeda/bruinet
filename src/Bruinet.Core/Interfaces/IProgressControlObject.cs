@@ -17,7 +17,7 @@ public interface IProgressControlObject<TScope> : IControlObject<TScope>
     /// Gets the current progress value (0.0 to 1.0).
     /// </summary>
     /// <returns>Progress value between 0.0 and 1.0, or null if element not found.</returns>
-    double? GetProgress();
+    double? GetProgress(int? timeoutMs = null);
 
     /// <summary>
     /// Waits for progress to reach a specific value.

@@ -445,7 +445,7 @@ Bruinet.Core.Interfaces.IControlObject<TScope>
 Bruinet.Core.Interfaces.IControlObject<TScope>.GetAttribute(string! name, int? timeoutMs) -> string?
 Bruinet.Core.Interfaces.IDateControlObject<TScope>
 Bruinet.Core.Interfaces.IDateControlObject<TScope>.AssertDate(System.DateTime? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IDateControlObject<TScope>.GetDate() -> System.DateTime?
+Bruinet.Core.Interfaces.IDateControlObject<TScope>.GetDate(int? timeoutMs = null) -> System.DateTime?
 Bruinet.Core.Interfaces.IDateControlObject<TScope>.SetDate(System.DateTime? date, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IDateControlObject<TScope>.WaitDate(System.DateTime? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IDiagnosticDriver
@@ -490,7 +490,7 @@ Bruinet.Core.Interfaces.IPressableControl<TScope>.Press(int? timeoutMs = null) -
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IProgressControlObject<TScope>.GetProgress() -> double?
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.GetProgress(int? timeoutMs = null) -> double?
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.IsIndeterminate() -> bool?
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitComplete(int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
@@ -576,7 +576,7 @@ Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitText(string? expected, in
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.AssertTime(System.TimeSpan? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.ITimeControlObject<TScope>.GetTime() -> System.TimeSpan?
+Bruinet.Core.Interfaces.ITimeControlObject<TScope>.GetTime(int? timeoutMs = null) -> System.TimeSpan?
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.SetTime(System.TimeSpan? time, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.WaitTime(System.TimeSpan? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>

@@ -58,9 +58,6 @@ public partial class DateTimePicker<TScope> : ClickableControlBase<TScope>, IDat
 
     #endregion
 
-    /// <summary>The date shown, as one call with the default wait.</summary>
-    DateTime? IDateControlObject<TScope>.GetDate() => GetDate(timeoutMs: null);
-
     private static void TypeFields(IWinFormsElement element, IReadOnlyList<Field> fields, Func<Field, string> text)
     {
         element.PressKey("HOME");

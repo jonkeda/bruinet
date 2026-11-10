@@ -1,3 +1,4 @@
+using Bruinet.Core.Interfaces;
 using System.Globalization;
 using Bruinet.Core.Locators;
 using Bruinet.Html.Interfaces;
@@ -14,7 +15,7 @@ namespace Bruinet.Html.Controls.DateTime;
 /// HTML date input control. Wraps &lt;input type="date"&gt;.
 /// </summary>
 
-public partial class DateInputControl<TScope> : FocusableControlBase<TScope>
+public partial class DateInputControl<TScope> : FocusableControlBase<TScope>, IDateControlObject<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region Date (GetDate / WaitDate / AssertDate)
