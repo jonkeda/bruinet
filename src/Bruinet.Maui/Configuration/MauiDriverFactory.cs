@@ -239,7 +239,7 @@ public static class MauiDriverFactory
     /// <c>name</c> attribute; the plain <c>name</c> key is the element type), text, bounds, enabled
     /// and shown. The Appium element reads them from the find in the same attempt.
     /// </summary>
-    internal const string IosFindFacts = "attribute/name,text,rect,enabled,displayed";
+    internal const string IosFindFacts = "attribute/name,text,rect,enabled,displayed,type";
 
     /// <summary>
     /// The simulator an iOS session asks for when the suite names none: the one

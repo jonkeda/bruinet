@@ -42,6 +42,46 @@ public sealed class AttemptMemoTests
     }
 
     [Fact]
+    public void ANestedCallsFirstAttempt_UsesWhatTheEnclosingAttemptRead()
+    {
+        using (AttemptMemo.Begin())
+        {
+            _ = AttemptMemo.Remember(_element, "Rect", () => 1);
+            var reads = 0;
+
+            using (AttemptMemo.Begin(inherit: true))
+            {
+                Assert.Equal(1, AttemptMemo.Remember(_element, "Rect", () => ++reads));
+            }
+
+            using (AttemptMemo.Begin())
+            {
+                Assert.Equal(1, AttemptMemo.Remember(_element, "Rect", () => ++reads));
+            }
+
+            Assert.Equal(1, reads);
+        }
+    }
+
+    [Fact]
+    public void AnActionInANestedCall_ForgetsWhatTheEnclosingAttemptRead()
+    {
+        using (AttemptMemo.Begin())
+        {
+            _ = AttemptMemo.Remember(_element, "Visible", () => false);
+
+            using (AttemptMemo.Begin(inherit: true))
+            {
+                using (Interactions.Report(InteractionKind.Tap, () => Rectangle.Empty))
+                {
+                }
+            }
+
+            Assert.False(AttemptMemo.Knows(_element, "Visible"));
+        }
+    }
+
+    [Fact]
     public void AStaleRead_IsReportedAgain_WithoutReadingAgain()
     {
         using (AttemptMemo.Begin())

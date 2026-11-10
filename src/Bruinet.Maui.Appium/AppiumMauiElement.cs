@@ -141,8 +141,9 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     /// <summary>
     /// Keeps the facts a find returned with this element for the running attempt: iOS sends the
-    /// element's shown and enabled state, text, bounds and AutomationId with the find, each of which
-    /// was a WebDriverAgent request of 90 ms or more of its own. Outside an attempt nothing is kept.
+    /// element's shown and enabled state, text, bounds, AutomationId and type with the find, each of
+    /// which was a WebDriverAgent request of 90 ms or more of its own. Outside an attempt nothing is
+    /// kept, except the type, which is kept for the session.
     /// An action ends them (<see cref="Bruinet.Core.Calls.AttemptMemo.Forget"/>).
     /// </summary>
     internal void Know(IDictionary<string, object> facts)
@@ -163,6 +164,10 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         if (facts.TryGetValue("attribute/name", out var name) && name is null or string)
             _ = Bruinet.Core.Calls.AttemptMemo.Remember(this, nameof(AutomationId), () => Present((string?)name));
+
+        // An element id's type never changes, so it is kept for the session, as a read of it is.
+        if (facts.TryGetValue("type", out var type) && type is string kind && _wrapped is { } wrapped)
+            _ = _driver.ElementFact(wrapped.Id, "type", () => kind);
     }
 
     /// <inheritdoc />

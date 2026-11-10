@@ -29,6 +29,10 @@ public static class ScrollHelper
         {
             return false;
         }
+        finally
+        {
+            Bruinet.Core.Calls.AttemptMemo.Forget();
+        }
     }
 
     /// <summary>
@@ -48,6 +52,22 @@ public static class ScrollHelper
         if (element == null)
             return false;
 
-        return element.ScrollContent(forward ? 1 : -1) != ScrollStep.NotMoved;
+        return Moving(() => element.ScrollContent(forward ? 1 : -1)) != ScrollStep.NotMoved;
+    }
+
+    /// <summary>
+    /// Runs a scroll and then forgets what the running attempt read (<see cref="Bruinet.Core.Calls.AttemptMemo"/>):
+    /// rows and bounds read before it are wrong after it. Not every head's scroll forgets by itself.
+    /// </summary>
+    internal static T Moving<T>(Func<T> scroll)
+    {
+        try
+        {
+            return scroll();
+        }
+        finally
+        {
+            Bruinet.Core.Calls.AttemptMemo.Forget();
+        }
     }
 }

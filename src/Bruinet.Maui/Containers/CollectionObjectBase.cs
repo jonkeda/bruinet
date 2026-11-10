@@ -137,10 +137,10 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     public IMauiElement? TryGetItemRoot(ItemKey key) => key.Kind switch
     {
         ItemKeyKind.Logical => WithRoot(
-            root => _itemStrategy.FindItemElements(root).FirstOrDefault(item => LogicalIndexOf(item) == key.Index()),
+            root => ItemRootsIn(root).FirstOrDefault(item => LogicalIndexOf(item) == key.Index()),
             null),
         ItemKeyKind.AutomationId => WithRoot(
-            root => _itemStrategy.FindItemElements(root).Where(item => item.AutomationId == key.Value).ToList() is [var only]
+            root => ItemRootsIn(root).Where(item => item.AutomationId == key.Value).ToList() is [var only]
                 ? only
                 : null,
             null),
@@ -221,7 +221,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
 
         return WithRoot(root =>
         {
-            var roots = _itemStrategy.FindItemElements(root);
+            var roots = ItemRootsIn(root);
             var itemRoot = FindItemRoot(root, roots, index);
             return itemRoot == null ? null : CreateItem(itemRoot, index, roots);
         }, null);
@@ -236,7 +236,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         if (index < 0)
             return null;
 
-        return WithRoot(root => FindItemRoot(root, _itemStrategy.FindItemElements(root), index), null);
+        return WithRoot(root => FindItemRoot(root, ItemRootsIn(root), index), null);
     }
 
     private IMauiElement? FindItemRoot(IMauiElement collectionRoot, IReadOnlyList<IMauiElement> roots, int index)
@@ -445,8 +445,19 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     /// <summary>
     /// Every materialized item root, or an empty list when the collection is absent.
     /// </summary>
+    /// <remarks>
+    /// One find per attempt: a scroll step asked for the rows three times before it moved, a second
+    /// each on iOS (.my/uitests D16). Every scroll the collection makes forgets them
+    /// (<see cref="ScrollHelper.Moving{T}"/>).
+    /// </remarks>
     protected IReadOnlyList<IMauiElement> TryGetItemRoots()
-        => WithRoot(root => _itemStrategy.FindItemElements(root), []);
+        => WithRoot(ItemRootsIn, []);
+
+    private IReadOnlyList<IMauiElement> ItemRootsIn(IMauiElement root)
+        => Bruinet.Core.Calls.AttemptMemo.Remember((root, _itemStrategy), ItemRootsQuestion,
+            () => _itemStrategy.FindItemElements(root));
+
+    private const string ItemRootsQuestion = "item roots";
 
     /// <summary>
     /// The items, yielded lazily. A consumer that stops early - <c>Items.First(...)</c> -
@@ -476,7 +487,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     /// <inheritdoc />
     /// <remarks>One read of the realized rows.</remarks>
     public int GetItemCount()
-        => WithRoot(root => _itemStrategy.FindItemElements(root).Count, 0);
+        => WithRoot(root => ItemRootsIn(root).Count, 0);
 
     /// <summary>
     /// Whether the collection currently has no materialized items.
@@ -662,7 +673,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
             }
 
             state.Rows ??= RealizedRows();
-            if ((ScrollTarget ?? root).ScrollContent(-1) is ScrollStep.Moved or ScrollStep.Unconfirmed
+            if (ScrollHelper.Moving(() => (ScrollTarget ?? root).ScrollContent(-1)) is ScrollStep.Moved or ScrollStep.Unconfirmed
                 && RealizedRows() is var rows
                 && rows != state.Rows)
             {
@@ -905,7 +916,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
             }
 
             state.Rows ??= RealizedRows();
-            switch ((ScrollTarget ?? root).ScrollContent(-1))
+            switch (ScrollHelper.Moving(() => (ScrollTarget ?? root).ScrollContent(-1)))
             {
                 // A swipe (Android) cannot confirm it moved; the realized rows changing can.
                 case ScrollStep.Moved:
@@ -973,7 +984,11 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
 
         try
         {
-            itemRoot.ScrollIntoView(CallRemainingMs);
+            ScrollHelper.Moving(() =>
+            {
+                itemRoot.ScrollIntoView(CallRemainingMs);
+                return true;
+            });
             return true;
         }
         catch (Exception error) when (error is NotSupportedException or InvalidOperationException)
@@ -1140,7 +1155,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         ScrollStep step;
         try
         {
-            step = (ScrollTarget ?? root).ScrollTowards(nextIndex);
+            step = ScrollHelper.Moving(() => (ScrollTarget ?? root).ScrollTowards(nextIndex));
         }
         catch (ArgumentOutOfRangeException)
         {
