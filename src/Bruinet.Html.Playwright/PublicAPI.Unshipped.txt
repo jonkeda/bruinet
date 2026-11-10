@@ -38,4 +38,5 @@ Bruinet.Html.Playwright.PlaywrightTestContext.Timeouts.get -> Bruinet.Core.Confi
 Bruinet.Html.Playwright.PlaywrightTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Playwright.PlaywrightTestContext.WaitReady(int? timeoutMs = null) -> bool
 static Bruinet.Html.Playwright.PlaywrightTestContext.CreateAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Playwright.PlaywrightTestContext!>!
+static Bruinet.Html.Playwright.PlaywrightTestContext.ForFrame(Microsoft.Playwright.IPage! page, Microsoft.Playwright.IFrame! frame, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Html.Playwright.PlaywrightTestContext!
 static Bruinet.Html.Playwright.PlaywrightTestContext.ForPage(Microsoft.Playwright.IPage! page, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Html.Playwright.PlaywrightTestContext!
