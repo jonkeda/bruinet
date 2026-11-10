@@ -1,6 +1,8 @@
 # WPF, WinForms and Stride onto the call model
 
-Status: **plan**, 2026-11-09. Nothing built. Bruinet at 802337ce.
+Status: **U0 to U7 done**, 2026-11-10, Bruinet at 6e23ddea; **U8 open** (the change list for the projects
+that use Bruinet). Written as a plan on 2026-11-09 at 802337ce: sections 2 to 4 describe the state before
+the move, the notes under section 7 what each step did.
 
 ## 1. The outcome
 
@@ -132,6 +134,26 @@ suites fail before any change.
 | **U5** | Stride protocol: one-attempt reads, identity, no in-game waits (below). | `Bruinet.Stride.Automation.Tests` green |
 | **U6** | Stride on the call model. | Stride suites at baseline or better |
 | **U7** | `Bruinet.Core.Legacy` deleted, AD-029 superseded, `NoCallModelStack_ReferencesTheFirstModel` becomes "no project references Legacy" then goes; docs, heads table, CHANGELOG, skills. | The solution builds without Legacy; every suite run once |
+| **U8** | The change list for consumers (below): every breaking change of U1 to U7 and since as a row a project can act on, proven on a consumer, found from the docs. | A consumer on the first model is moved by the list alone; no API change on `move` without its row |
+
+### U8: so other projects can be refactored
+
+The move broke the API of three stacks and reshaped three more; other projects use them. The list is
+`.github/skills/api-upgrade/references/changes.md` (skill `api-upgrade`): per change a `Find` regex for
+consumer code and what to write instead. It exists since 45826976 and got its Made rows in U7. Left:
+
+| # | What | Done when |
+| --- | --- | --- |
+| U8.1 | Rows for the API changes after U7: `IMauiDriver.IsAnotherAppInFront`/`ReturnToApp` and `IMauiElement.RevealClearOfEdges` (d459825c, d895969b), `IControlHost<TElement>.ScopeIsAbsent` (6256e176): a member added to an interface breaks whoever implements it. `ScrollView.ScrollTo(…, int? timeoutMs = null)` (b1cee0ae) needs a recompile only: say so in a row. | `git diff 7f972d8c..move -- 'src/*/PublicAPI.Unshipped.txt'` has no removed or interface line without a row |
+| U8.2 | The skill's rule "added lines alone need no row" corrected: an added interface or abstract member needs one. | `SKILL.md` says so |
+| U8.3 | A recipe per ported stack (`references/wpf.md`, `winforms.md`, `stride.md`): a first-model page object and a control before and after, taken from the suites' own diffs in 89d61307, 5646823d and 57ceff95, in the order to do it (usings, page base and `ReadyLocator`, controls and dropped controls, waits, fixture). The Made rows are one line each; a project with fifty page objects needs the worked example. | Each recipe's after-code is copied from a file that compiles in `tests/` or `samples/` |
+| U8.4 | Prove the list on a consumer that is not Bruinet's: apply the Made rows to one project still on the first model, by the skill's steps alone; every build error no row explains becomes a row. Tomorrow does not count: it uses Html only and built unchanged. | That project builds and its smoke tests pass; the rows it added are committed |
+| U8.5 | The skill's Known consumers table filled with the projects the owner names, each with how it takes Bruinet (submodule, package, copy). | The owner has read the table |
+| U8.6 | Found from the docs: `docs/guides/migration.md` and `CHANGELOG.md`'s Changed section point at the list; `AGENTS.md` names the skill beside the others. | A reader starting at the README reaches the list in two links |
+| U8.7 | A check, so the list cannot fall behind again: a test in `Bruinet.Core.Tests` (beside `SolutionTests`) or a step in `tools/Scripts` that fails when a commit removes or alters a `PublicAPI.Unshipped.txt` line and `changes.md` is untouched. | The check fails on a seeded removal and passes on `move` |
+
+Order: U8.1 and U8.2 now (the list is already behind by four commits), U8.3 before U8.4, U8.7 last.
+U8.4 and U8.5 need the owner: which projects, and which one goes first (Q6).
 
 ### Per stack (U3, U4, U6): as native Android did
 
@@ -193,6 +215,7 @@ one `Query`), and the rest is the per-stack list above. The context also names i
 | Q2 | Does U1 happen at all, or AD-010 as it stands? | **Decided 2026-11-09: U1 first.** AD-010 amended ("The scope and page layer moves down next, the element never"); AD-029's ruled-out bullet points here. |
 | Q3 | The WPF and WinForms apps load `Bruinet.Uia.Contracts` (the UIA bridge) for gestures and semantic verbs, as MAUI's Windows app does (AD-008)? | **Decided 2026-11-09: not in this plan.** UIA's own patterns cover what the suites do today; a follow-up if a gesture is asked for. |
 | Q4 | Order: WPF or WinForms first? | **Decided 2026-11-09: WPF first.** Its suite is smaller (25 facts), it has a known baseline, and it shares XAML habits with MAUI's Windows head; WinForms then reuses everything but the controls. |
+| Q6 | U8: which other projects use Bruinet, and which is moved first as the proof (U8.4)? | **Open.** Proposal: the smallest one on WPF or WinForms, since those two stacks changed most and share their rows; a Stride project second. Why: the proof should hit the rows with the most replacements, and a small project keeps a missing row cheap to find. |
 | Q5 | Calls layer public? | **Decided 2026-11-09: public**, against the proposal to keep it internal: every stack is written against Core's published surface, and Core stops listing each stack. Section 3 point 5; AD-010 amended. |
 
 U0 done 2026-11-09: [baseline.md](baseline.md). WPF 2 of 16 fail, WinForms 34 of 65, Stride 3 of 30,
@@ -301,16 +324,25 @@ at Legacy rewritten. The api-upgrade skill's list has a Made row per breaking ch
 planned rows 1 (conflict: Q5 made the calls layer public), 3 (overtaken), 4, 5 (made) and 6 (partly) are
 marked. Tomorrow's UI test projects were built against the new Bruinet before this was pushed.
 
-## 8. Where it ends
+## 8. Where it stands
 
-All steps done. What is left:
+U0 to U7 are done; U8 is open. Since U7 (2026-11-10):
+
+- Four commits landed on `move` from another machine (d459825c, d895969b, b1cee0ae, 6256e176: Android
+  return-to-app, `ScrollTo`, absence in an absent container), merged in 6e23ddea. They changed public
+  interfaces without a row in the change list: U8.1.
+- The public API review was brought up to date (122f9b59). Its proposal 1 no longer asks for
+  `Bruinet.Core.Calls` internal: Q5 stands, the conflict is closed. Its proposals 3 and 6 are done by U7
+  and U5, 4 is half done (Html and Blazor are now the odd ones out), 5's Core half is more pressing: this
+  move left `ItemKey`, `CollectionObjectBase`, `AppRoot` and `ObjectBase` declared in six packages.
+- Tomorrow is on 6e23ddea (its `game` at 90a99c2e2); a fork of the review's session reported its two UI
+  suites building, the game's smoke gate 2 of 2 and the studio suite on bUnit 159 passed, 0 failed.
+
+Left besides U8:
 
 - `DateTimePicker.SetDate` (WinForms) has not run on an unlocked desktop: the three WinForms tests that
   set a date failed all night only because Windows refuses synthetic keys while the desktop is locked.
-- Proposal 1 of the public API review (`.my/reviews/bruinet-public-api-review.md`, written the same
-  evening in another session) makes `Bruinet.Core.Calls` internal, the opposite of Q5. One of them has
-  to give; Q5 is the owner's answer, so the review's row is marked as conflicting, not changed.
 - A `wpf-control` (or one `desktop-control`) skill, as Android and Html have one.
 - The 13 MAUI-on-Windows collection failures and 2 flaky tests found in U2 are MAUI's, not this plan's.
 
-Expected next action: the owner runs the WinForms suite once on an unlocked desktop.
+Expected next action: U8.1 and U8.2; the owner answers Q6.
