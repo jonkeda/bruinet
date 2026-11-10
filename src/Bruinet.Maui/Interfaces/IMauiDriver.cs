@@ -285,12 +285,14 @@ public interface IMauiDriver : IDiagnosticDriver, IDisposable
 
     /// <summary>
     /// Whether an app other than the one under test is in front, such as a viewer the app handed a
-    /// file to. Heads that never leave the app answer false.
+    /// file to, or a system sheet the app handed the file to (the iOS share sheet). Heads that never
+    /// leave the app answer false.
     /// </summary>
     bool IsAnotherAppInFront() => false;
 
     /// <summary>
-    /// Brings the app under test back in front, leaving the other app as it is. Does nothing on
+    /// Brings the app under test back in front, leaving the other app as it is, or closes the system
+    /// sheet over it. Does nothing on
     /// heads that never leave the app.
     /// </summary>
     void ReturnToApp()

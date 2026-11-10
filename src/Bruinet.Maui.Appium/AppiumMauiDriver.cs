@@ -486,19 +486,22 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
     private void ResetApp() => _appium.Relaunch(_driver);
 
     /// <inheritdoc />
+    /// <remarks>Also true while the system's share sheet is open over the app (iOS).</remarks>
     public bool IsAnotherAppInFront()
-        => _appId is { } appId
-           && AppiumErrors.Live(() => _appium.FrontAppId(_driver)) is { Length: > 0 } front
-           && !string.Equals(front, appId, StringComparison.Ordinal);
+        => (_appId is { } appId
+            && AppiumErrors.Live(() => _appium.FrontAppId(_driver)) is { Length: > 0 } front
+            && !string.Equals(front, appId, StringComparison.Ordinal))
+           || AppiumErrors.Live(() => _appium.ShowsShareSheet(_driver));
 
     /// <inheritdoc />
+    /// <remarks>Closes the system's share sheet when one is open over the app (iOS).</remarks>
     public void ReturnToApp()
     {
-        if (_appId is not { } appId)
-            return;
-
         // Handles found before the other app came in front may be gone.
         Bruinet.Core.Calls.AttemptMemo.Forget();
+        if (AppiumErrors.Live(() => _appium.TryCloseShareSheet(_driver)) || _appId is not { } appId)
+            return;
+
         AppiumErrors.Live(() => _driver.ActivateApp(appId));
     }
 

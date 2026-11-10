@@ -25,7 +25,7 @@ internal sealed class IosPlatform : AppiumPlatform
         // A popup lives in a window of its own and neither the back button nor the edge swipe
         // reaches it. A failed test that left one open made recovery swipe the page under it, and
         // every later test in the class failed "Tab 'Projects' was not found".
-        if (TryDismissPopup(driver))
+        if (TryCloseShareSheet(driver) || TryDismissPopup(driver))
             return;
 
         // XCUITest's back taps the navigation bar's back button and silently does nothing when the
@@ -69,6 +69,45 @@ internal sealed class IosPlatform : AppiumPlatform
     }
 
     private static readonly By NavigationBar = MobileBy.ClassName("XCUIElementTypeNavigationBar");
+
+    /// <summary>
+    /// The share sheet's header: a navigation bar named after UIKit's view. Probed on iOS 27, after
+    /// <c>Launcher.OpenAsync(OpenFileRequest)</c>.
+    /// </summary>
+    private static readonly By ShareSheetBar = MobileBy.IosNSPredicate(
+        "type == 'XCUIElementTypeNavigationBar' AND name == 'UIActivityContentView'");
+
+    public override bool ShowsShareSheet(AppiumDriver driver) => driver.FindElements(ShareSheetBar).Count > 0;
+
+    /// <summary>
+    /// Takes the header's Close or Cancel button, else its last button; a header without buttons is
+    /// dragged down, which closes a sheet.
+    /// </summary>
+    public override bool TryCloseShareSheet(AppiumDriver driver)
+    {
+        if (driver.FindElements(ShareSheetBar).FirstOrDefault() is not { } bar)
+            return false;
+
+        var buttons = bar.FindElements(BarButton);
+        var close = buttons.FirstOrDefault(button => button.GetAttribute("name") is "Close" or "Cancel" or "close")
+                    ?? buttons.LastOrDefault();
+        if (close is not null)
+        {
+            close.Click();
+            return true;
+        }
+
+        var size = driver.Manage().Window.Size;
+        driver.ExecuteScript("mobile: dragFromToForDuration", new Dictionary<string, object>
+        {
+            { "duration", 0.2 },
+            { "fromX", bar.Location.X + bar.Size.Width / 2 },
+            { "fromY", bar.Location.Y + bar.Size.Height / 2 },
+            { "toX", bar.Location.X + bar.Size.Width / 2 },
+            { "toY", size.Height - 10 },
+        });
+        return true;
+    }
 
     private static readonly By BarButton = By.XPath("./XCUIElementTypeButton");
 

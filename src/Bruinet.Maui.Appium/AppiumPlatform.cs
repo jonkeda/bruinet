@@ -150,6 +150,16 @@ internal abstract class AppiumPlatform
     /// <summary>The app in front (package or bundle id), or null when it cannot be told.</summary>
     public abstract string? FrontAppId(AppiumDriver driver);
 
+    /// <summary>
+    /// Whether the system's share sheet is open over the app: the app handed a file to the system
+    /// without another app coming in front.
+    /// </summary>
+    public virtual bool ShowsShareSheet(AppiumDriver driver) => false;
+
+    /// <summary>Closes the system's share sheet.</summary>
+    /// <returns>Whether there was one to close.</returns>
+    public virtual bool TryCloseShareSheet(AppiumDriver driver) => false;
+
     /// <summary>One step back, the way a user of the platform would take it.</summary>
     public abstract void GoBack(AppiumDriver driver);
 
