@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Exceptions;
 using Bruinet.Maui.Interfaces;
@@ -26,8 +27,8 @@ public static class PageNavigation
         ArgumentNullException.ThrowIfNull(context);
         ArgumentException.ThrowIfNullOrEmpty(leaving);
         var call = new ControlCall(context.Logger, context.Name, context.NearMiss, leaving, leaving);
-        var arrived = call.Run(nameof(WaitArrived), null, timeoutMs, context.Timeouts.Animation,
-            attempt => Poller.Until(_ => ArrivalOf(context, leaving), attempt, Math.Min(context.Timeouts.PollingInterval, ArrivalPollMs)),
+        var arrived = call.Run(nameof(WaitArrived), null, timeoutMs, context.Timeouts.Animation.ToMs(),
+            attempt => Poller.Until(_ => ArrivalOf(context, leaving), attempt, Math.Min(context.Timeouts.PollingInterval.ToMs(), ArrivalPollMs)),
             succeeded: met => met);
 
         try

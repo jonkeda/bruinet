@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Composition;
 using Bruinet.Core.Scopes;
@@ -117,7 +118,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
 
     /// <inheritdoc />
     public bool WaitReady(int? timeoutMs = null)
-        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? _context.Timeouts.PageLoad);
+        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? _context.Timeouts.PageLoad.ToMs());
 
     /// <inheritdoc />
     public bool WaitLoaded(bool? expected, int? timeoutMs = null)
@@ -129,7 +130,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
 
         return RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? _context.Timeouts.PageLoad);
+            timeoutMs ?? _context.Timeouts.PageLoad.ToMs());
     }
 
     /// <inheritdoc />
@@ -142,7 +143,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
 
         RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? _context.Timeouts.PageLoad,
+            timeoutMs ?? _context.Timeouts.PageLoad.ToMs(),
             readiness => new ScopeNotReadyException(
                 readiness,
                 message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but it is {(expected.Value ? "not" : "still loaded")}."));
@@ -165,13 +166,13 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
             return readiness.IsLoaded && readiness.IsBusy == expected.Value
                 ? Observation.Done()
                 : Observation.ScopeNotReady(readiness);
-        }, timeoutMs ?? _context.Timeouts.PageLoad);
+        }, timeoutMs ?? _context.Timeouts.PageLoad.ToMs());
     }
 
     /// <inheritdoc />
     public void AssertIdle(string? message = null, int? timeoutMs = null)
     {
-        var budget = timeoutMs ?? _context.Timeouts.PageLoad;
+        var budget = timeoutMs ?? _context.Timeouts.PageLoad.ToMs();
         RunProbe(
             () => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
             budget,
@@ -195,7 +196,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
 
         return RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? _context.Timeouts.DefaultWait);
+            timeoutMs ?? _context.Timeouts.DefaultWait.ToMs());
     }
 
     /// <inheritdoc />
@@ -208,7 +209,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
 
         RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? _context.Timeouts.DefaultWait,
+            timeoutMs ?? _context.Timeouts.DefaultWait.ToMs(),
             _ =>
             {
                 var actual = GetTitle();

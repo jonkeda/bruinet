@@ -40,11 +40,11 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
     {
         Context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 1000,
-            PageLoad = 1000,
-            ElementFind = 1000,
-            PollingInterval = 1,
-            Animation = 300
+            DefaultWait = TimeSpan.FromMilliseconds(1000),
+            PageLoad = TimeSpan.FromMilliseconds(1000),
+            ElementFind = TimeSpan.FromMilliseconds(1000),
+            PollingInterval = TimeSpan.FromMilliseconds(1),
+            Animation = TimeSpan.FromMilliseconds(300)
         });
         Context.Setup(c => c.Logger).Returns(_logger.Object);
         Context.Setup(c => c.AppElement).Returns(_app.Object);
@@ -327,7 +327,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
         using var context = new MauiTestContext(new MauiTestContextOptions
         {
             Driver = driver.Object,
-            Timeouts = new TimeoutSettings { DefaultWait = 5000, ElementFind = 3000, PollingInterval = 10 }
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(5000), ElementFind = TimeSpan.FromMilliseconds(3000), PollingInterval = TimeSpan.FromMilliseconds(10) }
         });
         var button = new Button<AppRoot>(new AppRoot(context), "Missing");
 
@@ -352,7 +352,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
         using var context = new MauiTestContext(new MauiTestContextOptions
         {
             Driver = driver.Object,
-            Timeouts = new TimeoutSettings { DefaultWait = 300, PollingInterval = 10 }
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(300), PollingInterval = TimeSpan.FromMilliseconds(10) }
         });
         var button = new Button<AppRoot>(new AppRoot(context), "Anything");
 

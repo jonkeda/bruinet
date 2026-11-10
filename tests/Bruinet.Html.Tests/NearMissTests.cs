@@ -19,7 +19,7 @@ public sealed class NearMissTests : IDisposable
     public NearMissTests()
     {
         NearMisses.Path = _summary;
-        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 400, PageLoad = 400, PollingInterval = 1 });
+        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(400), PageLoad = TimeSpan.FromMilliseconds(400), PollingInterval = TimeSpan.FromMilliseconds(1) });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
         _context.Setup(c => c.Context).Returns(() => _context.Object);
         _context.Setup(c => c.IsIdle()).Returns(true);

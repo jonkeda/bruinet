@@ -65,6 +65,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** time in options and settings is `TimeSpan` (`TimeoutSettings`, `StrideTestContextOptions`, `BlazorOptions`,
+  `BunitTestContextOptions`); control verbs keep `int? timeoutMs`, and `TimeSpan.ToMs()` bridges them. Settings JSON takes a
+  number of milliseconds, as before, or a TimeSpan string (review proposal 9).
 - **Breaking:** `Bruinet.Core.Scraping` moved into the Scraper as `Bruinet.Scraper.Snapshots`; Core no longer declares
   the scraper's snapshot model (review proposal 7).
 - **Breaking:** `DeviceFact` moved to `Bruinet.Maui.Testing` and `BrowserFact` to `Bruinet.Html.Testing`, beside the

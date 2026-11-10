@@ -92,7 +92,7 @@ public sealed class FakeGame
         Driver.Setup(d => d.Find(It.IsAny<string>(), It.IsAny<string>())).Returns<string, string>((_, target) => State(target));
         Driver.Setup(d => d.Act(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object[]>()))
             .Callback<string, string, object[]>(Act);
-        Context = new StrideTestContext(Driver.Object, new StrideTestContextOptions { DefaultTimeoutMs = 1000, StartupTimeoutMs = 1000, PollingIntervalMs = 1 });
+        Context = new StrideTestContext(Driver.Object, new StrideTestContextOptions { DefaultTimeout = TimeSpan.FromMilliseconds(1000), StartupTimeout = TimeSpan.FromMilliseconds(1000), PollingInterval = TimeSpan.FromMilliseconds(1) });
     }
 
     public Mock<IStrideDriver> Driver { get; } = new();

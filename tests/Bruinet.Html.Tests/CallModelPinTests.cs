@@ -40,10 +40,10 @@ public class CallModelPinTests
         _output = output;
         _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 1000,
-            PageLoad = 1000,
-            ElementFind = 1000,
-            PollingInterval = 1,
+            DefaultWait = TimeSpan.FromMilliseconds(1000),
+            PageLoad = TimeSpan.FromMilliseconds(1000),
+            ElementFind = TimeSpan.FromMilliseconds(1000),
+            PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
         _context.Setup(c => c.Context).Returns(() => _context.Object);
@@ -126,7 +126,7 @@ public class CallModelPinTests
     private static PlaywrightTestContext PlaywrightContext(IPage page, int elementFind = 1000)
         => PlaywrightTestContext.ForPage(page, new HtmlTestContextOptions
         {
-            Timeouts = new TimeoutSettings { DefaultWait = 1000, ElementFind = elementFind, PollingInterval = 10 },
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(1000), ElementFind = TimeSpan.FromMilliseconds(elementFind), PollingInterval = TimeSpan.FromMilliseconds(10) },
         });
 
     #endregion

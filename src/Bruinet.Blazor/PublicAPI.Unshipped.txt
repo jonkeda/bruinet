@@ -5,8 +5,8 @@ Bruinet.Blazor.BlazorOptions.AppPath.set -> void
 Bruinet.Blazor.BlazorOptions.AppUrl.get -> string!
 Bruinet.Blazor.BlazorOptions.AppUrl.set -> void
 Bruinet.Blazor.BlazorOptions.BlazorOptions() -> void
-Bruinet.Blazor.BlazorOptions.ReadyTimeoutSeconds.get -> int
-Bruinet.Blazor.BlazorOptions.ReadyTimeoutSeconds.set -> void
+Bruinet.Blazor.BlazorOptions.ReadyTimeout.get -> System.TimeSpan
+Bruinet.Blazor.BlazorOptions.ReadyTimeout.set -> void
 Bruinet.Blazor.BruinetBlazorConfiguration
 Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.get -> Bruinet.Blazor.BlazorOptions!
 Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.set -> void

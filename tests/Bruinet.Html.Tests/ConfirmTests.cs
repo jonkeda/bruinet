@@ -16,7 +16,7 @@ public class ConfirmTests
 
     public ConfirmTests()
     {
-        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 1000, PollingInterval = 1 });
+        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(1000), PollingInterval = TimeSpan.FromMilliseconds(1) });
         _context.Setup(c => c.Logger).Returns(Mock.Of<ITestLogger>());
         _context.Setup(c => c.Context).Returns(() => _context.Object);
         _context.Setup(c => c.IsIdle()).Returns(true);

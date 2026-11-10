@@ -54,10 +54,10 @@ public abstract class StrideTestFixtureBase : IDisposable
         {
             GameExecutablePath = GetAppPath(),
             GameArguments = ["--automation"],
-            DefaultTimeoutMs = 10000,
-            StartupTimeoutMs = 15000,
-            PollingIntervalMs = 100,
-            ConnectionTimeoutMs = 10000,
+            DefaultTimeout = TimeSpan.FromMilliseconds(10000),
+            StartupTimeout = TimeSpan.FromMilliseconds(15000),
+            PollingInterval = TimeSpan.FromMilliseconds(100),
+            ConnectionTimeout = TimeSpan.FromMilliseconds(10000),
             ScreenshotDirectory = GetScreenshotDirectory(),
             LogDirectory = GetArtifactPathProvider().LogsDirectory
         };
@@ -125,7 +125,7 @@ public abstract class StrideTestFixtureBase : IDisposable
         _context = new StrideTestContext(driver.Channel, options, () => driver.GameWindowHandle);
 
         // Wait for game to be ready
-        _context.WaitReady(options.StartupTimeoutMs);
+        _context.WaitReady(options.StartupTimeout.ToMs());
     }
 
     /// <summary>

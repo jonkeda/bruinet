@@ -300,6 +300,8 @@ Bruinet.Core.Configuration.FrameworkOptions
 Bruinet.Core.Configuration.FrameworkOptions.Automation.get -> Bruinet.Core.Configuration.AutomationOptions!
 Bruinet.Core.Configuration.FrameworkOptions.Automation.set -> void
 Bruinet.Core.Configuration.FrameworkOptions.FrameworkOptions() -> void
+Bruinet.Core.Configuration.MillisecondsTimeSpanConverter
+Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.MillisecondsTimeSpanConverter() -> void
 Bruinet.Core.Configuration.ScreenshotFormat
 Bruinet.Core.Configuration.ScreenshotFormat.Jpeg = 1 -> Bruinet.Core.Configuration.ScreenshotFormat
 Bruinet.Core.Configuration.ScreenshotFormat.Png = 0 -> Bruinet.Core.Configuration.ScreenshotFormat
@@ -316,22 +318,23 @@ Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.get -> string!
 Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.set -> void
 Bruinet.Core.Configuration.ScreenshotSettings.ScreenshotSettings() -> void
 Bruinet.Core.Configuration.ScreenshotSettings.With(string? outputDirectory = null, Bruinet.Core.Configuration.ScreenshotFormat? format = null, int? jpegQuality = null, bool? captureOnFailure = null, bool? includeTimestamp = null) -> Bruinet.Core.Configuration.ScreenshotSettings!
+Bruinet.Core.Configuration.TimeSpanMilliseconds
 Bruinet.Core.Configuration.TimeoutDefaults
 Bruinet.Core.Configuration.TimeoutSettings
-Bruinet.Core.Configuration.TimeoutSettings.Animation.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.Animation.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.Animation.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.ElementFind.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.ElementFind.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.ElementFind.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.ElementState.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.ElementState.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.ElementState.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.PageLoad.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.PageLoad.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.PageLoad.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.get -> int
+Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.TimeoutSettings() -> void
-Bruinet.Core.Configuration.TimeoutSettings.With(int? defaultWait = null, int? pageLoad = null, int? elementFind = null, int? elementState = null, int? animation = null, int? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Configuration.TimeoutSettings.With(System.TimeSpan? defaultWait = null, System.TimeSpan? pageLoad = null, System.TimeSpan? elementFind = null, System.TimeSpan? elementState = null, System.TimeSpan? animation = null, System.TimeSpan? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Core.Diagnostics.AutWindow
 Bruinet.Core.Diagnostics.DebuggedApps
 Bruinet.Core.Diagnostics.PhysicalInput
@@ -970,6 +973,8 @@ const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
 override Bruinet.Core.Calls.Observation.ToString() -> string!
 override Bruinet.Core.Collections.ItemKey.ToString() -> string!
+override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.TimeSpan
+override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.TimeSpan value, System.Text.Json.JsonSerializerOptions! options) -> void
 override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
 override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
@@ -1026,6 +1031,7 @@ static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromScans(System
 static Bruinet.Core.Composition.TestPages.IsPage(System.Type! type) -> bool
 static Bruinet.Core.Configuration.BruinetConfigurationBase.LoadFromJson<T>(string! configFileName) -> T
 static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!
+static Bruinet.Core.Configuration.TimeSpanMilliseconds.ToMs(this System.TimeSpan value) -> int
 static Bruinet.Core.Configuration.TimeoutDefaults.Animation.get -> int
 static Bruinet.Core.Configuration.TimeoutDefaults.DefaultWait.get -> int
 static Bruinet.Core.Configuration.TimeoutDefaults.ElementFind.get -> int

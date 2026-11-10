@@ -32,7 +32,7 @@ public sealed class GalleryFixture : NativeAndroidTestFixtureBase, IAsyncLifetim
         options.AutoGrantPermissions = false;
         // The APK just built is the one under test: Appium skips a reinstall of the same version.
         options.AdditionalCapabilities["enforceAppInstall"] = true;
-        options.Timeouts = new Bruinet.Core.Configuration.TimeoutSettings { DefaultWait = 10000, PageLoad = 15000, PollingInterval = 100 };
+        options.Timeouts = new Bruinet.Core.Configuration.TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(10000), PageLoad = TimeSpan.FromMilliseconds(15000), PollingInterval = TimeSpan.FromMilliseconds(100) };
         return options;
     }
 

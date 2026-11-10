@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Utilities;
 using System.Runtime.CompilerServices;
@@ -66,12 +67,12 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
     /// <summary>
     /// Gets the default timeout in milliseconds.
     /// </summary>
-    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait;
+    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait.ToMs();
 
     /// <summary>
     /// Gets the polling interval in milliseconds.
     /// </summary>
-    protected int PollingIntervalMs => Context.Timeouts.PollingInterval;
+    protected int PollingIntervalMs => Context.Timeouts.PollingInterval.ToMs();
 
     #region Calls
 
@@ -99,7 +100,7 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
 
     int IControlHost<IMauiElement>.PollingIntervalMs => PollingIntervalMs;
 
-    int IControlHost<IMauiElement>.AnimationMs => Context.Timeouts.Animation;
+    int IControlHost<IMauiElement>.AnimationMs => Context.Timeouts.Animation.ToMs();
 
     ScopeReadiness IControlHost<IMauiElement>.ProbeScope() => _mauiScope.ProbeReadiness();
 

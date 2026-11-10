@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Recording;
 using Bruinet.Core.Scopes;
@@ -71,7 +72,7 @@ public sealed class StrideTestContext : IStrideTestContext, IRecordable
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new AppRoot(this).WaitFirst(timeoutMs, outcomes);
 
     /// <inheritdoc />
-    public bool WaitReady(int? timeoutMs = null) => new AppRoot(this).WaitReady(timeoutMs ?? Timeouts.PageLoad);
+    public bool WaitReady(int? timeoutMs = null) => new AppRoot(this).WaitReady(timeoutMs ?? Timeouts.PageLoad.ToMs());
 
     // One attempt (R2): the call around it is what waits.
     /// <inheritdoc />

@@ -17,12 +17,12 @@ public static class MauiHeadlessHead
     /// </summary>
     public static TimeoutSettings Timeouts => new()
     {
-        DefaultWait = 5000,
-        PageLoad = 10000,
-        ElementFind = 3000,
-        ElementState = 3000,
-        Animation = 0,
-        PollingInterval = 25,
+        DefaultWait = TimeSpan.FromMilliseconds(5000),
+        PageLoad = TimeSpan.FromMilliseconds(10000),
+        ElementFind = TimeSpan.FromMilliseconds(3000),
+        ElementState = TimeSpan.FromMilliseconds(3000),
+        Animation = TimeSpan.FromMilliseconds(0),
+        PollingInterval = TimeSpan.FromMilliseconds(25),
     };
 
     /// <summary>

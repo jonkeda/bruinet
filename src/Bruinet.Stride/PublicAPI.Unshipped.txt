@@ -192,10 +192,10 @@ Bruinet.Stride.Context.StrideTestContextOptions.AttachToExisting.get -> bool
 Bruinet.Stride.Context.StrideTestContextOptions.AttachToExisting.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.CaptureScreenshotOnFailure.get -> bool
 Bruinet.Stride.Context.StrideTestContextOptions.CaptureScreenshotOnFailure.set -> void
-Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeoutMs.get -> int
-Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeoutMs.set -> void
-Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeoutMs.get -> int
-Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeout.get -> System.TimeSpan
+Bruinet.Stride.Context.StrideTestContextOptions.ConnectionTimeout.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeout.get -> System.TimeSpan
+Bruinet.Stride.Context.StrideTestContextOptions.DefaultTimeout.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.EnableCsvLogging.get -> bool
 Bruinet.Stride.Context.StrideTestContextOptions.EnableCsvLogging.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.GameArguments.get -> string![]!
@@ -212,14 +212,14 @@ Bruinet.Stride.Context.StrideTestContextOptions.NearMiss.get -> Bruinet.Core.Cal
 Bruinet.Stride.Context.StrideTestContextOptions.NearMiss.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.PipeName.get -> string!
 Bruinet.Stride.Context.StrideTestContextOptions.PipeName.set -> void
-Bruinet.Stride.Context.StrideTestContextOptions.PollingIntervalMs.get -> int
-Bruinet.Stride.Context.StrideTestContextOptions.PollingIntervalMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.PollingInterval.get -> System.TimeSpan
+Bruinet.Stride.Context.StrideTestContextOptions.PollingInterval.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.ScreenshotDirectory.get -> string!
 Bruinet.Stride.Context.StrideTestContextOptions.ScreenshotDirectory.set -> void
-Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeoutMs.get -> int
-Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeoutMs.set -> void
-Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeoutMs.get -> int
-Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeoutMs.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeout.get -> System.TimeSpan
+Bruinet.Stride.Context.StrideTestContextOptions.ShortTimeout.set -> void
+Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeout.get -> System.TimeSpan
+Bruinet.Stride.Context.StrideTestContextOptions.StartupTimeout.set -> void
 Bruinet.Stride.Context.StrideTestContextOptions.StrideTestContextOptions() -> void
 Bruinet.Stride.Context.StrideTestContextOptions.ToTimeoutSettings() -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Stride.Controls.Buttons.Button<TScope>

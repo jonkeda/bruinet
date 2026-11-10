@@ -16,9 +16,9 @@ public class FluentChainingTests
         // Setup timeout settings
         var timeouts = new TimeoutSettings
         {
-            DefaultWait = 5000,
-            PageLoad = 30000,
-            PollingInterval = 100
+            DefaultWait = TimeSpan.FromMilliseconds(5000),
+            PageLoad = TimeSpan.FromMilliseconds(30000),
+            PollingInterval = TimeSpan.FromMilliseconds(100)
         };
         _mockContext.Setup(c => c.Timeouts).Returns(timeouts);
         _mockContext.Setup(c => c.DefaultLocatorStrategy).Returns(LocatorStrategy.AutomationId);

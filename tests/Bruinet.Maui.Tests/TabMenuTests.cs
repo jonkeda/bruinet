@@ -22,9 +22,9 @@ public class TabMenuTests
         _context = new Mock<IMauiTestContext>();
         _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 300,
-            PageLoad = 300,
-            PollingInterval = 20
+            DefaultWait = TimeSpan.FromMilliseconds(300),
+            PageLoad = TimeSpan.FromMilliseconds(300),
+            PollingInterval = TimeSpan.FromMilliseconds(20)
         });
         _context.Setup(c => c.DefaultLocatorStrategy).Returns(LocatorStrategy.AutomationId);
 

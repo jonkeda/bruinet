@@ -1,7 +1,12 @@
+using System.Text.Json.Serialization;
+
 namespace Bruinet.Core.Configuration;
 
 /// <summary>
-/// Timeout configuration for test operations.
+/// Timeout configuration for test operations. Settings are <see cref="TimeSpan"/>s; a control verb's
+/// own budget is <c>int? timeoutMs</c>, and <see cref="TimeSpanMilliseconds.ToMs"/> bridges the two
+/// (public API review, proposal 9). In a settings file each one is a number of milliseconds or a
+/// <see cref="TimeSpan"/> string.
 /// </summary>
 public class TimeoutSettings
 {
@@ -23,45 +28,40 @@ public class TimeoutSettings
             ? scale
             : 1;
 
-    private static int Scaled(int milliseconds) => Scale == 1 ? milliseconds : (int)Math.Round(milliseconds * Scale);
+    private static TimeSpan Scaled(TimeSpan value)
+        => Scale == 1 ? value : TimeSpan.FromMilliseconds(Math.Round(value.TotalMilliseconds * Scale));
 
-    /// <summary>
-    /// Default timeout for wait operations (milliseconds).
-    /// </summary>
-    public int DefaultWait { get => Scaled(_defaultWait); set => _defaultWait = value; }
+    /// <summary>Default timeout for wait operations.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan DefaultWait { get => Scaled(_defaultWait); set => _defaultWait = value; }
 
-    private int _defaultWait = 5000;
+    private TimeSpan _defaultWait = TimeSpan.FromMilliseconds(5000);
 
-    /// <summary>
-    /// Timeout for page load operations (milliseconds).
-    /// </summary>
-    public int PageLoad { get => Scaled(_pageLoad); set => _pageLoad = value; }
+    /// <summary>Timeout for page load operations.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan PageLoad { get => Scaled(_pageLoad); set => _pageLoad = value; }
 
-    private int _pageLoad = 10000;
+    private TimeSpan _pageLoad = TimeSpan.FromMilliseconds(10000);
 
-    /// <summary>
-    /// Timeout for element finding (milliseconds).
-    /// </summary>
-    public int ElementFind { get => Scaled(_elementFind); set => _elementFind = value; }
+    /// <summary>Timeout for element finding.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan ElementFind { get => Scaled(_elementFind); set => _elementFind = value; }
 
-    private int _elementFind = 3000;
+    private TimeSpan _elementFind = TimeSpan.FromMilliseconds(3000);
 
-    /// <summary>
-    /// Timeout for element state changes (milliseconds).
-    /// </summary>
-    public int ElementState { get => Scaled(_elementState); set => _elementState = value; }
+    /// <summary>Timeout for element state changes.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan ElementState { get => Scaled(_elementState); set => _elementState = value; }
 
-    private int _elementState = 3000;
+    private TimeSpan _elementState = TimeSpan.FromMilliseconds(3000);
 
-    /// <summary>
-    /// Delay for animation settling (milliseconds).
-    /// </summary>
-    public int Animation { get; set; } = 300;
+    /// <summary>Delay for animation settling.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan Animation { get; set; } = TimeSpan.FromMilliseconds(300);
 
-    /// <summary>
-    /// Polling interval for wait operations (milliseconds).
-    /// </summary>
-    public int PollingInterval { get; set; } = 100;
+    /// <summary>Polling interval for wait operations.</summary>
+    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan PollingInterval { get; set; } = TimeSpan.FromMilliseconds(100);
 
     /// <summary>
     /// Default timeout settings.
@@ -73,12 +73,12 @@ public class TimeoutSettings
     /// </summary>
     public static TimeoutSettings Fast => new()
     {
-        DefaultWait = 2000,
-        PageLoad = 5000,
-        ElementFind = 1000,
-        ElementState = 1000,
-        Animation = 150,
-        PollingInterval = 50
+        DefaultWait = TimeSpan.FromMilliseconds(2000),
+        PageLoad = TimeSpan.FromMilliseconds(5000),
+        ElementFind = TimeSpan.FromMilliseconds(1000),
+        ElementState = TimeSpan.FromMilliseconds(1000),
+        Animation = TimeSpan.FromMilliseconds(150),
+        PollingInterval = TimeSpan.FromMilliseconds(50)
     };
 
     /// <summary>
@@ -86,24 +86,24 @@ public class TimeoutSettings
     /// </summary>
     public static TimeoutSettings Slow => new()
     {
-        DefaultWait = 15000,
-        PageLoad = 30000,
-        ElementFind = 10000,
-        ElementState = 10000,
-        Animation = 500,
-        PollingInterval = 200
+        DefaultWait = TimeSpan.FromMilliseconds(15000),
+        PageLoad = TimeSpan.FromMilliseconds(30000),
+        ElementFind = TimeSpan.FromMilliseconds(10000),
+        ElementState = TimeSpan.FromMilliseconds(10000),
+        Animation = TimeSpan.FromMilliseconds(500),
+        PollingInterval = TimeSpan.FromMilliseconds(200)
     };
 
     /// <summary>
     /// Create a copy with modified values.
     /// </summary>
     public TimeoutSettings With(
-        int? defaultWait = null,
-        int? pageLoad = null,
-        int? elementFind = null,
-        int? elementState = null,
-        int? animation = null,
-        int? pollingInterval = null)
+        TimeSpan? defaultWait = null,
+        TimeSpan? pageLoad = null,
+        TimeSpan? elementFind = null,
+        TimeSpan? elementState = null,
+        TimeSpan? animation = null,
+        TimeSpan? pollingInterval = null)
     {
         return new TimeoutSettings
         {

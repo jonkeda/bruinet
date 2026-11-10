@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Interfaces;
 
@@ -39,7 +40,7 @@ public sealed class AppRoot : ObjectBase, IMauiScope<AppRoot>
     public bool WaitReady(int? timeoutMs = null)
     {
         var budget = timeoutMs ?? DefaultTimeoutMs;
-        var context = new AttemptContext(Deadline.In(budget), Context.Timeouts.Animation);
+        var context = new AttemptContext(Deadline.In(budget), Context.Timeouts.Animation.ToMs());
 
         return Poller.Until(
             _ => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
@@ -51,7 +52,7 @@ public sealed class AppRoot : ObjectBase, IMauiScope<AppRoot>
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes)
         => FirstOutcome.Wait(
             new ControlCall(Context.Logger, Context.Name, Context.NearMiss, nameof(AppRoot), nameof(AppRoot)),
-            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation, PollingIntervalMs);
+            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation.ToMs(), PollingIntervalMs);
 
     /// <inheritdoc />
     public bool AllowsScrollLookup => false;

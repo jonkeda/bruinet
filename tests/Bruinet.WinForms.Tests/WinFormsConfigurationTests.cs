@@ -56,9 +56,9 @@ public class WinFormsTestContextOptionsTests
     {
         var timeouts = new TimeoutSettings
         {
-            DefaultWait = 10000,
-            PageLoad = 20000,
-            PollingInterval = 200
+            DefaultWait = TimeSpan.FromMilliseconds(10000),
+            PageLoad = TimeSpan.FromMilliseconds(20000),
+            PollingInterval = TimeSpan.FromMilliseconds(200)
         };
 
         var options = new WinFormsTestContextOptions
@@ -66,9 +66,9 @@ public class WinFormsTestContextOptionsTests
             Timeouts = timeouts
         };
 
-        Assert.Equal(10000, options.Timeouts?.DefaultWait);
-        Assert.Equal(20000, options.Timeouts?.PageLoad);
-        Assert.Equal(200, options.Timeouts?.PollingInterval);
+        Assert.Equal(10000, options.Timeouts?.DefaultWait.ToMs());
+        Assert.Equal(20000, options.Timeouts?.PageLoad.ToMs());
+        Assert.Equal(200, options.Timeouts?.PollingInterval.ToMs());
     }
 }
 

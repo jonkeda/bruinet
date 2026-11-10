@@ -18,8 +18,9 @@ public class BlazorOptions
     public string? AppPath { get; set; }
 
     /// <summary>
-    /// Timeout in seconds to wait for application to be ready.
-    /// Default: 30
+    /// How long to wait for the application to be ready. Default: 30 seconds. In a settings file, a
+    /// number of milliseconds or a TimeSpan string.
     /// </summary>
-    public int ReadyTimeoutSeconds { get; set; } = 30;
+    [System.Text.Json.Serialization.JsonConverter(typeof(Bruinet.Core.Configuration.MillisecondsTimeSpanConverter))]
+    public TimeSpan ReadyTimeout { get; set; } = TimeSpan.FromSeconds(30);
 }

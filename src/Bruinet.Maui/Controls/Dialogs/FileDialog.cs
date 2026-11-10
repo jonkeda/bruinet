@@ -1,3 +1,5 @@
+using Bruinet.Core.Configuration;
+
 namespace Bruinet.Maui.Controls.Dialogs;
 
 /// <summary>
@@ -32,7 +34,7 @@ public sealed class FileDialog<TScope>
     {
         _scope.Context.AppElement.AnswerFileDialog(
             Path.GetFullPath(path),
-            timeoutMs ?? _scope.Context.Timeouts.DefaultWait);
+            timeoutMs ?? _scope.Context.Timeouts.DefaultWait.ToMs());
         return _scope.Self;
     }
 }

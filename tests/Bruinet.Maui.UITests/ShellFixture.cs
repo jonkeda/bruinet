@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Utilities;
 using Bruinet.Maui.Configuration;
 using Bruinet.Maui.Enums;
@@ -99,7 +100,7 @@ public class ShellFixture : MauiTestFixtureBase
             Bruinet.Core.Calls.Settle.Until(
                 () => !_page.IsSubPagePushed(),
                 TestConstants.ShortTestTimeoutMs,
-                Context.Timeouts.PollingInterval);
+                Context.Timeouts.PollingInterval.ToMs());
         }
 
         // A flyout item that is not the tabbed section has no tabs, so a test that ended on one

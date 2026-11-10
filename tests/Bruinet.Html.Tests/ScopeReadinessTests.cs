@@ -23,9 +23,9 @@ public class ScopeReadinessTests
     {
         _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 1000,
-            PageLoad = 1000,
-            PollingInterval = 1,
+            DefaultWait = TimeSpan.FromMilliseconds(1000),
+            PageLoad = TimeSpan.FromMilliseconds(1000),
+            PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
         _context.Setup(c => c.Context).Returns(() => _context.Object);

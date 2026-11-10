@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using System.Runtime.CompilerServices;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Utilities;
@@ -456,7 +457,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
 
     private protected int Budget(int? timeoutMs) => timeoutMs ?? DefaultTimeoutMs;
 
-    private protected int AnimationMs => Context.Timeouts.Animation;
+    private protected int AnimationMs => Context.Timeouts.Animation.ToMs();
 
     /// <summary>
     /// What is left of the running call's budget, for a wait below the call (a scroll); the

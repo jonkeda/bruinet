@@ -1,3 +1,5 @@
+using Bruinet.Core.Configuration;
+
 namespace Bruinet.Maui;
 
 /// <summary>
@@ -14,10 +16,10 @@ public abstract class ObjectBase
     /// <summary>
     /// Gets the default timeout in milliseconds.
     /// </summary>
-    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait;
+    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait.ToMs();
 
     /// <summary>
     /// Gets the polling interval in milliseconds.
     /// </summary>
-    protected int PollingIntervalMs => Context.Timeouts.PollingInterval;
+    protected int PollingIntervalMs => Context.Timeouts.PollingInterval.ToMs();
 }

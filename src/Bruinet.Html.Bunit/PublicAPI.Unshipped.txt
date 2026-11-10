@@ -59,4 +59,4 @@ Bruinet.Html.Bunit.BunitTestContextOptions.StartBlank.init -> void
 Bruinet.Html.Bunit.BunitTestContextOptions.User.get -> string?
 Bruinet.Html.Bunit.BunitTestContextOptions.User.init -> void
 const Bruinet.Html.Bunit.BunitTestContext.BusyScript = "bruinetBusy.set" -> string!
-const Bruinet.Html.Bunit.BunitTestContextOptions.PollingIntervalMs = 10 -> int
+static Bruinet.Html.Bunit.BunitTestContextOptions.PollingInterval.get -> System.TimeSpan

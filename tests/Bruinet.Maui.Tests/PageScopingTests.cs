@@ -17,10 +17,10 @@ public sealed class PageScopingTests
         var context = new Mock<IMauiTestContext>();
         context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 100,
-            PageLoad = 100,
-            ElementFind = 100,
-            PollingInterval = 1
+            DefaultWait = TimeSpan.FromMilliseconds(100),
+            PageLoad = TimeSpan.FromMilliseconds(100),
+            ElementFind = TimeSpan.FromMilliseconds(100),
+            PollingInterval = TimeSpan.FromMilliseconds(1)
         });
         context.Setup(c => c.DefaultLocatorStrategy).Returns(LocatorStrategy.AutomationId);
 
@@ -240,10 +240,10 @@ public sealed class PageScopingTests
         var context = new Mock<IMauiTestContext>();
         context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 100,
-            PageLoad = 100,
-            ElementFind = 100,
-            PollingInterval = 1
+            DefaultWait = TimeSpan.FromMilliseconds(100),
+            PageLoad = TimeSpan.FromMilliseconds(100),
+            ElementFind = TimeSpan.FromMilliseconds(100),
+            PollingInterval = TimeSpan.FromMilliseconds(1)
         });
         context.Setup(c => c.DefaultLocatorStrategy).Returns(LocatorStrategy.AutomationId);
         return context;

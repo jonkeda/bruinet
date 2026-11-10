@@ -71,7 +71,7 @@ Nothing is shipped yet, so every proposal below is still free. After the first `
 
 ### 5. Signatures are uneven
 
-- Time is `int? timeoutMs` in about 1,800 places and `TimeSpan` in about 80; `TimeoutSettings` is all bare `int`.
+- Time was `int? timeoutMs` in about 1,800 places and `TimeSpan` in about 80, with `TimeoutSettings` all bare `int`; proposal 9 settled it: verbs in `int? timeoutMs`, options and settings in `TimeSpan`.
 - Reads disagree on taking a timeout: `GetValue(int? timeoutMs)`, `GetPlaceholder(int? timeoutMs)` and `GetSelectedText(int? timeoutMs)` do; `GetDate()`, `GetTime()`, `GetProgress()` and every `Is…()` do not.
 - `ITextControlObject` has `AssertText…` and `WaitText…` but no `GetText`; `GetText` sits on each platform's base class instead.
 - `WaitText(expected)` and `WaitTextEquals(expected)` are both public on Html's `ControlBase` and do the same thing.
@@ -102,7 +102,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
 | 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Done as far as it goes: the step attributes are in `Bruinet.Bdd.Abstractions` (`e9d3b2c4`), `DeviceFact` and `BrowserFact` on their platforms (`a0ffa1eb`), `Scraping` in the Scraper. Staying in Core, with reason: the heads (the run's `BRUINET_HEAD`, read by Bdd, Uat and Core), `Composition` (`[TestModuleScan]`, `TestPages`, used by every stack, Uat, Bdd and consumers) and `MarkdownTables` (Core, Bdd and the Scraper). |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
-| 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Open. |
+| 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Done as proposed (the owner, 2026-11-10): `TimeoutSettings`, Stride's, Blazor's and bUnit's options are `TimeSpan`; `ToMs()` bridges to a verb; JSON keeps milliseconds. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
 | 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
 | 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Started: `BRUINET010` marks `Bdd`'s engine (`docs/experimental.md`). Left: Narrator, Contracts and the scraper support, then the move to `Shipped`. |
@@ -128,6 +128,6 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposals 1, 2, 4 and 7 are made as far as they go, 5 and 12 started, 13 in working order.
-What is left needs a design or a decision before code: the shared collection base (5), the signature rules (8), `timeoutMs` against `TimeSpan` (9), the logger's record (10) and one options type per platform (11).
-Proposal 9 is the smallest decision: my proposal stands, `int? timeoutMs` on control verbs and `TimeSpan` in options and settings.
+Proposals 1, 2, 4, 7 and 9 are made as far as they go, 5 and 12 started, 13 in working order.
+What is left needs a design before code: the shared collection base (5), the signature rules (8), the logger's record (10) and one options type per platform (11).
+Proposal 8 is next: its rules (one `Locator` on exceptions, `Exists()`, a `timeoutMs` on every read, what `expected: null` means) reach all six stacks through the `.tpl.cs` generators.

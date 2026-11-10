@@ -245,12 +245,12 @@ public abstract class MauiTestFixtureBase : IDisposable
 
         driverOptions.Timeouts = new TimeoutSettings
         {
-            DefaultWait = 5000,
-            PageLoad = 10000,
-            ElementFind = 3000,
-            ElementState = 3000,
-            Animation = 300,
-            PollingInterval = 100
+            DefaultWait = TimeSpan.FromMilliseconds(5000),
+            PageLoad = TimeSpan.FromMilliseconds(10000),
+            ElementFind = TimeSpan.FromMilliseconds(3000),
+            ElementState = TimeSpan.FromMilliseconds(3000),
+            Animation = TimeSpan.FromMilliseconds(300),
+            PollingInterval = TimeSpan.FromMilliseconds(100)
         };
         driverOptions.AppPath = string.IsNullOrWhiteSpace(Configuration.Maui.AppPath)
             ? GetDefaultAppPath(Configuration.Maui.Platform)

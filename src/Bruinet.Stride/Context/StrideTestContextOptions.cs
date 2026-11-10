@@ -7,30 +7,25 @@ public class StrideTestContextOptions
 {
     #region Timeouts
 
-    /// <summary>
-    /// Default timeout in milliseconds for wait operations.
-    /// </summary>
-    public int DefaultTimeoutMs { get; set; } = 3000;
+    /// <summary>Default timeout for wait operations.</summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromMilliseconds(3000);
 
-    /// <summary>
-    /// Short timeout in milliseconds for quick checks.
-    /// </summary>
-    public int ShortTimeoutMs { get; set; } = 1000;
+    /// <summary>Short timeout for quick checks.</summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan ShortTimeout { get; set; } = TimeSpan.FromMilliseconds(1000);
 
-    /// <summary>
-    /// Polling interval in milliseconds for wait operations.
-    /// </summary>
-    public int PollingIntervalMs { get; set; } = 100;
+    /// <summary>Polling interval for wait operations.</summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan PollingInterval { get; set; } = TimeSpan.FromMilliseconds(100);
 
-    /// <summary>
-    /// Timeout in milliseconds for game startup.
-    /// </summary>
-    public int StartupTimeoutMs { get; set; } = 10000;
+    /// <summary>Timeout for game startup.</summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan StartupTimeout { get; set; } = TimeSpan.FromMilliseconds(10000);
 
-    /// <summary>
-    /// Timeout in milliseconds for connecting to automation channel.
-    /// </summary>
-    public int ConnectionTimeoutMs { get; set; } = 5000;
+    /// <summary>Timeout for connecting to the automation channel.</summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(5000);
 
     #endregion
 
@@ -92,11 +87,11 @@ public class StrideTestContextOptions
     /// </summary>
     public TimeoutSettings ToTimeoutSettings() => new()
     {
-        DefaultWait = DefaultTimeoutMs,
-        PageLoad = StartupTimeoutMs,
-        ElementFind = ShortTimeoutMs,
-        ElementState = DefaultTimeoutMs,
-        Animation = 150,
-        PollingInterval = PollingIntervalMs
+        DefaultWait = DefaultTimeout,
+        PageLoad = StartupTimeout,
+        ElementFind = ShortTimeout,
+        ElementState = DefaultTimeout,
+        Animation = TimeSpan.FromMilliseconds(150),
+        PollingInterval = PollingInterval
     };
 }

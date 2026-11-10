@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Maui.Containers;
 
 namespace Bruinet.Maui.Controls.Container;
@@ -98,7 +99,7 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
 
             // A sliver at the bottom edge is in the tree without its children; move it clear.
             element?.RevealClearOfEdges();
-        }, timeoutMs ?? Context.Timeouts.PageLoad);
+        }, timeoutMs ?? Context.Timeouts.PageLoad.ToMs());
 
     /// <summary>
     /// Brings a descendant into view by automation id.

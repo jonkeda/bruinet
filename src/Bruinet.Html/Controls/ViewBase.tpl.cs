@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Interfaces;
@@ -81,7 +82,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     int IControlHost<IHtmlElement>.PollingIntervalMs => PollingIntervalMs;
 
-    int IControlHost<IHtmlElement>.AnimationMs => Context.Timeouts.Animation;
+    int IControlHost<IHtmlElement>.AnimationMs => Context.Timeouts.Animation.ToMs();
 
     ScopeReadiness IControlHost<IHtmlElement>.ProbeScope() => _scope.ProbeReadiness();
 

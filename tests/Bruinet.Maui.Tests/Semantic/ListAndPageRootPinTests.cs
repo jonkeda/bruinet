@@ -24,11 +24,11 @@ public class ListAndPageRootPinTests : SemanticControlTestsBase
     {
         Context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 1000,
-            PageLoad = 1000,
-            ElementFind = 1000,
-            PollingInterval = 1,
-            Animation = 300
+            DefaultWait = TimeSpan.FromMilliseconds(1000),
+            PageLoad = TimeSpan.FromMilliseconds(1000),
+            ElementFind = TimeSpan.FromMilliseconds(1000),
+            PollingInterval = TimeSpan.FromMilliseconds(1),
+            Animation = TimeSpan.FromMilliseconds(300)
         });
         Context.Setup(c => c.Logger).Returns(new Mock<ITestLogger>().Object);
         Context.Setup(c => c.AppElement).Returns(new Mock<IMauiElement>().Object);

@@ -24,7 +24,7 @@ public class CallBudgetTests
     public void Within_InsideACall_IsWhatTheCallHasLeft()
     {
         var context = new Mock<IHtmlTestContext>();
-        context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 1000, PageLoad = 1000, PollingInterval = 1 });
+        context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(1000), PageLoad = TimeSpan.FromMilliseconds(1000), PollingInterval = TimeSpan.FromMilliseconds(1) });
         context.Setup(c => c.Logger).Returns(new Mock<ITestLogger>().Object);
         context.Setup(c => c.Context).Returns(() => context.Object);
         context.Setup(c => c.IsIdle()).Returns(true);

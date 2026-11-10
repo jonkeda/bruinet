@@ -100,7 +100,7 @@ public class StrideGameDriver : IDisposable
             ?? throw new InvalidOperationException("Failed to start game process");
 
         var startTime = DateTime.UtcNow;
-        while ((DateTime.UtcNow - startTime).TotalMilliseconds < _options.StartupTimeoutMs)
+        while (DateTime.UtcNow - startTime < _options.StartupTimeout)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -118,7 +118,7 @@ public class StrideGameDriver : IDisposable
     private async Task ConnectToAutomationAsync(CancellationToken cancellationToken)
     {
         Channel = new NamedPipeChannel(_options.PipeName);
-        var timeout = TimeSpan.FromMilliseconds(_options.ConnectionTimeoutMs);
+        var timeout = _options.ConnectionTimeout;
         await Channel.ConnectAsync(timeout, cancellationToken);
     }
 

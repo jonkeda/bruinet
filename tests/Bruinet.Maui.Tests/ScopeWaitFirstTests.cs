@@ -12,7 +12,7 @@ public sealed class ScopeWaitFirstTests
 
     public ScopeWaitFirstTests()
     {
-        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 100, PollingInterval = 1 });
+        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(100), PollingInterval = TimeSpan.FromMilliseconds(1) });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
         _root = new AppRoot(_context.Object);
     }

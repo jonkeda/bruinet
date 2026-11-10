@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using System.Runtime.CompilerServices;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Scopes;
@@ -12,9 +13,9 @@ public abstract class ObjectBase
     /// <summary>The test context the object belongs to.</summary>
     public abstract INativeAndroidTestContext Context { get; }
 
-    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait;
+    protected int DefaultTimeoutMs => Context.Timeouts.DefaultWait.ToMs();
 
-    protected int PollingIntervalMs => Context.Timeouts.PollingInterval;
+    protected int PollingIntervalMs => Context.Timeouts.PollingInterval.ToMs();
 
     /// <summary>The name this object's own calls are logged under.</summary>
     protected virtual string ScopeName => GetType().Name;
@@ -31,7 +32,7 @@ public abstract class ObjectBase
         [CallerMemberName] string? caller = null)
     {
         caller ??= nameof(RunProbe);
-        return new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName).Run(caller, null, budgetMs, Context.Timeouts.Animation, attempt =>
+        return new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName).Run(caller, null, budgetMs, Context.Timeouts.Animation.ToMs(), attempt =>
         {
             if (Poller.Until(_ => probe(), attempt, PollingIntervalMs))
             {
@@ -57,5 +58,5 @@ public abstract class ObjectBase
     private protected int RunFirst(int? timeoutMs, Func<bool>[] outcomes)
         => FirstOutcome.Wait(
             new ControlCall(Context.Logger, Context.Name, Context.NearMiss, ScopeName, ScopeName),
-            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation, PollingIntervalMs);
+            Context.ProbeReadiness, outcomes, timeoutMs ?? DefaultTimeoutMs, Context.Timeouts.Animation.ToMs(), PollingIntervalMs);
 }

@@ -26,7 +26,7 @@ public sealed class ActionPacingTests
 
     public ActionPacingTests()
     {
-        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 2000, PageLoad = 2000, PollingInterval = 1 });
+        _context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(2000), PageLoad = TimeSpan.FromMilliseconds(2000), PollingInterval = TimeSpan.FromMilliseconds(1) });
         _context.Setup(c => c.Context).Returns(() => _context.Object);
         _context.Setup(c => c.IsIdle()).Returns(true);
         _context.Setup(c => c.TryFindElement(It.Is<Locator>(l => l.Value == "Go"))).Returns(_button.Object);

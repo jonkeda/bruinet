@@ -17,10 +17,10 @@ public sealed class FakeApp
     {
         Context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 1000,
-            PageLoad = 1000,
-            ElementFind = 1000,
-            PollingInterval = 1,
+            DefaultWait = TimeSpan.FromMilliseconds(1000),
+            PageLoad = TimeSpan.FromMilliseconds(1000),
+            ElementFind = TimeSpan.FromMilliseconds(1000),
+            PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         Context.Setup(c => c.Logger).Returns(Logger.Object);
         Context.Setup(c => c.Context).Returns(() => Context.Object);

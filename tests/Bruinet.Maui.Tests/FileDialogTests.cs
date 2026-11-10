@@ -10,7 +10,7 @@ public class FileDialogTests
         var app = new Mock<IMauiElement>();
         var context = new Mock<IMauiTestContext>();
         context.Setup(c => c.AppElement).Returns(app.Object);
-        context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = 4321 });
+        context.Setup(c => c.Timeouts).Returns(new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(4321) });
         var page = new TestPage(context.Object);
 
         var returned = new FileDialog<TestPage>(page).Choose("photo.png");

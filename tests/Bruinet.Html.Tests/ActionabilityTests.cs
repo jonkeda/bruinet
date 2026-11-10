@@ -93,7 +93,7 @@ public class ActionabilityTests
             .ReturnsAsync("""{"ready":"complete","body":true,"busy":null}""");
         var context = PlaywrightTestContext.ForPage(page.Object, new HtmlTestContextOptions
         {
-            Timeouts = new TimeoutSettings { DefaultWait = 300, ElementFind = 300, PollingInterval = 10 },
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(300), ElementFind = TimeSpan.FromMilliseconds(300), PollingInterval = TimeSpan.FromMilliseconds(10) },
         });
         return (context, button);
     }

@@ -9,9 +9,9 @@ public abstract class SemanticControlTestsBase
     {
         Context.Setup(c => c.Timeouts).Returns(new TimeoutSettings
         {
-            DefaultWait = 100,
-            PageLoad = 100,
-            PollingInterval = 1
+            DefaultWait = TimeSpan.FromMilliseconds(100),
+            PageLoad = TimeSpan.FromMilliseconds(100),
+            PollingInterval = TimeSpan.FromMilliseconds(1)
         });
         Context.Setup(c => c.DefaultLocatorStrategy).Returns(LocatorStrategy.AutomationId);
 

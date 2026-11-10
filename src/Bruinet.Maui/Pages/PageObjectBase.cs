@@ -1,3 +1,4 @@
+using Bruinet.Core.Configuration;
 using Bruinet.Core.Calls;
 using Bruinet.Maui.Containers;
 using Bruinet.Maui.Controls;
@@ -145,7 +146,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     protected override ScopeReadiness ProbeCallReadiness() => ProbeReadiness();
 
     /// <inheritdoc />
-    protected override int DefaultReadyTimeoutMs => Context.Timeouts.PageLoad;
+    protected override int DefaultReadyTimeoutMs => Context.Timeouts.PageLoad.ToMs();
 
     /// <inheritdoc />
     public bool IsBusy()
@@ -172,7 +173,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
             return readiness.IsLoaded && readiness.IsBusy == expected.Value
                 ? Observation.Done()
                 : Observation.ScopeNotReady(readiness);
-        }, timeoutMs ?? Context.Timeouts.PageLoad);
+        }, timeoutMs ?? Context.Timeouts.PageLoad.ToMs());
     }
 
     /// <summary>Waits until the loaded page is not busy: <c>WaitReady</c>.</summary>
@@ -186,7 +187,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     /// <exception cref="ScopeNotReadyException">The page did not become ready within the timeout.</exception>
     public void AssertIdle(string? message = null, int? timeoutMs = null)
     {
-        var budget = timeoutMs ?? Context.Timeouts.PageLoad;
+        var budget = timeoutMs ?? Context.Timeouts.PageLoad.ToMs();
         RunProbe(
             () => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
             budget,
@@ -204,7 +205,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
         return RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? Context.Timeouts.PageLoad);
+            timeoutMs ?? Context.Timeouts.PageLoad.ToMs());
     }
 
     /// <inheritdoc />
@@ -216,7 +217,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
         RunProbe(
             () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? Context.Timeouts.PageLoad,
+            timeoutMs ?? Context.Timeouts.PageLoad.ToMs(),
             readiness => new ScopeNotReadyException(
                 readiness,
                 message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but it is {(expected.Value ? "not" : "still loaded")}. Last readiness state: {readiness.State}."));
@@ -236,7 +237,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
         return RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? Context.Timeouts.DefaultWait);
+            timeoutMs ?? Context.Timeouts.DefaultWait.ToMs());
     }
 
     /// <inheritdoc />
@@ -248,7 +249,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
         RunProbe(
             () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
-            timeoutMs ?? Context.Timeouts.DefaultWait,
+            timeoutMs ?? Context.Timeouts.DefaultWait.ToMs(),
             _ =>
             {
                 var actual = GetTitle();
