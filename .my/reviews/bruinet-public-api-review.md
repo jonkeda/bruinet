@@ -1,6 +1,7 @@
 # Bruinet's public API: review and proposals
 
 First written 2026-11-09 at `f9ad9a96`. Brought up to date 2026-11-10 at `7f972d8c`, after the night's run moved WPF, WinForms and Stride onto the call model (U1 to U7); proposal 13 added the same day at `6e23ddea`.
+Proposals 2 and 5's Core half made, and proposal 13's check added, the same day (`0eee767f`, `24e3dcea` and `73cf06fa`).
 Read from the 34 `PublicAPI.Unshipped.txt` files under `src/` and spot checks in the source; nothing was built or run for this review.
 
 ## Outcome
@@ -94,10 +95,10 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | # | Proposal | State |
 | --- | --- | --- |
 | 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Open. `Core.Calls` is out of it: public by decision. |
-| 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Open; free today. |
+| 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Done in `24e3dcea`: `WaitHelper` internal, `WaitTextEquals` gone from all six stacks, `ITextControlObject` declares `WaitText`. |
 | 3 | Mark `Bruinet.Core.Legacy` obsolete or drop it. | Done: deleted in `7d03c22b`. |
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Half done: five stacks agree. Left: Html and Blazor, and `Maui.Containers`. Since five say `ViewBase`, Html's `ControlBase` is now the one to rename, not the reverse. |
-| 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). The Core half is more urgent than before: six copies now. |
+| 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
 | 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Open. |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
@@ -105,7 +106,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
 | 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
 | 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Open. |
-| 13 | A change list and skill so the projects that use Bruinet can be refactored after each change: per change, what to search for and what to write instead. | Started: skill `api-upgrade` and its list exist and cover U1 to U7. What is left is step U8 of `.my/upgrade/plan.md`. |
+| 13 | A change list and skill so the projects that use Bruinet can be refactored after each change: per change, what to search for and what to write instead. | In working order: rows to date, and `tools/Scripts/check-api-changes.ps1` (CI) fails a break without one. Left: U8.3 to U8.6 of `.my/upgrade/plan.md` (recipes, a proof on a consumer, the consumers table, links from the docs). |
 
 ### Proposal 13 comes first
 
@@ -113,9 +114,9 @@ The API is already used by other projects, so every open proposal above breaks s
 Proposal 13 is what makes that cheap, and it has to be in working order before proposals 1, 2, 4, 5, 7 and 8 are made, not after.
 
 - Each proposal, when made, adds its row to `.github/skills/api-upgrade/references/changes.md` in the same commit; the Planned rows there already say what each one will ask of a consumer.
-- The list is behind today: this morning's four commits added members to `IMauiDriver`, `IMauiElement` and `IControlHost<TElement>` without a row.
+- The list caught up with this morning's four commits; all four additions have default bodies, so none breaks a consumer.
 - The list has not yet been proven on a project that is not Bruinet's own; Tomorrow uses Html only and built unchanged.
-- A check that fails when a commit changes a `PublicAPI.Unshipped.txt` line without touching the list keeps it from falling behind again.
+- `check-api-changes.ps1` fails a change that removes or alters an API line, or adds an interface or abstract member, without touching the list.
 
 ## Unknown
 
@@ -127,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Finish proposal 13 first: the missing rows and the check (U8.1, U8.2 and U8.7 of the upgrade plan).
-Then proposal 2, which is one commit with no design, and after it the Core half of proposal 5, which last night made more pressing.
+The two cheap proposals are made, and the list now has a check, so the rest can follow one at a time.
+Next is the rename half of proposal 4 for Html and Blazor (`PageObjectBase`, `ViewBase`), which needs only a decision on the `Control` suffix; proposal 1 waits for a build of a consumer's suites against it.

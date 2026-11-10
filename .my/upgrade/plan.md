@@ -349,4 +349,6 @@ U8.1, U8.2 and U8.7 done 2026-11-10: four rows (all four additions have default 
 breaks a consumer; `ScrollTo` needs a rebuild only), the skill's rule corrected, and
 `check-api-changes.ps1` fails on a seeded removal and passes on `move`.
 
+Review proposals 2 and 5 (Core half) made after it: 24e3dcea, 73cf06fa.
+
 Expected next action: U8.3 recipes; the owner answers Q6.
