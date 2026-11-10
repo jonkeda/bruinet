@@ -571,6 +571,7 @@ Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextContains(string? ex
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEmpty(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.GetText(int? timeoutMs = null) -> string?
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>

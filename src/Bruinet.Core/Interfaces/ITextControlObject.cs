@@ -8,6 +8,12 @@ namespace Bruinet.Core.Interfaces;
 public interface ITextControlObject<TScope> : IControlObject<TScope>
 {
     /// <summary>
+    /// The control's text, waiting for the control within <paramref name="timeoutMs"/> (R7: a
+    /// <c>Get…</c> waits, an <c>Is…</c> or <c>TryGet…</c> reads once).
+    /// </summary>
+    string? GetText(int? timeoutMs = null);
+
+    /// <summary>
     /// Wait until text equals expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
