@@ -10,6 +10,7 @@ namespace Bruinet.Bdd.Runner;
 /// started and its mock server never outlive a host that crashed (AD-025). Elsewhere it holds
 /// nothing, and a runner ends when its pipe closes.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddRunnerJob : IDisposable
 {
     private const int ExtendedLimitInformation = 9;

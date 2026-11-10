@@ -4,6 +4,7 @@ namespace Bruinet.Bdd;
 /// The catalogs a document binds against: the fixture's own, and one per head of the suite's apps.
 /// It also knows the apps, so a step can name one as its subject (<c>Daan taps Save</c>).
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddCatalogSet
 {
     private readonly IReadOnlyDictionary<string, BddCommandCatalog> _byHead;

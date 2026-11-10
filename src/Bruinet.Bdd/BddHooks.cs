@@ -4,6 +4,7 @@ using System.Reflection;
 namespace Bruinet.Bdd;
 
 /// <summary>When a hook runs.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddHookKind
 {
     /// <summary>Once per feature file per test run, before its first scenario.</summary>
@@ -67,6 +68,7 @@ public sealed class BddAfterStepAttribute(params string[] tags) : BddScenarioHoo
 /// <param name="Name">The method, <c>Class.Method</c>: hooks of one kind run in its order.</param>
 /// <param name="Tags">The tags it runs for; empty for every scenario.</param>
 /// <param name="Run">Runs it; the step result is set for <see cref="BddHookKind.AfterStep"/> only.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddHook(
     BddHookKind Kind,
     string Name,

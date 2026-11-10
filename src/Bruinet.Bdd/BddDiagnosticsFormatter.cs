@@ -1,5 +1,6 @@
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddDiagnosticsFormatter
 {
     public static string FormatDiagnostics(IEnumerable<BddDiagnostic> diagnostics)

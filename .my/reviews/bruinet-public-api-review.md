@@ -94,7 +94,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 
 | # | Proposal | State |
 | --- | --- | --- |
-| 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Drivers and elements done in `5a3234b4` (`MauiHeadlessDriver` and `StrideGameDriver` stay public). Left: `Bdd`'s engine and the runner messages, which Uat, the command line, Presenter and Workspace use; see Next action. `Core.Calls` is out of it: public by decision. |
+| 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Done: drivers and elements internal (`5a3234b4`; `MauiHeadlessDriver` and `StrideGameDriver` stay public); `Bdd`'s engine and the runner messages marked `[Experimental("BRUINET010")]` instead, the owner's choice, since five of Bruinet's own packages use them. `Core.Calls` is out of it: public by decision. |
 | 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Done in `24e3dcea`: `WaitHelper` internal, `WaitTextEquals` gone from all six stacks, `ITextControlObject` declares `WaitText`. |
 | 3 | Mark `Bruinet.Core.Legacy` obsolete or drop it. | Done: deleted in `7d03c22b`. |
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
@@ -105,7 +105,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Open. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
 | 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
-| 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Open. |
+| 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Started: `BRUINET010` marks `Bdd`'s engine (`docs/experimental.md`). Left: Narrator, Contracts and the scraper support, then the move to `Shipped`. |
 | 13 | A change list and skill so the projects that use Bruinet can be refactored after each change: per change, what to search for and what to write instead. | In working order: rows to date, and `tools/Scripts/check-api-changes.ps1` (CI) fails a break without one. Left: U8.3 to U8.6 of `.my/upgrade/plan.md` (recipes, a proof on a consumer, the consumers table, links from the docs). |
 
 ### Proposal 13 comes first
@@ -128,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-The rest of proposal 1 needs a choice. `Bdd`'s engine and the runner messages are used by five of Bruinet's own assemblies, so making them internal means a list of `InternalsVisibleTo` between packages, which Core's rule (AD-010) avoids.
-My proposal: leave them public and mark them `[Experimental]` under proposal 12, so a consumer sees they are not promised; only the types no other assembly uses go internal now.
+Proposals 1, 2 and 4 are made, 5 and 12 started, 13 in working order.
+Next is the rest of proposal 5 (the shared collection base), which needs a design of its own, or proposal 7, which moves the step attributes and `MauiHead`/`WebHead` out of Core.

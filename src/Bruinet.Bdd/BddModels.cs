@@ -10,12 +10,14 @@ public sealed record BddSourceLocation(string? FilePath, int LineNumber)
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddDiagnosticSeverity
 {
     Error,
     Warning
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddDiagnostic(
     BddDiagnosticSeverity Severity,
     string Code,
@@ -117,6 +119,7 @@ public sealed record BddTableRow(
     IReadOnlyDictionary<string, string> Cells,
     BddSourceLocation Source);
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddParseResult
 {
     public BddParseResult(BddDocument? document, IReadOnlyList<BddDiagnostic> diagnostics)
@@ -135,4 +138,5 @@ public sealed class BddParseResult
 /// <summary>A value rewritten in place: the one right answer for a near miss (<c>2026-05-12</c> to <c>12-May-2026</c>).</summary>
 /// <param name="Original">The value as written.</param>
 /// <param name="Replacement">The value as it should be written.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddTextFix(string Original, string Replacement);

@@ -5,6 +5,7 @@ using Markdig.Syntax;
 
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static partial class BddMarkdownParser
 {
     private const string DocStringDelimiter = "\"\"\"";

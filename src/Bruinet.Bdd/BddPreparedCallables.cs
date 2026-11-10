@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bruinet.Bdd;
 
 /// <summary>The callable phrases a scenario file can see: its own and the global phrase files'.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddCallableSet
 {
     private readonly Dictionary<BddCatalogSet, BddPreparedCallables> _prepared = [];
@@ -44,6 +45,7 @@ public sealed class BddCallableSet
 /// <param name="Passes">What the body takes from under the call.</param>
 /// <param name="BlockType">What the passed table binds to, when a body step says; null otherwise.</param>
 /// <param name="Problem">Why it cannot be called; null when it can. Only its calls fail (AD-016 A10).</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPreparedCallable(
     BddCallable Callable,
     IReadOnlyDictionary<string, Type> Types,
@@ -82,6 +84,7 @@ public sealed record BddPreparedCallable(
 /// The callables of a file prepared against its catalogs: each body bound once with its
 /// placeholders in, to learn the types, before any call is bound.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddPreparedCallables
 {
     private const string Table = "table";

@@ -7,7 +7,8 @@ namespace Bruinet.Bdd;
 /// A typed phrase's values: checked when a step binds, read again when it runs with the
 /// scenario's clock and services. One reader, <see cref="BddValues"/>, for both (AD-016).
 /// </summary>
-public static class BddArguments
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
+internal static class BddArguments
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { Converters = { new JsonStringEnumConverter() } };
 

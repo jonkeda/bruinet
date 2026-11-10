@@ -5,6 +5,7 @@ using Bruinet.Core.Settings;
 namespace Bruinet.Bdd;
 
 /// <summary>Where a phrase parameter's value comes from in the scenario.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddParameterSource
 {
     /// <summary>A placeholder on the step line.</summary>
@@ -23,6 +24,7 @@ public enum BddParameterSource
 /// <param name="Source">Where the value comes from.</param>
 /// <param name="Optional">Whether the step may leave it out.</param>
 /// <param name="AllowsNull">Whether <c>null</c> reads as null for a reference type.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhraseParameter(string Name, Type Type, BddParameterSource Source, bool Optional, bool AllowsNull)
 {
     /// <summary>The placeholder as the phrase list shows it: <c>{due: date}</c>.</summary>
@@ -33,11 +35,13 @@ public sealed record BddPhraseParameter(string Name, Type Type, BddParameterSour
 /// <param name="Code">The diagnostic code, <c>UATA010</c>-<c>UATA013</c>.</param>
 /// <param name="Message">What is wrong with the declaration.</param>
 /// <param name="Declaration">The method that declares it: <c>Type.Method</c>.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhraseProblem(string Code, string Message, string Declaration);
 
 /// <summary>A declaration with no phrase text to match: only the validator's phrase list shows it.</summary>
 /// <param name="Keyword">The attribute's keyword.</param>
 /// <param name="Problem">Why it has no phrase.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddUnmatchableDeclaration(BddEffectiveStepKeyword Keyword, BddPhraseProblem Problem);
 
 internal sealed record BddDeclaredPhrase(

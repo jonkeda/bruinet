@@ -43,6 +43,7 @@ public interface IBddArgumentConverter<out T>
 }
 
 /// <summary>The app's own argument types: <see cref="BddArgumentTypeAttribute"/> types and converters.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddArgumentTypes
 {
     private readonly Dictionary<Type, MethodInfo> _parse = [];

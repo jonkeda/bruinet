@@ -18,7 +18,6 @@ Bruinet.Bdd.BddArgumentTypes.BddArgumentTypes() -> void
 Bruinet.Bdd.BddArgumentTypes.IsRegistered(System.Type! type) -> bool
 Bruinet.Bdd.BddArgumentTypes.Registered.get -> System.Collections.Generic.IEnumerable<System.Type!>!
 Bruinet.Bdd.BddArgumentTypes.TryRead(string! text, System.Type! type, System.IServiceProvider? services, out object? value, out Bruinet.Bdd.BddValueProblem? problem) -> bool
-Bruinet.Bdd.BddArguments
 Bruinet.Bdd.BddAssemblyRegistration
 Bruinet.Bdd.BddAssemblyRegistration.Assembly.get -> string!
 Bruinet.Bdd.BddAssemblyRegistration.Assembly.init -> void
@@ -1100,8 +1099,6 @@ override Bruinet.Bdd.BddSourceLocation.ToString() -> string!
 override Bruinet.Bdd.BddUserRole.ToString() -> string!
 static Bruinet.Bdd.BddArgumentTypes.Discover(System.Collections.Generic.IEnumerable<System.Type!>! types) -> Bruinet.Bdd.BddArgumentTypes!
 static Bruinet.Bdd.BddArgumentTypes.Empty.get -> Bruinet.Bdd.BddArgumentTypes!
-static Bruinet.Bdd.BddArguments.Check(Bruinet.Bdd.BddCommandPattern! pattern, Bruinet.Bdd.BddStep! step, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! arguments, Bruinet.Bdd.BddValueContext! context) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddDiagnostic!>!
-static Bruinet.Bdd.BddArguments.Read(Bruinet.Bdd.BddPhraseParameter! parameter, Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddValueContext! context) -> object?
 static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddBindResult!
 static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs, Bruinet.Bdd.BddCallableSet! callables, string? only = null) -> Bruinet.Bdd.BddBindResult!
 static Bruinet.Bdd.BddBinder.Bind(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCommandCatalog! catalog) -> Bruinet.Bdd.BddBindResult!

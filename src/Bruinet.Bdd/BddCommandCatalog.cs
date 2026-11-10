@@ -2,6 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddCommandCatalog
 {
     private readonly List<BddCommandPattern> _patterns = [];
@@ -138,6 +139,7 @@ public sealed class BddCommandCatalog
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddCommandPattern
 {
     private readonly Regex _regex;
@@ -380,8 +382,10 @@ public sealed class BddCommandPattern
 /// <param name="ArgumentCount">How many arguments the step passes: the item, then the value or literal.</param>
 /// <param name="NamesControl">Whether the phrase has <c>{control}</c>; without it, the page's one control that declares the verb runs it.</param>
 /// <param name="Navigates">Whether the verb can leave the page (<see cref="Bruinet.Core.Testing.BddStepAttribute.Navigates"/>).</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddControlVerb(string MethodName, int ArgumentCount, bool NamesControl, bool Navigates);
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddCommandMatch(
     BddCommandPattern Pattern,
     IReadOnlyDictionary<string, string> Arguments)
@@ -390,6 +394,7 @@ public sealed record BddCommandMatch(
     public IReadOnlyDictionary<string, string> RawArguments { get; init; } = Arguments;
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public delegate Task<BddStepResult> BddCommandHandler(
     BddExecutionContext context,
     BddStepInvocation invocation,

@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 namespace Bruinet.Bdd.Runner;
 
 /// <summary>The protocol between a host and the runner process.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddRunnerProtocol
 {
     /// <summary>The version this build speaks. Raised when a message changes its meaning.</summary>
@@ -23,6 +24,7 @@ public static class BddRunnerProtocol
 }
 
 /// <summary>Messages over a stream, one JSON object per line.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddRunnerChannel : IDisposable
 {
     private static readonly JsonSerializerOptions Json = new()

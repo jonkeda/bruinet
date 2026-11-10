@@ -6,6 +6,7 @@ namespace Bruinet.Bdd;
 /// (<c>Scenarios/</c>, <c>*.uat.md</c>, <c># UAT:</c>, <c>*.phrases.md</c>, <c>## Phrase:</c>) that
 /// <c>bruinet data validate --fix</c> applies.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddFileFormat
 {
     /// <summary>The folder of feature and step files, beside the config.</summary>

@@ -8,6 +8,7 @@ namespace Bruinet.Bdd.Runner;
 /// (AD-025). A host takes one for a run and gives it back after; one whose output
 /// has changed since its copy is replaced.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddWarmRunners : IAsyncDisposable
 {
     private readonly object _gate = new();

@@ -4,6 +4,7 @@ namespace Bruinet.Bdd;
 /// What a head adds to binding beyond the folder, file, <c>Using</c> and global scopes: the page a
 /// step runs on, for Bruinet.Uat. Set on <see cref="BddCommandCatalog.Scope"/>.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public interface IStepScopeModel
 {
     /// <summary>The namespaces it provides, which a file's <c>Using</c> may name.</summary>
@@ -16,6 +17,7 @@ public interface IStepScopeModel
 }
 
 /// <summary>One scenario's walk: what a step can bind to where it stands, and what each bound step did.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public interface IStepScope
 {
     /// <summary>The candidates the step can bind to at this point; adds a problem when none fits.</summary>

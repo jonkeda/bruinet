@@ -9,6 +9,7 @@ namespace Bruinet.Bdd;
 /// step that fails when asked to. The seam a test replaces; the running default is
 /// <see cref="BddBreakpoints"/>, which only exists while a debugger is attached.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public interface IBddBreakHook
 {
     /// <summary>The break before a step, or null to run on.</summary>
@@ -33,6 +34,7 @@ public interface IBddBreakHook
 /// <param name="Source">Where the step is written: the feature file, or a step file for a callable's step.</param>
 /// <param name="Calls">The calls that put it there, outermost first: <c>Step: the synced list has todos (Todo.steps.md:3) at TOD.01.feature.md:34</c>.</param>
 /// <param name="Result">For a break after a failure, the failed step's result; null before a step.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddStepBreak(
     string Text,
     IReadOnlyDictionary<string, string> Arguments,
@@ -50,6 +52,7 @@ public sealed record BddStepBreak(
 }
 
 /// <summary>A move from a paused step, as the IDE's step commands write it.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddStepMove
 {
     /// <summary>The next step at the paused step's depth or above: a call runs whole.</summary>
@@ -77,6 +80,7 @@ public enum BddStepMove
 /// (<see cref="BddStepMove"/>), for the test process that paused; the break it makes removes it.
 /// While paused, <see cref="PausedPath"/> says where: the IDE's step commands and preview read it.
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddBreakpoints : IBddBreakHook
 {
     private readonly string _path;

@@ -10,6 +10,10 @@
     <NuGetAudit>true</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
     <NuGetAuditLevel>low</NuGetAuditLevel>
+    <!-- BRUINET010: Bruinet.Bdd's engine and runner protocol are public for Bruinet's own packages
+         (Uat, the command line, Presenter, Workspace, Narrator) but not promised to consumers
+         (public API review proposals 1 and 12). Bruinet uses them knowingly; a consumer opts in. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

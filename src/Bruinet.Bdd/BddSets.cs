@@ -10,6 +10,7 @@ namespace Bruinet.Bdd;
 /// found item's different cells. For a step table against objects, use
 /// <see cref="BddTableBinding.AssertExactly{T}"/>.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddSets
 {
     /// <summary>The two lists hold the same items, in any order unless <paramref name="ordered"/>.</summary>

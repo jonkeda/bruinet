@@ -9,6 +9,7 @@ namespace Bruinet.Bdd.Runner;
 /// <param name="PagesAssembly">The suite's Pages assembly. Its folder is the suite's output: the runner starts there, with the suite's own dependencies.</param>
 /// <param name="WorkingDirectory">The runner's working directory; null for the suite's output folder.</param>
 /// <param name="Environment">Variables set for the runner only: the app's path, how its window is shown.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddRunnerStart(string PagesAssembly, string? WorkingDirectory = null, IReadOnlyDictionary<string, string>? Environment = null)
 {
     /// <summary>The assembly with the runner's entry point, which every suite has in its output.</summary>
@@ -76,9 +77,11 @@ public sealed record BddRunnerStart(string PagesAssembly, string? WorkingDirecto
 }
 
 /// <summary>The runner process ended, or did not answer as the protocol says.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddRunnerException(string message) : Exception(message);
 
 /// <summary>A host's end of a runner process: starts it, sends requests, reads the answers.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddRunnerClient : IAsyncDisposable
 {
     /// <summary>How long a canceled step gets to end by itself before the runner is killed.</summary>

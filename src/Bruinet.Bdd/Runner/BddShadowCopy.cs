@@ -12,6 +12,7 @@ namespace Bruinet.Bdd.Runner;
 /// has its own copies, and removes them itself (<see cref="Clean"/>): a copy a runner runs from is
 /// never removed, since only the files it has not loaded yet would go.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddShadowCopy
 {
     /// <summary>Where the copies go: a folder per output, a copy per build.</summary>

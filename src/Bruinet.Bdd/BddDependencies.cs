@@ -8,6 +8,7 @@ namespace Bruinet.Bdd;
 /// <param name="Kind"><c>http</c>, <c>sqlserver</c> or <c>sqlite</c>.</param>
 /// <param name="Mode">How it is answered in this run: the table's, or <c>BRUINET_DEP_&lt;NAME&gt;</c>'s over it.</param>
 /// <param name="Where">What the mode needs: a base URL, a preset, a stubs class, a seeded file, a connection's name.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddDependency(string Name, string Kind, string Mode, string Where)
 {
     /// <summary>The modes each kind takes (AI11's design): real, recorded and replayed, stubbed, or a seeded copy.</summary>
@@ -36,6 +37,7 @@ public sealed record BddDependency(string Name, string Kind, string Mode, string
 }
 
 /// <summary>The fields of <c>## Runtime</c> that set a suite's HTTP replay (AI11).</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddReplayFields
 {
     /// <summary><c>true</c>: every dependency answered in the process; one named <c>real</c> or <c>record</c> fails the run.</summary>
@@ -52,6 +54,7 @@ public static class BddReplayFields
 }
 
 /// <summary>A suite's dependencies as a run gets them.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddDependencies
 {
     /// <summary>

@@ -9,6 +9,7 @@ namespace Bruinet.Bdd;
 /// step-definition classes of its composition, found by reflection, with their arguments read from
 /// the step and their calls made.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddStepDefinitionRuntime
 {
     private const string ServiceProviderItemKey = "Uat.Reflection.ServiceProvider";
@@ -458,6 +459,7 @@ public sealed class BddStepDefinitionRuntime
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhraseClassBinding(
     Type Type,
     IReadOnlyList<BddPhraseClassMethodBinding> Methods)
@@ -468,6 +470,7 @@ public sealed record BddPhraseClassBinding(
     internal IReadOnlyList<BddHookMethod> Hooks { get; init; } = [];
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhraseClassMethodBinding(
     MethodInfo Method,
     IReadOnlyList<BddPhraseMethodPhrase> Phrases)
@@ -476,6 +479,7 @@ public sealed record BddPhraseClassMethodBinding(
     public IReadOnlyList<BddUnmatchableDeclaration> Unmatchable { get; init; } = [];
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhraseMethodPhrase(
     string Phrase,
     BddEffectiveStepKeyword Keyword)

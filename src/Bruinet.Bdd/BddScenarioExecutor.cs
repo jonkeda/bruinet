@@ -1,10 +1,12 @@
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddScenarioExecutionResult(
     BddScenarioRunResult Result,
     BddExecutionContext Context,
     string? EvidencePath);
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddScenarioExecutor
 {
     public static async Task<BddScenarioExecutionResult> RunAsync(

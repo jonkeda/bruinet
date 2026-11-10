@@ -132,6 +132,7 @@ public sealed record BddStepResult(
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddScenarioRunResult(
     BddBoundScenario Scenario,
     IReadOnlyList<BddStepResult> Steps,
@@ -142,6 +143,7 @@ public sealed record BddScenarioRunResult(
     public bool Passed => Steps.Count > 0 && Steps.All(x => x.Status == BddStepResultStatus.Passed);
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddScenarioRunner
 {
     private readonly BddExecutionContext _context;
@@ -197,6 +199,7 @@ public sealed class BddScenarioRunner
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddStepExecutionSession
 {
     private readonly BddExecutionContext _context;

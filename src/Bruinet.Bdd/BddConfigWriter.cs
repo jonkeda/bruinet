@@ -9,6 +9,7 @@ namespace Bruinet.Bdd;
 /// including unknown sections, prose and column padding: <c>Apply(markdown, Empty)</c> returns
 /// its input unchanged.
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddConfigWriter
 {
     /// <summary>Applies <paramref name="edit" /> to <paramref name="markdown" />.</summary>
@@ -111,6 +112,7 @@ public static class BddConfigWriter
 }
 
 /// <summary>The well-known <c>Runtime</c> fields Presenter and the runtime read by name.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddConfigFields
 {
     /// <summary>The UAT test project, from which the Pages assembly is resolved.</summary>
@@ -150,24 +152,28 @@ public static class BddConfigFields
 /// <summary>What a new config starts with.</summary>
 /// <param name="Project">The UAT test project, relative to the config.</param>
 /// <param name="Fixture">The fixture type, when one has been chosen already.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddConfigTemplate(string Project, string? Fixture = null);
 
 /// <summary>One <c>Field</c>/<c>Value</c> row to set or remove.</summary>
 /// <param name="Section">The section heading, such as <c>Runtime</c>.</param>
 /// <param name="Field">The field name.</param>
 /// <param name="Value">The new value, or <see langword="null" /> to remove the row.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddConfigFieldEdit(string Section, string Field, string? Value);
 
 /// <summary>The full contents of a list table, such as <c>Assemblies</c>.</summary>
 /// <param name="Section">The section heading.</param>
 /// <param name="Columns">The column names, used when the section has to be created.</param>
 /// <param name="Rows">The rows, each keyed by column name. An empty list clears the table.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddConfigRowsEdit(
     string Section,
     IReadOnlyList<string> Columns,
     IReadOnlyList<IReadOnlyDictionary<string, string>> Rows);
 
 /// <summary>A set of changes to apply to a config in one pass.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddConfigEdit
 {
     private BddConfigEdit(

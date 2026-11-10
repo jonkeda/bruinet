@@ -8,6 +8,7 @@ namespace Bruinet.Bdd;
 /// test case's <c>BddScenario</c> trait, so <c>dotnet test --filter "BddScenario=..."</c> runs one
 /// scenario; an IDE computes the same address from a line.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddScenarioAddress
 {
     /// <summary>The trait that holds the address.</summary>

@@ -5,6 +5,7 @@ namespace Bruinet.Bdd;
 /// (<c>Invoicing/Credit notes</c>); the root is <c>""</c>. A phrase of a namespace is visible from
 /// that folder and every folder below it; a phrase of the root, from everywhere.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddNamespaces
 {
     /// <summary>A namespace as it is compared: <c>/</c> between folders, no empty parts, <c>""</c> for the root.</summary>
@@ -69,6 +70,7 @@ public static class BddNamespaces
 /// <param name="Namespace">The folder under the scenario root.</param>
 /// <param name="File">The full path of the scenario file; null inside a phrase file's callable.</param>
 /// <param name="Usings">The namespaces it uses; seeing one is as if the file were also in it.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddScope(string Namespace, string? File, IReadOnlyList<string> Usings)
 {
     public static BddScope Of(BddDocument document, BddCatalogSet catalogs)

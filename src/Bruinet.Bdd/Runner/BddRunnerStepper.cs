@@ -8,6 +8,7 @@ namespace Bruinet.Bdd.Runner;
 /// <param name="IsCall">Whether it is a call: Step into goes inside without running anything.</param>
 /// <param name="Calls">The calls around it, outermost first.</param>
 /// <param name="Failed">For a stop after a failure, the failed step's result; null before a step.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddRunnerStop(string? File, int Line, string Text, int Depth, bool IsCall, IReadOnlyList<BddRunnerCall> Calls, BddRunnerStep? Failed = null)
 {
     /// <summary>The step's arguments as read; null at a call (its text has its values) or when not known.</summary>
@@ -31,6 +32,7 @@ public sealed record BddRunnerStop(string? File, int Line, string Text, int Dept
 /// out of depth d is over at d - 1; into goes to the next position, inside a call; continue runs to
 /// a breakpoint. Every move stops at a breakpoint and after a failed step.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddRunnerStepper
 {
     private readonly Func<CancellationToken, Task<BddRunnerStep>> _next;

@@ -20,6 +20,7 @@ public interface IBddClock
 /// (<see cref="CompositionFor"/>). The app names are the <c>Apps</c> table's, which the engine
 /// checks before it asks the fixture.
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public interface IBddSessionHost
 {
     /// <summary>

@@ -20,6 +20,7 @@ namespace Bruinet.Bdd;
 /// test data's pinned now: <c>today</c>, <c>+2d</c>, <c>-1d</c>.
 /// </para>
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static partial class BddTableBinding
 {
     /// <summary>One <typeparamref name="T"/> per row, built through its widest public constructor.</summary>

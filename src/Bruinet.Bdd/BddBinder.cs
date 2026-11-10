@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddBinder
 {
     private const string UserParameter = "user";
@@ -792,6 +793,7 @@ public static class BddBinder
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddBindResult
 {
     public BddBindResult(BddBoundDocument? document, IReadOnlyList<BddDiagnostic> diagnostics)
@@ -813,6 +815,7 @@ public sealed class BddBindResult
     public bool Success => Document is not null && Diagnostics.All(x => x.Severity != BddDiagnosticSeverity.Error);
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddBoundDocument(
     BddDocument Source,
     IReadOnlyList<BddBoundScenario> Scenarios);
@@ -825,6 +828,7 @@ public sealed record BddBoundScenario(
     public IReadOnlyList<BddHook> Hooks { get; init; } = [];
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddStepInvocation(
     string ScenarioName,
     BddStep Step,

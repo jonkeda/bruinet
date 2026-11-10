@@ -10,6 +10,7 @@ namespace Bruinet.Bdd;
 /// <param name="Apps">The <c>Apps</c> table, for <see cref="BddUserRole"/> values.</param>
 /// <param name="Types">The app's argument types; none when null.</param>
 /// <param name="Services">The scenario's services, for converters that need them; none at bind time.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddValueContext(
     DateTimeOffset Now,
     IReadOnlyList<BddAppConfig> Apps,
@@ -32,9 +33,11 @@ public sealed record BddValueContext(
 /// <param name="Message">What is wrong and how to write it.</param>
 /// <param name="Fix">The value rewritten, when there is exactly one right answer.</param>
 /// <param name="Original">The value as written, when there is a <paramref name="Fix"/>.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddValueProblem(string Code, string Message, string? Fix = null, string? Original = null);
 
 /// <summary>A value that does not fit its type.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed class BddValueException(BddValueProblem problem) : FormatException(problem.Message)
 {
     /// <summary>The problem.</summary>
@@ -46,6 +49,7 @@ public sealed class BddValueException(BddValueProblem problem) : FormatException
 /// cells. Invariant whatever the machine culture: dates <c>12-May-2026</c>, numbers <c>1,250.75</c>.
 /// See AD-016.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static partial class BddValues
 {
     private static readonly string[] Months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

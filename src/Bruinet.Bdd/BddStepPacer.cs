@@ -5,6 +5,7 @@ namespace Bruinet.Bdd;
 /// until the step's spoken line has played, then a beat for its result to be seen. Null on the
 /// context unless something paces the run, so a test run is never slowed.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public interface IBddStepPacer
 {
     /// <summary>Before a step runs, after the break hook.</summary>
@@ -21,6 +22,7 @@ public interface IBddStepPacer
 }
 
 /// <summary>Where a step is written in the scenario.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddWrittenStep
 {
     /// <summary>

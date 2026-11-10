@@ -1,5 +1,6 @@
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddScenarioSource
 {
     /// <summary>
@@ -142,6 +143,7 @@ public static class BddScenarioSource
 /// <param name="ScenarioName">The scenario's name; outline rows carry their <c>[n]</c> suffix.</param>
 /// <param name="TestData">The file's <c>TestData</c> metadata, or <c>null</c>.</param>
 /// <param name="Index">The scenario's position in the file.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddScenarioReference(string FilePath, string ScenarioName, string? TestData, int Index)
 {
     /// <summary>The scenario's own tags.</summary>

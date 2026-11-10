@@ -4,6 +4,7 @@ using Bruinet.Core.Utilities;
 
 namespace Bruinet.Bdd;
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddConfig(
     IReadOnlyDictionary<string, string> Runtime,
     IReadOnlyList<BddAssemblyRegistration> Assemblies,
@@ -134,6 +135,7 @@ public sealed record BddConfig(
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddAssemblyRegistration(string Kind, string Assembly);
 
 /// <summary>
@@ -142,6 +144,7 @@ public sealed record BddAssemblyRegistration(string Kind, string Assembly);
 /// </summary>
 /// <param name="Name">The app's name in scenarios, such as <c>Alice</c>.</param>
 /// <param name="Values">Every column of the row, by column name.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddAppConfig(string Name, IReadOnlyDictionary<string, string> Values)
 {
     /// <summary>Who uses the app: the <c>User</c> column, or the app's name when it has none.</summary>
@@ -151,10 +154,12 @@ public sealed record BddAppConfig(string Name, IReadOnlyDictionary<string, strin
     public string? Head => Values.TryGetValue("Head", out var head) && head.Trim() is { Length: > 0 } trimmed ? trimmed : null;
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddDiscoverySettings(
     bool RequireExplicitUatAttributes = false,
     bool AllowNameInference = true);
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddReportingSettings(
     string OutputDirectory,
     bool ScreenshotOnFailure = false,
@@ -167,6 +172,7 @@ public sealed record BddReportingSettings(
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddSettingsConfig(
     string Root = "TestSettings",
     string DefaultFile = "testsettings.json",
@@ -176,6 +182,7 @@ public sealed record BddSettingsConfig(
     public static BddSettingsConfig Default { get; } = new();
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddSkipRule
 {
     public BddSkipRule(string tag, string environmentVariable)
@@ -192,11 +199,13 @@ public sealed record BddSkipRule
     public string EnvironmentVariable { get; init; }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddSkipDecision(bool ShouldSkip, string? Reason, BddSkipRule? Rule)
 {
     public static BddSkipDecision Run { get; } = new(false, null, null);
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddMetadataFields
 {
     public const string App = "App";
@@ -294,6 +303,7 @@ public static class BddTagConventions
     }
 }
 
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddConfigParser
 {
     public static BddConfig Parse(string markdown, string? suiteName = null)

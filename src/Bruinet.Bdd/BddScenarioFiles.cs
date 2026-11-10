@@ -8,6 +8,7 @@ namespace Bruinet.Bdd;
 /// names where the others are.
 /// </param>
 /// <param name="Diagnostics">The parse problems of the file and of the phrase files it sees.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddLoadedScenarioFile(
     BddDocument? Document,
     BddCallableSet Callables,
@@ -46,12 +47,14 @@ public sealed record BddLoadedScenarioFile(
 /// <summary>A checked file: every diagnostic, and the binding when the file parsed.</summary>
 /// <param name="Diagnostics">Parse, bind and value problems, and broken callables as warnings.</param>
 /// <param name="Bind">The binding; null when the file has no <c># Feature:</c> heading.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddFileCheck(IReadOnlyList<BddDiagnostic> Diagnostics, BddBindResult? Bind);
 
 /// <summary>
 /// The one loader of scenario files, for the xUnit gate, the tool and the Presenter: the file, and
 /// the <c>*.steps.md</c> files of its folder and every folder above it, up to the scenario root.
 /// </summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public static class BddScenarioFiles
 {
     /// <summary>The name ending of a phrase file.</summary>

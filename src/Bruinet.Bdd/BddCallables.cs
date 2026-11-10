@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 namespace Bruinet.Bdd;
 
 /// <summary>How often a callable phrase runs its body for one call.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddCallableKind
 {
     /// <summary><c>## Step:</c> - once.</summary>
@@ -13,6 +14,7 @@ public enum BddCallableKind
 }
 
 /// <summary>What a body step takes from under the call.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public enum BddPassedBlock
 {
     /// <summary>Nothing.</summary>
@@ -34,6 +36,7 @@ public enum BddPassedBlock
 /// <param name="Declared">The <c>Parameters</c> table's rows.</param>
 /// <param name="Steps">The body, with <c>&lt;x&gt;</c> placeholders left in.</param>
 /// <param name="Source">The heading's line.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddCallable(
     BddCallableKind Kind,
     string Phrase,
@@ -65,15 +68,18 @@ public sealed record BddCallable(
 /// <param name="TypeName">As the phrase list writes types: <c>number</c>, <c>date</c>, <c>TodoStatus</c>.</param>
 /// <param name="Example">A value that must read as the type; null when the table has no example.</param>
 /// <param name="Source">The row's line.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddCallableParameterDeclaration(string Name, string TypeName, string? Example, BddSourceLocation Source);
 
 /// <summary>A <c>*.steps.md</c> file: callable phrases seen by every scenario in its folder and below.</summary>
 /// <param name="Title">The <c># Steps:</c> heading's text.</param>
 /// <param name="Callables">Its phrases.</param>
 /// <param name="Source">The file.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhrasesDocument(string Title, IReadOnlyList<BddCallable> Callables, BddSourceLocation Source);
 
 /// <summary>A parsed phrase file and its problems.</summary>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddPhrasesParseResult(BddPhrasesDocument? Document, IReadOnlyList<BddDiagnostic> Diagnostics)
 {
     /// <summary>Whether it parsed without errors.</summary>
@@ -89,6 +95,7 @@ public sealed record BddPhrasesParseResult(BddPhrasesDocument? Document, IReadOn
 /// <param name="Row">The 1-based row of the call's table, for a per-row callable.</param>
 /// <param name="Values">What each placeholder was replaced with.</param>
 /// <param name="Parent">The frame of the call's own call, if it is inside a callable too.</param>
+[System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddCallFrame(
     BddCallable Callable,
     BddStep Call,
