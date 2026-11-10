@@ -1,6 +1,6 @@
 namespace Bruinet.Core.Interfaces;
 
-public interface IPressableControl<TScope> : IControlObject<TScope>
+public interface IPressableControlObject<TScope> : IControlObject<TScope>
 {
     /// <summary>
     /// Activates the button through keyboard input after focusing it.

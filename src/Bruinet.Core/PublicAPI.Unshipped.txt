@@ -485,8 +485,8 @@ Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Blur(int? timeoutMs = nu
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Focus(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.IsFocused() -> bool?
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Core.Interfaces.IPressableControl<TScope>
-Bruinet.Core.Interfaces.IPressableControl<TScope>.Press(int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IPressableControlObject<TScope>
+Bruinet.Core.Interfaces.IPressableControlObject<TScope>.Press(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope

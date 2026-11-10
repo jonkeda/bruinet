@@ -14,7 +14,7 @@ namespace Bruinet.Maui.Controls.Base;
 
 public abstract partial class ClickableControlBase<TScope> : FocusableControlBase<TScope>,
     IClickableControlObject<TScope>,
-    IPressableControl<TScope>
+    IPressableControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     #region Click

@@ -7,7 +7,7 @@ namespace Bruinet.Maui.Controls.Base;
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 public abstract partial class ClickableControlBase<TScope> : FocusableControlBase<TScope>,
     IClickableControlObject<TScope>,
-    IPressableControl<TScope>
+    IPressableControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>
