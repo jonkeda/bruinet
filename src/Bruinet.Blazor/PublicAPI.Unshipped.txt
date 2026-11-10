@@ -1,18 +1,4 @@
 #nullable enable
-Bruinet.Blazor.BlazorOptions
-Bruinet.Blazor.BlazorOptions.AppPath.get -> string?
-Bruinet.Blazor.BlazorOptions.AppPath.set -> void
-Bruinet.Blazor.BlazorOptions.AppUrl.get -> string!
-Bruinet.Blazor.BlazorOptions.AppUrl.set -> void
-Bruinet.Blazor.BlazorOptions.BlazorOptions() -> void
-Bruinet.Blazor.BlazorOptions.ReadyTimeout.get -> System.TimeSpan
-Bruinet.Blazor.BlazorOptions.ReadyTimeout.set -> void
-Bruinet.Blazor.BruinetBlazorConfiguration
-Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.get -> Bruinet.Blazor.BlazorOptions!
-Bruinet.Blazor.BruinetBlazorConfiguration.Blazor.set -> void
-Bruinet.Blazor.BruinetBlazorConfiguration.Browser.get -> Bruinet.Core.Configuration.BrowserOptions!
-Bruinet.Blazor.BruinetBlazorConfiguration.Browser.set -> void
-Bruinet.Blazor.BruinetBlazorConfiguration.BruinetBlazorConfiguration() -> void
 Bruinet.Blazor.Context.BlazorTestContext
 Bruinet.Blazor.Context.BlazorTestContext.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 Bruinet.Blazor.Context.BlazorTestContext.CurrentUrl.get -> string!
@@ -203,7 +189,6 @@ Bruinet.Blazor.Testing.BlazorTestFixtureBase.BlazorContext.get -> Bruinet.Blazor
 Bruinet.Blazor.Testing.BlazorTestFixtureBase.BlazorTestFixtureBase() -> void
 override Bruinet.Blazor.Pages.BlazorPageObjectBase<TSelf>.BusySignal.get -> Bruinet.Html.Scopes.BusySignal
 override Bruinet.Blazor.Testing.BlazorTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
-static Bruinet.Blazor.BruinetBlazorConfiguration.Load(string? configPath = null) -> Bruinet.Blazor.BruinetBlazorConfiguration!
 static Bruinet.Blazor.Context.BlazorTestContext.CreateAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Blazor.Context.BlazorTestContext!>!
 static Bruinet.Blazor.Context.BlazorTestContext.ForPage(Microsoft.Playwright.IPage! page, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Blazor.Context.BlazorTestContext!
 virtual Bruinet.Blazor.Controls.IFrameControl<TScope>.ClickInsideCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! selector, int? timeoutMs = null) -> void

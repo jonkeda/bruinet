@@ -24,10 +24,9 @@ public sealed class BlazorUatFixture : IDisposable
             return;
         }
 
-        var config = BruinetBlazorConfiguration.Load();
         _host = WebAppHost.Start(new WebAppHostOptions
         {
-            AppPath = config?.Blazor?.AppPath ?? WebAppHost.FindBuiltApp("samples/Bruinet.Samples.Blazor.App"),
+            AppPath = WebAppHost.FindBuiltApp("samples/Bruinet.Samples.Blazor.App"),
             Name = "Blazor sample",
         });
         _baseUrl = _host.BaseUrl;
@@ -36,8 +35,6 @@ public sealed class BlazorUatFixture : IDisposable
             _context = BlazorTestContext.CreateAsync(new HtmlTestContextOptions
             {
                 BaseUrl = _host.BaseUrl,
-                Headless = config?.Browser?.Headless ?? true,
-                BrowserType = config?.Browser?.BrowserType ?? "chromium"
             }).GetAwaiter().GetResult();
         }
         catch
