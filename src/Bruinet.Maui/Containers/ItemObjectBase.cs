@@ -123,7 +123,7 @@ public abstract class ItemObjectBase<TCollection, TSelf>
 /// <see cref="ItemObjectBase{TCollection, TSelf}"/> can constrain on it without
 /// naming the item type and creating a circular constraint.
 /// </summary>
-public interface IItemRootProvider
+public interface IItemRootProvider : IItemRootSource<IMauiElement>
 {
     /// <summary>
     /// The strongest key the platform offers for the row at <paramref name="position"/> whose
@@ -131,8 +131,4 @@ public interface IItemRootProvider
     /// </summary>
     ItemKey KeyOf(IMauiElement itemRoot, int position);
 
-    /// <summary>
-    /// Finds the root element of the item with the given key, or null when it is not realized.
-    /// </summary>
-    IMauiElement? TryGetItemRoot(ItemKey key);
 }

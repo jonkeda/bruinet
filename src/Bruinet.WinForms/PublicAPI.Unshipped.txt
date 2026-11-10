@@ -16,7 +16,6 @@ Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem
 Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Collections.IWinFormsCollection
-Bruinet.WinForms.Collections.IWinFormsCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Exists() -> bool

@@ -77,7 +77,6 @@ Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.Parent.get -> TParen
 Bruinet.Maui.Containers.ElementMatch
 Bruinet.Maui.Containers.IItemRootProvider
 Bruinet.Maui.Containers.IItemRootProvider.KeyOf(Bruinet.Maui.Interfaces.IMauiElement! itemRoot, int position) -> Bruinet.Core.Collections.ItemKey
-Bruinet.Maui.Containers.IItemRootProvider.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Containers.IItemStrategy
 Bruinet.Maui.Containers.IItemStrategy.FindItemElement(Bruinet.Maui.Interfaces.IMauiElement! collectionRoot, int index) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Containers.IItemStrategy.FindItemElements(Bruinet.Maui.Interfaces.IMauiElement! collectionRoot) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!

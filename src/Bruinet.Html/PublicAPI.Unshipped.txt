@@ -14,7 +14,6 @@ Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(str
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Html.Collections.IHtmlCollection
-Bruinet.Html.Collections.IHtmlCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Collections.ItemObjectBase<TSelf>
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Exists() -> bool

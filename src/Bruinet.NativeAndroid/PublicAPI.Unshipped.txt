@@ -40,7 +40,6 @@ Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Tr
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Collections.INativeAndroidCollection
-Bruinet.NativeAndroid.Collections.INativeAndroidCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Exists() -> bool

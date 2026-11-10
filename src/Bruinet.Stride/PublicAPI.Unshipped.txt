@@ -17,7 +17,6 @@ Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(s
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Stride.Collections.IStrideCollection
-Bruinet.Stride.Collections.IStrideCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Stride.Interfaces.IStrideElement?
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Exists() -> bool

@@ -210,6 +210,8 @@ Bruinet.Core.Calls.ObservationLog.Unexpected(System.Exception! error, string! su
 Bruinet.Core.Calls.Poller
 Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
+Bruinet.Core.Collections.IItemRootSource<TElement>
+Bruinet.Core.Collections.IItemRootSource<TElement>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> TElement?
 Bruinet.Core.Collections.ItemKey
 Bruinet.Core.Collections.ItemKey.ItemKey() -> void
 Bruinet.Core.Collections.ItemKey.ItemKey(Bruinet.Core.Collections.ItemKeyKind Kind, string! Value) -> void
