@@ -1,145 +1,43 @@
-using Bruinet.Core.Calls;
-using Bruinet.Core.Exceptions;
 using Bruinet.Core.Locators;
-using Bruinet.Core.Scopes;
 using Bruinet.Html.Interfaces;
 
 namespace Bruinet.Html.Controls;
 
 /// <summary>
-/// A scope inside another scope, found by its own root element. Its readiness asks the parent
-/// first, then checks its root, then its own content (design 7.2).
+/// A scope inside another scope, found by its own root element: Core's
+/// <see cref="Bruinet.Core.Scopes.ContainerObjectBase{TContext, TElement, TParentScope, TScope}"/> on the Html types.
 /// </summary>
-public abstract class ContainerBase<TParent, TScope> : ObjectBase, IHtmlContainer<TParent, TScope>
+/// <typeparam name="TParent">The scope it is declared in.</typeparam>
+/// <typeparam name="TScope">The container's own type.</typeparam>
+public abstract class ContainerBase<TParent, TScope>
+    : Bruinet.Core.Scopes.ContainerObjectBase<IHtmlTestContext, IHtmlElement, IHtmlScope<TParent>, TScope>, IHtmlContainer<TParent, TScope>
     where TParent : IHtmlScope<TParent>
     where TScope : IHtmlContainer<TParent, TScope>
 {
-    private readonly IHtmlScope<TParent> _parentScope;
-    private readonly Locator _locator;
-
+    /// <summary>The container found by <paramref name="locator"/> in <paramref name="parentScope"/>.</summary>
     protected ContainerBase(IHtmlScope<TParent> parentScope, Locator locator)
+        : base(parentScope, locator)
     {
-        _parentScope = parentScope ?? throw new ArgumentNullException(nameof(parentScope));
-        _locator = locator ?? throw new ArgumentNullException(nameof(locator));
     }
-
-    public override IHtmlTestContext Context => _parentScope.Context;
-
-    public TParent Parent => _parentScope.Self;
-
-    public abstract TScope Self { get; }
-
-    public LocatorStrategy DefaultLocatorStrategy => _parentScope.DefaultLocatorStrategy;
-
-    public IHtmlPage? Page => _parentScope.Page;
-
-    /// <summary>The container's locator in its parent.</summary>
-    protected Locator Locator => _locator;
-
-    protected override string ScopeName => $"{GetType().Name}('{_locator}')";
-
-    /// <summary>
-    /// Whether the parent's readiness is on this container's path. False for a scope shown over
-    /// its parent (a dialog over a busy page), which must be usable while the parent is not.
-    /// </summary>
-    protected virtual bool AsksParent => true;
-
-    /// <summary>
-    /// The container's own content check, once its root is there: a spinner gone, rows loaded.
-    /// Ready by default.
-    /// </summary>
-    protected virtual ScopeReadiness ProbeContentReadiness(IHtmlElement root) => ContentReady();
-
-    /// <summary>A ready answer from this container.</summary>
-    protected ScopeReadiness ContentReady() => ScopeReadiness.Ready(ScopeName);
-
-    /// <summary>A "content not ready" answer from this container.</summary>
-    protected ScopeReadiness ContentNotReady(string? detail = null)
-        => new(ScopeName, ScopeReadinessState.ContentNotReady, detail);
-
-    /// <summary>The root element, found in one attempt, or null. Override to find it another way.</summary>
-    protected virtual IHtmlElement? TryFindRootElement() => _parentScope.TryFindElement(_locator);
-
-    public ScopeReadiness ProbeReadiness()
-    {
-        if (AsksParent && _parentScope.ProbeReadiness() is { IsReady: false } parent)
-        {
-            return parent;
-        }
-
-        return TryFindRootElement() is { } root
-            ? ProbeContentReadiness(root)
-            : new ScopeReadiness(ScopeName, ScopeReadinessState.MissingRoot);
-    }
-
-    public bool IsReady() => ProbeReadiness().IsReady;
 
     /// <inheritdoc />
-    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
+    public override IHtmlTestContext Context => ParentScope.Context;
 
-    public bool WaitReady(int? timeoutMs = null)
-        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
+    /// <inheritdoc />
+    public TParent Parent => ParentScope.Self;
 
-    #region State
+    /// <inheritdoc />
+    public IHtmlPage? Page => ParentScope.Page;
 
-    /// <summary>Whether the container's root element exists, now. <see cref="WaitExists"/> waits.</summary>
-    public bool Exists() => TryFindRootElement() != null;
+    /// <summary>The container's root element now; throws when it is not there.</summary>
+    public IHtmlElement ContainerRoot => TryFindRootElement() ?? throw new Bruinet.Core.Exceptions.ElementNotFoundException(Locator);
 
-    /// <summary>Whether the container's root element is visible, now; null when it does not exist.</summary>
-    public bool? IsVisible() => TryFindRootElement()?.Visible;
+    /// <inheritdoc />
+    protected override bool IsShown(IHtmlElement root) => root.Visible;
 
-    /// <summary>Waits until the container's existence matches <paramref name="expected"/>; null skips.</summary>
-    public bool WaitExists(bool? expected = true, int? timeoutMs = null)
-        => WaitRoot(expected, root => root != null, timeoutMs, nameof(WaitExists));
+    /// <inheritdoc />
+    protected override IHtmlElement? TryFindIn(IHtmlElement root, Locator locator) => root.TryFindElement(locator);
 
-    /// <summary>Waits until the container's visibility matches <paramref name="expected"/>; null skips.</summary>
-    public bool WaitVisible(bool? expected = true, int? timeoutMs = null)
-        => WaitRoot(expected, root => root?.Visible == true, timeoutMs, nameof(WaitVisible));
-
-    /// <summary>Asserts the container's existence, returning the container so a chain stays inside it.</summary>
-    public TScope AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null)
-        => WaitRoot(expected, root => root != null, timeoutMs, nameof(AssertExists))
-            ? Self
-            : throw new ControlAssertionException(message
-                ?? $"Expected container {(expected == true ? "to exist" : "not to exist")}. Locator: {_locator}");
-
-    /// <summary>Asserts the container's visibility, returning the container so a chain stays inside it.</summary>
-    public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)
-        => WaitRoot(expected, root => root?.Visible == true, timeoutMs, nameof(AssertVisible))
-            ? Self
-            : throw new ControlAssertionException(message ?? $"Expected container visibility '{expected}'. Locator: {_locator}");
-
-    // One call (R1): each attempt asks the parent first (R4), then reads the root once.
-    private bool WaitRoot(bool? expected, Func<IHtmlElement?, bool> state, int? timeoutMs, string caller)
-    {
-        if (expected is not { } wanted)
-        {
-            return true;
-        }
-
-        return RunProbe(
-            () => (AsksParent ? ScopeGate.Check(_parentScope.ProbeReadiness()) : null)
-                ?? (state(TryFindRootElement()) == wanted ? Observation.Done() : Observation.Pending()),
-            timeoutMs ?? DefaultTimeoutMs,
-            caller: caller);
-    }
-
-    #endregion
-
-    public IHtmlElement ContainerRoot => TryFindRootElement() ?? throw new ElementNotFoundException(_locator);
-
-    public IHtmlElement? TryFindElement(Locator locator)
-    {
-        return TryFindRootElement()?.TryFindElement(locator);
-    }
-
-    public IHtmlElement FindElement(Locator locator)
-    {
-        return TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
-    }
-
-    public IReadOnlyList<IHtmlElement> FindElements(Locator locator)
-    {
-        return TryFindRootElement()?.FindElements(locator) ?? [];
-    }
+    /// <inheritdoc />
+    protected override IReadOnlyList<IHtmlElement> FindAllIn(IHtmlElement root, Locator locator) => root.FindElements(locator);
 }

@@ -24,8 +24,6 @@ public class FrameScope<TParent> : ContainerBase<TParent, FrameScope<TParent>>
 
     public override FrameScope<TParent> Self => this;
 
-    private IHtmlScope<TParent> ParentScope => Parent;
-
     protected override IHtmlElement? TryFindRootElement()
         => ParentScope.TryFindElement(Locator)?.TryGetFrameDocument();
 }

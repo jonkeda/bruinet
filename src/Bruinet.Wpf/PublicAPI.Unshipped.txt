@@ -20,27 +20,10 @@ Bruinet.Wpf.Collections.ItemObjectBase<TSelf>
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Wpf.Collections.IWpfCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Wpf.Interfaces.IWpfPage?
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.Wpf.Interfaces.IWpfScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.Wpf.Interfaces.IWpfScope<TParent>! parentScope, string! automationId) -> void
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Exists() -> bool
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.Wpf.Interfaces.IWpfPage?
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Context.WpfTestContext
 Bruinet.Wpf.Context.WpfTestContext.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 Bruinet.Wpf.Context.WpfTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -420,7 +403,6 @@ Bruinet.Wpf.Testing.WpfTestFixtureBase.Options.get -> Bruinet.Wpf.Context.WpfTes
 Bruinet.Wpf.Testing.WpfTestFixtureBase.SetupWith(System.Action<Bruinet.Wpf.Context.WpfTestContextOptions!>! configureAction) -> void
 Bruinet.Wpf.Testing.WpfTestFixtureBase.WpfTestFixtureBase() -> void
 abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
-abstract Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Wpf.Testing.WpfTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
 const Bruinet.Wpf.Testing.WpfTestFixtureBase.SettingsFile = "bruinet.wpf.config.json" -> string!
@@ -428,7 +410,9 @@ override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Wp
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
 override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
-override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ScopeName.get -> string!
+override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.FindAllIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
+override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsShown(Bruinet.Wpf.Interfaces.IWpfElement! root) -> bool
+override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.TryFindIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
 override Bruinet.Wpf.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Wpf.Interfaces.IWpfElement! element) -> void
 override Bruinet.Wpf.Controls.Selection.ComboBox<TScope>.ExpandsToShowItems.get -> bool
 override Bruinet.Wpf.Controls.Text.PasswordBox<TScope>.AppendCore(Bruinet.Wpf.Interfaces.IWpfElement! element, string? text, int? timeoutMs = null) -> void
@@ -444,9 +428,6 @@ static readonly Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TIt
 static readonly Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ListItems -> Bruinet.Core.Locators.Locator!
 virtual Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
 virtual Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
-virtual Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.AsksParent.get -> bool
-virtual Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ProbeContentReadiness(Bruinet.Wpf.Interfaces.IWpfElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
-virtual Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.TryFindRootElement() -> Bruinet.Wpf.Interfaces.IWpfElement?
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void

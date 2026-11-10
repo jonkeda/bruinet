@@ -810,6 +810,26 @@ Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.ProbeReadiness() -> Bruinet.
 Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
 Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ContainerObjectBase(TParentScope parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.Exists() -> bool
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsReady() -> bool
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsVisible() -> bool?
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ParentScope.get -> TParentScope
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Scopes.IElementScope<TElement>
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
@@ -984,6 +1004,10 @@ Bruinet.Core.Utilities.MarkdownTables
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.FindAllIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Self.get -> TSelf!
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.TryFindIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> TElement?
+abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.FindAllIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsShown(TElement! root) -> bool
+abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.Self.get -> TScope
+abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> TElement?
 abstract Bruinet.Core.Scopes.ObjectBase<TContext>.Context.get -> TContext
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
@@ -1009,6 +1033,7 @@ override Bruinet.Core.Configuration.WindowHandleJsonConverter.Write(System.Text.
 override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
 override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
+override Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ScopeName.get -> string!
 override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
 override Bruinet.Core.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
 override Bruinet.Core.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
@@ -1157,4 +1182,7 @@ static Bruinet.Core.Utilities.MarkdownTables.IsSeparatorRow(string! line) -> boo
 static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
+virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.AsksParent.get -> bool
+virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!

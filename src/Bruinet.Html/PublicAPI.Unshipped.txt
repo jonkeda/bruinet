@@ -103,27 +103,10 @@ Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.SelectTab(s
 Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.TabContainerControl(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator, string! tabSelector = "[role='tab']") -> void
 Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.TabCount.get -> int
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContainerBase(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContainerRoot.get -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Exists() -> bool
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsReady() -> bool
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsVisible() -> bool?
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Parent.get -> TParent
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.AssertDate(System.DateOnly? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.AssertMaximum(System.DateOnly? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -491,7 +474,6 @@ Bruinet.Html.Testing.WebAppHostOptions.ReadyPath.init -> void
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.get -> System.TimeSpan
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.init -> void
 abstract Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
-abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
 const Bruinet.Html.Pages.PageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
 const Bruinet.Html.Testing.HtmlTestFixtureBase.SettingsFile = "bruinet.html.config.json" -> string!
@@ -504,7 +486,9 @@ override Bruinet.Html.Controls.Container.FrameScope<TParent>.TryFindRootElement(
 override Bruinet.Html.Controls.Container.ScrollContainerControl<TParent, TScope>.Self.get -> TScope
 override Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.Self.get -> TScope
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ScopeName.get -> string!
+override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindAllIn(Bruinet.Html.Interfaces.IHtmlElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
+override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsShown(Bruinet.Html.Interfaces.IHtmlElement! root) -> bool
+override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.TryFindIn(Bruinet.Html.Interfaces.IHtmlElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetItemTextsCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetSelectedTextCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> string?
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetSelectedValueCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> string?
@@ -537,9 +521,6 @@ virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetColumnCountCore
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetHeaderTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, int column) -> string?
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetRowCountCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> int?
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetRowTextsCore(Bruinet.Html.Interfaces.IHtmlElement! element, int row) -> System.Collections.Generic.IReadOnlyList<string!>?
-virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.AsksParent.get -> bool
-virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ProbeContentReadiness(Bruinet.Html.Interfaces.IHtmlElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
-virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.TryFindRootElement() -> Bruinet.Html.Interfaces.IHtmlElement?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetDateCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMaximumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMinimumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?

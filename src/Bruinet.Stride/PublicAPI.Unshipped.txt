@@ -123,27 +123,10 @@ Bruinet.Stride.Communication.WindowInfo.WindowX.set -> void
 Bruinet.Stride.Communication.WindowInfo.WindowY.get -> int
 Bruinet.Stride.Communication.WindowInfo.WindowY.set -> void
 Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.Stride.Interfaces.IStrideScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.Stride.Interfaces.IStrideScope<TParent>! parentScope, string! automationId) -> void
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Exists() -> bool
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement!
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.Stride.Interfaces.IStridePage?
 Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
-Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Stride.Context.StrideTestContext
 Bruinet.Stride.Context.StrideTestContext.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 Bruinet.Stride.Context.StrideTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -517,7 +500,6 @@ Bruinet.Stride.Testing.StrideTestFixtureBase.Options.get -> Bruinet.Stride.Conte
 Bruinet.Stride.Testing.StrideTestFixtureBase.SetupWith(System.Action<Bruinet.Stride.Context.StrideTestContextOptions!>! configureAction) -> void
 Bruinet.Stride.Testing.StrideTestFixtureBase.StrideTestFixtureBase() -> void
 abstract Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
-abstract Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
 const Bruinet.Stride.Testing.StrideTestFixtureBase.SettingsFile = "bruinet.stride.config.json" -> string!
@@ -525,7 +507,9 @@ override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.Stride.Interfaces.IStrideElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.Stride.Interfaces.IStrideElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
 override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
-override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ScopeName.get -> string!
+override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.FindAllIn(Bruinet.Stride.Interfaces.IStrideElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
+override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.IsShown(Bruinet.Stride.Interfaces.IStrideElement! root) -> bool
+override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.TryFindIn(Bruinet.Stride.Interfaces.IStrideElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
 override Bruinet.Stride.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Stride.Interfaces.IStrideElement! element) -> void
 override Bruinet.Stride.Controls.ViewBase<TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
@@ -540,9 +524,6 @@ static Bruinet.Stride.Controls.ViewBase<TScope>.ResolveLocator(string! automatio
 static Bruinet.Stride.Interfaces.StrideElementExtensions.FindElement(this Bruinet.Stride.Interfaces.IStrideElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement!
 static Bruinet.Stride.Testing.StrideTestFixtureBase.FindSolutionDirectory() -> string!
 virtual Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
-virtual Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.AsksParent.get -> bool
-virtual Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.ProbeContentReadiness(Bruinet.Stride.Interfaces.IStrideElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
-virtual Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.TryFindRootElement() -> Bruinet.Stride.Interfaces.IStrideElement?
 virtual Bruinet.Stride.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.Stride.Interfaces.IStrideElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Stride.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.Stride.Interfaces.IStrideElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Stride.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.Stride.Interfaces.IStrideElement! element, int? timeoutMs = null) -> void
