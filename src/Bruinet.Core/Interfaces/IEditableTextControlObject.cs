@@ -70,12 +70,12 @@ public interface IEditableTextControlObject<TScope> : ITextControlObject<TScope>
     /// Wait until read-only state matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
-    bool WaitReadOnly(bool? expected, int? timeoutMs = null);
+    bool WaitReadOnly(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Assert read-only state matches expected value.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
-    TScope AssertReadOnly(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null);
 }

@@ -517,7 +517,7 @@ Bruinet.Stride.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>!
 Bruinet.Stride.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.Button(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Controls.Buttons.Button<TSelf!>!
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.Button(string! automationId) -> Bruinet.Stride.Controls.Buttons.Button<TSelf!>!
@@ -543,9 +543,9 @@ Bruinet.Stride.Pages.PageObjectBase<TSelf>.TextBlock(string! automationId) -> Br
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.ToggleButton(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Controls.Toggle.ToggleButton<TSelf!>!
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.ToggleButton(string! automationId) -> Bruinet.Stride.Controls.Toggle.ToggleButton<TSelf!>!
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
-Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Stride.StrideOptions

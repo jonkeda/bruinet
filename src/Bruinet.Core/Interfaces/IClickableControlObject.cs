@@ -38,14 +38,14 @@ public interface IClickableControlObject<TScope> : IControlObject<TScope>
     /// Wait until control is clickable (visible and enabled).
     /// If expected is null, returns true immediately (skip).
     /// </summary>
-    bool WaitClickable(bool? expected, int? timeoutMs = null);
+    bool WaitClickable(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Assert control clickable state matches expected value.
     /// If expected is null, returns immediately (skip).
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
-    TScope AssertClickable(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>
     /// Hover the mouse over the control.

@@ -20,7 +20,7 @@ public interface IRefreshableControlObject<TScope> : IControlObject<TScope>
     /// <param name="expected">Expected refresh state. Null skips the check.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
-    bool WaitRefreshing(bool? expected, int? timeoutMs = null);
+    bool WaitRefreshing(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Asserts the refresh state.
@@ -30,7 +30,7 @@ public interface IRefreshableControlObject<TScope> : IControlObject<TScope>
     /// <param name="message">Optional custom assertion message.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
-    TScope AssertRefreshing(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertRefreshing(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>
     /// Performs a pull-to-refresh gesture.

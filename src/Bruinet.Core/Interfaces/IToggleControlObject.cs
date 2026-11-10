@@ -50,11 +50,11 @@ public interface IToggleControlObject<TScope> : IControlObject<TScope>
     /// <returns>The containing scope for fluent chaining.</returns>
     [BddThen("{control} should be checked", HasLiteral = true, Literal = true, CommandId = "Control.AssertChecked.True")]
     [BddThen("{control} should be unchecked", HasLiteral = true, Literal = false, CommandId = "Control.AssertChecked.False")]
-    TScope AssertChecked(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>
     /// Wait until checked state matches expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
-    bool WaitChecked(bool? expected, int? timeoutMs = null);
+    bool WaitChecked(bool? expected = true, int? timeoutMs = null);
 }

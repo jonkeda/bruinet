@@ -25,7 +25,7 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// <param name="expected">Expected selected state. Null skips the check.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
-    bool WaitSelected(bool? expected, int? timeoutMs = null);
+    bool WaitSelected(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Asserts the tab is selected or unselected.
@@ -36,5 +36,5 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
     /// <exception cref="Bruinet.Core.Exceptions.AssertionException">Thrown when assertion fails.</exception>
-    TScope AssertSelected(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null);
 }

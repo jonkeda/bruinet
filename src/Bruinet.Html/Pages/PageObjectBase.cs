@@ -143,7 +143,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
     public bool WaitReady(int? timeoutMs = null)
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? _context.Timeouts.PageLoad.ToMs());
 
-    public bool WaitLoaded(bool? expected, int? timeoutMs = null)
+    public bool WaitLoaded(bool? expected = true, int? timeoutMs = null)
     {
         if (expected == null)
         {
@@ -155,7 +155,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
             timeoutMs ?? _context.Timeouts.PageLoad.ToMs());
     }
 
-    public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
+    public void AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
         {
@@ -181,7 +181,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
         return readiness.IsBusy;
     }
 
-    public bool WaitBusy(bool? expected, int? timeoutMs = null)
+    public bool WaitBusy(bool? expected = true, int? timeoutMs = null)
     {
         if (expected == null)
         {

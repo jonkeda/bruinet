@@ -159,7 +159,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     }
 
     /// <inheritdoc />
-    public bool WaitBusy(bool? expected, int? timeoutMs = null)
+    public bool WaitBusy(bool? expected = true, int? timeoutMs = null)
     {
         if (expected == null)
             return true;
@@ -198,7 +198,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     }
 
     /// <inheritdoc />
-    public bool WaitLoaded(bool? expected, int? timeoutMs = null)
+    public bool WaitLoaded(bool? expected = true, int? timeoutMs = null)
     {
         if (expected == null)
             return true;
@@ -210,7 +210,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
 
     /// <inheritdoc />
     /// <exception cref="ScopeNotReadyException">The loaded state did not match within the timeout.</exception>
-    public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
+    public void AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
             return;

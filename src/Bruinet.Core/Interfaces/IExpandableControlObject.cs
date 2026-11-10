@@ -20,7 +20,7 @@ public interface IExpandableControlObject<TScope> : IClickableControlObject<TSco
     /// <param name="expected">Expected expanded state. Null skips the check.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
-    bool WaitExpanded(bool? expected, int? timeoutMs = null);
+    bool WaitExpanded(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Asserts the control's expanded state.
@@ -30,7 +30,7 @@ public interface IExpandableControlObject<TScope> : IClickableControlObject<TSco
     /// <param name="message">Optional custom assertion message.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
-    TScope AssertExpanded(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertExpanded(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>
     /// Expands the control. No-op if already expanded.

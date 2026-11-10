@@ -403,7 +403,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     /// A null expectation is a skip and returns true.
     /// </summary>
     /// <remarks>One call; each attempt checks the parent chain first.</remarks>
-    public bool WaitExists(bool? expected, int? timeoutMs = null)
+    public bool WaitExists(bool? expected = true, int? timeoutMs = null)
         => RunWaitWithOptionalElement(expected, root => (root != null) == expected!.Value, timeoutMs);
 
     /// <summary>
@@ -411,7 +411,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     /// A null expectation is a skip and returns true.
     /// </summary>
     /// <remarks>One call; each attempt checks the parent chain first.</remarks>
-    public bool WaitVisible(bool? expected, int? timeoutMs = null)
+    public bool WaitVisible(bool? expected = true, int? timeoutMs = null)
         => RunWaitWithOptionalElement(expected, root => root?.Visible == expected!.Value, timeoutMs);
 
     /// <summary>

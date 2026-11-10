@@ -409,7 +409,7 @@ Bruinet.WinForms.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool
 Bruinet.WinForms.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Buttons.Button<TSelf!>!
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Button(string! automationId) -> Bruinet.WinForms.Controls.Buttons.Button<TSelf!>!
@@ -451,9 +451,9 @@ Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TrackBar(string! automationId) -> B
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TreeNode(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Controls.Container.TreeNode<TSelf!>!
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TreeNode(string! automationId) -> Bruinet.WinForms.Controls.Container.TreeNode<TSelf!>!
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Testing.WinFormsTestFixtureBase

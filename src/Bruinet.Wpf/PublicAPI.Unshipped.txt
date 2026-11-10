@@ -401,7 +401,7 @@ Bruinet.Wpf.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]!
 Bruinet.Wpf.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.Wpf.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Wpf.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Button(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Controls.Buttons.Button<TSelf!>!
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Button(string! automationId) -> Bruinet.Wpf.Controls.Buttons.Button<TSelf!>!
@@ -443,9 +443,9 @@ Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ToggleButton(string! automationId) -> Br
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.TreeViewItem(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Controls.Container.TreeViewItem<TSelf!>!
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.TreeViewItem(string! automationId) -> Bruinet.Wpf.Controls.Container.TreeViewItem<TSelf!>!
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
-Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Testing.WpfTestFixtureBase

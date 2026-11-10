@@ -146,9 +146,9 @@ Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.RunWaitWithOptionalEl
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Self.get -> TSelf!
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.TryFindElement() -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.TryGetContainerRoot() -> Bruinet.Maui.Interfaces.IMauiElement?
-Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitExists(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitVisible(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.WithRoot<T>(System.Func<Bruinet.Maui.Interfaces.IMauiElement!, T>! read, T whenAbsent) -> T
 Bruinet.Maui.Containers.ScrollHelper
 Bruinet.Maui.Context.MauiTestContext
@@ -987,15 +987,17 @@ Bruinet.Maui.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]
 Bruinet.Maui.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Maui.Pages.PageObjectBase<TSelf>
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.Maui.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Maui.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Maui.Interfaces.IMauiTestContext! context) -> void
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
-Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitIdle(int? timeoutMs = null) -> bool
-Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Testing.DeviceFactAttribute
+Bruinet.Maui.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void
 Bruinet.Maui.Testing.MauiTestFixtureBase
 Bruinet.Maui.Testing.MauiTestFixtureBase.Configuration.get -> Bruinet.Maui.Configuration.BruinetMauiConfiguration!
 Bruinet.Maui.Testing.MauiTestFixtureBase.Context.get -> Bruinet.Maui.Context.MauiTestContext!
@@ -1289,5 +1291,3 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
-Bruinet.Maui.Testing.DeviceFactAttribute
-Bruinet.Maui.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void

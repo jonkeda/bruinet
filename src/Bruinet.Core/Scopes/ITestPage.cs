@@ -16,16 +16,16 @@ public interface ITestPage : IScope
     bool IsLoaded();
 
     /// <summary>Waits until the loaded state matches <paramref name="expected"/>. Null skips.</summary>
-    bool WaitLoaded(bool? expected, int? timeoutMs = null);
+    bool WaitLoaded(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>Asserts the loaded state. Null skips.</summary>
-    void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null);
+    void AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>Whether the page reports itself busy now.</summary>
     bool IsBusy();
 
     /// <summary>Waits until the busy state matches <paramref name="expected"/>. Null skips.</summary>
-    bool WaitBusy(bool? expected, int? timeoutMs = null);
+    bool WaitBusy(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>Asserts that the page becomes idle.</summary>
     void AssertIdle(string? message = null, int? timeoutMs = null);

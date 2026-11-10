@@ -19,7 +19,7 @@ public interface IFocusableControlObject<TScope> : IControlObject<TScope>
     /// <param name="expected">Expected focus state. Null skips the check.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True if condition met within timeout, false if timeout reached.</returns>
-    bool WaitFocused(bool? expected, int? timeoutMs = null);
+    bool WaitFocused(bool? expected = true, int? timeoutMs = null);
 
     /// <summary>
     /// Asserts the control's focus state.
@@ -29,7 +29,7 @@ public interface IFocusableControlObject<TScope> : IControlObject<TScope>
     /// <param name="message">Optional custom assertion message.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
-    TScope AssertFocused(bool? expected, string? message = null, int? timeoutMs = null);
+    TScope AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>
     /// Sets focus to the control.
