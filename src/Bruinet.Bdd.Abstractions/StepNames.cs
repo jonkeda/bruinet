@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Bdd;
 
 /// <summary>
 /// The name a step uses for a page or control: its identifier without a known suffix, in words

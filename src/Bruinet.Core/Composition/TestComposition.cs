@@ -126,7 +126,7 @@ public sealed class TestCompositionCatalog
                     pageAttribute?.Lifetime ?? ServiceLifetime.Scoped,
                     type.Assembly.Location)
                 {
-                    Namespace = Bruinet.Core.Testing.BddNamespaceAttribute.Of(type),
+                    Namespace = Bruinet.Bdd.BddNamespaceAttribute.Of(type),
                 });
                 continue;
             }
@@ -311,7 +311,7 @@ public sealed record TestPageDescriptor(
     ServiceLifetime Lifetime,
     string SourcePath)
 {
-    /// <summary>The page's UAT namespace (<see cref="Bruinet.Core.Testing.BddNamespaceAttribute"/>); null for none.</summary>
+    /// <summary>The page's UAT namespace (<see cref="Bruinet.Bdd.BddNamespaceAttribute"/>); null for none.</summary>
     public string? Namespace { get; init; }
 }
 

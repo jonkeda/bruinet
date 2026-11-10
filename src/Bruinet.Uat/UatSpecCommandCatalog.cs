@@ -1,3 +1,5 @@
+using Bruinet.Bdd;
+
 namespace Bruinet.Uat;
 
 public static class UatSpecCommandCatalog

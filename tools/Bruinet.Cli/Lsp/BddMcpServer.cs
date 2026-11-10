@@ -482,7 +482,7 @@ public sealed class BddMcpServer : IDisposable
         }
 
         var catalog = Catalogs(suite).Default;
-        var step = new BddStep(BddStepKeyword.Given, Bruinet.Core.Testing.BddEffectiveStepKeyword.Given, state, null, new BddSourceLocation(null, 1));
+        var step = new BddStep(BddStepKeyword.Given, Bruinet.Bdd.BddEffectiveStepKeyword.Given, state, null, new BddSourceLocation(null, 1));
         if (!catalog.Patterns.Any(pattern => pattern.IsState && pattern.TryMatch(step) is not null))
         {
             throw new ToolProblem($"'{state}' is not a declared state of {suite.Name}: list_states names them.");

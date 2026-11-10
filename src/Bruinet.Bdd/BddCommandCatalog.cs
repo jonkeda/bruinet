@@ -381,7 +381,7 @@ public sealed class BddCommandPattern
 /// <param name="MethodName">The method, invoked by name.</param>
 /// <param name="ArgumentCount">How many arguments the step passes: the item, then the value or literal.</param>
 /// <param name="NamesControl">Whether the phrase has <c>{control}</c>; without it, the page's one control that declares the verb runs it.</param>
-/// <param name="Navigates">Whether the verb can leave the page (<see cref="Bruinet.Core.Testing.BddStepAttribute.Navigates"/>).</param>
+/// <param name="Navigates">Whether the verb can leave the page (<see cref="Bruinet.Bdd.BddStepAttribute.Navigates"/>).</param>
 [System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
 public sealed record BddControlVerb(string MethodName, int ArgumentCount, bool NamesControl, bool Navigates);
 

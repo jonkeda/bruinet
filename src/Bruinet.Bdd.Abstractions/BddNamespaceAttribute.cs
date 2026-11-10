@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Bdd;
 
 /// <summary>
 /// The UAT namespace of a phrase class or page object: a folder under the scenario root, with

@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Cli;
 using System.Text.Json;
 using Bruinet.Core.Composition;

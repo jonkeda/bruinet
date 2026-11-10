@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Core.Scraping;
 using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Explore;

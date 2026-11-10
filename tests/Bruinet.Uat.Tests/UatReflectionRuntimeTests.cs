@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Xunit;
 using Bruinet.Core.Settings;
 

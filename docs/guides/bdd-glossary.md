@@ -7,7 +7,7 @@ its own words where Cucumber has no equivalent.
 | --- | --- | --- |
 | feature, scenario, scenario outline, background, examples, tags | the same | same idea, same word |
 | step | step | a line of a scenario |
-| step definition | step definition | a declared step text plus the method it runs: `[BddGiven]`, `[BddWhen]`, `[BddThen]` from `Bruinet.Core.Testing` |
+| step definition | step definition | a declared step text plus the method it runs: `[BddGiven]`, `[BddWhen]`, `[BddThen]` from `Bruinet.Bdd` (package `Bruinet.Bdd.Abstractions`) |
 | step-definition class | binding class | a class with `[BddStepDefinitions]` or deriving from `BddStepDefinitionsBase`; discovered from the fixture's `TestComposition` scan |
 | step text, `{placeholder}` | step text, Cucumber expression | a strict subset: no optional text, no alternatives (AD-016) |
 | fixture | (context injection, `ScenarioContext`) | xUnit's word |

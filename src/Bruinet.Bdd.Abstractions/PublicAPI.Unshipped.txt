@@ -1,0 +1,36 @@
+#nullable enable
+Bruinet.Bdd.BddEffectiveStepKeyword
+Bruinet.Bdd.BddEffectiveStepKeyword.Given = 0 -> Bruinet.Bdd.BddEffectiveStepKeyword
+Bruinet.Bdd.BddEffectiveStepKeyword.Then = 2 -> Bruinet.Bdd.BddEffectiveStepKeyword
+Bruinet.Bdd.BddEffectiveStepKeyword.When = 1 -> Bruinet.Bdd.BddEffectiveStepKeyword
+Bruinet.Bdd.BddGivenAttribute
+Bruinet.Bdd.BddGivenAttribute.BddGivenAttribute() -> void
+Bruinet.Bdd.BddGivenAttribute.BddGivenAttribute(string! phrase) -> void
+Bruinet.Bdd.BddNamespaceAttribute
+Bruinet.Bdd.BddNamespaceAttribute.BddNamespaceAttribute(string! name) -> void
+Bruinet.Bdd.BddNamespaceAttribute.Name.get -> string!
+Bruinet.Bdd.BddStateAttribute
+Bruinet.Bdd.BddStateAttribute.BddStateAttribute(string! phrase) -> void
+Bruinet.Bdd.BddStepAttribute
+Bruinet.Bdd.BddStepAttribute.BddStepAttribute(Bruinet.Bdd.BddEffectiveStepKeyword keyword, string! phrase) -> void
+Bruinet.Bdd.BddStepAttribute.CommandId.get -> string?
+Bruinet.Bdd.BddStepAttribute.CommandId.init -> void
+Bruinet.Bdd.BddStepAttribute.HasLiteral.get -> bool
+Bruinet.Bdd.BddStepAttribute.HasLiteral.init -> void
+Bruinet.Bdd.BddStepAttribute.IsInferred.get -> bool
+Bruinet.Bdd.BddStepAttribute.Keyword.get -> Bruinet.Bdd.BddEffectiveStepKeyword
+Bruinet.Bdd.BddStepAttribute.Literal.get -> bool
+Bruinet.Bdd.BddStepAttribute.Literal.init -> void
+Bruinet.Bdd.BddStepAttribute.Navigates.get -> bool
+Bruinet.Bdd.BddStepAttribute.Navigates.init -> void
+Bruinet.Bdd.BddStepAttribute.Phrase.get -> string!
+Bruinet.Bdd.BddThenAttribute
+Bruinet.Bdd.BddThenAttribute.BddThenAttribute() -> void
+Bruinet.Bdd.BddThenAttribute.BddThenAttribute(string! phrase) -> void
+Bruinet.Bdd.BddWhenAttribute
+Bruinet.Bdd.BddWhenAttribute.BddWhenAttribute() -> void
+Bruinet.Bdd.BddWhenAttribute.BddWhenAttribute(string! phrase) -> void
+Bruinet.Bdd.StepNames
+static Bruinet.Bdd.BddNamespaceAttribute.Of(System.Type! type) -> string?
+static Bruinet.Bdd.StepNames.FromIdentifier(string! identifier) -> string!
+static Bruinet.Bdd.StepNames.HasKnownSuffix(string! identifier) -> bool

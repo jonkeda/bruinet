@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Core.Testing;
 using Bruinet.Samples.Todo.Contracts;
 using Bruinet.Samples.Todo.Web.Uat.Runtime;

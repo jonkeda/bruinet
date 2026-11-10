@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Reflection;
 using System.Reflection.Emit;
 using Bruinet.Core.Composition;

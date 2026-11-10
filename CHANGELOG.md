@@ -65,6 +65,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** the step attributes (`BddGiven`, `BddWhen`, `BddThen`, `BddState`, `BddNamespace`) and `StepNames` moved
+  from `Bruinet.Core.Testing` to namespace `Bruinet.Bdd`, in the new package `Bruinet.Bdd.Abstractions` that Core references
+  (review proposal 7).
 - **Breaking:** `Bruinet.Bdd`'s engine and runner protocol are `[Experimental]` (`BRUINET010`, `docs/experimental.md`):
   public for Bruinet's own packages, not promised to consumers. Step authors' types are not marked (review proposals 1, 12).
 - **Breaking:** the driver and element classes of every head are internal; tests reach the app through page objects, fixtures

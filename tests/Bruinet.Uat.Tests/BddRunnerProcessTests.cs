@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Diagnostics;
 using Bruinet.Bdd.Runner;
 using Xunit;

@@ -1,3 +1,4 @@
+
 namespace Bruinet.Core.Interfaces;
 
 /// <summary>

@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Bdd;
 
 /// <summary>
 /// Base of the step attributes <see cref="BddGivenAttribute"/>, <see cref="BddWhenAttribute"/>

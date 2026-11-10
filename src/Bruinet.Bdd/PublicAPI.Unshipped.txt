@@ -135,7 +135,7 @@ Bruinet.Bdd.BddCommandCatalog.IsGeneric.get -> bool
 Bruinet.Bdd.BddCommandCatalog.IsGeneric.set -> void
 Bruinet.Bdd.BddCommandCatalog.Match(Bruinet.Bdd.BddStep! step) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
 Bruinet.Bdd.BddCommandCatalog.Patterns.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandPattern!>!
-Bruinet.Bdd.BddCommandCatalog.Register(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null, bool namesPage = false, string? page = null, string? pageAfter = null, Bruinet.Bdd.BddControlVerb? controlVerb = null, string? phraseNamespace = null, bool isState = false) -> Bruinet.Bdd.BddCommandPattern!
+Bruinet.Bdd.BddCommandCatalog.Register(Bruinet.Bdd.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null, bool namesPage = false, string? page = null, string? pageAfter = null, Bruinet.Bdd.BddControlVerb? controlVerb = null, string? phraseNamespace = null, bool isState = false) -> Bruinet.Bdd.BddCommandPattern!
 Bruinet.Bdd.BddCommandCatalog.Scope.get -> Bruinet.Bdd.IStepScopeModel?
 Bruinet.Bdd.BddCommandCatalog.Scope.set -> void
 Bruinet.Bdd.BddCommandCatalog.Unmatchable.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddUnmatchableDeclaration!>!
@@ -150,7 +150,7 @@ Bruinet.Bdd.BddCommandMatch.RawArguments.get -> System.Collections.Generic.IRead
 Bruinet.Bdd.BddCommandMatch.RawArguments.init -> void
 Bruinet.Bdd.BddCommandPattern
 Bruinet.Bdd.BddCommandPattern.AllowsTable.get -> bool
-Bruinet.Bdd.BddCommandPattern.BddCommandPattern(Bruinet.Core.Testing.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null) -> void
+Bruinet.Bdd.BddCommandPattern.BddCommandPattern(Bruinet.Bdd.BddEffectiveStepKeyword keyword, string! phrase, string? commandId = null, bool requiresTable = false, bool allowsTable = true, Bruinet.Bdd.BddCommandHandler? handler = null, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>? parameters = null, Bruinet.Bdd.BddPhraseProblem? problem = null) -> void
 Bruinet.Bdd.BddCommandPattern.Callable.get -> Bruinet.Bdd.BddCallable?
 Bruinet.Bdd.BddCommandPattern.Callable.init -> void
 Bruinet.Bdd.BddCommandPattern.CommandId.get -> string!
@@ -162,7 +162,7 @@ Bruinet.Bdd.BddCommandPattern.IsExact.get -> bool
 Bruinet.Bdd.BddCommandPattern.IsPageScoped.get -> bool
 Bruinet.Bdd.BddCommandPattern.IsState.get -> bool
 Bruinet.Bdd.BddCommandPattern.IsState.init -> void
-Bruinet.Bdd.BddCommandPattern.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddCommandPattern.Keyword.get -> Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddCommandPattern.NamesPage.get -> bool
 Bruinet.Bdd.BddCommandPattern.NamesPage.init -> void
 Bruinet.Bdd.BddCommandPattern.Namespace.get -> string!
@@ -397,10 +397,10 @@ Bruinet.Bdd.BddPhraseClassMethodBinding.Phrases.init -> void
 Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddUnmatchableDeclaration!>!
 Bruinet.Bdd.BddPhraseClassMethodBinding.Unmatchable.init -> void
 Bruinet.Bdd.BddPhraseMethodPhrase
-Bruinet.Bdd.BddPhraseMethodPhrase.BddPhraseMethodPhrase(string! Phrase, Bruinet.Core.Testing.BddEffectiveStepKeyword Keyword) -> void
+Bruinet.Bdd.BddPhraseMethodPhrase.BddPhraseMethodPhrase(string! Phrase, Bruinet.Bdd.BddEffectiveStepKeyword Keyword) -> void
 Bruinet.Bdd.BddPhraseMethodPhrase.IsState.get -> bool
 Bruinet.Bdd.BddPhraseMethodPhrase.IsState.init -> void
-Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.get -> Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddPhraseMethodPhrase.Keyword.init -> void
 Bruinet.Bdd.BddPhraseMethodPhrase.Parameters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddPhraseParameter!>!
 Bruinet.Bdd.BddPhraseMethodPhrase.Parameters.init -> void
@@ -576,10 +576,10 @@ Bruinet.Bdd.BddSourceLocation.FilePath.init -> void
 Bruinet.Bdd.BddSourceLocation.LineNumber.get -> int
 Bruinet.Bdd.BddSourceLocation.LineNumber.init -> void
 Bruinet.Bdd.BddStep
-Bruinet.Bdd.BddStep.BddStep(Bruinet.Bdd.BddStepKeyword Keyword, Bruinet.Core.Testing.BddEffectiveStepKeyword EffectiveKeyword, string! Text, Bruinet.Bdd.BddTable? Table, Bruinet.Bdd.BddSourceLocation! Source, string? DocString = null) -> void
+Bruinet.Bdd.BddStep.BddStep(Bruinet.Bdd.BddStepKeyword Keyword, Bruinet.Bdd.BddEffectiveStepKeyword EffectiveKeyword, string! Text, Bruinet.Bdd.BddTable? Table, Bruinet.Bdd.BddSourceLocation! Source, string? DocString = null) -> void
 Bruinet.Bdd.BddStep.DocString.get -> string?
 Bruinet.Bdd.BddStep.DocString.init -> void
-Bruinet.Bdd.BddStep.EffectiveKeyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddStep.EffectiveKeyword.get -> Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddStep.EffectiveKeyword.init -> void
 Bruinet.Bdd.BddStep.Keyword.get -> Bruinet.Bdd.BddStepKeyword
 Bruinet.Bdd.BddStep.Keyword.init -> void
@@ -715,8 +715,8 @@ Bruinet.Bdd.BddTextFix.Original.init -> void
 Bruinet.Bdd.BddTextFix.Replacement.get -> string!
 Bruinet.Bdd.BddTextFix.Replacement.init -> void
 Bruinet.Bdd.BddUnmatchableDeclaration
-Bruinet.Bdd.BddUnmatchableDeclaration.BddUnmatchableDeclaration(Bruinet.Core.Testing.BddEffectiveStepKeyword Keyword, Bruinet.Bdd.BddPhraseProblem! Problem) -> void
-Bruinet.Bdd.BddUnmatchableDeclaration.Keyword.get -> Bruinet.Core.Testing.BddEffectiveStepKeyword
+Bruinet.Bdd.BddUnmatchableDeclaration.BddUnmatchableDeclaration(Bruinet.Bdd.BddEffectiveStepKeyword Keyword, Bruinet.Bdd.BddPhraseProblem! Problem) -> void
+Bruinet.Bdd.BddUnmatchableDeclaration.Keyword.get -> Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddUnmatchableDeclaration.Keyword.init -> void
 Bruinet.Bdd.BddUnmatchableDeclaration.Problem.get -> Bruinet.Bdd.BddPhraseProblem!
 Bruinet.Bdd.BddUnmatchableDeclaration.Problem.init -> void

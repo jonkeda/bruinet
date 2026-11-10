@@ -12,4 +12,9 @@
     <PackageReference Include="xunit.extensibility.core" PrivateAssets="all" />
   </ItemGroup>
 
+  <!-- The step attributes Core's controls declare their built-in phrases with (proposal 7). -->
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.Bdd.Abstractions\Bruinet.Bdd.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

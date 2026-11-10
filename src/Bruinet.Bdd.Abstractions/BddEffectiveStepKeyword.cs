@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Bdd;
 
 /// <summary>
 /// The Gherkin keyword a UAT step resolves to after And/But are folded into the

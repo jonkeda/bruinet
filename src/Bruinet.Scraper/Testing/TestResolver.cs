@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Globalization;
 using Bruinet.Core.Scraping;
 using Bruinet.Core.Testing;

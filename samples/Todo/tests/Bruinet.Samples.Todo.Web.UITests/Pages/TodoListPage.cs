@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Core.Collections;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Testing;

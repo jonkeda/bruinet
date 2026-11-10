@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Bruinet.Core.Testing;

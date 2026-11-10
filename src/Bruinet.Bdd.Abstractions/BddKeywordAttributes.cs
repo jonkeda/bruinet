@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Bdd;
 
 /// <summary>Declares a <c>Given</c> UAT step on the method it decorates.</summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

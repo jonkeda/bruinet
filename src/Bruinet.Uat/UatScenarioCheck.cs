@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Bruinet.Core.Composition;

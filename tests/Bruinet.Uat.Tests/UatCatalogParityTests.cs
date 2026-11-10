@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -62,7 +63,8 @@ public sealed class UatCatalogParityTests
     [Fact]
     public void SpecCatalog_ControlVerbs_ComeFromCoreStepAttributes()
     {
-        var expected = typeof(BddStepAttribute).Assembly
+        // Core's controls declare the built-in verbs; the attributes themselves live in Bruinet.Bdd.Abstractions.
+        var expected = typeof(Bruinet.Core.Interfaces.IClickableControlObject<>).Assembly
             .GetTypes()
             .SelectMany(type => type.GetMethods(
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))

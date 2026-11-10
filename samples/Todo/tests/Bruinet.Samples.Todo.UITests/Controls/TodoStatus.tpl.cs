@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Core.Testing;
 
 namespace Bruinet.Samples.Todo.UITests.Controls;

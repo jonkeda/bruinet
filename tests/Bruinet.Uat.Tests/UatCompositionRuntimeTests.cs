@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Core.Composition;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

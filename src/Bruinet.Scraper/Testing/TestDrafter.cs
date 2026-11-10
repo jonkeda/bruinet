@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using System.Text;
 using Bruinet.Core.Testing;
 using Bruinet.Scraper.Code;

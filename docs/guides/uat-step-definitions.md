@@ -4,7 +4,7 @@ Bruinet UAT scenarios are markdown files whose steps bind to a command catalog.
 There is no separate flow-file format. In current code, a flow is the ordered
 execution of parsed and bound steps.
 
-Every step is declared with one of three attributes from `Bruinet.Core.Testing`:
+Every step is declared with one of three attributes from namespace `Bruinet.Bdd` (package `Bruinet.Bdd.Abstractions`):
 `[BddGiven]`, `[BddWhen]` or `[BddThen]`. What the step becomes depends on the
 method the attribute sits on:
 
@@ -385,15 +385,15 @@ Given I am on the Main page
 ## Custom Control Verbs
 
 To add a verb, put a `[BddWhen]` or `[BddThen]` on the control method that
-performs it. The attribute lives in `Bruinet.Core.Testing`, so a control project needs no
-reference to `Bruinet.Uat` to declare one. Do **not** add a
+performs it. The attribute lives in `Bruinet.Bdd.Abstractions` (namespace `Bruinet.Bdd`), which `Bruinet.Core` references, so a
+control project needs no reference to `Bruinet.Uat` to declare one. Do **not** add a
 `catalog.Register(...)` call for a control verb - that is the hand-written table
 AD-011 removed.
 
 From the Todo sample's `TodoStatus` component:
 
 ```csharp
-using Bruinet.Core.Testing;
+using Bruinet.Bdd;
 
 [BddWhen("I advance {control} to {value}")]
 public TodoStatus<TScope> AdvanceTo(string? expected, int? timeoutMs = null) { ... }
@@ -938,7 +938,7 @@ The rule is [AD-015](../../.docs/decisions/ad-015-a-steps-subject-picks-its-app.
 
 ## Source Files
 
-- `src/Bruinet.Core/Testing/BddStepAttribute.cs` and `UatKeywordAttributes.cs` — the step attributes
+- `src/Bruinet.Bdd.Abstractions/BddStepAttribute.cs` and `BddKeywordAttributes.cs` — the step attributes
 - `src/Bruinet.Core/Interfaces/*.cs` — the built-in control-verb declarations
 - `src/Bruinet.Uat/UatCatalogBuilder.cs` — the discovery pass and both projections
 - `src/Bruinet.Uat/BddMarkdownParser.cs`

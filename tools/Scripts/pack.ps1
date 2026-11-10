@@ -14,6 +14,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $libraries = @(
+    'Bruinet.Bdd.Abstractions',
     'Bruinet.Core',
     'Bruinet.Stride.Automation',
     'Bruinet.Mocking',

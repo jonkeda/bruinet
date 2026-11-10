@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.Bdd</RootNamespace>
+    <Description>The step attributes of Bruinet's Markdown feature files (BddGiven, BddWhen, BddThen, BddState, BddNamespace), for page-object and control projects that declare phrases without running them.</Description>
+    <PackageId>Bruinet.Bdd.Abstractions</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <!-- The framework only: Bruinet.Core references this package so its controls can declare their
+       built-in phrases, so this package references nothing of Bruinet's (public API review, proposal 7). -->
+
+</Project>

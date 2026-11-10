@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Xunit;
 
 namespace Bruinet.Uat.Tests;
