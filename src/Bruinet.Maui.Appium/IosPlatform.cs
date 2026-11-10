@@ -497,19 +497,13 @@ internal sealed class IosPlatform : AppiumPlatform
             { "duration", durationMs / 1000.0 } // iOS uses seconds
         });
 
-    // XCUITest's "mobile: swipe" only takes a direction; this is its coordinate-based swipe.
+    // XCUITest's "mobile: swipe" only takes a direction; this is its coordinate-based swipe. Not
+    // "mobile: dragFromToWithVelocity": about one call in seven stalled 20-37 s inside XCTest's
+    // event synthesis while the app sat idle; a timed drag never took over 3 s. The list does not
+    // coast after a timed drag, so a scroll step moves by the drag distance.
     public override void Swipe(AppiumMauiElement element, int startX, int startY, int endX, int endY, int durationMs)
-    {
-        var distance = Math.Sqrt(Math.Pow(endX - startX, 2) + Math.Pow(endY - startY, 2));
-        Script(element, "mobile: dragFromToWithVelocity", new Dictionary<string, object>
+        => Script(element, "mobile: dragFromToForDuration", new Dictionary<string, object>
         {
-            { "fromX", startX },
-            { "fromY", startY },
-            { "toX", endX },
-            { "toY", endY },
-            { "pressDuration", 0.05 },
-            { "holdDuration", 0.05 },
-            { "velocity", Math.Max(100, distance / Math.Max(0.05, durationMs / 1000.0)) }
+            { "fromX", startX }, { "fromY", startY }, { "toX", endX }, { "toY", endY }, { "duration", 0.1 },
         });
-    }
 }
