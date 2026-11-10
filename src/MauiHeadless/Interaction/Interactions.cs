@@ -305,6 +305,13 @@ public static class Interactions
         var recognizers = view.GestureRecognizers.OfType<SwipeGestureRecognizer>()
             .Where(recognizer => recognizer.Direction.HasFlag(direction))
             .ToList();
+        // A finger on a SwipeView's content drags the SwipeView when nothing under it takes the swipe (D19).
+        if (recognizers.Count == 0 && EnclosingSwipeView(view, direction) is { } enclosing)
+        {
+            enclosing.Swipe(direction);
+            return view;
+        }
+
         if (recognizers.Count == 0)
             throw new ElementNotInteractableException(
                 $"Cannot swipe {Name(view)} {direction}: it is not a SwipeView, CarouselView or RefreshView, and no SwipeGestureRecognizer takes {direction}.");
@@ -315,6 +322,24 @@ public static class Interactions
                 recognizer.SendSwiped(view, direction);
         });
         return view;
+    }
+
+    /// <summary>The nearest SwipeView around <paramref name="view"/> with items on the side a swipe toward <paramref name="direction"/> uncovers.</summary>
+    private static SwipeView? EnclosingSwipeView(View view, SwipeDirection direction)
+    {
+        for (var parent = view.Parent; parent is not null; parent = parent.Parent)
+        {
+            if (parent is SwipeView swipeView)
+                return (direction switch
+                {
+                    SwipeDirection.Right => swipeView.LeftItems,
+                    SwipeDirection.Left => swipeView.RightItems,
+                    SwipeDirection.Down => swipeView.TopItems,
+                    _ => swipeView.BottomItems,
+                }) is { Count: > 0 } ? swipeView : null;
+        }
+
+        return null;
     }
 
     private static int? CarouselStep(CarouselView carousel, SwipeDirection direction)

@@ -346,9 +346,22 @@ internal sealed class MauiHeadlessElement : IMauiElement
             MauiGesture.SwipeLeft or MauiGesture.SwipeRight or MauiGesture.SwipeUp or MauiGesture.SwipeDown
                 => view is SwipeView or CarouselView
                    || (gesture == MauiGesture.SwipeDown && view is RefreshView or ContentView { Content: RefreshView })
-                   || view.GestureRecognizers.OfType<SwipeGestureRecognizer>().Any(),
+                   || view.GestureRecognizers.OfType<SwipeGestureRecognizer>().Any()
+                   // Interactions.Swipe hands the swipe to an enclosing SwipeView (D19).
+                   || InsideSwipeView(view),
             _ => false,
         };
+    }
+
+    private static bool InsideSwipeView(View view)
+    {
+        for (var parent = view.Parent; parent is not null; parent = parent.Parent)
+        {
+            if (parent is SwipeView)
+                return true;
+        }
+
+        return false;
     }
 
     #endregion

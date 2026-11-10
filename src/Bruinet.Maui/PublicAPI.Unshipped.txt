@@ -1291,3 +1291,8 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! automationId) -> void
+override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.EnsureClickableCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
+override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.RequiresVisibilityForAction.get -> bool
