@@ -100,7 +100,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
 | 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
-| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Open. |
+| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Step attributes done in `e9d3b2c4`: package `Bruinet.Bdd.Abstractions`, namespace `Bruinet.Bdd`, referenced by Core because its controls declare the built-in phrases. Left: `MauiHead`/`WebHead`, `BrowserFact`/`DeviceFact`, `Scraping`, `Composition`, `MarkdownTable`. |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Open. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
@@ -128,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposals 1, 2 and 4 are made, 5 and 12 started, 13 in working order.
-Next is the rest of proposal 5 (the shared collection base), which needs a design of its own, or proposal 7, which moves the step attributes and `MauiHead`/`WebHead` out of Core.
+Proposal 7 continues with `MauiHead`/`WebHead` and `BrowserFact`/`DeviceFact`, which belong to their platforms; `Scraping`, `Composition` and `MarkdownTable` follow, each to the tool that uses it.
+The rest of proposal 5 (the shared collection base) and proposal 11 (one options type per platform) each need a design first.
