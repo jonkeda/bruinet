@@ -31,8 +31,9 @@ public static class Poller
             Observation observation;
             try
             {
-                // Readiness answers are kept for this attempt only (AttemptMemo).
-                using (AttemptMemo.Begin())
+                // Readiness answers are kept for this attempt only (AttemptMemo). The first attempt
+                // may also use what an enclosing attempt read; a retry reads afresh.
+                using (AttemptMemo.Begin(inherit: context.Log.Attempts == 0))
                 {
                     observation = attempt(context);
                 }
