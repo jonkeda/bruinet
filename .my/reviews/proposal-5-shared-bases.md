@@ -1,6 +1,6 @@
 # Proposal 5: the shared bases, Core half
 
-Drafted 2026-11-10 at `bc1be389`, for the owner to approve rule by rule. Nothing here is made yet.
+Drafted 2026-11-10 at `bc1be389`; the owner approved all six with option A the same day, and all six are made. Two things the draft did not foresee: the container and row bases take three small hooks for searching inside an element, since the stacks' elements share no lookup interface; and a collection is no longer a subclass of its stack's container base, only of Core's.
 
 ## Outcome
 
@@ -45,4 +45,4 @@ The hooks either way: the rows (`Children()` on Stride), reading a row's key (th
 
 One commit per rule in order 1, 2, 3, 4, then rule 5 as two commits (container, then collection) under A or one under B, each with its change-list row and a run of the five stacks' unit tests and Tomorrow's two suites in a worktree.
 
-Next action: the owner approves rules 1 to 4 and 6, and picks A or B for rule 5.
+Next action: none; this design is done.

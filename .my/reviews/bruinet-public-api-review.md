@@ -57,9 +57,7 @@ Nothing is shipped yet, so every proposal below is still free. After the first `
 
 ### 3. The per-stack bases are copied six times
 
-- `ItemKey` and `ItemKeyKind` are declared in six packages (three before last night), Maui's with two more members than the rest.
-- `CollectionObjectBase`, `AppRoot` and `ObjectBase` are declared in the same six.
-- The port made the stacks alike by copying, which was the plan's choice; it also means the next change to an item key or a collection is six edits.
+- They were: `ItemKey`, the object, app-root, row, container and collection bases were each declared in six packages. Proposal 5 left one copy in Core for five stacks, and MAUI's own.
 
 ### 4. Package and namespace boundaries leak
 
@@ -98,7 +96,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Done in `24e3dcea`: `WaitHelper` internal, `WaitTextEquals` gone from all six stacks, `ITextControlObject` declares `WaitText`. |
 | 3 | Mark `Bruinet.Core.Legacy` obsolete or drop it. | Done: deleted in `7d03c22b`. |
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
-| 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
+| 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | Done: the UIA half (`Bruinet.FlaUI`), `ItemKey`, and, as designed in `proposal-5-shared-bases.md` (approved 2026-11-10, option A), the object, app-root, row, container and collection bases of five stacks; MAUI keeps its own. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
 | 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Done as far as it goes: the step attributes are in `Bruinet.Bdd.Abstractions` (`e9d3b2c4`), `DeviceFact` and `BrowserFact` on their platforms (`a0ffa1eb`), `Scraping` in the Scraper. Staying in Core, with reason: the heads (the run's `BRUINET_HEAD`, read by Bdd, Uat and Core), `Composition` (`[TestModuleScan]`, `TestPages`, used by every stack, Uat, Bdd and consumers) and `MarkdownTables` (Core, Bdd and the Scraper). |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Done: all eight rules of `proposal-8-signature-rules.md`, approved by the owner 2026-11-10, one commit each with its change-list row; the generator names the `Exists` query `Exists()`. |
@@ -128,4 +126,4 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Every proposal is made as far as decided except two: the shared collection base (5) needs a design, and moving the cleaned surface to `PublicAPI.Shipped.txt` (12) waits for the first release.
+Every proposal is made as far as decided. What remains is proposal 12's last step: before the first release, move the cleaned surface to `PublicAPI.Shipped.txt`.

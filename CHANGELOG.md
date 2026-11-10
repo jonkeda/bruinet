@@ -65,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** the object, app-root, row, container and collection bases of Html, WPF, WinForms, Android and Stride derive
+  from shared bases in Core (`ObjectBase<TContext>`, `AppRootBase`, `ItemObjectBase`, `ContainerObjectBase`,
+  `CollectionObjectBase`), with `IElementScope<TElement>` and `IItemRootSource<TElement>`; each stack keeps its classes'
+  names and constructors. MAUI keeps its own (review proposal 5).
 - **Breaking:** one options type per platform (review proposal 11): the stacks' context options share `TestContextOptionsBase`
   (`Timeouts`, `Logger`, `Name`, `NearMiss`, `Artifacts`), and `bruinet.{platform}.config.json` binds to them directly; the
   `Bruinet{X}Configuration` and `{X}Options` types are gone. Code wins over the file, the file over the defaults
