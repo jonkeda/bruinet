@@ -1086,6 +1086,14 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// <c>UiScrollable</c> rooted at this element, or on the app element at the first scrollable
     /// container on screen. Android only; iOS answers null until it is written and run on a device.
     /// </remarks>
+    /// <inheritdoc />
+    /// <remarks>Android only: there a list runs under the tab bar, and UiAutomator2 leaves out a sliver's children.</remarks>
+    public void RevealClearOfEdges()
+    {
+        if (_driver.Appium.ScrollsEdgeToEdge)
+            Live(NudgeClearOfBottomEdge);
+    }
+
     public IMauiElement? TryFindByScrolling(Locator locator)
     {
         // What was read before the scroll is wrong after it; the element found is read afresh.

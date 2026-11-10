@@ -902,6 +902,7 @@ Bruinet.Maui.Interfaces.IMauiElement.Text.get -> string?
 Bruinet.Maui.Interfaces.IMauiElement.Toggle() -> void
 Bruinet.Maui.Interfaces.IMauiElement.TryFindActiveDialog() -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.TryFindByScrolling(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Interfaces.IMauiElement.RevealClearOfEdges() -> void
 Bruinet.Maui.Interfaces.IMauiElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.Value.get -> string?

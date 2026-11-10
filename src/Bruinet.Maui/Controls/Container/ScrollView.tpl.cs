@@ -84,11 +84,14 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
             var element = TryFindElement(locator);
             if (element is null && Context.Driver?.OmitsOffscreenElements == true)
             {
-                ContainerRoot.TryFindByScrolling(locator);
+                ContainerRoot.TryFindByScrolling(locator)?.RevealClearOfEdges();
                 return;
             }
 
             ScrollHelper.ScrollIntoView(element, CallRemainingMs);
+
+            // A sliver at the bottom edge is in the tree without its children; move it clear.
+            element?.RevealClearOfEdges();
         });
 
     /// <summary>
