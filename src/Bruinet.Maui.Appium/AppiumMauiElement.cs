@@ -1036,6 +1036,10 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         if (android && !CanScrollOnAndroid())
             return ScrollStep.NotMoved;
 
+        // iOS says it through the scroll bar: a step up at the top was a pull-to-refresh (D13).
+        if (!android && verticalSteps != 0 && AtIosScrollEdge(verticalSteps))
+            return ScrollStep.NotMoved;
+
         var rect = Rect;
 
         if (verticalSteps != 0)
@@ -1085,6 +1089,15 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     private bool CanScrollOnAndroid()
         => _element.GetAttribute("scrollable") == "true" || _element.FindElements(ScrollableDescendant).Count > 0;
+
+    private static readonly By IosVerticalScrollBar =
+        MobileBy.IosClassChain($"XCUIElementTypeOther[`name BEGINSWITH \"{IosScrollBar.NamePrefix}\"`]");
+
+    private bool AtIosScrollEdge(int verticalSteps)
+    {
+        var bar = _element.FindElements(IosVerticalScrollBar).FirstOrDefault();
+        return bar is not null && IosScrollBar.AtEdge(bar.GetAttribute("name"), bar.GetAttribute("value"), verticalSteps);
+    }
 
     private static int SwipeInset(int extent, bool android)
         => android ? Math.Max(EdgeInset, extent / 10) : EdgeInset;
