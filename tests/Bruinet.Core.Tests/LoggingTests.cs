@@ -16,9 +16,9 @@ public sealed class CsvTestLoggerTests : IDisposable
     {
         using (var logger = new CsvTestLogger(_file))
         {
-            logger.LogEntry("Saves", "Edit", "Save", "Click", null);
-            logger.LogExit("Saves", "Edit", "Save", "Click", LogResult.Success, 42);
-            logger.LogAssertExit("Saves", "Edit", "Title", "AssertText", "Apple", "Pear", LogResult.Fail, 7, "differs");
+            logger.Write(LogEvent.Entry("Saves", "Edit", "Save", "Click", null));
+            logger.Write(LogEvent.Exit("Saves", "Edit", "Save", "Click", LogResult.Success, TimeSpan.FromMilliseconds(42)));
+            logger.Write(new LogEvent(LogEventKind.Exit, "Saves", "Edit") { ControlId = "Title", Action = "AssertText", Actual = "Apple", Expected = "Pear", Result = LogResult.Fail, Duration = TimeSpan.FromMilliseconds(7), Message = "differs" });
         }
 
         var lines = File.ReadAllLines(_file);
@@ -35,29 +35,25 @@ public sealed class CsvTestLoggerTests : IDisposable
     {
         using (var logger = new CsvTestLogger(_file))
         {
-            logger.LogInfo("Saves", "Edit", "a;b \"c\"");
+            logger.Write(LogEvent.Info("Saves", "Edit", "a;b \"c\""));
         }
 
         Assert.EndsWith(";\"a;b \"\"c\"\"\"", File.ReadAllLines(_file)[1]);
     }
 
     [Fact]
-    public void TheShortcuts_WriteTheirResult()
+    public void TheOtherEvents_WriteTheirResult()
     {
         using (var logger = new CsvTestLogger(_file))
         {
-            logger.LogAction("T", "P", "C", "Click");
-            logger.LogAssertPass("T", "P", "C", "AssertText", "a", "a");
-            logger.LogAssertFail("T", "P", "C", "AssertText", "a", "b", "no");
-            logger.LogWait("T", "P", "C", "WaitVisible", success: false, 300);
-            logger.LogNavigation("T", "List", "Edit");
-            logger.LogError("T", "P", "C", "Click", new InvalidOperationException("gone"));
-            logger.LogScreenshot("T", "P", "shot.png", ScreenshotReason.AssertionFailure);
+            logger.Write(LogEvent.Navigation("T", "List", "Edit"));
+            logger.Write(LogEvent.Failed("T", "P", "C", "Click", new InvalidOperationException("gone")));
+            logger.Write(LogEvent.Screenshot("T", "P", "shot.png", ScreenshotReason.AssertionFailure));
         }
 
         var results = File.ReadAllLines(_file).Skip(1).Select(line => line.Split(';')[8]).ToList();
 
-        Assert.Equal(["Success", "Success", "Fail", "Fail", "Info", "Error", "Info"], results);
+        Assert.Equal(["Info", "Error", "Info"], results);
     }
 }
 
@@ -74,12 +70,13 @@ public sealed class ConsoleTestLoggerTests
         try
         {
             var logger = new ConsoleTestLogger();
-            logger.LogEntry("Saves", "Edit", "Save", "Click", null);
-            logger.LogExit("Saves", "Edit", "Save", "Click", LogResult.Success, 42, "done");
-            logger.LogAssertExit("Saves", "Edit", "Title", "AssertText", null, "Pear", LogResult.Fail, 7);
-            logger.LogAssertFail("Saves", "Edit", "Title", "AssertText", "Apple", "Pear", "differs");
-            logger.LogWait("Saves", "Edit", "Save", "WaitVisible", success: true, 120);
-            logger.LogScreenshot("Saves", "Edit", "shot.png", ScreenshotReason.AssertionFailure);
+            logger.Write(LogEvent.Entry("Saves", "Edit", "Save", "Click", null));
+            logger.Write(LogEvent.Exit("Saves", "Edit", "Save", "Click", LogResult.Success, TimeSpan.FromMilliseconds(42), "done"));
+            logger.Write(new LogEvent(LogEventKind.Exit, "Saves", "Edit")
+            {
+                ControlId = "Title", Action = "AssertText", Expected = "Pear", Result = LogResult.Fail, Duration = TimeSpan.FromMilliseconds(7),
+            });
+            logger.Write(LogEvent.Screenshot("Saves", "Edit", "shot.png", ScreenshotReason.AssertionFailure));
             logger.Flush();
             logger.Dispose();
         }
@@ -93,13 +90,11 @@ public sealed class ConsoleTestLoggerTests
         Assert.Equal("[→] [Saves][Edit] Save.Click()", lines[0]);
         Assert.Equal("[←] [Saves][Edit] Save.Click Success 42ms (done)", lines[1]);
         Assert.Equal("[←] [Saves][Edit] Title.AssertText Actual=null Expected=Pear Fail 7ms", lines[2]);
-        Assert.Equal("[Fail] [Saves][Edit] Title.AssertText Value=Apple Expected=Pear (differs)", lines[3]);
-        Assert.Equal("[Success] [Saves][Edit] Save.WaitVisible Value=120", lines[4]);
-        Assert.Contains("Screenshot (AssertionFailure): shot.png", lines[5]);
+        Assert.Contains("Screenshot (AssertionFailure): shot.png", lines[3]);
     }
 
     [Fact]
-    public void TheShortcuts_WriteTheirResultAndWhatTheyNamed()
+    public void TheOtherEvents_WriteTheirResultAndWhatTheyNamed()
     {
         var output = new StringWriter();
         var original = Console.Out;
@@ -107,11 +102,9 @@ public sealed class ConsoleTestLoggerTests
         try
         {
             var logger = new ConsoleTestLogger();
-            logger.LogAction("T", "P", "Save", "Click");
-            logger.LogAssertPass("T", "P", "Title", "AssertText", "a", "a");
-            logger.LogNavigation("T", "List", "Edit");
-            logger.LogInfo("T", "P", "ready");
-            logger.LogError("T", "P", "Save", "Click", new InvalidOperationException("gone"));
+            logger.Write(LogEvent.Navigation("T", "List", "Edit"));
+            logger.Write(LogEvent.Info("T", "P", "ready"));
+            logger.Write(LogEvent.Failed("T", "P", "Save", "Click", new InvalidOperationException("gone")));
         }
         finally
         {
@@ -122,8 +115,6 @@ public sealed class ConsoleTestLoggerTests
 
         Assert.Equal(
         [
-            "[Success] [T][P] Save.Click",
-            "[Success] [T][P] Title.AssertText Value=a Expected=a",
             "[Info] [T][List] .Navigate Value=Edit",
             "[Info] [T][P] .Info (ready)",
             "[Error] [T][P] Save.Click (gone)",

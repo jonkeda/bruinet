@@ -146,7 +146,7 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
     {
         ArgumentNullException.ThrowIfNull(destination);
 
-        _logger.LogNavigation("", "", destination);
+        _logger.Write(LogEvent.Navigation("", "", destination));
         _driver.NavigateTo(destination);
     }
 

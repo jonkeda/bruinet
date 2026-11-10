@@ -121,9 +121,7 @@ public class ScopeReadinessTests
 
         Assert.True(new AppRoot(_context.Object).WaitReady(timeoutMs: 300));
 
-        _logger.Verify(l => l.LogEntry(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<string?>()), Times.Once);
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<LogResult>(), It.IsAny<int>(), It.IsAny<string?>()), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Entry)), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit)), Times.Once);
     }
 }

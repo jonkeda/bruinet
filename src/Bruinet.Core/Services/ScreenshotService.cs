@@ -98,7 +98,7 @@ public class ScreenshotService : IScreenshotService
         }
         catch (Exception ex)
         {
-            _logger.LogError(testMethod, testClass, "", "CaptureFailureTree", ex);
+            _logger.Write(LogEvent.Failed(testMethod, testClass, "", "CaptureFailureTree", ex));
         }
     }
 
@@ -137,7 +137,7 @@ public class ScreenshotService : IScreenshotService
                 path = File.Exists(TreePathFor(path)) ? TreePathFor(path)
                     : Directory.GetFiles(Path.GetDirectoryName(path)!, Path.GetFileNameWithoutExtension(path) + ".*").FirstOrDefault() ?? path;
             }
-            _logger.LogScreenshot(testMethod, testClass, path, reason);
+            _logger.Write(LogEvent.Screenshot(testMethod, testClass, path, reason));
             TestArtifactManifestWriter.RecordArtifact(
                 path,
                 "screenshot",
@@ -154,7 +154,7 @@ public class ScreenshotService : IScreenshotService
         catch (Exception ex)
         {
             // Screenshot failures should not fail the test
-            _logger.LogError(testMethod, testClass, "", "CaptureScreenshot", ex);
+            _logger.Write(LogEvent.Failed(testMethod, testClass, "", "CaptureScreenshot", ex));
             return string.Empty;
         }
     }

@@ -102,7 +102,7 @@ public sealed class NativeAndroidTestContext : INativeAndroidTestContext, IRecor
     public void NavigateTo(string destination)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(destination);
-        Logger.LogNavigation(string.Empty, string.Empty, destination);
+        Logger.Write(LogEvent.Navigation(string.Empty, string.Empty, destination));
         Driver.OpenDeepLink(destination);
     }
 

@@ -26,72 +26,29 @@ public class CsvTestLogger : ITestLogger
         _writer = new StreamWriter(filePath, append: false, Encoding.UTF8);
     }
 
-    public void Log(string testName, string pageName, string controlId, string action,
-        string? value, string? expectedValue, LogResult result, string? message)
+    /// <inheritdoc />
+    public void Write(LogEvent entry)
     {
-        var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "", testName, pageName, controlId, action,
-            value, expectedValue, result.ToString(), null, message);
-        WriteLine(line);
+        ArgumentNullException.ThrowIfNull(entry);
+        WriteLine(Line(entry));
     }
 
-    public void LogEntry(string testName, string pageName, string controlId, string action, string? value)
+    /// <summary>The CSV line written for <paramref name="entry"/>, below the header.</summary>
+    internal static string Line(LogEvent entry)
     {
-        var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "→", testName, pageName, controlId, action,
-            value, null, null, null, null);
-        WriteLine(line);
+        var timestamp = entry.Timestamp.LocalDateTime.ToString("O", CultureInfo.InvariantCulture);
+        return entry.Kind switch
+        {
+            LogEventKind.Entry => BuildCsvLine(timestamp, "→", entry.TestName, entry.PageName, entry.ControlId ?? "", entry.Action ?? "",
+                entry.Value, null, null, null, null),
+            LogEventKind.Exit => BuildCsvLine(timestamp, "←", entry.TestName, entry.PageName, entry.ControlId ?? "", entry.Action ?? "",
+                entry.Actual, entry.Expected, entry.Result?.ToString(), (int?)entry.Duration?.TotalMilliseconds, entry.Message),
+            LogEventKind.Screenshot => BuildCsvLine(timestamp, "", entry.TestName, entry.PageName, "", entry.Action ?? "",
+                entry.Value, null, entry.Result?.ToString(), null, entry.ScreenshotReason?.ToString()),
+            _ => BuildCsvLine(timestamp, "", entry.TestName, entry.PageName, entry.ControlId ?? "", entry.Action ?? "",
+                entry.Value, entry.Expected, entry.Result?.ToString(), null, entry.Message),
+        };
     }
-
-    public void LogExit(string testName, string pageName, string controlId, string action,
-        LogResult result, int durationMs, string? message = null)
-    {
-        var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "←", testName, pageName, controlId, action,
-            null, null, result.ToString(), durationMs, message);
-        WriteLine(line);
-    }
-
-    public void LogAssertExit(string testName, string pageName, string controlId, string assertType,
-        string? actualValue, string? expectedValue, LogResult result, int durationMs, string? message = null)
-    {
-        var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "←", testName, pageName, controlId, assertType,
-            actualValue, expectedValue, result.ToString(), durationMs, message);
-        WriteLine(line);
-    }
-
-    public void LogAction(string testName, string pageName, string controlId, string action, string? value = null)
-        => Log(testName, pageName, controlId, action, value, null, LogResult.Success, null);
-
-    public void LogAssertPass(string testName, string pageName, string controlId, string assertType,
-        string? actualValue, string? expectedValue)
-        => Log(testName, pageName, controlId, assertType, actualValue, expectedValue, LogResult.Success, null);
-
-    public void LogAssertFail(string testName, string pageName, string controlId, string assertType,
-        string? actualValue, string? expectedValue, string? message = null)
-        => Log(testName, pageName, controlId, assertType, actualValue, expectedValue, LogResult.Fail, message);
-
-    public void LogWait(string testName, string pageName, string controlId, string waitType,
-        bool success, int elapsedMs)
-    {
-        var timestamp = DateTime.Now.ToString("O");
-        var line = BuildCsvLine(timestamp, "←", testName, pageName, controlId, waitType,
-            null, null, success ? "Success" : "Fail", elapsedMs, null);
-        WriteLine(line);
-    }
-
-    public void LogNavigation(string testName, string sourcePage, string targetPage)
-        => Log(testName, sourcePage, "", "Navigate", targetPage, null, LogResult.Info, null);
-
-    public void LogInfo(string testName, string pageName, string message)
-        => Log(testName, pageName, "", "Info", null, null, LogResult.Info, message);
-
-    public void LogError(string testName, string pageName, string controlId, string action, Exception ex)
-        => Log(testName, pageName, controlId, action, null, null, LogResult.Error, ex.Message);
-
-    public void LogScreenshot(string testName, string pageName, string screenshotPath, ScreenshotReason reason)
-        => Log(testName, pageName, "", "Screenshot", screenshotPath, null, LogResult.Info, reason.ToString());
 
     public void Flush()
     {

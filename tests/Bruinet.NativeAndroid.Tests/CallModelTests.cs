@@ -76,8 +76,7 @@ public class CallModelTests
         Assert.Throws<InvalidOperationException>(() => _app.Page().Target.Click());
 
         element.Verify(e => e.Click(), Times.Once);
-        _app.Logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Error, It.IsAny<int>(), It.Is<string?>(m => m != null && m.Contains("boom"))),
+        _app.Logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Error && (e.Message != null && e.Message.Contains("boom")))),
             Times.Once);
     }
 
@@ -124,9 +123,7 @@ public class CallModelTests
 
         Assert.Equal("good", _app.Page().Status.GetText(timeoutMs: 1000));
 
-        _app.Logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Warning, It.IsAny<int>(),
-            It.Is<string?>(m => m != null && m.StartsWith("near-miss:"))), Times.Once);
+        _app.Logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Warning && (e.Message != null && e.Message.StartsWith("near-miss:")))), Times.Once);
     }
 
     #endregion

@@ -92,10 +92,8 @@ public class CallModelPinTests
 
     private void VerifyLogPairs(int expected)
     {
-        _logger.Verify(l => l.LogEntry(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<string?>()), Times.Exactly(expected));
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<LogResult>(), It.IsAny<int>(), It.IsAny<string?>()), Times.Exactly(expected));
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Entry)), Times.Exactly(expected));
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit)), Times.Exactly(expected));
     }
 
     /// <summary>A Playwright page whose every lookup lands on <paramref name="child"/>.</summary>
@@ -240,8 +238,7 @@ public class CallModelPinTests
         Assert.Throws<InvalidOperationException>(() => NewPage().Target.Click());
 
         element.Verify(e => e.Click(), Times.Once);
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Error, It.IsAny<int>(), It.Is<string?>(m => m != null && m.Contains("boom"))),
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Error && (e.Message != null && e.Message.Contains("boom")))),
             Times.Once);
     }
 
@@ -378,9 +375,7 @@ public class CallModelPinTests
 
         Assert.Equal("good", NewPage().Status.GetText(timeoutMs: 1000));
 
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Warning, It.IsAny<int>(),
-            It.Is<string?>(m => m != null && m.StartsWith("near-miss:"))), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Warning && (e.Message != null && e.Message.StartsWith("near-miss:")))), Times.Once);
     }
 
     #endregion

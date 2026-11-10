@@ -617,48 +617,52 @@ Bruinet.Core.Logging.ConsoleTestLogger
 Bruinet.Core.Logging.ConsoleTestLogger.ConsoleTestLogger() -> void
 Bruinet.Core.Logging.ConsoleTestLogger.Dispose() -> void
 Bruinet.Core.Logging.ConsoleTestLogger.Flush() -> void
-Bruinet.Core.Logging.ConsoleTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
-Bruinet.Core.Logging.ConsoleTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.ConsoleTestLogger.Write(Bruinet.Core.Logging.LogEvent! entry) -> void
 Bruinet.Core.Logging.CsvTestLogger
 Bruinet.Core.Logging.CsvTestLogger.CsvTestLogger(string! filePath) -> void
 Bruinet.Core.Logging.CsvTestLogger.Dispose() -> void
 Bruinet.Core.Logging.CsvTestLogger.Flush() -> void
-Bruinet.Core.Logging.CsvTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
-Bruinet.Core.Logging.CsvTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.CsvTestLogger.Write(Bruinet.Core.Logging.LogEvent! entry) -> void
 Bruinet.Core.Logging.ITestLogger
 Bruinet.Core.Logging.ITestLogger.Flush() -> void
-Bruinet.Core.Logging.ITestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
-Bruinet.Core.Logging.ITestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
-Bruinet.Core.Logging.ITestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.ITestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
-Bruinet.Core.Logging.ITestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
-Bruinet.Core.Logging.ITestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
-Bruinet.Core.Logging.ITestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
-Bruinet.Core.Logging.ITestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.ITestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
-Bruinet.Core.Logging.ITestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
-Bruinet.Core.Logging.ITestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
-Bruinet.Core.Logging.ITestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
+Bruinet.Core.Logging.ITestLogger.Write(Bruinet.Core.Logging.LogEvent! entry) -> void
+Bruinet.Core.Logging.LogEvent
+Bruinet.Core.Logging.LogEvent.LogEvent(Bruinet.Core.Logging.LogEventKind Kind, string! TestName, string! PageName) -> void
+Bruinet.Core.Logging.LogEvent.Action.get -> string?
+Bruinet.Core.Logging.LogEvent.Action.init -> void
+Bruinet.Core.Logging.LogEvent.Actual.get -> string?
+Bruinet.Core.Logging.LogEvent.Actual.init -> void
+Bruinet.Core.Logging.LogEvent.ControlId.get -> string?
+Bruinet.Core.Logging.LogEvent.ControlId.init -> void
+Bruinet.Core.Logging.LogEvent.Duration.get -> System.TimeSpan?
+Bruinet.Core.Logging.LogEvent.Duration.init -> void
+Bruinet.Core.Logging.LogEvent.Error.get -> System.Exception?
+Bruinet.Core.Logging.LogEvent.Error.init -> void
+Bruinet.Core.Logging.LogEvent.Expected.get -> string?
+Bruinet.Core.Logging.LogEvent.Expected.init -> void
+Bruinet.Core.Logging.LogEvent.Kind.get -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEvent.Kind.init -> void
+Bruinet.Core.Logging.LogEvent.Message.get -> string?
+Bruinet.Core.Logging.LogEvent.Message.init -> void
+Bruinet.Core.Logging.LogEvent.PageName.get -> string!
+Bruinet.Core.Logging.LogEvent.PageName.init -> void
+Bruinet.Core.Logging.LogEvent.Result.get -> Bruinet.Core.Logging.LogResult?
+Bruinet.Core.Logging.LogEvent.Result.init -> void
+Bruinet.Core.Logging.LogEvent.ScreenshotReason.get -> Bruinet.Core.Logging.ScreenshotReason?
+Bruinet.Core.Logging.LogEvent.ScreenshotReason.init -> void
+Bruinet.Core.Logging.LogEvent.TestName.get -> string!
+Bruinet.Core.Logging.LogEvent.TestName.init -> void
+Bruinet.Core.Logging.LogEvent.Timestamp.get -> System.DateTimeOffset
+Bruinet.Core.Logging.LogEvent.Timestamp.init -> void
+Bruinet.Core.Logging.LogEvent.Value.get -> string?
+Bruinet.Core.Logging.LogEvent.Value.init -> void
+Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Entry = 0 -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Error = 3 -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Exit = 1 -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Info = 5 -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Navigation = 2 -> Bruinet.Core.Logging.LogEventKind
+Bruinet.Core.Logging.LogEventKind.Screenshot = 4 -> Bruinet.Core.Logging.LogEventKind
 Bruinet.Core.Logging.LogResult
 Bruinet.Core.Logging.LogResult.Error = 2 -> Bruinet.Core.Logging.LogResult
 Bruinet.Core.Logging.LogResult.Fail = 1 -> Bruinet.Core.Logging.LogResult
@@ -668,19 +672,8 @@ Bruinet.Core.Logging.LogResult.Warning = 4 -> Bruinet.Core.Logging.LogResult
 Bruinet.Core.Logging.NullTestLogger
 Bruinet.Core.Logging.NullTestLogger.Dispose() -> void
 Bruinet.Core.Logging.NullTestLogger.Flush() -> void
-Bruinet.Core.Logging.NullTestLogger.Log(string! testName, string! pageName, string! controlId, string! action, string? value, string? expectedValue, Bruinet.Core.Logging.LogResult result, string? message) -> void
-Bruinet.Core.Logging.NullTestLogger.LogAction(string! testName, string! pageName, string! controlId, string! action, string? value = null) -> void
-Bruinet.Core.Logging.NullTestLogger.LogAssertExit(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.NullTestLogger.LogAssertFail(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue, string? message = null) -> void
-Bruinet.Core.Logging.NullTestLogger.LogAssertPass(string! testName, string! pageName, string! controlId, string! assertType, string? actualValue, string? expectedValue) -> void
-Bruinet.Core.Logging.NullTestLogger.LogEntry(string! testName, string! pageName, string! controlId, string! action, string? value) -> void
-Bruinet.Core.Logging.NullTestLogger.LogError(string! testName, string! pageName, string! controlId, string! action, System.Exception! ex) -> void
-Bruinet.Core.Logging.NullTestLogger.LogExit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, int durationMs, string? message = null) -> void
-Bruinet.Core.Logging.NullTestLogger.LogInfo(string! testName, string! pageName, string! message) -> void
-Bruinet.Core.Logging.NullTestLogger.LogNavigation(string! testName, string! sourcePage, string! targetPage) -> void
-Bruinet.Core.Logging.NullTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
-Bruinet.Core.Logging.NullTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
 Bruinet.Core.Logging.NullTestLogger.NullTestLogger() -> void
+Bruinet.Core.Logging.NullTestLogger.Write(Bruinet.Core.Logging.LogEvent! entry) -> void
 Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.AssertionFailure = 1 -> Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.ElementNotFound = 4 -> Bruinet.Core.Logging.ScreenshotReason
@@ -1068,6 +1061,12 @@ static Bruinet.Core.Locators.Locator.ByText(string! text) -> Bruinet.Core.Locato
 static Bruinet.Core.Locators.Locator.ByXPath(string! xpath) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.operator !=(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
 static Bruinet.Core.Locators.Locator.operator ==(Bruinet.Core.Locators.Locator? left, Bruinet.Core.Locators.Locator? right) -> bool
+static Bruinet.Core.Logging.LogEvent.Entry(string! testName, string! pageName, string! controlId, string! action, string? value) -> Bruinet.Core.Logging.LogEvent!
+static Bruinet.Core.Logging.LogEvent.Exit(string! testName, string! pageName, string! controlId, string! action, Bruinet.Core.Logging.LogResult result, System.TimeSpan duration, string? message = null) -> Bruinet.Core.Logging.LogEvent!
+static Bruinet.Core.Logging.LogEvent.Failed(string! testName, string! pageName, string! controlId, string! action, System.Exception! error) -> Bruinet.Core.Logging.LogEvent!
+static Bruinet.Core.Logging.LogEvent.Info(string! testName, string! pageName, string! message) -> Bruinet.Core.Logging.LogEvent!
+static Bruinet.Core.Logging.LogEvent.Navigation(string! testName, string! sourcePage, string! targetPage) -> Bruinet.Core.Logging.LogEvent!
+static Bruinet.Core.Logging.LogEvent.Screenshot(string! testName, string! pageName, string! path, Bruinet.Core.Logging.ScreenshotReason reason) -> Bruinet.Core.Logging.LogEvent!
 static Bruinet.Core.Logging.NullTestLogger.Instance.get -> Bruinet.Core.Logging.NullTestLogger!
 static Bruinet.Core.Logging.StepLog.Add(Bruinet.Core.Logging.StepLogLevel level, string! source, string! message, System.Exception? exception = null, bool elsewhere = false) -> void
 static Bruinet.Core.Logging.StepLog.Enabled.get -> bool

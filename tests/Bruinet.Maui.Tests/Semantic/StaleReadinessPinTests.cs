@@ -240,10 +240,8 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
 
         NewPage().Target.Click(timeoutMs: 1000);
 
-        _logger.Verify(l => l.LogEntry(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<string?>()), Times.Once);
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<LogResult>(), It.IsAny<int>(), It.IsAny<string?>()), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Entry)), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit)), Times.Once);
     }
 
     /// <summary>(d) As (a), for <c>Get*</c>.</summary>
@@ -303,8 +301,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
         Assert.Throws<InvalidOperationException>(() => NewPage().Target.Click(timeoutMs: 1000));
 
         element.Verify(e => e.Invoke(), Times.Once);
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Error, It.IsAny<int>(), It.Is<string?>(m => m != null && m.Contains("boom"))),
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Error && (e.Message != null && e.Message.Contains("boom")))),
             Times.Once);
     }
 
@@ -697,8 +694,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
 
         Assert.Equal("second", NewPage().Status.GetText(timeoutMs: 1000));
 
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Warning, It.IsAny<int>(), It.Is<string?>(m => m!.StartsWith("near-miss"))),
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Warning && (e.Message!.StartsWith("near-miss")))),
             Times.Once);
     }
 
@@ -940,8 +936,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
 
         Assert.Equal("late", NewPage().Status.GetText(timeoutMs: 400));
 
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), LogResult.Warning, It.IsAny<int>(), It.IsAny<string?>()), Times.AtLeastOnce);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Result == LogResult.Warning)), Times.AtLeastOnce);
     }
 
     #endregion

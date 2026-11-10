@@ -37,8 +37,7 @@ public sealed class ScopeWaitFirstTests
     {
         Assert.Equal(-1, _root.WaitFirst(50, () => false, () => false));
 
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            "WaitFirst", LogResult.Error, It.IsAny<int>(), It.IsAny<string?>()), Times.Once);
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Action == "WaitFirst" && e.Result == LogResult.Error)), Times.Once);
     }
 
     [Fact]

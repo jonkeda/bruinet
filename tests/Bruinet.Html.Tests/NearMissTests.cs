@@ -40,8 +40,7 @@ public sealed class NearMissTests : IDisposable
     // Other test classes run beside this one and add their own near-misses to the run's list.
     private List<NearMisses.NearMiss> Ours() => [.. NearMisses.All.Where(miss => miss.Control.Contains(_id, StringComparison.Ordinal))];
 
-    private void VerifyExit(LogResult result) => _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(),
-        It.IsAny<string>(), "Click", result, It.IsAny<int>(), It.IsAny<string?>()), Times.Once);
+    private void VerifyExit(LogResult result) => _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Action == "Click" && e.Result == result)), Times.Once);
 
     [Fact]
     public void AClickThatTakesMostOfItsBudgetInOneAttempt_IsANearMiss_InTheLogAndTheSummary()

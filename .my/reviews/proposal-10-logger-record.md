@@ -1,6 +1,6 @@
 # Proposal 10: the logger takes one record per event
 
-Drafted 2026-11-10 at `48d8e853`, for the owner to approve. Nothing here is made yet.
+Drafted 2026-11-10 at `48d8e853`; approved and made the same day. One change from the draft: the error factory is `LogEvent.Failed`, as a static `Error` would clash with the record's `Error` property.
 
 ## Outcome
 
@@ -64,4 +64,4 @@ Keeping the methods and adding a record overload beside them would double the su
 One commit: the record and interface, the three loggers, the ten call sites, the 15 test checks, the change-list row and a changelog line.
 Then Tomorrow's two suites build in a worktree, as before, and it is pushed.
 
-Next action: the owner approves the design (or asks for changes), then it is made in one commit.
+Next action: none; this design is done.

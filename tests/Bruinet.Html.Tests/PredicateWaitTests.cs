@@ -72,8 +72,7 @@ public class PredicateWaitTests
 
         Assert.False(Status().WaitAttribute("data-count", count => count != "0", timeoutMs: 200));
 
-        _logger.Verify(l => l.LogExit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            "WaitAttribute", LogResult.Error, It.IsAny<int>(), It.Is<string?>(m => m != null && m.Contains("value '0'"))),
+        _logger.Verify(l => l.Write(It.Is<LogEvent>(e => e.Kind == LogEventKind.Exit && e.Action == "WaitAttribute" && e.Result == LogResult.Error && (e.Message != null && e.Message.Contains("value '0'")))),
             Times.Once);
     }
 }

@@ -53,7 +53,7 @@ public sealed class ControlCall
         var clock = Stopwatch.StartNew();
         var startMs = Timing.NowMs;
         var context = new AttemptContext(Deadline.In(budgetMs), animationMs);
-        _logger?.LogEntry(_testName, _pageName, _controlId, caller, value);
+        _logger?.Write(LogEvent.Entry(_testName, _pageName, _controlId, caller, value));
 
         var outer = AttemptContext.Current;
         AttemptContext.Current = context;
@@ -64,8 +64,8 @@ public sealed class ControlCall
         }
         catch (Exception error)
         {
-            _logger?.LogExit(_testName, _pageName, _controlId, caller,
-                LogResult.Error, (int)clock.ElapsedMilliseconds, error.Message);
+            _logger?.Write(LogEvent.Exit(_testName, _pageName, _controlId, caller,
+                LogResult.Error, TimeSpan.FromMilliseconds((int)clock.ElapsedMilliseconds), error.Message));
             Timing.Call(_pageName, _controlId, caller, startMs, (int)clock.ElapsedMilliseconds, context.Log.Attempts, "error");
             throw;
         }
@@ -79,18 +79,18 @@ public sealed class ControlCall
         Timing.Call(_pageName, _controlId, caller, startMs, elapsed, context.Log.Attempts, answered ? "success" : "error");
         if (!answered)
         {
-            _logger?.LogExit(_testName, _pageName, _controlId, caller,
-                LogResult.Error, elapsed, context.Log.Summary());
+            _logger?.Write(LogEvent.Exit(_testName, _pageName, _controlId, caller,
+                LogResult.Error, TimeSpan.FromMilliseconds(elapsed), context.Log.Summary()));
         }
         else if (IsNearMiss(context, elapsed))
         {
-            _logger?.LogExit(_testName, _pageName, _controlId, caller,
-                LogResult.Warning, elapsed, $"near-miss: {context.Log.Summary()} (budget {budgetMs} ms)");
+            _logger?.Write(LogEvent.Exit(_testName, _pageName, _controlId, caller,
+                LogResult.Warning, TimeSpan.FromMilliseconds(elapsed), $"near-miss: {context.Log.Summary()} (budget {budgetMs} ms)"));
             NearMisses.Add(new NearMisses.NearMiss(_testName, _pageName, _controlId, caller, elapsed, budgetMs, context.Log.Summary()));
         }
         else
         {
-            _logger?.LogExit(_testName, _pageName, _controlId, caller, LogResult.Success, elapsed);
+            _logger?.Write(LogEvent.Exit(_testName, _pageName, _controlId, caller, LogResult.Success, TimeSpan.FromMilliseconds(elapsed)));
         }
 
         return result;
