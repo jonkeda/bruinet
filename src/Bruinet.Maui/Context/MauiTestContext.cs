@@ -45,8 +45,9 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
             ArgumentNullException.ThrowIfNull(options.DriverOptions, nameof(options.DriverOptions));
 
             var driverOptions = options.DriverOptions;
-            driverOptions.Timeouts ??= options.Timeouts;
-            driverOptions.Logger ??= options.Logger;
+            // The context's own, so a driver never budgets or logs apart from its calls (proposal 11, rule 4).
+            driverOptions.Timeouts = options.Timeouts;
+            driverOptions.Logger = options.Logger;
 
             _driver = MauiDriverFactory.Create(driverOptions);
             _platform = driverOptions.Platform;

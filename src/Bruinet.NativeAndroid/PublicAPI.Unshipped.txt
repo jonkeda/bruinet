@@ -8,7 +8,7 @@ Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.FindElement(Bruinet.Core.L
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Name.get -> string?
-Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NativeAndroidTestContext(Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver! driver, Bruinet.NativeAndroid.NativeAndroidDriverOptions? options = null) -> void
+Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NativeAndroidTestContext(Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver! driver, Bruinet.NativeAndroid.NativeAndroidTestContextOptions? options = null) -> void
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NavigateBack() -> void
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NavigateTo(string! destination) -> void
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
@@ -400,41 +400,33 @@ Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TScope>.Self.get -> TScope
 Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext
 Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext.Driver.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver!
 Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions
-Bruinet.NativeAndroid.NativeAndroidDriverOptions
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppActivity.get -> string?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppActivity.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPackage.get -> string?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPackage.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPath.get -> string?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppPath.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppiumServerUri.get -> System.Uri!
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AppiumServerUri.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutoGrantPermissions.get -> bool
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutoGrantPermissions.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutomationName.get -> string!
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.AutomationName.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.DeviceName.get -> string!
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.DeviceName.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.FullReset.get -> bool
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.FullReset.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Logger.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Name.get -> string?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Name.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.NativeAndroidDriverOptions() -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.NearMiss.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.NoReset.get -> bool
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.NoReset.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.PlatformVersion.get -> string?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.PlatformVersion.set -> void
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
-Bruinet.NativeAndroid.NativeAndroidDriverOptions.Timeouts.set -> void
 Bruinet.NativeAndroid.NativeAndroidEvidenceCapture
 Bruinet.NativeAndroid.NativeAndroidEvidenceCapture.Capture(string! directory, string! name) -> string!
 Bruinet.NativeAndroid.NativeAndroidEvidenceCapture.NativeAndroidEvidenceCapture(Bruinet.NativeAndroid.Interfaces.INativeAndroidDriver! driver) -> void
 Bruinet.NativeAndroid.NativeAndroidLocator
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppActivity.get -> string?
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppActivity.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppPackage.get -> string?
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppPackage.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppPath.get -> string?
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppPath.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppiumServerUri.get -> System.Uri!
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AppiumServerUri.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AutoGrantPermissions.get -> bool
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AutoGrantPermissions.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AutomationName.get -> string!
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.AutomationName.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.DeviceName.get -> string!
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.DeviceName.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FullReset.get -> bool
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FullReset.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.NativeAndroidTestContextOptions() -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.NoReset.get -> bool
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.NoReset.set -> void
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.PlatformVersion.get -> string?
+Bruinet.NativeAndroid.NativeAndroidTestContextOptions.PlatformVersion.set -> void
 Bruinet.NativeAndroid.ObjectBase
 Bruinet.NativeAndroid.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.NativeAndroid.ObjectBase.ObjectBase() -> void
@@ -518,11 +510,9 @@ override Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Context.get -> Bruinet.
 override Bruinet.NativeAndroid.Pages.AppRoot.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Create(Bruinet.NativeAndroid.NativeAndroidDriverOptions! options) -> Bruinet.NativeAndroid.Appium.NativeAndroidTestContext!
+static Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Create(Bruinet.NativeAndroid.NativeAndroidTestContextOptions! options) -> Bruinet.NativeAndroid.Appium.NativeAndroidTestContext!
 static Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ResolveLocator(string! resourceIdOrXPath) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions.FindElement(this Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
-static Bruinet.NativeAndroid.NativeAndroidDriverOptions.FromEnvironment() -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
-static Bruinet.NativeAndroid.NativeAndroidDriverOptions.FromEnvironment(System.Func<string!, string?>! read) -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByAndroidXPath(string! xpath) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByClass(string! className) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByContentDescription(string! contentDescription) -> Bruinet.Core.Locators.Locator!
@@ -531,6 +521,8 @@ static Bruinet.NativeAndroid.NativeAndroidLocator.ByResourceIdEndsWith(string! r
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByText(string! text) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByTextContains(string! text) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.NativeAndroidLocator.ByTextOrDescription(string! value) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FromEnvironment() -> Bruinet.NativeAndroid.NativeAndroidTestContextOptions!
+static Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FromEnvironment(System.Func<string!, string?>! read) -> Bruinet.NativeAndroid.NativeAndroidTestContextOptions!
 static readonly Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DirectChildren -> Bruinet.Core.Locators.Locator!
 virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
 virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
@@ -600,6 +592,6 @@ virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Br
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator?
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.TitleLocator.get -> Bruinet.Core.Locators.Locator?
-virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.CreateOptions() -> Bruinet.NativeAndroid.NativeAndroidDriverOptions!
+virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.CreateOptions() -> Bruinet.NativeAndroid.NativeAndroidTestContextOptions!
 virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 virtual Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!

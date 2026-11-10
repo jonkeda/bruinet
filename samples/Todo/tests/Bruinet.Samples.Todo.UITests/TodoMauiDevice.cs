@@ -106,7 +106,6 @@ public sealed class TodoMauiDevice : ITestApp
         var configuration = BruinetMauiConfiguration.Load();
         var options = MauiDriverOptions.FromConfiguration(configuration.Maui);
         options.Platform = platform;
-        options.Timeouts = TodoMauiLaunch.Timeouts;
         options.AppPath = TodoMauiLaunch.AppPath(platform);
         options.Placement = placement;
         if (platform == MauiPlatform.Android)
@@ -127,7 +126,7 @@ public sealed class TodoMauiDevice : ITestApp
             context = new MauiTestContext(new MauiTestContextOptions
             {
                 DriverOptions = options,
-                Timeouts = options.Timeouts,
+                Timeouts = TodoMauiLaunch.Timeouts,
                 Name = definition.Name,
             });
             TodoMauiLaunch.WaitForTheList(context);

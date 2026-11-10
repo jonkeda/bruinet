@@ -243,15 +243,6 @@ public abstract class MauiTestFixtureBase : IDisposable
 
         var driverOptions = MauiDriverOptions.FromConfiguration(Configuration.Maui);
 
-        driverOptions.Timeouts = new TimeoutSettings
-        {
-            DefaultWait = TimeSpan.FromMilliseconds(5000),
-            PageLoad = TimeSpan.FromMilliseconds(10000),
-            ElementFind = TimeSpan.FromMilliseconds(3000),
-            ElementState = TimeSpan.FromMilliseconds(3000),
-            Animation = TimeSpan.FromMilliseconds(300),
-            PollingInterval = TimeSpan.FromMilliseconds(100)
-        };
         driverOptions.AppPath = string.IsNullOrWhiteSpace(Configuration.Maui.AppPath)
             ? GetDefaultAppPath(Configuration.Maui.Platform)
             : Configuration.Maui.AppPath;
@@ -271,7 +262,6 @@ public abstract class MauiTestFixtureBase : IDisposable
         {
 
             DriverOptions = driverOptions,
-            Timeouts = driverOptions.Timeouts
         };
     }
 

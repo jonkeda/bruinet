@@ -87,12 +87,12 @@ public class MauiDriverOptions
     /// <summary>
     /// Timeout settings for waits and polling.
     /// </summary>
-    public TimeoutSettings? Timeouts { get; set; }
+    public TimeoutSettings? Timeouts { get; internal set; }
 
     /// <summary>
     /// Logger for driver operations.
     /// </summary>
-    public ITestLogger? Logger { get; set; }
+    public ITestLogger? Logger { get; internal set; }
 
 
     /// <summary>

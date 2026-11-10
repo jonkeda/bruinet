@@ -15,7 +15,7 @@ public abstract class NativeAndroidTestFixtureBase
         ?? throw new InvalidOperationException("Context not initialized. Ensure InitializeAsync has completed.");
 
     /// <summary>The session's options: the environment's, which a suite completes with its app.</summary>
-    protected virtual NativeAndroidDriverOptions CreateOptions() => NativeAndroidDriverOptions.FromEnvironment();
+    protected virtual NativeAndroidTestContextOptions CreateOptions() => NativeAndroidTestContextOptions.FromEnvironment();
 
     /// <summary>Opens the session and starts the app.</summary>
     public virtual Task InitializeAsync()

@@ -26,19 +26,19 @@ internal sealed class AppiumNativeAndroidDriver : INativeAndroidDriver
     private const int MaxSearchSwipes = 15;
 
     private readonly AndroidDriver _driver;
-    private readonly NativeAndroidDriverOptions _options;
+    private readonly NativeAndroidTestContextOptions _options;
     private bool _disposed;
 
     /// <summary>Wraps a session that is already open.</summary>
-    public AppiumNativeAndroidDriver(AndroidDriver driver, NativeAndroidDriverOptions? options = null)
+    public AppiumNativeAndroidDriver(AndroidDriver driver, NativeAndroidTestContextOptions? options = null)
     {
         _driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        _options = options ?? new NativeAndroidDriverOptions();
+        _options = options ?? new NativeAndroidTestContextOptions();
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.Zero;
     }
 
     /// <summary>Opens a session with <paramref name="options"/>.</summary>
-    public static AppiumNativeAndroidDriver Create(NativeAndroidDriverOptions options)
+    public static AppiumNativeAndroidDriver Create(NativeAndroidTestContextOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
         return new AppiumNativeAndroidDriver(new AndroidDriver(options.AppiumServerUri, BuildAppiumOptions(options)), options);
@@ -206,13 +206,13 @@ internal sealed class AppiumNativeAndroidDriver : INativeAndroidDriver
         => AppiumNativeAndroidElement.Live(() => _driver.ExecuteScript(command, arguments ?? []));
 
     private string RequirePackage(string operation)
-        => AppPackage ?? throw new InvalidOperationException($"{operation} needs the app's package: set {nameof(NativeAndroidDriverOptions.AppPackage)} or APPIUM_APP_PACKAGE.");
+        => AppPackage ?? throw new InvalidOperationException($"{operation} needs the app's package: set {nameof(NativeAndroidTestContextOptions.AppPackage)} or APPIUM_APP_PACKAGE.");
 
     private string? Capability(string name) => _driver.Capabilities.GetCapability(name)?.ToString();
 
     private Rectangle ScreenBounds() => new(Point.Empty, _driver.Manage().Window.Size);
 
-    private static AppiumOptions BuildAppiumOptions(NativeAndroidDriverOptions options)
+    private static AppiumOptions BuildAppiumOptions(NativeAndroidTestContextOptions options)
     {
         var appiumOptions = new AppiumOptions
         {

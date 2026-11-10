@@ -22,7 +22,7 @@ public sealed class GalleryFixture : NativeAndroidTestFixtureBase, IAsyncLifetim
         => _composition ??= TestComposition.ForFixture(this, services => services.AddSingleton(Context));
 
     /// <inheritdoc />
-    protected override NativeAndroidDriverOptions CreateOptions()
+    protected override NativeAndroidTestContextOptions CreateOptions()
     {
         var options = base.CreateOptions();
         options.AppPath ??= GalleryApk();

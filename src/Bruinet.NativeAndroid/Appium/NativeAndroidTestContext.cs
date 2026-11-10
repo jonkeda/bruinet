@@ -21,20 +21,20 @@ public sealed class NativeAndroidTestContext : INativeAndroidTestContext, IRecor
         "com.android.systemui",
     ];
 
-    private readonly NativeAndroidDriverOptions _options;
+    private readonly NativeAndroidTestContextOptions _options;
     private bool _disposed;
 
     /// <summary>The context over an open session.</summary>
-    public NativeAndroidTestContext(INativeAndroidDriver driver, NativeAndroidDriverOptions? options = null)
+    public NativeAndroidTestContext(INativeAndroidDriver driver, NativeAndroidTestContextOptions? options = null)
     {
         Driver = driver ?? throw new ArgumentNullException(nameof(driver));
-        _options = options ?? new NativeAndroidDriverOptions();
+        _options = options ?? new NativeAndroidTestContextOptions();
         Timeouts = _options.Timeouts ?? TimeoutSettings.Default;
         Logger = _options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance;
     }
 
     /// <summary>Opens a session with <paramref name="options"/> and makes its context.</summary>
-    public static NativeAndroidTestContext Create(NativeAndroidDriverOptions options)
+    public static NativeAndroidTestContext Create(NativeAndroidTestContextOptions options)
         => new(AppiumNativeAndroidDriver.Create(options), options);
 
     /// <inheritdoc />

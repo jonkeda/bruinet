@@ -17,7 +17,6 @@ Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.LaunchSettings.get -> System.Collections.Generic.Dictionary<string!, string!>!
 Bruinet.Maui.Configuration.MauiDriverOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.Maui.Configuration.MauiDriverOptions.Logger.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.MauiDriverOptions() -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.Placement.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.Placement.set -> void
@@ -28,7 +27,6 @@ Bruinet.Maui.Configuration.MauiDriverOptions.PlatformVersion.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.ProcessName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.ProcessName.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
-Bruinet.Maui.Configuration.MauiDriverOptions.Timeouts.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.WindowHandle.get -> nint?
 Bruinet.Maui.Configuration.MauiDriverOptions.WindowHandle.set -> void
 Bruinet.Maui.Configuration.MauiOptions

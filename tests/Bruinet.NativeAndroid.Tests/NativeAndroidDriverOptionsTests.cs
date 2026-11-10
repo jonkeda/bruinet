@@ -5,7 +5,7 @@ public sealed class NativeAndroidDriverOptionsTests
     [Fact]
     public void AdditionalCapabilities_Is_Case_Insensitive()
     {
-        var options = new NativeAndroidDriverOptions();
+        var options = new NativeAndroidTestContextOptions();
 
         options.AdditionalCapabilities["appWaitActivity"] = ".MainActivity";
         options.AdditionalCapabilities["APPWAITACTIVITY"] = ".LoginActivity";
@@ -31,7 +31,7 @@ public sealed class NativeAndroidDriverOptionsTests
             ["APPIUM_FULL_RESET"] = "true",
         };
 
-        var options = NativeAndroidDriverOptions.FromEnvironment(name => variables.GetValueOrDefault(name));
+        var options = NativeAndroidTestContextOptions.FromEnvironment(name => variables.GetValueOrDefault(name));
 
         Assert.Equal(new Uri("http://10.0.0.5:4724"), options.AppiumServerUri);
         Assert.Equal(@"C:\apps\gallery.apk", options.AppPath);
@@ -48,7 +48,7 @@ public sealed class NativeAndroidDriverOptionsTests
     [Fact]
     public void FromEnvironment_KeepsTheDefaults_ForUnsetVariables()
     {
-        var options = NativeAndroidDriverOptions.FromEnvironment(_ => null);
+        var options = NativeAndroidTestContextOptions.FromEnvironment(_ => null);
 
         Assert.Equal(new Uri("http://127.0.0.1:4723"), options.AppiumServerUri);
         Assert.Equal("emulator-5554", options.DeviceName);
@@ -59,7 +59,7 @@ public sealed class NativeAndroidDriverOptionsTests
     [Fact]
     public void FromEnvironment_RejectsAFlagItCannotRead()
     {
-        var error = Assert.Throws<FormatException>(() => NativeAndroidDriverOptions.FromEnvironment(name => name == "APPIUM_NO_RESET" ? "maybe" : null));
+        var error = Assert.Throws<FormatException>(() => NativeAndroidTestContextOptions.FromEnvironment(name => name == "APPIUM_NO_RESET" ? "maybe" : null));
 
         Assert.Contains("APPIUM_NO_RESET", error.Message);
     }
