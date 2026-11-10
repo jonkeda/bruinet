@@ -78,7 +78,13 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
     /// misses it and the call used to do nothing; there the scroll view scrolls itself until the
     /// descendant shows (its root's <c>TryFindByScrolling</c>).
     /// </remarks>
-    public TSelf ScrollTo(Locator locator)
+    /// <remarks>
+    /// The search covers the whole scroller, down then up, so its default budget is the page-load
+    /// wait rather than the default wait: on a long Android form the swipes to the bottom alone
+    /// used the default 5 s, and a row above the fold was never reached. A hit stops early.
+    /// </remarks>
+    /// <param name="timeoutMs">The call's budget; null for the page-load wait.</param>
+    public TSelf ScrollTo(Locator locator, int? timeoutMs = null)
         => RunDo(() =>
         {
             var element = TryFindElement(locator);
@@ -92,14 +98,16 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
 
             // A sliver at the bottom edge is in the tree without its children; move it clear.
             element?.RevealClearOfEdges();
-        });
+        }, timeoutMs ?? Context.Timeouts.PageLoad);
 
     /// <summary>
     /// Brings a descendant into view by automation id.
     /// </summary>
     /// <returns>The container, for chaining.</returns>
-    public TSelf ScrollTo(string automationId)
-        => ScrollTo(Locator.ByAutomationId(automationId));
+    /// <param name="automationId">The descendant's automation id.</param>
+    /// <param name="timeoutMs">The call's budget; null for the page-load wait.</param>
+    public TSelf ScrollTo(string automationId, int? timeoutMs = null)
+        => ScrollTo(Locator.ByAutomationId(automationId), timeoutMs);
 
     #endregion
 }
