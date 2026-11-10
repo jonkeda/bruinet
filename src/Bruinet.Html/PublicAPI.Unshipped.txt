@@ -451,9 +451,7 @@ Bruinet.Html.Interfaces.PageProbe.PageProbe(string? ReadyState, bool HasBody, st
 Bruinet.Html.Interfaces.PageProbe.ReadyState.get -> string?
 Bruinet.Html.Interfaces.PageProbe.ReadyState.init -> void
 Bruinet.Html.ObjectBase
-Bruinet.Html.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.Html.ObjectBase.ObjectBase() -> void
-Bruinet.Html.ObjectBase.PollingIntervalMs.get -> int
 Bruinet.Html.Pages.AppRoot
 Bruinet.Html.Pages.AppRoot.AppRoot(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
 Bruinet.Html.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -518,7 +516,6 @@ Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.init -> void
 abstract Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Html.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
-abstract Bruinet.Html.ObjectBase.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
 const Bruinet.Html.Pages.PageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
 const Bruinet.Html.Testing.HtmlTestFixtureBase.SettingsFile = "bruinet.html.config.json" -> string!
@@ -622,7 +619,6 @@ virtual Bruinet.Html.Controls.ViewBase<TScope>.PressKeyCore(Bruinet.Html.Interfa
 virtual Bruinet.Html.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
 virtual Bruinet.Html.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
 virtual Bruinet.Html.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! keys, int? timeoutMs = null) -> void
-virtual Bruinet.Html.ObjectBase.ScopeName.get -> string!
 virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.BusySignal.get -> Bruinet.Html.Scopes.BusySignal
 virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.CompareUrl() -> bool
 virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.GetTitle() -> string?

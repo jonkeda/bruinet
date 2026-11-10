@@ -374,9 +374,7 @@ Bruinet.Wpf.Interfaces.IWpfTestContext
 Bruinet.Wpf.Interfaces.IWpfTestContext.Driver.get -> Bruinet.Wpf.Interfaces.IWpfDriver!
 Bruinet.Wpf.Interfaces.WpfElementExtensions
 Bruinet.Wpf.ObjectBase
-Bruinet.Wpf.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.Wpf.ObjectBase.ObjectBase() -> void
-Bruinet.Wpf.ObjectBase.PollingIntervalMs.get -> int
 Bruinet.Wpf.Pages.AppRoot
 Bruinet.Wpf.Pages.AppRoot.AppRoot(Bruinet.Wpf.Interfaces.IWpfTestContext! context) -> void
 Bruinet.Wpf.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -447,7 +445,6 @@ Bruinet.Wpf.Testing.WpfTestFixtureBase.WpfTestFixtureBase() -> void
 abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
-abstract Bruinet.Wpf.ObjectBase.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 abstract Bruinet.Wpf.Testing.WpfTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
 const Bruinet.Wpf.Testing.WpfTestFixtureBase.SettingsFile = "bruinet.wpf.config.json" -> string!
@@ -530,7 +527,6 @@ virtual Bruinet.Wpf.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Excepti
 virtual Bruinet.Wpf.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
 virtual Bruinet.Wpf.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.Wpf.Interfaces.IWpfElement! element) -> void
 virtual Bruinet.Wpf.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.Wpf.Interfaces.IWpfElement! element, string! keys, int? timeoutMs = null) -> void
-virtual Bruinet.Wpf.ObjectBase.ScopeName.get -> string!
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool

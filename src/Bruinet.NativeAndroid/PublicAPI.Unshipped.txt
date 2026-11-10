@@ -428,9 +428,7 @@ Bruinet.NativeAndroid.NativeAndroidTestContextOptions.NoReset.set -> void
 Bruinet.NativeAndroid.NativeAndroidTestContextOptions.PlatformVersion.get -> string?
 Bruinet.NativeAndroid.NativeAndroidTestContextOptions.PlatformVersion.set -> void
 Bruinet.NativeAndroid.ObjectBase
-Bruinet.NativeAndroid.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.NativeAndroid.ObjectBase.ObjectBase() -> void
-Bruinet.NativeAndroid.ObjectBase.PollingIntervalMs.get -> int
 Bruinet.NativeAndroid.Pages.AppRoot
 Bruinet.NativeAndroid.Pages.AppRoot.AppRoot(Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext! context) -> void
 Bruinet.NativeAndroid.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -470,7 +468,6 @@ abstract Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Self.get -> TSe
 abstract Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
 abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
-abstract Bruinet.NativeAndroid.ObjectBase.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 const Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EnterKeyCode = 66 -> int
 const Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.BusyViewName = "bruinet_busy" -> string!
 override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
@@ -582,7 +579,6 @@ virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RequiresVisibilityForAct
 virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element) -> void
 virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ScrollsToFind.get -> bool
 virtual Bruinet.NativeAndroid.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, string! keys, int? timeoutMs = null) -> void
-virtual Bruinet.NativeAndroid.ObjectBase.ScopeName.get -> string!
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Activity.get -> string?
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
 virtual Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.GetTitle() -> string?

@@ -483,9 +483,7 @@ Bruinet.Stride.Interfaces.IStrideTestContext.HoldKey(Bruinet.Stride.Infrastructu
 Bruinet.Stride.Interfaces.IStrideTestContext.PressKey(Bruinet.Stride.Infrastructure.VirtualKey key) -> void
 Bruinet.Stride.Interfaces.StrideElementExtensions
 Bruinet.Stride.ObjectBase
-Bruinet.Stride.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.Stride.ObjectBase.ObjectBase() -> void
-Bruinet.Stride.ObjectBase.PollingIntervalMs.get -> int
 Bruinet.Stride.Pages.AppRoot
 Bruinet.Stride.Pages.AppRoot.AppRoot(Bruinet.Stride.Interfaces.IStrideTestContext! context) -> void
 Bruinet.Stride.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -544,7 +542,6 @@ Bruinet.Stride.Testing.StrideTestFixtureBase.StrideTestFixtureBase() -> void
 abstract Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
-abstract Bruinet.Stride.ObjectBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
 const Bruinet.Stride.Testing.StrideTestFixtureBase.SettingsFile = "bruinet.stride.config.json" -> string!
@@ -601,7 +598,6 @@ virtual Bruinet.Stride.Controls.ViewBase<TScope>.IsVisibleCore(Bruinet.Stride.In
 virtual Bruinet.Stride.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 virtual Bruinet.Stride.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
 virtual Bruinet.Stride.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.Stride.Interfaces.IStrideElement! element) -> void
-virtual Bruinet.Stride.ObjectBase.ScopeName.get -> string!
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool

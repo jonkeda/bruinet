@@ -382,9 +382,7 @@ Bruinet.WinForms.Interfaces.IWinFormsTestContext
 Bruinet.WinForms.Interfaces.IWinFormsTestContext.Driver.get -> Bruinet.WinForms.Interfaces.IWinFormsDriver!
 Bruinet.WinForms.Interfaces.WinFormsElementExtensions
 Bruinet.WinForms.ObjectBase
-Bruinet.WinForms.ObjectBase.DefaultTimeoutMs.get -> int
 Bruinet.WinForms.ObjectBase.ObjectBase() -> void
-Bruinet.WinForms.ObjectBase.PollingIntervalMs.get -> int
 Bruinet.WinForms.Pages.AppRoot
 Bruinet.WinForms.Pages.AppRoot.AppRoot(Bruinet.WinForms.Interfaces.IWinFormsTestContext! context) -> void
 Bruinet.WinForms.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -455,7 +453,6 @@ Bruinet.WinForms.Testing.WinFormsTestFixtureBase.WinFormsTestFixtureBase() -> vo
 abstract Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
-abstract Bruinet.WinForms.ObjectBase.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 abstract Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.WinForms.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
 const Bruinet.WinForms.Testing.WinFormsTestFixtureBase.SettingsFile = "bruinet.winforms.config.json" -> string!
@@ -553,7 +550,6 @@ virtual Bruinet.WinForms.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Ex
 virtual Bruinet.WinForms.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
 virtual Bruinet.WinForms.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element) -> void
 virtual Bruinet.WinForms.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.WinForms.Interfaces.IWinFormsElement! element, string! keys, int? timeoutMs = null) -> void
-virtual Bruinet.WinForms.ObjectBase.ScopeName.get -> string!
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool

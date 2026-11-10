@@ -802,6 +802,12 @@ Bruinet.Core.Scopes.ITestPage.TakeScreenshot(string? filename = null) -> void
 Bruinet.Core.Scopes.ITestPage.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Scopes.ITestPage.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Scopes.ITestPage.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Scopes.ObjectBase<TContext>
+Bruinet.Core.Scopes.ObjectBase<TContext>.DefaultTimeoutMs.get -> int
+Bruinet.Core.Scopes.ObjectBase<TContext>.ObjectBase() -> void
+Bruinet.Core.Scopes.ObjectBase<TContext>.PollingIntervalMs.get -> int
+Bruinet.Core.Scopes.ObjectBase<TContext>.RunFirst(int? timeoutMs, System.Func<bool>![]! outcomes) -> int
+Bruinet.Core.Scopes.ObjectBase<TContext>.RunProbe(System.Func<Bruinet.Core.Calls.Observation>! probe, int budgetMs, System.Func<Bruinet.Core.Scopes.ScopeReadiness, System.Exception!>? fail = null, string? caller = null) -> bool
 Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Core.Scopes.ScopeReadiness.Detail.get -> string?
 Bruinet.Core.Scopes.ScopeReadiness.Detail.init -> void
@@ -945,6 +951,7 @@ Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.get -> int
 Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.init -> void
 Bruinet.Core.Utilities.MarkdownTableRow.MarkdownTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, int LineNumber) -> void
 Bruinet.Core.Utilities.MarkdownTables
+abstract Bruinet.Core.Scopes.ObjectBase<TContext>.Context.get -> TContext
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRUINET_TEST_SUITE" -> string!
@@ -1115,3 +1122,4 @@ static Bruinet.Core.Utilities.MarkdownTables.IsSeparatorRow(string! line) -> boo
 static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
+virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
