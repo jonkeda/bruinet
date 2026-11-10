@@ -319,6 +319,9 @@ Bruinet.Maui.Controls.Buttons.ImageButton<TScope>.GetAspect(int? timeoutMs = nul
 Bruinet.Maui.Controls.Buttons.ImageButton<TScope>.ImageButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Buttons.ImageButton<TScope>.ImageButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! automationId) -> void
 Bruinet.Maui.Controls.Buttons.ImageButton<TScope>.WaitAspect(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! automationId) -> void
 Bruinet.Maui.Controls.Buttons.ToolbarButton<TScope>
 Bruinet.Maui.Controls.Buttons.ToolbarButton<TScope>.ToolbarButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Buttons.ToolbarButton<TScope>.ToolbarButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
@@ -865,11 +868,8 @@ Bruinet.Maui.Interfaces.IMauiElementScope
 Bruinet.Maui.Interfaces.IMauiElementScope.AllowsScrollLookup.get -> bool
 Bruinet.Maui.Interfaces.IMauiElementScope.Context.get -> Bruinet.Maui.Interfaces.IMauiTestContext!
 Bruinet.Maui.Interfaces.IMauiElementScope.DescribeMiss(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Core.Exceptions.ElementNotFoundException!
-Bruinet.Maui.Interfaces.IMauiElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement!
-Bruinet.Maui.Interfaces.IMauiElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
 Bruinet.Maui.Interfaces.IMauiElementScope.Page.get -> Bruinet.Maui.Interfaces.IMauiPage?
 Bruinet.Maui.Interfaces.IMauiElementScope.ScrollingRoot.get -> Bruinet.Maui.Interfaces.IMauiElement?
-Bruinet.Maui.Interfaces.IMauiElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiItemObject<TCollection, TSelf>
 Bruinet.Maui.Interfaces.IMauiItemObject<TCollection, TSelf>.Index.get -> int
 Bruinet.Maui.Interfaces.IMauiItemObject<TCollection, TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
@@ -1010,6 +1010,8 @@ override Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.EnsureReadyForA
 override Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.EnsureReadyForActionCore(Bruinet.Maui.Interfaces.IMauiElement! root) -> void
 override Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.ClickCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
 override Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
+override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.EnsureClickableCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
+override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.RequiresVisibilityForAction.get -> bool
 override Bruinet.Maui.Controls.Buttons.ToolbarButton<TScope>.ClickCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
 override Bruinet.Maui.Controls.Buttons.ToolbarButton<TScope>.RequiresVisibilityForAction.get -> bool
 override Bruinet.Maui.Controls.Collection.IndicatorView<TScope>.IsEnabledCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
@@ -1256,8 +1258,3 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
-Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>
-Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.SwipeItem(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! automationId) -> void
-override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.EnsureClickableCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
-override Bruinet.Maui.Controls.Buttons.SwipeItem<TScope>.RequiresVisibilityForAction.get -> bool

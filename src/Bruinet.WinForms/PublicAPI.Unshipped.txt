@@ -370,10 +370,7 @@ Bruinet.WinForms.Interfaces.IWinFormsElement.VerticalScrollPercent.get -> double
 Bruinet.WinForms.Interfaces.IWinFormsElement.Visible.get -> bool
 Bruinet.WinForms.Interfaces.IWinFormsElementScope
 Bruinet.WinForms.Interfaces.IWinFormsElementScope.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
-Bruinet.WinForms.Interfaces.IWinFormsElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
-Bruinet.WinForms.Interfaces.IWinFormsElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
 Bruinet.WinForms.Interfaces.IWinFormsElementScope.Page.get -> Bruinet.WinForms.Interfaces.IWinFormsPage?
-Bruinet.WinForms.Interfaces.IWinFormsElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
 Bruinet.WinForms.Interfaces.IWinFormsPage
 Bruinet.WinForms.Interfaces.IWinFormsPage<TSelf>
 Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>

@@ -5,7 +5,7 @@ namespace Bruinet.Maui.Interfaces;
 /// <summary>
 /// Anything controls can be declared in: a page, a container, a collection row, or the app root.
 /// </summary>
-public interface IMauiElementScope : IScope
+public interface IMauiElementScope : IElementScope<IMauiElement>
 {
     /// <summary>
     /// Gets the MAUI test context for this scope.
@@ -17,17 +17,7 @@ public interface IMauiElementScope : IScope
     /// </summary>
     IMauiPage? Page { get; }
 
-    /// <summary>
-    /// Finds the first element in this scope matching <paramref name="locator"/>, in one attempt.
-    /// </summary>
-    /// <returns>The element, or null when none matches now.</returns>
-    IMauiElement? TryFindElement(Locator locator);
 
-    /// <summary>
-    /// Finds the first element in this scope matching <paramref name="locator"/>, or throws.
-    /// </summary>
-    /// <exception cref="ElementNotFoundException">No element matches.</exception>
-    IMauiElement FindElement(Locator locator);
 
     /// <summary>
     /// The error for <paramref name="locator"/> not found in this scope, in the scope's own words
@@ -36,11 +26,6 @@ public interface IMauiElementScope : IScope
     /// <param name="locator">The locator that found nothing.</param>
     ElementNotFoundException DescribeMiss(Locator locator) => new(locator);
 
-    /// <summary>
-    /// Finds every element in this scope matching <paramref name="locator"/>, in one attempt.
-    /// </summary>
-    /// <returns>The matches; empty when none match now.</returns>
-    IReadOnlyList<IMauiElement> FindElements(Locator locator);
 
     /// <summary>
     /// The element that scrolls for this scope, or null to let the driver pick the one on screen.

@@ -362,10 +362,7 @@ Bruinet.Wpf.Interfaces.IWpfElement.VerticalScrollPercent.get -> double?
 Bruinet.Wpf.Interfaces.IWpfElement.Visible.get -> bool
 Bruinet.Wpf.Interfaces.IWpfElementScope
 Bruinet.Wpf.Interfaces.IWpfElementScope.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
-Bruinet.Wpf.Interfaces.IWpfElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
-Bruinet.Wpf.Interfaces.IWpfElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 Bruinet.Wpf.Interfaces.IWpfElementScope.Page.get -> Bruinet.Wpf.Interfaces.IWpfPage?
-Bruinet.Wpf.Interfaces.IWpfElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
 Bruinet.Wpf.Interfaces.IWpfPage
 Bruinet.Wpf.Interfaces.IWpfPage<TSelf>
 Bruinet.Wpf.Interfaces.IWpfScope<TScope>

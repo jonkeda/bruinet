@@ -388,10 +388,7 @@ Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.TryFindElement(Bruinet.Co
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElement.Visible.get -> bool
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
 Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
-Bruinet.NativeAndroid.Interfaces.INativeAndroidElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage.Activity.get -> string?
 Bruinet.NativeAndroid.Interfaces.INativeAndroidPage<TSelf>

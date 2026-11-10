@@ -423,10 +423,7 @@ Bruinet.Html.Interfaces.IHtmlElement.Visible.get -> bool
 Bruinet.Html.Interfaces.IHtmlElement.WaitsForActionability.get -> bool
 Bruinet.Html.Interfaces.IHtmlElementScope
 Bruinet.Html.Interfaces.IHtmlElementScope.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-Bruinet.Html.Interfaces.IHtmlElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Interfaces.IHtmlElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
 Bruinet.Html.Interfaces.IHtmlElementScope.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
-Bruinet.Html.Interfaces.IHtmlElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Interfaces.IHtmlPage
 Bruinet.Html.Interfaces.IHtmlPage.Url.get -> string?
 Bruinet.Html.Interfaces.IHtmlPage<TSelf>

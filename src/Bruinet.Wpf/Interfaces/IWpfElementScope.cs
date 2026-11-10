@@ -8,7 +8,7 @@ namespace Bruinet.Wpf.Interfaces;
 /// Where controls are found: the app's window, a page, a container, a dialog or a list row. A scope
 /// says whether it is ready, asking its parent first, and finds elements inside itself in one attempt.
 /// </summary>
-public interface IWpfElementScope : IScope
+public interface IWpfElementScope : IElementScope<IWpfElement>
 {
     /// <summary>The test context the scope belongs to.</summary>
     IWpfTestContext Context { get; }
@@ -16,13 +16,6 @@ public interface IWpfElementScope : IScope
     /// <summary>The page the scope is on; null for the app root.</summary>
     IWpfPage? Page { get; }
 
-    /// <summary>The first matching element in the scope now, or null. One attempt.</summary>
-    IWpfElement? TryFindElement(Locator locator);
 
-    /// <summary>The first matching element in the scope now. One attempt.</summary>
-    /// <exception cref="ElementNotFoundException">Nothing matches.</exception>
-    IWpfElement FindElement(Locator locator);
 
-    /// <summary>The matching elements in the scope now. One attempt.</summary>
-    IReadOnlyList<IWpfElement> FindElements(Locator locator);
 }

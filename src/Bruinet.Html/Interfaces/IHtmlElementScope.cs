@@ -9,7 +9,7 @@ namespace Bruinet.Html.Interfaces;
 /// <summary>
 /// Anything controls can be declared in: the test context, a page, a container, a frame.
 /// </summary>
-public interface IHtmlElementScope : IScope
+public interface IHtmlElementScope : IElementScope<IHtmlElement>
 {
     /// <summary>The test context the scope belongs to.</summary>
     IHtmlTestContext Context { get; }
@@ -17,13 +17,6 @@ public interface IHtmlElementScope : IScope
     /// <summary>The page the scope is on, for naming; <c>null</c> for the context itself.</summary>
     IHtmlPage? Page { get; }
 
-    /// <summary>The first matching element in the scope, or <c>null</c>.</summary>
-    IHtmlElement? TryFindElement(Locator locator);
 
-    /// <summary>The first matching element in the scope.</summary>
-    /// <exception cref="ElementNotFoundException">Nothing matches.</exception>
-    IHtmlElement FindElement(Locator locator);
 
-    /// <summary>Every matching element in the scope.</summary>
-    IReadOnlyList<IHtmlElement> FindElements(Locator locator);
 }

@@ -784,6 +784,10 @@ Bruinet.Core.Recording.RecordingTarget.Window
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.get -> nint
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.init -> void
 Bruinet.Core.Recording.RecordingTarget.Window.Window(nint Handle) -> void
+Bruinet.Core.Scopes.IElementScope<TElement>
+Bruinet.Core.Scopes.IElementScope<TElement>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
+Bruinet.Core.Scopes.IElementScope<TElement>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+Bruinet.Core.Scopes.IElementScope<TElement>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
 Bruinet.Core.Scopes.IScope
 Bruinet.Core.Scopes.IScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Core.Scopes.IScope.IsReady() -> bool

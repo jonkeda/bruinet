@@ -469,10 +469,7 @@ Bruinet.Stride.Interfaces.IStrideElement.TryFindElement(Bruinet.Core.Locators.Lo
 Bruinet.Stride.Interfaces.IStrideElement.Visible.get -> bool
 Bruinet.Stride.Interfaces.IStrideElementScope
 Bruinet.Stride.Interfaces.IStrideElementScope.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
-Bruinet.Stride.Interfaces.IStrideElementScope.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement!
-Bruinet.Stride.Interfaces.IStrideElementScope.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
 Bruinet.Stride.Interfaces.IStrideElementScope.Page.get -> Bruinet.Stride.Interfaces.IStridePage?
-Bruinet.Stride.Interfaces.IStrideElementScope.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
 Bruinet.Stride.Interfaces.IStridePage
 Bruinet.Stride.Interfaces.IStridePage<TSelf>
 Bruinet.Stride.Interfaces.IStrideScope<TScope>
