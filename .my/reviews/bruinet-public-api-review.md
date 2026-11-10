@@ -1,6 +1,6 @@
 # Bruinet's public API: review and proposals
 
-First written 2026-11-09 at `f9ad9a96`. Brought up to date 2026-11-10 at `7f972d8c`, after the night's run moved WPF, WinForms and Stride onto the call model (U1 to U7).
+First written 2026-11-09 at `f9ad9a96`. Brought up to date 2026-11-10 at `7f972d8c`, after the night's run moved WPF, WinForms and Stride onto the call model (U1 to U7); proposal 13 added the same day at `6e23ddea`.
 Read from the 34 `PublicAPI.Unshipped.txt` files under `src/` and spot checks in the source; nothing was built or run for this review.
 
 ## Outcome
@@ -105,6 +105,17 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
 | 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
 | 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Open. |
+| 13 | A change list and skill so the projects that use Bruinet can be refactored after each change: per change, what to search for and what to write instead. | Started: skill `api-upgrade` and its list exist and cover U1 to U7. What is left is step U8 of `.my/upgrade/plan.md`. |
+
+### Proposal 13 comes first
+
+The API is already used by other projects, so every open proposal above breaks someone.
+Proposal 13 is what makes that cheap, and it has to be in working order before proposals 1, 2, 4, 5, 7 and 8 are made, not after.
+
+- Each proposal, when made, adds its row to `.github/skills/api-upgrade/references/changes.md` in the same commit; the Planned rows there already say what each one will ask of a consumer.
+- The list is behind today: this morning's four commits added members to `IMauiDriver`, `IMauiElement` and `IControlHost<TElement>` without a row.
+- The list has not yet been proven on a project that is not Bruinet's own; Tomorrow uses Html only and built unchanged.
+- A check that fails when a commit changes a `PublicAPI.Unshipped.txt` line without touching the list keeps it from falling behind again.
 
 ## Unknown
 
@@ -116,4 +127,5 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 
 ## Next action
 
-Proposal 2 is still one commit with no design. After it, the Core half of proposal 5 is the one last night made more pressing.
+Finish proposal 13 first: the missing rows and the check (U8.1, U8.2 and U8.7 of the upgrade plan).
+Then proposal 2, which is one commit with no design, and after it the Core half of proposal 5, which last night made more pressing.
