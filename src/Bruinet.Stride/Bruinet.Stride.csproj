@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <RootNamespace>Bruinet.Stride</RootNamespace>
-    <Description>Stride game engine UI testing client. Provides controls and page objects for communicating with Stride applications via Bruinet.Stride.Automation.</Description>
+    <Description>Stride game UI testing on the call model (AD-010): the client for Bruinet.Stride.Automation, with generated controls, pages, containers and collections, one call per member over the automation pipe.</Description>
     <PackageId>Bruinet.Stride</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
-    <ProjectReference Include="..\Bruinet.Core.Legacy\Bruinet.Core.Legacy.csproj" />
   </ItemGroup>
 
 </Project>

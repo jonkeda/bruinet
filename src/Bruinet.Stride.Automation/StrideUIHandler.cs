@@ -226,14 +226,15 @@ public class StrideUIHandler : IAutomationHandler
     private AutomationResponse Find(string scope, string target)
     {
         var within = FindElement(scope);
-        var found = within is null ? null : Descendants(within, includeSelf: false).FirstOrDefault(element => Matches(element, target));
+        // From the root, the root itself counts: a game whose UI root is a page's panel is found by it.
+        var found = within is null ? null : Descendants(within, includeSelf: string.IsNullOrEmpty(scope)).FirstOrDefault(element => Matches(element, target));
         return AutomationResponse.Ok(CreateElementState(found, target));
     }
 
     private AutomationResponse FindAll(string scope, string target)
     {
         var within = FindElement(scope);
-        var found = within is null ? [] : Descendants(within, includeSelf: false).Where(element => Matches(element, target));
+        var found = within is null ? [] : Descendants(within, includeSelf: string.IsNullOrEmpty(scope)).Where(element => Matches(element, target));
         return AutomationResponse.Ok(found.Select(element => CreateElementState(element, element.Name)).ToList());
     }
 

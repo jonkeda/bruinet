@@ -6,7 +6,7 @@ namespace Bruinet.Stride.UITests.PageObjects;
 public class MainPage : PageObjectBase<MainPage>
 {
     public override string Name => "Main Page";
-    public override string AutomationId => "MainPanel";
+    protected override Locator ReadyLocator => Locator.ByAutomationId("MainPanel");
 
     public MainPage(IStrideTestContext context) : base(context) { }
 
@@ -24,9 +24,12 @@ public class MainPage : PageObjectBase<MainPage>
     public TextBlock<MainPage> VolumeDisplay => TextBlock("VolumeDisplay");
 
     // Actions
-    public int GetCounterValue()
+    public int GetCounterValue() => Count(CounterDisplay.GetText());
+
+    /// <summary>The number in the counter's text ("Count: 3"); 0 when it shows none.</summary>
+    private static int Count(string? counterText)
     {
-        var text = CounterDisplay.GetText() ?? "";
+        var text = counterText ?? "";
         var valueStr = text.Replace("Count: ", "");
         return int.TryParse(valueStr, out var value) ? value : 0;
     }
@@ -35,7 +38,7 @@ public class MainPage : PageObjectBase<MainPage>
     {
         var before = GetCounterValue();
         IncrementButton.Click();
-        WaitFor(() => GetCounterValue() == before + 1);
+        CounterDisplay.WaitText(text => Count(text) == before + 1);
         return this;
     }
 
@@ -43,14 +46,14 @@ public class MainPage : PageObjectBase<MainPage>
     {
         var before = GetCounterValue();
         DecrementButton.Click();
-        WaitFor(() => GetCounterValue() == before - 1);
+        CounterDisplay.WaitText(text => Count(text) == before - 1);
         return this;
     }
 
     public MainPage ResetCounter()
     {
         ResetButton.Click();
-        WaitFor(() => GetCounterValue() == 0);
+        CounterDisplay.WaitText(text => Count(text) == 0);
         return this;
     }
 
@@ -58,7 +61,7 @@ public class MainPage : PageObjectBase<MainPage>
     {
         NameInput.SetText(name);
         GreetButton.Click();
-        WaitFor(() => !string.IsNullOrEmpty(GreetingDisplay.GetText()));
+        GreetingDisplay.WaitText(text => !string.IsNullOrEmpty(text));
         return this;
     }
 

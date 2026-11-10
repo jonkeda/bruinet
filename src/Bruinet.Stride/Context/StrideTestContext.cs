@@ -1,240 +1,155 @@
-using System.Text.Json;
-using Bruinet.Core.Interfaces;
-using Bruinet.Core.Logging;
-using Bruinet.Stride.Communication;
-using Bruinet.Stride.Infrastructure;
-using Bruinet.Stride.Interfaces;
+using Bruinet.Core.Calls;
+using Bruinet.Core.Recording;
+using Bruinet.Core.Scopes;
+using Bruinet.Stride.Automation;
+using Bruinet.Stride.Pages;
 
 namespace Bruinet.Stride.Context;
 
 /// <summary>
-/// Test context for Stride game engine UI testing.
-/// Implements both the new IStrideTestContext and the Core ITestContext.
+/// One Stride game under test, and its UI root as the outermost scope: ready while the game says it
+/// is (its scene loaded). A game that is gone ends the call with <see cref="AppUnavailableException"/> (R0).
 /// </summary>
-public class StrideTestContext : IStrideTestContext
+public sealed class StrideTestContext : IStrideTestContext, IRecordable
 {
-    private readonly IAutomationChannel _channel;
     private readonly StrideTestContextOptions _options;
-    private readonly JsonSerializerOptions _jsonOptions;
     private bool _disposed;
 
-    public TimeoutSettings Timeouts { get; }
-    public ITestLogger Logger { get; }
-    public bool IsGameReady => CheckGameReady();
-
-    public StrideTestContext(IAutomationChannel channel, StrideTestContextOptions? options = null)
-        : this(channel, new ConsoleTestLogger(), options)
+    /// <summary>The context over an open automation channel.</summary>
+    /// <param name="channel">The connected pipe to the game.</param>
+    /// <param name="options">The timeouts and names; the defaults when null.</param>
+    /// <param name="windowHandle">The game window's handle, for a recorder; zero when unknown.</param>
+    public StrideTestContext(IAutomationChannel channel, StrideTestContextOptions? options = null, Func<nint>? windowHandle = null)
+        : this(new StrideAutomationDriver(channel, windowHandle), options)
     {
     }
 
-    public StrideTestContext(IAutomationChannel channel, ITestLogger logger, StrideTestContextOptions? options = null)
+    /// <summary>The context over a driver.</summary>
+    public StrideTestContext(IStrideDriver driver, StrideTestContextOptions? options = null)
     {
-        _channel = channel ?? throw new ArgumentNullException(nameof(channel));
-        Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        Driver = driver ?? throw new ArgumentNullException(nameof(driver));
         _options = options ?? new StrideTestContextOptions();
-        _jsonOptions = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNameCaseInsensitive = true
-        };
         Timeouts = _options.ToTimeoutSettings();
+        Logger = _options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance;
     }
 
-    #region ITestContext navigation (not meaningful for Stride, but required)
+    /// <inheritdoc />
+    public IStrideDriver Driver { get; }
 
-    public void NavigateTo(string destination) { /* No-op for Stride */ }
-    public void NavigateBack() { /* No-op for Stride */ }
-    public void Refresh() { /* No-op for Stride */ }
+    /// <inheritdoc />
+    public string? Name => _options.Name;
 
-    public byte[] TakeScreenshot()
-    {
-        var response = SendCommand(AutomationCommand.Action("TakeScreenshot"));
-        if (response.Success && response.Result is string base64)
-        {
-            if (File.Exists(base64))
-                return File.ReadAllBytes(base64);
+    /// <inheritdoc />
+    public NearMissSettings NearMiss => _options.NearMiss;
 
-            return Convert.FromBase64String(base64);
-        }
+    /// <inheritdoc />
+    public TimeoutSettings Timeouts { get; }
 
-        if (response.Success && response.Result is JsonElement json && json.ValueKind == JsonValueKind.String)
-        {
-            var value = json.GetString();
-            if (!string.IsNullOrWhiteSpace(value) && File.Exists(value))
-                return File.ReadAllBytes(value);
+    /// <inheritdoc />
+    public ITestLogger Logger { get; }
 
-            if (!string.IsNullOrWhiteSpace(value))
-                return Convert.FromBase64String(value);
-        }
+    /// <inheritdoc />
+    public IStrideTestContext Context => this;
 
-        return [];
-    }
+    /// <inheritdoc />
+    public LocatorStrategy DefaultLocatorStrategy => LocatorStrategy.AutomationId;
 
+    /// <summary>None: the context is the game's UI root, not a page.</summary>
+    public IStridePage? Page => null;
+
+    /// <inheritdoc />
+    public RecordingTarget? RecordingTarget
+        => _disposed || Driver.WindowHandle == 0 ? null : new RecordingTarget.Window(Driver.WindowHandle);
+
+    /// <summary>Ready while the game says it is.</summary>
+    public ScopeReadiness ProbeReadiness()
+        => Driver.IsGameReady()
+            ? ScopeReadiness.Ready(nameof(StrideTestContext))
+            : new ScopeReadiness(nameof(StrideTestContext), ScopeReadinessState.NotLoaded, "the game is not ready");
+
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => new AppRoot(this).WaitFirst(timeoutMs, outcomes);
+
+    /// <inheritdoc />
+    public bool WaitReady(int? timeoutMs = null) => new AppRoot(this).WaitReady(timeoutMs ?? Timeouts.PageLoad);
+
+    // One attempt (R2): the call around it is what waits.
+    /// <inheritdoc />
+    public IStrideElement? TryFindElement(Locator locator)
+        => StrideElement.From(Driver, Driver.Find(string.Empty, StrideLocators.TargetOf(locator)));
+
+    /// <inheritdoc />
+    public IStrideElement FindElement(Locator locator) => TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
+
+    /// <inheritdoc />
+    public IReadOnlyList<IStrideElement> FindElements(Locator locator)
+        => [.. Driver.FindAll(string.Empty, StrideLocators.TargetOf(locator)).Select(state => StrideElement.From(Driver, state)).OfType<IStrideElement>()];
+
+    /// <inheritdoc />
+    public void PressKey(VirtualKey key) => Driver.PressKey(key);
+
+    /// <inheritdoc />
+    public void HoldKey(VirtualKey key, int durationMs) => Driver.HoldKey(key, durationMs);
+
+    /// <summary>A game has no destination to go to: its page objects navigate with its controls and keys.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public void NavigateTo(string destination)
+        => throw new NotSupportedException("A Stride game has no destination to navigate to; navigate with its page objects' controls and keys.");
+
+    /// <summary>A game has no history to go back in.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public void NavigateBack()
+        => throw new NotSupportedException("A Stride game has no history to go back in; navigate with its page objects' controls and keys.");
+
+    /// <summary>A game has no page to reload.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public void Refresh()
+        => throw new NotSupportedException("A Stride game has no page to reload; start a new context for a fresh game.");
+
+    /// <inheritdoc />
+    public byte[] TakeScreenshot() => Driver.TakeScreenshot();
+
+    /// <inheritdoc />
     public void SaveScreenshot(string path)
     {
-        var bytes = TakeScreenshot();
+        ArgumentNullException.ThrowIfNull(path);
+        var bytes = Driver.TakeScreenshot();
         if (bytes.Length > 0)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(path) ?? ".");
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)) ?? ".");
             File.WriteAllBytes(path, bytes);
         }
     }
 
-    public void ResetAppState() { /* No-op for Stride */ }
+    /// <summary>A game cannot be reset from outside: start a new context for a fresh game.</summary>
+    /// <exception cref="NotSupportedException">Always.</exception>
+    public void ResetAppState()
+        => throw new NotSupportedException("A Stride game cannot be reset from outside; start a new context for a fresh game.");
 
-    #endregion
-
-    #region Element Operations
-
-    public ElementState GetElementState(string automationId)
-    {
-        var response = SendCommand(AutomationCommand.Query("GetState", automationId));
-
-        if (!response.Success || response.Result == null)
-            return new ElementState { Exists = false };
-
-        try
-        {
-            var json = response.Result.ToString()!;
-            return JsonSerializer.Deserialize<ElementState>(json, _jsonOptions)
-                ?? new ElementState { Exists = false };
-        }
-        catch
-        {
-            return new ElementState { Exists = false };
-        }
-    }
-
-    public bool ElementExists(string automationId)
-        => GetElementState(automationId).Exists;
-
-    public bool ElementIsVisible(string automationId)
-    {
-        var state = GetElementState(automationId);
-        return state.Exists && state.IsVisible;
-    }
-
-    public void ClickElement(string automationId)
-    {
-        // Server-side click via automation pipe — no physical mouse needed
-        var response = SendCommand(AutomationCommand.Action("Click", automationId));
-        if (!response.Success)
-            throw new InvalidOperationException($"Server-side click failed for '{automationId}': {response.Error}");
-    }
-
-    public bool SetElementText(string automationId, string text)
-    {
-        var response = SendCommand(AutomationCommand.Action("SetElementText", automationId, text));
-        return response.Success;
-    }
-
-    public bool SetSliderValue(string automationId, double value)
-    {
-        var response = SendCommand(AutomationCommand.Action("SetSliderValue", automationId, value));
-        return response.Success;
-    }
-
-    public bool SetToggleValue(string automationId, bool value)
-    {
-        var response = SendCommand(AutomationCommand.Action("SetToggleValue", automationId, value));
-        return response.Success;
-    }
-
-    #endregion
-
-    #region Input
-
-    public void PressKey(VirtualKey key)
-    {
-        var strideKeyName = MapVirtualKeyToStrideKeyName(key);
-        var response = SendCommand(AutomationCommand.Action("SimulateKeyPress", null, strideKeyName));
-        if (!response.Success)
-            throw new InvalidOperationException($"Server-side key press failed for '{key}': {response.Error}");
-    }
-
-    public void HoldKey(VirtualKey key, int durationMs)
-    {
-        var strideKeyName = MapVirtualKeyToStrideKeyName(key);
-        var response = SendCommand(AutomationCommand.Action("SimulateKeyHold", null, strideKeyName, durationMs));
-        if (!response.Success)
-            throw new InvalidOperationException($"Server-side key hold failed for '{key}': {response.Error}");
-    }
-
-    private static string MapVirtualKeyToStrideKeyName(VirtualKey key) => key switch
-    {
-        VirtualKey.Backspace => "Back",
-        VirtualKey.Control => "LeftCtrl",
-        VirtualKey.LeftControl => "LeftCtrl",
-        VirtualKey.RightControl => "RightCtrl",
-        _ => key.ToString()
-    };
-
-    #endregion
-
-    #region Game State
-
-    private bool CheckGameReady()
-    {
-        try
-        {
-            var response = SendCommand(AutomationCommand.Query("IsGameReady"));
-            return response.Success && IsResultTrue(response.Result);
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    public bool IsGameBusy()
-    {
-        try
-        {
-            var response = SendCommand(AutomationCommand.Query("IsBusy"));
-            return response.Success && IsResultTrue(response.Result);
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    private static bool IsResultTrue(object? result)
-    {
-        if (result is bool b)
-            return b;
-        if (result is System.Text.Json.JsonElement je && je.ValueKind == System.Text.Json.JsonValueKind.True)
-            return true;
-        return false;
-    }
-
-    public bool WaitForGameReady(int? timeoutMs = null)
-        => WaitFor(() => IsGameReady, timeoutMs ?? _options.StartupTimeoutMs, "game ready");
-
-    #endregion
-
-    #region Wait / Command
-
-    public bool WaitFor(Func<bool> condition, int? timeoutMs = null, string description = "condition")
-    {
-        return LegacyWaitHelper.WaitFor(
-            condition,
-            timeoutMs ?? Timeouts.DefaultWait,
-            Timeouts.PollingInterval);
-    }
-
-    public AutomationResponse SendCommand(AutomationCommand command)
-        => _channel.SendCommandAsync(command).GetAwaiter().GetResult();
-
-    #endregion
-
+    /// <inheritdoc />
     public void Dispose()
     {
         if (_disposed)
+        {
             return;
-        _disposed = true;
+        }
 
-        _channel.Dispose();
-        GC.SuppressFinalize(this);
+        _disposed = true;
+        Driver.Dispose();
+        Logger.Flush();
+        Logger.Dispose();
+    }
+
+    /// <summary>
+    /// A call log in the folder <c>BRUINET_CALL_LOG</c> names, when it is set: the same switch as
+    /// the other stacks', and only when the options give no logger of their own.
+    /// </summary>
+    private static CsvTestLogger? OpenCallLog()
+    {
+        var folder = Environment.GetEnvironmentVariable("BRUINET_CALL_LOG");
+        return string.IsNullOrWhiteSpace(folder)
+            ? null
+            : new CsvTestLogger(Path.Combine(folder,
+                $"calls-stride-{DateTime.Now:yyyyMMdd-HHmmss}-{Environment.ProcessId}-{Guid.NewGuid().ToString("N")[..8]}.csv"));
     }
 }

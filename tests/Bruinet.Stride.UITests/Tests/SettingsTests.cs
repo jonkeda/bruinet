@@ -43,7 +43,7 @@ public class SettingsTests : StrideUITestBase
     {
         var settings = OpenSettings();
         settings.MasterVolumeSlider.AssertExists(true);
-        settings.MasterVolumeSlider.AssertValue(80, tolerance: 1);
+        settings.MasterVolumeSlider.AssertValueWithin(80, 1);
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class SettingsTests : StrideUITestBase
 
         settings.SetMasterVolume(50);
 
-        settings.MasterVolumeSlider.AssertValue(50, tolerance: 5);
+        settings.MasterVolumeSlider.AssertValueWithin(50, 5);
         settings.MasterVolumeDisplay.AssertTextContains("50");
     }
 
@@ -61,7 +61,7 @@ public class SettingsTests : StrideUITestBase
     public void AudioSettings_MuteToggle_InitiallyOff()
     {
         var settings = OpenSettings();
-        settings.MuteAudioToggle.AssertUnchecked();
+        settings.MuteAudioToggle.AssertChecked(false);
     }
 
     [Fact]
@@ -83,14 +83,14 @@ public class SettingsTests : StrideUITestBase
     {
         var settings = OpenSettings();
         settings.FullscreenToggle.AssertExists(true);
-        settings.FullscreenToggle.AssertUnchecked();
+        settings.FullscreenToggle.AssertChecked(false);
     }
 
     [Fact]
     public void GraphicsSettings_BrightnessSlider_InitialValue_Is50()
     {
         var settings = OpenSettings();
-        settings.BrightnessSlider.AssertValue(50, tolerance: 1);
+        settings.BrightnessSlider.AssertValueWithin(50, 1);
     }
 
     #endregion
@@ -109,14 +109,14 @@ public class SettingsTests : StrideUITestBase
     {
         var settings = OpenSettings();
         settings.PlayerNameInput.AssertExists(true);
-        settings.PlayerNameInput.AssertTextNotEmpty();
+        settings.PlayerNameInput.AssertTextEmpty(false);
     }
 
     [Fact]
     public void GameplaySettings_MoveSpeedSlider_InitialValue_Is5()
     {
         var settings = OpenSettings();
-        settings.MoveSpeedSlider.AssertValue(5, tolerance: 1);
+        settings.MoveSpeedSlider.AssertValueWithin(5, 1);
     }
 
     [Fact]
@@ -126,14 +126,14 @@ public class SettingsTests : StrideUITestBase
 
         settings.SetMoveSpeed(8);
 
-        settings.MoveSpeedSlider.AssertValue(8, tolerance: 2);
+        settings.MoveSpeedSlider.AssertValueWithin(8, 2);
     }
 
     [Fact]
     public void GameplaySettings_InvertYToggle_InitiallyOff()
     {
         var settings = OpenSettings();
-        settings.InvertYToggle.AssertUnchecked();
+        settings.InvertYToggle.AssertChecked(false);
     }
 
     #endregion

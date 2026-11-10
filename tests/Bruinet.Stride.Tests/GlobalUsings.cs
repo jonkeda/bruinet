@@ -1,0 +1,13 @@
+global using Xunit;
+global using Moq;
+global using Bruinet.Core;
+global using Bruinet.Core.Exceptions;
+global using Bruinet.Core.Locators;
+global using Bruinet.Stride.Automation;
+global using Bruinet.Stride.Communication;
+global using Bruinet.Stride.Context;
+global using Bruinet.Stride.Controls.Buttons;
+global using Bruinet.Stride.Controls.Text;
+global using Bruinet.Stride.Controls.Toggle;
+global using Bruinet.Stride.Interfaces;
+global using Bruinet.Stride.Pages;

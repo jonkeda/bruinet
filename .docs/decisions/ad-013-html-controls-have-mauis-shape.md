@@ -18,7 +18,8 @@ in a known suffix.
 WPF's control names (`TextBox`, `PasswordBox`, `TreeViewItem`) and the same members. Each Core method
 acts through a UI Automation pattern of the shared `UiaElementBase` (`Bruinet.FlaUI`). **WinForms** the
 same (U4, `tools/Scripts/CreateWinForms.Bat`), with its own names (`TrackBar`, `NumericUpDown`,
-`DateTimePicker`, `TabPage`, `TreeNode`).
+`DateTimePicker`, `TabPage`, `TreeNode`). **Stride** too (U6, `tools/Scripts/CreateStride.Bat`), each Core method
+one command to the game over the automation pipe.
 
 **Why:** hand-written Html controls approximated MAUI's surface by hand and drifted
 (`AssertTextContaining` beside `AssertTextContains`, missing `Enter` and `AssertSelectedText`, so
@@ -30,7 +31,7 @@ Evidence: [review-html-vs-maui.md at 7162ac7](https://github.com/exact-mobile-ap
 members (`*Async` wrappers, async interfaces); a public member whose name differs from MAUI's for
 the same behaviour.
 
-**Broken when:** an Html, Blazor, native Android, WPF or WinForms control with `*Core` methods is a plain `.cs`,
+**Broken when:** an Html, Blazor, native Android, WPF, WinForms or Stride control with `*Core` methods is a plain `.cs`,
 or its `.gen.cs` differs from what its `Create*.Bat` writes; the generator needs a stack-specific
 branch; a `Task`-returning public member appears on a control, page or container; a UAT phrase
-fails on Html, native Android, WPF or WinForms with "available methods" for a method MAUI has.
+fails on Html, native Android, WPF, WinForms or Stride with "available methods" for a method MAUI has.

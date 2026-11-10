@@ -34,25 +34,35 @@ public class GameplayTests : StrideUITestBase
     [Fact]
     public void Player_MoveNorth_PositionChanges()
     {
-        var game = new GamePage(Context);
-        game.AssertLoaded(true);
+        var game = OnTheGame();
         var initialText = game.PositionDisplay.GetText();
 
         game.MoveNorth(durationMs: 300);
 
-        Assert.NotEqual(initialText, game.PositionDisplay.GetText());
+        Assert.True(game.PositionDisplay.WaitText(text => text != initialText), $"The position stayed {initialText}.");
     }
 
     [Fact]
     public void Player_MoveSouth_PositionChanges()
     {
-        var game = new GamePage(Context);
-        game.AssertLoaded(true);
+        var game = OnTheGame();
         var initialText = game.PositionDisplay.GetText();
 
         game.MoveSouth(durationMs: 300);
 
-        Assert.NotEqual(initialText, game.PositionDisplay.GetText());
+        Assert.True(game.PositionDisplay.WaitText(text => text != initialText), $"The position stayed {initialText}.");
+    }
+
+    // The game ignores movement while the settings are open, and a test before may leave them open.
+    private GamePage OnTheGame()
+    {
+        var settings = new SettingsPage(Context);
+        if (settings.IsLoaded())
+            settings.Close();
+
+        var game = new GamePage(Context);
+        game.AssertLoaded(true);
+        return game;
     }
 
     [Fact]

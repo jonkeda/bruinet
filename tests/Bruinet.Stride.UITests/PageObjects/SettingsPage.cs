@@ -6,7 +6,7 @@ namespace Bruinet.Stride.UITests.PageObjects;
 public class SettingsPage : PageObjectBase<SettingsPage>
 {
     public override string Name => "Settings Page";
-    public override string AutomationId => "SettingsPanel";
+    protected override Locator ReadyLocator => Locator.ByAutomationId("SettingsPanel");
 
     public SettingsPage(IStrideTestContext context) : base(context) { }
 

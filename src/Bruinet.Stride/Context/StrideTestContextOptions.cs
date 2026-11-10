@@ -34,11 +34,16 @@ public class StrideTestContextOptions
 
     #endregion
 
-    #region Input Simulation
+    #region Calls
 
-    public int ClickDelayMs { get; set; } = 50;
-    public int PostClickDelayMs { get; set; } = 100;
-    public int KeyPressDelayMs { get; set; } = 20;
+    /// <summary>The call log; <c>BRUINET_CALL_LOG</c>'s, or none, when null.</summary>
+    public ITestLogger? Logger { get; set; }
+
+    /// <summary>The context's name in call logs, when a scenario runs several apps.</summary>
+    public string? Name { get; set; }
+
+    /// <summary>When a call that passed is logged as a near-miss.</summary>
+    public Bruinet.Core.Calls.NearMissSettings NearMiss { get; set; } = Bruinet.Core.Calls.NearMissSettings.Default;
 
     #endregion
 

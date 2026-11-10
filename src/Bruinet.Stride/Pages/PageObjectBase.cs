@@ -1,19 +1,22 @@
-using Bruinet.Core.Exceptions;
-using Bruinet.Core.Interfaces;
-using Bruinet.Core.Utilities;
-using Bruinet.Stride.Controls;
-using Bruinet.Stride.Infrastructure;
-using Bruinet.Stride.Interfaces;
+using Bruinet.Core.Calls;
+using Bruinet.Core.Scopes;
+using Bruinet.Stride.Controls.Buttons;
+using Bruinet.Stride.Controls.Display;
+using Bruinet.Stride.Controls.Range;
+using Bruinet.Stride.Controls.Text;
+using Bruinet.Stride.Controls.Toggle;
 
 namespace Bruinet.Stride.Pages;
 
+// Test composition and UAT find Stride pages by Core's ITestPage, which IStridePage derives from.
+
 /// <summary>
-/// Base class for Stride page objects with fluent method chaining support.
-/// Uses CRTP (Curiously Recurring Template Pattern) for strongly-typed fluent returns.
-/// Implements IStrideScope so pages can be used as scopes for child controls.
+/// One view of the game's UI: a HUD, a menu, an overlay. It is known by an element it shows
+/// (<see cref="ReadyLocator"/>). Its readiness (design 4): the game is ready, then the page's ready
+/// element is shown, then the game is not busy and no busy indicator of the page is shown.
 /// </summary>
-/// <typeparam name="TSelf">The concrete page type (CRTP pattern).</typeparam>
-public abstract class PageObjectBase<TSelf> : IStrideScope<TSelf>, IPageObject
+/// <typeparam name="TSelf">The page's own type.</typeparam>
+public abstract class PageObjectBase<TSelf> : ObjectBase, IStridePage<TSelf>
     where TSelf : PageObjectBase<TSelf>
 {
     private readonly IStrideTestContext _context;
@@ -23,134 +26,208 @@ public abstract class PageObjectBase<TSelf> : IStrideScope<TSelf>, IPageObject
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    #region IStrideScope Implementation
+    /// <inheritdoc />
+    public override IStrideTestContext Context => _context;
 
+    /// <inheritdoc />
     public TSelf Self => (TSelf)this;
 
-    public IStrideTestContext StrideContext => _context;
-
-    #endregion
-
-    #region IPageObject Implementation
-
+    /// <inheritdoc />
     public virtual string Name => GetType().Name;
 
-    /// <summary>
-    /// Automation ID for the page root element (empty if page has no root element).
-    /// </summary>
-    public virtual string AutomationId => string.Empty;
+    /// <inheritdoc />
+    protected override string ScopeName => Name;
 
-    public LocatorStrategy DefaultLocatorStrategy => LocatorStrategy.AutomationId;
+    /// <inheritdoc />
+    public LocatorStrategy DefaultLocatorStrategy => _context.DefaultLocatorStrategy;
 
-    public IPageObject? Page => this;
+    /// <inheritdoc />
+    public IStridePage? Page => this;
 
-    public virtual bool IsLoaded(int? timeoutMs = null)
+    /// <summary>An element that shows the page is there (its root panel); by default the one named as the page.</summary>
+    protected virtual Locator ReadyLocator => Locator.ByAutomationId(Name);
+
+    /// <summary>More elements that mean the page is busy while shown: a loading text, a spinner.</summary>
+    protected virtual IReadOnlyList<Locator> BusyIndicators => [];
+
+    /// <summary>Whether the page is shown now: its ready element is. The override point.</summary>
+    public virtual bool IsLoaded() => _context.TryFindElement(ReadyLocator)?.Visible == true;
+
+    /// <summary>One probe of the page (design 4): the game ready, then loaded, then not busy.</summary>
+    public virtual ScopeReadiness ProbeReadiness()
     {
-        if (!string.IsNullOrEmpty(AutomationId))
-            return _context.ElementExists(AutomationId) && _context.ElementIsVisible(AutomationId);
-        return true;
-    }
-
-    public virtual bool IsReady(int? timeoutMs = null)
-    {
-        return IsLoaded(timeoutMs) && !_context.IsGameBusy();
-    }
-
-    public virtual bool WaitReady(int? timeoutMs = null)
-    {
-        var timeout = timeoutMs ?? _context.Timeouts.PageLoad;
-        return LegacyWaitHelper.WaitFor(() => IsReady(), timeout, _context.Timeouts.PollingInterval);
-    }
-
-    public virtual bool WaitLoaded(bool? expected, int? timeoutMs = null)
-    {
-        if (expected == null)
-            return true;
-
-        var timeout = timeoutMs ?? _context.Timeouts.PageLoad;
-        return LegacyWaitHelper.WaitFor(
-            () => IsLoaded() == expected.Value,
-            timeout,
-            _context.Timeouts.PollingInterval);
-    }
-
-    public virtual void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
-    {
-        if (expected == null)
-            return;
-
-        if (!WaitLoaded(expected, timeoutMs))
+        if (_context.ProbeReadiness() is { IsReady: false } game)
         {
-            var actual = IsLoaded();
-            throw new PageLoadException(
-                message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but loaded state is {actual}.");
+            return game;
         }
+
+        if (!IsLoaded())
+        {
+            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded, $"'{ReadyLocator}' is not shown");
+        }
+
+        if (_context.Driver.IsGameBusy())
+        {
+            return new ScopeReadiness(Name, ScopeReadinessState.Busy, "the game says it is busy");
+        }
+
+        foreach (var indicator in BusyIndicators)
+        {
+            if (_context.TryFindElement(indicator)?.Visible == true)
+            {
+                return new ScopeReadiness(Name, ScopeReadinessState.Busy, $"'{indicator}' is shown");
+            }
+        }
+
+        return ScopeReadiness.Ready(Name);
     }
 
-    public virtual string? GetTitle(int? timeoutMs = null) => Name;
+    /// <inheritdoc />
+    public bool IsReady() => ProbeReadiness().IsReady;
 
+    /// <inheritdoc />
+    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
+
+    /// <inheritdoc />
+    public bool WaitReady(int? timeoutMs = null)
+        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? _context.Timeouts.PageLoad);
+
+    /// <inheritdoc />
+    public bool WaitLoaded(bool? expected, int? timeoutMs = null)
+    {
+        if (expected == null)
+        {
+            return true;
+        }
+
+        return RunProbe(
+            () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.PageLoad);
+    }
+
+    /// <inheritdoc />
+    public void AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null)
+    {
+        if (expected == null)
+        {
+            return;
+        }
+
+        RunProbe(
+            () => IsLoaded() == expected.Value ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.PageLoad,
+            readiness => new ScopeNotReadyException(
+                readiness,
+                message ?? $"Expected page '{Name}' {(expected.Value ? "to be loaded" : "not to be loaded")} but it is {(expected.Value ? "not" : "still loaded")}."));
+    }
+
+    /// <inheritdoc />
+    public bool IsBusy() => ProbeReadiness().IsBusy;
+
+    /// <inheritdoc />
+    public bool WaitBusy(bool? expected, int? timeoutMs = null)
+    {
+        if (expected == null)
+        {
+            return true;
+        }
+
+        return RunProbe(() =>
+        {
+            var readiness = ProbeReadiness();
+            return readiness.IsLoaded && readiness.IsBusy == expected.Value
+                ? Observation.Done()
+                : Observation.ScopeNotReady(readiness);
+        }, timeoutMs ?? _context.Timeouts.PageLoad);
+    }
+
+    /// <inheritdoc />
+    public void AssertIdle(string? message = null, int? timeoutMs = null)
+    {
+        var budget = timeoutMs ?? _context.Timeouts.PageLoad;
+        RunProbe(
+            () => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(),
+            budget,
+            readiness => new ScopeNotReadyException(
+                readiness,
+                message ?? $"Page '{Name}' did not become ready within {budget} ms. Last readiness state: {readiness.State}" +
+                    (readiness.Detail is null ? "." : $" ({readiness.Detail}).")));
+    }
+
+    /// <summary>The page's title: its name, since a game's view has no title of its own.</summary>
+    public virtual string? GetTitle() => Name;
+
+    /// <inheritdoc />
     public bool WaitTitle(string? expected, int? timeoutMs = null)
     {
         if (expected == null)
+        {
             return true;
-        var timeout = timeoutMs ?? _context.Timeouts.DefaultWait;
-        return LegacyWaitHelper.WaitFor(() => GetTitle() == expected, timeout, _context.Timeouts.PollingInterval);
+        }
+
+        return RunProbe(
+            () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.DefaultWait);
     }
 
+    /// <inheritdoc />
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
-            return;
-
-        if (!WaitTitle(expected, timeoutMs))
         {
-            var actual = GetTitle();
-            throw new PageLoadException(
-                message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.");
+            return;
         }
+
+        RunProbe(
+            () => GetTitle() == expected ? Observation.Done() : Observation.Pending(),
+            timeoutMs ?? _context.Timeouts.DefaultWait,
+            _ =>
+            {
+                var actual = GetTitle();
+                return new AssertionException(
+                    message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
+            });
     }
 
-    public virtual void TakeScreenshot(string? filename = null, int? timeoutMs = null)
-    {
-        var path = filename ?? $"{Name}_{DateTime.Now:yyyyMMdd_HHmmss}";
-        _context.SaveScreenshot(path);
-    }
+    /// <inheritdoc />
+    public void TakeScreenshot(string? filename = null)
+        => _context.SaveScreenshot(filename ?? $"{Name}_{DateTime.Now:yyyyMMdd_HHmmss}.png");
 
-    #endregion
+    /// <inheritdoc />
+    public IStrideElement? TryFindElement(Locator locator) => _context.TryFindElement(locator);
 
-    #region Control Factory Methods
+    /// <inheritdoc />
+    public IStrideElement FindElement(Locator locator) => _context.FindElement(locator);
 
-    protected Button<TSelf> Button(string automationId) => new(this, automationId);
-    protected TextBlock<TSelf> TextBlock(string automationId) => new(this, automationId);
-    protected EditText<TSelf> EditText(string automationId) => new(this, automationId);
-    protected CheckBox<TSelf> CheckBox(string automationId) => new(this, automationId);
-    protected ToggleButton<TSelf> ToggleButton(string automationId) => new(this, automationId);
-    protected Slider<TSelf> Slider(string automationId) => new(this, automationId);
-    protected ProgressBar<TSelf> ProgressBar(string automationId) => new(this, automationId);
-    protected ListBox<TSelf> ListBox(string automationId) => new(this, automationId);
-    protected ComboBox<TSelf> ComboBox(string automationId) => new(this, automationId);
-    protected Image<TSelf> Image(string automationId) => new(this, automationId);
-    protected Panel<TSelf> Panel(string automationId) => new(this, automationId);
+    /// <inheritdoc />
+    public IReadOnlyList<IStrideElement> FindElements(Locator locator) => _context.FindElements(locator);
 
-    #endregion
+    #region Keys
 
-    #region Input Helpers
-
+    /// <summary>Presses a key in the game's own input (one frame or more).</summary>
     protected void PressKey(VirtualKey key) => _context.PressKey(key);
+
+    /// <summary>Holds a key down in the game's own input for <paramref name="durationMs"/>.</summary>
     protected void HoldKey(VirtualKey key, int durationMs) => _context.HoldKey(key, durationMs);
-    protected void PressEscape() => PressKey(VirtualKey.Escape);
-    protected void PressEnter() => PressKey(VirtualKey.Enter);
-    protected void PressTab() => PressKey(VirtualKey.Tab);
 
     #endregion
 
-    #region Wait Helpers
+    #region Factory methods
 
-    protected bool WaitFor(Func<bool> condition, int? timeoutMs = null)
-    {
-        var timeout = timeoutMs ?? _context.Timeouts.DefaultWait;
-        return LegacyWaitHelper.WaitFor(condition, timeout, _context.Timeouts.PollingInterval);
-    }
+    // A control declared by a plain string is found by its Name.
+
+    protected Button<TSelf> Button(Locator locator) => new(this, locator);
+    protected Button<TSelf> Button(string automationId) => new(this, automationId);
+    protected ToggleButton<TSelf> ToggleButton(Locator locator) => new(this, locator);
+    protected ToggleButton<TSelf> ToggleButton(string automationId) => new(this, automationId);
+    protected EditText<TSelf> EditText(Locator locator) => new(this, locator);
+    protected EditText<TSelf> EditText(string automationId) => new(this, automationId);
+    protected TextBlock<TSelf> TextBlock(Locator locator) => new(this, locator);
+    protected TextBlock<TSelf> TextBlock(string automationId) => new(this, automationId);
+    protected Slider<TSelf> Slider(Locator locator) => new(this, locator);
+    protected Slider<TSelf> Slider(string automationId) => new(this, automationId);
+    protected ImageElement<TSelf> Image(Locator locator) => new(this, locator);
+    protected ImageElement<TSelf> Image(string automationId) => new(this, automationId);
 
     #endregion
 }

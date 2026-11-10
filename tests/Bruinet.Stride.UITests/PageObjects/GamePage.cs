@@ -6,7 +6,7 @@ namespace Bruinet.Stride.UITests.PageObjects;
 public class GamePage : PageObjectBase<GamePage>
 {
     public override string Name => "Game Page";
-    public override string AutomationId => "HUD";
+    protected override Locator ReadyLocator => Locator.ByAutomationId("HUD");
 
     public GamePage(IStrideTestContext context) : base(context) { }
 

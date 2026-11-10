@@ -121,10 +121,11 @@ public abstract class StrideTestFixtureBase : IDisposable
         if (_driver.Channel == null)
             throw new InvalidOperationException("Failed to establish automation channel");
 
-        _context = new StrideTestContext(_driver.Channel, options);
+        var driver = _driver;
+        _context = new StrideTestContext(driver.Channel, options, () => driver.GameWindowHandle);
 
         // Wait for game to be ready
-        _context.WaitForGameReady(options.StartupTimeoutMs);
+        _context.WaitReady(options.StartupTimeoutMs);
     }
 
     /// <summary>

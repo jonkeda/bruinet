@@ -91,6 +91,13 @@ public sealed class StrideUIHandlerTests
     }
 
     [Fact]
+    public void Find_FromTheRoot_FindsTheRootItself_ByItsName()
+    {
+        Assert.True(State(AutomationCommand.Query("Find", "", "Root")).Exists);
+        Assert.False(State(AutomationCommand.Query("Find", "Rows", "Rows")).Exists);
+    }
+
+    [Fact]
     public void A_Missing_Element_IsAnAnswer_NotAWait()
     {
         var state = State(AutomationCommand.Query("GetState", "Nothing"));

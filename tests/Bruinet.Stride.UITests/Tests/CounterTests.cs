@@ -23,6 +23,8 @@ public class CounterTests : StrideUITestBase
     {
         var mainPage = new MainPage(Context);
         mainPage.AssertLoaded(true);
+        // The game is shared by the suite: start from zero, whatever the tests before left.
+        mainPage.ResetCounter();
 
         mainPage.IncrementCounter();
 

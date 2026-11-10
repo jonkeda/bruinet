@@ -272,4 +272,26 @@ U5 done 2026-11-10. The Stride protocol, for the call model:
 Checks: `StrideUIHandlerTests`, 7 new tests over a Stride UI tree built in the test (no engine); the Stride
 suite unchanged against the rebuilt game (27 of 30, the baseline's 3 failing).
 
-Expected next action: U6, Stride on the call model.
+U6 done 2026-11-10. `Bruinet.Stride` on the call model; decisions:
+
+- The element is a handle by identity (`StrideElement`, `#key`), each read one `GetState`; gone is stale.
+  The driver (`StrideAutomationDriver`) maps a closed or broken pipe to `AppUnavailableException`.
+- The context is ready while the game says so (`IsGameReady`); a page is busy while the game says so
+  (`IsBusy`) or one of its `BusyIndicators` is shown. `NavigateTo`, `NavigateBack`, `Refresh` and
+  `ResetAppState` throw `NotSupportedException` (the old ones did nothing).
+- Controls: `Button`, `ToggleButton` (a click, confirmed), `EditText` (written in the game, no selection),
+  `TextBlock`, `Slider`, `ImageElement`. Dropped: `ComboBox`, `ListBox` (the server never reported items),
+  `CheckBox` (Stride has none), `ProgressBar`, `Panel` (a container). Gestures with no server route throw
+  `RouteUnavailableException`.
+- Server fix found by the suite: a lookup from the root includes the root (the sample's `MainPanel` is it).
+- The context names the game window (`IRecordable`): the `.my` index's open recorder item is done.
+- Suite fixes: the counter test resets first (the game is shared), the movement tests close the settings
+  first and wait for the position to change; old names mapped to the shared ones (`AssertValueWithin`,
+  `AssertChecked(false)`, `AssertTextEmpty(false)`).
+
+Results: new `Bruinet.Stride.Tests` 6 of 6; server tests 11 of 11; UI suite 30 of 30, twice, 2 s each
+(baseline 27 of 30); R0: the game's Increment added 2, `IncrementButton_Click_IncreasesCounter` failed,
+restored. The movement failures of the baseline are gone with the settings closed first: most likely a
+settings test before them left the overlay open, in which the game ignores movement (not proven apart).
+
+Expected next action: U7, `Bruinet.Core.Legacy` deleted.
