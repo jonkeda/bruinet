@@ -1,82 +1,32 @@
-using Bruinet.Core.Calls;
-using Bruinet.Core.Scopes;
+using Bruinet.Core.Collections;
+using Bruinet.Core.Locators;
+using Bruinet.Wpf.Interfaces;
 
 namespace Bruinet.Wpf.Collections;
 
 /// <summary>
-/// One row of a collection, as a scope for the controls inside it. The row stands for one item
-/// (<see cref="Key"/>) and finds its element again by that key on every lookup (design 7). When its
-/// item is gone, a call on the row waits for it, then fails naming it; it never finds another
-/// item's row in its place (R0).
+/// One row of a collection, as a scope for the controls inside it: Core's
+/// <see cref="ItemObjectBase{TContext, TElement, TCollection, TSelf}"/> on the Wpf types.
 /// </summary>
 /// <typeparam name="TSelf">The row's own type.</typeparam>
-public abstract class ItemObjectBase<TSelf> : ObjectBase, IWpfScope<TSelf>
+public abstract class ItemObjectBase<TSelf> : ItemObjectBase<IWpfTestContext, IWpfElement, IWpfCollection, TSelf>, IWpfScope<TSelf>
     where TSelf : ItemObjectBase<TSelf>
 {
-    private readonly IWpfCollection _collection;
-
     /// <summary>The row of <paramref name="key"/>, found at <paramref name="position"/> when it was made.</summary>
     protected ItemObjectBase(IWpfCollection collection, ItemKey key, int position)
+        : base(collection, key, position)
     {
-        _collection = collection ?? throw new ArgumentNullException(nameof(collection));
-        Key = key;
-        Position = position;
-    }
-
-    /// <summary>The item this row stands for.</summary>
-    public ItemKey Key { get; }
-
-    /// <summary>Where the row was among the rows shown when it was made. It may have moved since.</summary>
-    public int Position { get; }
-
-    /// <inheritdoc />
-    public override IWpfTestContext Context => _collection.Context;
-
-    /// <inheritdoc />
-    public abstract TSelf Self { get; }
-
-    /// <inheritdoc />
-    public IWpfPage? Page => _collection.Page;
-
-    /// <inheritdoc />
-    public LocatorStrategy DefaultLocatorStrategy => _collection.DefaultLocatorStrategy;
-
-    /// <inheritdoc />
-    protected override string ScopeName => $"{GetType().Name}({Key})";
-
-    /// <summary>The collection first, then the row of this item (R4).</summary>
-    public ScopeReadiness ProbeReadiness()
-    {
-        if (_collection.ProbeReadiness() is { IsReady: false } collection)
-        {
-            return collection;
-        }
-
-        return _collection.TryGetItemRoot(Key) is null
-            ? new ScopeReadiness(ScopeName, ScopeReadinessState.ItemChanged, $"{Key} is no longer shown in the list")
-            : ScopeReadiness.Ready(ScopeName);
     }
 
     /// <inheritdoc />
-    public bool IsReady() => ProbeReadiness().IsReady;
+    public override IWpfTestContext Context => Collection.Context;
 
     /// <inheritdoc />
-    public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
+    public IWpfPage? Page => Collection.Page;
 
     /// <inheritdoc />
-    public bool WaitReady(int? timeoutMs = null)
-        => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
-
-    /// <summary>Whether the row's item is still shown in the list now.</summary>
-    public bool Exists() => _collection.TryGetItemRoot(Key) != null;
+    protected override IWpfElement? TryFindIn(IWpfElement root, Locator locator) => root.TryFindElement(locator);
 
     /// <inheritdoc />
-    public IWpfElement? TryFindElement(Locator locator) => _collection.TryGetItemRoot(Key)?.TryFindElement(locator);
-
-    /// <inheritdoc />
-    public IWpfElement FindElement(Locator locator) => TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
-
-    /// <inheritdoc />
-    public IReadOnlyList<IWpfElement> FindElements(Locator locator)
-        => _collection.TryGetItemRoot(Key)?.FindElements(locator) ?? [];
+    protected override IReadOnlyList<IWpfElement> FindAllIn(IWpfElement root, Locator locator) => root.FindElements(locator);
 }

@@ -223,6 +223,20 @@ Bruinet.Core.Collections.ItemKeyKind
 Bruinet.Core.Collections.ItemKeyKind.AutomationId = 1 -> Bruinet.Core.Collections.ItemKeyKind
 Bruinet.Core.Collections.ItemKeyKind.Logical = 0 -> Bruinet.Core.Collections.ItemKeyKind
 Bruinet.Core.Collections.ItemKeyKind.Position = 2 -> Bruinet.Core.Collections.ItemKeyKind
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Collection.get -> TCollection
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Exists() -> bool
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.IsReady() -> bool
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.ItemObjectBase(TCollection collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Position.get -> int
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Core.Composition.AssemblyFile
 Bruinet.Core.Composition.TestComposition
 Bruinet.Core.Composition.TestComposition.Catalog.get -> Bruinet.Core.Composition.TestCompositionCatalog!
@@ -786,6 +800,16 @@ Bruinet.Core.Recording.RecordingTarget.Window
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.get -> nint
 Bruinet.Core.Recording.RecordingTarget.Window.Handle.init -> void
 Bruinet.Core.Recording.RecordingTarget.Window.Window(nint Handle) -> void
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.AppRootBase(TContext context) -> void
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.IsReady() -> bool
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Core.Scopes.IElementScope<TElement>
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
@@ -957,6 +981,9 @@ Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.get -> int
 Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.init -> void
 Bruinet.Core.Utilities.MarkdownTableRow.MarkdownTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, int LineNumber) -> void
 Bruinet.Core.Utilities.MarkdownTables
+abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.FindAllIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
+abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Self.get -> TSelf!
+abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.TryFindIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> TElement?
 abstract Bruinet.Core.Scopes.ObjectBase<TContext>.Context.get -> TContext
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
@@ -974,6 +1001,7 @@ const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
 override Bruinet.Core.Calls.Observation.ToString() -> string!
 override Bruinet.Core.Collections.ItemKey.ToString() -> string!
+override Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.ScopeName.get -> string!
 override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.TimeSpan
 override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.TimeSpan value, System.Text.Json.JsonSerializerOptions! options) -> void
 override Bruinet.Core.Configuration.WindowHandleJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> nint?
@@ -984,6 +1012,7 @@ override Bruinet.Core.Locators.Locator.ToString() -> string!
 override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
 override Bruinet.Core.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
 override Bruinet.Core.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
+override sealed Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.Context.get -> TContext
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(Bruinet.Core.Configuration.ArtifactsOptions! artifacts, string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Read(string! runDirectory) -> Bruinet.Core.Artifacts.TestArtifactManifest?

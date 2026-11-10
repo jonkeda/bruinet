@@ -67,7 +67,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerBas
     /// <remarks>
     /// One lookup by the key's selector, as every later read of the row is: reading each row's key
     /// in turn costs a driver call per row, and a long list then outlasts the call's budget.
-    /// The row's <see cref="ItemObjectBase{TSelf}.Position"/> is not looked up, so it is <c>-1</c>.
+    /// The row's <c>Position</c> is not looked up, so it is <c>-1</c>.
     /// </remarks>
     public TItem? TryItem(string key)
     {

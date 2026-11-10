@@ -15,19 +15,8 @@ Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCou
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Html.Collections.IHtmlCollection
 Bruinet.Html.Collections.ItemObjectBase<TSelf>
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.Exists() -> bool
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Html.Collections.IHtmlCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.Position.get -> int
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Context.HtmlTestContextOptions
 Bruinet.Html.Context.HtmlTestContextOptions.BaseUrl.get -> string?
 Bruinet.Html.Context.HtmlTestContextOptions.BaseUrl.set -> void
@@ -450,16 +439,8 @@ Bruinet.Html.ObjectBase
 Bruinet.Html.ObjectBase.ObjectBase() -> void
 Bruinet.Html.Pages.AppRoot
 Bruinet.Html.Pages.AppRoot.AppRoot(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
-Bruinet.Html.Pages.AppRoot.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Html.Pages.AppRoot.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Pages.AppRoot.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Pages.AppRoot.IsReady() -> bool
 Bruinet.Html.Pages.AppRoot.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
-Bruinet.Html.Pages.AppRoot.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Html.Pages.AppRoot.Self.get -> Bruinet.Html.Pages.AppRoot!
-Bruinet.Html.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Html.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Pages.PageObjectBase<TSelf>
 Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
 Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
@@ -510,13 +491,13 @@ Bruinet.Html.Testing.WebAppHostOptions.ReadyPath.init -> void
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.get -> System.TimeSpan
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.init -> void
 abstract Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
-abstract Bruinet.Html.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
 const Bruinet.Html.Pages.PageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
 const Bruinet.Html.Testing.HtmlTestFixtureBase.SettingsFile = "bruinet.html.config.json" -> string!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-override Bruinet.Html.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
+override Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.Html.Interfaces.IHtmlElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
+override Bruinet.Html.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.Html.Interfaces.IHtmlElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 override Bruinet.Html.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
 override Bruinet.Html.Controls.Container.FrameScope<TParent>.Self.get -> Bruinet.Html.Controls.Container.FrameScope<TParent>!
 override Bruinet.Html.Controls.Container.FrameScope<TParent>.TryFindRootElement() -> Bruinet.Html.Interfaces.IHtmlElement?
@@ -532,7 +513,6 @@ override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.SelectByTextC
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.SelectByValueCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? value, int? timeoutMs = null) -> void
 override Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
 override Bruinet.Html.Controls.ViewBase<TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-override Bruinet.Html.Pages.AppRoot.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Html.Controls.ViewBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
