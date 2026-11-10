@@ -439,8 +439,8 @@ Bruinet.Maui.Controls.Container.RefreshView<TParent>.RefreshView(Bruinet.Maui.In
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollBack() -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollForward() -> TSelf!
-Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(Bruinet.Core.Locators.Locator! locator) -> TSelf!
-Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(string! automationId) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(Bruinet.Core.Locators.Locator! locator, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(string! automationId, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Container.ScrollView<TParent>
@@ -902,6 +902,7 @@ Bruinet.Maui.Interfaces.IMauiElement.Text.get -> string?
 Bruinet.Maui.Interfaces.IMauiElement.Toggle() -> void
 Bruinet.Maui.Interfaces.IMauiElement.TryFindActiveDialog() -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.TryFindByScrolling(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Interfaces.IMauiElement.RevealClearOfEdges() -> void
 Bruinet.Maui.Interfaces.IMauiElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Interfaces.IMauiElement.Value.get -> string?
@@ -1304,3 +1305,5 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Br
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
 override Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.AllowsScrollLookup.get -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.IsAnotherAppInFront() -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.ReturnToApp() -> void

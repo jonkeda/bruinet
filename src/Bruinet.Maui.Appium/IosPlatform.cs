@@ -289,11 +289,15 @@ internal sealed class IosPlatform : AppiumPlatform
     public override IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator)
         => driver.FindByScrollingIos(container, locator);
 
+    public override string? AppId(AppiumDriver driver) => CapabilityText(driver, "bundleId");
+
+    public override string? FrontAppId(AppiumDriver driver)
+        => (driver.ExecuteScript("mobile: activeAppInfo") as IDictionary<string, object>)?["bundleId"]?.ToString();
+
     public override void Relaunch(AppiumDriver driver)
     {
         // A session started from an app path has no bundleId capability; the app in front is ours.
-        var bundleId = CapabilityText(driver, "bundleId")
-                       ?? (driver.ExecuteScript("mobile: activeAppInfo") as IDictionary<string, object>)?["bundleId"]?.ToString();
+        var bundleId = AppId(driver) ?? FrontAppId(driver);
         if (string.IsNullOrEmpty(bundleId))
         {
             return;

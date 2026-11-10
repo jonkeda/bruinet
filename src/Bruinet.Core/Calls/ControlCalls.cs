@@ -32,6 +32,12 @@ public interface IControlHost<TElement>
     /// <summary>The scope chain's readiness, one probe (R4).</summary>
     ScopeReadiness ProbeScope();
 
+    /// <summary>
+    /// Whether the scope is missing only because a container in it is absent from a page that is
+    /// there: an element inside it is then absent too. False when the stack cannot tell.
+    /// </summary>
+    bool ScopeIsAbsent() => false;
+
     /// <summary>The element for an attempt: one lookup, and the stack's way to bring it into the tree when it has one.</summary>
     TElement? Locate(AttemptContext attempt);
 
@@ -297,9 +303,18 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
         var find = resolve ?? host.TryFind;
         AssertPolling(caller, timeoutMs, _ =>
         {
-            if (CheckScope() is { } notReady)
+            var readiness = host.ProbeScope();
+            if (!readiness.IsReady)
             {
-                return notReady;
+                // A read-only page without its header actions has no Done either (D11). Only an
+                // answer the absence satisfies passes; anything else keeps the scope's message.
+                if (readiness.State == ScopeReadinessState.MissingRoot && host.ScopeIsAbsent()
+                    && Compare(getActual(null), expected, compare, message, null) is { Kind: ObservationKind.Done } absent)
+                {
+                    return absent;
+                }
+
+                return ScopeGate.Check(readiness)!.Value;
             }
 
             return Compare(getActual(find()), expected, compare, message, null);

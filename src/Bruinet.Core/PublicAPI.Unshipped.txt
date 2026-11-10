@@ -145,6 +145,7 @@ Bruinet.Core.Calls.IControlHost<TElement>.Noun.get -> string!
 Bruinet.Core.Calls.IControlHost<TElement>.OnStale() -> void
 Bruinet.Core.Calls.IControlHost<TElement>.PollingIntervalMs.get -> int
 Bruinet.Core.Calls.IControlHost<TElement>.ProbeScope() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.Core.Calls.IControlHost<TElement>.ScopeIsAbsent() -> bool
 Bruinet.Core.Calls.IControlHost<TElement>.ScrollIntoView(TElement! element, int timeoutMs) -> void
 Bruinet.Core.Calls.IControlHost<TElement>.ScrollKey(TElement! element) -> string!
 Bruinet.Core.Calls.IControlHost<TElement>.TryFind() -> TElement?

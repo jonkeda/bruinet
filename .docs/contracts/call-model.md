@@ -127,3 +127,6 @@ The rules above hold unchanged. Where Appium and UiAutomator2 differ:
   its locator. The action is still not repeated (R0).
 - **UiAutomator2's own idle wait is short** (`waitForIdleTimeout` 500 ms, not 10 s): an animating
   screen is never idle, and the call's poll is what waits (R2).
+- **UiAutomator2's selector wait is short too** (`waitForSelectorTimeout` 100 ms, not 10 s): a read
+  of a stale element makes the server find it again by its locator, and a gone element cost each
+  read 10 s before it reported stale.

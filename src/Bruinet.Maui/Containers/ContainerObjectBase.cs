@@ -22,9 +22,14 @@ namespace Bruinet.Maui.Containers;
 /// <typeparam name="TSelf">The container type itself (self-referencing for fluent returns).</typeparam>
 /// <typeparam name="TSetResult">The scope returned by generated set operations.</typeparam>
 public abstract class RootedScopeBase<TSelf, TSetResult>
-    : ObjectBase, IMauiScope<TSelf>, IControlHost<IMauiElement>, IRootCache
+    : ObjectBase, IMauiScope<TSelf>, IControlHost<IMauiElement>, IRootCache, IAbsentScope
     where TSelf : RootedScopeBase<TSelf, TSetResult>
 {
+    bool IAbsentScope.IsAbsent() => IsAbsentScope();
+
+    /// <summary>Whether this scope's root is absent from a parent chain that is there; never for a page.</summary>
+    private protected virtual bool IsAbsentScope() => false;
+
     private IMauiElement? _cachedRoot;
     private bool _rootCacheValid;
 
@@ -745,6 +750,22 @@ public abstract class ContainerObjectBase<TParent, TSelf>
     protected override ScopeReadiness ProbeParentReadiness()
         => AsksParent ? _parentScope.ProbeReadiness() : ContentReady();
 
+    private protected override bool IsAbsentScope()
+    {
+        if (!AsksParent)
+        {
+            return false;
+        }
+
+        var parent = _parentScope.ProbeReadiness();
+        if (parent.IsReady)
+        {
+            return TryGetContainerRoot() is null;
+        }
+
+        return parent.State == ScopeReadinessState.MissingRoot && _parentScope is IAbsentScope absent && absent.IsAbsent();
+    }
+
     protected override TParent SetResult => Parent;
 
     // Element-object members, so a container can declare a control capability
@@ -756,4 +777,10 @@ public abstract class ContainerObjectBase<TParent, TSelf>
     /// <summary>Reads a named attribute from the container's root, in the platform's own vocabulary, now.</summary>
     public string? GetAttribute(string name, int? timeoutMs = null)
         => TryGetContainerRoot()?.GetAttribute(name);
+}
+
+/// <summary>A scope that can tell it is absent from a page that is there (D11).</summary>
+internal interface IAbsentScope
+{
+    bool IsAbsent();
 }

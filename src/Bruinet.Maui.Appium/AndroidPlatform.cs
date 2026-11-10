@@ -178,6 +178,11 @@ internal sealed class AndroidPlatform : AppiumPlatform
     public override IMauiElement? FindByScrolling(AppiumMauiDriver driver, IMauiElement? container, Locator locator)
         => driver.FindByScrollingAndroid(container, locator);
 
+    public override string? AppId(AppiumDriver driver) => CapabilityText(driver, "appPackage");
+
+    public override string? FrontAppId(AppiumDriver driver)
+        => driver.ExecuteScript("mobile: getCurrentPackage")?.ToString();
+
     public override void Relaunch(AppiumDriver driver)
     {
         if (CapabilityText(driver, "appPackage") is not { } package)

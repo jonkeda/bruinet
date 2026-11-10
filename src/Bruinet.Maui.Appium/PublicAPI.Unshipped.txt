@@ -95,6 +95,9 @@ Bruinet.Maui.Appium.AppiumMauiElement.Text.get -> string?
 Bruinet.Maui.Appium.AppiumMauiElement.Toggle() -> void
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindActiveDialog() -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindByScrolling(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
+Bruinet.Maui.Appium.AppiumMauiElement.RevealClearOfEdges() -> void
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Appium.AppiumMauiElement.Visible.get -> bool
+Bruinet.Maui.Appium.AppiumMauiDriver.IsAnotherAppInFront() -> bool
+Bruinet.Maui.Appium.AppiumMauiDriver.ReturnToApp() -> void

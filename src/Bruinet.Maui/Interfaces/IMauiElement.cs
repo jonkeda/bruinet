@@ -336,6 +336,14 @@ public interface IMauiElement
     IMauiElement? TryFindByScrolling(Locator locator) => null;
 
     /// <summary>
+    /// Moves this element clear of the screen edges when it rests there, for a caller that asked to
+    /// see it. A row at the bottom edge can show a sliver whose children are not in the tree.
+    /// </summary>
+    void RevealClearOfEdges()
+    {
+    }
+
+    /// <summary>
     /// Brings a named descendant into view, without animation.
     /// </summary>
     /// <param name="automationId">The descendant to reveal.</param>

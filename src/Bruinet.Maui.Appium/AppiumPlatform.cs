@@ -144,6 +144,12 @@ internal abstract class AppiumPlatform
     /// </summary>
     public abstract void Relaunch(AppiumDriver driver);
 
+    /// <summary>The app under test as the session names it (package or bundle id), or null.</summary>
+    public abstract string? AppId(AppiumDriver driver);
+
+    /// <summary>The app in front (package or bundle id), or null when it cannot be told.</summary>
+    public abstract string? FrontAppId(AppiumDriver driver);
+
     /// <summary>One step back, the way a user of the platform would take it.</summary>
     public abstract void GoBack(AppiumDriver driver);
 

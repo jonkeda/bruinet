@@ -103,6 +103,8 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
 
     ScopeReadiness IControlHost<IMauiElement>.ProbeScope() => _mauiScope.ProbeReadiness();
 
+    bool IControlHost<IMauiElement>.ScopeIsAbsent() => _mauiScope is Containers.IAbsentScope absent && absent.IsAbsent();
+
     IMauiElement? IControlHost<IMauiElement>.Locate(AttemptContext attempt) => Locate(attempt);
 
     IMauiElement? IControlHost<IMauiElement>.TryFind() => TryFindElement();

@@ -211,6 +211,30 @@ public sealed class PageScopingTests
         context.Verify(c => c.FindElement(It.Is<Locator>(l => l.Value == "Accept")), Times.Never);
     }
 
+    [Fact]
+    public void AbsenceAssertion_PassesWhenItsContainerIsAbsentFromAPresentPage()
+    {
+        var context = CreateContext();
+        var pageRoot = CreateUsableElement();
+        context.Setup(c => c.FindElements(It.Is<Locator>(l => l.Value == "ScopedPage")))
+            .Returns([pageRoot.Object]);
+
+        var page = new ScopedPage(context.Object);
+
+        page.Actions.Done.AssertExists(false, timeoutMs: 100);
+        Assert.Throws<ScopeNotReadyException>(() => page.Actions.Done.AssertExists(true, timeoutMs: 100));
+    }
+
+    [Fact]
+    public void AbsenceAssertion_StillFailsWhenThePageIsMissing()
+    {
+        var context = CreateContext();
+        context.Setup(c => c.FindElements(It.IsAny<Locator>())).Returns([]);
+        var page = new ScopedPage(context.Object);
+
+        Assert.Throws<ScopeNotReadyException>(() => page.Actions.Done.AssertExists(false, timeoutMs: 100));
+    }
+
     private static Mock<IMauiTestContext> CreateContext()
     {
         var context = new Mock<IMauiTestContext>();
@@ -239,6 +263,13 @@ public sealed class PageScopingTests
         public override string Name => "ScopedPage";
 
         public Button<ScopedPage> Save => new(this, "Save");
+
+        public HeaderActions Actions => new(this);
+    }
+
+    private sealed class HeaderActions(ScopedPage page) : ContainerObjectBase<ScopedPage, HeaderActions>(page, "HeaderActions")
+    {
+        public Button<HeaderActions> Done => new(this, "Done");
     }
 
     private sealed class RequiredBusyPage(IMauiTestContext context) : PageObjectBase<RequiredBusyPage>(context)

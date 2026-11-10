@@ -43,7 +43,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
         _platform = platform;
         _appium = AppiumPlatform.For(platform);
+        // A new session starts with the app in front, so the front app is ours when no capability names it.
+        _appId = _appium.AppId(driver) ?? AppiumErrors.Live(() => _appium.FrontAppId(driver));
     }
+
+    private readonly string? _appId;
 
     /// <summary>What this session does differently on its platform.</summary>
     internal AppiumPlatform Appium => _appium;
@@ -71,8 +75,17 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         var by = _appium.ToBy(locator);
 
-        return AppiumErrors.Live(() => FindAll(by, null));
+        var found = AppiumErrors.Live(() => FindAll(by, null));
+        if (found.Count > 0)
+        {
+            ScrollMemory.Seen(locator);
+        }
+
+        return found;
     }
+
+    /// <summary>Views found and vertical moves, for the order of the Android scroll search (D12).</summary>
+    internal ScrollMemory ScrollMemory { get; } = new();
 
     #region Finds that bring facts
 
@@ -472,6 +485,23 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
     private void ResetApp() => _appium.Relaunch(_driver);
 
+    /// <inheritdoc />
+    public bool IsAnotherAppInFront()
+        => _appId is { } appId
+           && AppiumErrors.Live(() => _appium.FrontAppId(_driver)) is { Length: > 0 } front
+           && !string.Equals(front, appId, StringComparison.Ordinal);
+
+    /// <inheritdoc />
+    public void ReturnToApp()
+    {
+        if (_appId is not { } appId)
+            return;
+
+        // Handles found before the other app came in front may be gone.
+        Bruinet.Core.Calls.AttemptMemo.Forget();
+        AppiumErrors.Live(() => _driver.ActivateApp(appId));
+    }
+
     #endregion
 
     #region Dialogs
@@ -673,6 +703,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         if (FindOnScreen(locator) is { } already)
         {
+            ScrollMemory.Seen(locator);
             return already;
         }
 
@@ -688,13 +719,19 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         var gesture = new Dictionary<string, object> { { "elementId", scroller.Id } };
         var horizontal = IsHorizontalScroller(scroller);
         var strip = horizontal ? TryGetResourceId(container) ?? string.Empty : null;
-        var directions = !horizontal ? ScrollDirections
+        var directions = !horizontal ? ScrollMemory.Directions(locator)
             : _lastSideDirection.TryGetValue(strip!, out var last) && last == "right" ? ["left", "right"] : SideScrollDirections;
 
         var found = ScrollUntil(gesture, directions, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false,
             scroller.Rect, horizontal ? () => ScrollPosition(scroller) : null,
             horizontal ? direction => _lastSideDirection[strip!] = direction : null);
-        return found ? ReResolveAfterScrolling(locator) ?? FindOnScreen(locator) : null;
+        if (!found)
+        {
+            return null;
+        }
+
+        ScrollMemory.Seen(locator);
+        return ReResolveAfterScrolling(locator) ?? FindOnScreen(locator);
     }
 
     /// <summary>
@@ -808,7 +845,13 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 }
 
                 swiped = true;
-                if (found())
+                var hit = found();
+                if (more || hit)
+                {
+                    ScrollMemory.Moved(direction);
+                }
+
+                if (hit)
                 {
                     foundIn?.Invoke(direction);
                     return true;
