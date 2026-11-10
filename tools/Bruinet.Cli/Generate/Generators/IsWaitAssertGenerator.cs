@@ -219,8 +219,16 @@ public class IsWaitAssertGenerator : IMemberGenerator
 
         // The comparison variants (Wait{P}Contains, Assert{P}Empty, ...) all carry the same
         // stem, so anything that would clash with one already clashes with these three.
-        return [queryPrefix + propertyName, "Wait" + propertyName, "Assert" + propertyName];
+        var query = queryPrefix == _methodPrefix ? StateQueryName(propertyName) : queryPrefix + propertyName;
+        return [query, "Wait" + propertyName, "Assert" + propertyName];
     }
+
+    /// <summary>
+    /// The query an <c>Is*Core</c> state generates: <c>Is{P}</c>, except <c>Exists</c>, which reads
+    /// as a sentence beside <c>WaitExists</c> and <c>AssertExists</c> (public API review, proposal 8, rule 4).
+    /// </summary>
+    internal static string StateQueryName(string propertyName)
+        => propertyName == "Exists" ? "Exists" : "Is" + propertyName;
 
     /// <summary>
     /// Generates the query/Wait/Assert trio from a single Is*Core or Get*Core method.
@@ -242,7 +250,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         var writer = new CsWriter(0);
 
         // Write region start
-        writer.WriteLine($"#region {propertyName} (Is{propertyName} / Wait{propertyName} / Assert{propertyName})");
+        writer.WriteLine($"#region {propertyName} ({StateQueryName(propertyName)} / Wait{propertyName} / Assert{propertyName})");
         writer.WriteLine();
 
         // Generate Is*() method
@@ -551,7 +559,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         return ", " + string.Join(", ", coreMethod.Parameters.Select(p => p.ParameterName));
     }
 
-    #region IsExists / WaitExists / AssertExists
+    #region Exists / WaitExists / AssertExists
 
     /// <summary>
     /// Generates public bool Is{PropertyName}() method.
@@ -561,7 +569,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         var parameters = string.Join(", ", coreMethod.Parameters.Select(p => $"{p.TypeName} {p.ParameterName}"));
 
         writer.WriteLine(GeneratedMember.Attribute);
-        writer.WriteLine($"public {coreMethod.ReturnType} Is{propertyName}({parameters})");
+        writer.WriteLine($"public {coreMethod.ReturnType} {StateQueryName(propertyName)}({parameters})");
         writer.Open();
         writer.WriteLine($"return {coreMethod.MethodName}(TryFindElement(){BuildLambdaArguments(coreMethod)}) == true;");
         writer.Close();
