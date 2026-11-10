@@ -241,7 +241,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
     }
 
     /// <inheritdoc />
-    /// <exception cref="AssertionException">The title did not match within the timeout.</exception>
+    /// <exception cref="ControlAssertionException">The title did not match within the timeout.</exception>
     public void AssertTitle(string? expected, string? message = null, int? timeoutMs = null)
     {
         if (expected == null)
@@ -253,7 +253,7 @@ public abstract class PageObjectBase<TSelf> : RootedScopeBase<TSelf, TSelf>, IMa
             _ =>
             {
                 var actual = GetTitle();
-                return new AssertionException(
+                return new ControlAssertionException(
                     message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
             });
     }

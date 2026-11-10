@@ -72,9 +72,9 @@ public partial class Player<TScope> : ComponentObjectBase<TScope, Player<TScope>
     public void GetterShortcut_ForwardsDeclaredComparisons()
     {
         var generated = Flat(Generate(
-            "[GenerateComparisons(Comparison.Equals | Comparison.GreaterThan)]\n" +
+            "[GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan)]\n" +
             "protected double? GetProgressShortcut() => ProgressSlider.GetValue();\n" +
-            "[GenerateComparisons(Comparison.Equals | Comparison.Empty)]\n" +
+            "[GenerateComparisons(Comparison.EqualTo | Comparison.Empty)]\n" +
             "protected string? GetStatusShortcut() => StatusLabel.GetText();"));
 
         Assert.Contains(
@@ -198,7 +198,7 @@ public partial class Player<TScope> : ComponentObjectBase<TScope, Player<TScope>
         var code = $@"namespace T;
 public abstract class S<TScope> where TScope : IScope<TScope>
 {{
-    [GenerateComparisons(Comparison.Equals | Comparison.{comparison})]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.{comparison})]
     protected virtual double? GetValueCore(IMauiElement? element) => null;
 }}";
         var generated = Flat(ControlObjectGenerator.CreateDefault()
@@ -217,7 +217,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
         var code = @"namespace T;
 public abstract class S<TScope> where TScope : IScope<TScope>
 {
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan)]
     protected virtual double? GetValueCore(IMauiElement? element) => null;
 }";
         var generated = ControlObjectGenerator.CreateDefault()

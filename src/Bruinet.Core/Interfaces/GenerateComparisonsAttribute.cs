@@ -8,7 +8,7 @@ namespace Bruinet.Core.Interfaces;
 public enum Comparison
 {
     /// <summary>Exact equality — <c>AssertText</c>, <c>WaitText</c>.</summary>
-    Equals = 1,
+    EqualTo = 1,
 
     /// <summary>Substring containment — <c>AssertTextContains</c>, <c>WaitTextContains</c>.</summary>
     Contains = 2,
@@ -26,7 +26,7 @@ public enum Comparison
     /// Element-wise sequence equality, order significant — <c>AssertItemTexts</c>.
     /// </summary>
     /// <remarks>
-    /// For a <c>Get*Core</c> returning a collection. <see cref="Equals"/> would compare such a
+    /// For a <c>Get*Core</c> returning a collection. <see cref="EqualTo"/> would compare such a
     /// return value by reference, which no caller can satisfy; this compares contents.
     /// </remarks>
     SequenceEquals = 32,
@@ -68,12 +68,12 @@ public enum Comparison
 
 /// <summary>
 /// Declares which comparison variants Bruinet.Generator should emit for a
-/// <c>Get*Core</c> method. Without this attribute only <see cref="Comparison.Equals"/>
+/// <c>Get*Core</c> method. Without this attribute only <see cref="Comparison.EqualTo"/>
 /// is generated.
 /// </summary>
 /// <example>
 /// <code>
-/// [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+/// [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
 /// protected virtual string? GetTextCore(IMauiElement element) => element.Text;
 /// </code>
 /// </example>

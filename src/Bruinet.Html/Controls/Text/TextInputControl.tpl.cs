@@ -32,7 +32,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
 
     /// <summary>The input's value.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.Empty)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.Empty)]
     protected virtual string? GetValueCore(IHtmlElement element)
     {
         return element.InputValue;

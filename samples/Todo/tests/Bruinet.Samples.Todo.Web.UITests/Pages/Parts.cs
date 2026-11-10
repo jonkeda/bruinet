@@ -114,7 +114,7 @@ public sealed class TodoListState(IHtmlScope<TodoListPage> page)
     {
         if (!WaitShowing(state, expected, timeoutMs))
         {
-            throw new AssertionException($"Expected the list {(expected ? "to show" : "not to show")} {state}.");
+            throw new ControlAssertionException($"Expected the list {(expected ? "to show" : "not to show")} {state}.");
         }
 
         return this;

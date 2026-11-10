@@ -23,7 +23,7 @@ public partial class ProgressControl<TScope> : ViewBase<TScope>
 
     /// <summary>The progress value; 0 when it has none.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetValueCore(IHtmlElement element)
     {
@@ -39,7 +39,7 @@ public partial class ProgressControl<TScope> : ViewBase<TScope>
 
     /// <summary>The value as a percentage of the maximum.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetPercentageCore(IHtmlElement element)
     {

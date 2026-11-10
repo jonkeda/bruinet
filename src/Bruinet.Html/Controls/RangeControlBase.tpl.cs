@@ -27,7 +27,7 @@ public abstract partial class RangeControlBase<TScope> : FocusableControlBase<TS
 
     /// <summary>The input's value; null when it is empty or not a number.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetValueCore(IHtmlElement? element)
         => Parse(element?.InputValue);

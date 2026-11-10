@@ -357,7 +357,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     /// <summary>The control's text.</summary>
     /// <param name="element">The pre-found view.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.StartsWith
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.StartsWith
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(INativeAndroidElement element)
     {
@@ -377,7 +377,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     /// <summary>The control's content description: what TalkBack reads for it.</summary>
     /// <param name="element">The pre-found view.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetContentDescriptionCore(INativeAndroidElement element)
     {
         return element.ContentDescription;

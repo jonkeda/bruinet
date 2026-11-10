@@ -56,7 +56,7 @@ public partial class AvatarView<TScope> : ComponentObjectBase<TScope, AvatarView
     #region Shortcuts
 
     /// <summary>The initials the avatar shows; null while an image replaces them.</summary>
-    [GenerateComparisons(Comparison.Equals | Comparison.Empty)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Empty)]
     protected string? GetInitialsShortcut() => Initials.GetInitials();
 
     /// <summary>

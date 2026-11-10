@@ -152,7 +152,7 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
         {
             return Observation.NotReady(error, KeyOf(element));
         }
-        catch (AssertionException error)
+        catch (ControlAssertionException error)
         {
             return Observation.Mismatch(error, KeyOf(element));
         }
@@ -324,7 +324,7 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
     private static Observation Compare<T>(T? actual, T? expected, Func<T?, T?, bool> compare, string? message, string? key)
         => compare(actual, expected)
             ? Observation.Done()
-            : Observation.Mismatch(new AssertionException(message ?? "Assert exception", expected, actual), key);
+            : Observation.Mismatch(new ControlAssertionException(message ?? "Assert exception", expected, actual), key);
 
     private void AssertPolling(string caller, int? timeoutMs, Func<AttemptContext, Observation> attemptOnce)
     {

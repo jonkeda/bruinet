@@ -111,16 +111,16 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     protected MediaElement<TScope> PauseShortcut(int? timeoutMs = null) => PlayPauseButton.Pause(timeoutMs);
 
     /// <summary>Playback progress, 0 to 100, from the seek slider.</summary>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast)]
     protected double? GetProgressShortcut() => ProgressSlider.GetValue();
 
     /// <summary>Elapsed time in seconds; null while playing or before the media opens.</summary>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected double? GetElapsedShortcut() => TimeElapsedLabel.GetSeconds();
 
     /// <summary>Remaining time in seconds; null while playing or before the media opens.</summary>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected double? GetRemainingShortcut() => TimeRemainingLabel.GetSeconds();
 

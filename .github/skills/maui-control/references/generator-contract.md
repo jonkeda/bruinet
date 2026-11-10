@@ -103,7 +103,7 @@ A `Get*Core` emits equality only. Add `[GenerateComparisons(...)]` (from
 `Bruinet.Core.Interfaces`) for more:
 
 ```csharp
-[GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.Empty)]
+[GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.Empty)]
 protected virtual string? GetTextCore(IMauiElement element) => element.Text;
 // AssertText, AssertTextContains, AssertTextEmpty, and the matching Wait* members
 ```

@@ -142,7 +142,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
         var code = @"namespace T;
 public abstract class S<TScope> where TScope : IScope<TScope>
 {
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.StartsWith)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.StartsWith)]
     protected virtual string? GetTextCore(IMauiElement element) => null;
 }";
         var generated = GenerateAll(code);
@@ -161,7 +161,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
         var code = @"namespace T;
 public abstract class S<TScope> where TScope : IScope<TScope>
 {
-    [GenerateComparisons(Comparison.Equals | Comparison.Empty)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Empty)]
     protected virtual string? GetTextCore(IMauiElement element) => null;
 }";
         var generated = GenerateAll(code);

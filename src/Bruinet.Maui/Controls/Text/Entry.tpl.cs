@@ -27,7 +27,7 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     /// </summary>
     /// <param name="element">The pre-found element (may be null).</param>
     /// <returns>The element text, or null if element is null.</returns>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.StartsWith
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.StartsWith
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(IMauiElement? element)
     {

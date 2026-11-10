@@ -26,7 +26,7 @@ public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TS
 
     /// <summary>The value; null without the RangeValue pattern.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetValueCore(IWpfElement? element)
         => element?.RangeValue;

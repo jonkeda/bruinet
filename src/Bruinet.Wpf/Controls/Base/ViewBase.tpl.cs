@@ -334,7 +334,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     /// <summary>The control's text.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.StartsWith
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.StartsWith
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(IWpfElement element)
     {
@@ -354,7 +354,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     /// <summary>The control's help text: its tooltip or placeholder, as UI Automation reads it.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetHelpTextCore(IWpfElement element)
     {
         return element.HelpText;

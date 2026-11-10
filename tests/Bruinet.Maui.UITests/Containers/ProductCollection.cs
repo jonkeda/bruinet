@@ -86,7 +86,7 @@ public class ProductCollection : CollectionObjectBase<GridCollectionDemoPage, Pr
     {
         if (!WaitLogicalCount(expected, timeoutMs))
         {
-            throw new AssertionException(
+            throw new ControlAssertionException(
                 message ?? $"Expected logical count {expected} but the label reported {GetLogicalCount()}.");
         }
 

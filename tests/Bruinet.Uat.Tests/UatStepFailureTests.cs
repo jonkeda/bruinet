@@ -9,7 +9,7 @@ public sealed class UatStepFailureTests
 {
     public static TheoryData<Exception, string> Failures => new()
     {
-        { new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText")), "assertion" },
+        { new ControlAssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText")), "assertion" },
         { Thrown(() => Assert.Fail("The runner counted 1 times, not 5.")), "assertion" },
         { new ElementNotFoundException("Not found: #save."), "locator-not-found" },
         { new WaitTimeoutException("Waited for Save.", 5000, "Save shown"), "timeout" },
@@ -19,7 +19,7 @@ public sealed class UatStepFailureTests
         { new AppUnavailableException("The app is not running."), "app-unavailable" },
         { Thrown(() => _ = int.Parse("seven", CultureInfo.InvariantCulture)), "app-exception" },
         { new InvalidOperationException("Something inside."), "error" },
-        { new InvalidOperationException("Failed to run 'Click' on control 'Save'.", new AssertionException("Expected it enabled.")), "assertion" },
+        { new InvalidOperationException("Failed to run 'Click' on control 'Save'.", new ControlAssertionException("Expected it enabled.")), "assertion" },
         { Thrown(() => throw new FormatException("Not a date.")), "app-exception" },
     };
 
@@ -38,7 +38,7 @@ public sealed class UatStepFailureTests
     [Fact]
     public void TheLocator_IsTheExceptionsOwn_ElseTheOneItsMessageNames()
     {
-        Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText"))]));
+        Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new ControlAssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText"))]));
         Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new InvalidOperationException("Failed to run 'AssertRowStatus' on control 'Todos': Expected Text to be 'Done'. Locator: AutomationId:StatusText\r\nActual: 'Overdue'.")]));
         Assert.Null(UatStepFailure.Locate([new FormatException("Not a date.")]));
     }

@@ -99,7 +99,7 @@ public class NavMenuControlTests
     [Fact]
     public void AssertItemCount_WhenMismatch_Throws()
     {
-        Assert.Throws<AssertionException>(() => _page.TestNav.AssertItemCount(5));
+        Assert.Throws<ControlAssertionException>(() => _page.TestNav.AssertItemCount(5));
     }
 
     [Fact]
@@ -111,7 +111,7 @@ public class NavMenuControlTests
     [Fact]
     public void AssertItemsHasItem_WhenNotExists_Throws()
     {
-        Assert.Throws<AssertionException>(() => _page.TestNav.AssertItemsHasItem("Missing", timeoutMs: 0));
+        Assert.Throws<ControlAssertionException>(() => _page.TestNav.AssertItemsHasItem("Missing", timeoutMs: 0));
     }
 
     [Fact]

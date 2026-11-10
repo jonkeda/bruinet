@@ -66,11 +66,11 @@ public partial class TodoStatus<TScope> : ComponentObjectBase<TScope, TodoStatus
     #region Shortcuts
 
     /// <summary>The status name shown: Open, In progress, Done or Overdue.</summary>
-    [GenerateComparisons(Comparison.Equals)]
+    [GenerateComparisons(Comparison.EqualTo)]
     protected string? GetStatusShortcut() => Text.GetText();
 
     /// <summary>The glyph shown.</summary>
-    [GenerateComparisons(Comparison.Equals)]
+    [GenerateComparisons(Comparison.EqualTo)]
     protected string? GetGlyphShortcut() => Glyph.GetText();
 
     /// <summary>Whether the Next button is shown, which is whether the status can be changed here.</summary>

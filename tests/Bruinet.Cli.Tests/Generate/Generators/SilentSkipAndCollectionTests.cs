@@ -157,7 +157,7 @@ public class SilentSkipAndCollectionTests
     {
         var code = GenerateAll(Wrap(
             """
-            [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+            [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
                 protected virtual string? GetTextCore(IMauiElement element) => null;
             """));
 

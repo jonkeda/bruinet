@@ -46,7 +46,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf>
     /// Reads the item's caption: its text, or failing that its accessibility name.
     /// </summary>
     /// <param name="element">The item's root element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.Empty)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.Empty)]
     protected virtual string? GetTextCore(IMauiElement element)
     {
         var text = element.Text;

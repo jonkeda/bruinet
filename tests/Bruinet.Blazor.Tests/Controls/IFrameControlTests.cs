@@ -94,7 +94,7 @@ public class IFrameControlTests
     public void AssertSource_WhenMismatch_Throws()
     {
         MockHtmlFactory.SetupDomAttribute(_mockElement, "src", "other.html");
-        Assert.Throws<AssertionException>(() => _page.TestIFrame.AssertSource("frame.html"));
+        Assert.Throws<ControlAssertionException>(() => _page.TestIFrame.AssertSource("frame.html"));
     }
 
     [Fact]

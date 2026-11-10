@@ -113,14 +113,14 @@ public abstract class ContainerObjectBase<TParent, TScope> : ObjectBase, INative
     public TScope AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null)
         => WaitRoot(expected, root => root != null, timeoutMs, nameof(AssertExists))
             ? Self
-            : throw new AssertionException(message
+            : throw new ControlAssertionException(message
                 ?? $"Expected container {(expected == true ? "to exist" : "not to exist")}. Locator: {_locator}");
 
     /// <summary>Asserts the container's visibility, returning the container so a chain stays inside it.</summary>
     public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)
         => WaitRoot(expected, root => root?.Visible == true, timeoutMs, nameof(AssertVisible))
             ? Self
-            : throw new AssertionException(message ?? $"Expected container visibility '{expected}'. Locator: {_locator}");
+            : throw new ControlAssertionException(message ?? $"Expected container visibility '{expected}'. Locator: {_locator}");
 
     // One call (R1): each attempt asks the parent first (R4), then reads the root once.
     private bool WaitRoot(bool? expected, Func<INativeAndroidElement?, bool> state, int? timeoutMs, string caller)

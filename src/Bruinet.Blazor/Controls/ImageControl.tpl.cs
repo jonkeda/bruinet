@@ -16,7 +16,7 @@ public partial class ImageControl<TScope> : ClickableControlBase<TScope>
 
     /// <summary>The image's <c>src</c>.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetSourceCore(IHtmlElement element) => element.GetDomAttribute("src");
 
     /// <summary>The image's <c>alt</c> text.</summary>

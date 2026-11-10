@@ -10,7 +10,7 @@ namespace Bruinet.Core.Exceptions;
 /// property only, so a failure said what was expected and never what was found, and the value the
 /// framework had already read had to be rediscovered by hand before the failure meant anything.
 /// </remarks>
-public class AssertionException : BruinetException
+public class ControlAssertionException : BruinetException
 {
     /// <summary>The value the assertion required.</summary>
     public object? Expected { get; }
@@ -21,16 +21,16 @@ public class AssertionException : BruinetException
     /// <summary>The locator of the control asserted on, when the caller supplied one.</summary>
     public Locator? Locator { get; }
 
-    public AssertionException(string message) : base(message) { }
+    public ControlAssertionException(string message) : base(message) { }
 
-    public AssertionException(string message, object? expected, object? actual)
+    public ControlAssertionException(string message, object? expected, object? actual)
         : base(Describe(message, actual, null))
     {
         Expected = expected;
         Actual = actual;
     }
 
-    public AssertionException(string message, object? expected, object? actual, Locator locator)
+    public ControlAssertionException(string message, object? expected, object? actual, Locator locator)
         : base(Describe(message, actual, locator?.ToString()))
     {
         Expected = expected;
@@ -38,7 +38,7 @@ public class AssertionException : BruinetException
         Locator = locator;
     }
 
-    public AssertionException(string message, Exception innerException)
+    public ControlAssertionException(string message, Exception innerException)
         : base(message, innerException) { }
 
     /// <summary>

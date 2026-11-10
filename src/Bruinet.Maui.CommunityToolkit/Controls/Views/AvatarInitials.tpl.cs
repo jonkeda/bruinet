@@ -42,7 +42,7 @@ public partial class AvatarInitials<TScope> : Label<TScope>
     /// <param name="element">The pre-found element, or null when there is none.</param>
     /// <returns>The initials, or null when none are shown.</returns>
     [AbsenceTolerant]
-    [GenerateComparisons(Comparison.Equals | Comparison.Empty)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Empty)]
     protected virtual string? GetInitialsCore(IMauiElement? element)
         => element?.Visible == true ? element.Text : null;
 

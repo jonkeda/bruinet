@@ -177,7 +177,7 @@ public class ScreenshotService : IScreenshotService
     {
         return ex switch
         {
-            AssertionException => ("assertion_failure", ScreenshotReason.AssertionFailure),
+            ControlAssertionException => ("assertion_failure", ScreenshotReason.AssertionFailure),
             ElementNotFoundException => ("element_not_found", ScreenshotReason.ElementNotFound),
             WaitTimeoutException => ("timeout", ScreenshotReason.Timeout),
             TimeoutException => ("timeout", ScreenshotReason.Timeout),

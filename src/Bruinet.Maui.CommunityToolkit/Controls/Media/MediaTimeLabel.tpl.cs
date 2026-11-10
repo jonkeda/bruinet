@@ -52,7 +52,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
     /// </summary>
     /// <param name="element">The pre-found element.</param>
     /// <returns>The seconds, or null while the readout shows no clock.</returns>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetSecondsCore(IMauiElement? element)
     {

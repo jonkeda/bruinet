@@ -363,7 +363,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     /// <summary>The control's text.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.StartsWith
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.StartsWith
         | Comparison.EndsWith | Comparison.Empty)]
     protected virtual string? GetTextCore(IHtmlElement element)
     {

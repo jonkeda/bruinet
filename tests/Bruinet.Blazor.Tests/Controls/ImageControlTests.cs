@@ -69,7 +69,7 @@ public class ImageControlTests
     public void AssertSource_WhenMismatch_Throws()
     {
         MockHtmlFactory.SetupDomAttribute(_mockElement, "src", "other.png");
-        Assert.Throws<AssertionException>(() => _page.TestImage.AssertSource("image.png"));
+        Assert.Throws<ControlAssertionException>(() => _page.TestImage.AssertSource("image.png"));
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public class ImageControlTests
     public void AssertAltText_WhenMismatch_Throws()
     {
         MockHtmlFactory.SetupDomAttribute(_mockElement, "alt", "Wrong alt");
-        Assert.Throws<AssertionException>(() => _page.TestImage.AssertAltText("Nice image"));
+        Assert.Throws<ControlAssertionException>(() => _page.TestImage.AssertAltText("Nice image"));
     }
 
     [Fact]

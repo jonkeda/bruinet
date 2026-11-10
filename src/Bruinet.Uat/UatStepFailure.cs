@@ -54,7 +54,7 @@ internal static partial class UatStepFailure
             ["binding"] = step.Invocation.CommandId,
         };
 
-        if (exceptions.OfType<AssertionException>().FirstOrDefault() is { } assertion)
+        if (exceptions.OfType<ControlAssertionException>().FirstOrDefault() is { } assertion)
         {
             node["expected"] = Kept(Text(assertion.Expected));
             node["actual"] = Kept(Text(assertion.Actual));
@@ -89,7 +89,7 @@ internal static partial class UatStepFailure
             return bound ? "error" : "bind";
         }
 
-        if (exceptions.Any(exception => exception is AssertionException || exception.GetType().FullName?.StartsWith("Xunit.", StringComparison.Ordinal) == true))
+        if (exceptions.Any(exception => exception is ControlAssertionException || exception.GetType().FullName?.StartsWith("Xunit.", StringComparison.Ordinal) == true))
         {
             return "assertion";
         }
@@ -129,7 +129,7 @@ internal static partial class UatStepFailure
 
     private static string? Locator(Exception exception) => exception switch
     {
-        AssertionException assertion => assertion.Locator?.ToString(),
+        ControlAssertionException assertion => assertion.Locator?.ToString(),
         ElementNotFoundException notFound => notFound.Locator?.ToString(),
         ElementNotReadyException notReady => notReady.Locator.ToString(),
         StaleElementException stale => stale.Locator?.ToString(),

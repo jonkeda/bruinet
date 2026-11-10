@@ -53,7 +53,7 @@ public sealed class TodoList : CollectionObjectBase<TodoListPage, TodoList, Todo
     {
         if (!WaitRow(title, present, timeoutMs))
         {
-            throw new AssertionException(
+            throw new ControlAssertionException(
                 $"Expected {(present ? "a" : "no")} row titled '{title}' in '{Locator.Value}'. "
                 + $"Rows shown: {string.Join(", ", Titles().Select(shown => $"'{shown}'"))}.");
         }
@@ -125,7 +125,7 @@ public sealed class TodoList : CollectionObjectBase<TodoListPage, TodoList, Todo
     {
         if (!RunWait(() => FindItem(row => TryReadTitle(row) == title)?.Pending.IsShown() == expected, timeoutMs ?? TestConstants.PageTimeoutMs))
         {
-            throw new AssertionException(
+            throw new ControlAssertionException(
                 $"Expected the row titled '{title}' in '{Locator.Value}' to {(expected ? "show" : "not show")} the pending marker.");
         }
 

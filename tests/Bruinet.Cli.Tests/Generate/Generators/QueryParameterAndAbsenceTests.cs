@@ -50,7 +50,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
     {
         var generated = Generate(
             "[AbsenceTolerant]\n" +
-            "[GenerateComparisons(Comparison.Equals | Comparison.Contains | Comparison.Empty)]\n" +
+            "[GenerateComparisons(Comparison.EqualTo | Comparison.Contains | Comparison.Empty)]\n" +
             "protected virtual string? GetInitialsCore(IMauiElement? element) => null;");
 
         Assert.Contains("return RunGetWithOptionalElement(element => GetInitialsCore(element), timeoutMs);", generated);

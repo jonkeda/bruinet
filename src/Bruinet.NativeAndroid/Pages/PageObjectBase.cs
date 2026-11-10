@@ -213,7 +213,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeAndroidPage<TSe
             _ =>
             {
                 var actual = GetTitle();
-                return new AssertionException(
+                return new ControlAssertionException(
                     message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
             });
     }

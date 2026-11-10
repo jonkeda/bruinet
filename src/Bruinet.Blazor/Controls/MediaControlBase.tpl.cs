@@ -47,7 +47,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
 
     /// <summary>The playback position, in seconds.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast)]
     protected virtual double? GetCurrentTimeCore(IHtmlElement element) => Number(element, "currentTime", 0);
 
     /// <summary>Moves the playback position to <paramref name="seconds"/>, and confirms it moved.</summary>
@@ -114,7 +114,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
 
     /// <summary>The media's source: its <c>src</c>, or the source the browser chose.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetSourceCore(IHtmlElement element)
         => element.GetDomAttribute("src") ?? element.GetDomProperty("currentSrc");
 

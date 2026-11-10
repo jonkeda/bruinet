@@ -119,7 +119,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerBas
             _ =>
             {
                 var actual = GetItemCount();
-                return new AssertionException(message ?? $"Expected {expected} rows in {ScopeName}, but there are {actual}.", expected, actual);
+                return new ControlAssertionException(message ?? $"Expected {expected} rows in {ScopeName}, but there are {actual}.", expected, actual);
             });
         return Self;
     }

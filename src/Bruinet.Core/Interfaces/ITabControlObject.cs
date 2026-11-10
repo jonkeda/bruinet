@@ -35,6 +35,6 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// <param name="message">Optional custom assertion message.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>The containing scope for fluent chaining.</returns>
-    /// <exception cref="Bruinet.Core.Exceptions.AssertionException">Thrown when assertion fails.</exception>
+    /// <exception cref="Bruinet.Core.Exceptions.ControlAssertionException">Thrown when assertion fails.</exception>
     TScope AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null);
 }

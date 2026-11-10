@@ -94,7 +94,7 @@ public sealed class TodoListPage : BlazorPageObjectBase<TodoListPage>
             }
             else if (!WaitNoItemWhere(row => row.Title.TryGetText() == title, timeoutMs))
             {
-                throw new AssertionException($"Expected no row titled '{title}' in the list.");
+                throw new ControlAssertionException($"Expected no row titled '{title}' in the list.");
             }
 
             return this;

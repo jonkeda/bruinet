@@ -42,7 +42,7 @@ public sealed class UserList : CollectionObjectBase<UserListPage, UserList, User
     {
         if (!WaitRow(name, present, timeoutMs ?? TestConstants.PageTimeoutMs))
         {
-            throw new AssertionException(
+            throw new ControlAssertionException(
                 $"Expected {(present ? "a" : "no")} user '{name}' in '{Locator.Value}'. "
                 + $"Users shown: {string.Join(", ", Names().Select(shown => $"'{shown}'"))}.");
         }
@@ -62,7 +62,7 @@ public sealed class UserList : CollectionObjectBase<UserListPage, UserList, User
         var positions = names.Select(name => shown.ToList().IndexOf(name)).ToList();
         if (positions.Any(position => position < 0) || positions.Zip(positions.Skip(1)).Any(pair => pair.First > pair.Second))
         {
-            throw new AssertionException(
+            throw new ControlAssertionException(
                 $"Expected the users in the order {string.Join(", ", names)}; shown: {string.Join(", ", shown)}.");
         }
 

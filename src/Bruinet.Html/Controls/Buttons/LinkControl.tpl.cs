@@ -22,7 +22,7 @@ public partial class LinkControl<TScope> : ClickableControlBase<TScope>
 
     /// <summary>The link's <c>href</c>.</summary>
     /// <param name="element">The pre-found element.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetHrefCore(IHtmlElement element)
     {
         return element.GetAttribute("href");

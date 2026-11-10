@@ -10,7 +10,7 @@ namespace Bruinet.ControlContracts;
 /// head cannot keep is overridden with <c>[Fact(Skip = "why")]</c>, so a difference between heads is
 /// written down rather than missing. The contracts follow the Core interfaces' documentation: a null
 /// argument skips, a missing element answers null, an assert that fails throws
-/// <see cref="AssertionException"/>, and every action returns the control's scope.
+/// <see cref="ControlAssertionException"/>, and every action returns the control's scope.
 /// </summary>
 /// <typeparam name="TScope">The page the controls' calls return.</typeparam>
 public abstract class ControlContract<TScope> where TScope : class
@@ -31,7 +31,7 @@ public abstract class ControlContract<TScope> where TScope : class
     protected void ReturnsScope(TScope returned) => Assert.Same(Scope, returned);
 
     /// <summary>The assert failed the Bruinet way.</summary>
-    protected static void Fails(Action assert) => Assert.ThrowsAny<AssertionException>(assert);
+    protected static void Fails(Action assert) => Assert.ThrowsAny<ControlAssertionException>(assert);
 
     /// <summary>Reads until the page shows <paramref name="expected"/>, then asserts it.</summary>
     protected void Shows<T>(T expected, Func<T> read)

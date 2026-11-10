@@ -31,7 +31,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
     /// </summary>
     /// <param name="element">The pre-found element (may be null).</param>
     /// <returns>The current URL, or null if not available.</returns>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetUrlCore(IMauiElement? element)
     {
         if (element == null)
@@ -45,7 +45,7 @@ public partial class WebView<TScope> : Base.ViewBase<TScope>
     /// </summary>
     /// <param name="element">The pre-found element (may be null).</param>
     /// <returns>The page title, or null if not available.</returns>
-    [GenerateComparisons(Comparison.Equals | Comparison.Contains)]
+    [GenerateComparisons(Comparison.EqualTo | Comparison.Contains)]
     protected virtual string? GetPageTitleCore(IMauiElement? element)
     {
         if (element == null)

@@ -35,7 +35,7 @@ public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TS
 
     /// <summary>The progress; null when it does not read as a number.</summary>
     /// <param name="element">The pre-found view.</param>
-    [GenerateComparisons(Comparison.Equals | Comparison.GreaterThan | Comparison.AtLeast
+    [GenerateComparisons(Comparison.EqualTo | Comparison.GreaterThan | Comparison.AtLeast
         | Comparison.LessThan | Comparison.AtMost)]
     protected virtual double? GetValueCore(INativeAndroidElement? element)
         => Parse(element?.Text);
