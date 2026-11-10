@@ -800,7 +800,9 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         try
         {
-            return _driver.FindOne(by, _element);
+            var found = _driver.FindOne(by, _element);
+            _driver.ScrollMemory.Seen(locator);
+            return found;
         }
         catch (NoSuchElementException)
         {
@@ -813,7 +815,13 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     {
         var by = _driver.Appium.ToChildBy(locator);
 
-        return _driver.FindAll(by, _element);
+        var found = _driver.FindAll(by, _element);
+        if (found.Count > 0)
+        {
+            _driver.ScrollMemory.Seen(locator);
+        }
+
+        return found;
     });
 
     #endregion

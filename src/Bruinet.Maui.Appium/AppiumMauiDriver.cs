@@ -75,8 +75,17 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         var by = _appium.ToBy(locator);
 
-        return AppiumErrors.Live(() => FindAll(by, null));
+        var found = AppiumErrors.Live(() => FindAll(by, null));
+        if (found.Count > 0)
+        {
+            ScrollMemory.Seen(locator);
+        }
+
+        return found;
     }
+
+    /// <summary>Views found and vertical moves, for the order of the Android scroll search (D12).</summary>
+    internal ScrollMemory ScrollMemory { get; } = new();
 
     #region Finds that bring facts
 
@@ -694,6 +703,7 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     {
         if (FindOnScreen(locator) is { } already)
         {
+            ScrollMemory.Seen(locator);
             return already;
         }
 
@@ -709,13 +719,19 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
         var gesture = new Dictionary<string, object> { { "elementId", scroller.Id } };
         var horizontal = IsHorizontalScroller(scroller);
         var strip = horizontal ? TryGetResourceId(container) ?? string.Empty : null;
-        var directions = !horizontal ? ScrollDirections
+        var directions = !horizontal ? ScrollMemory.Directions(locator)
             : _lastSideDirection.TryGetValue(strip!, out var last) && last == "right" ? ["left", "right"] : SideScrollDirections;
 
         var found = ScrollUntil(gesture, directions, () => FindOnScreen(locator) is not null, budgetMs, atLeastOneSwipe: false,
             scroller.Rect, horizontal ? () => ScrollPosition(scroller) : null,
             horizontal ? direction => _lastSideDirection[strip!] = direction : null);
-        return found ? ReResolveAfterScrolling(locator) ?? FindOnScreen(locator) : null;
+        if (!found)
+        {
+            return null;
+        }
+
+        ScrollMemory.Seen(locator);
+        return ReResolveAfterScrolling(locator) ?? FindOnScreen(locator);
     }
 
     /// <summary>
@@ -829,7 +845,13 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
                 }
 
                 swiped = true;
-                if (found())
+                var hit = found();
+                if (more || hit)
+                {
+                    ScrollMemory.Moved(direction);
+                }
+
+                if (hit)
                 {
                     foundIn?.Invoke(direction);
                     return true;
