@@ -94,7 +94,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 
 | # | Proposal | State |
 | --- | --- | --- |
-| 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Open. `Core.Calls` is out of it: public by decision. |
+| 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Drivers and elements done in `5a3234b4` (`MauiHeadlessDriver` and `StrideGameDriver` stay public). Left: `Bdd`'s engine and the runner messages, which Uat, the command line, Presenter and Workspace use; see Next action. `Core.Calls` is out of it: public by decision. |
 | 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Done in `24e3dcea`: `WaitHelper` internal, `WaitTextEquals` gone from all six stacks, `ITextControlObject` declares `WaitText`. |
 | 3 | Mark `Bruinet.Core.Legacy` obsolete or drop it. | Done: deleted in `7d03c22b`. |
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
@@ -120,7 +120,7 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Unknown
 
-- Which driver, element or `Bdd` types consumers use directly; proposal 1 needs a build of Tomorrow's two UI suites against it to find out.
+- Which `Bdd` engine types consumers use directly. Tomorrow uses seven: the step-author types, `BddDocument`, `BddBoundScenario`, `BddTagConventions`, `BddMarkdownParser` and `BddParseResult`.
 - Whether `bool? expected` with `null` meaning "skip" is relied on by data-driven steps; if so it should be documented on the interface, not removed.
 - `Bruinet.Presenter`, `Bruinet.Scraper`, `Bruinet.Bdd.Workspace` and `Bruinet.Mocking.Analyzers` declare no public API file and were not reviewed; if any is packed, it needs one.
 - `Bruinet.Mocking.*`, `Bruinet.Contracts`, `Bruinet.TestData`, `Bruinet.FlaUI` and `MauiHeadless` were read by type list only, not member by member.
@@ -128,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposal 4 is made as far as decided; its leftovers are small renames that can wait for a reason.
-Next is proposal 1, which needs a build of a consumer's suites against the engine made internal, then the rest of proposal 5's Core half (the shared collection base), which needs a design.
+The rest of proposal 1 needs a choice. `Bdd`'s engine and the runner messages are used by five of Bruinet's own assemblies, so making them internal means a list of `InternalsVisibleTo` between packages, which Core's rule (AD-010) avoids.
+My proposal: leave them public and mark them `[Experimental]` under proposal 12, so a consumer sees they are not promised; only the types no other assembly uses go internal now.
