@@ -1,20 +1,9 @@
 #nullable enable
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.Wpf.Interfaces.IWpfScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.Wpf.Interfaces.IWpfScope<TParent>! parent, string! automationId, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.GetItemCount() -> int
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int index, int? timeoutMs = null) -> TItem!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Wpf.Interfaces.IWpfElement! row, int position) -> Bruinet.Core.Collections.ItemKey
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
+Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Page.get -> Bruinet.Wpf.Interfaces.IWpfPage?
+Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Parent.get -> TParent
 Bruinet.Wpf.Collections.IWpfCollection
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Wpf.Collections.IWpfCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
@@ -402,10 +391,17 @@ Bruinet.Wpf.Testing.WpfTestFixtureBase.Dispose() -> void
 Bruinet.Wpf.Testing.WpfTestFixtureBase.Options.get -> Bruinet.Wpf.Context.WpfTestContextOptions!
 Bruinet.Wpf.Testing.WpfTestFixtureBase.SetupWith(System.Action<Bruinet.Wpf.Context.WpfTestContextOptions!>! configureAction) -> void
 Bruinet.Wpf.Testing.WpfTestFixtureBase.WpfTestFixtureBase() -> void
-abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Wpf.Testing.WpfTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
 const Bruinet.Wpf.Testing.WpfTestFixtureBase.SettingsFile = "bruinet.wpf.config.json" -> string!
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.FindAllIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.IsShown(Bruinet.Wpf.Interfaces.IWpfElement! root) -> bool
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Wpf.Interfaces.IWpfElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollStep(Bruinet.Wpf.Interfaces.IWpfElement! list, bool onwards) -> bool
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryFindIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
+override Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.Wpf.Interfaces.IWpfElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
@@ -427,7 +423,6 @@ static Bruinet.Wpf.Testing.WpfTestFixtureBase.FindSolutionDirectory() -> string!
 static readonly Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DataItems -> Bruinet.Core.Locators.Locator!
 static readonly Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ListItems -> Bruinet.Core.Locators.Locator!
 virtual Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
-virtual Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Wpf.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.Wpf.Interfaces.IWpfElement! element, int? timeoutMs = null) -> void

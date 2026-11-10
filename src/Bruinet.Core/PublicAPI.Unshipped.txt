@@ -210,6 +210,17 @@ Bruinet.Core.Calls.ObservationLog.Unexpected(System.Exception! error, string! su
 Bruinet.Core.Calls.Poller
 Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.CollectionObjectBase(TParentScope parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.GetItemCount() -> int
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.Item(int index, int? timeoutMs = null) -> TItem!
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.TryItem(int index) -> TItem?
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.WaitFor(System.Func<TItem?>! find, string! what, bool scroll, int? timeoutMs) -> TItem!
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Core.Collections.IItemRootSource<TElement>
 Bruinet.Core.Collections.IItemRootSource<TElement>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> TElement?
 Bruinet.Core.Collections.ItemKey
@@ -1001,6 +1012,9 @@ Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.get -> int
 Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.init -> void
 Bruinet.Core.Utilities.MarkdownTableRow.MarkdownTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, int LineNumber) -> void
 Bruinet.Core.Utilities.MarkdownTables
+abstract Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.KeyOf(TElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+abstract Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<TElement!>!
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.FindAllIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.Self.get -> TSelf!
 abstract Bruinet.Core.Collections.ItemObjectBase<TContext, TElement, TCollection, TSelf>.TryFindIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> TElement?
@@ -1182,6 +1196,11 @@ static Bruinet.Core.Utilities.MarkdownTables.IsSeparatorRow(string! line) -> boo
 static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
+virtual Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
+virtual Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.ScrollStep(TElement! list, bool onwards) -> bool
+virtual Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.ScrollsToFind.get -> bool
+virtual Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> TElement?
+virtual Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>.TryItem(string! key) -> TItem?
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.AsksParent.get -> bool
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?

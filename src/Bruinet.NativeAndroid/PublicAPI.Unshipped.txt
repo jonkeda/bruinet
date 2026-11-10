@@ -24,21 +24,10 @@ Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.TryFindElement(Bruinet.Cor
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
 Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeAndroid.Interfaces.INativeAndroidScope<TParent>! parent, string! resourceId, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.GetItemCount() -> int
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int index, int? timeoutMs = null) -> TItem!
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! row, int position) -> Bruinet.Core.Collections.ItemKey
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
-Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Page.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidPage?
+Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Parent.get -> TParent
 Bruinet.NativeAndroid.Collections.INativeAndroidCollection
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.NativeAndroid.Collections.INativeAndroidCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
@@ -423,11 +412,19 @@ Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, in
 Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase
 Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 Bruinet.NativeAndroid.Testing.NativeAndroidTestFixtureBase.NativeAndroidTestFixtureBase() -> void
-abstract Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
 abstract Bruinet.NativeAndroid.Controls.Selection.ChoiceGroupBase<TScope>.IsChosen(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! choice) -> bool
 const Bruinet.NativeAndroid.Controls.Text.EditText<TScope>.EnterKeyCode = 66 -> int
 const Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.BusyViewName = "bruinet_busy" -> string!
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.FindAllIn(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.IsShown(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root) -> bool
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollStep(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! list, bool onwards) -> bool
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryFindIn(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
+override Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
 override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
 override Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
@@ -482,7 +479,6 @@ static Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FromEnvironment() -
 static Bruinet.NativeAndroid.NativeAndroidTestContextOptions.FromEnvironment(System.Func<string!, string?>! read) -> Bruinet.NativeAndroid.NativeAndroidTestContextOptions!
 static readonly Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DirectChildren -> Bruinet.Core.Locators.Locator!
 virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
-virtual Bruinet.NativeAndroid.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
 virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.NativeAndroid.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, int? timeoutMs = null) -> void
