@@ -5,7 +5,7 @@ using Bruinet.Html.Interfaces;
 
 namespace Bruinet.Html.Bouw7.Controls;
 
-public partial class B7DialogManager<TScope> : ControlBase<TScope>
+public partial class B7DialogManager<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public B7DialogManager(IHtmlScope<TScope> scope, Locator locator)

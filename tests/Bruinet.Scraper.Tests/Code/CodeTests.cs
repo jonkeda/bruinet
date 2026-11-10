@@ -74,7 +74,7 @@ public sealed class CodeTests : IDisposable
             using Bruinet.Html;
             namespace Shop.UITests.Pages;
 
-            public sealed class OrdersPage(IHtmlTestContext context) : HtmlPageObjectBase<OrdersPage>(context)
+            public sealed class OrdersPage(IHtmlTestContext context) : PageObjectBase<OrdersPage>(context)
             {
                 public ButtonControl<OrdersPage> New => new(this, Locator.ByDataTestId("new-order"));
                 private string Hidden => "";
@@ -291,7 +291,7 @@ public sealed class CodeTests : IDisposable
         var project = MakeProject("Shop.UITests");
         project.StartSession("One", DateTimeOffset.UnixEpoch).AddPage(Cards("https://shop.example/cards", 1) with { CapturedAt = DateTimeOffset.UnixEpoch });
         await using var service = new ScraperService(_root);
-        File.WriteAllText(Path.Combine(project.Folder, "CardsPage.cs"), service.Header(null, "/cards") + "\nclass CardsPage : HtmlPageObjectBase<CardsPage> { }");
+        File.WriteAllText(Path.Combine(project.Folder, "CardsPage.cs"), service.Header(null, "/cards") + "\nclass CardsPage : PageObjectBase<CardsPage> { }");
         project.StartSession("Two", DateTimeOffset.UnixEpoch.AddDays(1)).AddPage(Cards("https://shop.example/cards", 2) with { CapturedAt = DateTimeOffset.UnixEpoch.AddDays(1) });
         project.StartSession("Three", DateTimeOffset.UnixEpoch.AddDays(2)).AddPage(Cards("https://shop.example/cards", 3) with { CapturedAt = DateTimeOffset.UnixEpoch.AddDays(2) });
 
@@ -312,7 +312,7 @@ public sealed class CodeTests : IDisposable
         await using var service = new ScraperService(_root);
         var pageHeader = service.Header(null, "/cards");
         var cardHeader = service.Header(null, "/cards", node: 2);
-        File.WriteAllText(Path.Combine(project.Folder, "CardsPage.cs"), pageHeader + "\nclass CardsPage : HtmlPageObjectBase<CardsPage> { }");
+        File.WriteAllText(Path.Combine(project.Folder, "CardsPage.cs"), pageHeader + "\nclass CardsPage : PageObjectBase<CardsPage> { }");
         File.WriteAllText(Path.Combine(project.Folder, "Card.cs"), cardHeader + "\nclass Card<T> : ContainerBase<T, Card<T>> { }");
 
         var before = service.Match(null, "/cards");

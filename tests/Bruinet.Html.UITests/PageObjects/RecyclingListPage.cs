@@ -6,7 +6,7 @@ using Bruinet.Html.Controls.Display;
 namespace Bruinet.Html.UITests.PageObjects;
 
 /// <summary>The sample's /recycling-list page: a virtualized list whose row nodes are reused for other items.</summary>
-public sealed class RecyclingListPage : HtmlPageObjectBase<RecyclingListPage>
+public sealed class RecyclingListPage : PageObjectBase<RecyclingListPage>
 {
     public RecyclingListPage(IHtmlTestContext context)
         : base(context)

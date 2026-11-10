@@ -65,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** Html's `HtmlPageObjectBase<TSelf>` is `PageObjectBase<TSelf>` and its `ControlBase<TScope>` is `ViewBase<TScope>`, the names
+  the other five stacks use; Html and Blazor controls keep their `Control` suffix (review proposal 4).
 - **Breaking:** `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`), one type for the six stacks' collections;
   how a stack reads a key from a row is internal to it (review proposal 5).
 - `tools/Scripts/check-api-changes.ps1` fails a change that breaks the public API without a row in the api-upgrade

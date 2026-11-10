@@ -53,7 +53,7 @@ public class CallModelPinTests
 
     #region Pages and helpers
 
-    private sealed class PinPage(IHtmlTestContext context) : HtmlPageObjectBase<PinPage>(context)
+    private sealed class PinPage(IHtmlTestContext context) : PageObjectBase<PinPage>(context)
     {
         public override bool IsLoaded() => true;
 

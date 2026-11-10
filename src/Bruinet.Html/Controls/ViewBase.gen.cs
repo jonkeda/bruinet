@@ -21,7 +21,7 @@ namespace Bruinet.Html.Controls;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 
-public abstract partial class ControlBase<TScope> : ObjectBase, IControlObject<TScope>, IControlHost<IHtmlElement>
+public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TScope>, IControlHost<IHtmlElement>
     where TScope : IHtmlScope<TScope>
 {
     #region SendKeys

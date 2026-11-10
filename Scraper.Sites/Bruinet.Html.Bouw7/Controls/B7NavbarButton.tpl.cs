@@ -5,7 +5,7 @@ using Bruinet.Html.Interfaces;
 
 namespace Bruinet.Html.Bouw7.Controls;
 
-public partial class B7NavbarButton<TScope> : ControlBase<TScope>
+public partial class B7NavbarButton<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     private static readonly Locator TextPart = Locator.ByCss("div");

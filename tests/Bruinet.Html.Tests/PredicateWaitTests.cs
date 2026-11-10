@@ -28,7 +28,7 @@ public class PredicateWaitTests
         _context.Setup(c => c.IsIdle()).Returns(true);
     }
 
-    private sealed class WaitPage(IHtmlTestContext context) : HtmlPageObjectBase<WaitPage>(context)
+    private sealed class WaitPage(IHtmlTestContext context) : PageObjectBase<WaitPage>(context)
     {
         public override bool IsLoaded() => true;
 

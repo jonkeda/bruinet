@@ -9,7 +9,7 @@ using Bruinet.Html.Pages;
 namespace Bruinet.Html.React.Pages;
 
 /// <summary>The page /tabs: drafted by the Scraper from a recording. Draft again to update; add to the other part, TabsPage.cs.</summary>
-public sealed partial class TabsPage(IHtmlTestContext context) : HtmlPageObjectBase<TabsPage>(context)
+public sealed partial class TabsPage(IHtmlTestContext context) : PageObjectBase<TabsPage>(context)
 {
     public ButtonControl<TabsPage> Button => new(this, Locator.ByCss("button.navbar-toggler"));
 

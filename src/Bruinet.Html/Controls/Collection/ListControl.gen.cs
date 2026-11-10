@@ -15,7 +15,7 @@ namespace Bruinet.Html.Controls.Collection;
 /// rows that are acted on, use a collection (<c>CollectionObjectBase</c>).
 /// </summary>
 
-public partial class ListControl<TScope> : ControlBase<TScope>
+public partial class ListControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region ItemCount (GetItemCount / WaitItemCount / AssertItemCount)

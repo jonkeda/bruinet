@@ -14,18 +14,18 @@ namespace Bruinet.Html.Controls;
 /// finds its element within its scope (page, container, frame or row).
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public abstract partial class ControlBase<TScope> : ObjectBase, IControlObject<TScope>, IControlHost<IHtmlElement>
+public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TScope>, IControlHost<IHtmlElement>
     where TScope : IHtmlScope<TScope>
 {
     private readonly IHtmlScope<TScope> _scope;
 
-    protected ControlBase(IHtmlScope<TScope> scope, Locator locator)
+    protected ViewBase(IHtmlScope<TScope> scope, Locator locator)
     {
         _scope = scope ?? throw new ArgumentNullException(nameof(scope));
         Locator = locator ?? throw new ArgumentNullException(nameof(locator));
     }
 
-    protected ControlBase(IHtmlScope<TScope> scope, string selectorOrId)
+    protected ViewBase(IHtmlScope<TScope> scope, string selectorOrId)
         : this(scope, ResolveLocator(selectorOrId))
     {
     }

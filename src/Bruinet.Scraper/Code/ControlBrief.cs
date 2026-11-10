@@ -170,7 +170,7 @@ public static partial class ControlBrief
         [PartCore.Range] = Simple("a simple control: range", "RangeControlBase", "src/Bruinet.Html/Controls/Range/RangeInputControl.cs", "SetValue(value), GetValue()"),
         [PartCore.Date] = Simple("a simple control: date", "FocusableControlBase", "src/Bruinet.Html/Controls/DateTime/DateInputControl.tpl.cs", "SetDate(date), GetDate()"),
         [PartCore.Clickable] = Simple("a simple control: clickable", "ClickableControlBase", "src/Bruinet.Html/Controls/Buttons/ButtonControl.tpl.cs", "Click(); GetText()"),
-        [PartCore.Readable] = Simple("a simple control: text to read", "ControlBase", "src/Bruinet.Html/Controls/Display/LabelControl.cs", "GetText(); a Get*Core per thing it shows"),
+        [PartCore.Readable] = Simple("a simple control: text to read", "ViewBase", "src/Bruinet.Html/Controls/Display/LabelControl.cs", "GetText(); a Get*Core per thing it shows"),
     };
 
     private static readonly Hint Component = new(

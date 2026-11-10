@@ -1,6 +1,6 @@
 # Scraper Config
 
-MudBlazor docs (Blazor WebAssembly): tabs, per-render ids, a large page. Platform html: a third-party app sets no Bruinet busy signal, so its page objects take HtmlPageObjectBase.
+MudBlazor docs (Blazor WebAssembly): tabs, per-render ids, a large page. Platform html: a third-party app sets no Bruinet busy signal, so its page objects take PageObjectBase.
 One page and what one click on it shows, explored lightly: a public site is not ours to load.
 
 ## App

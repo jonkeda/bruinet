@@ -10,8 +10,8 @@ using Bruinet.Html.Scopes;
 namespace Bruinet.Html.Pages;
 
 // Test composition and UAT find Html pages by Core's ITestPage, which IHtmlPage derives from.
-public abstract class HtmlPageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
-    where TSelf : HtmlPageObjectBase<TSelf>
+public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
+    where TSelf : PageObjectBase<TSelf>
 {
     /// <summary>The attribute on <c>&lt;body&gt;</c> that carries the busy signal (design 7.2).</summary>
     public const string BusyAttribute = "data-busy";
@@ -20,12 +20,12 @@ public abstract class HtmlPageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
 
     private readonly IHtmlTestContext _context;
 
-    protected HtmlPageObjectBase(IHtmlTestContext context)
+    protected PageObjectBase(IHtmlTestContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    protected HtmlPageObjectBase(IHtmlTestContext context, string url)
+    protected PageObjectBase(IHtmlTestContext context, string url)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         Url = url;

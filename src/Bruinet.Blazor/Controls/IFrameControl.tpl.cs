@@ -9,7 +9,7 @@ namespace Bruinet.Blazor.Controls;
 /// An &lt;iframe&gt; element, read and driven from outside through script. To use controls inside
 /// a same-origin frame, use a <c>FrameScope</c> instead.
 /// </summary>
-public partial class IFrameControl<TScope> : ControlBase<TScope>
+public partial class IFrameControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public IFrameControl(IHtmlScope<TScope> scope, Locator locator) : base(scope, locator) { }

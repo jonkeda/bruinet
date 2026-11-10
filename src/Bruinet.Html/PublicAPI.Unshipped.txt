@@ -150,57 +150,57 @@ Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitExists(bool? expected =
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>
-Bruinet.Html.Controls.ControlBase<TScope>.ActAndConfirm<T>(string! action, System.Action! act, System.Func<T?>! read, System.Func<T?, bool>! done, string! expected, int? timeoutMs) -> void
-Bruinet.Html.Controls.ControlBase<TScope>.AssertAttribute(string? name, string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.CallRemainingMs.get -> int
-Bruinet.Html.Controls.ControlBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
-Bruinet.Html.Controls.ControlBase<TScope>.ContainingScope.get -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.ControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.Html.Controls.ControlBase<TScope>.ControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
-Bruinet.Html.Controls.ControlBase<TScope>.FindElement() -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Controls.ControlBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
-Bruinet.Html.Controls.ControlBase<TScope>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Html.Controls.ControlBase<TScope>.IsEnabled() -> bool?
-Bruinet.Html.Controls.ControlBase<TScope>.IsExists() -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.IsVisible() -> bool?
-Bruinet.Html.Controls.ControlBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
-Bruinet.Html.Controls.ControlBase<TScope>.PressKey(string! key, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunAssertWithOptionalElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunDo(System.Action! operation, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunDoWithElement(System.Action<Bruinet.Html.Interfaces.IHtmlElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunGetWithElement<T>(System.Func<Bruinet.Html.Interfaces.IHtmlElement!, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
-Bruinet.Html.Controls.ControlBase<TScope>.RunGetWithOptionalElement<T>(System.Func<Bruinet.Html.Interfaces.IHtmlElement?, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
-Bruinet.Html.Controls.ControlBase<TScope>.RunSetWithElement<T>(T? value, System.Action<Bruinet.Html.Interfaces.IHtmlElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.RunWait(System.Func<bool>! operation, int? timeoutMs = null, string? caller = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.RunWaitForValue(System.Func<Bruinet.Html.Interfaces.IHtmlElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs = null, string? caller = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.RunWaitWithElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement!, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ControlBase<TScope>.TryFindElement() -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Controls.ControlBase<TScope>.TryGetText() -> string?
-Bruinet.Html.Controls.ControlBase<TScope>.WaitAttribute(string! name, System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitAttribute(string? name, string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitText(System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>
+Bruinet.Html.Controls.ViewBase<TScope>.ActAndConfirm<T>(string! action, System.Action! act, System.Func<T?>! read, System.Func<T?, bool>! done, string! expected, int? timeoutMs) -> void
+Bruinet.Html.Controls.ViewBase<TScope>.AssertAttribute(string? name, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
+Bruinet.Html.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
+Bruinet.Html.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.ViewBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.Html.Controls.ViewBase<TScope>.ViewBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Html.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Html.Interfaces.IHtmlElement!
+Bruinet.Html.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
+Bruinet.Html.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
+Bruinet.Html.Controls.ViewBase<TScope>.IsEnabled() -> bool?
+Bruinet.Html.Controls.ViewBase<TScope>.IsExists() -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.Html.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.Html.Controls.ViewBase<TScope>.PressKey(string! key, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunAssertWithOptionalElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunDo(System.Action! operation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunDoWithElement(System.Action<Bruinet.Html.Interfaces.IHtmlElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunGetWithElement<T>(System.Func<Bruinet.Html.Interfaces.IHtmlElement!, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.Html.Controls.ViewBase<TScope>.RunGetWithOptionalElement<T>(System.Func<Bruinet.Html.Interfaces.IHtmlElement?, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.Html.Controls.ViewBase<TScope>.RunSetWithElement<T>(T? value, System.Action<Bruinet.Html.Interfaces.IHtmlElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.RunWait(System.Func<bool>! operation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.RunWaitForValue(System.Func<Bruinet.Html.Interfaces.IHtmlElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.RunWaitWithElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement!, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.Html.Interfaces.IHtmlElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Controls.ViewBase<TScope>.TryGetText() -> string?
+Bruinet.Html.Controls.ViewBase<TScope>.WaitAttribute(string! name, System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitAttribute(string? name, string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitText(System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.AssertDate(System.DateOnly? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.AssertMaximum(System.DateOnly? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -486,28 +486,28 @@ Bruinet.Html.Pages.AppRoot.Self.get -> Bruinet.Html.Pages.AppRoot!
 Bruinet.Html.Pages.AppRoot.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Pages.AppRoot.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Pages.AppRoot.WaitReady(int? timeoutMs = null) -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.DefaultOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.HtmlPageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.HtmlPageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context, string! url) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.IsBusy() -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.IsReady() -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Self.get -> TSelf!
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Url.get -> string?
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
-Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>
+Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Html.Pages.PageObjectBase<TSelf>.DefaultOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
+Bruinet.Html.Pages.PageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
+Bruinet.Html.Pages.PageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
+Bruinet.Html.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context, string! url) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.IsReady() -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
+Bruinet.Html.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
+Bruinet.Html.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Pages.PageObjectBase<TSelf>.Url.get -> string?
+Bruinet.Html.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.Html.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Scopes.BusySignal
 Bruinet.Html.Scopes.BusySignal.Ignore = 0 -> Bruinet.Html.Scopes.BusySignal
 Bruinet.Html.Scopes.BusySignal.Optional = 1 -> Bruinet.Html.Scopes.BusySignal
@@ -538,7 +538,7 @@ abstract Bruinet.Html.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Html.ObjectBase.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
-const Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
+const Bruinet.Html.Pages.PageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Html.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
@@ -548,7 +548,7 @@ override Bruinet.Html.Controls.Container.ScrollContainerControl<TParent, TScope>
 override Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.Self.get -> TScope
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ScopeName.get -> string!
-override Bruinet.Html.Controls.ControlBase<TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
+override Bruinet.Html.Controls.ViewBase<TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetItemTextsCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetSelectedTextCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> string?
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.GetSelectedValueCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> string?
@@ -557,10 +557,10 @@ override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.SelectByTextC
 override Bruinet.Html.Controls.Selection.RadioGroupControl<TScope>.SelectByValueCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? value, int? timeoutMs = null) -> void
 override Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
 override Bruinet.Html.Pages.AppRoot.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-override Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
-override Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.ScopeName.get -> string!
+override Bruinet.Html.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
+override Bruinet.Html.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Html.BruinetHtmlConfiguration.Load(string? configPath = null) -> Bruinet.Html.BruinetHtmlConfiguration!
-static Bruinet.Html.Controls.ControlBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Html.Controls.ViewBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Html.Interfaces.HtmlElementExtensions.FindElement(this Bruinet.Html.Interfaces.IHtmlElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 static Bruinet.Html.Interfaces.PageProbe.Navigating.get -> Bruinet.Html.Interfaces.PageProbe!
 static Bruinet.Html.Testing.WebAppHost.FindBuiltApp(string! projectDirectory, string! framework = "net10.0") -> string!
@@ -585,17 +585,17 @@ virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetRowTextsCore(Br
 virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.AsksParent.get -> bool
 virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ProbeContentReadiness(Bruinet.Html.Interfaces.IHtmlElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Html.Controls.ContainerBase<TParent, TScope>.TryFindRootElement() -> Bruinet.Html.Interfaces.IHtmlElement?
-virtual Bruinet.Html.Controls.ControlBase<TScope>.EnsureEnabledCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
-virtual Bruinet.Html.Controls.ControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
-virtual Bruinet.Html.Controls.ControlBase<TScope>.GetAttributeCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? name) -> string?
-virtual Bruinet.Html.Controls.ControlBase<TScope>.GetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
-virtual Bruinet.Html.Controls.ControlBase<TScope>.IsEnabledCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
-virtual Bruinet.Html.Controls.ControlBase<TScope>.IsVisibleCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
-virtual Bruinet.Html.Controls.ControlBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
-virtual Bruinet.Html.Controls.ControlBase<TScope>.PressKeyCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! key, int? timeoutMs = null) -> void
-virtual Bruinet.Html.Controls.ControlBase<TScope>.RequiresVisibilityForAction.get -> bool
-virtual Bruinet.Html.Controls.ControlBase<TScope>.ScrollIntoViewCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
-virtual Bruinet.Html.Controls.ControlBase<TScope>.SendKeysCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! keys, int? timeoutMs = null) -> void
+virtual Bruinet.Html.Controls.ViewBase<TScope>.EnsureEnabledCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
+virtual Bruinet.Html.Controls.ViewBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
+virtual Bruinet.Html.Controls.ViewBase<TScope>.GetAttributeCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? name) -> string?
+virtual Bruinet.Html.Controls.ViewBase<TScope>.GetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
+virtual Bruinet.Html.Controls.ViewBase<TScope>.IsEnabledCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Html.Controls.ViewBase<TScope>.IsVisibleCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Html.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+virtual Bruinet.Html.Controls.ViewBase<TScope>.PressKeyCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! key, int? timeoutMs = null) -> void
+virtual Bruinet.Html.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
+virtual Bruinet.Html.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
+virtual Bruinet.Html.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! keys, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetDateCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMaximumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMinimumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
@@ -641,12 +641,12 @@ virtual Bruinet.Html.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.Ht
 virtual Bruinet.Html.Controls.ToggleControlBase<TScope>.SetCheckedCore(Bruinet.Html.Interfaces.IHtmlElement! element, bool? checked, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.ToggleControlBase<TScope>.ToggleCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Html.ObjectBase.ScopeName.get -> string!
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.BusySignal.get -> Bruinet.Html.Scopes.BusySignal
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.CompareUrl() -> bool
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.GetTitle() -> string?
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.IsLoaded() -> bool
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Name.get -> string!
-virtual Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.BusySignal.get -> Bruinet.Html.Scopes.BusySignal
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.CompareUrl() -> bool
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.Name.get -> string!
+virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateBunitContext() -> Bruinet.Html.Interfaces.IHtmlTestContext!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!

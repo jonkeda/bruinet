@@ -68,7 +68,7 @@ public class ActionabilityTests
         Assert.False(PlaywrightErrors.ActionRan(Covered));
     }
 
-    private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public override bool IsLoaded() => true;
 

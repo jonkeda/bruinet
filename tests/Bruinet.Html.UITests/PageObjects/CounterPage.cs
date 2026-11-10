@@ -3,7 +3,7 @@ using Bruinet.Html.Controls.Display;
 
 namespace Bruinet.Html.UITests.PageObjects;
 
-public sealed class CounterPage : HtmlPageObjectBase<CounterPage>
+public sealed class CounterPage : PageObjectBase<CounterPage>
 {
     public CounterPage(IHtmlTestContext context)
         : base(context)

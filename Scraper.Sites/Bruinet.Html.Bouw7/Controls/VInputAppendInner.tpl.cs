@@ -5,7 +5,7 @@ using Bruinet.Html.Interfaces;
 
 namespace Bruinet.Html.Bouw7.Controls;
 
-public partial class VInputAppendInner<TScope> : ControlBase<TScope>
+public partial class VInputAppendInner<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public VInputAppendInner(IHtmlScope<TScope> scope, Locator locator)

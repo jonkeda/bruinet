@@ -9,7 +9,7 @@ using Bruinet.Html.Pages;
 namespace Bruinet.Html.Vue2.Pages;
 
 /// <summary>The page #/en-US/component/tabs: drafted by the Scraper from a recording. Draft again to update; add to the other part, EnUsComponentTabsPage.cs.</summary>
-public sealed partial class EnUsComponentTabsPage(IHtmlTestContext context) : HtmlPageObjectBase<EnUsComponentTabsPage>(context)
+public sealed partial class EnUsComponentTabsPage(IHtmlTestContext context) : PageObjectBase<EnUsComponentTabsPage>(context)
 {
     public TextInputControl<EnUsComponentTabsPage> Search => new(this, Locator.ByCss("input[placeholder='Search']"));
 

@@ -2,7 +2,7 @@ using Bruinet.Html.Controls.Collection;
 
 namespace Bruinet.Html.UITests.PageObjects;
 
-public sealed class DataTablePage : HtmlPageObjectBase<DataTablePage>
+public sealed class DataTablePage : PageObjectBase<DataTablePage>
 {
     public DataTablePage(IHtmlTestContext context)
         : base(context)

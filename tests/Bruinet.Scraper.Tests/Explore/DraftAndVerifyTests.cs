@@ -64,7 +64,7 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
         var account = Assert.Single(drafted.Pages, p => p.Key == "/pages/account.html");
         Assert.Equal((DraftOutcome.Written, "AccountPage"), (account.Outcome, account.ClassName));
         var code = File.ReadAllText(Pages("AccountPage.scraped.cs"));
-        Assert.Contains("public sealed partial class AccountPage(IHtmlTestContext context) : HtmlPageObjectBase<AccountPage>(context)", code);
+        Assert.Contains("public sealed partial class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context)", code);
         Assert.Contains("OrderDelete => new(this, Locator.ByDataTestId(\"order-delete\"));", code);
         // The dialog's close button is in the draft though the page opens with the dialog closed.
         Assert.Contains("OrderClose => new(this, Locator.ByDataTestId(\"order-close\"));", code);
@@ -87,8 +87,8 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
         await _service.DraftAsync(null);
         // As if an earlier recording had a Gone element, and a person's part uses it.
         var scraped = Pages("AccountPage.scraped.cs");
-        var withGone = File.ReadAllText(scraped).Replace("public sealed partial class AccountPage(IHtmlTestContext context) : HtmlPageObjectBase<AccountPage>(context)\n{\n",
-            "public sealed partial class AccountPage(IHtmlTestContext context) : HtmlPageObjectBase<AccountPage>(context)\n{\n    public ButtonControl<AccountPage> Gone => new(this, Locator.ByDataTestId(\"gone\"));\n\n", StringComparison.Ordinal);
+        var withGone = File.ReadAllText(scraped).Replace("public sealed partial class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context)\n{\n",
+            "public sealed partial class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context)\n{\n    public ButtonControl<AccountPage> Gone => new(this, Locator.ByDataTestId(\"gone\"));\n\n", StringComparison.Ordinal);
         File.WriteAllText(scraped, withGone);
         File.WriteAllText(Pages("AccountPage.cs"), "namespace Shop.UITests.Pages;\n\npublic sealed partial class AccountPage\n{\n    public object Both => (Gone, OrderDelete);\n}\n");
 

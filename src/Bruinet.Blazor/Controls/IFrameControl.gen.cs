@@ -16,7 +16,7 @@ namespace Bruinet.Blazor.Controls;
 /// a same-origin frame, use a <c>FrameScope</c> instead.
 /// </summary>
 
-public partial class IFrameControl<TScope> : ControlBase<TScope>
+public partial class IFrameControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region Source (GetSource / WaitSource / AssertSource)

@@ -12,7 +12,7 @@ something they do not offer, add it there first; never reach past them.
 ## Workflow
 
 1. **Find the page object** (`PageObjects/` or `Pages/` in the test project). A Blazor page
-   derives from `BlazorPageObjectBase<T>`, a plain web page from `HtmlPageObjectBase<T>`. If a
+   derives from `BlazorPageObjectBase<T>`, a plain web page from `PageObjectBase<T>`. If a
    control member is missing, add it with the `html-control` skill first.
 2. **Write the test** with page-object members only (shape below).
 3. **If the sample lacks what the test needs**, add it to `samples/Bruinet.Samples.Blazor.App`

@@ -170,7 +170,7 @@ public sealed class WorkflowTests : IAsyncDisposable
             // <scraped page="/menu" from="explore/001-menu.nodes.jsonl" hash="1" />
             namespace Shop.UITests.Pages;
 
-            public sealed partial class MenuPage(IHtmlTestContext context) : HtmlPageObjectBase<MenuPage>(context)
+            public sealed partial class MenuPage(IHtmlTestContext context) : PageObjectBase<MenuPage>(context)
             {
                 public LabelControl<MenuPage> Title => new(this, Locator.ByCss("h1"));
             }
@@ -185,7 +185,7 @@ public sealed class WorkflowTests : IAsyncDisposable
         Assert.Equal([Path.Combine("Tests", "MenuTests.cs")], result.UsedElsewhere);
         Assert.False(File.Exists(Path.Combine(pages, "MenuPage.scraped.cs")));
         var draft = File.ReadAllText(Path.Combine(pages, "MainMenuPage.scraped.cs"));
-        Assert.Contains("public sealed partial class MainMenuPage(IHtmlTestContext context) : HtmlPageObjectBase<MainMenuPage>(context)", draft);
+        Assert.Contains("public sealed partial class MainMenuPage(IHtmlTestContext context) : PageObjectBase<MainMenuPage>(context)", draft);
         Assert.Contains("LabelControl<MainMenuPage> Title", draft);
         Assert.Contains("public MainMenuPage Self2 => this;", File.ReadAllText(Path.Combine(pages, "MainMenuPage.cs")));
         Assert.Contains("MenuPage? page", File.ReadAllText(Path.Combine(_folder, "Tests", "MenuTests.cs")));

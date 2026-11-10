@@ -7,7 +7,7 @@ using Bruinet.Html.Controls.Toggle;
 
 namespace Bruinet.Html.UITests.PageObjects;
 
-public sealed class FormControlsPage : HtmlPageObjectBase<FormControlsPage>
+public sealed class FormControlsPage : PageObjectBase<FormControlsPage>
 {
     public FormControlsPage(IHtmlTestContext context)
         : base(context)

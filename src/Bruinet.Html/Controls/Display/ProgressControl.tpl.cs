@@ -8,7 +8,7 @@ namespace Bruinet.Html.Controls.Display;
 /// <summary>
 /// HTML progress control. Wraps &lt;progress&gt;.
 /// </summary>
-public partial class ProgressControl<TScope> : ControlBase<TScope>
+public partial class ProgressControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public ProgressControl(IHtmlScope<TScope> scope, Locator locator)

@@ -15,7 +15,7 @@ namespace Bruinet.Blazor.Controls;
 /// A navigation menu: its items are links, one of which is active.
 /// </summary>
 
-public partial class NavMenuControl<TScope> : ControlBase<TScope>
+public partial class NavMenuControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region ItemCount (GetItemCount / WaitItemCount / AssertItemCount)

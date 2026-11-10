@@ -29,7 +29,7 @@ public class CollectionTests
 
     private static string KeySelectorOf(string? key) => $"[{ItemKeys.Attribute}=\"{key}\"]";
 
-    private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public Rows List => new(this);
     }

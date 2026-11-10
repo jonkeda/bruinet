@@ -9,7 +9,7 @@ using Bruinet.Html.Pages;
 namespace Bruinet.Html.Plain.Pages;
 
 /// <summary>The page /tables: drafted by the Scraper from a recording. Draft again to update; add to the other part, TablesPage.cs.</summary>
-public sealed partial class TablesPage(IHtmlTestContext context) : HtmlPageObjectBase<TablesPage>(context)
+public sealed partial class TablesPage(IHtmlTestContext context) : PageObjectBase<TablesPage>(context)
 {
     public LabelControl<TablesPage> DataTables => new(this, Locator.ByCss("h3:has-text('Data Tables')"));
 

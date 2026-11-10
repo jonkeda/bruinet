@@ -23,7 +23,7 @@ public sealed class ControlTemplatesTests : IDisposable
 
             namespace Shop.UITests.Controls;
 
-            public partial class Status<TScope> : ControlBase<TScope> where TScope : IHtmlScope<TScope>
+            public partial class Status<TScope> : ViewBase<TScope> where TScope : IHtmlScope<TScope>
             {
                 public Status(IHtmlScope<TScope> scope, string selectorOrId) : base(scope, selectorOrId) { }
 

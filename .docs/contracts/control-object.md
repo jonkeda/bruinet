@@ -50,7 +50,7 @@ element replaced before it can be read - fails the call and returns
 
 Html and Blazor control objects are generated the same way, from `.tpl.cs` templates under
 `src/Bruinet.Html/Controls` and `src/Bruinet.Blazor/Controls` (`tools\Scripts\CreateHtml.Bat`).
-The element type is `IHtmlElement`, and Html's `ControlBase<TScope>` has MAUI's `Run*` names and
+The element type is `IHtmlElement`, and Html's `ViewBase<TScope>` has MAUI's `Run*` names and
 signatures (R8), so the generator's output compiles on both. The Html capability bases implement
 the same Core interfaces as MAUI's (`IClickableControlObject`, `IEditableTextControlObject`,
 `ISelectorControlObject`, ...), so the public surface and the UAT verbs are the same.

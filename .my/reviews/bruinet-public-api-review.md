@@ -97,7 +97,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 1 | Make the engine internal: the driver and element classes, `Bdd`'s parser, binder and catalogs, `Bdd.Runner` messages. | Open. `Core.Calls` is out of it: public by decision. |
 | 2 | Delete the three `Placeholder` types, `WaitHelper.Pause`, and one of `WaitText`/`WaitTextEquals`. | Done in `24e3dcea`: `WaitHelper` internal, `WaitTextEquals` gone from all six stacks, `ITextControlObject` declares `WaitText`. |
 | 3 | Mark `Bruinet.Core.Legacy` obsolete or drop it. | Done: deleted in `7d03c22b`. |
-| 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Half done: five stacks agree. Left: Html and Blazor, and `Maui.Containers`. Since five say `ViewBase`, Html's `ControlBase` is now the one to rename, not the reverse. |
+| 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
 | 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
 | 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Open. |
@@ -128,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-The two cheap proposals are made, and the list now has a check, so the rest can follow one at a time.
-Next is the rename half of proposal 4 for Html and Blazor (`PageObjectBase`, `ViewBase`), which needs only a decision on the `Control` suffix; proposal 1 waits for a build of a consumer's suites against it.
+Proposal 4 is made as far as decided; its leftovers are small renames that can wait for a reason.
+Next is proposal 1, which needs a build of a consumer's suites against the engine made internal, then the rest of proposal 5's Core half (the shared collection base), which needs a design.

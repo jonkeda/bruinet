@@ -15,7 +15,7 @@ namespace Bruinet.Html.Controls.Display;
 /// HTML progress control. Wraps &lt;progress&gt;.
 /// </summary>
 
-public partial class ProgressControl<TScope> : ControlBase<TScope>
+public partial class ProgressControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region Value (GetValue / WaitValue / AssertValue)

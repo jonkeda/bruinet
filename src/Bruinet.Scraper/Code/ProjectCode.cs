@@ -12,7 +12,7 @@ namespace Bruinet.Scraper.Code;
 /// </summary>
 public static class ProjectCode
 {
-    private static readonly string[] PageBases = ["HtmlPageObjectBase", "BlazorPageObjectBase", "PageObjectBase"];
+    private static readonly string[] PageBases = ["PageObjectBase", "BlazorPageObjectBase"];
     private static readonly string[] ContainerBases = ["ContainerBase", "FrameScope"];
     private static readonly string[] CollectionBases = ["CollectionObjectBase"];
     private static readonly string[] ItemBases = ["ItemObjectBase"];
@@ -107,7 +107,7 @@ public static class ProjectCode
         : ContainerBases.Contains(baseName) ? CodeKind.Container
         : CollectionBases.Contains(baseName) ? CodeKind.Collection
         : ItemBases.Contains(baseName) ? CodeKind.Item
-        : baseName.EndsWith("ControlBase", StringComparison.Ordinal) ? CodeKind.Control
+        : baseName == "ViewBase" || baseName.EndsWith("ControlBase", StringComparison.Ordinal) ? CodeKind.Control
         : null;
 
     private static string? BaseName(TypeSyntax type) => type switch

@@ -7,7 +7,7 @@ namespace Bruinet.Html.Controls.Collection;
 /// <summary>
 /// HTML table control. Wraps &lt;table&gt;, reading its header and body cells as text.
 /// </summary>
-public partial class TableControl<TScope> : ControlBase<TScope>
+public partial class TableControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public TableControl(IHtmlScope<TScope> scope, Locator locator)

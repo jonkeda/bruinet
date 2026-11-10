@@ -17,7 +17,7 @@ public sealed record PageProbe(string? ReadyState, bool HasBody, string? Busy)
 }
 
 /// <summary>
-/// A context that answers a page's probe in one round trip. <c>HtmlPageObjectBase</c> uses it
+/// A context that answers a page's probe in one round trip. <c>PageObjectBase</c> uses it
 /// when its context has it, and otherwise asks for idle and the body's attribute apart.
 /// </summary>
 public interface IHtmlPageProbe

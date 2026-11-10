@@ -9,7 +9,7 @@ namespace Bruinet.Html.Controls;
 /// LongPress.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public abstract partial class ClickableControlBase<TScope> : ControlBase<TScope>, IClickableControlObject<TScope>
+public abstract partial class ClickableControlBase<TScope> : ViewBase<TScope>, IClickableControlObject<TScope>
     where TScope : IHtmlScope<TScope>
 {
     protected ClickableControlBase(IHtmlScope<TScope> scope, Locator locator)

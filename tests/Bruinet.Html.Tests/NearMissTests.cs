@@ -30,7 +30,7 @@ public sealed class NearMissTests : IDisposable
 
     public void Dispose() => File.Delete(_summary);
 
-    private sealed class Page(IHtmlTestContext context, string id) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context, string id) : PageObjectBase<Page>(context)
     {
         public override bool IsLoaded() => true;
 

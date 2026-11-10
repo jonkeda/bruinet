@@ -7,9 +7,9 @@ namespace Bruinet.Html.Controls.Display;
 /// <summary>
 /// HTML label/text display control. Wraps any element used for text display
 /// (&lt;label&gt;, &lt;span&gt;, &lt;p&gt;, &lt;h1-h6&gt;, etc.). Its text members come from
-/// <see cref="ControlBase{TScope}"/>.
+/// <see cref="ViewBase{TScope}"/>.
 /// </summary>
-public class LabelControl<TScope> : ControlBase<TScope>, ITextControlObject<TScope>
+public class LabelControl<TScope> : ViewBase<TScope>, ITextControlObject<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public LabelControl(IHtmlScope<TScope> scope, Locator locator)

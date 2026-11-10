@@ -87,7 +87,7 @@ public static class PageDrafter
 
     private static string Code(ScrapeProject project, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor)
     {
-        var baseClass = blazor ? "BlazorPageObjectBase" : "HtmlPageObjectBase";
+        var baseClass = blazor ? "BlazorPageObjectBase" : "PageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
         foreach (var member in members)
             namespaces.Add(member.Namespace);

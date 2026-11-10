@@ -43,7 +43,7 @@ public sealed class ActionPacingTests
         _field.Setup(e => e.Clear()).Callback(() => _value = string.Empty);
     }
 
-    private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public override bool IsLoaded() => true;
 

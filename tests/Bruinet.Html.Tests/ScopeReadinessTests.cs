@@ -39,7 +39,7 @@ public class ScopeReadinessTests
         _target.Setup(e => e.TryFindElement(It.Is<Locator>(l => l.Value == "Inner"))).Returns(_target.Object);
     }
 
-    private sealed class Page(IHtmlTestContext context, BusySignal busySignal = BusySignal.Optional) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context, BusySignal busySignal = BusySignal.Optional) : PageObjectBase<Page>(context)
     {
         protected override BusySignal BusySignal => busySignal;
 

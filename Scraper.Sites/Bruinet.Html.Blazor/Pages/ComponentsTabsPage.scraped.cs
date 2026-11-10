@@ -9,7 +9,7 @@ using Bruinet.Html.Pages;
 namespace Bruinet.Html.Blazor.Pages;
 
 /// <summary>The page /components/tabs: drafted by the Scraper from a recording. Draft again to update; add to the other part, ComponentsTabsPage.cs.</summary>
-public sealed partial class ComponentsTabsPage(IHtmlTestContext context) : HtmlPageObjectBase<ComponentsTabsPage>(context)
+public sealed partial class ComponentsTabsPage(IHtmlTestContext context) : PageObjectBase<ComponentsTabsPage>(context)
 {
     public ButtonControl<ComponentsTabsPage> OpenSearchDialog => new(this, Locator.ByCss("button[aria-label='Open search dialog']"));
 

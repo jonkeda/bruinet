@@ -4,7 +4,7 @@ using Bruinet.Html.Controls.Text;
 
 namespace Bruinet.Html.UITests.PageObjects;
 
-public sealed class LoginPage : HtmlPageObjectBase<LoginPage>
+public sealed class LoginPage : PageObjectBase<LoginPage>
 {
     public LoginPage(IHtmlTestContext context)
         : base(context)

@@ -44,7 +44,7 @@ public class PageProbeTests
         _target.Setup(e => e.Enabled).Returns(true);
     }
 
-    private sealed class Page(IHtmlTestContext context, BusySignal busySignal) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context, BusySignal busySignal) : PageObjectBase<Page>(context)
     {
         protected override BusySignal BusySignal => busySignal;
 

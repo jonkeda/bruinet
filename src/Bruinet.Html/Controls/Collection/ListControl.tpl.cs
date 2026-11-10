@@ -8,7 +8,7 @@ namespace Bruinet.Html.Controls.Collection;
 /// HTML list control. Wraps &lt;ul&gt; and &lt;ol&gt;, reading their &lt;li&gt; items as text. For
 /// rows that are acted on, use a collection (<c>CollectionObjectBase</c>).
 /// </summary>
-public partial class ListControl<TScope> : ControlBase<TScope>
+public partial class ListControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     public ListControl(IHtmlScope<TScope> scope, Locator locator)

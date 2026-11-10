@@ -25,7 +25,7 @@ public class ConfirmTests
         _input.Setup(e => e.Enabled).Returns(true);
     }
 
-    private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public TextInputControl<Page> Title => new(this, Locator.ByAutomationId("Title"));
     }

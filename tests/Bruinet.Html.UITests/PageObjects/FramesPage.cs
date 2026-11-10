@@ -5,7 +5,7 @@ using Bruinet.Html.Controls.Display;
 namespace Bruinet.Html.UITests.PageObjects;
 
 /// <summary>The sample's /frames page: a status on the page, and an iframe with a status and a button of its own.</summary>
-public sealed class FramesPage : HtmlPageObjectBase<FramesPage>
+public sealed class FramesPage : PageObjectBase<FramesPage>
 {
     public FramesPage(IHtmlTestContext context)
         : base(context)

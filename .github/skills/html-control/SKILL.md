@@ -16,7 +16,7 @@ the element type. Only the base classes and the platform probe differ.
 
 | Kind | Base | Example |
 | --- | --- | --- |
-| Simple control | `ControlBase<TScope>` or a family base (`ClickableControlBase`, `FocusableControlBase`, `ToggleControlBase`, `RangeControlBase`, `SelectorControlBase`, `ScrollableControlBase`) | `TextInputControl<TScope>` |
+| Simple control | `ViewBase<TScope>` or a family base (`ClickableControlBase`, `FocusableControlBase`, `ToggleControlBase`, `RangeControlBase`, `SelectorControlBase`, `ScrollableControlBase`) | `TextInputControl<TScope>` |
 | Container or component | `ContainerBase<TParent, TSelf>`; parts are controls declared on it | `TodoStatus<TParent>` in the Todo web tests |
 | Frame | `FrameScope<TParent>` | `FramesPage.Inner` |
 | Collection with rows | `CollectionObjectBase<TParent, TSelf, TItem>` plus `ItemObjectBase<TSelf>` | `RecyclingListPage.TodoRows` |

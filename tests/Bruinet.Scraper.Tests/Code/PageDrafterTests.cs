@@ -77,7 +77,7 @@ public sealed class PageDrafterTests : IDisposable
         Assert.StartsWith("// <scraped page=\"/orders/{id}\" from=\"2026-09-30-explore/001-order.nodes.jsonl\" hash=\"", draft.Code);
         Assert.Contains("using Bruinet.Html.Controls.Buttons;\nusing Bruinet.Html.Interfaces;\nusing Bruinet.Html.Pages;", draft.Code.ReplaceLineEndings("\n"));
         Assert.Contains("namespace Shop.UITests.Pages;", draft.Code);
-        Assert.Contains("public sealed partial class OrderPage(IHtmlTestContext context) : HtmlPageObjectBase<OrderPage>(context)", draft.Code);
+        Assert.Contains("public sealed partial class OrderPage(IHtmlTestContext context) : PageObjectBase<OrderPage>(context)", draft.Code);
         Assert.Contains("    public ButtonControl<OrderPage> OrderDetails => new(this, Locator.ByDataTestId(\"order-details\"));", draft.Code);
         Assert.Single(draft.Members);
         Assert.Contains("    // Not drafted: shown only after a click", draft.Code);

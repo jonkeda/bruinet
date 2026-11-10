@@ -14,7 +14,7 @@ namespace Bruinet.Html.Controls.Collection;
 /// HTML table control. Wraps &lt;table&gt;, reading its header and body cells as text.
 /// </summary>
 
-public partial class TableControl<TScope> : ControlBase<TScope>
+public partial class TableControl<TScope> : ViewBase<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region RowCount (GetRowCount / WaitRowCount / AssertRowCount)

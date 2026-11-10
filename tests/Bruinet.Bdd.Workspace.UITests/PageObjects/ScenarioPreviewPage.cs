@@ -4,7 +4,7 @@ using Bruinet.Html.Controls.Display;
 namespace Bruinet.Bdd.Workspace.UITests.PageObjects;
 
 /// <summary>The Scenario Preview page, as Visual Studio's and VS Code's webviews show it.</summary>
-public sealed class ScenarioPreviewPage(IHtmlTestContext context) : HtmlPageObjectBase<ScenarioPreviewPage>(context)
+public sealed class ScenarioPreviewPage(IHtmlTestContext context) : PageObjectBase<ScenarioPreviewPage>(context)
 {
     /// <summary>"Parsed only", or "Bound in" a suite.</summary>
     public LabelControl<ScenarioPreviewPage> BindState => new(this, "#uat-state");

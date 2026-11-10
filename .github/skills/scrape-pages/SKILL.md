@@ -36,9 +36,9 @@ read them first.
    `check_code` generates the public members. Its first line is the brief's. Say what it will
    offer, show the code, then `write_code`.
 5. **Pages second.** One page object per recorded page the user wants, in the `Pages` folder:
-   `HtmlPageObjectBase<TSelf>`, or `BlazorPageObjectBase<TSelf>` for a Blazor app that sets
+   `PageObjectBase<TSelf>`, or `BlazorPageObjectBase<TSelf>` for a Blazor app that sets
    Bruinet's busy signal (`data-busy` on `<body>`, as the Blazor sample does): it waits until the
-   app is interactive. A Blazor app without it (a third party's) takes `HtmlPageObjectBase`. It uses the controls (`match_controls` says which occur on the
+   app is interactive. A Blazor app without it (a third party's) takes `PageObjectBase`. It uses the controls (`match_controls` says which occur on the
    page). Its first line is `scraped_header` for the page. `suggest_controls` gives a member per
    thing a test acts on or reads, with the control that fits (the `Bruinet.Blazor.Controls` one in
    a Blazor project) and a locator: start from it, rename for what the user sees, drop what the

@@ -5,7 +5,7 @@ using Bruinet.Html.Scopes;
 
 namespace Bruinet.Blazor.Pages;
 
-public abstract class BlazorPageObjectBase<TSelf> : HtmlPageObjectBase<TSelf>
+public abstract class BlazorPageObjectBase<TSelf> : PageObjectBase<TSelf>
     where TSelf : BlazorPageObjectBase<TSelf>
 {
     protected BlazorPageObjectBase(IHtmlTestContext context) : base(context) { }

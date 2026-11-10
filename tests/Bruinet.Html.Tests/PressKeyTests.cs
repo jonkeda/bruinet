@@ -23,7 +23,7 @@ public class PressKeyTests
         _canvas.Setup(e => e.Enabled).Returns(true);
     }
 
-    private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
+    private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public LabelControl<Page> Map => new(this, Locator.ByAutomationId("Map"));
     }
