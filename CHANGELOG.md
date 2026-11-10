@@ -63,6 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- `tools/Scripts/check-api-changes.ps1` fails a change that breaks the public API without a row in the api-upgrade
+  skill's change list; CI runs it on pull requests.
 - The iOS alert button order and the full row frames are driver facts (`IMauiDriver.ListsCancelFirstInTwoButtonAlerts`,
   `ReportsFullRowFrames`); `ContentDialog` and `CollectionObjectBase` no longer branch on `MauiPlatform.iOS` (AD-010).
 - The tests that record `Interactions` share one serial collection; a parallel report leaked into another test's log.

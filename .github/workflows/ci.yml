@@ -35,6 +35,11 @@ jobs:
         run: |
           $reason = if ($env:BODY -match 'Tests removed because:\s*(.+)') { $Matches[1] } else { '' }
           ./tools/Scripts/check-test-guard.ps1 -Base origin/${{ github.base_ref }} -Head HEAD -Reason $reason
+      # A pull request that breaks the public API carries its row in the consumers' change list
+      # (skill api-upgrade).
+      - name: API changes listed for consumers
+        shell: pwsh
+        run: ./tools/Scripts/check-api-changes.ps1 -Base origin/${{ github.base_ref }} -Head HEAD
 
   build-and-test:
     name: Build and unit test

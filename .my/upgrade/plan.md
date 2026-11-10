@@ -144,13 +144,13 @@ consumer code and what to write instead. It exists since 45826976 and got its Ma
 
 | # | What | Done when |
 | --- | --- | --- |
-| U8.1 | Rows for the API changes after U7: `IMauiDriver.IsAnotherAppInFront`/`ReturnToApp` and `IMauiElement.RevealClearOfEdges` (d459825c, d895969b), `IControlHost<TElement>.ScopeIsAbsent` (6256e176): a member added to an interface breaks whoever implements it. `ScrollView.ScrollTo(…, int? timeoutMs = null)` (b1cee0ae) needs a recompile only: say so in a row. | `git diff 7f972d8c..move -- 'src/*/PublicAPI.Unshipped.txt'` has no removed or interface line without a row |
-| U8.2 | The skill's rule "added lines alone need no row" corrected: an added interface or abstract member needs one. | `SKILL.md` says so |
+| U8.1 | **Done.** Rows for the API changes after U7: `IMauiDriver.IsAnotherAppInFront`/`ReturnToApp` and `IMauiElement.RevealClearOfEdges` (d459825c, d895969b), `IControlHost<TElement>.ScopeIsAbsent` (6256e176): a member added to an interface breaks whoever implements it. `ScrollView.ScrollTo(…, int? timeoutMs = null)` (b1cee0ae) needs a recompile only: say so in a row. | `git diff 7f972d8c..move -- 'src/*/PublicAPI.Unshipped.txt'` has no removed or interface line without a row |
+| U8.2 | **Done.** The skill's rule "added lines alone need no row" corrected: an added interface or abstract member needs one. | `SKILL.md` says so |
 | U8.3 | A recipe per ported stack (`references/wpf.md`, `winforms.md`, `stride.md`): a first-model page object and a control before and after, taken from the suites' own diffs in 89d61307, 5646823d and 57ceff95, in the order to do it (usings, page base and `ReadyLocator`, controls and dropped controls, waits, fixture). The Made rows are one line each; a project with fifty page objects needs the worked example. | Each recipe's after-code is copied from a file that compiles in `tests/` or `samples/` |
 | U8.4 | Prove the list on a consumer that is not Bruinet's: apply the Made rows to one project still on the first model, by the skill's steps alone; every build error no row explains becomes a row. Tomorrow does not count: it uses Html only and built unchanged. | That project builds and its smoke tests pass; the rows it added are committed |
 | U8.5 | The skill's Known consumers table filled with the projects the owner names, each with how it takes Bruinet (submodule, package, copy). | The owner has read the table |
 | U8.6 | Found from the docs: `docs/guides/migration.md` and `CHANGELOG.md`'s Changed section point at the list; `AGENTS.md` names the skill beside the others. | A reader starting at the README reaches the list in two links |
-| U8.7 | A check, so the list cannot fall behind again: a test in `Bruinet.Core.Tests` (beside `SolutionTests`) or a step in `tools/Scripts` that fails when a commit removes or alters a `PublicAPI.Unshipped.txt` line and `changes.md` is untouched. | The check fails on a seeded removal and passes on `move` |
+| U8.7 | **Done:** `tools/Scripts/check-api-changes.ps1`, run by CI's test-guard job. A check, so the list cannot fall behind again: a test in `Bruinet.Core.Tests` (beside `SolutionTests`) or a step in `tools/Scripts` that fails when a commit removes or alters a `PublicAPI.Unshipped.txt` line and `changes.md` is untouched. | The check fails on a seeded removal and passes on `move` |
 
 Order: U8.1 and U8.2 now (the list is already behind by four commits), U8.3 before U8.4, U8.7 last.
 U8.4 and U8.5 need the owner: which projects, and which one goes first (Q6).
@@ -345,4 +345,8 @@ Left besides U8:
 - A `wpf-control` (or one `desktop-control`) skill, as Android and Html have one.
 - The 13 MAUI-on-Windows collection failures and 2 flaky tests found in U2 are MAUI's, not this plan's.
 
-Expected next action: U8.1 and U8.2; the owner answers Q6.
+U8.1, U8.2 and U8.7 done 2026-11-10: four rows (all four additions have default bodies, so none
+breaks a consumer; `ScrollTo` needs a rebuild only), the skill's rule corrected, and
+`check-api-changes.ps1` fails on a seeded removal and passes on `move`.
+
+Expected next action: U8.3 recipes; the owner answers Q6.

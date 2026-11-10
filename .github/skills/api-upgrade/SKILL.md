@@ -15,7 +15,14 @@ The review behind the first rows is `.my/reviews/bruinet-public-api-review.md`.
 ## When Bruinet's API changes
 
 A change is an API change when it edits a `src/*/PublicAPI.Unshipped.txt` by removing or altering a
-line. Added lines alone need no row.
+line, or adds a member to an interface or an abstract member to a class: whoever implements or
+derives from it no longer compiles. Other added lines need no row. An interface member added with a
+default body breaks no one; give it a row anyway that says so, since the check below cannot tell.
+
+`tools/Scripts/check-api-changes.ps1` fails when a change removes or alters a
+`PublicAPI.Unshipped.txt` line, or adds an interface or abstract member to a type that was already
+public, and `references/changes.md` is untouched in the same change. Run it before a commit; CI runs
+it on pull requests.
 
 1. In the same commit, add a row to `references/changes.md` under `## Made`, newest first. If the
    change was listed under `## Planned`, move that row and fill in what was really done.
