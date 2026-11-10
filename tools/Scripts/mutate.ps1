@@ -52,6 +52,7 @@ $libraries = [ordered]@{
     'Bruinet.Core'         = 'Bruinet.Core.Tests'
     'Bruinet.Bdd'          = 'Bruinet.Bdd.Tests'
     'Bruinet.TestData'     = 'Bruinet.TestData.Tests'
+    'Bruinet.Traits'       = 'Bruinet.Traits.Tests'
     'Bruinet.Mocking.Data' = 'Bruinet.Mocking.Data.Tests'
     'Bruinet.Recording'    = 'Bruinet.Recording.Tests'
     'Bruinet.Html'         = 'Bruinet.Html.Bunit.Tests'

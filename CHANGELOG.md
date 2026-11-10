@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `InvokeCommand` (Button control type plus Invoke for a container with a command); peers report the view's
   `IsEnabled`; Border and page peers report the class names `Border` and `Page`. `BruinetVerbRules.Publish` declares
   gesture verbs for every element matching a rule. Moved from Exact Construction.
+- `Bruinet.Traits`: typed trait attributes for xUnit 2. Tiers `[Unit]`, `[Integration]`, `[HermeticUi]`, `[Live]` and
+  `[Video]` write `Pyramid` (Unit, Integration and Video also write the matching `Category`); owners `[Module]`,
+  `[Component]` and `[CommonArea]`; run sets `[Smoke]`, `[Uat]` and `[Contract]`; and `[Journey]`. `TraitCheck`
+  reports tests with no tier, more than one, or no known owner, reading plain `[Trait]` too.
 - **Breaking:** Stride is on the call model. `Bruinet.Stride` has its own element (`IStrideElement`, a handle on a UI element
   by its identity, read fresh from the game each time; gone is stale), driver (`IStrideDriver`, the pipe: a broken pipe is
   `AppUnavailableException`), scope, page and context interfaces, generated controls (`Button`, `ToggleButton`, `EditText`,

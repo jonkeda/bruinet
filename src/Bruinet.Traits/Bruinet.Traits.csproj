@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <RootNamespace>Bruinet.Traits</RootNamespace>
+    <Description>Typed xUnit trait attributes for the test tier, owner, journey and run set, and a check that every test in an assembly carries one tier and one owner.</Description>
+    <PackageId>Bruinet.Traits</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.extensibility.core" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bruinet.Traits.Tests" />
+  </ItemGroup>
+
+</Project>

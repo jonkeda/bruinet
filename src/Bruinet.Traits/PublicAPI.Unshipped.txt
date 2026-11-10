@@ -1,0 +1,68 @@
+#nullable enable
+Bruinet.Traits.BruinetTraitAttribute
+Bruinet.Traits.BruinetTraitAttribute.Traits.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!
+Bruinet.Traits.BruinetTraitDiscoverer
+Bruinet.Traits.BruinetTraitDiscoverer.BruinetTraitDiscoverer() -> void
+Bruinet.Traits.BruinetTraitDiscoverer.GetTraits(Xunit.Abstractions.IAttributeInfo! traitAttribute) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string!>>!
+Bruinet.Traits.CommonAreaAttribute
+Bruinet.Traits.CommonAreaAttribute.CommonAreaAttribute(string! name) -> void
+Bruinet.Traits.CommonAreaAttribute.Name.get -> string!
+Bruinet.Traits.ComponentAttribute
+Bruinet.Traits.ComponentAttribute.ComponentAttribute(string! name) -> void
+Bruinet.Traits.ComponentAttribute.Name.get -> string!
+Bruinet.Traits.ContractAttribute
+Bruinet.Traits.ContractAttribute.ContractAttribute() -> void
+Bruinet.Traits.HermeticUiAttribute
+Bruinet.Traits.HermeticUiAttribute.HermeticUiAttribute() -> void
+Bruinet.Traits.IntegrationAttribute
+Bruinet.Traits.IntegrationAttribute.IntegrationAttribute() -> void
+Bruinet.Traits.JourneyAttribute
+Bruinet.Traits.JourneyAttribute.Id.get -> string!
+Bruinet.Traits.JourneyAttribute.JourneyAttribute(string! id) -> void
+Bruinet.Traits.LiveAttribute
+Bruinet.Traits.LiveAttribute.LiveAttribute() -> void
+Bruinet.Traits.ModuleAttribute
+Bruinet.Traits.ModuleAttribute.ModuleAttribute(string! name) -> void
+Bruinet.Traits.ModuleAttribute.Name.get -> string!
+Bruinet.Traits.SmokeAttribute
+Bruinet.Traits.SmokeAttribute.SmokeAttribute() -> void
+Bruinet.Traits.TierNames
+Bruinet.Traits.TraitCheck
+Bruinet.Traits.TraitCheckOptions
+Bruinet.Traits.TraitCheckOptions.KnownCommonAreas.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
+Bruinet.Traits.TraitCheckOptions.KnownCommonAreas.init -> void
+Bruinet.Traits.TraitCheckOptions.KnownComponents.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
+Bruinet.Traits.TraitCheckOptions.KnownComponents.init -> void
+Bruinet.Traits.TraitCheckOptions.KnownModules.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
+Bruinet.Traits.TraitCheckOptions.KnownModules.init -> void
+Bruinet.Traits.TraitCheckOptions.TraitCheckOptions() -> void
+Bruinet.Traits.TraitKeys
+Bruinet.Traits.TraitProblem
+Bruinet.Traits.TraitProblem.Problem.get -> string!
+Bruinet.Traits.TraitProblem.Problem.init -> void
+Bruinet.Traits.TraitProblem.Test.get -> string!
+Bruinet.Traits.TraitProblem.Test.init -> void
+Bruinet.Traits.TraitProblem.TraitProblem(string! Test, string! Problem) -> void
+Bruinet.Traits.UatAttribute
+Bruinet.Traits.UatAttribute.UatAttribute() -> void
+Bruinet.Traits.UnitAttribute
+Bruinet.Traits.UnitAttribute.UnitAttribute() -> void
+Bruinet.Traits.VideoAttribute
+Bruinet.Traits.VideoAttribute.VideoAttribute() -> void
+const Bruinet.Traits.BruinetTraitDiscoverer.AssemblyName = "Bruinet.Traits" -> string!
+const Bruinet.Traits.BruinetTraitDiscoverer.TypeName = "Bruinet.Traits.BruinetTraitDiscoverer" -> string!
+const Bruinet.Traits.TierNames.HermeticUi = "Hermetic UI" -> string!
+const Bruinet.Traits.TierNames.Integration = "Integration" -> string!
+const Bruinet.Traits.TierNames.Live = "Live" -> string!
+const Bruinet.Traits.TierNames.Unit = "Unit" -> string!
+const Bruinet.Traits.TierNames.Video = "Video" -> string!
+const Bruinet.Traits.TraitKeys.Category = "Category" -> string!
+const Bruinet.Traits.TraitKeys.CommonArea = "CommonArea" -> string!
+const Bruinet.Traits.TraitKeys.Component = "Component" -> string!
+const Bruinet.Traits.TraitKeys.Journey = "Journey" -> string!
+const Bruinet.Traits.TraitKeys.Module = "Module" -> string!
+const Bruinet.Traits.TraitKeys.Pyramid = "Pyramid" -> string!
+static Bruinet.Traits.TierNames.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Traits.TraitCheck.Check(System.Reflection.Assembly! assembly, Bruinet.Traits.TraitCheckOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>!
+static Bruinet.Traits.TraitCheck.ReadTraits(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!>!
+static Bruinet.Traits.TraitCheck.Report(System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>! problems) -> string!
