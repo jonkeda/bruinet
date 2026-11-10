@@ -1,4 +1,4 @@
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Html;
 
 namespace Bruinet.Scraper.Tests.Html;

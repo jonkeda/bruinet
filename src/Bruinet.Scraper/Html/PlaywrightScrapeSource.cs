@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Threading.Channels;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Explore;
 using Microsoft.Playwright;
 

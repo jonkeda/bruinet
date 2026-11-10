@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Recordings;
 

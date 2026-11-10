@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Recordings;
 
 namespace Bruinet.Scraper.Projects;

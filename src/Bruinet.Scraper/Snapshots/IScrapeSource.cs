@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Scraping;
+namespace Bruinet.Scraper.Snapshots;
 
 /// <summary>
 /// Where the Scraper records from: a browser for Html, and later an app's UI Automation tree. One per

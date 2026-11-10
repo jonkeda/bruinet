@@ -1,5 +1,5 @@
 using System.Globalization;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using System.Text.Json.Serialization;
 
 namespace Bruinet.Scraper.Projects;

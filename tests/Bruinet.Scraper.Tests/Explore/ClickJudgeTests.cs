@@ -1,4 +1,4 @@
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Explore;
 using Bruinet.Scraper.Projects;
 

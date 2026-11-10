@@ -1,5 +1,5 @@
 using System.Text.Json.Nodes;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Projects;
 using Xunit;
 

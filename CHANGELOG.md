@@ -65,6 +65,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** `Bruinet.Core.Scraping` moved into the Scraper as `Bruinet.Scraper.Snapshots`; Core no longer declares
+  the scraper's snapshot model (review proposal 7).
 - **Breaking:** `DeviceFact` moved to `Bruinet.Maui.Testing` and `BrowserFact` to `Bruinet.Html.Testing`, beside the
   platforms they skip for; the heads (`MauiHeads`, `WebHeads`) stay in Core (review proposal 7).
 - **Breaking:** the step attributes (`BddGiven`, `BddWhen`, `BddThen`, `BddState`, `BddNamespace`) and `StepNames` moved

@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Scraping;
+namespace Bruinet.Scraper.Snapshots;
 
 /// <summary>
 /// Something the person did in the app while a source records actions (<see cref="IScrapeSource.StartActionsAsync"/>):

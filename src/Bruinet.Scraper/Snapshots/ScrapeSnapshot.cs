@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Scraping;
+namespace Bruinet.Scraper.Snapshots;
 
 /// <summary>A page or window captured at one moment: its nodes in document order.</summary>
 public sealed record ScrapeSnapshot

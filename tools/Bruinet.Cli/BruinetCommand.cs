@@ -8,7 +8,7 @@ using Bruinet.Cli.Scenario;
 using Bruinet.Cli.Scrape;
 using Bruinet.Cli.Selection;
 using Bruinet.Cli.Servers;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.DataValidator;
 using Bruinet.Scraper.Service;
 using Microsoft.Playwright;

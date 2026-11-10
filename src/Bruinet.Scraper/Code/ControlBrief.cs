@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Core.Utilities;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Projects;

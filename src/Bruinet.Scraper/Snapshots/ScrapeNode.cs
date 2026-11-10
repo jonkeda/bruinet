@@ -1,4 +1,4 @@
-namespace Bruinet.Core.Scraping;
+namespace Bruinet.Scraper.Snapshots;
 
 /// <summary>
 /// One node of a captured UI tree: an element, or the root of a shadow tree. The same shape for every

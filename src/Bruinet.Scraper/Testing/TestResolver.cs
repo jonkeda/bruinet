@@ -1,6 +1,6 @@
 using Bruinet.Bdd;
 using System.Globalization;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 using Bruinet.Core.Testing;
 using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Html;

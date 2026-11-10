@@ -1,6 +1,6 @@
 namespace Bruinet.Scraper.Html;
 
-/// <summary>What an Html node keeps in <see cref="Bruinet.Core.Scraping.ScrapeNode.Attributes"/>.</summary>
+/// <summary>What an Html node keeps in <see cref="Bruinet.Scraper.Snapshots.ScrapeNode.Attributes"/>.</summary>
 public static class HtmlAttributes
 {
     /// <summary>

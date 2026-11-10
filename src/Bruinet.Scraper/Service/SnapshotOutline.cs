@@ -1,5 +1,5 @@
 using System.Text;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 
 namespace Bruinet.Scraper.Service;
 

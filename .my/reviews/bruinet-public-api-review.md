@@ -39,7 +39,7 @@ Nothing is shipped yet, so every proposal below is still free. After the first `
 - Every driver and element class is public (`PlaywrightHtmlElement`, `BunitHtmlElement`, `AppiumMauiElement`, `FlaUIMauiElement`, `FlaUIWpfElement`, `FlaUIWinFormsElement`, `StrideElement`), while the rule for tests is that they never touch a driver or an element.
 - Three empty `public static class Placeholder` types still ship in `Bruinet.Core` (`Attributes`, `Locators`, `Logging`).
 - `Bruinet.Core.Utilities.WaitHelper.Pause(int)` is still a public sleep in a framework whose rule is no sleeps.
-- `Bruinet.Core.Utilities.MarkdownTable*`, `Bruinet.Core.Scraping.*` and `Bruinet.Core.Composition.*` are tooling support that every test project sees in IntelliSense.
+- `Bruinet.Core.Utilities.MarkdownTables` is tooling support that every test project sees in IntelliSense; `Scraping` has moved to the Scraper, and `Composition` turned out to be test composition every stack uses.
 
 `Bruinet.Core.Calls` is no longer on this list: it is public on purpose, so a custom stack can stand on it.
 
@@ -100,7 +100,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
 | 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
-| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Step attributes done (`e9d3b2c4`, package `Bruinet.Bdd.Abstractions`); `DeviceFact` and `BrowserFact` moved to Maui and Html. The heads stay in Core: they are the run's `BRUINET_HEAD` setting, read by `Bdd`'s skip rules, Uat and Core's timings, none of which references a platform. Left: `Scraping`, `Composition`, `MarkdownTable`. |
+| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Done as far as it goes: the step attributes are in `Bruinet.Bdd.Abstractions` (`e9d3b2c4`), `DeviceFact` and `BrowserFact` on their platforms (`a0ffa1eb`), `Scraping` in the Scraper. Staying in Core, with reason: the heads (the run's `BRUINET_HEAD`, read by Bdd, Uat and Core), `Composition` (`[TestModuleScan]`, `TestPages`, used by every stack, Uat, Bdd and consumers) and `MarkdownTables` (Core, Bdd and the Scraper). |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Open. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
@@ -128,5 +128,6 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposal 7's last part moves `Scraping`, `Composition` and `MarkdownTable` to the tools that use them; each needs a look at who reads it first.
-The rest of proposal 5 (the shared collection base) and proposal 11 (one options type per platform) each need a design first.
+Proposals 1, 2, 4 and 7 are made as far as they go, 5 and 12 started, 13 in working order.
+What is left needs a design or a decision before code: the shared collection base (5), the signature rules (8), `timeoutMs` against `TimeSpan` (9), the logger's record (10) and one options type per platform (11).
+Proposal 9 is the smallest decision: my proposal stands, `int? timeoutMs` on control verbs and `TimeSpan` in options and settings.

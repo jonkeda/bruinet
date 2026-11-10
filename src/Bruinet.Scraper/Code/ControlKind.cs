@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using Bruinet.Core.Scraping;
+using Bruinet.Scraper.Snapshots;
 
 namespace Bruinet.Scraper.Code;
 
