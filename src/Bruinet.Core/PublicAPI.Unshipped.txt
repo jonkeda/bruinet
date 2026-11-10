@@ -78,7 +78,6 @@ Bruinet.Core.Artifacts.TestArtifactSuite.Name.set -> void
 Bruinet.Core.Artifacts.TestArtifactSuite.Target.get -> string?
 Bruinet.Core.Artifacts.TestArtifactSuite.Target.set -> void
 Bruinet.Core.Artifacts.TestArtifactSuite.TestArtifactSuite() -> void
-Bruinet.Core.Attributes.Placeholder
 Bruinet.Core.Calls.AttemptContext
 Bruinet.Core.Calls.AttemptContext.AttemptContext(Bruinet.Core.Calls.Deadline deadline, int animationMs) -> void
 Bruinet.Core.Calls.AttemptContext.Deadline.get -> Bruinet.Core.Calls.Deadline
@@ -559,7 +558,7 @@ Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEmpty(bool? expecte
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.AssertTime(System.TimeSpan? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.GetTime() -> System.TimeSpan?
@@ -601,7 +600,6 @@ Bruinet.Core.Locators.LocatorStrategy.PartialLinkText = 8 -> Bruinet.Core.Locato
 Bruinet.Core.Locators.LocatorStrategy.TagName = 9 -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Core.Locators.LocatorStrategy.Text = 6 -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Core.Locators.LocatorStrategy.XPath = 5 -> Bruinet.Core.Locators.LocatorStrategy
-Bruinet.Core.Locators.Placeholder
 Bruinet.Core.Logging.ConsoleTestLogger
 Bruinet.Core.Logging.ConsoleTestLogger.ConsoleTestLogger() -> void
 Bruinet.Core.Logging.ConsoleTestLogger.Dispose() -> void
@@ -670,7 +668,6 @@ Bruinet.Core.Logging.NullTestLogger.LogNavigation(string! testName, string! sour
 Bruinet.Core.Logging.NullTestLogger.LogScreenshot(string! testName, string! pageName, string! screenshotPath, Bruinet.Core.Logging.ScreenshotReason reason) -> void
 Bruinet.Core.Logging.NullTestLogger.LogWait(string! testName, string! pageName, string! controlId, string! waitType, bool success, int elapsedMs) -> void
 Bruinet.Core.Logging.NullTestLogger.NullTestLogger() -> void
-Bruinet.Core.Logging.Placeholder
 Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.AssertionFailure = 1 -> Bruinet.Core.Logging.ScreenshotReason
 Bruinet.Core.Logging.ScreenshotReason.ElementNotFound = 4 -> Bruinet.Core.Logging.ScreenshotReason
@@ -1117,7 +1114,6 @@ Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.get -> int
 Bruinet.Core.Utilities.MarkdownTableRow.LineNumber.init -> void
 Bruinet.Core.Utilities.MarkdownTableRow.MarkdownTableRow(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Cells, int LineNumber) -> void
 Bruinet.Core.Utilities.MarkdownTables
-Bruinet.Core.Utilities.WaitHelper
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRUINET_TEST_SUITE" -> string!
@@ -1286,4 +1282,3 @@ static Bruinet.Core.Utilities.MarkdownTables.IsSeparatorRow(string! line) -> boo
 static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
-static Bruinet.Core.Utilities.WaitHelper.Pause(int milliseconds) -> void

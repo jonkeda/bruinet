@@ -1,4 +1,3 @@
-using System.Diagnostics;
 
 namespace Bruinet.Uat;
 
@@ -81,17 +80,7 @@ public static class UatControlAssertions
     {
         ArgumentNullException.ThrowIfNull(condition);
 
-        // Inside a running call the caller's budget bounds it (R2).
-        timeoutMs = Bruinet.Core.Calls.CallBudget.Within(timeoutMs);
-        var stopwatch = Stopwatch.StartNew();
-        while (stopwatch.ElapsedMilliseconds < timeoutMs)
-        {
-            if (condition())
-                return true;
-
-            Bruinet.Core.Utilities.WaitHelper.Pause(100);
-        }
-
-        return condition();
+        // Inside a running call the caller's budget bounds it (R2); Settle applies it.
+        return Bruinet.Core.Calls.Settle.Until(condition, timeoutMs, pollingIntervalMs: 100);
     }
 }

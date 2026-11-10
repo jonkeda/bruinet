@@ -171,17 +171,6 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
         return RunSetWithElement(text, element => EnterCore(element, text, timeoutMs), timeoutMs);
     }
 
-    /// <summary>
-    /// Waits until the text equals the expected value.
-    /// If expected is null, returns true immediately (skip).
-    /// </summary>
-    /// <param name="expected">The expected text.</param>
-    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
-    /// <returns>True if the condition was met, false if the timeout was reached.</returns>
-    public bool WaitTextEquals(string? expected, int? timeoutMs = null)
-    {
-        return WaitText(expected, timeoutMs) == true;
-    }
 
     #endregion
 }

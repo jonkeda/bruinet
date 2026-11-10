@@ -366,9 +366,6 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
     /// <summary>The text now, or <c>null</c> when the control is not there. Does not wait (R7).</summary>
     public string? TryGetText() => TryFindElement() is { } element ? GetTextCore(element) : null;
 
-    /// <summary>Waits until the text equals <paramref name="expected"/>. An alias for <c>WaitText</c>.</summary>
-    public bool WaitTextEquals(string? expected, int? timeoutMs = null) => WaitText(expected, timeoutMs);
-
     /// <summary>Waits until the text satisfies <paramref name="until"/> (a count above zero, a value that changed).</summary>
     public bool WaitText(Func<string?, bool> until, int? timeoutMs = null)
         => RunWaitForValue(element => GetTextCore(element), until, timeoutMs);

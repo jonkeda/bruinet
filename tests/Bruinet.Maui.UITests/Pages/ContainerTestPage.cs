@@ -1,4 +1,4 @@
-using Bruinet.Core.Utilities;
+using Bruinet.Core.Calls;
 using Bruinet.Maui.Containers;
 
 namespace Bruinet.Maui.UITests.Pages;
@@ -151,21 +151,9 @@ public class ContainerTestPage : PageObjectBase<ContainerTestPage>
     /// <returns>The revealed item, or null if it never appeared.</returns>
     public IMauiElement? WaitForSwipeItem(int timeoutMs)
     {
-        var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
-
-        do
-        {
-            var item = TryFindByAutomationId("SwipeDeleteItem");
-            if (item is not null)
-            {
-                return item;
-            }
-
-            WaitHelper.Pause(50);
-        }
-        while (DateTime.UtcNow < deadline);
-
-        return null;
+        IMauiElement? item = null;
+        Settle.Until(() => (item = TryFindByAutomationId("SwipeDeleteItem")) is not null, timeoutMs);
+        return item;
     }
 
     /// <summary>

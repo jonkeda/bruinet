@@ -10,7 +10,7 @@ public interface ITextControlObject<TScope> : IControlObject<TScope>
     /// Wait until text equals expected value.
     /// If expected is null, returns true immediately (skip).
     /// </summary>
-    bool WaitTextEquals(string? expected, int? timeoutMs = null);
+    bool WaitText(string? expected, int? timeoutMs = null);
 
     /// <summary>
     /// Wait until text contains expected substring.

@@ -729,7 +729,6 @@ Bruinet.Maui.Controls.Text.Entry<TScope>.WaitText(string? expected, int? timeout
 Bruinet.Maui.Controls.Text.Entry<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Text.Entry<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Text.Entry<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Maui.Controls.Text.Entry<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Text.Entry<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Text.SearchBar<TScope>
 Bruinet.Maui.Controls.Text.SearchBar<TScope>.Search(string? searchText, int? timeoutMs = null) -> TScope

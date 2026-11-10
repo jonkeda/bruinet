@@ -9,6 +9,9 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| P2 | `WaitTextEquals` removed from every stack's control base and Maui's `Entry`; `ITextControlObject<TScope>` declares `WaitText` instead (review proposal 2) | `\.WaitTextEquals\(`; a custom control implementing `ITextControlObject<` | `.WaitText(` (same arguments, same answer); an implementer renames its member to `WaitText` |
+| P2 | `WaitHelper` internal: `WaitHelper.Pause` is no longer public (review proposal 2) | `WaitHelper\.Pause\(` | the control's or page's `Wait…`/`Assert…`; for a condition of your own outside a call, `Bruinet.Core.Calls.Settle.Until(() => …, windowMs)` |
+| P2 | The three empty `Placeholder` classes deleted from `Bruinet.Core.Attributes`, `.Locators`, `.Logging` (review proposal 2) | `Placeholder` with `using Bruinet\.Core\.(Attributes\|Locators\|Logging)`; a lone `using Bruinet\.Core\.Attributes;` | delete the reference or the `using`; they were empty |
 | 6256e176 | `IControlHost<TElement>.ScopeIsAbsent()` added, with a default body (`false`) | none: a custom host compiles unchanged; implement it only to let absence pass when the scope itself is absent | - |
 | b1cee0ae | Maui `ScrollView.ScrollTo(locator)` and `ScrollTo(automationId)` take an optional `int? timeoutMs = null` | none in source: callers compile unchanged; a consumer built against an older Bruinet binary must be rebuilt | - |
 | d895969b | `IMauiElement.RevealClearOfEdges()` added, with an empty default body | none: a custom `IMauiElement` compiles unchanged | - |
@@ -35,9 +38,9 @@ row is corrected when it moves to `## Made`.
 | 1 | Driver and element classes made internal | `\b(Playwright|Bunit)Html(Driver|Element)\b`, `\b(Appium|FlaUI|MauiHeadless)Maui(Driver|Element)\b`, `\bFlaUI(Wpf|WinForms)(Driver|Element)\b`, `\bAppiumNativeAndroid(Driver|Element)\b` | none - go through the page object; a fixture names the head by its context options, not the driver type |
 | 1 | `Bruinet.Bdd` parser, binder, catalogs and config editors made internal | `\bBdd(Binder|BindResult|MarkdownParser|CommandCatalog|CommandPattern|CatalogSet|Callable\w*|ConfigParser|ConfigWriter|Config\w*Edit|PhrasesDocument)\b` | none in step code; a tool that read these uses the `bruinet` command line or the MCP tools |
 | 1 | `Bruinet.Bdd.Runner` messages made internal | `using Bruinet\.Bdd\.Runner`, `\bBddRunner\w+\b` | none - only Bruinet's runner and its clients speak it |
-| 2 | `Placeholder` classes removed from Core | `\bPlaceholder\b` with `using Bruinet\.Core\.(Attributes|Locators|Logging)` | delete the reference; they were empty |
-| 2 | `WaitHelper.Pause` removed | `WaitHelper\.Pause\(` | a `Wait…` on the control or page whose state the pause was waiting for |
-| 2 | `WaitTextEquals` removed (Html `ControlBase`) | `\.WaitTextEquals\(` | `.WaitText(` |
+| 2 | `Placeholder` classes removed from Core (**made, see Made P2**) | `\bPlaceholder\b` with `using Bruinet\.Core\.(Attributes|Locators|Logging)` | delete the reference; they were empty |
+| 2 | `WaitHelper.Pause` removed (**made, see Made P2**) | `WaitHelper\.Pause\(` | a `Wait…` on the control or page whose state the pause was waiting for |
+| 2 | `WaitTextEquals` removed (Html `ControlBase`) (**made, see Made P2**) | `\.WaitTextEquals\(` | `.WaitText(` |
 | 3 | `Bruinet.Core.Legacy` types moved to namespace `Bruinet.Core.Legacy` and marked obsolete (**overtaken: the project is deleted, see Made U7**) | `\b(IElement<|IDriver<|IElementScope|IPageObject|ICollectionObject<|IContainerObject<|ControlObjectBase<|LegacyWaitHelper|PageReadinessSnapshot)\b` | add `using Bruinet.Core.Legacy;` now; move the page or control to the call model's bases before the package is dropped |
 | 4 | Html and Blazor page base renamed | `\b(Html|Blazor)PageObjectBase<` | `PageObjectBase<` |
 | 4 | Html and Blazor control names lose the `Control` suffix (if that direction is chosen) | `\b(Button|Link|List|Table|Label|Progress|RangeInput|RadioGroup|Select|TextArea|TextInput|CheckBox|RadioButton|DateInput|TimeInput|Audio|Video|Image|IFrame|NavMenu|TabContainer|ScrollContainer)Control<` | the same name without `Control`; where it then clashes with an app type, alias the Bruinet namespace |

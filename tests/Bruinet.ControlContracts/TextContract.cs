@@ -22,10 +22,10 @@ public abstract class TextContract<TScope> : ControlContract<TScope> where TScop
     private string End => Text[^3..];
 
     [Fact]
-    public virtual void WaitTextEquals_TrueForItsText_FalseForAnother()
+    public virtual void WaitText_TrueForItsText_FalseForAnother()
     {
-        Assert.True(Label.WaitTextEquals(Text));
-        Assert.False(Label.WaitTextEquals(Text + "x", ShortTimeoutMs));
+        Assert.True(Label.WaitText(Text));
+        Assert.False(Label.WaitText(Text + "x", ShortTimeoutMs));
     }
 
     [Fact]

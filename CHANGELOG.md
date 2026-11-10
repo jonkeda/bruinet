@@ -59,6 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Removed
+- **Breaking:** `WaitTextEquals` on every stack: `ITextControlObject<TScope>` declares `WaitText`, which did the same.
+- **Breaking:** `WaitHelper` is internal; the three empty `Placeholder` classes in Core are gone (review proposal 2).
 - **Breaking:** `Bruinet.Core.Legacy`, the first model's interfaces and waits: every stack is on the call model (AD-029
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 

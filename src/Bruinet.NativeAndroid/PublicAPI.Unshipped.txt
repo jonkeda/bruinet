@@ -393,7 +393,6 @@ Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitText(string? expected, int? 
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
-Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.NativeAndroid.Interfaces.GestureDirection

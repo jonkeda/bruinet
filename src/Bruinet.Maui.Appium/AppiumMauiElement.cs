@@ -768,7 +768,7 @@ public sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             var previous = Rect;
             for (var check = 0; check < maxChecks; check++)
             {
-                WaitHelper.Pause(IntervalMs);
+                Thread.Sleep(IntervalMs);
                 var current = Rect;
                 if (current == previous)
                 {

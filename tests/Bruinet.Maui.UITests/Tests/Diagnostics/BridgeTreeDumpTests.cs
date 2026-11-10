@@ -69,11 +69,12 @@ public class BridgeTreeDumpTests
     {
         var driver = (FlaUIMauiDriver)_fixture.Context.Driver;
 
+        var before = SwipeRelatedLines(driver);
         _output.WriteLine("--- before ---");
-        _output.WriteLine(SwipeRelatedLines(driver));
+        _output.WriteLine(before);
 
         driver.PerformGesture("TestSwipeView", Bruinet.Maui.Interfaces.MauiGesture.SwipeRight);
-        Bruinet.Core.Utilities.WaitHelper.Pause(500);
+        Bruinet.Core.Calls.Settle.Until(() => SwipeRelatedLines(driver) != before, 500);
 
         _output.WriteLine("--- after SwipeRight ---");
         _output.WriteLine(SwipeRelatedLines(driver));

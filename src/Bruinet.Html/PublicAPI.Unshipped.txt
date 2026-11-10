@@ -209,7 +209,6 @@ Bruinet.Html.Controls.ControlBase<TScope>.WaitText(string? expected, int? timeou
 Bruinet.Html.Controls.ControlBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ControlBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ControlBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.ControlBase<TScope>.WaitTextEquals(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ControlBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ControlBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.DateTime.DateInputControl<TScope>

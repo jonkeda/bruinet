@@ -1217,7 +1217,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                             $"Locator: {Locator}. {context.Log.Summary()}.");
                     }
 
-                    Bruinet.Core.Utilities.WaitHelper.Pause(
+                    Thread.Sleep(
                         Math.Max(1, Math.Min(PollingIntervalMs, context.Deadline.RemainingMs)));
                 }
             });

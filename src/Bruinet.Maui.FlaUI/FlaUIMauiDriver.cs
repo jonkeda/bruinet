@@ -201,7 +201,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
                 return new FlaUIMauiElement(found, this);
             }
 
-            WaitHelper.Pause(100);
+            Thread.Sleep(100);
         }
         while (stopwatch.ElapsedMilliseconds < timeoutMs);
 
@@ -783,7 +783,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         {
             if (stopwatch.ElapsedMilliseconds >= timeoutMs)
                 throw new ElementNotFoundException(Locator.ByClassName(FileDialogClass), timeoutMs);
-            WaitHelper.Pause(100);
+            Thread.Sleep(100);
         }
 
         var nameBox = dialog.FindFirstDescendant(ConditionFactory.ByControlType(ControlType.Edit)
@@ -805,7 +805,7 @@ public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         {
             if (stopwatch.ElapsedMilliseconds >= closeBy)
                 throw new BruinetException($"The file dialog did not close after choosing '{Path.GetFileName(path)}'.");
-            WaitHelper.Pause(100);
+            Thread.Sleep(100);
         }
     }
 

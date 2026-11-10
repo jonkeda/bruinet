@@ -6,7 +6,7 @@ namespace Bruinet.Core.Utilities;
 /// The poll's pause, between one attempt of a call and the next. A wait below a call is
 /// <c>Bruinet.Core.Calls.Settle</c>.
 /// </summary>
-public static class WaitHelper
+internal static class WaitHelper
 {
     /// <summary>
     /// Pauses execution for a short polling/settling interval: the poll's pause between attempts.
