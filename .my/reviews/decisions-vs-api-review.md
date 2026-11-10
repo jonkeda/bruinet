@@ -39,7 +39,7 @@ Four points need the owner, below.
 ## For the owner
 
 1. **AD-026 rules out "a driver merged with its platform package", and three stacks do it.** WPF's, WinForms' and native Android's heads are namespaces inside the platform assembly (the review's finding 4). My proposal: amend AD-026 so that a stack with one head keeps it inside and a second head earns the project (R3), since splitting three packages buys nothing today.
-2. **Proposal 5's rule 2 will make AD-010 wrong again.** `IElementScope<TElement>` in Core is in the working tree, uncommitted; AD-010 says a stack's interface adds the lookups itself and rules out a Core `IElementScope` with three type parameters. One type parameter keeps the reason intact, so my proposal: rule 2's commit amends AD-010's first bullet and its table, and rules 4 and 5 take containers, collections and rows off its "still per stack" list.
+2. **Proposal 5 keeps moving what AD-010 lists as per stack.** Rule 2 (`IElementScope<TElement>` in Core, `acae41e2`) landed during this check and AD-010 now says so; one type parameter leaves its reason against three intact. My proposal: rules 3 to 5 each take their part (item roots, containers, collections, rows) off AD-010's "still per stack" list in their own commit.
 3. **AD-010's title and file name still say three stacks are ahead of Core.** My proposal: retitle it "Each stack owns its element and driver", keep the file name so links hold.
 4. **The review's finding on Narrator's `Bdd…` names contradicts AD-021**, which asks for `Bdd` names outside `Bruinet.Uat`. My proposal: drop the finding from the review; `SpeechSecrets` beside `VoiceSecrets` is the real half of it.
 
