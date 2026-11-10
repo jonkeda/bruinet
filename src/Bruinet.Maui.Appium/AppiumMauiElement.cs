@@ -238,10 +238,13 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public bool IsShownWhenFound => !IsApp && _driver.FindsOnlyVisibleElements;
 
     /// <inheritdoc />
-    public Point Location => Live(() => _element.Location);
+    /// <remarks>From <see cref="Rect"/>, so the bounds an iOS find brought are used: a list's rows are
+    /// told apart by position, one request of about 115 ms each (.my/uitests D22).</remarks>
+    public Point Location => Rect.Location;
 
     /// <inheritdoc />
-    public Size Size => Live(() => _element.Size);
+    /// <remarks>From <see cref="Rect"/>, as <see cref="Location"/> is.</remarks>
+    public Size Size => Rect.Size;
 
     /// <inheritdoc />
     /// <remarks>One request: <c>Location</c> and <c>Size</c> each fetch the element's rect, so building
@@ -1094,9 +1097,13 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     private bool AtIosScrollEdge(int verticalSteps)
     {
-        var bar = _element.FindElements(IosVerticalScrollBar).FirstOrDefault();
-        return bar is not null && IosScrollBar.AtEdge(bar.GetAttribute("name"), bar.GetAttribute("value"), verticalSteps);
+        // The find brings the bar's name and value with it (WebDriverAgent's text is the value):
+        // two reads less on each step of a scroll (.my/uitests D23).
+        var bar = _driver.FindAll(IosVerticalScrollBar, _element).FirstOrDefault();
+        return bar is not null && IosScrollBar.AtEdge(bar.AutomationId, bar.ScrollBarValue, verticalSteps);
     }
+
+    private string? ScrollBarValue => Fact(TextQuestion, () => _element.GetAttribute("value"));
 
     private static int SwipeInset(int extent, bool android)
         => android ? Math.Max(EdgeInset, extent / 10) : EdgeInset;

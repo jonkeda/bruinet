@@ -527,6 +527,53 @@ public class ContainerCollectionTests
             () => page.Rows.ItemWhere(r => r.Name.GetText() == "Zeta"));
     }
 
+    /// <summary>
+    /// A row replaced under the search (a next page, a recycle) is re-read on the next attempt;
+    /// the list is not found again for it (.my/uitests D22).
+    /// </summary>
+    [Fact]
+    [Trait("Method", "ItemWhere")]
+    [Trait("Pattern", "StaleRecovery")]
+    public void ItemWhere_RereadsRows_WhenARowIsReplaced_WithoutRefindingTheList()
+    {
+        var page = new TestPage(_context.Object);
+        var rows = SetupCollection("Rows", ("Alpha", "1"), ("Beta", "2"));
+        var replaced = new Mock<IMauiElement>();
+        replaced.Setup(e => e.InstanceKey).Throws(new StaleElementException());
+        replaced.Setup(e => e.AutomationId).Throws(new StaleElementException());
+        replaced.Setup(e => e.PositionInSet).Throws(new StaleElementException());
+        replaced.Setup(e => e.Visible).Throws(new StaleElementException());
+        replaced.Setup(e => e.Rect).Throws(new StaleElementException());
+        replaced.Setup(e => e.TryFindElement(It.IsAny<Locator>())).Throws(new StaleElementException());
+        replaced.Setup(e => e.FindElements(It.IsAny<Locator>())).Throws(new StaleElementException());
+        var root = Mock.Get(_context.Object.FindElement(Locator.ByAutomationId("Rows")));
+        var listings = 0;
+        root.Setup(e => e.FindElements(It.Is<Locator>(l => l.Value == "RowRoot")))
+            .Returns(() => listings++ == 0
+                ? [replaced.Object, rows[1].Object]
+                : [rows[0].Object, rows[1].Object]);
+        _context.Invocations.Clear();
+
+        var row = page.Rows.ItemWhere(r => r.Name.GetText() == "Alpha", timeoutMs: 5000);
+
+        Assert.Equal(0, row.Index);
+        Assert.Equal(1, _context.Invocations.Count(i => i.Arguments.FirstOrDefault() is Locator { Value: "Rows" }));
+    }
+
+    [Fact]
+    public void ItemWhere_ReadsAPartlyShownRowWhereItIs_WithoutScrollingItIntoView()
+    {
+        var page = new TestPage(_context.Object);
+        var rows = SetupCollection("Rows", ("Alpha", "1"), ("Beta", "2"));
+        var name = SetupChild(rows[1], "RowName", "Beta");
+        name.Setup(e => e.Visible).Returns(false);
+
+        var row = page.Rows.ItemWhere(r => r.Name.GetText() == "Beta", timeoutMs: 5000);
+
+        Assert.Equal(1, row.Index);
+        name.Verify(e => e.ScrollIntoView(It.IsAny<int>()), Times.Never);
+    }
+
     #endregion
 
     #region Collection as a scope

@@ -133,7 +133,7 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
 
         try
         {
-            if (ensureVisible && host.ChecksVisibility)
+            if (ensureVisible && host.ChecksVisibility && !ReadsInPlace.Active)
             {
                 EnsureVisible(element, attempt);
             }

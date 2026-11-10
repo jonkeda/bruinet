@@ -64,6 +64,30 @@ public sealed class AttemptMemoTests
     }
 
     [Fact]
+    public void WhatANestedCallsFirstAttemptRead_IsKnownToTheEnclosingAttempt_ButNotWhatAPollRead()
+    {
+        var other = new object();
+        using (AttemptMemo.Begin())
+        {
+            var reads = 0;
+
+            using (AttemptMemo.Begin(inherit: true))
+            {
+                _ = AttemptMemo.Remember(_element, "Rect", () => ++reads);
+            }
+
+            using (AttemptMemo.Begin())
+            {
+                _ = AttemptMemo.Remember(other, "Rect", () => ++reads);
+            }
+
+            Assert.Equal(1, AttemptMemo.Remember(_element, "Rect", () => ++reads));
+            Assert.False(AttemptMemo.Knows(other, "Rect"));
+            Assert.Equal(2, reads);
+        }
+    }
+
+    [Fact]
     public void AnActionInANestedCall_ForgetsWhatTheEnclosingAttemptRead()
     {
         using (AttemptMemo.Begin())

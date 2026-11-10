@@ -1205,3 +1205,6 @@ virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
+Bruinet.Core.Calls.ReadsInPlace
+static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
+static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
