@@ -1,5 +1,6 @@
 global using System.Diagnostics;
 global using Bruinet.Core.Calls;
+global using Bruinet.Core.Collections;
 global using Bruinet.Core.Configuration;
 global using Bruinet.Core.Exceptions;
 global using Bruinet.Core.Interfaces;

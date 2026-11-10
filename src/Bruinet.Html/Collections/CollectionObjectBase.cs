@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Locators;
@@ -44,7 +45,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerBas
 
     /// <summary>The row whose <c>data-item-key</c> is <paramref name="key"/>, as a CSS selector.</summary>
     private static Locator KeySelector(string key)
-        => Locator.ByCss($"[{ItemKey.Attribute}=\"{key.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"]");
+        => Locator.ByCss($"[{ItemKeys.Attribute}=\"{key.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"]");
 
     /// <summary>The rows now. One attempt.</summary>
     protected IReadOnlyList<IHtmlElement> TryGetItemRoots() => FindElements(_itemLocator);
@@ -53,13 +54,13 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerBas
     public int GetItemCount() => TryGetItemRoots().Count;
 
     /// <summary>The rows now, as row objects. One attempt.</summary>
-    public IReadOnlyList<TItem> Items => [.. TryGetItemRoots().Select((row, position) => CreateItem(ItemKey.Of(row, position), position))];
+    public IReadOnlyList<TItem> Items => [.. TryGetItemRoots().Select((row, position) => CreateItem(ItemKeys.Of(row, position), position))];
 
     /// <summary>The row at <paramref name="index"/> now, or <c>null</c>.</summary>
     public TItem? TryItem(int index)
     {
         var rows = TryGetItemRoots();
-        return index >= 0 && index < rows.Count ? CreateItem(ItemKey.Of(rows[index], index), index) : null;
+        return index >= 0 && index < rows.Count ? CreateItem(ItemKeys.Of(rows[index], index), index) : null;
     }
 
     /// <summary>The row whose <c>data-item-key</c> is <paramref name="key"/> now, or <c>null</c>.</summary>

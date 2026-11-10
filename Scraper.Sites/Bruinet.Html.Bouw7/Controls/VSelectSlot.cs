@@ -1,4 +1,5 @@
 // <scraped control="div||v-select__slot|div+,input" from="2026-10-02-recording/008-department.nodes.jsonl#478" />
+using Bruinet.Core.Collections;
 using Bruinet.Core.Locators;
 using Bruinet.Core.Scopes;
 using Bruinet.Html.Collections;

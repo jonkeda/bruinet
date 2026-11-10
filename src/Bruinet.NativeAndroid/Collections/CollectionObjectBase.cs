@@ -45,7 +45,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerObj
     protected abstract TItem CreateItem(ItemKey key, int position);
 
     /// <summary>The key of a row view.</summary>
-    protected ItemKey KeyOf(INativeAndroidElement row, int position) => ItemKey.Of(row, position, ItemKeyLocator);
+    protected ItemKey KeyOf(INativeAndroidElement row, int position) => ItemKeys.Of(row, position, ItemKeyLocator);
 
     /// <inheritdoc />
     /// <remarks>

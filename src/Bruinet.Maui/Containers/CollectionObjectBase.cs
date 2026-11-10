@@ -84,7 +84,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private bool UsesLogicalIndexes => HasLogicalIndexes && !_positionsRepeat;
 
     private int? LogicalIndexOf(IMauiElement itemRoot)
-        => UsesLogicalIndexes ? ItemKey.LogicalIndexOf(itemRoot) : null;
+        => UsesLogicalIndexes ? ItemKeys.LogicalIndexOf(itemRoot) : null;
 
     /// <summary>
     /// Stops using logical indexes once two realized rows share one. A grouped CollectionView on
@@ -101,7 +101,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         var indexes = new HashSet<int>();
         foreach (var root in roots)
         {
-            if (ItemKey.LogicalIndexOf(root) is { } index && !indexes.Add(index))
+            if (ItemKeys.LogicalIndexOf(root) is { } index && !indexes.Add(index))
             {
                 _positionsRepeat = true;
                 return;
@@ -137,14 +137,14 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     public IMauiElement? TryGetItemRoot(ItemKey key) => key.Kind switch
     {
         ItemKeyKind.Logical => WithRoot(
-            root => _itemStrategy.FindItemElements(root).FirstOrDefault(item => LogicalIndexOf(item) == key.Index),
+            root => _itemStrategy.FindItemElements(root).FirstOrDefault(item => LogicalIndexOf(item) == key.Index()),
             null),
         ItemKeyKind.AutomationId => WithRoot(
             root => _itemStrategy.FindItemElements(root).Where(item => item.AutomationId == key.Value).ToList() is [var only]
                 ? only
                 : null,
             null),
-        _ => TryGetItemRoot(key.Index)
+        _ => TryGetItemRoot(key.Index())
     };
 
     /// <summary>Whether no other realized row carries <paramref name="id"/>.</summary>

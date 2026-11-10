@@ -49,33 +49,23 @@ Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int 
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
-Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Stride.Interfaces.IStrideElement! row, int position) -> Bruinet.Stride.Collections.ItemKey
-Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Stride.Collections.ItemKey key) -> Bruinet.Stride.Interfaces.IStrideElement?
+Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Stride.Interfaces.IStrideElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Stride.Interfaces.IStrideElement?
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Stride.Collections.IStrideCollection
-Bruinet.Stride.Collections.IStrideCollection.TryGetItemRoot(Bruinet.Stride.Collections.ItemKey key) -> Bruinet.Stride.Interfaces.IStrideElement?
-Bruinet.Stride.Collections.ItemKey
-Bruinet.Stride.Collections.ItemKey.ItemKey() -> void
-Bruinet.Stride.Collections.ItemKey.ItemKey(Bruinet.Stride.Collections.ItemKeyKind Kind, string! Value) -> void
-Bruinet.Stride.Collections.ItemKey.Kind.get -> Bruinet.Stride.Collections.ItemKeyKind
-Bruinet.Stride.Collections.ItemKey.Kind.init -> void
-Bruinet.Stride.Collections.ItemKey.Value.get -> string!
-Bruinet.Stride.Collections.ItemKey.Value.init -> void
-Bruinet.Stride.Collections.ItemKeyKind
-Bruinet.Stride.Collections.ItemKeyKind.Logical = 0 -> Bruinet.Stride.Collections.ItemKeyKind
-Bruinet.Stride.Collections.ItemKeyKind.Position = 1 -> Bruinet.Stride.Collections.ItemKeyKind
+Bruinet.Stride.Collections.IStrideCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Stride.Interfaces.IStrideElement?
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement!
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
-Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Stride.Collections.IStrideCollection! collection, Bruinet.Stride.Collections.ItemKey key, int position) -> void
-Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Stride.Collections.ItemKey
+Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Stride.Collections.IStrideCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Stride.Interfaces.IStridePage?
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Position.get -> int
 Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
@@ -614,7 +604,7 @@ Bruinet.Stride.Testing.StrideTestFixtureBase.GameWindowHandle.get -> nint
 Bruinet.Stride.Testing.StrideTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
 Bruinet.Stride.Testing.StrideTestFixtureBase.SetupWith(System.Action<Bruinet.Stride.BruinetStrideConfiguration!>! configureAction) -> void
 Bruinet.Stride.Testing.StrideTestFixtureBase.StrideTestFixtureBase() -> void
-abstract Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Stride.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Stride.ObjectBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
@@ -622,7 +612,6 @@ abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> str
 const Bruinet.Stride.Automation.StrideElement.KeyPrefix = "#" -> string!
 const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
 override Bruinet.Stride.Automation.StrideElement.ToString() -> string!
-override Bruinet.Stride.Collections.ItemKey.ToString() -> string!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
@@ -635,7 +624,6 @@ override Bruinet.Stride.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Stride.Automation.StrideElement.From(Bruinet.Stride.Interfaces.IStrideDriver! driver, Bruinet.Stride.Communication.ElementState! state) -> Bruinet.Stride.Automation.StrideElement?
 static Bruinet.Stride.Automation.StrideLocators.TargetOf(Bruinet.Core.Locators.Locator! locator) -> string!
 static Bruinet.Stride.BruinetStrideConfiguration.Load(string? configPath = null) -> Bruinet.Stride.BruinetStrideConfiguration!
-static Bruinet.Stride.Collections.ItemKey.Of(Bruinet.Stride.Interfaces.IStrideElement! row, int position, Bruinet.Core.Locators.Locator? keyElement = null) -> Bruinet.Stride.Collections.ItemKey
 static Bruinet.Stride.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.GameQuery(string! method, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.Query(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!

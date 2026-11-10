@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Scopes;
 using Bruinet.Html.Collections;
@@ -22,11 +23,11 @@ public class CollectionTests
         _list.Setup(l => l.FindElements(It.Is<Locator>(l => l.Value == "Row"))).Returns(() => _rows.ToArray());
 
         // A keyed row is found by its key (a CSS attribute selector), as a browser would.
-        _list.Setup(l => l.TryFindElement(It.Is<Locator>(l => l.Value.StartsWith("[" + ItemKey.Attribute))))
-            .Returns((Locator selector) => _rows.FirstOrDefault(row => selector.Value == KeySelectorOf(row.GetAttribute(ItemKey.Attribute))));
+        _list.Setup(l => l.TryFindElement(It.Is<Locator>(l => l.Value.StartsWith("[" + ItemKeys.Attribute))))
+            .Returns((Locator selector) => _rows.FirstOrDefault(row => selector.Value == KeySelectorOf(row.GetAttribute(ItemKeys.Attribute))));
     }
 
-    private static string KeySelectorOf(string? key) => $"[{ItemKey.Attribute}=\"{key}\"]";
+    private static string KeySelectorOf(string? key) => $"[{ItemKeys.Attribute}=\"{key}\"]";
 
     private sealed class Page(IHtmlTestContext context) : HtmlPageObjectBase<Page>(context)
     {
@@ -52,7 +53,7 @@ public class CollectionTests
     {
         var row = new Mock<IHtmlElement>();
         var delete = new Mock<IHtmlElement>();
-        row.Setup(r => r.GetAttribute(ItemKey.Attribute)).Returns(key);
+        row.Setup(r => r.GetAttribute(ItemKeys.Attribute)).Returns(key);
         row.Setup(r => r.TryFindElement(It.Is<Locator>(l => l.Value == "Delete"))).Returns(delete.Object);
         delete.Setup(d => d.Visible).Returns(true);
         delete.Setup(d => d.Enabled).Returns(true);

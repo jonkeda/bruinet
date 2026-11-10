@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.Html.Interfaces;
 
 namespace Bruinet.Html.Collections;

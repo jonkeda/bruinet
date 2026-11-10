@@ -210,6 +210,16 @@ Bruinet.Core.Calls.ObservationLog.Unexpected(System.Exception! error, string! su
 Bruinet.Core.Calls.Poller
 Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
+Bruinet.Core.Collections.ItemKey
+Bruinet.Core.Collections.ItemKey.ItemKey() -> void
+Bruinet.Core.Collections.ItemKey.Kind.get -> Bruinet.Core.Collections.ItemKeyKind
+Bruinet.Core.Collections.ItemKey.Kind.init -> void
+Bruinet.Core.Collections.ItemKey.Value.get -> string!
+Bruinet.Core.Collections.ItemKey.Value.init -> void
+Bruinet.Core.Collections.ItemKeyKind
+Bruinet.Core.Collections.ItemKeyKind.AutomationId = 1 -> Bruinet.Core.Collections.ItemKeyKind
+Bruinet.Core.Collections.ItemKeyKind.Logical = 0 -> Bruinet.Core.Collections.ItemKeyKind
+Bruinet.Core.Collections.ItemKeyKind.Position = 2 -> Bruinet.Core.Collections.ItemKeyKind
 Bruinet.Core.Composition.AssemblyFile
 Bruinet.Core.Composition.TestComposition
 Bruinet.Core.Composition.TestComposition.Catalog.get -> Bruinet.Core.Composition.TestCompositionCatalog!
@@ -557,8 +567,8 @@ Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextContains(string? ex
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEmpty(bool? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.Core.Interfaces.ITextControlObject<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.AssertTime(System.TimeSpan? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITimeControlObject<TScope>.GetTime() -> System.TimeSpan?
@@ -1142,6 +1152,7 @@ const Bruinet.Core.Scraping.ScrapeCheck.Visible = "visible" -> string!
 const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
 override Bruinet.Core.Calls.Observation.ToString() -> string!
+override Bruinet.Core.Collections.ItemKey.ToString() -> string!
 override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
 override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
@@ -1185,6 +1196,10 @@ static Bruinet.Core.Calls.ScopeGate.Check(Bruinet.Core.Scopes.ScopeReadiness rea
 static Bruinet.Core.Calls.ScopeGate.Misconfigured(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
 static Bruinet.Core.Calls.ScopeGate.NotReady(Bruinet.Core.Scopes.ScopeReadiness readiness, string! caller, string! subject, int budgetMs) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
 static Bruinet.Core.Calls.Settle.Until(System.Func<bool>! condition, int windowMs, int pollingIntervalMs = 50) -> bool
+static Bruinet.Core.Collections.ItemKey.AutomationId(string! automationId) -> Bruinet.Core.Collections.ItemKey
+static Bruinet.Core.Collections.ItemKey.Logical(int index) -> Bruinet.Core.Collections.ItemKey
+static Bruinet.Core.Collections.ItemKey.Logical(string! key) -> Bruinet.Core.Collections.ItemKey
+static Bruinet.Core.Collections.ItemKey.Position(int position) -> Bruinet.Core.Collections.ItemKey
 static Bruinet.Core.Composition.AssemblyFile.FolderOf(System.Reflection.Assembly! assembly) -> string!
 static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, Bruinet.Core.Composition.TestCompositionDiscoveryOptions! options, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>? configureServices = null) -> Bruinet.Core.Composition.TestComposition!
 static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, System.Action<Microsoft.Extensions.DependencyInjection.IServiceCollection!>? configureServices = null) -> Bruinet.Core.Composition.TestComposition!

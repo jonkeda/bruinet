@@ -12,33 +12,23 @@ Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int ind
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Wpf.Interfaces.IWpfElement! row, int position) -> Bruinet.Wpf.Collections.ItemKey
-Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Wpf.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
+Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.Wpf.Interfaces.IWpfElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Collections.IWpfCollection
-Bruinet.Wpf.Collections.IWpfCollection.TryGetItemRoot(Bruinet.Wpf.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
-Bruinet.Wpf.Collections.ItemKey
-Bruinet.Wpf.Collections.ItemKey.ItemKey() -> void
-Bruinet.Wpf.Collections.ItemKey.ItemKey(Bruinet.Wpf.Collections.ItemKeyKind Kind, string! Value) -> void
-Bruinet.Wpf.Collections.ItemKey.Kind.get -> Bruinet.Wpf.Collections.ItemKeyKind
-Bruinet.Wpf.Collections.ItemKey.Kind.init -> void
-Bruinet.Wpf.Collections.ItemKey.Value.get -> string!
-Bruinet.Wpf.Collections.ItemKey.Value.init -> void
-Bruinet.Wpf.Collections.ItemKeyKind
-Bruinet.Wpf.Collections.ItemKeyKind.Logical = 0 -> Bruinet.Wpf.Collections.ItemKeyKind
-Bruinet.Wpf.Collections.ItemKeyKind.Position = 1 -> Bruinet.Wpf.Collections.ItemKeyKind
+Bruinet.Wpf.Collections.IWpfCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
-Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Wpf.Collections.IWpfCollection! collection, Bruinet.Wpf.Collections.ItemKey key, int position) -> void
-Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Wpf.Collections.ItemKey
+Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Wpf.Collections.IWpfCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Wpf.Interfaces.IWpfPage?
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Position.get -> int
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
@@ -493,13 +483,12 @@ Bruinet.Wpf.WpfOptions.ProcessName.set -> void
 Bruinet.Wpf.WpfOptions.WindowHandle.get -> string?
 Bruinet.Wpf.WpfOptions.WindowHandle.set -> void
 Bruinet.Wpf.WpfOptions.WpfOptions() -> void
-abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Wpf.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Wpf.ObjectBase.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 abstract Bruinet.Wpf.Testing.WpfTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
-override Bruinet.Wpf.Collections.ItemKey.ToString() -> string!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
@@ -514,7 +503,6 @@ override Bruinet.Wpf.Pages.AppRoot.Context.get -> Bruinet.Wpf.Interfaces.IWpfTes
 override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Wpf.BruinetWpfConfiguration.Load(string? configPath = null) -> Bruinet.Wpf.BruinetWpfConfiguration!
-static Bruinet.Wpf.Collections.ItemKey.Of(Bruinet.Wpf.Interfaces.IWpfElement! row, int position, Bruinet.Core.Locators.Locator? keyElement = null) -> Bruinet.Wpf.Collections.ItemKey
 static Bruinet.Wpf.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Attach(System.Diagnostics.Process! process) -> Bruinet.Wpf.FlaUI.FlaUIWpfDriver!
 static Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Attach(nint windowHandle) -> Bruinet.Wpf.FlaUI.FlaUIWpfDriver!

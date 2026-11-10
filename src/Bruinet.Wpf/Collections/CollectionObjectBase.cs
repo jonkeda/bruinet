@@ -49,7 +49,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem> : ContainerObj
     protected abstract TItem CreateItem(ItemKey key, int position);
 
     /// <summary>The key of a row element.</summary>
-    protected ItemKey KeyOf(IWpfElement row, int position) => ItemKey.Of(row, position, ItemKeyLocator);
+    protected ItemKey KeyOf(IWpfElement row, int position) => ItemKeys.Of(row, position, ItemKeyLocator);
 
     /// <inheritdoc />
     /// <remarks>

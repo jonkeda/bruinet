@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.NativeAndroid.Collections;
 using Bruinet.NativeAndroid.Controls.Collection;
 
@@ -121,8 +122,8 @@ public class CollectionTests
         texted.Setup(r => r.TryFindElement(It.Is<Locator>(l => l.Value == "android.widget.TextView"))).Returns(FakeApp.View(text: "Invoice B").Object);
         var blank = FakeApp.View();
 
-        Assert.Equal(new ItemKey(ItemKeyKind.Logical, "Invoice A"), ItemKey.Of(described.Object, 0));
-        Assert.Equal(new ItemKey(ItemKeyKind.Logical, "Invoice B"), ItemKey.Of(texted.Object, 1));
-        Assert.Equal(new ItemKey(ItemKeyKind.Position, "2"), ItemKey.Of(blank.Object, 2));
+        Assert.Equal(new ItemKey(ItemKeyKind.Logical, "Invoice A"), ItemKeys.Of(described.Object, 0));
+        Assert.Equal(new ItemKey(ItemKeyKind.Logical, "Invoice B"), ItemKeys.Of(texted.Object, 1));
+        Assert.Equal(new ItemKey(ItemKeyKind.Position, "2"), ItemKeys.Of(blank.Object, 2));
     }
 }

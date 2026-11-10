@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.Maui.Controls.Navigation;
 using Bruinet.Maui.UITests.Pages;
 

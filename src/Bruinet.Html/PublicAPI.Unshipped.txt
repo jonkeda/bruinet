@@ -13,32 +13,22 @@ Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(int in
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> TItem!
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Items.get -> System.Collections.Generic.IReadOnlyList<TItem!>!
-Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Html.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
+Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(int index) -> TItem?
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitItemCount(int expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.WaitNoItemWhere(System.Func<TItem!, bool>! predicate, int? timeoutMs = null) -> bool
 Bruinet.Html.Collections.IHtmlCollection
-Bruinet.Html.Collections.IHtmlCollection.TryGetItemRoot(Bruinet.Html.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Collections.ItemKey
-Bruinet.Html.Collections.ItemKey.ItemKey() -> void
-Bruinet.Html.Collections.ItemKey.ItemKey(Bruinet.Html.Collections.ItemKeyKind Kind, string! Value) -> void
-Bruinet.Html.Collections.ItemKey.Kind.get -> Bruinet.Html.Collections.ItemKeyKind
-Bruinet.Html.Collections.ItemKey.Kind.init -> void
-Bruinet.Html.Collections.ItemKey.Value.get -> string!
-Bruinet.Html.Collections.ItemKey.Value.init -> void
-Bruinet.Html.Collections.ItemKeyKind
-Bruinet.Html.Collections.ItemKeyKind.Logical = 0 -> Bruinet.Html.Collections.ItemKeyKind
-Bruinet.Html.Collections.ItemKeyKind.Position = 1 -> Bruinet.Html.Collections.ItemKeyKind
+Bruinet.Html.Collections.IHtmlCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Collections.ItemObjectBase<TSelf>
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Html.Collections.IHtmlCollection! collection, Bruinet.Html.Collections.ItemKey key, int position) -> void
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Html.Collections.ItemKey
+Bruinet.Html.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Html.Collections.IHtmlCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.Html.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Position.get -> int
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
@@ -543,14 +533,12 @@ Bruinet.Html.Testing.WebAppHostOptions.ReadyPath.get -> string!
 Bruinet.Html.Testing.WebAppHostOptions.ReadyPath.init -> void
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.get -> System.TimeSpan
 Bruinet.Html.Testing.WebAppHostOptions.StartTimeout.init -> void
-abstract Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Html.Collections.ItemKey key, int position) -> TItem!
+abstract Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Html.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Html.ObjectBase.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
-const Bruinet.Html.Collections.ItemKey.Attribute = "data-item-key" -> string!
 const Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
-override Bruinet.Html.Collections.ItemKey.ToString() -> string!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Html.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
@@ -572,7 +560,6 @@ override Bruinet.Html.Pages.AppRoot.Context.get -> Bruinet.Html.Interfaces.IHtml
 override Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.HtmlPageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Html.BruinetHtmlConfiguration.Load(string? configPath = null) -> Bruinet.Html.BruinetHtmlConfiguration!
-static Bruinet.Html.Collections.ItemKey.Of(Bruinet.Html.Interfaces.IHtmlElement! row, int position) -> Bruinet.Html.Collections.ItemKey
 static Bruinet.Html.Controls.ControlBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Html.Interfaces.HtmlElementExtensions.FindElement(this Bruinet.Html.Interfaces.IHtmlElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 static Bruinet.Html.Interfaces.PageProbe.Navigating.get -> Bruinet.Html.Interfaces.PageProbe!

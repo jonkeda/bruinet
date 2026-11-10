@@ -44,7 +44,7 @@ public interface IMauiItemObject<TCollection, TSelf>
     int Index { get; }
 
     /// <summary>Which item the row holds, recorded when it was created; the row is found again by it.</summary>
-    Containers.ItemKey Key { get; }
+    ItemKey Key { get; }
 }
 
 /// <summary>

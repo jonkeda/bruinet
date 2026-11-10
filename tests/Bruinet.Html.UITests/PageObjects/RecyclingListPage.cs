@@ -1,3 +1,4 @@
+using Bruinet.Core.Collections;
 using Bruinet.Html.Collections;
 using Bruinet.Html.Controls.Buttons;
 using Bruinet.Html.Controls.Display;
