@@ -4,7 +4,7 @@ Do not fix tests by adding arbitrary sleeps or longer delays. Wait for concrete
 UI state, navigation completion, busy sentinel changes, text, visibility,
 enabled state, request observation, or another observable condition.
 
-On MAUI, the framework does the waiting, and does it one way (2026-09-19; the rules are the
+The framework does the waiting, and does it one way, on every stack (MAUI first, 2026-09-19; the rules are the
 [call model](../contracts/call-model.md)):
 
 - **One unit per public call.** A call on a control, page, container, collection or
@@ -17,7 +17,7 @@ On MAUI, the framework does the waiting, and does it one way (2026-09-19; the ru
   shown over a page answers for itself.
 - **Every attempt finds its element again.** A replaced element is a signal
   (`StaleElementException`), never a reason to wait on the old one.
-- **Non-`Try` members wait; `Try*` members answer about now.**
+- **Actions, `Get…`, `Assert…` and `Wait…` wait; `Is…` and `Try*` members answer about now.**
 - **Inside a Core method, wait for an action's effect with `Confirm`**, which never
   repeats the action.
 

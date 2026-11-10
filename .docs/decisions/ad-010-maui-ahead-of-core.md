@@ -1,87 +1,49 @@
 # AD-010: MAUI, Html And Native Android Ahead Of Core, On Purpose
 
-`Bruinet.Maui` owns the interfaces its call model needs (`IMauiElement`,
-`IMauiDriver`, `IMauiElementScope`, `IMauiPage`, `IMauiTestContext`) and no longer
-implements Core's element, driver, scope and page interfaces. Since 2026-09-26
-`Bruinet.Html` does the same, with its own set (`IHtmlElement`, `IHtmlDriver`,
-`IHtmlElementScope`, `IHtmlPage`, `IHtmlTestContext`), and since 2026-10-07
-`Bruinet.NativeAndroid` (`INativeAndroidElement`, `INativeAndroidDriver`,
-`INativeAndroidElementScope`, `INativeAndroidPage`, `INativeAndroidTestContext`). Since 2026-11-10
-WPF, WinForms and Stride do too (`IWpf*`, `IWinForms*`, `IStride*`; `.my/upgrade/plan.md`), and the
-first model's project, `Bruinet.Core.Legacy` (AD-029, superseded), is gone: every stack is on the call
-model. What is proven moves down to Core, one layer at a time, as its own step; the element and
-driver never do (below)
-([move-down plan](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/stale-readiness/move-down.md)).
+Each stack owns its element and its driver. What the stacks share is in Core, once, and a stack's
+interfaces derive from Core's. The title is the decision's first form: MAUI left Core's old
+interfaces first (2026-09), Html (2026-09-26) and native Android (2026-10-07) followed, and since
+2026-11-10 WPF, WinForms and Stride have too. Every stack is on the call model and the first model
+is gone (AD-029).
 
-**The leaf layer has moved down** (2026-09-26, [review at 7162ac7](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/core/review-what-can-move-now.md)).
-It names no element, driver or scope type, so it needed none of the interfaces:
+| Layer | Where | What |
+| --- | --- | --- |
+| Calls | `Bruinet.Core.Calls`, public | `ControlCalls<TElement>` runs every control call once for all stacks, and each control base is its `IControlHost<TElement>`. With it: `ControlCall`, `AttemptContext`, `Deadline`, `Poller`, `Confirmer`, `ScopeGate`, `FirstOutcome`, `Observation`, `ObservationLog`, `Confirmation<T>`, `CallBudget`, `NearMissSettings`. |
+| Exceptions | `Bruinet.Core.Exceptions` | `StaleElementException`, `ElementNotReadyException` with `NotReadyReason`, `ScopeNotReadyException`, `AppUnavailableException`, `RouteUnavailableException`. |
+| Scopes and pages | `Bruinet.Core.Scopes` | `IScope`, `ITestPage : IScope` (its eleven members), `ScopeReadiness`, `ObjectBase<TContext>`; on `ITestContext`, the context's `Name` and `NearMiss`. |
+| Item keys | `Bruinet.Core.Collections` | `ItemKey` and `ItemKeyKind`; each stack reads its own keys. |
+| Element and driver | each stack | `IMauiElement`, `IHtmlDriver`, `IWpf*`, `IStride*`…, for good. |
 
-- `Bruinet.Core.Calls`: `Deadline`, `AttemptContext`, `Observation`, `ObservationLog`,
-  `Poller`, `Confirmer`, `ControlCall`, `ScopeGate`, `FirstOutcome` (the body of every
-  scope's `WaitFirst`) (internal until 2026-11-09, visible to `Bruinet.Maui`,
-  `Bruinet.Html`, `Bruinet.NativeAndroid` and their test projects; public since, below), and `Confirmation<T>`, `CallBudget`,
-  `NearMissSettings` (public);
-- `Bruinet.Core.Exceptions`: `StaleElementException`, `ElementNotReadyException` with
-  `NotReadyReason`, `ScopeNotReadyException`, `AppUnavailableException`,
-  `RouteUnavailableException`;
-- `Bruinet.Core.Scopes`: `ScopeReadiness`, `ScopeReadinessState`.
+What holds:
 
-MAUI, Html and native Android have no copies of these.
+- **A stack's scope, page and context interface derives from Core's** and adds what is typed:
+  `Context`, `Page`, the lookups, and its own extras (Html's `Url`, Android's `Activity`, MAUI's
+  `DescribeMiss`). It is never bridged to Core's by an adapter.
+- **The element and the driver stay per stack.** MAUI's element carries some forty platform verbs,
+  Android's its view's fields, Html's the DOM: a Core element would be the union of them all, or
+  too poor to use.
+- **One derived interface per stack, with no type parameters**, not a Core
+  `IElementScope<TElement, TContext, TPage>`: three type parameters on every page object read worse.
+- **The page is `ITestPage`, not `IPage`**: Playwright's page is `IPage` in every Html suite, and the
+  name matches Composition's `[TestPage]` and `TestPages`. Composition and UAT find pages by it
+  (`TestPages.IsPage`); `[TestPage]` stays for a suite that names a page or its lifetime.
+- **The calls layer is public** (2026-11-09). A stack is written against Core's published surface,
+  as a third party's would be, and Core has no `InternalsVisibleTo` for a stack (the test projects
+  keep theirs). The cost is accepted: a change to `IControlHost` is a breaking change, announced in
+  the CHANGELOG and the change list (`.github/skills/api-upgrade/references/changes.md`).
+- **The control bases keep the `Run*` names and signatures** (R8) as one-line delegations, so the
+  generator's output does not change.
+- **A layer moves down as a step of its own, once the stacks have proven it.** Still per stack: the
+  containers, collections and rows with their own polls (an item found by scrolling, the end of a
+  list), the page bases, the key readers, Html's `BusySignal` and MAUI's `RootedScopeBase`. Expect
+  them to differ where the platform differs.
 
-**The control layer's calls have moved down** (2026-10-22, the
-[review of 2026-10-21](https://github.com/exact-mobile-apps/test-tooling/blob/37f180a7/.my/reviews/2026-10-21-review.md), C1). The three control bases
-(Html's `ControlBase`, MAUI's and native Android's `ViewBase`) had the same `Run*` family three
-times, and the copies had started to differ. Now `Bruinet.Core.Calls.ControlCalls<TElement>` runs
-every call once for all of them: the attempt, the visibility check, the action once, the waits,
-reads and asserts. Each base is its `IControlHost<TElement>` (public, as the leaf layer is since 2026-11-09, below): its
-element lookup, scope probe, settings, and the few places a platform differs (MAUI's sweep and
-native Android's scroll to find, Playwright's own actionability, the scroll throttle's key). The
-bases keep the `Run*` names and signatures (R8) as one-line delegations, so the generator's
-output is unchanged. It still names no element interface: `TElement` is the stack's own.
-
-MAUI's scopes followed the same day: `RootedScopeBase`, under its containers, collections and
-rooted pages, had the same family over the scope's root (`ActOnceOnRoot`), and is now a host
-too, one that names itself a container, never checks its root's visibility and forgets a stale
-root. Html's and native Android's containers had no such family (a scope there only probes its
-readiness), so nothing of theirs moved.
-
-**The scope and page layer moves down next, the element never** (amended 2026-11-09, with the
-plan to move WPF, WinForms and Stride onto the call model, `.my/upgrade/plan.md`). Compared member
-by member at 802337ce, the three stacks' scopes have the same members (`DefaultLocatorStrategy`,
-`ProbeReadiness`, `IsReady`, `WaitReady`, `WaitFirst`, the lookups) and their pages the same eleven
-(`Name`, `IsLoaded`, `WaitLoaded`, `AssertLoaded`, `IsBusy`, `WaitBusy`, `AssertIdle`, `GetTitle`,
-`WaitTitle`, `AssertTitle`, `TakeScreenshot`); they differ only in the types they return. Their
-elements and drivers differ for real: MAUI's element carries some forty platform verbs, Android's
-its view's fields, Html's the DOM. So:
-
-- **Core gets the element-free half** of the scope, page and context: `IScope` (`DefaultLocatorStrategy`,
-  `ProbeReadiness`, `IsReady`, `WaitReady`, `WaitFirst`), `ITestPage : IScope` (the eleven members),
-  both in `Bruinet.Core.Scopes`, and on `ITestContext` the context's `Name` and `NearMiss`, the only
-  context members the three shared that name no element. Built as the plan's step U1, before any
-  old stack moves, so WPF, WinForms and Stride land on Core's contracts and are not copies four to
-  six. The page is `ITestPage`, not `IPage`: Playwright's page interface is `IPage` in every Html
-  suite, and the name matches Composition's `[TestPage]`, `TestPages` and `TestPageDescriptor`.
-- **Each stack's scope, page and context interface derives from Core's** and adds what is typed:
-  `Context`, `Page`, `TryFindElement`, `FindElement`, `FindElements`, and its own extras (Html's
-  `Url`, Android's `Activity`, MAUI's `DescribeMiss`). One derived interface per stack, not a
-  Core `IElementScope<TElement, TContext, TPage>`: three type parameters on every page object read worse.
-- **The element and the driver stay per stack for good.** The first draft's "one element, one driver
-  in Core" is dropped: a Core element would be the union of every platform's verbs, or too poor to use.
-- **Composition and UAT find pages by Core's `ITestPage`** (`TestPages.IsPage`), so the page bases
-  no longer carry `[TestPage]`; the attribute stays for a suite that names a page or its lifetime.
-  Finding a first-model page by an interface's name goes once Legacy does.
-- **The calls layer becomes public** (decided 2026-11-09): `ControlCalls<TElement>`,
-  `IControlHost<TElement>`, `ControlCall`, `AttemptContext`, `Deadline`, `Poller`, `Confirmer`,
-  `ScopeGate`, `FirstOutcome`, `Observation` and `ObservationLog`, in Core's PublicAPI files, and
-  Core's `InternalsVisibleTo` for the stacks goes (the test projects keep theirs). A stack is then
-  written against Core's published surface, as a third party's would be, and six stacks no longer
-  each need a line in Core. The cost is accepted: `IControlHost` moved twice this autumn, and a
-  change to it is now a breaking change, announced in the CHANGELOG.
-
-What stays per stack besides the element and driver: the collections' own polls (an item found by
-scrolling, the end of a list), page bases and their `RunProbe`, item keys, and Html's `BusySignal`.
-Expect those to differ from each other where the platform differs. Do not add adapters between a
-stack's interfaces and Core's: a stack's interface *derives* from Core's, it is never bridged to it.
+**Why:** the stacks had the same `Run*` family three times and the copies had started to differ, and
+a scope's and a page's members differed only in the types they return, while elements and drivers
+differ for real. Evidence: the [move-down plan](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/stale-readiness/move-down.md),
+the [review at 7162ac7](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/core/review-what-can-move-now.md),
+the [review of 2026-10-21](https://github.com/exact-mobile-apps/test-tooling/blob/37f180a7/.my/reviews/2026-10-21-review.md) (C1)
+and `.my/upgrade/plan.md`. Each move as it was made: this record at `98a84eff`.
 
 **Broken when:** an adapter is added between a stack's interfaces and Core's; Core is changed to
 match a stack's interfaces or bases outside a deliberate move-down step; a stack declares a scope or

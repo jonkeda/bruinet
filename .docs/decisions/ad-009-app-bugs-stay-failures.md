@@ -32,7 +32,7 @@ would have shipped the bug.
   element can reveal that it was recycled: give the item template an id.
 - **Success after trouble is reported.** A call that passed after its element was
   replaced three or more times, or after using more than half its budget, logs a
-  near-miss warning (thresholds: `MauiTestContextOptions.NearMiss`), whether the time went
+  near-miss warning (thresholds: `NearMiss` on every stack's context options), whether the time went
   into several attempts or into one. The run's near-misses are listed in `near-misses.md` in
   the suite's artifact folder, worst first. Set `BRUINET_CALL_LOG` to a folder to write every
   context's calls to CSV.

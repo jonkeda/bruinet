@@ -31,5 +31,5 @@ where it can be watched; placing it, its z-order and giving the focus back to th
 management, not pointer, keyboard or clipboard use. A shown browser is headed. The default stays
 `background`, so a test run does not change.
 
-**Broken when:** `Bruinet.Maui.FlaUI` gains pointer/keyboard/clipboard/foreground code, or a
+**Broken when:** `Bruinet.Maui.FlaUI` gains pointer/keyboard/clipboard/foreground code, MAUI's element derives from the shared `UiaElementBase` (`Bruinet.FlaUI`, where WPF's and WinForms' fallback lives), or a
 setting is added to re-enable physical input on MAUI.

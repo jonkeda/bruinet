@@ -23,9 +23,9 @@ The short list that must not be broken. Each links the decision that explains it
 - **App bugs stay failures.** An action runs once and is confirmed, never repeated;
   defects are reported, not absorbed. [AD-009](decisions/ad-009-app-bugs-stay-failures.md),
   [control-object](contracts/control-object.md)
-- **MAUI, Html and native Android are ahead of Core on purpose.** No adapters between their interfaces and
-  Core's; Core is not changed ahead of the move-down. The calls layer, its exceptions and
-  `ScopeReadiness` have moved down: one copy, in Core.
+- **Each stack owns its element and driver; what they share is Core's, once.** No adapters between a
+  stack's interfaces and Core's: they derive. The calls layer, its exceptions, `IScope`, `ITestPage`,
+  `ObjectBase<TContext>` and `ItemKey` have moved down; a layer moves only as a deliberate step.
   [AD-010](decisions/ad-010-maui-ahead-of-core.md)
 - **UAT step vocabulary is attribute-declared.** Every step is a `[BddGiven]`, `[BddWhen]` or
   `[BddThen]` (base `BddStepAttribute`): a control verb on a control method, a step definition on a
@@ -36,7 +36,7 @@ The short list that must not be broken. Each links the decision that explains it
   and checked by one engine (gate and `bruinet data` alike); mock bodies are contract types,
   never anonymous (`BRUINET001`); a UAT file names its own `TestData`.
   [AD-012](decisions/ad-012-test-data-is-typed-validated-and-chosen-by-the-scenario.md)
-- **Html and native Android controls have MAUI's shape.** Generated from `.tpl.cs`, MAUI's `Run*` signatures and
+- **Every stack's controls have MAUI's shape.** Generated from `.tpl.cs`, MAUI's `Run*` signatures and
   Core interfaces, no async members. [AD-013](decisions/ad-013-html-controls-have-mauis-shape.md)
 - **One scenario file serves every head.** Head tags decide where it runs; no per-head copies.
   Apps of several heads meet only in a `mixed` suite, each binding against its own head's catalog.

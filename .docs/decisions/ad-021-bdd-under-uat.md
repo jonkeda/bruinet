@@ -19,7 +19,7 @@ reached through the catalog's `Scope` (`IStepScopeModel`, one `IStepScope` per w
 **Bdd is the main; Uat is a specialization of it.** `Uat` names are for `Bruinet.Uat` and its tests
 only (and `UatPlatformsAttribute` in Bruinet.Maui, for now). Everything else takes `Bdd` names, types
 and projects alike:
-- the engine (`BddBinder`, `BddCatalogSet`, `IBddClock`) and `BddEffectiveStepKeyword` in Bruinet.Core;
+- the engine (`BddBinder`, `BddCatalogSet`, `IBddClock`) and `BddEffectiveStepKeyword` in Bruinet.Bdd.Abstractions;
 - the Presenter's types;
 - the tooling library `Bruinet.Bdd.Workspace` (it holds the preview, namespace `Bruinet.Bdd.Preview`) and the tool `bruinet` (`tools/Bruinet.Cli`, AD-028), whose `lsp` command is the language server;
 - the IDE extensions, "Bruinet BDD".
