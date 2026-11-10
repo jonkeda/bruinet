@@ -43,10 +43,10 @@ public abstract class ItemObjectBase<TContext, TElement, TCollection, TSelf> : O
     /// </summary>
     public int Position { get; }
 
-    /// <inheritdoc cref="IScope" />
+    /// <summary>This object, as its own type, for fluent chains.</summary>
     public abstract TSelf Self { get; }
 
-    /// <inheritdoc />
+    /// <summary>How a bare string locator inside this scope is read.</summary>
     public LocatorStrategy DefaultLocatorStrategy => Collection.DefaultLocatorStrategy;
 
     /// <inheritdoc />
@@ -65,27 +65,27 @@ public abstract class ItemObjectBase<TContext, TElement, TCollection, TSelf> : O
             : ScopeReadiness.Ready(ScopeName);
     }
 
-    /// <inheritdoc />
+    /// <summary>Whether this scope is ready now. One look.</summary>
     public bool IsReady() => ProbeReadiness().IsReady;
 
-    /// <inheritdoc />
+    /// <summary>Waits for the first of <paramref name="outcomes"/> that holds and answers its index, or -1 when none held within the budget.</summary>
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
 
-    /// <inheritdoc />
+    /// <summary>Waits until this scope is ready, as one call with its own budget.</summary>
     public bool WaitReady(int? timeoutMs = null)
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
 
     /// <summary>Whether the row's item is still shown in the list now.</summary>
     public bool Exists() => Collection.TryGetItemRoot(Key) != null;
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now, or null. One attempt.</summary>
     public TElement? TryFindElement(Locator locator)
         => Collection.TryGetItemRoot(Key) is { } root ? TryFindIn(root, locator) : null;
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now; throws when there is none.</summary>
     public TElement FindElement(Locator locator) => TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
 
-    /// <inheritdoc />
+    /// <summary>Every element <paramref name="locator"/> finds in this scope now. One attempt.</summary>
     public IReadOnlyList<TElement> FindElements(Locator locator)
         => Collection.TryGetItemRoot(Key) is { } root ? FindAllIn(root, locator) : [];
 

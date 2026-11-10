@@ -33,10 +33,10 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
     /// <summary>The container's locator in its parent.</summary>
     protected Locator Locator { get; }
 
-    /// <inheritdoc cref="IScope" />
+    /// <summary>This object, as its own type, for fluent chains.</summary>
     public abstract TScope Self { get; }
 
-    /// <inheritdoc />
+    /// <summary>How a bare string locator inside this scope is read.</summary>
     public LocatorStrategy DefaultLocatorStrategy => ParentScope.DefaultLocatorStrategy;
 
     /// <inheritdoc />
@@ -64,7 +64,7 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
     /// <summary>The root element, found in one attempt, or null. Override to find it another way.</summary>
     protected virtual TElement? TryFindRootElement() => ParentScope.TryFindElement(Locator);
 
-    /// <inheritdoc />
+    /// <summary>Whether this scope is ready now, and if not, why. One look.</summary>
     public ScopeReadiness ProbeReadiness()
     {
         if (AsksParent && ParentScope.ProbeReadiness() is { IsReady: false } parent)
@@ -77,13 +77,13 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
             : new ScopeReadiness(ScopeName, ScopeReadinessState.MissingRoot);
     }
 
-    /// <inheritdoc />
+    /// <summary>Whether this scope is ready now. One look.</summary>
     public bool IsReady() => ProbeReadiness().IsReady;
 
-    /// <inheritdoc />
+    /// <summary>Waits for the first of <paramref name="outcomes"/> that holds and answers its index, or -1 when none held within the budget.</summary>
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
 
-    /// <inheritdoc />
+    /// <summary>Waits until this scope is ready, as one call with its own budget.</summary>
     public bool WaitReady(int? timeoutMs = null)
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
 
@@ -133,13 +133,13 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
 
     #endregion
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now, or null. One attempt.</summary>
     public TElement? TryFindElement(Locator locator) => TryFindRootElement() is { } root ? TryFindIn(root, locator) : null;
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now; throws when there is none.</summary>
     public TElement FindElement(Locator locator) => TryFindElement(locator) ?? throw new ElementNotFoundException(locator);
 
-    /// <inheritdoc />
+    /// <summary>Every element <paramref name="locator"/> finds in this scope now. One attempt.</summary>
     public IReadOnlyList<TElement> FindElements(Locator locator) => TryFindRootElement() is { } root ? FindAllIn(root, locator) : [];
 
     /// <summary>Whether <paramref name="root"/> is shown.</summary>

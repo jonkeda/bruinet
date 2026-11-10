@@ -17,6 +17,11 @@ namespace Bruinet.Maui.Containers;
 /// holds another item reports <see cref="ScopeReadinessState.ItemChanged"/>, so a call never acts
 /// on the wrong item.
 /// </para>
+/// <para>
+/// MAUI keeps its own row base rather than Core's (public API review, proposal 5, rule 6): a MAUI row
+/// keeps its element and checks that it still holds its item, where the other stacks find the row
+/// again by key on every lookup.
+/// </para>
 /// </remarks>
 /// <typeparam name="TCollection">The owning collection.</typeparam>
 /// <typeparam name="TSelf">The item type itself (self-referencing for fluent returns).</typeparam>

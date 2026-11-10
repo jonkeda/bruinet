@@ -7,6 +7,10 @@ namespace Bruinet.Maui.Pages;
 /// <summary>
 /// The whole app as a scope, for the controls that do not live inside a page.
 /// </summary>
+/// <remarks>
+/// MAUI keeps its own app root rather than Core's <c>AppRootBase</c> (public API review, proposal 5,
+/// rule 6): it waits without a logged call and answers whether scroll lookups are allowed.
+/// </remarks>
 public sealed class AppRoot : ObjectBase, IMauiScope<AppRoot>
 {
     private readonly IMauiTestContext _context;

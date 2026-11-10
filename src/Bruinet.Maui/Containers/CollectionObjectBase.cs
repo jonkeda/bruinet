@@ -11,6 +11,11 @@ namespace Bruinet.Maui.Containers;
 /// scroll to realize rows take one scroll step per poll attempt, within the call's budget
 /// (call model R2, R7).
 /// </summary>
+/// <remarks>
+/// MAUI keeps its own collection base rather than Core's (public API review, proposal 5, rule 6): rows
+/// come from item strategies, keys have three kinds (logical index, automation id, position) and
+/// grouped lists repeat positions, so only the member names are shared with the other stacks.
+/// </remarks>
 /// <typeparam name="TParent">The parent scope type.</typeparam>
 /// <typeparam name="TSelf">The collection type itself (self-referencing).</typeparam>
 /// <typeparam name="TItem">The item container type.</typeparam>

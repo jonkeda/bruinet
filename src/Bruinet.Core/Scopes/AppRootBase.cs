@@ -24,28 +24,28 @@ public abstract class AppRootBase<TContext, TElement> : ObjectBase<TContext>
     /// <inheritdoc />
     public sealed override TContext Context => _context;
 
-    /// <inheritdoc />
+    /// <summary>How a bare string locator inside this scope is read.</summary>
     public LocatorStrategy DefaultLocatorStrategy => _context.DefaultLocatorStrategy;
 
-    /// <inheritdoc />
+    /// <summary>Whether this scope is ready now, and if not, why. One look.</summary>
     public ScopeReadiness ProbeReadiness() => _context.ProbeReadiness() with { ScopeName = "AppRoot" };
 
-    /// <inheritdoc />
+    /// <summary>Whether this scope is ready now. One look.</summary>
     public bool IsReady() => ProbeReadiness().IsReady;
 
-    /// <inheritdoc />
+    /// <summary>Waits for the first of <paramref name="outcomes"/> that holds and answers its index, or -1 when none held within the budget.</summary>
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);
 
     /// <summary>Waits for the app to be in front, as one call with its own budget.</summary>
     public bool WaitReady(int? timeoutMs = null)
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now, or null. One attempt.</summary>
     public TElement? TryFindElement(Locator locator) => _context.TryFindElement(locator);
 
-    /// <inheritdoc />
+    /// <summary>The element <paramref name="locator"/> finds in this scope now; throws when there is none.</summary>
     public TElement FindElement(Locator locator) => _context.FindElement(locator);
 
-    /// <inheritdoc />
+    /// <summary>Every element <paramref name="locator"/> finds in this scope now. One attempt.</summary>
     public IReadOnlyList<TElement> FindElements(Locator locator) => _context.FindElements(locator);
 }
