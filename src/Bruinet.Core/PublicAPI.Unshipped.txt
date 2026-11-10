@@ -212,6 +212,7 @@ Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
 Bruinet.Core.Collections.ItemKey
 Bruinet.Core.Collections.ItemKey.ItemKey() -> void
+Bruinet.Core.Collections.ItemKey.ItemKey(Bruinet.Core.Collections.ItemKeyKind Kind, string! Value) -> void
 Bruinet.Core.Collections.ItemKey.Kind.get -> Bruinet.Core.Collections.ItemKeyKind
 Bruinet.Core.Collections.ItemKey.Kind.init -> void
 Bruinet.Core.Collections.ItemKey.Value.get -> string!
