@@ -226,7 +226,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A scenario outline can have several Examples sections: `### Examples: <name>`, each with a tag
   line of its own that joins the outline's tags for its rows (a head tag picks rows for a head).
   Rows are numbered across the sections, so names, filters and timings stay put. `UAT015` names
-  the section; two sections with one name are `UAT032`. The preview shows each section.
+  the section; two sections with one name are `UAT032`. The preview shows each section (AD-036).
 - `docs/guides/coming-from-reqnroll.md`: one scenario in both forms, Reqnroll's attributes beside
   Bruinet's, what works differently and what is not there.
 - Narrated recordings pace each action: while a scene records, every control action (a click, a

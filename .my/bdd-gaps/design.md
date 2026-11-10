@@ -3,7 +3,7 @@
 Status: **design**, 2026-10-30. D3 built (`docs/guides/coming-from-reqnroll.md`). **D1 parked**
 (2026-10-30, the owner): worth its week only when someone names the tool that will read the
 output (Construction's team, an Exact dashboard); its spike then tests that tool, not Cucumber's
-HTML formatter. D2 built (2026-10-30; a missing table stays `UAT017`, no `UAT033`). Item 6 of [improvements](../improvements/README.md),
+HTML formatter. D2 built (2026-10-30; a missing table stays `UAT017`, no `UAT033`; its grammar recorded as AD-036 on 2026-11-10). Item 6 of [improvements](../improvements/README.md),
 built on [the Reqnroll comparison](../uat/reqnroll-comparison.md) of 2026-09-27, checked against the
 tree at 3ec7549b.
 
@@ -27,7 +27,7 @@ whether Cucumber's tools accept Bruinet's Markdown as the source.
 | Looks for | Today (checked 2026-10-30) | Here |
 | --- | --- | --- |
 | Hooks per scenario, per step, by tag | `[BddBeforeFeature]`, `[BddBeforeScenario(tags)]`, `[BddAfterScenario(tags)]`, `[BddAfterStep(tags)]` (`src/Bruinet.Bdd/BddHooks.cs`), in `docs/guides/uat-step-definitions.md` | built; no `BeforeStep` or run hooks (an xUnit fixture is the run's scope), named in D3 |
-| Scenario Outline | `## Scenario Outline:` with **one** `### Examples` (`BddMarkdownParser.ParseExamplesTable`) | **D2**: several blocks |
+| Scenario Outline | `## Scenario Outline:` with one or more `### Examples: <name>` sections, tagged per section (`BddMarkdownParser`) | built (D2, AD-036) |
 | Set and instance comparison with a diff | `BddSets.AssertSet`, `BddTable.AssertExactly`, `AssertContains`, `AssertDoesNotContain`, documented | built |
 | Cucumber Messages, an HTML report | a `<feature>__<scenario>__result.json` per scenario, `manifest.json` and `summary.md` per run (`UatScenarioReport`, `TestArtifactManifestWriter`) | **D1** |
 | A map from Reqnroll's words | `docs/guides/bdd-glossary.md`: the words only | **D3** |

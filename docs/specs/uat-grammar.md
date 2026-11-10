@@ -84,7 +84,8 @@ Rules the EBNF does not show:
   every placeholder needs a column in every Examples section. An outline has one or more Examples
   sections; `### Examples: <name>` names one, and two names in one outline must differ. A
   section's tags join the outline's for its rows only. Rows are numbered across the sections:
-  row *n* runs as `<name> [n]`, so a row's name does not depend on its section.
+  row *n* runs as `<name> [n]`, so a row's name does not depend on its section
+  ([AD-036](../../.docs/decisions/ad-036-an-outline-has-named-examples-sections.md)).
 - **Tables.** Every row has as many cells as the header, and a table has at least one data row.
   Cells are trimmed. In a gherkin block, a table under a step is the step's. Outside the blocks,
   a section's table (Metadata, Data, Examples, Parameters) is the first table of the section;
