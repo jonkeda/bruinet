@@ -129,8 +129,8 @@ internal static partial class UatStepFailure
 
     private static string? Locator(Exception exception) => exception switch
     {
-        AssertionException assertion => assertion.ControlLocator,
-        ElementNotFoundException notFound => notFound.LocatorString ?? notFound.LocatorInfo?.ToString(),
+        AssertionException assertion => assertion.Locator?.ToString(),
+        ElementNotFoundException notFound => notFound.Locator?.ToString(),
         ElementNotReadyException notReady => notReady.Locator.ToString(),
         StaleElementException stale => stale.Locator?.ToString(),
         _ => null,

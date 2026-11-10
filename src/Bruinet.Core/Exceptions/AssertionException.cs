@@ -1,3 +1,5 @@
+using Bruinet.Core.Locators;
+
 namespace Bruinet.Core.Exceptions;
 
 /// <summary>
@@ -17,7 +19,7 @@ public class AssertionException : BruinetException
     public object? Actual { get; }
 
     /// <summary>The locator of the control asserted on, when the caller supplied one.</summary>
-    public string? ControlLocator { get; }
+    public Locator? Locator { get; }
 
     public AssertionException(string message) : base(message) { }
 
@@ -28,12 +30,12 @@ public class AssertionException : BruinetException
         Actual = actual;
     }
 
-    public AssertionException(string message, object? expected, object? actual, string controlLocator)
-        : base(Describe(message, actual, controlLocator))
+    public AssertionException(string message, object? expected, object? actual, Locator locator)
+        : base(Describe(message, actual, locator?.ToString()))
     {
         Expected = expected;
         Actual = actual;
-        ControlLocator = controlLocator;
+        Locator = locator;
     }
 
     public AssertionException(string message, Exception innerException)

@@ -357,9 +357,9 @@ Bruinet.Core.Exceptions.AssertionException.Actual.get -> object?
 Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message) -> void
 Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, System.Exception! innerException) -> void
 Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, object? expected, object? actual) -> void
-Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, object? expected, object? actual, string! controlLocator) -> void
-Bruinet.Core.Exceptions.AssertionException.ControlLocator.get -> string?
+Bruinet.Core.Exceptions.AssertionException.AssertionException(string! message, object? expected, object? actual, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Core.Exceptions.AssertionException.Expected.get -> object?
+Bruinet.Core.Exceptions.AssertionException.Locator.get -> Bruinet.Core.Locators.Locator?
 Bruinet.Core.Exceptions.BruinetException
 Bruinet.Core.Exceptions.BruinetException.BruinetException(string! message) -> void
 Bruinet.Core.Exceptions.BruinetException.BruinetException(string! message, System.Exception! innerException) -> void
@@ -368,9 +368,7 @@ Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruine
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, int timeoutMs) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message, System.Exception! innerException) -> void
-Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message, string! locator) -> void
-Bruinet.Core.Exceptions.ElementNotFoundException.LocatorInfo.get -> Bruinet.Core.Locators.Locator?
-Bruinet.Core.Exceptions.ElementNotFoundException.LocatorString.get -> string?
+Bruinet.Core.Exceptions.ElementNotFoundException.Locator.get -> Bruinet.Core.Locators.Locator?
 Bruinet.Core.Exceptions.ElementNotReadyException
 Bruinet.Core.Exceptions.ElementNotReadyException.Detail.get -> string?
 Bruinet.Core.Exceptions.ElementNotReadyException.ElementNotReadyException(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Exceptions.NotReadyReason reason, string? detail = null) -> void

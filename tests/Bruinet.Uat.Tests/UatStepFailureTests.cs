@@ -9,7 +9,7 @@ public sealed class UatStepFailureTests
 {
     public static TheoryData<Exception, string> Failures => new()
     {
-        { new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", "AutomationId:StatusText"), "assertion" },
+        { new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText")), "assertion" },
         { Thrown(() => Assert.Fail("The runner counted 1 times, not 5.")), "assertion" },
         { new ElementNotFoundException("Not found: #save."), "locator-not-found" },
         { new WaitTimeoutException("Waited for Save.", 5000, "Save shown"), "timeout" },
@@ -38,7 +38,7 @@ public sealed class UatStepFailureTests
     [Fact]
     public void TheLocator_IsTheExceptionsOwn_ElseTheOneItsMessageNames()
     {
-        Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", "AutomationId:StatusText")]));
+        Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new AssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText"))]));
         Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new InvalidOperationException("Failed to run 'AssertRowStatus' on control 'Todos': Expected Text to be 'Done'. Locator: AutomationId:StatusText\r\nActual: 'Overdue'.")]));
         Assert.Null(UatStepFailure.Locate([new FormatException("Not a date.")]));
     }
@@ -53,7 +53,7 @@ public sealed class UatStepFailureTests
 
     [Fact]
     public void ALocatorNotFound_GivesItsLocator()
-        => Assert.Equal("#save", UatStepFailure.Locate([new ElementNotFoundException("Not found.", "#save")]));
+        => Assert.Equal("Css:#save", UatStepFailure.Locate([new ElementNotFoundException(Bruinet.Core.Locators.Locator.ByCss("#save"))]));
 
     [Fact]
     public void AStepWithNoDefinition_IsABindFailure()
