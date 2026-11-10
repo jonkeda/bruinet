@@ -1056,7 +1056,9 @@ static Bruinet.Core.Locators.Locator.ByAccessibilityId(string! accessibilityId) 
 static Bruinet.Core.Locators.Locator.ByAutomationId(string! automationId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ByClassName(string! className) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ByControlType(string! controlType) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByControlTypeAndName(string! controlType, string! name) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ByCss(string! cssSelector) -> Bruinet.Core.Locators.Locator!
+static Bruinet.Core.Locators.Locator.ByDataAutomationId(string! automationId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ByDataTestId(string! testId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ById(string! id) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Core.Locators.Locator.ByLinkText(string! linkText) -> Bruinet.Core.Locators.Locator!

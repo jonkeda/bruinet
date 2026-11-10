@@ -119,6 +119,19 @@ public sealed class Locator
         => new(LocatorStrategy.ControlType, controlType);
 
     /// <summary>
+    /// Create a locator by control type and name together (desktop and MAUI heads): the element of
+    /// <paramref name="controlType"/> whose name is <paramref name="name"/>.
+    /// </summary>
+    public static Locator ByControlTypeAndName(string controlType, string name)
+        => new(controlType, name);
+
+    /// <summary>
+    /// Create a locator by the <c>data-automation-id</c> attribute (Html).
+    /// </summary>
+    public static Locator ByDataAutomationId(string automationId)
+        => new(LocatorStrategy.DataAutomationId, automationId);
+
+    /// <summary>
     /// Create a new locator scoped to a parent element.
     /// </summary>
     public Locator ScopedTo(Locator parent)
