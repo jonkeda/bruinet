@@ -83,6 +83,25 @@ public class MauiDriverOptions
     public Dictionary<string, string> LaunchSettings { get; } = new(StringComparer.Ordinal);
 
     /// <summary>
+    /// Copies the named environment variables of the test process into <see cref="LaunchSettings"/>,
+    /// skipping the ones that are unset or empty. A device app does not inherit the test process's
+    /// environment, so a setting the fixture put there reaches the app this way.
+    /// </summary>
+    /// <param name="names">The environment variable names.</param>
+    /// <returns>These options.</returns>
+    public MauiDriverOptions ForwardEnvironment(params string[] names)
+    {
+        ArgumentNullException.ThrowIfNull(names);
+        foreach (var name in names)
+        {
+            if (Environment.GetEnvironmentVariable(name) is { Length: > 0 } value)
+                LaunchSettings[name] = value;
+        }
+
+        return this;
+    }
+
+    /// <summary>
     /// Where this app's window goes on Windows (<c>right</c>, <c>offscreen</c>, <c>secondary</c>,
     /// <c>left-half</c>, <c>right-half</c>), for this launch only: two apps of one test can be
     /// placed side by side. If null, <c>BRUINET_AUT_PLACE</c> decides, as for every app.

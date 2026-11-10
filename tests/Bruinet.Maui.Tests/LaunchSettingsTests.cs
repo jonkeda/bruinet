@@ -69,4 +69,25 @@ public class LaunchSettingsTests
     [Fact]
     public void LaunchSettings_OnIosWhenEmpty_AddNothing()
         => Assert.Null(MauiDriverFactory.LaunchProcessArguments(new MauiDriverOptions { Platform = MauiPlatform.iOS }));
+
+    [Fact]
+    public void ForwardEnvironment_CopiesOnlyTheSetVariables()
+    {
+        var set = "BRUINET_TEST_FORWARD_" + Guid.NewGuid().ToString("N");
+        var empty = set + "_EMPTY";
+        var unset = set + "_UNSET";
+        Environment.SetEnvironmentVariable(set, "9090");
+        Environment.SetEnvironmentVariable(empty, string.Empty);
+        try
+        {
+            var options = new MauiDriverOptions { Platform = MauiPlatform.Android }.ForwardEnvironment(set, empty, unset);
+
+            Assert.Equal("9090", Assert.Single(options.LaunchSettings, setting => setting.Key == set).Value);
+            Assert.Single(options.LaunchSettings);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable(set, null);
+        }
+    }
 }

@@ -51,12 +51,34 @@ dependency would break the copy route silently.
 |---|---|
 | `Layout` | `Grid`, `VerticalStackLayout`, `HorizontalStackLayout`, `StackLayout`, `FlexLayout`, `AbsoluteLayout` |
 | `ContentView` | `ContentView` and custom views deriving from it |
-| `Border` | `Border` |
+| `Border` | `Border` (class name `Border`) |
+| `ContentPage` | the page itself (class name `Page`) |
 
 The `Layout` registration is against the **base** type, so one line covers every
 layout subclass.
 
 `ScrollView` needs no handler — it is already addressable.
+
+## Options
+
+The overload with options changes two things about the peers:
+
+```csharp
+handlers.AddBruinetAutomationHandlers(options =>
+{
+    // A container without an AutomationId gets no peer; its children are still exposed.
+    options.PeersRequireAutomationId = true;
+
+    // A container that returns a command is a Button with the Invoke pattern.
+    options.InvokeCommand = view => view is MyClickable c && c.Command is { } command
+        ? new AutomationCommand(command, c.CommandParameter)
+        : null;
+});
+```
+
+Invoke runs the command on the UI thread, and only when the view is enabled and `CanExecute`
+returns `true`. Every container peer reports the MAUI view's `IsEnabled`, which a WinUI panel
+otherwise always reports as enabled.
 
 ## What is deliberately not registered
 
@@ -161,6 +183,35 @@ log's first line says which it is - `bridge ON` or `bridge OFF`, with the reason
 
 Nothing else is needed. No registration: the first element that declares a verb creates the
 bridge, and an app with no declarations behaves exactly as if these files were absent.
+
+### Rules: one declaration for many elements
+
+When every element of one kind should answer a verb, declare it once in code instead of on each
+element. A rule never overrides verbs that are already set.
+
+```csharp
+BruinetVerbRules.Publish("SwipeDown", e => e is RefreshView && !string.IsNullOrEmpty(e.AutomationId));
+BruinetVerbRules.Publish("Tap", e => e is Grid g && MyAutomation.GetTap(g), recheckOnLoaded: true);
+```
+
+`recheckOnLoaded` tests the element again when it loads, for rules that read state set after the
+handler connects, such as gesture recognizers added in code.
+
+## Launch settings on Android
+
+`MauiDriverOptions.LaunchSettings` reach an Android app as intent extras, not as environment
+variables. Copy the ones the app reads into its environment at the start of `OnCreate`:
+
+```csharp
+protected override void OnCreate(Bundle? savedInstanceState)
+{
+    BruinetLaunchSettings.ApplyIntentExtras(Intent, "MY_API_URL", "MY_TEST_USER");
+    base.OnCreate(savedInstanceState);
+}
+```
+
+From the test side, `options.ForwardEnvironment("MY_API_URL", "MY_TEST_USER")` copies the test
+process's own values of those variables into `LaunchSettings`, skipping any that are not set.
 
 ## From a test
 

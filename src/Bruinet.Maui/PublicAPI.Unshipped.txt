@@ -7,6 +7,7 @@ Bruinet.Maui.Configuration.MauiDriverOptions.AppPath.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.get -> System.Uri!
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.ApplyEnvironment(System.Func<string!, string?>! read) -> void
+Bruinet.Maui.Configuration.MauiDriverOptions.ForwardEnvironment(params string![]! names) -> Bruinet.Maui.Configuration.MauiDriverOptions!
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.LaunchSettings.get -> System.Collections.Generic.Dictionary<string!, string!>!

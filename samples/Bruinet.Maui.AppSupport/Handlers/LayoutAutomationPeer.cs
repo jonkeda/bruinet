@@ -1,5 +1,4 @@
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Bruinet.Maui.AppSupport.Handlers;
 
@@ -10,9 +9,10 @@ namespace Bruinet.Maui.AppSupport.Handlers;
 /// <remarks>
 /// Standard MAUI layouts use <c>LayoutPanel</c>, which derives from WinUI
 /// <c>Panel</c>. Panel has no AutomationPeer, so a layout's AutomationId is invisible
-/// to UIA tools (FlaUI, WinAppDriver, Appium). This peer surfaces it as a Group.
+/// to UIA tools (FlaUI, WinAppDriver, Appium). This peer surfaces it as a Group, or as a
+/// Button when <see cref="BruinetAutomationOptions.InvokeCommand"/> returns a command.
 /// </remarks>
-public class LayoutAutomationPeer : FrameworkElementAutomationPeer
+public class LayoutAutomationPeer : ContainerAutomationPeer
 {
     public LayoutAutomationPeer(FrameworkElement owner)
         : base(owner)
@@ -20,11 +20,4 @@ public class LayoutAutomationPeer : FrameworkElementAutomationPeer
     }
 
     protected override string GetClassNameCore() => "Layout";
-
-    protected override AutomationControlType GetAutomationControlTypeCore()
-        => AutomationControlType.Group;
-
-    protected override bool IsContentElementCore() => true;
-
-    protected override bool IsControlElementCore() => true;
 }

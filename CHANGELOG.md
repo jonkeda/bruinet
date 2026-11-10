@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `Test-Guard-Reason:` commit line, and counts test cases per row, so merging facts into a theory is not a loss.
 - `repeat-run.ps1` takes `-Framework`, `-VaryOrder` (alternate xUnit collection parallelism) and `-AppProcess`, reports
   tests missing from some runs, and exits 1 when a test failed or went missing.
+- `MauiDriverOptions.ForwardEnvironment(names)` copies the set test-process variables into `LaunchSettings`, and
+  AppSupport's `BruinetLaunchSettings.ApplyIntentExtras` copies them from the Android intent into the app's environment.
+- AppSupport container peers: `AddBruinetAutomationHandlers(options => …)` with `PeersRequireAutomationId` and
+  `InvokeCommand` (Button control type plus Invoke for a container with a command); peers report the view's
+  `IsEnabled`; Border and page peers report the class names `Border` and `Page`. `BruinetVerbRules.Publish` declares
+  gesture verbs for every element matching a rule. Moved from Exact Construction.
 - **Breaking:** Stride is on the call model. `Bruinet.Stride` has its own element (`IStrideElement`, a handle on a UI element
   by its identity, read fresh from the game each time; gone is stale), driver (`IStrideDriver`, the pipe: a broken pipe is
   `AppUnavailableException`), scope, page and context interfaces, generated controls (`Button`, `ToggleButton`, `EditText`,

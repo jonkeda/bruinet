@@ -77,8 +77,35 @@ public static class BruinetAutomationSupport
     /// <returns>The same collection, for chaining.</returns>
     public static IMauiHandlersCollection AddBruinetAutomationHandlers(
         this IMauiHandlersCollection handlers)
+        => handlers.AddBruinetAutomationHandlers(_ => { });
+
+    /// <summary>
+    /// Registers the automation handlers as <see cref="AddBruinetAutomationHandlers(IMauiHandlersCollection)"/>
+    /// does, with choices for the Windows container peers.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// handlers.AddBruinetAutomationHandlers(options =&gt;
+    /// {
+    ///     options.PeersRequireAutomationId = true;
+    ///     options.InvokeCommand = view =&gt; view is MyButton b &amp;&amp; b.Command is { } c
+    ///         ? new AutomationCommand(c, b.CommandParameter) : null;
+    /// });
+    /// </code>
+    /// </example>
+    /// <param name="handlers">The handler collection from <c>ConfigureMauiHandlers</c>.</param>
+    /// <param name="configure">Sets the peer options.</param>
+    /// <returns>The same collection, for chaining.</returns>
+    public static IMauiHandlersCollection AddBruinetAutomationHandlers(
+        this IMauiHandlersCollection handlers,
+        Action<BruinetAutomationOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(handlers);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var options = new BruinetAutomationOptions();
+        configure(options);
+        BruinetAutomationOptions.Current = options;
 
 #if WINDOWS
         // One registration against the base Layout type covers Grid, the stack
