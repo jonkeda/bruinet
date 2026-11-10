@@ -21,7 +21,7 @@ namespace Bruinet.Maui.FlaUI;
 /// No physical input and no fallback to it: an action with no UI Automation pattern and no
 /// bridge verb throws, naming the route the app would have to offer (AD-005).
 /// </summary>
-public sealed class FlaUIMauiElement : IMauiElement, IDetachable
+internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
 {
     private readonly AutomationElement? _wrapped;
     private readonly FlaUIMauiDriver _driver;

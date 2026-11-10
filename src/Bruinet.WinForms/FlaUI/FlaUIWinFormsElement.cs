@@ -7,7 +7,7 @@ namespace Bruinet.WinForms.FlaUI;
 /// A WinForms element through FlaUI's UI Automation: the patterns of <see cref="UiaElementBase"/>, with
 /// lookups that answer WinForms elements. One attempt each; nothing here waits.
 /// </summary>
-public sealed class FlaUIWinFormsElement : UiaElementBase, IWinFormsElement
+internal sealed class FlaUIWinFormsElement : UiaElementBase, IWinFormsElement
 {
     /// <summary>The element <paramref name="element"/> of the app <paramref name="app"/>.</summary>
     public FlaUIWinFormsElement(AutomationElement element, DesktopApp app)

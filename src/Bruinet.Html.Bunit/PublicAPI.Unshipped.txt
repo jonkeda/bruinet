@@ -3,63 +3,6 @@ Bruinet.Html.Bunit.BrowserOnlyException
 Bruinet.Html.Bunit.BrowserOnlyException.BrowserOnlyException(string! member) -> void
 Bruinet.Html.Bunit.BrowserOnlyException.BrowserOnlyException(string! member, string! why) -> void
 Bruinet.Html.Bunit.BrowserOnlyException.Member.get -> string!
-Bruinet.Html.Bunit.BunitHtmlDriver
-Bruinet.Html.Bunit.BunitHtmlDriver.CurrentUrl.get -> string!
-Bruinet.Html.Bunit.BunitHtmlDriver.Dispose() -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Bunit.BunitHtmlDriver.GetAutomationTree() -> string!
-Bruinet.Html.Bunit.BunitHtmlDriver.GetPageSource() -> string!
-Bruinet.Html.Bunit.BunitHtmlDriver.GoBack() -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.GoForward() -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.GoTo(string! url) -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.IsIdle() -> bool
-Bruinet.Html.Bunit.BunitHtmlDriver.PageRoot.get -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Bunit.BunitHtmlDriver.PageTitle.get -> string!
-Bruinet.Html.Bunit.BunitHtmlDriver.Reload() -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.SaveScreenshot(string! path) -> void
-Bruinet.Html.Bunit.BunitHtmlDriver.TakeScreenshot() -> byte[]!
-Bruinet.Html.Bunit.BunitHtmlElement
-Bruinet.Html.Bunit.BunitHtmlElement.Blur() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Check() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Clear() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Click() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.ClickAt(double x, double y) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.DoubleClick() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Enabled.get -> bool
-Bruinet.Html.Bunit.BunitHtmlElement.Evaluate(string! expression) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Evaluate<T>(string! expression) -> T
-Bruinet.Html.Bunit.BunitHtmlElement.Fill(string! value) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Bunit.BunitHtmlElement.Focus() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.GetAttribute(string! name) -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.GetCssValue(string! propertyName) -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.GetDomAttribute(string! attributeName) -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.GetDomProperty(string! propertyName) -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.Hover() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.InnerHtml.get -> string!
-Bruinet.Html.Bunit.BunitHtmlElement.InputValue.get -> string!
-Bruinet.Html.Bunit.BunitHtmlElement.InstanceKey.get -> string!
-Bruinet.Html.Bunit.BunitHtmlElement.IsChecked.get -> bool
-Bruinet.Html.Bunit.BunitHtmlElement.Location.get -> System.Drawing.Point
-Bruinet.Html.Bunit.BunitHtmlElement.LongPress(int durationMs = 1000) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.OuterHtml.get -> string!
-Bruinet.Html.Bunit.BunitHtmlElement.PressKey(string! key) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Rect.get -> System.Drawing.Rectangle
-Bruinet.Html.Bunit.BunitHtmlElement.RightClick() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.ScrollIntoView(int timeoutMs) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.SelectOption(string! value) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.SelectOption(string![]! values) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Selected.get -> bool
-Bruinet.Html.Bunit.BunitHtmlElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Size.get -> System.Drawing.Size
-Bruinet.Html.Bunit.BunitHtmlElement.Submit() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) -> void
-Bruinet.Html.Bunit.BunitHtmlElement.TagName.get -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.Text.get -> string?
-Bruinet.Html.Bunit.BunitHtmlElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Bunit.BunitHtmlElement.TryGetFrameDocument() -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Bunit.BunitHtmlElement.Uncheck() -> void
-Bruinet.Html.Bunit.BunitHtmlElement.Visible.get -> bool
 Bruinet.Html.Bunit.BunitTestContext
 Bruinet.Html.Bunit.BunitTestContext.BunitTestContext(Bruinet.Html.Bunit.BunitTestContextOptions! options) -> void
 Bruinet.Html.Bunit.BunitTestContext.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!

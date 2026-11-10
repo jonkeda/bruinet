@@ -8,7 +8,7 @@ namespace Bruinet.WinForms.FlaUI;
 /// The WinForms app under test through FlaUI's UI Automation, over a <see cref="DesktopApp"/>: launched
 /// with the foreground handed back and its window placed as asked, or attached to.
 /// </summary>
-public sealed class FlaUIWinFormsDriver : IWinFormsDriver, IRecordable
+internal sealed class FlaUIWinFormsDriver : IWinFormsDriver, IRecordable
 {
     private readonly DesktopApp _app;
 

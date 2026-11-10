@@ -10,7 +10,7 @@ namespace Bruinet.Maui.Appium;
 /// Appium-based implementation of <see cref="IMauiDriver"/>.
 /// Delegates all operations to the underlying AppiumDriver.
 /// </summary>
-public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Recording.IRecordable
+internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Recording.IRecordable
 {
     private readonly AppiumDriver _driver;
 

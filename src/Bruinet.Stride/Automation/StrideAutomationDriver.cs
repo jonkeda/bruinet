@@ -7,7 +7,7 @@ namespace Bruinet.Stride.Automation;
 /// one command, actions that fail loudly, and a game that is gone (the pipe broken or closed)
 /// reported as <see cref="AppUnavailableException"/> rather than as an element that is not there.
 /// </summary>
-public sealed class StrideAutomationDriver : IStrideDriver
+internal sealed class StrideAutomationDriver : IStrideDriver
 {
     private static readonly JsonSerializerOptions Json = new()
     {

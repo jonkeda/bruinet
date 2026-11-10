@@ -1,66 +1,4 @@
 #nullable enable
-Bruinet.Html.Playwright.PlaywrightHtmlDriver
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.CurrentUrl.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.Dispose() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.GetAutomationTree() -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.GetPageSource() -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.GoBack() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.GoForward() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.GoTo(string! url) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.IsIdle() -> bool
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.PageRoot.get -> Bruinet.Html.Interfaces.IHtmlElement!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.PageTitle.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.PlaywrightHtmlDriver(Microsoft.Playwright.IPage! page, Microsoft.Playwright.IFrame? frame = null) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.ProbePage(string! busyAttribute) -> Bruinet.Html.Interfaces.PageProbe!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.ProbePageWhenReady(string! busyAttribute, Bruinet.Html.Scopes.BusySignal signal, int timeoutMs) -> Bruinet.Html.Interfaces.PageProbe!
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.Reload() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.SaveScreenshot(string! path) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlDriver.TakeScreenshot() -> byte[]!
-Bruinet.Html.Playwright.PlaywrightHtmlElement
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Blur() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Check() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Clear() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Click() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.ClickAt(double x, double y) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.DoubleClick() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Enabled.get -> bool
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Evaluate(string! expression) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Evaluate<T>(string! expression) -> T
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Fill(string! value) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Focus() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.GetAttribute(string! name) -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.GetCssValue(string! propertyName) -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.GetDomAttribute(string! attributeName) -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.GetDomProperty(string! propertyName) -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Hover() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.InnerHtml.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlElement.InputValue.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlElement.InstanceKey.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlElement.IsChecked.get -> bool
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Location.get -> System.Drawing.Point
-Bruinet.Html.Playwright.PlaywrightHtmlElement.LongPress(int durationMs = 1000) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.OuterHtml.get -> string!
-Bruinet.Html.Playwright.PlaywrightHtmlElement.PlaywrightHtmlElement(Microsoft.Playwright.ILocator! locator) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.PressKey(string! key) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Rect.get -> System.Drawing.Rectangle
-Bruinet.Html.Playwright.PlaywrightHtmlElement.RightClick() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.ScrollIntoView(int timeoutMs) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.SelectOption(string! value) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.SelectOption(string![]! values) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Selected.get -> bool
-Bruinet.Html.Playwright.PlaywrightHtmlElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Size.get -> System.Drawing.Size
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Submit() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Swipe(int startX, int startY, int endX, int endY, int durationMs = 500) -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.TagName.get -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Text.get -> string?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.TryGetFrameDocument() -> Bruinet.Html.Interfaces.IHtmlElement?
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Uncheck() -> void
-Bruinet.Html.Playwright.PlaywrightHtmlElement.Visible.get -> bool
-Bruinet.Html.Playwright.PlaywrightHtmlElement.WaitsForActionability.get -> bool
 Bruinet.Html.Playwright.PlaywrightRecorder
 Bruinet.Html.Playwright.PlaywrightRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
 Bruinet.Html.Playwright.PlaywrightRecorder.PlaywrightRecorder() -> void
@@ -99,7 +37,5 @@ Bruinet.Html.Playwright.PlaywrightTestContext.TakeScreenshot() -> byte[]!
 Bruinet.Html.Playwright.PlaywrightTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Html.Playwright.PlaywrightTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Playwright.PlaywrightTestContext.WaitReady(int? timeoutMs = null) -> bool
-const Bruinet.Html.Playwright.PlaywrightHtmlElement.OutsideACallMs = 5000 -> int
-const Bruinet.Html.Playwright.PlaywrightHtmlElement.ReadAttachMs = 250 -> int
 static Bruinet.Html.Playwright.PlaywrightTestContext.CreateAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Playwright.PlaywrightTestContext!>!
 static Bruinet.Html.Playwright.PlaywrightTestContext.ForPage(Microsoft.Playwright.IPage! page, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Html.Playwright.PlaywrightTestContext!

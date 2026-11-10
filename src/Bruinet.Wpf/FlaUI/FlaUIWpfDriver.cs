@@ -8,7 +8,7 @@ namespace Bruinet.Wpf.FlaUI;
 /// The WPF app under test through FlaUI's UI Automation, over a <see cref="DesktopApp"/>: launched
 /// with the foreground handed back and its window placed as asked, or attached to.
 /// </summary>
-public sealed class FlaUIWpfDriver : IWpfDriver, IRecordable
+internal sealed class FlaUIWpfDriver : IWpfDriver, IRecordable
 {
     private readonly DesktopApp _app;
 

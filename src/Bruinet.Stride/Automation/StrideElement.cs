@@ -5,7 +5,7 @@ namespace Bruinet.Stride.Automation;
 /// element's state now (one command, addressed as <c>#key</c>); an element the game no longer has
 /// is stale (R5), never another element with the same name.
 /// </summary>
-public sealed class StrideElement : IStrideElement
+internal sealed class StrideElement : IStrideElement
 {
     /// <summary>The prefix of a target that names an element by its identity.</summary>
     public const string KeyPrefix = "#";

@@ -1,54 +1,4 @@
 #nullable enable
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.ActivateApp() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.AppPackage.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.AppiumNativeAndroidDriver(OpenQA.Selenium.Appium.Android.AndroidDriver! driver, Bruinet.NativeAndroid.NativeAndroidDriverOptions? options = null) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Back() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.CurrentActivity.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.CurrentPackage.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Dispose() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.GetAutomationTree() -> string!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.GetPageSource() -> string!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.HideKeyboard() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsAppInForeground() -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsAppRunning() -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.IsKeyboardShown.get -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.OpenDeepLink(string! uri) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.PressKeyCode(int keyCode) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.ResetAppState() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.SaveScreenshot(string! path) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TakeScreenshot() -> byte[]!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TerminateApp() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator) -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator! scrollable) -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.AppiumNativeAndroidElement(OpenQA.Selenium.Appium.AppiumElement! element, Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver! driver) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Checked.get -> bool?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ClassName.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Clear() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Click() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ContentDescription.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.DoubleTap() -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Enabled.get -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Focused.get -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.GetAttribute(string! name) -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Hint.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.InstanceKey.get -> string!
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.LongPress(int durationMs = 1000) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Rect.get -> System.Drawing.Rectangle
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ResourceId.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Scroll(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.ScrollIntoView(int timeoutMs) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Selected.get -> bool
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Swipe(Bruinet.NativeAndroid.Interfaces.GestureDirection direction, double percent = 0.75) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.TapAt(double x, double y) -> void
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Text.get -> string?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
-Bruinet.NativeAndroid.Appium.AppiumNativeAndroidElement.Visible.get -> bool
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
@@ -568,7 +518,6 @@ override Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Context.get -> Bruinet.
 override Bruinet.NativeAndroid.Pages.AppRoot.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.NativeAndroid.Interfaces.INativeAndroidTestContext!
 override Bruinet.NativeAndroid.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver.Create(Bruinet.NativeAndroid.NativeAndroidDriverOptions! options) -> Bruinet.NativeAndroid.Appium.AppiumNativeAndroidDriver!
 static Bruinet.NativeAndroid.Appium.NativeAndroidTestContext.Create(Bruinet.NativeAndroid.NativeAndroidDriverOptions! options) -> Bruinet.NativeAndroid.Appium.NativeAndroidTestContext!
 static Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ResolveLocator(string! resourceIdOrXPath) -> Bruinet.Core.Locators.Locator!
 static Bruinet.NativeAndroid.Interfaces.NativeAndroidElementExtensions.FindElement(this Bruinet.NativeAndroid.Interfaces.INativeAndroidElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!

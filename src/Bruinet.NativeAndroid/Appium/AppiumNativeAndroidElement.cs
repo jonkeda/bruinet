@@ -10,7 +10,7 @@ namespace Bruinet.NativeAndroid.Appium;
 /// recreated view, an ended session and a command the server lacks each surface as their own
 /// exception; nothing here waits or retries.
 /// </summary>
-public sealed class AppiumNativeAndroidElement : INativeAndroidElement
+internal sealed class AppiumNativeAndroidElement : INativeAndroidElement
 {
     private readonly AppiumElement _element;
     private readonly AppiumNativeAndroidDriver _driver;

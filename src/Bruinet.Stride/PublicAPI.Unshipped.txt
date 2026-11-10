@@ -1,40 +1,4 @@
 #nullable enable
-Bruinet.Stride.Automation.StrideAutomationDriver
-Bruinet.Stride.Automation.StrideAutomationDriver.Act(string! method, string! target, params object![]! args) -> void
-Bruinet.Stride.Automation.StrideAutomationDriver.Dispose() -> void
-Bruinet.Stride.Automation.StrideAutomationDriver.Find(string! scope, string! target) -> Bruinet.Stride.Communication.ElementState!
-Bruinet.Stride.Automation.StrideAutomationDriver.FindAll(string! scope, string! target) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Communication.ElementState!>!
-Bruinet.Stride.Automation.StrideAutomationDriver.GetChildren(string! scope) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Communication.ElementState!>!
-Bruinet.Stride.Automation.StrideAutomationDriver.GetState(string! target) -> Bruinet.Stride.Communication.ElementState!
-Bruinet.Stride.Automation.StrideAutomationDriver.HoldKey(Bruinet.Stride.Infrastructure.VirtualKey key, int durationMs) -> void
-Bruinet.Stride.Automation.StrideAutomationDriver.IsGameBusy() -> bool
-Bruinet.Stride.Automation.StrideAutomationDriver.IsGameReady() -> bool
-Bruinet.Stride.Automation.StrideAutomationDriver.PressKey(Bruinet.Stride.Infrastructure.VirtualKey key) -> void
-Bruinet.Stride.Automation.StrideAutomationDriver.StrideAutomationDriver(Bruinet.Stride.Communication.IAutomationChannel! channel, System.Func<nint>? windowHandle = null) -> void
-Bruinet.Stride.Automation.StrideAutomationDriver.TakeScreenshot() -> byte[]!
-Bruinet.Stride.Automation.StrideAutomationDriver.WindowHandle.get -> nint
-Bruinet.Stride.Automation.StrideElement
-Bruinet.Stride.Automation.StrideElement.AutomationId.get -> string?
-Bruinet.Stride.Automation.StrideElement.Checked.get -> bool?
-Bruinet.Stride.Automation.StrideElement.Children() -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
-Bruinet.Stride.Automation.StrideElement.Click() -> void
-Bruinet.Stride.Automation.StrideElement.ControlType.get -> string?
-Bruinet.Stride.Automation.StrideElement.Enabled.get -> bool
-Bruinet.Stride.Automation.StrideElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Stride.Interfaces.IStrideElement!>!
-Bruinet.Stride.Automation.StrideElement.GetAttribute(string! name) -> string?
-Bruinet.Stride.Automation.StrideElement.InstanceKey.get -> string!
-Bruinet.Stride.Automation.StrideElement.RangeMaximum.get -> double?
-Bruinet.Stride.Automation.StrideElement.RangeMinimum.get -> double?
-Bruinet.Stride.Automation.StrideElement.RangeValue.get -> double?
-Bruinet.Stride.Automation.StrideElement.Rect.get -> System.Drawing.Rectangle
-Bruinet.Stride.Automation.StrideElement.ScrollIntoView(int timeoutMs) -> void
-Bruinet.Stride.Automation.StrideElement.SetRangeValue(double value) -> void
-Bruinet.Stride.Automation.StrideElement.SetText(string! text) -> void
-Bruinet.Stride.Automation.StrideElement.StrideElement(Bruinet.Stride.Interfaces.IStrideDriver! driver, Bruinet.Stride.Communication.ElementState! found) -> void
-Bruinet.Stride.Automation.StrideElement.Text.get -> string?
-Bruinet.Stride.Automation.StrideElement.Toggle() -> void
-Bruinet.Stride.Automation.StrideElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Stride.Interfaces.IStrideElement?
-Bruinet.Stride.Automation.StrideElement.Visible.get -> bool
 Bruinet.Stride.Automation.StrideLocators
 Bruinet.Stride.BruinetStrideConfiguration
 Bruinet.Stride.BruinetStrideConfiguration.BruinetStrideConfiguration() -> void
@@ -609,9 +573,7 @@ abstract Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Stride.ObjectBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> string!
-const Bruinet.Stride.Automation.StrideElement.KeyPrefix = "#" -> string!
 const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
-override Bruinet.Stride.Automation.StrideElement.ToString() -> string!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
@@ -621,7 +583,6 @@ override Bruinet.Stride.Controls.ViewBase<TScope>.Context.get -> Bruinet.Stride.
 override Bruinet.Stride.Pages.AppRoot.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.Stride.Automation.StrideElement.From(Bruinet.Stride.Interfaces.IStrideDriver! driver, Bruinet.Stride.Communication.ElementState! state) -> Bruinet.Stride.Automation.StrideElement?
 static Bruinet.Stride.Automation.StrideLocators.TargetOf(Bruinet.Core.Locators.Locator! locator) -> string!
 static Bruinet.Stride.BruinetStrideConfiguration.Load(string? configPath = null) -> Bruinet.Stride.BruinetStrideConfiguration!
 static Bruinet.Stride.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!

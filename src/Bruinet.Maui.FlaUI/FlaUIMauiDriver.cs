@@ -17,7 +17,7 @@ namespace Bruinet.Maui.FlaUI;
 /// FlaUI-based implementation of <see cref="IMauiDriver"/> for Windows platform.
 /// Provides native Windows UI Automation support for MAUI desktop apps.
 /// </summary>
-public sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
+internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 {
     private readonly DesktopApp _app;
     private bool _disposed;

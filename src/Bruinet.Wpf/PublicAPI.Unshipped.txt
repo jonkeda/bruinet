@@ -317,25 +317,6 @@ Bruinet.Wpf.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? 
 Bruinet.Wpf.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.App.get -> Bruinet.FlaUI.DesktopApp!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Close() -> void
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.CurrentWindowHandle.get -> string!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Dispose() -> void
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.FlaUIWpfDriver(Bruinet.FlaUI.DesktopApp! app) -> void
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.GetAutomationTree() -> string!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.GetPageSource() -> string!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.HasExited.get -> bool
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Quit() -> void
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.TakeScreenshot() -> byte[]!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.TopLevelWindows() -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Window.get -> Bruinet.Wpf.Interfaces.IWpfElement!
-Bruinet.Wpf.FlaUI.FlaUIWpfElement
-Bruinet.Wpf.FlaUI.FlaUIWpfElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.FlaUI.FlaUIWpfElement.FlaUIWpfElement(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.FlaUI.DesktopApp! app) -> void
-Bruinet.Wpf.FlaUI.FlaUIWpfElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement?
 Bruinet.Wpf.Interfaces.IWpfContainer<TParent, TSelf>
 Bruinet.Wpf.Interfaces.IWpfContainer<TParent, TSelf>.Parent.get -> TParent
 Bruinet.Wpf.Interfaces.IWpfDriver
@@ -504,9 +485,6 @@ override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Inte
 override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Wpf.BruinetWpfConfiguration.Load(string? configPath = null) -> Bruinet.Wpf.BruinetWpfConfiguration!
 static Bruinet.Wpf.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
-static Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Attach(System.Diagnostics.Process! process) -> Bruinet.Wpf.FlaUI.FlaUIWpfDriver!
-static Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Attach(nint windowHandle) -> Bruinet.Wpf.FlaUI.FlaUIWpfDriver!
-static Bruinet.Wpf.FlaUI.FlaUIWpfDriver.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null) -> Bruinet.Wpf.FlaUI.FlaUIWpfDriver!
 static Bruinet.Wpf.Interfaces.WpfElementExtensions.FindElement(this Bruinet.Wpf.Interfaces.IWpfElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
 static Bruinet.Wpf.Testing.WpfTestFixtureBase.FindSolutionDirectory() -> string!
 static readonly Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DataItems -> Bruinet.Core.Locators.Locator!

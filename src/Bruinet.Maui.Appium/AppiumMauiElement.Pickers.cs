@@ -28,7 +28,7 @@ namespace Bruinet.Maui.Appium;
 /// emulator runs in English. iOS shows wheels instead (<c>AppiumMauiElement.Wheels.cs</c>).
 /// </para>
 /// </remarks>
-public sealed partial class AppiumMauiElement
+internal sealed partial class AppiumMauiElement
 {
     private const int PickerDialogWaitMs = 3_000;
 

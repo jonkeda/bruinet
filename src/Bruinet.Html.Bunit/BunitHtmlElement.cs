@@ -17,7 +17,7 @@ namespace Bruinet.Html.Bunit;
 /// replaces bUnit's nodes, so a held node would go stale. Gone is <see cref="StaleElementException"/>,
 /// which the call around it treats as a signal to look again.
 /// </summary>
-public sealed class BunitHtmlElement : IHtmlElement
+internal sealed class BunitHtmlElement : IHtmlElement
 {
     private readonly BunitTestContext _context;
     private readonly Func<IElement?> _resolve;

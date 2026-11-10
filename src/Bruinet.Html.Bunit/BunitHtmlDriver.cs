@@ -5,7 +5,7 @@ using Bruinet.Html.Interfaces;
 namespace Bruinet.Html.Bunit;
 
 /// <summary>The rendered root as Bruinet's Html driver: lookups, navigation and the page's markup.</summary>
-public sealed class BunitHtmlDriver : IHtmlDriver
+internal sealed class BunitHtmlDriver : IHtmlDriver
 {
     private readonly BunitTestContext _context;
 

@@ -20,7 +20,7 @@ namespace Bruinet.Maui.Appium;
 /// documented, not measured. A wheel is told apart by its value, never by its place.
 /// </para>
 /// </remarks>
-public sealed partial class AppiumMauiElement
+internal sealed partial class AppiumMauiElement
 {
     private static readonly By IosWheels = By.XPath("//XCUIElementTypePickerWheel");
 

@@ -22,7 +22,7 @@ namespace Bruinet.Html.Playwright;
 /// not Playwright's 30 s default. A read waits for its element no longer than
 /// <see cref="ReadAttachMs"/>: see <see cref="Read{T}"/>.
 /// </remarks>
-public sealed class PlaywrightHtmlElement : IHtmlElement
+internal sealed class PlaywrightHtmlElement : IHtmlElement
 {
     /// <summary>The longest a Playwright call made outside a Bruinet call may wait.</summary>
     public const int OutsideACallMs = 5000;

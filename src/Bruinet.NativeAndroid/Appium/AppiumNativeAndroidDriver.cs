@@ -11,7 +11,7 @@ namespace Bruinet.NativeAndroid.Appium;
 /// Lookups make one attempt: the session's implicit wait is zero, and the call around a lookup is
 /// what waits.
 /// </summary>
-public sealed class AppiumNativeAndroidDriver : INativeAndroidDriver
+internal sealed class AppiumNativeAndroidDriver : INativeAndroidDriver
 {
     // queryAppState: 3 is "running in the background", 4 "in the foreground".
     private const long RunningInBackground = 3;

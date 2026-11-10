@@ -12,7 +12,7 @@ namespace Bruinet.Html.Playwright;
 /// The browser, its context and the page belong to <see cref="PlaywrightTestContext"/>, which
 /// creates and closes them; this driver only talks to the page.
 /// </remarks>
-public sealed class PlaywrightHtmlDriver : IHtmlDriver
+internal sealed class PlaywrightHtmlDriver : IHtmlDriver
 {
     private readonly IPage _page;
     private readonly IFrame? _frame;

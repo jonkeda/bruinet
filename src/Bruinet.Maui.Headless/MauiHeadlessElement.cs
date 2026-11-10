@@ -32,7 +32,7 @@ namespace Bruinet.Maui.Headless;
 /// it first (<see cref="MauiHeadlessAppBridge"/>), as they do there.
 /// </para>
 /// </remarks>
-public sealed class MauiHeadlessElement : IMauiElement
+internal sealed class MauiHeadlessElement : IMauiElement
 {
     private static readonly ConditionalWeakTable<MauiElement, string> Keys = new();
     private static readonly ConditionalWeakTable<Picker, StrongBox<bool>> OpenDropdowns = new();

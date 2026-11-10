@@ -7,7 +7,7 @@ namespace Bruinet.Wpf.FlaUI;
 /// A WPF element through FlaUI's UI Automation: the patterns of <see cref="UiaElementBase"/>, with
 /// lookups that answer WPF elements. One attempt each; nothing here waits.
 /// </summary>
-public sealed class FlaUIWpfElement : UiaElementBase, IWpfElement
+internal sealed class FlaUIWpfElement : UiaElementBase, IWpfElement
 {
     /// <summary>The element <paramref name="element"/> of the app <paramref name="app"/>.</summary>
     public FlaUIWpfElement(AutomationElement element, DesktopApp app)

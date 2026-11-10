@@ -324,25 +324,6 @@ Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, 
 Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.App.get -> Bruinet.FlaUI.DesktopApp!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Close() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.CurrentWindowHandle.get -> string!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Dispose() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.FlaUIWinFormsDriver(Bruinet.FlaUI.DesktopApp! app) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetAutomationTree() -> string!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.GetPageSource() -> string!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.HasExited.get -> bool
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Quit() -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.TakeScreenshot() -> byte[]!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.TopLevelWindows() -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Window.get -> Bruinet.WinForms.Interfaces.IWinFormsElement!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.FlaUIWinFormsElement(FlaUI.Core.AutomationElements.AutomationElement! element, Bruinet.FlaUI.DesktopApp! app) -> void
-Bruinet.WinForms.FlaUI.FlaUIWinFormsElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
 Bruinet.WinForms.Interfaces.IWinFormsContainer<TParent, TSelf>
 Bruinet.WinForms.Interfaces.IWinFormsContainer<TParent, TSelf>.Parent.get -> TParent
 Bruinet.WinForms.Interfaces.IWinFormsDriver
@@ -522,9 +503,6 @@ override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Win
 override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.WinForms.BruinetWinFormsConfiguration.Load(string? configPath = null) -> Bruinet.WinForms.BruinetWinFormsConfiguration!
 static Bruinet.WinForms.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
-static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Attach(System.Diagnostics.Process! process) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
-static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Attach(nint windowHandle) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
-static Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null) -> Bruinet.WinForms.FlaUI.FlaUIWinFormsDriver!
 static Bruinet.WinForms.Interfaces.WinFormsElementExtensions.FindElement(this Bruinet.WinForms.Interfaces.IWinFormsElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 static Bruinet.WinForms.Testing.WinFormsTestFixtureBase.FindSolutionDirectory() -> string!
 static readonly Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DataItems -> Bruinet.Core.Locators.Locator!
