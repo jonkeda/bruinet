@@ -116,4 +116,16 @@ public class IosRoutesTests
             return true;
         }
     }
+
+    [Theory]
+    [InlineData("Vertical scroll bar, 3 pages", "0%", -1, true)]
+    [InlineData("Vertical scroll bar, 3 pages", "0%", 1, false)]
+    [InlineData("Vertical scroll bar, 3 pages", "100%", 1, true)]
+    [InlineData("Vertical scroll bar, 3 pages", "100%", -1, false)]
+    [InlineData("Vertical scroll bar, 3 pages", "42%", -1, false)]
+    [InlineData("Vertical scroll bar, 1 page", "0%", 1, true)]
+    [InlineData("Verticale schuifbalk, 3 pagina's", "0%", -1, false)]
+    [InlineData(null, null, -1, false)]
+    public void TheScrollBar_SaysWhenAStepCannotMove(string? name, string? value, int steps, bool atEdge)
+        => Assert.Equal(atEdge, IosScrollBar.AtEdge(name, value, steps));
 }

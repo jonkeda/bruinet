@@ -161,6 +161,24 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             ownsLifecycle: false);
     }
 
+    /// <summary>
+    /// A context whose elements are found in <paramref name="frame"/>, such as a sign-in form in
+    /// an iframe. Navigation, screenshots and readiness are the page's. The page is not owned.
+    /// </summary>
+    public static PlaywrightTestContext ForFrame(IPage page, IFrame frame, HtmlTestContextOptions? options = null)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(frame);
+        options ??= new HtmlTestContextOptions();
+
+        return new PlaywrightTestContext(
+            page,
+            frame,
+            options,
+            options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance,
+            ownsLifecycle: false);
+    }
+
     public IHtmlTestContext Context => this;
 
     public IHtmlDriver Driver => _driver;

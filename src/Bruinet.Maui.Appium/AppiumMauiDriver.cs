@@ -941,6 +941,13 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
             return already;
         }
 
+        // A swipe from the list's lower edge lands on an open keyboard and moves nothing; a user
+        // closes it first, as ScrollIntoView does (D14). Rows behind it may already be the hit.
+        if (HideKeyboardIfShown() && FindOnScreenIos(locator) is { } uncovered)
+        {
+            return uncovered;
+        }
+
         var scroller = IosScroller(container);
         if (scroller is null)
         {
@@ -957,7 +964,11 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
                 try
                 {
                     // The list scan's own swipe, about 1.7 s; XCUITest's 'mobile: scroll' took 7.5 s a page.
-                    _ = new AppiumMauiElement(scroller, this).ScrollContent(direction == "down" ? 1 : -1);
+                    // NotMoved: the scroll bar says this end is reached, so no swipe (D13).
+                    if (new AppiumMauiElement(scroller, this).ScrollContent(direction == "down" ? 1 : -1) == ScrollStep.NotMoved)
+                    {
+                        break;
+                    }
                 }
                 catch (Exception error) when (!AppiumErrors.IsGone(error))
                 {
