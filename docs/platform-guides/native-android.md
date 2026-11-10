@@ -18,13 +18,13 @@ wait for state), scope readiness and collections with item keys.
 ## A session
 
 ```csharp
-var context = NativeAndroidTestContext.Create(NativeAndroidDriverOptions.FromEnvironment());
+var context = NativeAndroidTestContext.Create(NativeAndroidTestContextOptions.FromEnvironment());
 context.NavigateTo("myapp://orders");   // a deep link
 var page = new OrdersPage(context);
 page.AssertIdle();
 ```
 
-`NativeAndroidDriverOptions.FromEnvironment()` reads:
+`NativeAndroidTestContextOptions.FromEnvironment()` reads:
 
 | Variable | Purpose | Default |
 | --- | --- | --- |
