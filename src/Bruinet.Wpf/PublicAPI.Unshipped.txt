@@ -90,16 +90,8 @@ Bruinet.Wpf.Context.WpfTestContextOptions.Environment.get -> System.Collections.
 Bruinet.Wpf.Context.WpfTestContextOptions.Environment.init -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.ExecutablePath.get -> string?
 Bruinet.Wpf.Context.WpfTestContextOptions.ExecutablePath.init -> void
-Bruinet.Wpf.Context.WpfTestContextOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.Wpf.Context.WpfTestContextOptions.Logger.init -> void
-Bruinet.Wpf.Context.WpfTestContextOptions.Name.get -> string?
-Bruinet.Wpf.Context.WpfTestContextOptions.Name.init -> void
-Bruinet.Wpf.Context.WpfTestContextOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
-Bruinet.Wpf.Context.WpfTestContextOptions.NearMiss.init -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.ProcessId.get -> int?
 Bruinet.Wpf.Context.WpfTestContextOptions.ProcessId.init -> void
-Bruinet.Wpf.Context.WpfTestContextOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
-Bruinet.Wpf.Context.WpfTestContextOptions.Timeouts.init -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.WindowHandle.get -> nint?
 Bruinet.Wpf.Context.WpfTestContextOptions.WindowHandle.init -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.WpfTestContextOptions() -> void

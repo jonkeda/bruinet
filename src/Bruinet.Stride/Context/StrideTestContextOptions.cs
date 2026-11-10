@@ -3,21 +3,24 @@ namespace Bruinet.Stride.Context;
 /// <summary>
 /// Configuration options for Stride UI tests.
 /// </summary>
-public class StrideTestContextOptions
+public class StrideTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
+    /// <summary>
+    /// Stride's call budgets by default: shorter than the other stacks', since a game answers in
+    /// frames (proposal 11 put them on the shared <see cref="TestContextOptionsBase.Timeouts"/>).
+    /// </summary>
+    public StrideTestContextOptions()
+        => Timeouts = new TimeoutSettings
+        {
+            DefaultWait = TimeSpan.FromMilliseconds(3000),
+            PageLoad = TimeSpan.FromMilliseconds(10000),
+            ElementFind = TimeSpan.FromMilliseconds(1000),
+            ElementState = TimeSpan.FromMilliseconds(3000),
+            Animation = TimeSpan.FromMilliseconds(150),
+            PollingInterval = TimeSpan.FromMilliseconds(100),
+        };
+
     #region Timeouts
-
-    /// <summary>Default timeout for wait operations.</summary>
-    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromMilliseconds(3000);
-
-    /// <summary>Short timeout for quick checks.</summary>
-    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan ShortTimeout { get; set; } = TimeSpan.FromMilliseconds(1000);
-
-    /// <summary>Polling interval for wait operations.</summary>
-    [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan PollingInterval { get; set; } = TimeSpan.FromMilliseconds(100);
 
     /// <summary>Timeout for game startup.</summary>
     [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
@@ -31,14 +34,8 @@ public class StrideTestContextOptions
 
     #region Calls
 
-    /// <summary>The call log; <c>BRUINET_CALL_LOG</c>'s, or none, when null.</summary>
-    public ITestLogger? Logger { get; set; }
 
-    /// <summary>The context's name in call logs, when a scenario runs several apps.</summary>
-    public string? Name { get; set; }
 
-    /// <summary>When a call that passed is logged as a near-miss.</summary>
-    public Bruinet.Core.Calls.NearMissSettings NearMiss { get; set; } = Bruinet.Core.Calls.NearMissSettings.Default;
 
     #endregion
 
@@ -82,16 +79,4 @@ public class StrideTestContextOptions
 
     #endregion
 
-    /// <summary>
-    /// Convert to Core TimeoutSettings.
-    /// </summary>
-    public TimeoutSettings ToTimeoutSettings() => new()
-    {
-        DefaultWait = DefaultTimeout,
-        PageLoad = StartupTimeout,
-        ElementFind = ShortTimeout,
-        ElementState = DefaultTimeout,
-        Animation = TimeSpan.FromMilliseconds(150),
-        PollingInterval = PollingInterval
-    };
 }

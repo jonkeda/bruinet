@@ -45,10 +45,10 @@ public class WinFormsTestContextOptionsTests
     }
 
     [Fact]
-    public void Options_DefaultTimeouts_AreNull()
+    public void Options_DefaultTimeouts_AreTheSharedDefaults()
     {
         var options = new WinFormsTestContextOptions();
-        Assert.Null(options.Timeouts);
+        Assert.Equal(Bruinet.Core.Configuration.TimeoutSettings.Default.DefaultWait, options.Timeouts.DefaultWait);
     }
 
     [Fact]

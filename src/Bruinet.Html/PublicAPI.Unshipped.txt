@@ -47,16 +47,8 @@ Bruinet.Html.Context.HtmlTestContextOptions.EnableTracing.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.Headless.get -> bool
 Bruinet.Html.Context.HtmlTestContextOptions.Headless.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.HtmlTestContextOptions() -> void
-Bruinet.Html.Context.HtmlTestContextOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.Html.Context.HtmlTestContextOptions.Logger.set -> void
-Bruinet.Html.Context.HtmlTestContextOptions.Name.get -> string?
-Bruinet.Html.Context.HtmlTestContextOptions.Name.set -> void
-Bruinet.Html.Context.HtmlTestContextOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
-Bruinet.Html.Context.HtmlTestContextOptions.NearMiss.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.get -> bool
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.set -> void
-Bruinet.Html.Context.HtmlTestContextOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
-Bruinet.Html.Context.HtmlTestContextOptions.Timeouts.set -> void
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void

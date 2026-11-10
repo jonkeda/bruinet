@@ -318,6 +318,16 @@ Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.get -> string!
 Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.set -> void
 Bruinet.Core.Configuration.ScreenshotSettings.ScreenshotSettings() -> void
 Bruinet.Core.Configuration.ScreenshotSettings.With(string? outputDirectory = null, Bruinet.Core.Configuration.ScreenshotFormat? format = null, int? jpegQuality = null, bool? captureOnFailure = null, bool? includeTimestamp = null) -> Bruinet.Core.Configuration.ScreenshotSettings!
+Bruinet.Core.Configuration.TestContextOptionsBase
+Bruinet.Core.Configuration.TestContextOptionsBase.Logger.get -> Bruinet.Core.Logging.ITestLogger?
+Bruinet.Core.Configuration.TestContextOptionsBase.Logger.set -> void
+Bruinet.Core.Configuration.TestContextOptionsBase.Name.get -> string?
+Bruinet.Core.Configuration.TestContextOptionsBase.Name.set -> void
+Bruinet.Core.Configuration.TestContextOptionsBase.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.Core.Configuration.TestContextOptionsBase.NearMiss.set -> void
+Bruinet.Core.Configuration.TestContextOptionsBase.TestContextOptionsBase() -> void
+Bruinet.Core.Configuration.TestContextOptionsBase.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Configuration.TestContextOptionsBase.Timeouts.set -> void
 Bruinet.Core.Configuration.TimeSpanMilliseconds
 Bruinet.Core.Configuration.TimeoutDefaults
 Bruinet.Core.Configuration.TimeoutSettings
@@ -627,7 +637,6 @@ Bruinet.Core.Logging.ITestLogger
 Bruinet.Core.Logging.ITestLogger.Flush() -> void
 Bruinet.Core.Logging.ITestLogger.Write(Bruinet.Core.Logging.LogEvent! entry) -> void
 Bruinet.Core.Logging.LogEvent
-Bruinet.Core.Logging.LogEvent.LogEvent(Bruinet.Core.Logging.LogEventKind Kind, string! TestName, string! PageName) -> void
 Bruinet.Core.Logging.LogEvent.Action.get -> string?
 Bruinet.Core.Logging.LogEvent.Action.init -> void
 Bruinet.Core.Logging.LogEvent.Actual.get -> string?
@@ -642,6 +651,7 @@ Bruinet.Core.Logging.LogEvent.Expected.get -> string?
 Bruinet.Core.Logging.LogEvent.Expected.init -> void
 Bruinet.Core.Logging.LogEvent.Kind.get -> Bruinet.Core.Logging.LogEventKind
 Bruinet.Core.Logging.LogEvent.Kind.init -> void
+Bruinet.Core.Logging.LogEvent.LogEvent(Bruinet.Core.Logging.LogEventKind Kind, string! TestName, string! PageName) -> void
 Bruinet.Core.Logging.LogEvent.Message.get -> string?
 Bruinet.Core.Logging.LogEvent.Message.init -> void
 Bruinet.Core.Logging.LogEvent.PageName.get -> string!

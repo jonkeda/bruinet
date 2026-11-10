@@ -1,3 +1,5 @@
+using Bruinet.Core.Configuration;
+
 namespace Bruinet.Stride.Tests;
 
 /// <summary>
@@ -92,7 +94,19 @@ public sealed class FakeGame
         Driver.Setup(d => d.Find(It.IsAny<string>(), It.IsAny<string>())).Returns<string, string>((_, target) => State(target));
         Driver.Setup(d => d.Act(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object[]>()))
             .Callback<string, string, object[]>(Act);
-        Context = new StrideTestContext(Driver.Object, new StrideTestContextOptions { DefaultTimeout = TimeSpan.FromMilliseconds(1000), StartupTimeout = TimeSpan.FromMilliseconds(1000), PollingInterval = TimeSpan.FromMilliseconds(1) });
+        Context = new StrideTestContext(Driver.Object, new StrideTestContextOptions
+        {
+            StartupTimeout = TimeSpan.FromMilliseconds(1000),
+            Timeouts = new TimeoutSettings
+            {
+                DefaultWait = TimeSpan.FromMilliseconds(1000),
+                PageLoad = TimeSpan.FromMilliseconds(1000),
+                ElementFind = TimeSpan.FromMilliseconds(1000),
+                ElementState = TimeSpan.FromMilliseconds(1000),
+                Animation = TimeSpan.FromMilliseconds(150),
+                PollingInterval = TimeSpan.FromMilliseconds(1),
+            },
+        });
     }
 
     public Mock<IStrideDriver> Driver { get; } = new();

@@ -30,7 +30,7 @@ public sealed class StrideTestContext : IStrideTestContext, IRecordable
     {
         Driver = driver ?? throw new ArgumentNullException(nameof(driver));
         _options = options ?? new StrideTestContextOptions();
-        Timeouts = _options.ToTimeoutSettings();
+        Timeouts = _options.Timeouts;
         Logger = _options.Logger ?? (ITestLogger?)OpenCallLog() ?? NullTestLogger.Instance;
     }
 

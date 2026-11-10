@@ -4,7 +4,7 @@ using Bruinet.Core.Logging;
 
 namespace Bruinet.Html.Context;
 
-public class HtmlTestContextOptions
+public class HtmlTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
     public string? BaseUrl { get; set; }
 
@@ -20,15 +20,9 @@ public class HtmlTestContextOptions
     /// </summary>
     public bool ShareBrowser { get; set; } = true;
 
-    public TimeoutSettings Timeouts { get; set; } = TimeoutSettings.Default;
 
-    public ITestLogger? Logger { get; set; }
 
-    /// <summary>A name for the context in logs and messages; see <c>IHtmlTestContext.Name</c>.</summary>
-    public string? Name { get; set; }
 
-    /// <summary>When a call that passed is logged as a near-miss.</summary>
-    public NearMissSettings NearMiss { get; set; } = NearMissSettings.Default;
 
     public bool EnableTracing { get; set; }
 

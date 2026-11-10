@@ -6,7 +6,7 @@ namespace Bruinet.WinForms.Context;
 /// How a WinForms test context reaches its app: a driver it is given, a window or process to attach to,
 /// or an executable to launch (in that order).
 /// </summary>
-public class WinFormsTestContextOptions
+public class WinFormsTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
     /// <summary>A driver made already (a test's own, or another head's). The context does not dispose it.</summary>
     public IWinFormsDriver? Driver { get; init; }
@@ -26,15 +26,7 @@ public class WinFormsTestContextOptions
     /// <summary>A window to attach to.</summary>
     public IntPtr? WindowHandle { get; init; }
 
-    /// <summary>The timeouts every call uses; the defaults when null.</summary>
-    public TimeoutSettings? Timeouts { get; init; }
 
-    /// <summary>The call log; <c>BRUINET_CALL_LOG</c>'s, or none, when null.</summary>
-    public ITestLogger? Logger { get; init; }
 
-    /// <summary>The context's name in call logs, when a scenario runs several apps.</summary>
-    public string? Name { get; init; }
 
-    /// <summary>When a call that passed is logged as a near-miss.</summary>
-    public NearMissSettings NearMiss { get; init; } = NearMissSettings.Default;
 }

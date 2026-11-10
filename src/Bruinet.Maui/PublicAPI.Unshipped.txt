@@ -184,17 +184,9 @@ Bruinet.Maui.Context.MauiTestContextOptions.Driver.get -> Bruinet.Maui.Interface
 Bruinet.Maui.Context.MauiTestContextOptions.Driver.init -> void
 Bruinet.Maui.Context.MauiTestContextOptions.DriverOptions.get -> Bruinet.Maui.Configuration.MauiDriverOptions?
 Bruinet.Maui.Context.MauiTestContextOptions.DriverOptions.init -> void
-Bruinet.Maui.Context.MauiTestContextOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.Maui.Context.MauiTestContextOptions.Logger.init -> void
 Bruinet.Maui.Context.MauiTestContextOptions.MauiTestContextOptions() -> void
-Bruinet.Maui.Context.MauiTestContextOptions.Name.get -> string?
-Bruinet.Maui.Context.MauiTestContextOptions.Name.init -> void
-Bruinet.Maui.Context.MauiTestContextOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings?
-Bruinet.Maui.Context.MauiTestContextOptions.NearMiss.init -> void
 Bruinet.Maui.Context.MauiTestContextOptions.OwnsDriver.get -> bool
 Bruinet.Maui.Context.MauiTestContextOptions.OwnsDriver.init -> void
-Bruinet.Maui.Context.MauiTestContextOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
-Bruinet.Maui.Context.MauiTestContextOptions.Timeouts.init -> void
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope

@@ -54,9 +54,16 @@ public abstract class StrideTestFixtureBase : IDisposable
         {
             GameExecutablePath = GetAppPath(),
             GameArguments = ["--automation"],
-            DefaultTimeout = TimeSpan.FromMilliseconds(10000),
+            Timeouts = new TimeoutSettings
+            {
+                DefaultWait = TimeSpan.FromMilliseconds(10000),
+                PageLoad = TimeSpan.FromMilliseconds(15000),
+                ElementFind = TimeSpan.FromMilliseconds(1000),
+                ElementState = TimeSpan.FromMilliseconds(10000),
+                Animation = TimeSpan.FromMilliseconds(150),
+                PollingInterval = TimeSpan.FromMilliseconds(100),
+            },
             StartupTimeout = TimeSpan.FromMilliseconds(15000),
-            PollingInterval = TimeSpan.FromMilliseconds(100),
             ConnectionTimeout = TimeSpan.FromMilliseconds(10000),
             ScreenshotDirectory = GetScreenshotDirectory(),
             LogDirectory = GetArtifactPathProvider().LogsDirectory

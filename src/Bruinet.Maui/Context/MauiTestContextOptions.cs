@@ -5,7 +5,7 @@ namespace Bruinet.Maui.Context;
 /// <summary>
 /// Configuration options for creating a MAUI test context.
 /// </summary>
-public class MauiTestContextOptions
+public class MauiTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
     /// <summary>
     /// Pre-created driver instance (for testing or custom drivers).
@@ -26,27 +26,7 @@ public class MauiTestContextOptions
     /// </summary>
     public MauiDriverOptions? DriverOptions { get; init; }
 
-    /// <summary>
-    /// Gets or sets the timeout configuration.
-    /// If null, default timeouts will be used.
-    /// </summary>
-    public TimeoutSettings? Timeouts { get; init; }
 
-    /// <summary>
-    /// Gets or sets the test logger.
-    /// If null, a no-op logger will be used.
-    /// </summary>
-    public ITestLogger? Logger { get; init; }
 
-    /// <summary>
-    /// When a successful call is still logged as a near-miss. If null,
-    /// <see cref="NearMissSettings.Default"/>.
-    /// </summary>
-    public NearMissSettings? NearMiss { get; init; }
 
-    /// <summary>
-    /// A name for the context in call logs, such as the app's name when a test runs several
-    /// (<c>Daan's PC</c>). If null, the logs say <c>Test</c>.
-    /// </summary>
-    public string? Name { get; init; }
 }

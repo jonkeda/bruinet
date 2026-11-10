@@ -90,16 +90,8 @@ Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.get -> System.Co
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.get -> string?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.init -> void
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Logger.init -> void
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Name.get -> string?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Name.init -> void
-Bruinet.WinForms.Context.WinFormsTestContextOptions.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
-Bruinet.WinForms.Context.WinFormsTestContextOptions.NearMiss.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.get -> int?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.init -> void
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Timeouts.init -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WinFormsTestContextOptions() -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.get -> nint?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.init -> void
