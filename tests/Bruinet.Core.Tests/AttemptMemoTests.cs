@@ -1,5 +1,6 @@
 using System.Drawing;
 using Bruinet.Core.Calls;
+using Bruinet.Core.Exceptions;
 using Bruinet.Core.Recording;
 
 namespace Bruinet.Core.Tests;
@@ -37,6 +38,22 @@ public sealed class AttemptMemoTests
 
             Assert.True(shown);
             Assert.Equal(2, reads);
+        }
+    }
+
+    [Fact]
+    public void AStaleRead_IsReportedAgain_WithoutReadingAgain()
+    {
+        using (AttemptMemo.Begin())
+        {
+            var reads = 0;
+            int Read() => ++reads > 0 ? throw new StaleElementException() : 0;
+
+            Assert.Throws<StaleElementException>(() => AttemptMemo.Remember(_element, "Rect", Read));
+            Assert.Throws<StaleElementException>(() => AttemptMemo.Remember(_element, "Rect", Read));
+
+            Assert.Equal(1, reads);
+            Assert.False(AttemptMemo.Knows(_element, "Rect"));
         }
     }
 }

@@ -1,3 +1,5 @@
+using Bruinet.Core.Exceptions;
+
 namespace Bruinet.Core.Calls;
 
 /// <summary>
@@ -14,8 +16,12 @@ namespace Bruinet.Core.Calls;
 /// Only within an attempt (call model R2): the next attempt asks afresh, so state the app changes
 /// between attempts is seen. A call made inside an attempt has a memo of its own, not the outer
 /// one: an outer attempt can act between its inner calls (a UAT step long-presses a card, then
-/// reads it), and answers kept from before the action were wrong after it. A read that throws (a
-/// stale element) is not kept.
+/// reads it), and answers kept from before the action were wrong after it.
+/// </para>
+/// <para>
+/// A read that reports its element stale is kept as that report: an element that is gone stays
+/// gone, and on Android each such read made the server search the tree for it again, 2 s a time.
+/// Any other throw is not kept.
 /// </para>
 /// </remarks>
 public static class AttemptMemo
@@ -39,21 +45,34 @@ public static class AttemptMemo
 
         if (answers.TryGetValue((subject, question), out var kept))
         {
+            if (kept is Gone gone)
+            {
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw(gone.Report);
+            }
+
             return (T)kept!;
         }
 
-        var answer = read();
-        answers[(subject, question)] = answer;
-        return answer;
+        try
+        {
+            var answer = read();
+            answers[(subject, question)] = answer;
+            return answer;
+        }
+        catch (StaleElementException stale)
+        {
+            answers[(subject, question)] = new Gone(stale);
+            throw;
+        }
     }
 
     /// <summary>
     /// Whether <paramref name="question"/> about <paramref name="subject"/> was answered in this
-    /// attempt. An answer is kept only when its read did not throw, so a kept one also says the
-    /// subject was alive when it was read.
+    /// attempt by a read that did not throw, so a known answer also says the subject was alive when
+    /// it was read.
     /// </summary>
     public static bool Knows(object subject, string question)
-        => _answers is { } answers && answers.ContainsKey((subject, question));
+        => _answers is { } answers && answers.TryGetValue((subject, question), out var kept) && kept is not Gone;
 
     /// <summary>
     /// Drops every answer kept in this attempt: an action ran, and what was read before it may be
@@ -68,6 +87,9 @@ public static class AttemptMemo
         _answers = [];
         return new Scope(enclosing);
     }
+
+    /// <summary>A read that found its element gone.</summary>
+    private sealed record Gone(StaleElementException Report);
 
     private sealed class Scope(Dictionary<(object Subject, string Question), object?>? enclosing) : IDisposable
     {

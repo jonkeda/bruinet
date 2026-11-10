@@ -43,7 +43,11 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
 
         _platform = platform;
         _appium = AppiumPlatform.For(platform);
+        // A new session starts with the app in front, so the front app is ours when no capability names it.
+        _appId = _appium.AppId(driver) ?? AppiumErrors.Live(() => _appium.FrontAppId(driver));
     }
+
+    private readonly string? _appId;
 
     /// <summary>What this session does differently on its platform.</summary>
     internal AppiumPlatform Appium => _appium;
@@ -471,6 +475,23 @@ public sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.Re
     }
 
     private void ResetApp() => _appium.Relaunch(_driver);
+
+    /// <inheritdoc />
+    public bool IsAnotherAppInFront()
+        => _appId is { } appId
+           && AppiumErrors.Live(() => _appium.FrontAppId(_driver)) is { Length: > 0 } front
+           && !string.Equals(front, appId, StringComparison.Ordinal);
+
+    /// <inheritdoc />
+    public void ReturnToApp()
+    {
+        if (_appId is not { } appId)
+            return;
+
+        // Handles found before the other app came in front may be gone.
+        Bruinet.Core.Calls.AttemptMemo.Forget();
+        AppiumErrors.Live(() => _driver.ActivateApp(appId));
+    }
 
     #endregion
 

@@ -197,9 +197,11 @@ public static class MauiDriverFactory
     /// <b>Android.</b> UiAutomator2 waits for the app to be idle before every command, up to 10 s,
     /// and a page with anything moving (a playing MediaElement, an ActivityIndicator) never is:
     /// each lookup there took 11 s. 100 ms bounds it (0 crashed the UiAutomator2 server in one
-    /// night's runs, 100 was clean); Bruinet waits for state itself. Window animations off, so a
-    /// fresh emulator without the runbook's <c>adb shell settings</c> does not tap during a
-    /// transition.
+    /// night's runs, 100 was clean); Bruinet waits for state itself. The selector wait is bounded the
+    /// same way: the server finds a stale element again by its locator, and that find waited 10 s
+    /// before it reported the element gone, so each read of a closed sheet's row took 11 s. Window
+    /// animations off, so a fresh emulator without the runbook's <c>adb shell settings</c> does not
+    /// tap during a transition.
     /// </para>
     /// <para>
     /// <b>iOS.</b> XCUITest waits for the app to be quiescent before each command by default, the
@@ -218,6 +220,7 @@ public static class MauiDriverFactory
         MauiPlatform.Android => new Dictionary<string, object>
         {
             ["settings[waitForIdleTimeout]"] = 100,
+            ["settings[waitForSelectorTimeout]"] = 100,
             ["disableWindowAnimation"] = true,
         },
         MauiPlatform.iOS => new Dictionary<string, object>

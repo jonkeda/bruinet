@@ -1304,3 +1304,5 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Br
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
 override Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.AllowsScrollLookup.get -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.IsAnotherAppInFront() -> bool
+Bruinet.Maui.Interfaces.IMauiDriver.ReturnToApp() -> void

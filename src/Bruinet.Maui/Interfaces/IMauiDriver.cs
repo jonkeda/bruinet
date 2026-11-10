@@ -283,6 +283,20 @@ public interface IMauiDriver : IDiagnosticDriver, IDisposable
     /// </summary>
     void ResetAppState();
 
+    /// <summary>
+    /// Whether an app other than the one under test is in front, such as a viewer the app handed a
+    /// file to. Heads that never leave the app answer false.
+    /// </summary>
+    bool IsAnotherAppInFront() => false;
+
+    /// <summary>
+    /// Brings the app under test back in front, leaving the other app as it is. Does nothing on
+    /// heads that never leave the app.
+    /// </summary>
+    void ReturnToApp()
+    {
+    }
+
     #endregion
 
     #region Script Execution

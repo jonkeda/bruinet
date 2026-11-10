@@ -98,3 +98,5 @@ Bruinet.Maui.Appium.AppiumMauiElement.TryFindByScrolling(Bruinet.Core.Locators.L
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindDeclared(string! automationId) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Appium.AppiumMauiElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Maui.Interfaces.IMauiElement?
 Bruinet.Maui.Appium.AppiumMauiElement.Visible.get -> bool
+Bruinet.Maui.Appium.AppiumMauiDriver.IsAnotherAppInFront() -> bool
+Bruinet.Maui.Appium.AppiumMauiDriver.ReturnToApp() -> void

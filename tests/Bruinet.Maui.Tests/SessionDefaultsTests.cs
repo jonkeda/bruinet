@@ -15,6 +15,7 @@ public class SessionDefaultsTests
         var capabilities = MauiDriverFactory.SessionCapabilities(new MauiDriverOptions { Platform = MauiPlatform.Android });
 
         Assert.Equal(100, capabilities["settings[waitForIdleTimeout]"]);
+        Assert.Equal(100, capabilities["settings[waitForSelectorTimeout]"]);
         Assert.Equal(true, capabilities["disableWindowAnimation"]);
         Assert.False(capabilities.ContainsKey("waitForQuiescence"));
     }
