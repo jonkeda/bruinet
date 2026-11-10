@@ -1010,10 +1010,10 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     private const int EdgeInset = 20;
 
     /// <summary>
-    /// An element shorter (or narrower) than this cannot be swiped meaningfully - the start and end
-    /// points would collapse onto each other.
+    /// The shortest drag a swipe makes, after the insets. A shorter one is a tap: on iOS a 4 px
+    /// step across a project's 44 px tab strip opened another tab (.my/uitests D17).
     /// </summary>
-    private const int MinimumSwipeExtent = 40;
+    private const int MinimumSwipeDistance = 40;
 
     /// <inheritdoc />
     /// <remarks>
@@ -1049,13 +1049,10 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         if (verticalSteps != 0)
         {
-            if (rect.Height <= MinimumSwipeExtent)
+            if (SwipeSpan(rect.Y, rect.Height, android) is not var (near, far))
                 return ScrollStep.NotMoved;
 
             var centerX = rect.X + (rect.Width / 2);
-            var inset = SwipeInset(rect.Height, android);
-            var near = rect.Y + inset;
-            var far = rect.Y + rect.Height - inset;
 
             for (var step = 0; step < Math.Abs(verticalSteps); step++)
             {
@@ -1068,13 +1065,10 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
         if (horizontalSteps != 0)
         {
-            if (rect.Width <= MinimumSwipeExtent)
+            if (SwipeSpan(rect.X, rect.Width, android) is not var (near, far))
                 return ScrollStep.NotMoved;
 
             var centerY = rect.Y + (rect.Height / 2);
-            var inset = SwipeInset(rect.Width, android);
-            var near = rect.X + inset;
-            var far = rect.X + rect.Width - inset;
 
             for (var step = 0; step < Math.Abs(horizontalSteps); step++)
             {
@@ -1106,6 +1100,16 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
     private static int SwipeInset(int extent, bool android)
         => android ? Math.Max(EdgeInset, extent / 10) : EdgeInset;
+
+    /// <summary>
+    /// Where a swipe across an element starts and ends along one axis, or null when the drag left
+    /// after the insets is too short to be anything but a tap.
+    /// </summary>
+    internal static (int Near, int Far)? SwipeSpan(int start, int extent, bool android)
+    {
+        var inset = SwipeInset(extent, android);
+        return extent - (2 * inset) < MinimumSwipeDistance ? null : (start + inset, start + extent - inset);
+    }
 
     /// <inheritdoc />
     /// <remarks>
