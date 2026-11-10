@@ -30,6 +30,9 @@ public sealed partial class AppiumMauiElement
     /// <summary>How many rows a wheel is turned back at most to find its first.</summary>
     private const int MaxWheelRows = 500;
 
+    /// <summary>How long a turned wheel may take to report its new row.</summary>
+    private const int WheelSettleMs = 1500;
+
     /// <summary>Taps the field open, hands its one wheel to <paramref name="choose"/>, presses Done.</summary>
     internal void OnTheWheel(string operation, Action<IWebElement> choose)
     {
@@ -173,11 +176,14 @@ public sealed partial class AppiumMauiElement
         month.SendKeys(date.ToString("MMMM", culture));
         day.SendKeys(date.Day.ToString(CultureInfo.InvariantCulture));
 
-        var landed = Digits(year.GetAttribute("value")) == date.Year.ToString(CultureInfo.InvariantCulture)
+        bool Landed() => Digits(year.GetAttribute("value")) == date.Year.ToString(CultureInfo.InvariantCulture)
             && month.GetAttribute("value") == date.ToString("MMMM", culture)
             && Digits(day.GetAttribute("value")) == date.Day.ToString(CultureInfo.InvariantCulture);
-        if (!landed)
+
+        // A wheel reports its new row only once it has stopped turning.
+        if (!Bruinet.Core.Calls.Settle.Until(Landed, WheelSettleMs, pollingIntervalMs: 100))
         {
+            var shown = string.Join(", ", wheels.Select(w => w.GetAttribute("value")));
             // UIKit turns a wheel past MinimumDate or MaximumDate back by itself; put the old date
             // back so nothing changes, then refuse as Windows and Android do.
             for (var i = 0; i < wheels.Count; i++)
@@ -187,8 +193,9 @@ public sealed partial class AppiumMauiElement
 
             PressDone();
             throw new BruinetException(
-                $"'{name}' was asked for {date:yyyy-MM-dd}, which its date wheels do not offer: "
-                + "it is outside the picker's MinimumDate and MaximumDate. Nothing was changed.");
+                $"'{name}' was asked for {date:yyyy-MM-dd}, which its date wheels did not keep: "
+                + $"it is outside the picker's MinimumDate and MaximumDate, or the app changes a picked date "
+                + $"while the wheels turn (the wheels showed {shown}). Nothing was changed.");
         }
 
         PressDone();
