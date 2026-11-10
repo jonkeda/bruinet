@@ -88,6 +88,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 ## Run Guides
 
 - [Build And Test](run/build-and-test.md)
+- [Scripts For An App's Test Runs](run/app-scripts.md) - headless and Android runners, run guards, test guard, coverage and mutation
 - [The `bruinet` Command Line](run/cli.md) - install it, and every command
 - [MAUI](run/MAUI.md)
 - [MAUI Android](run/maui-android.md)

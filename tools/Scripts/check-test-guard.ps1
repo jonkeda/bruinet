@@ -1,16 +1,27 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Fails when a change takes tests away: deleted test files, fewer tests, skipped tests or scenarios,
-    fewer assertions (AD-033).
+    Fails when a change takes tests away: deleted test files, fewer test cases, skipped tests or
+    scenarios, fewer assertions (AD-033).
 
 .DESCRIPTION
     Compares the working tree (or -Head) with -Base and reads only the test files: C# files under a
     tests folder or a *Tests* project, and *.feature.md scenarios. A change that removes tests is not
-    always wrong, but it must say why: pass -Reason and the findings become notes.
+    always wrong, but it must say why, in one of these ways, and the findings then become notes:
+      - the -Reason parameter;
+      - the TEST_GUARD_REASON environment variable (CI copies it from the pull request description);
+      - a "Test-Guard-Reason: <why>" line in a commit message between -Base and -Head.
+
+    Test cases are counted as test methods without data ([Fact], [Test], [TestMethod] and attributes
+    ending in Fact, such as [BrowserFact]) plus data rows ([InlineData], [MemberData], [ClassData],
+    [TestCase], [DataRow]). Merging facts into one theory is then not fewer tests, and the assertions
+    it folds together are reported as a note.
 
     Also notes, without failing, assertions rewritten in a change that also edits non-test code: the
     pattern of a test bent to fit the code. A reviewer reads those lines first.
+
+    An app's repository calls this script with -Root (its own root) and -Exclude (the Bruinet
+    submodule), so it keeps no copy of its own.
 
 .PARAMETER Base
     The revision to compare with. Default: HEAD, so uncommitted work is checked.
@@ -21,27 +32,43 @@
 .PARAMETER Reason
     Why tests went away; the findings are printed as notes and the script passes.
 
+.PARAMETER Root
+    The repository to check. Default: the Bruinet root.
+
+.PARAMETER Exclude
+    Path patterns (-like, relative to -Root, forward slashes) to leave out, for example 'Brinell/*'.
+
 .EXAMPLE
     ./tools/Scripts/check-test-guard.ps1
     ./tools/Scripts/check-test-guard.ps1 -Base origin/move -Head HEAD
+    ./Brinell/tools/Scripts/check-test-guard.ps1 -Root . -Exclude 'Brinell/*' -Base origin/main -Head HEAD
 #>
 param(
     [string] $Base = 'HEAD',
     [string] $Head,
-    [string] $Reason
+    [string] $Reason,
+    [string] $Root = (Join-Path $PSScriptRoot '../..'),
+    [string[]] $Exclude = @()
 )
 
 $ErrorActionPreference = 'Stop'
-Set-Location (Resolve-Path (Join-Path $PSScriptRoot '../..'))
+Set-Location (Resolve-Path $Root)
 
 [string[]] $range = if ($Head) { $Base, $Head } else { $Base }
-$isTest = { param($path) $path -match '(^|/)tests/|Tests?(\.[A-Za-z]+)*/' -or $path -like '*.feature.md' }
+$isExcluded = { param($path) @($Exclude | Where-Object { $path -like $_ }).Count -gt 0 }
+$isTest = { param($path) -not (& $isExcluded $path) -and ($path -match '(^|/)tests/|Tests?(\.[A-Za-z]+)*/' -or $path -like '*.feature.md') }
+
+if (-not $Reason) { $Reason = $env:TEST_GUARD_REASON }
+if (-not $Reason -and $Head) {
+    $trailer = git log --format=%B "$Base..$Head" | Where-Object { $_ -match '^\s*Test-Guard-Reason:\s*(\S.*)$' } | Select-Object -First 1
+    if ($trailer) { $Reason = ($trailer -replace '^\s*Test-Guard-Reason:\s*', '').Trim() }
+}
 
 $status = git diff -M --name-status @range | ForEach-Object {
     $parts = $_ -split "`t"
     [pscustomobject]@{ Status = $parts[0].Substring(0, 1); Path = $parts[-1]; Old = $parts[1] }
 }
-$codeChanged = @($status | Where-Object { $_.Path -like '*.cs' -and -not (& $isTest $_.Path) }).Count -gt 0
+$codeChanged = @($status | Where-Object { $_.Path -like '*.cs' -and -not (& $isExcluded $_.Path) -and -not (& $isTest $_.Path) }).Count -gt 0
 
 $failures = [System.Collections.Generic.List[string]]::new()
 $notes = [System.Collections.Generic.List[string]]::new()
@@ -66,9 +93,10 @@ foreach ($file in $status | Where-Object { & $isTest $_.Path }) {
         continue
     }
 
-    $test = '\[(Fact|Theory|Test|TestMethod|TestCase|BddScenario)\b'
-    $fewer = (& $count $removed $test) - (& $count $added $test)
-    if ($fewer -gt 0) { $failures.Add("$($file.Path): $fewer test(s) fewer") }
+    $case = '\[(\w*Fact|Test|TestMethod|InlineData|MemberData|ClassData|TestCase|DataRow|BddScenario)\b'
+    $fewer = (& $count $removed $case) - (& $count $added $case)
+    if ($fewer -gt 0) { $failures.Add("$($file.Path): $fewer test case(s) fewer") }
+    $merged = $fewer -le 0 -and (& $count $added '\[\w*Theory\b') -gt (& $count $removed '\[\w*Theory\b')
 
     $skips = & $count $added 'Skip\s*=|\[Ignore|Assert\.Skip|\[Skip'
     if ($skips -gt 0) { $failures.Add("$($file.Path): $skips skip(s) added") }
@@ -77,7 +105,10 @@ foreach ($file in $status | Where-Object { & $isTest $_.Path }) {
     $assert = '\bAssert\.\w+|\.Assert\w*\('
     $assertsRemoved = & $count $removed $assert
     $assertsFewer = $assertsRemoved - (& $count $added $assert)
-    if ($assertsFewer -gt 0) {
+    if ($assertsFewer -gt 0 -and $merged) {
+        $notes.Add("$($file.Path): facts merged into a theory; $assertsFewer assertion line(s) folded together")
+    }
+    elseif ($assertsFewer -gt 0) {
         $failures.Add("$($file.Path): $assertsFewer assertion(s) fewer")
     }
     elseif ($assertsRemoved -gt 0 -and $codeChanged) {
@@ -96,5 +127,6 @@ if ($Reason) {
     exit 0
 }
 foreach ($failure in $failures) { Write-Host "FAIL $failure" }
-Write-Host 'Test guard: tests were taken away. Restore them, or run again with -Reason "<why>".'
+Write-Host 'Test guard: tests were taken away. Restore them, or give a reason: -Reason "<why>",'
+Write-Host 'a "Test-Guard-Reason: <why>" line in a commit message, or the same line in the pull request description.'
 exit 1

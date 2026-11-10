@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scripts for an app's own test runs (`docs/run/app-scripts.md`): `run-maui-headless.ps1` and `run-maui-android.ps1`,
+  `RunGuards.psm1` (`Stop-LeftoverApp`, `Test-BruinetSubmodule`), `coverage-areas.ps1` (line coverage per source folder)
+  and `mutate-folder.ps1` (Stryker on one folder through a harness library). Moved from Exact Construction.
+- `check-test-guard.ps1` takes `-Root` and `-Exclude`, reads the reason from `TEST_GUARD_REASON` or a
+  `Test-Guard-Reason:` commit line, and counts test cases per row, so merging facts into a theory is not a loss.
+- `repeat-run.ps1` takes `-Framework`, `-VaryOrder` (alternate xUnit collection parallelism) and `-AppProcess`, reports
+  tests missing from some runs, and exits 1 when a test failed or went missing.
 - **Breaking:** Stride is on the call model. `Bruinet.Stride` has its own element (`IStrideElement`, a handle on a UI element
   by its identity, read fresh from the game each time; gone is stale), driver (`IStrideDriver`, the pipe: a broken pipe is
   `AppUnavailableException`), scope, page and context interfaces, generated controls (`Button`, `ToggleButton`, `EditText`,

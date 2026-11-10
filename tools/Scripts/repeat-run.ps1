@@ -13,6 +13,12 @@
         or app-bug-or-test. The suggestion is a heuristic to sort the list; the class is decided
         by reading the failure.
 
+    A test that is missing from some runs counts as unstable too. With -VaryOrder, odd runs turn
+    xUnit's collection parallelism on and even runs turn it off, so the runs differ in scheduling
+    and order-dependent tests show up.
+
+    Exits 1 when a test failed in any run, so a script or CI can gate on it.
+
     Written for the stale-readiness work (a baseline before a change, and a comparison
     after it). UI tests drive the desktop, so the script refuses to start while another test
     host is running: two runs at once fight over the desktop and produce failures that are not real.
@@ -26,11 +32,20 @@
 .PARAMETER Filter
     Optional dotnet test filter, for example "FullyQualifiedName~Todo".
 
+.PARAMETER Framework
+    Optional target framework, for a multi-target test project.
+
 .PARAMETER OutDir
     Where to put the .trx files and the summary. Default: TestResults/repeat-<timestamp>.
 
 .PARAMETER Build
     Build once before the first run. By default the runs use the existing build (--no-build).
+
+.PARAMETER VaryOrder
+    Alternate xUnit collection parallelism between runs (xUnit only).
+
+.PARAMETER AppProcess
+    Name patterns of the app processes an earlier run may have left. Default: Bruinet.Samples.*.
 
 .PARAMETER AllowProcess
     Sample processes the runs need running, by name: a web host such as
@@ -39,13 +54,17 @@
 
 .EXAMPLE
     .\tools\Scripts\repeat-run.ps1 -Project samples/Todo/tests/Bruinet.Samples.Todo.UITests -Runs 5
+    .\Brinell\tools\Scripts\repeat-run.ps1 -Project MyApp.Tests -Framework net10.0-windows10.0.19041.0 -Runs 2 -Build -VaryOrder -AppProcess 'MyApp*'
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Project,
     [int]$Runs = 5,
     [string]$Filter,
+    [string]$Framework,
     [string]$OutDir,
     [switch]$Build,
+    [switch]$VaryOrder,
+    [string[]]$AppProcess = @('Bruinet.Samples.*'),
     [string[]]$AllowProcess = @()
 )
 
@@ -64,7 +83,7 @@ if (Get-Process -Name testhost -ErrorAction SilentlyContinue) {
 # A sample app left over from an earlier run breaks the next run's attach (FlaUI GetMainWindow
 # fails with "Unexpected HRESULT"): every test of that fixture fails, and none of it is real.
 $orphans = Get-Process -ErrorAction SilentlyContinue |
-    Where-Object { $_.ProcessName -like 'Bruinet.Samples.*' -and $AllowProcess -notcontains $_.ProcessName }
+    Where-Object { $name = $_.ProcessName; @($AppProcess | Where-Object { $name -like $_ }).Count -gt 0 -and $AllowProcess -notcontains $name }
 if ($orphans) {
     throw "Sample app(s) still running from an earlier run: $(($orphans | ForEach-Object { "$($_.ProcessName) ($($_.Id))" }) -join ', '). Stop them first."
 }
@@ -74,17 +93,19 @@ if (-not $OutDir) {
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
+$frameworkArguments = if ($Framework) { @('-f', $Framework) } else { @() }
 if ($Build) {
-    dotnet build $Project -nologo -v q
+    dotnet build $Project @frameworkArguments -nologo -v q
     if ($LASTEXITCODE -ne 0) { throw "Build failed." }
 }
 
 $started = Get-Date
 for ($run = 1; $run -le $Runs; $run++) {
     Write-Host "Run $run of $Runs..."
-    $arguments = @('test', $Project, '--no-build', '-nologo',
+    $arguments = @('test', $Project, '--no-build', '-nologo') + $frameworkArguments + @(
         '--logger', "trx;LogFileName=run-$run.trx", '--results-directory', $OutDir)
     if ($Filter) { $arguments += @('--filter', $Filter) }
+    if ($VaryOrder) { $arguments += @('--', "xUnit.ParallelizeTestCollections=$(($run % 2) -eq 1)") }
     & dotnet @arguments | Out-Null
 }
 $elapsed = (Get-Date) - $started
@@ -101,14 +122,18 @@ function Get-SuggestedClass([string]$message) {
 
 $failures = @{}
 $testsSeen = @{}
+$runsSeen = @{}
 $durations = @{}
-foreach ($trx in Get-ChildItem -Path $OutDir -Filter 'run-*.trx') {
+$trxFiles = @(Get-ChildItem -Path $OutDir -Filter 'run-*.trx')
+foreach ($trx in $trxFiles) {
     [xml]$doc = Get-Content -Raw -Path $trx.FullName
     $ns = New-Object System.Xml.XmlNamespaceManager($doc.NameTable)
     $ns.AddNamespace('t', $doc.DocumentElement.NamespaceURI)
     foreach ($result in $doc.SelectNodes('//t:UnitTestResult', $ns)) {
         $name = $result.testName
         $testsSeen[$name] = $true
+        if (-not $runsSeen.ContainsKey($name)) { $runsSeen[$name] = @{} }
+        $runsSeen[$name][$trx.Name] = $true
         if ($result.duration) {
             if (-not $durations.ContainsKey($name)) { $durations[$name] = @() }
             $durations[$name] += [TimeSpan]::Parse($result.duration).TotalSeconds
@@ -143,6 +168,13 @@ foreach ($name in ($failures.Keys | Sort-Object { -$failures[$_].Count }, { $_ }
 }
 if ($failures.Count -eq 0) { $lines += '| (no failures) | | | | |' }
 
+# A test that ran in some runs only: a crash, a test that hides itself, or discovery that varies.
+$missing = @($runsSeen.Keys | Where-Object { $runsSeen[$_].Count -lt $trxFiles.Count } | Sort-Object)
+if ($missing) {
+    $lines += @('', '## Missing from some runs', '', '| Test | Ran in |', '|---|---:|')
+    foreach ($name in $missing) { $lines += "| ``$name`` | $($runsSeen[$name].Count)/$($trxFiles.Count) |" }
+}
+
 $lines += @('', '## Slowest tests', '', 'Mean and worst over the runs, in seconds.', '', '| Test | Mean | Worst |', '|---|---:|---:|')
 $slowest = $durations.Keys |
     ForEach-Object { [pscustomobject]@{ Name = $_; Mean = ($durations[$_] | Measure-Object -Average).Average; Worst = ($durations[$_] | Measure-Object -Maximum).Maximum } } |
@@ -154,3 +186,17 @@ foreach ($test in $slowest) {
 $summary = Join-Path $OutDir 'repeat-summary.md'
 $lines | Set-Content -Path $summary -Encoding utf8
 Write-Host "Summary: $summary"
+
+if ($trxFiles.Count -lt $Runs) {
+    Write-Host "Only $($trxFiles.Count) of $Runs runs wrote a .trx file."
+    exit 1
+}
+if ($testsSeen.Count -eq 0) {
+    Write-Host 'No test ran. Check the project and the filter.'
+    exit 1
+}
+if ($failures.Count -gt 0 -or $missing) {
+    Write-Host "Unstable or failing: $($failures.Count) failed at least once, $($missing.Count) missing from some runs."
+    exit 1
+}
+Write-Host "Stable: $($testsSeen.Count) tests passed in all $Runs runs."
