@@ -1127,3 +1127,6 @@ static Bruinet.Core.Utilities.MarkdownTables.IsTableRow(string! line) -> bool
 static Bruinet.Core.Utilities.MarkdownTables.ReadSections(string! markdown) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Core.Utilities.MarkdownTable!>!
 static Bruinet.Core.Utilities.MarkdownTables.SplitRow(string! line) -> System.Collections.Generic.IReadOnlyList<string!>!
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
+Bruinet.Core.Calls.ReadsInPlace
+static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
+static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!

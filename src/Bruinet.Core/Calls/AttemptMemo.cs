@@ -17,7 +17,9 @@ namespace Bruinet.Core.Calls;
 /// between attempts is seen. A call made inside an attempt keeps its own answers, but its first
 /// attempt also reads what the enclosing attempt already knows: a row predicate's reads asked
 /// iOS again for each row's bounds and state, 1.4 s a row (.my/uitests D16). Its later attempts
-/// start empty, so a call that waits for a change sees it. An action forgets the whole chain:
+/// start empty, so a call that waits for a change sees it. What that first attempt read is handed
+/// back to the enclosing attempt when it ends: a row search asked each row's nested read the same
+/// scope questions again, 0.4 s a row on iOS (.my/uitests D23). An action forgets the whole chain:
 /// an outer attempt can act between its inner calls (a UAT step long-presses a card, then reads
 /// it), and answers kept from before the action were wrong after it.
 /// </para>
@@ -99,8 +101,9 @@ public static class AttemptMemo
     internal static IDisposable Begin(bool inherit = false)
     {
         var enclosing = _frame;
-        _frame = new Frame(enclosing, inherit);
-        return new Scope(enclosing);
+        var frame = new Frame(enclosing, inherit);
+        _frame = frame;
+        return new Scope(frame);
     }
 
     /// <summary>A read that found its element gone.</summary>
@@ -133,11 +136,32 @@ public static class AttemptMemo
             return false;
         }
 
+        /// <summary>
+        /// Hands this attempt's answers to the attempt it inherits from, where that one has none of
+        /// its own: both read the app at the same moment, and an action in between cleared both.
+        /// </summary>
+        public void HandBack()
+        {
+            if (!_inherit || Enclosing is not { } enclosing)
+            {
+                return;
+            }
+
+            foreach (var (key, answer) in Answers)
+            {
+                _ = enclosing.Answers.TryAdd(key, answer);
+            }
+        }
+
         private readonly bool _inherit = inherit;
     }
 
-    private sealed class Scope(Frame? enclosing) : IDisposable
+    private sealed class Scope(Frame frame) : IDisposable
     {
-        public void Dispose() => _frame = enclosing;
+        public void Dispose()
+        {
+            frame.HandBack();
+            _frame = frame.Enclosing;
+        }
     }
 }

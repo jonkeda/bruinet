@@ -607,6 +607,35 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
     }
 
     /// <summary>
+    /// (D23) A scroll to the end steps on without asking a last row already on screen to scroll
+    /// itself into view: that request moved nothing and cost iOS a whole attempt per step.
+    /// </summary>
+    [Fact]
+    [Trait("Pin", "review")]
+    public void ScrollToEnd_StepsOn_WithoutPullingALastRowAlreadyOnScreen()
+    {
+        var rows = new List<Mock<IMauiElement>> { Row("Row_0", "0") };
+        _rows.Add(rows[0].Object);
+        _listRoot.Setup(e => e.ScrollTowards(It.IsAny<int>())).Returns(() =>
+        {
+            if (rows.Count == 3)
+            {
+                return ScrollStep.NotMoved;
+            }
+
+            var row = Row($"Row_{rows.Count}", rows.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            rows.Add(row);
+            _rows.Add(row.Object);
+            return ScrollStep.Unconfirmed;
+        });
+
+        NewPage().Rows.ScrollToEnd(timeoutMs: 5000);
+
+        _listRoot.Verify(e => e.ScrollTowards(It.IsAny<int>()), Times.AtLeast(3));
+        Assert.All(rows, row => row.Verify(e => e.ScrollIntoView(It.IsAny<int>()), Times.Never));
+    }
+
+    /// <summary>
     /// (D6) Item(index) waits like Item(key). Fails today: it answers "no item" at once, while a
     /// row that appears a moment later is exactly what a test is waiting for.
     /// </summary>

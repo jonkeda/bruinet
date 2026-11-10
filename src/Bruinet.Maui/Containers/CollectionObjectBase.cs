@@ -714,7 +714,12 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
                 bool matches;
                 try
                 {
-                    matches = predicate(item);
+                    // The search owns the scrolling: the predicate reads the row where it is.
+                    using (Bruinet.Core.Calls.ReadsInPlace.Begin())
+                    {
+                        matches = predicate(item);
+                    }
+
                     read++;
                 }
                 catch (ElementNotReadyException partlyShown) when (partlyShown.Reason == NotReadyReason.NotVisible)
@@ -1038,7 +1043,35 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     private Func<AttemptContext, Observation> MaterializeAttempts(Func<int> nextIndex, Func<Observation?> target)
     {
         var state = new Materialization();
-        return context => RootAttempt(root => MaterializeStep(context, state, root, nextIndex, target));
+        return context => RootAttempt(root =>
+        {
+            try
+            {
+                return MaterializeStep(context, state, root, nextIndex, target);
+            }
+            catch (StaleElementException) when (StillThere(root))
+            {
+                // A row went stale under the step: a next page or a recycle replaced it. The list
+                // keeps its root and its seen rows; the next attempt reads the rows again (D22).
+                return Observation.Pending("rows changed");
+            }
+        });
+    }
+
+    /// <summary>Whether the list itself is still there, by one fresh read.</summary>
+    private static bool StillThere(IMauiElement root)
+    {
+        // What this attempt read says nothing now: the stale row was read in it too.
+        Bruinet.Core.Calls.AttemptMemo.Forget();
+        try
+        {
+            _ = root.InstanceKey;
+            return true;
+        }
+        catch (StaleElementException)
+        {
+            return false;
+        }
     }
 
     private Observation MaterializeStep(AttemptContext context, Materialization state, IMauiElement root,
@@ -1174,12 +1207,14 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
     protected virtual IMauiElement? ScrollTarget => null;
 
     /// <summary>
-    /// Asks the last realized row to scroll itself into view.
+    /// Asks the last realized row to scroll itself into view; false when it is already on screen,
+    /// where the request moves nothing and a real step is needed: on iOS each such request cost a
+    /// whole attempt of a scroll to the end (.my/uitests D23).
     /// </summary>
     private bool TryScrollLastItemIntoView()
     {
         var roots = TryGetItemRoots();
-        if (roots.Count == 0)
+        if (roots.Count == 0 || roots[^1].Visible)
             return false;
 
         return ScrollHelper.ScrollIntoView(roots[^1], CallRemainingMs);
