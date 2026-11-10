@@ -35,7 +35,7 @@ public class DatePickerTests
     /// Verifies that the DatePicker control exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task DatePicker_IsExists_ReturnsTrue()
     {
         var page = GetPage();

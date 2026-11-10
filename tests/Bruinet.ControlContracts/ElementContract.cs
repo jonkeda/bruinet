@@ -24,9 +24,9 @@ public abstract class ElementContract<TScope> : ControlContract<TScope> where TS
     [Fact]
     public virtual void IsExists_TrueOnThePage_FalseOffIt()
     {
-        Assert.True(Shown.IsExists());
-        Assert.True(Hidden.IsExists());
-        Assert.False(Missing.IsExists());
+        Assert.True(Shown.Exists());
+        Assert.True(Hidden.Exists());
+        Assert.False(Missing.Exists());
     }
 
     [Fact]

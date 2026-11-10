@@ -58,7 +58,7 @@ public class ProgressControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestProgress.IsExists());
+        Assert.True(_page.TestProgress.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

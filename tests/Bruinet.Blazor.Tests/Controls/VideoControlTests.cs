@@ -81,7 +81,7 @@ public class VideoControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestVideo.IsExists());
+        Assert.True(_page.TestVideo.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

@@ -385,7 +385,7 @@ public class ReadinessTests
     #region Queries stay instantaneous
 
     /// <summary>
-    /// <c>IsExists()</c> answers immediately when the page is loaded and the element is not.
+    /// <c>Exists()</c> answers immediately when the page is loaded and the element is not.
     /// </summary>
     /// <remarks>
     /// The constraint that keeps this design from becoming "wait everywhere". An Is query
@@ -398,16 +398,16 @@ public class ReadinessTests
         _context.Setup(c => c.TryFindElement(It.IsAny<Locator>())).Returns((IMauiElement?)null);
 
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-        var exists = page.Target.IsExists();
+        var exists = page.Target.Exists();
         stopwatch.Stop();
 
         Assert.False(exists);
         Assert.True(stopwatch.ElapsedMilliseconds < 500,
-            $"IsExists must not wait for the element; took {stopwatch.ElapsedMilliseconds}ms");
+            $"Exists must not wait for the element; took {stopwatch.ElapsedMilliseconds}ms");
     }
 
     /// <summary>
-    /// <c>IsExists()</c> does not wait for a page that has not arrived yet.
+    /// <c>Exists()</c> does not wait for a page that has not arrived yet.
     /// </summary>
     /// <remarks>
     /// A query issued straight after navigation is one observation, of the element only: a lookup
@@ -421,7 +421,7 @@ public class ReadinessTests
         var page = new GatedPage(_context.Object, () => { checks++; return false; });
         _context.Setup(c => c.TryFindElement(It.IsAny<Locator>())).Returns((IMauiElement?)null);
 
-        Assert.False(page.Target.IsExists());
+        Assert.False(page.Target.Exists());
         Assert.Equal(0, checks);
     }
 

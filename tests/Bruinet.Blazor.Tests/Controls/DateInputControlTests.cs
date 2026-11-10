@@ -49,7 +49,7 @@ public class DateInputControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestDateInput.IsExists());
+        Assert.True(_page.TestDateInput.Exists());
     }
 
     [Fact]

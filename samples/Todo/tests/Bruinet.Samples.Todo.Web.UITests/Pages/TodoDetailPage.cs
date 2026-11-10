@@ -21,7 +21,7 @@ public sealed class TodoDetailPage : BlazorPageObjectBase<TodoDetailPage>
         return page;
     }
 
-    public override bool IsLoaded() => base.IsLoaded() && EditButton.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && EditButton.Exists();
 
     public LabelControl<TodoDetailPage> Title => new(this, Locator.ByDataTestId("TodoDetail_Title"));
 

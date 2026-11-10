@@ -300,9 +300,9 @@ public class CallModelPinTests
         using var context = PlaywrightContext(PageAnswering(broken).Object);
 
         var answered = false;
-        var error = Record.Exception(() => answered = new PinPage(context).Status.IsExists());
+        var error = Record.Exception(() => answered = new PinPage(context).Status.Exists());
 
-        Assert.False(error == null && !answered, "IsExists() answered false although the lookup threw.");
+        Assert.False(error == null && !answered, "Exists() answered false although the lookup threw.");
     }
 
     /// <summary>

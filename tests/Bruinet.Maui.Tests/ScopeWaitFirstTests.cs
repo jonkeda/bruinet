@@ -58,7 +58,7 @@ public sealed class ScopeWaitFirstTests
         var sheet = new Sheet(_root, "Sheet");
         Assert.False(sheet.IsReady());
 
-        Assert.Equal(1, sheet.WaitFirst(1000, () => false, () => !sheet.IsExists()));
+        Assert.Equal(1, sheet.WaitFirst(1000, () => false, () => !sheet.Exists()));
     }
 
     private sealed class Sheet(IMauiScope<AppRoot> scope, string automationId)

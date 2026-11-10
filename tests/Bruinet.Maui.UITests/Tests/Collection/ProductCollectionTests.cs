@@ -116,7 +116,7 @@ public class ProductCollectionTests
         var countInRow = Page.Products.Item(0).Label("ProductCountLabel");
 
         Page.Products.CountLabel.AssertExists();
-        Assert.False(countInRow.IsExists());
+        Assert.False(countInRow.Exists());
 
         return Task.CompletedTask;
     }

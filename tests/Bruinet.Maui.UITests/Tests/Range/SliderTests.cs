@@ -27,7 +27,7 @@ public class SliderTests
     /// Verifies that the Slider exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Slider_IsExists_ReturnsTrue()
     {
         var page = GetPage();

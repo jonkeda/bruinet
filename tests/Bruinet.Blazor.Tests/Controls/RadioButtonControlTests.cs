@@ -47,7 +47,7 @@ public class RadioButtonControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestRadio.IsExists());
+        Assert.True(_page.TestRadio.Exists());
     }
 
     [Fact]

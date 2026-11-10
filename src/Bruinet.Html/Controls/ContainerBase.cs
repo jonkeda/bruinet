@@ -83,7 +83,7 @@ public abstract class ContainerBase<TParent, TScope> : ObjectBase, IHtmlContaine
     #region State
 
     /// <summary>Whether the container's root element exists, now. <see cref="WaitExists"/> waits.</summary>
-    public bool IsExists() => TryFindRootElement() != null;
+    public bool Exists() => TryFindRootElement() != null;
 
     /// <summary>Whether the container's root element is visible, now; null when it does not exist.</summary>
     public bool? IsVisible() => TryFindRootElement()?.Visible;

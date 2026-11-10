@@ -68,7 +68,7 @@ public abstract class ItemObjectBase<TSelf> : ObjectBase, IWinFormsScope<TSelf>
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
 
     /// <summary>Whether the row's item is still shown in the list now.</summary>
-    public bool IsExists() => _collection.TryGetItemRoot(Key) != null;
+    public bool Exists() => _collection.TryGetItemRoot(Key) != null;
 
     /// <inheritdoc />
     public IWinFormsElement? TryFindElement(Locator locator) => _collection.TryGetItemRoot(Key)?.TryFindElement(locator);

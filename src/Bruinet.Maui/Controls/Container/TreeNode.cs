@@ -40,7 +40,7 @@ public class TreeNode<TTree>
     public Button<TTree> Toggle => new(_tree, _toggleAutomationId);
 
     /// <summary>Whether the node is in the tree at all, which means every ancestor is expanded.</summary>
-    public bool IsExists() => Text.IsExists();
+    public bool Exists() => Text.Exists();
 
     /// <summary>Waits until the node is (or is no longer) in the tree.</summary>
     public bool WaitExists(bool? expected = true, int? timeoutMs = null) => Text.WaitExists(expected, timeoutMs);

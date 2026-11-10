@@ -40,7 +40,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
     /// <summary>The element, found in one attempt, or null.</summary>
     protected IHtmlElement? TryFindElement()
     {
-        // A query outside a call (IsVisible, TryGetText, IsExists) writes no call row; the touch map still needs it.
+        // A query outside a call (IsVisible, TryGetText, Exists) writes no call row; the touch map still needs it.
         if (Bruinet.Core.Logging.Timing.Enabled && AttemptContext.Current is null)
         {
             Bruinet.Core.Logging.Timing.Query(_scope.Page?.GetType().Name ?? "Unknown", Locator.Value, "TryFind");
@@ -333,11 +333,11 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     #region Exists
 
-    // Hand-written, as on MAUI: IsExists answers bool, not bool?, and never fails on absence.
+    // Hand-written, as on MAUI: Exists answers bool, not bool?, and never fails on absence.
     private static bool? IsExistsBase(IHtmlElement? element) => element != null;
 
     /// <summary>Whether the control is on the page now. Does not wait (R7).</summary>
-    public bool IsExists()
+    public bool Exists()
     {
         return IsExistsBase(TryFindElement()) == true;
     }

@@ -23,9 +23,9 @@ Bruinet.Html.Collections.IHtmlCollection
 Bruinet.Html.Collections.IHtmlCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Collections.ItemObjectBase<TSelf>
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Html.Collections.ItemObjectBase<TSelf>.Exists() -> bool
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Html.Collections.IHtmlCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
@@ -136,9 +136,9 @@ Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContainerRoot.get -> Bruine
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Exists() -> bool
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
-Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsExists() -> bool
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsReady() -> bool
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsVisible() -> bool?
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
@@ -339,11 +339,11 @@ Bruinet.Html.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, stri
 Bruinet.Html.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
 Bruinet.Html.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
 Bruinet.Html.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.Html.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Html.Controls.ViewBase<TScope>.IsExists() -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.IsVisible() -> bool?
 Bruinet.Html.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Html.Controls.ViewBase<TScope>.PressKey(string! key, int? timeoutMs = null) -> TScope

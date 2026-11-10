@@ -25,7 +25,7 @@ public class ButtonControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestButton.IsExists());
+        Assert.True(_page.TestButton.Exists());
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class ButtonControlTests
     {
         MockHtmlFactory.SetupElementNotFound(_mockContext);
 
-        Assert.False(_page.TestButton.IsExists());
+        Assert.False(_page.TestButton.Exists());
     }
 
     [Fact]

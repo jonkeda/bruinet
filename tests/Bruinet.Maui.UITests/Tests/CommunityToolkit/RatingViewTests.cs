@@ -21,7 +21,7 @@ public class RatingViewTests
     private CommunityToolkitTestPage GetPage() => new(_fixture.Context);
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task RatingView_IsExists_ReturnsTrue()
     {
         GetPage().TestRatingView.AssertExists();

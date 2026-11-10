@@ -123,7 +123,7 @@ public class AudioControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestAudio.IsExists());
+        Assert.True(_page.TestAudio.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

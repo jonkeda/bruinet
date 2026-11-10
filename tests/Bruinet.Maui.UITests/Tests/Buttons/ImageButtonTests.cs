@@ -28,12 +28,12 @@ public class ImageButtonTests
     /// Verifies that the ImageButton exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task ImageButton_IsExists_ReturnsTrue()
     {
         var page = GetPage();
         // Assert
-        Assert.True(page.TestImageButton.IsExists());
+        Assert.True(page.TestImageButton.Exists());
         return Task.CompletedTask;
     }
 

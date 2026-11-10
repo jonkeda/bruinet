@@ -96,7 +96,7 @@ public class ImageControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestImage.IsExists());
+        Assert.True(_page.TestImage.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

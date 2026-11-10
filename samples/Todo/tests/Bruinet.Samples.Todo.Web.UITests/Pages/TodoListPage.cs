@@ -21,7 +21,7 @@ public sealed class TodoListPage : BlazorPageObjectBase<TodoListPage>
     {
     }
 
-    public override bool IsLoaded() => base.IsLoaded() && AddButton.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && AddButton.Exists();
 
     protected override bool CompareUrl() => new Uri(Context.CurrentUrl).LocalPath is "/" or "/todos";
 

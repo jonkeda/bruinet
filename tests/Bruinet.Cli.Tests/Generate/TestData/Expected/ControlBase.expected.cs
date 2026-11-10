@@ -71,10 +71,10 @@ public abstract partial class ControlBase<TScope>
     }
 
     #endregion
-    #region Exists (IsExists / WaitExists / AssertExists)
+    #region Exists (Exists / WaitExists / AssertExists)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool IsExists()
+    public bool Exists()
     {
         return IsExistsCore(TryFindElement()) == true;
     }

@@ -23,9 +23,9 @@ Bruinet.Wpf.Collections.IWpfCollection
 Bruinet.Wpf.Collections.IWpfCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.Wpf.Interfaces.IWpfElement?
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Exists() -> bool
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Wpf.Collections.IWpfCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
@@ -43,9 +43,9 @@ Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Exists() -> bool
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Wpf.Interfaces.IWpfElement!>!
-Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsExists() -> bool
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
 Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
@@ -278,12 +278,12 @@ Bruinet.Wpf.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, strin
 Bruinet.Wpf.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
 Bruinet.Wpf.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
 Bruinet.Wpf.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.Wpf.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.Wpf.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Wpf.Interfaces.IWpfElement!
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetHelpText(int? timeoutMs = null) -> string?
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
 Bruinet.Wpf.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Wpf.Controls.ViewBase<TScope>.IsExists() -> bool
 Bruinet.Wpf.Controls.ViewBase<TScope>.IsVisible() -> bool?
 Bruinet.Wpf.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Wpf.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

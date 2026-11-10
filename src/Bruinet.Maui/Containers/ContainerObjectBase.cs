@@ -390,7 +390,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     /// <summary>
     /// Whether the container's root element exists, now. <see cref="WaitExists"/> waits.
     /// </summary>
-    public bool IsExists() => TryGetContainerRoot() != null;
+    public bool Exists() => TryGetContainerRoot() != null;
 
     /// <summary>
     /// Whether the container's root element is visible, now; null when it does not exist.

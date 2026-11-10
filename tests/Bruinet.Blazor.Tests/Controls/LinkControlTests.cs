@@ -39,7 +39,7 @@ public class LinkControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestLink.IsExists());
+        Assert.True(_page.TestLink.Exists());
     }
 
     [Fact]

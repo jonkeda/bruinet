@@ -23,7 +23,7 @@ public sealed class TodoEditPage : BlazorPageObjectBase<TodoEditPage>
         return page;
     }
 
-    public override bool IsLoaded() => base.IsLoaded() && Save.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && Save.Exists();
 
     public LabelControl<TodoEditPage> Heading => new(this, Locator.ByCss("h1"));
 

@@ -290,11 +290,11 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     #region Exists
 
-    // Hand-written, as on MAUI and Html: IsExists answers bool, not bool?, and never fails on absence.
+    // Hand-written, as on MAUI and Html: Exists answers bool, not bool?, and never fails on absence.
     private static bool? IsExistsBase(IStrideElement? element) => element != null;
 
     /// <summary>Whether the control is on the screen now. Does not wait (R7).</summary>
-    public bool IsExists()
+    public bool Exists()
     {
         return IsExistsBase(TryFindElement()) == true;
     }

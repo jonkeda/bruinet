@@ -113,7 +113,7 @@ The framework implements the **Is/Wait/Check/Assert** pattern for robust control
 
 ```csharp
 // Is - Check current state (returns bool, doesn't wait)
-bool exists = control.IsExists();
+bool exists = control.Exists();
 
 // Wait - Poll for condition with timeout (returns bool)
 bool found = control.WaitExists(expected: true, timeoutMs: 5000);

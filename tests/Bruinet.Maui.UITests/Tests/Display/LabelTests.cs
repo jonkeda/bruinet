@@ -28,7 +28,7 @@ public class LabelTests
     /// Verifies that the Label exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Label_IsExists_ReturnsTrue()
     {
         var page = GetPage();

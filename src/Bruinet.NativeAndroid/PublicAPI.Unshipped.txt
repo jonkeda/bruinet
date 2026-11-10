@@ -43,9 +43,9 @@ Bruinet.NativeAndroid.Collections.INativeAndroidCollection
 Bruinet.NativeAndroid.Collections.INativeAndroidCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement?
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Exists() -> bool
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.NativeAndroid.Collections.INativeAndroidCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.NativeAndroid.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
@@ -63,9 +63,9 @@ Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContainerO
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Exists() -> bool
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!>!
-Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsExists() -> bool
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
 Bruinet.NativeAndroid.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
@@ -296,12 +296,12 @@ Bruinet.NativeAndroid.Controls.ViewBase<TScope>.AssertVisible(bool? expected = t
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.FindElement() -> Bruinet.NativeAndroid.Interfaces.INativeAndroidElement!
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetContentDescription(int? timeoutMs = null) -> string?
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsExists() -> bool
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.IsVisible() -> bool?
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.NativeAndroid.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

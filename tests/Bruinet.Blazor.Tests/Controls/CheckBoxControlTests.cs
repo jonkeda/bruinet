@@ -84,7 +84,7 @@ public class CheckBoxControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestCheckBox.IsExists());
+        Assert.True(_page.TestCheckBox.Exists());
     }
 
     [Fact]

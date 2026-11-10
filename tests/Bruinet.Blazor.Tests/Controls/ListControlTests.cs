@@ -64,7 +64,7 @@ public class ListControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestList.IsExists());
+        Assert.True(_page.TestList.Exists());
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class ListControlTests
     {
         MockHtmlFactory.SetupElementNotFound(_mockContext);
 
-        Assert.False(_page.TestList.IsExists());
+        Assert.False(_page.TestList.Exists());
     }
 
     private static Mock<IHtmlElement> CreateChildElement(string? text)

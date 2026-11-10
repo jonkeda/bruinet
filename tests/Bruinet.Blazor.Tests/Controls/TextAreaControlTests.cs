@@ -40,7 +40,7 @@ public class TextAreaControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestTextArea.IsExists());
+        Assert.True(_page.TestTextArea.Exists());
     }
 
     [Fact]

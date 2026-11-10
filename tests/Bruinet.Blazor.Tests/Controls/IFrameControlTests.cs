@@ -107,7 +107,7 @@ public class IFrameControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestIFrame.IsExists());
+        Assert.True(_page.TestIFrame.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

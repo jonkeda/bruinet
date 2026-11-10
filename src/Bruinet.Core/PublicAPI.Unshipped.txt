@@ -464,8 +464,8 @@ Bruinet.Core.Interfaces.IElementObject<TScope>
 Bruinet.Core.Interfaces.IElementObject<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IElementObject<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IElementObject<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Core.Interfaces.IElementObject<TScope>.Exists() -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.IsEnabled() -> bool?
-Bruinet.Core.Interfaces.IElementObject<TScope>.IsExists() -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.IsVisible() -> bool?
 Bruinet.Core.Interfaces.IElementObject<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool

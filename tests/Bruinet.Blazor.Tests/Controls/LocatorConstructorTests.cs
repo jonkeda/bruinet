@@ -20,7 +20,7 @@ public class LocatorConstructorTests
         context.Setup(c => c.FindElement(Target)).Returns(element.Object);
         var page = new TestPage(context.Object);
 
-        Assert.True(Make(page, kind).IsExists());
+        Assert.True(Make(page, kind).Exists());
         context.Verify(c => c.TryFindElement(Target), Times.AtLeastOnce);
     }
 

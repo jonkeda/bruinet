@@ -38,7 +38,7 @@ public sealed class PresenterUatScenarioTests(PresenterFixture fixture)
         }
 
         // Settings closed: a scenario that failed with it open would cover the run toolbar.
-        if (presenterPage.NarratorSettings.IsExists())
+        if (presenterPage.NarratorSettings.Exists())
         {
             presenterPage.SettingsButton.Click();
         }

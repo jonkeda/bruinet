@@ -515,7 +515,7 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
     /// <summary>
     /// Whether the control is on the page, scrolling to it if it is not on screen.
     /// </summary>
-    public bool IsExists()
+    public bool Exists()
     {
         return IsExistsBase(TryFindElement(ScrollLookup.Once)) == true;
     }

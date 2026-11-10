@@ -161,7 +161,7 @@ public static class TodoMauiLaunch
             var dialog = new ContentDialog<AppRoot>(appRoot);
             var list = new TodoListPage(context);
 
-            if (dialog.IsExists())
+            if (dialog.Exists())
             {
                 var buttons = dialog.GetButtonTexts() ?? [];
                 dialog.DialogButton(buttons.Contains("Discard") ? "Discard" : "Cancel").Click();

@@ -51,7 +51,7 @@ files with an empty `.gen.cs`; they predate R5 and are not a model.
 
 Do not re-declare these:
 
-- `IsExists`, `IsVisible`, `WaitExists`, `WaitVisible`, `AssertExists`, `AssertVisible`,
+- `Exists`, `IsVisible`, `WaitExists`, `WaitVisible`, `AssertExists`, `AssertVisible`,
   `GetAttribute`, `IsReady`, `WaitReady`;
 - typed children scoped to the root: `Child<TControl>(id)`, `Label(id)`, `Button(id)`,
   `Entry(id)`, `CheckBox(id)`;

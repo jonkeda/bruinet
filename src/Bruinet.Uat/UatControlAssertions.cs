@@ -32,14 +32,14 @@ public static class UatControlAssertions
 
     public static bool IsAbsentOrHidden(object control)
     {
-        return !IsExists(control) || IsVisible(control) != true;
+        return !Exists(control) || IsVisible(control) != true;
     }
 
-    public static bool IsExists(object control)
+    public static bool Exists(object control)
     {
         try
         {
-            return ((dynamic)control).IsExists();
+            return ((dynamic)control).Exists();
         }
         catch
         {
@@ -73,7 +73,7 @@ public static class UatControlAssertions
 
     public static string? GetTextIfPresent(object control, int timeoutMs)
     {
-        return IsExists(control) ? GetText(control, timeoutMs) : null;
+        return Exists(control) ? GetText(control, timeoutMs) : null;
     }
 
     public static bool WaitUntil(Func<bool> condition, int timeoutMs)

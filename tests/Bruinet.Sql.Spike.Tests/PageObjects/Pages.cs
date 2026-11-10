@@ -6,7 +6,7 @@ namespace Bruinet.Sql.Spike.Tests.PageObjects;
 public sealed class PlacesPage(IHtmlTestContext context) : BlazorPageObjectBase<PlacesPage>(context)
 {
     // The count shows once the first load is back, not with the heading.
-    public override bool IsLoaded() => base.IsLoaded() && Count.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && Count.Exists();
 
     public LabelControl<PlacesPage> Heading => new(this, Locator.ByDataTestId("places-heading"));
 
@@ -34,7 +34,7 @@ public sealed class PlacesPage(IHtmlTestContext context) : BlazorPageObjectBase<
 /// <summary>The form for a new place (/places/new).</summary>
 public sealed class NewPlacePage(IHtmlTestContext context) : BlazorPageObjectBase<NewPlacePage>(context)
 {
-    public override bool IsLoaded() => base.IsLoaded() && Heading.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && Heading.Exists();
 
     public LabelControl<NewPlacePage> Heading => new(this, Locator.ByDataTestId("new-place-heading"));
 
@@ -81,7 +81,7 @@ public sealed class NewPlacePage(IHtmlTestContext context) : BlazorPageObjectBas
 /// <summary>One place (/places/{id}), with its distance from the origin.</summary>
 public sealed class PlacePage(IHtmlTestContext context) : BlazorPageObjectBase<PlacePage>(context)
 {
-    public override bool IsLoaded() => base.IsLoaded() && PlaceName.IsExists();
+    public override bool IsLoaded() => base.IsLoaded() && PlaceName.Exists();
 
     public LabelControl<PlacePage> PlaceName => new(this, Locator.ByDataTestId("place-name"));
 

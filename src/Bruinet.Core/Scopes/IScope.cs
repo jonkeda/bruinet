@@ -35,7 +35,7 @@ public interface IScope
     /// reachable, so an outcome may be that this scope, or its parent, is gone.
     /// </summary>
     /// <param name="timeoutMs">The whole budget; the default wait when null.</param>
-    /// <param name="outcomes">Answers about now, such as <c>page.IsReady</c> or <c>control.IsExists</c>; none may wait itself.</param>
+    /// <param name="outcomes">Answers about now, such as <c>page.IsReady</c> or <c>control.Exists</c>; none may wait itself.</param>
     /// <returns>The index of the outcome that held, or -1 when none did within the budget.</returns>
     int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes);
 }

@@ -28,7 +28,7 @@ public class ImageTests
     /// Verifies that the Image exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Image_IsExists_ReturnsTrue()
     {
         var page = GetPage();

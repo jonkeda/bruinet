@@ -6,7 +6,7 @@ namespace Bruinet.Samples.Todo.UITests.Controls;
 /// <remarks>
 /// A read-only status control (every list row) has no Next button at all, and that is an answer,
 /// not a failure: <c>IsShown</c> is false for a missing button. Plain <c>IsVisible</c> reads null
-/// for a missing element, and <c>IsExists</c> may scroll the list and find another row's button.
+/// for a missing element, and <c>Exists</c> may scroll the list and find another row's button.
 /// </remarks>
 /// <typeparam name="TScope">The containing scope type, normally the status control.</typeparam>
 public partial class TodoStatusNextButton<TScope> : Button<TScope>

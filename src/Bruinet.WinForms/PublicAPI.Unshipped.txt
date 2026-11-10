@@ -23,9 +23,9 @@ Bruinet.WinForms.Collections.IWinFormsCollection
 Bruinet.WinForms.Collections.IWinFormsCollection.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.WinForms.Interfaces.IWinFormsElement?
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Exists() -> bool
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.IsExists() -> bool
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.IsReady() -> bool
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.WinForms.Collections.IWinFormsCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Key.get -> Bruinet.Core.Collections.ItemKey
@@ -43,9 +43,9 @@ Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContainerObject
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContentNotReady(string? detail = null) -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Exists() -> bool
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.WinForms.Interfaces.IWinFormsElement!>!
-Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsExists() -> bool
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsReady() -> bool
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.IsVisible() -> bool?
 Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
@@ -285,12 +285,12 @@ Bruinet.WinForms.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, 
 Bruinet.WinForms.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
 Bruinet.WinForms.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
 Bruinet.WinForms.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.WinForms.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.WinForms.Controls.ViewBase<TScope>.FindElement() -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 Bruinet.WinForms.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.WinForms.Controls.ViewBase<TScope>.GetHelpText(int? timeoutMs = null) -> string?
 Bruinet.WinForms.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
 Bruinet.WinForms.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.WinForms.Controls.ViewBase<TScope>.IsExists() -> bool
 Bruinet.WinForms.Controls.ViewBase<TScope>.IsVisible() -> bool?
 Bruinet.WinForms.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.WinForms.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

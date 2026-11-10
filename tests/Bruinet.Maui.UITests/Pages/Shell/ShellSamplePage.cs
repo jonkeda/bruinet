@@ -42,7 +42,7 @@ public class ShellSamplePage : PageObjectBase<ShellSamplePage>
     /// </para>
     /// </remarks>
     public override bool IsLoaded()
-        => Shell.Tabs.IsExists()
+        => Shell.Tabs.Exists()
            || Context.TryFindElement(Locator.ByAutomationId("ShellFlyoutPageTitle")) != null;
 
     /// <inheritdoc />
@@ -81,7 +81,7 @@ public class ShellSamplePage : PageObjectBase<ShellSamplePage>
     /// Whether the Detail tab currently has its sub-page pushed.
     /// </summary>
     /// <remarks>
-    /// A plain lookup rather than <c>DetailSubPage.IsExists()</c>, which scrolls to be sure of
+    /// A plain lookup rather than <c>DetailSubPage.Exists()</c>, which scrolls to be sure of
     /// an absence. The fixture asks this before every test, and the usual answer is "no", so
     /// the scrolling form would spend a sweep per test confirming nothing is there.
     /// </remarks>

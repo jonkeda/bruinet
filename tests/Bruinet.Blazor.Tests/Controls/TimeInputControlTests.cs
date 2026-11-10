@@ -49,7 +49,7 @@ public class TimeInputControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestTimeInput.IsExists());
+        Assert.True(_page.TestTimeInput.Exists());
     }
 
     [Fact]

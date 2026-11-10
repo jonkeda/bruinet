@@ -27,7 +27,7 @@ public class CheckBoxTests
     /// Verifies that the CheckBox exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task CheckBox_IsExists_ReturnsTrue()
     {
         var page = GetPage();

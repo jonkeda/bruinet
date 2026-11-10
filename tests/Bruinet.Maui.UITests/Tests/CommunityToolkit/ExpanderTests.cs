@@ -21,7 +21,7 @@ public class ExpanderTests
     private CommunityToolkitTestPage GetPage() => new(_fixture.Context);
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Expander_IsExists_ReturnsTrue()
     {
         GetPage().TestExpander.AssertExists();

@@ -22,7 +22,7 @@ public class ContentDialogControlTests : SemanticControlTestsBase
             .Setup(a => a.TryFindActiveDialog())
             .Returns(dialogRoot.Object);
 
-        var exists = Page.Dialog.DialogButton("Delete").IsExists();
+        var exists = Page.Dialog.DialogButton("Delete").Exists();
 
         Assert.True(exists);
         dialogRoot.Verify(e => e.TryFindElement(It.IsAny<Locator>()), Times.Once);
@@ -41,7 +41,7 @@ public class ContentDialogControlTests : SemanticControlTestsBase
             .Returns(dialogRoot.Object);
         Context.Setup(c => c.TryFindElement(It.IsAny<Locator>())).Returns(CreateElement("Delete", 0, 0, 80, 40).Object);
 
-        var exists = Page.Dialog.DialogButton("Delete").IsExists();
+        var exists = Page.Dialog.DialogButton("Delete").Exists();
 
         Assert.False(exists);
         Context.Verify(c => c.TryFindElement(It.IsAny<Locator>()), Times.Never);
@@ -60,7 +60,7 @@ public class ContentDialogControlTests : SemanticControlTestsBase
             .Setup(a => a.TryFindActiveDialog())
             .Returns(dialogRoot.Object);
 
-        var exists = Page.Dialog.PromptInput.IsExists();
+        var exists = Page.Dialog.PromptInput.Exists();
 
         Assert.True(exists);
         dialogRoot.Verify(e => e.TryFindElement(It.IsAny<Locator>()), Times.Once);

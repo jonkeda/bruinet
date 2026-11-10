@@ -79,7 +79,7 @@ public class RangeInputControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestRange.IsExists());
+        Assert.True(_page.TestRange.Exists());
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class RangeInputControlTests
     {
         MockHtmlFactory.SetupElementNotFound(_mockContext);
 
-        Assert.False(_page.TestRange.IsExists());
+        Assert.False(_page.TestRange.Exists());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

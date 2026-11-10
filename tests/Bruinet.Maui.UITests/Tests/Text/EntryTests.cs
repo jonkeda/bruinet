@@ -28,7 +28,7 @@ public class EntryTests
     /// Verifies that the Entry control exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Entry_IsExists_ReturnsTrue()
     {
         var page = GetPage();

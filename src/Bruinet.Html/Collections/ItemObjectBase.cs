@@ -64,7 +64,7 @@ public abstract class ItemObjectBase<TSelf> : ObjectBase, IHtmlScope<TSelf>
         => RunProbe(() => ScopeGate.Check(ProbeReadiness()) ?? Observation.Done(), timeoutMs ?? DefaultTimeoutMs);
 
     /// <summary>Whether the row's item is still in the list now.</summary>
-    public bool IsExists() => _collection.TryGetItemRoot(Key) != null;
+    public bool Exists() => _collection.TryGetItemRoot(Key) != null;
 
     public IHtmlElement? TryFindElement(Locator locator) => _collection.TryGetItemRoot(Key)?.TryFindElement(locator);
 

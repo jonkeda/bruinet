@@ -28,7 +28,7 @@ public class ButtonTests
     /// Verifies that the Button exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Button_IsExists_ReturnsTrue()
     {
         var page = GetPage();

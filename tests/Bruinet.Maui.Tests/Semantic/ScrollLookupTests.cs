@@ -35,7 +35,7 @@ public class ScrollLookupTests : SemanticControlTestsBase
     [Fact]
     public void IsExists_OnAPage_SweepsOnce_LettingThePlatformPickTheScroller()
     {
-        Assert.False(Page.PromptOk.IsExists());
+        Assert.False(Page.PromptOk.Exists());
 
         _app.Verify(
             a => a.TryFindByScrolling(It.Is<Locator>(l => l.Value == MissingId)),
@@ -77,7 +77,7 @@ public class ScrollLookupTests : SemanticControlTestsBase
 
         var scroller = new ScrollView<TestPage>(Page, "Scroller");
 
-        Assert.False(scroller.Label("BelowTheFold").IsExists());
+        Assert.False(scroller.Label("BelowTheFold").Exists());
 
         scrollRoot.Verify(
             e => e.TryFindByScrolling(It.Is<Locator>(l => l.Value == "BelowTheFold")),
@@ -92,7 +92,7 @@ public class ScrollLookupTests : SemanticControlTestsBase
         Context.Setup(c => c.TryFindElement(It.Is<Locator>(l => l.Value == MissingId)))
             .Returns(present.Object);
 
-        Assert.True(Page.PromptOk.IsExists());
+        Assert.True(Page.PromptOk.Exists());
 
         _app.Verify(
             a => a.TryFindByScrolling(It.IsAny<Locator>()),

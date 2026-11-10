@@ -49,7 +49,7 @@ public class GridContainerTests
         var titleInForm = Page.ProductForm.Label("PageTitle");
 
         Page.PageTitle.AssertExists();
-        Assert.False(titleInForm.IsExists());
+        Assert.False(titleInForm.Exists());
         return Task.CompletedTask;
     }
 
@@ -73,7 +73,7 @@ public class GridContainerTests
             Page.ProductForm.Options.Button("ProductAddButton");
 
         Page.ProductForm.AddButton.AssertExists();
-        Assert.False(addButtonInOptions.IsExists());
+        Assert.False(addButtonInOptions.Exists());
         return Task.CompletedTask;
     }
 

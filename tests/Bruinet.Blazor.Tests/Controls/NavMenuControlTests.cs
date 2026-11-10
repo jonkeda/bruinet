@@ -117,7 +117,7 @@ public class NavMenuControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestNav.IsExists());
+        Assert.True(_page.TestNav.Exists());
     }
 
     private static Mock<IHtmlElement> CreateNavItem(string text)

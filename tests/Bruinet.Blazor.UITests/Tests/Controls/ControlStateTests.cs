@@ -11,7 +11,7 @@ public sealed class ControlStateTests : BlazorSampleTestBase
         NavigateToPage("/counter");
         var page = new CounterPage(Context);
 
-        Assert.True(page.IncrementButton.IsExists());
+        Assert.True(page.IncrementButton.Exists());
     }
 
     [Fact]

@@ -318,7 +318,7 @@ public abstract class StateControl<TScope>
         // Assert
         Assert.Contains("public bool? IsVisible()", generated);
         Assert.Contains("public bool? IsEnabled()", generated);
-        Assert.Contains("public bool? IsExists()", generated);
+        Assert.Contains("public bool? Exists()", generated);
 
         Assert.Contains("public bool WaitVisible(", generated);
         Assert.Contains("public bool WaitEnabled(", generated);
@@ -376,7 +376,7 @@ public abstract class StateControl<TScope>
         // Is/Wait/Assert family
         Assert.Contains("public bool? IsVisible()", content);
         Assert.Contains("public bool? IsEnabled()", content);
-        Assert.Contains("public bool IsExists()", content);
+        Assert.Contains("public bool Exists()", content);
 
         Assert.Contains("public bool WaitVisible(bool? expected = true, int? timeoutMs = null)", content);
         Assert.Contains("public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)", content);

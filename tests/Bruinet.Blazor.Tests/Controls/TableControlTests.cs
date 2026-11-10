@@ -97,7 +97,7 @@ public class TableControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestTable.IsExists());
+        Assert.True(_page.TestTable.Exists());
     }
 
     [Fact]
@@ -105,7 +105,7 @@ public class TableControlTests
     {
         MockHtmlFactory.SetupElementNotFound(_mockContext);
 
-        Assert.False(_page.TestTable.IsExists());
+        Assert.False(_page.TestTable.Exists());
     }
 
     private static Mock<IHtmlElement> CreateChildElement(string? text)

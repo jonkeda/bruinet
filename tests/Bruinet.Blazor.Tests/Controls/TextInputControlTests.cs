@@ -39,7 +39,7 @@ public class TextInputControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestTextInput.IsExists());
+        Assert.True(_page.TestTextInput.Exists());
     }
 
     [Fact]

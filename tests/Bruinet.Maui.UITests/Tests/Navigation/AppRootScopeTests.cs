@@ -67,7 +67,7 @@ public class AppRootScopeTests
         _fixture.Hub.WaitLoaded(true, TestConstants.DefaultTestTimeoutMs);
 
         Assert.False(
-            _fixture.BackToHub.IsExists(),
+            _fixture.BackToHub.Exists(),
             "The hub reported a back toolbar item, which it does not have.");
 
         return Task.CompletedTask;

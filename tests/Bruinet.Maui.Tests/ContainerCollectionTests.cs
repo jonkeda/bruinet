@@ -43,7 +43,7 @@ public class ContainerCollectionTests
         var root = SetupRootElement("Form");
         SetupChild(root, "FormButton");
 
-        Assert.True(page.Form.FormButton.IsExists());
+        Assert.True(page.Form.FormButton.Exists());
 
         // Resolved element-relative, not page-wide.
         root.Verify(e => e.TryFindElement(
@@ -72,7 +72,7 @@ public class ContainerCollectionTests
 
         var control = new Label<FormContainer>(page.Form, "Elsewhere");
 
-        Assert.False(control.IsExists());
+        Assert.False(control.Exists());
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class ContainerCollectionTests
         var innerRoot = SetupChild(outerRoot, "Options");
         SetupChild(innerRoot, "OptionsCheckBox");
 
-        Assert.True(page.Form.Options.OptionsCheckBox.IsExists());
+        Assert.True(page.Form.Options.OptionsCheckBox.Exists());
     }
 
     #endregion
@@ -206,9 +206,9 @@ public class ContainerCollectionTests
         SetupChild(root, "FormButton");
         var form = page.Form;
 
-        _ = form.FormButton.IsExists();
-        _ = form.FormButton.IsExists();
-        _ = form.FormButton.IsExists();
+        _ = form.FormButton.Exists();
+        _ = form.FormButton.Exists();
+        _ = form.FormButton.Exists();
 
         _context.Verify(c => c.FindElement(It.Is<Locator>(l => l.Value == "Form")), Times.Once);
     }
@@ -222,9 +222,9 @@ public class ContainerCollectionTests
         SetupChild(root, "FormButton");
         var form = page.Form;
 
-        _ = form.FormButton.IsExists();
+        _ = form.FormButton.Exists();
         form.InvalidateCache();
-        _ = form.FormButton.IsExists();
+        _ = form.FormButton.Exists();
 
         _context.Verify(c => c.FindElement(It.Is<Locator>(l => l.Value == "Form")), Times.Exactly(2));
     }
@@ -251,9 +251,9 @@ public class ContainerCollectionTests
             .Returns(fresh.Object);
 
         var form = page.Form;
-        _ = form.IsExists();
+        _ = form.Exists();
 
-        Assert.True(form.FormButton.IsExists());
+        Assert.True(form.FormButton.Exists());
     }
 
     /// <summary>
@@ -346,7 +346,7 @@ public class ContainerCollectionTests
             .Returns(Mock.Of<IMauiElement>(e => e.Visible == true));
         _context.Setup(c => c.AppElement).Returns(app.Object);
 
-        Assert.False(page.Rows.Item(0).Due.IsExists());
+        Assert.False(page.Rows.Item(0).Due.Exists());
         app.Verify(a => a.TryFindByScrolling(It.IsAny<Locator>()), Times.Never);
     }
 
@@ -544,7 +544,7 @@ public class ContainerCollectionTests
             .Returns(Array.Empty<IMauiElement>());
         SetupChild(root, "RowsEmptyLabel");
 
-        Assert.True(page.Rows.EmptyLabel.IsExists());
+        Assert.True(page.Rows.EmptyLabel.Exists());
     }
 
     [Fact]

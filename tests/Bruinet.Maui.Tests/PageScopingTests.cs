@@ -39,7 +39,7 @@ public sealed class PageScopingTests
 
         var page = new ScopedPage(context.Object);
 
-        Assert.False(page.Save.IsExists());
+        Assert.False(page.Save.Exists());
         context.Verify(c => c.TryFindElement(It.Is<Locator>(l => l.Value == "Save")), Times.Never);
         pageRoot.Verify(e => e.TryFindElement(It.Is<Locator>(l => l.Value == "Save")), Times.Once);
     }
@@ -205,7 +205,7 @@ public sealed class PageScopingTests
         popupRoot.Setup(e => e.TryFindElement(It.Is<Locator>(l => l.Value == "Accept")))
             .Returns(popupChild.Object);
 
-        var actual = new PopupPage(context.Object).Accept.IsExists();
+        var actual = new PopupPage(context.Object).Accept.Exists();
 
         Assert.True(actual);
         context.Verify(c => c.FindElement(It.Is<Locator>(l => l.Value == "Accept")), Times.Never);

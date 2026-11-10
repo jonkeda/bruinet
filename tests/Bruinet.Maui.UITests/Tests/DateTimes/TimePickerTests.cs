@@ -32,7 +32,7 @@ public class TimePickerTests
     /// Verifies that the TimePicker control exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task TimePicker_IsExists_ReturnsTrue()
     {
         var page = GetPage();

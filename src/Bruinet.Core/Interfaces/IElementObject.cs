@@ -12,7 +12,7 @@ public interface IElementObject<TScope>
     /// <summary>
     /// Check if the element exists in the UI tree.
     /// </summary>
-    bool IsExists();
+    bool Exists();
 
     /// <summary>
     /// Check if the element is visible.

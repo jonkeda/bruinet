@@ -128,7 +128,7 @@ public class ScrollTests
 
     /// <summary>7. A control below the fold still exists, whether or not it is on screen.</summary>
     [Fact(Timeout = TestConstants.LongTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task BottomButton_Exists_WithoutScrolling()
     {
         var page = _fixture.NavigateToScroll();

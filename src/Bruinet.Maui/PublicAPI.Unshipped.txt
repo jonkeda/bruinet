@@ -126,8 +126,8 @@ Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ContentNotReady(strin
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.ContentReady() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Entry(string! automationId) -> Bruinet.Maui.Controls.Text.Entry<TSelf!>!
+Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Exists() -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.InvalidateCache() -> void
-Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsExists() -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsReady() -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsVisible() -> bool?
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Label(string! automationId) -> Bruinet.Maui.Controls.Display.Label<TSelf!>!
@@ -307,10 +307,10 @@ Bruinet.Maui.Controls.Base.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, Sy
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.ContainingScope.get -> TScope
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.Context.get -> Bruinet.Maui.Interfaces.IMauiTestContext!
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.DefaultTimeoutMs.get -> int
+Bruinet.Maui.Controls.Base.ViewBase<TScope>.Exists() -> bool
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.FindElement() -> Bruinet.Maui.Interfaces.IMauiElement!
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsExists() -> bool
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsVisible() -> bool?
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsVisibleAfterScroll() -> bool?
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
@@ -451,9 +451,9 @@ Bruinet.Maui.Controls.Container.TreeNode<TTree>
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TTree
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.AssertExpanded(bool expected = true, string? message = null, int? timeoutMs = null) -> TTree
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.Collapse(int? timeoutMs = null) -> TTree
+Bruinet.Maui.Controls.Container.TreeNode<TTree>.Exists() -> bool
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.Expand(int? timeoutMs = null) -> TTree
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Maui.Controls.Container.TreeNode<TTree>.IsExists() -> bool
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.IsExpanded(int? timeoutMs = null) -> bool?
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.SetExpanded(bool? expanded, int? timeoutMs = null) -> TTree
 Bruinet.Maui.Controls.Container.TreeNode<TTree>.Text.get -> Bruinet.Maui.Controls.Display.Label<TTree>!

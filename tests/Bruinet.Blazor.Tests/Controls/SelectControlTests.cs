@@ -65,7 +65,7 @@ public class SelectControlTests
     [Fact]
     public void IsExists_WhenExists_ReturnsTrue()
     {
-        Assert.True(_page.TestSelect.IsExists());
+        Assert.True(_page.TestSelect.Exists());
     }
 
     [Fact]

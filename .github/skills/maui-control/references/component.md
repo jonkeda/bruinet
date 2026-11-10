@@ -82,7 +82,7 @@ The two public constructors take `scope`, like a simple control.
   protected virtual bool? IsShownCore(IMauiElement? element) => element?.Visible == true;
   ```
 
-  Plain `IsVisible` answers null for a missing element, and `IsExists` may scroll the app and
+  Plain `IsVisible` answers null for a missing element, and `Exists` may scroll the app and
   find another element on the page. The component then forwards to that read.
 
 ## Shortcuts

@@ -27,7 +27,7 @@ public class SwitchTests
     /// Verifies that the Switch exists on the page.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsExists")]
+    [Trait("Method", "Exists")]
     public Task Switch_IsExists_ReturnsTrue()
     {
         var page = GetPage();
