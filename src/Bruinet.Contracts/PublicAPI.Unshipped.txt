@@ -232,3 +232,43 @@ static Bruinet.Contracts.RoundTripField.Number(string! sentPath, string? readPat
 static Bruinet.Contracts.RoundTripField.Same(string! sentPath, string? readPath = null) -> Bruinet.Contracts.RoundTripField!
 static Bruinet.Contracts.TruncatedJson.CompleteArrayItems(string? body) -> (string! Json, int Count)?
 static Bruinet.Contracts.UnregisteredEndpoints.Find(System.Collections.Generic.IEnumerable<Bruinet.Contracts.ContractExchange!>! exchanges, System.Collections.Generic.IEnumerable<Bruinet.Contracts.DtoContract!>! contracts) -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.UnregisteredEndpoint!>!
+Bruinet.Contracts.LiveContractGate
+Bruinet.Contracts.LiveContractSettings
+Bruinet.Contracts.LiveContractSettings.Account.get -> string?
+Bruinet.Contracts.LiveContractSettings.Account.init -> void
+Bruinet.Contracts.LiveContractSettings.AccountDefined.get -> bool
+Bruinet.Contracts.LiveContractSettings.AccountDefined.init -> void
+Bruinet.Contracts.LiveContractSettings.AccountFile.get -> string!
+Bruinet.Contracts.LiveContractSettings.AccountFile.init -> void
+Bruinet.Contracts.LiveContractSettings.AccountSetting.get -> string!
+Bruinet.Contracts.LiveContractSettings.AccountSetting.init -> void
+Bruinet.Contracts.LiveContractSettings.LiveApi.get -> bool
+Bruinet.Contracts.LiveContractSettings.LiveApi.init -> void
+Bruinet.Contracts.LiveContractSettings.LiveApiSetting.get -> string!
+Bruinet.Contracts.LiveContractSettings.LiveApiSetting.init -> void
+Bruinet.Contracts.LiveContractSettings.MockBackend.get -> bool
+Bruinet.Contracts.LiveContractSettings.MockBackend.init -> void
+Bruinet.Contracts.LiveContractSettings.MockBackendSetting.get -> string!
+Bruinet.Contracts.LiveContractSettings.MockBackendSetting.init -> void
+Bruinet.Contracts.LiveContractSettings.RealSignIn.get -> bool
+Bruinet.Contracts.LiveContractSettings.RealSignIn.init -> void
+Bruinet.Contracts.LiveContractSettings.SignInSetting.get -> string!
+Bruinet.Contracts.LiveContractSettings.SignInSetting.init -> void
+Bruinet.Contracts.LocalAccount
+Bruinet.Contracts.LocalAccount.LocalAccount(string! Username, string! Password, string! Organization) -> void
+Bruinet.Contracts.LocalAccount.Organization.get -> string!
+Bruinet.Contracts.LocalAccount.Organization.init -> void
+Bruinet.Contracts.LocalAccount.Password.get -> string!
+Bruinet.Contracts.LocalAccount.Password.init -> void
+Bruinet.Contracts.LocalAccount.Username.get -> string!
+Bruinet.Contracts.LocalAccount.Username.init -> void
+Bruinet.Contracts.LocalAccountStore
+Bruinet.Contracts.LocalAccountStore.Find(string! name, string? searchFrom = null) -> Bruinet.Contracts.LocalAccount?
+Bruinet.Contracts.LocalAccountStore.FileName.get -> string!
+Bruinet.Contracts.LocalAccountStore.FindFile(string? searchFrom = null) -> string?
+Bruinet.Contracts.LocalAccountStore.KeyPrefix.get -> string!
+Bruinet.Contracts.LocalAccountStore.LocalAccountStore(string! keyPrefix, string! fileName = ".env.local") -> void
+Bruinet.Contracts.LocalAccountStore.Parse(System.Collections.Generic.IEnumerable<string!>! lines, string! name) -> Bruinet.Contracts.LocalAccount?
+const Bruinet.Contracts.LocalAccountStore.DefaultAccountName = "default" -> string!
+const Bruinet.Contracts.LocalAccountStore.DefaultFileName = ".env.local" -> string!
+static Bruinet.Contracts.LiveContractGate.SkipReason(Bruinet.Contracts.LiveContractSettings! settings, string! account) -> string?

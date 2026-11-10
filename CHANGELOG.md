@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `[Video]` write `Pyramid` (Unit, Integration and Video also write the matching `Category`); owners `[Module]`,
   `[Component]` and `[CommonArea]`; run sets `[Smoke]`, `[Uat]` and `[Contract]`; and `[Journey]`. `TraitCheck`
   reports tests with no tier, more than one, or no known owner, reading plain `[Trait]` too.
+- Bruinet.Contracts: `LocalAccountStore` reads named test accounts (`{PREFIX}_{ACCOUNT}_USERNAME`, `_PASSWORD`,
+  `_ORGANIZATION`) from a git-ignored `.env.local`, and `LiveContractGate.SkipReason` decides whether a live
+  contract test runs: a live run, no mock backend, a real sign-in, and the test's own account. Moved from Exact Construction.
 - **Breaking:** Stride is on the call model. `Bruinet.Stride` has its own element (`IStrideElement`, a handle on a UI element
   by its identity, read fresh from the game each time; gone is stale), driver (`IStrideDriver`, the pipe: a broken pipe is
   `AppUnavailableException`), scope, page and context interfaces, generated controls (`Button`, `ToggleButton`, `EditText`,
