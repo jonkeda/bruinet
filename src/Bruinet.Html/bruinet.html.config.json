@@ -1,15 +1,11 @@
 {
+  "baseUrl": "https://localhost:3000",
+  "headless": true,
+  "browserType": "chromium",
+  "timeouts": { "defaultWait": 5000, "pageLoad": 10000 },
   "artifacts": {
     "rootDirectory": null,
     "runId": null,
     "suite": "Html"
-  },
-  "html": {
-    "appUrl": "https://localhost:3000",
-    "appPath": null
-  },
-  "browser": {
-    "headless": true,
-    "browserType": "chromium"
   }
 }

@@ -1,13 +1,11 @@
 {
+  "executablePath": null,
+  "processName": null,
+  "windowHandle": null,
+  "timeouts": { "defaultWait": 5000, "pageLoad": 10000 },
   "artifacts": {
     "rootDirectory": null,
     "runId": null,
     "suite": "WinForms"
-  },
-  "winForms": {
-    "appPath": null,
-    "processName": null,
-    "windowHandle": null,
-    "attachToRunning": false
   }
 }

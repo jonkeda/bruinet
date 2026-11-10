@@ -1,8 +1,4 @@
 #nullable enable
-Bruinet.WinForms.BruinetWinFormsConfiguration
-Bruinet.WinForms.BruinetWinFormsConfiguration.BruinetWinFormsConfiguration() -> void
-Bruinet.WinForms.BruinetWinFormsConfiguration.WinForms.get -> Bruinet.WinForms.WinFormsOptions!
-Bruinet.WinForms.BruinetWinFormsConfiguration.WinForms.set -> void
 Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.WinForms.Interfaces.IWinFormsScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
@@ -83,18 +79,20 @@ Bruinet.WinForms.Context.WinFormsTestContext.WaitReady(int? timeoutMs = null) ->
 Bruinet.WinForms.Context.WinFormsTestContext.WinFormsTestContext(Bruinet.WinForms.Context.WinFormsTestContextOptions! options) -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Arguments.get -> string?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Arguments.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Arguments.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Driver.get -> Bruinet.WinForms.Interfaces.IWinFormsDriver?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Driver.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Driver.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.Environment.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.get -> string?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.ExecutablePath.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.get -> int?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.set -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessName.get -> string?
+Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessName.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WinFormsTestContextOptions() -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.get -> nint?
-Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.init -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.set -> void
 Bruinet.WinForms.Controls.Buttons.Button<TScope>
 Bruinet.WinForms.Controls.Buttons.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.WinForms.Controls.Buttons.Button<TScope>.Button(Bruinet.WinForms.Interfaces.IWinFormsScope<TScope>! scope, string! automationId) -> void
@@ -449,27 +447,18 @@ Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, i
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.WinForms.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.WinForms.Testing.WinFormsTestFixtureBase
-Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Configuration.get -> Bruinet.WinForms.BruinetWinFormsConfiguration!
 Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Context.get -> Bruinet.WinForms.Context.WinFormsTestContext!
 Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Dispose() -> void
-Bruinet.WinForms.Testing.WinFormsTestFixtureBase.SetupWith(System.Action<Bruinet.WinForms.BruinetWinFormsConfiguration!>! configureAction) -> void
+Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Options.get -> Bruinet.WinForms.Context.WinFormsTestContextOptions!
+Bruinet.WinForms.Testing.WinFormsTestFixtureBase.SetupWith(System.Action<Bruinet.WinForms.Context.WinFormsTestContextOptions!>! configureAction) -> void
 Bruinet.WinForms.Testing.WinFormsTestFixtureBase.WinFormsTestFixtureBase() -> void
-Bruinet.WinForms.WinFormsOptions
-Bruinet.WinForms.WinFormsOptions.AppPath.get -> string?
-Bruinet.WinForms.WinFormsOptions.AppPath.set -> void
-Bruinet.WinForms.WinFormsOptions.AttachToRunning.get -> bool
-Bruinet.WinForms.WinFormsOptions.AttachToRunning.set -> void
-Bruinet.WinForms.WinFormsOptions.ProcessName.get -> string?
-Bruinet.WinForms.WinFormsOptions.ProcessName.set -> void
-Bruinet.WinForms.WinFormsOptions.WinFormsOptions() -> void
-Bruinet.WinForms.WinFormsOptions.WindowHandle.get -> string?
-Bruinet.WinForms.WinFormsOptions.WindowHandle.set -> void
 abstract Bruinet.WinForms.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.WinForms.ObjectBase.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 abstract Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.WinForms.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
+const Bruinet.WinForms.Testing.WinFormsTestFixtureBase.SettingsFile = "bruinet.winforms.config.json" -> string!
 override Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 override Bruinet.WinForms.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.WinForms.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
@@ -493,7 +482,6 @@ override Bruinet.WinForms.Controls.ViewBase<TScope>.Context.get -> Bruinet.WinFo
 override Bruinet.WinForms.Pages.AppRoot.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.WinForms.Interfaces.IWinFormsTestContext!
 override Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.WinForms.BruinetWinFormsConfiguration.Load(string? configPath = null) -> Bruinet.WinForms.BruinetWinFormsConfiguration!
 static Bruinet.WinForms.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.WinForms.Interfaces.WinFormsElementExtensions.FindElement(this Bruinet.WinForms.Interfaces.IWinFormsElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.WinForms.Interfaces.IWinFormsElement!
 static Bruinet.WinForms.Testing.WinFormsTestFixtureBase.FindSolutionDirectory() -> string!
@@ -573,7 +561,7 @@ virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
 virtual Bruinet.WinForms.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator!
-virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.CreateTestContextOptions() -> Bruinet.WinForms.Context.WinFormsTestContextOptions!
+virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.CreateTestContextOptions(Bruinet.WinForms.Context.WinFormsTestContextOptions! loaded) -> Bruinet.WinForms.Context.WinFormsTestContextOptions!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetScreenshotDirectory() -> string!

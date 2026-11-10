@@ -1,22 +1,18 @@
 {
-  "artifacts": {
-    "rootDirectory": null,
-    "runId": null,
-    "suite": "MAUI"
-  },
-  "framework": {
-    "automation": {
-      "enabled": false
-    }
-  },
-  "maui": {
-    "serverUri": "http://127.0.0.1:4723",
+  "driverOptions": {
     "platform": "windows",
     "appPath": null,
     "processName": null,
     "windowHandle": null,
+    "appiumServerUri": "http://127.0.0.1:4723",
     "deviceName": null,
     "platformVersion": null,
-    "attachToRunning": false
+    "udid": null
+  },
+  "timeouts": { "defaultWait": 5000, "pageLoad": 10000 },
+  "artifacts": {
+    "rootDirectory": null,
+    "runId": null,
+    "suite": "MAUI"
   }
 }

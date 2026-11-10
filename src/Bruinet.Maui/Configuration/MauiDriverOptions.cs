@@ -11,6 +11,7 @@ public class MauiDriverOptions
     /// - Windows: FlaUI (always)
     /// - Android/iOS: Appium
     /// </summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
     public MauiPlatform Platform { get; set; } = MauiPlatform.Windows;
 
     /// <summary>
@@ -31,6 +32,7 @@ public class MauiDriverOptions
     /// Window handle to attach to (alternative to AppPath).
     /// Windows FlaUI only.
     /// </summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(Bruinet.Core.Configuration.WindowHandleJsonConverter))]
     public IntPtr? WindowHandle { get; set; }
 
     /// <summary>
@@ -48,6 +50,9 @@ public class MauiDriverOptions
     /// Platform version for iOS.
     /// </summary>
     public string? PlatformVersion { get; set; }
+
+    /// <summary>The device's UDID, for Appium (<c>udid</c>), when it must be pinned.</summary>
+    public string? Udid { get; set; }
 
     /// <summary>
     /// Additional Appium capabilities.
@@ -87,61 +92,51 @@ public class MauiDriverOptions
     /// <summary>
     /// Timeout settings for waits and polling.
     /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
     public TimeoutSettings? Timeouts { get; internal set; }
 
     /// <summary>
     /// Logger for driver operations.
     /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
     public ITestLogger? Logger { get; internal set; }
 
-
     /// <summary>
-    /// Creates MAUI driver options from configuration objects.
-    /// Configuration is required; no fallback to environment variables.
+    /// Overrides these options with the <c>APPIUM_*</c> variables that are set, so a CI job or a local
+    /// script can choose the platform and device without editing the settings file:
+    /// <c>APPIUM_PLATFORM</c>, <c>APPIUM_SERVER_URI</c>, <c>APPIUM_APP_PATH</c>, <c>APPIUM_DEVICE_NAME</c>,
+    /// <c>APPIUM_PLATFORM_VERSION</c> and <c>APPIUM_UDID</c>. An unset or blank variable keeps the file's value.
+    /// The fixture applies them after the file and before its own code.
     /// </summary>
-    public static MauiDriverOptions FromConfiguration(MauiOptions mauiConfig)
+    /// <param name="read">Returns a variable's value, or null when it is not set.</param>
+    /// <exception cref="InvalidOperationException">A variable holds a value it cannot take.</exception>
+    public void ApplyEnvironment(Func<string, string?> read)
     {
-        ArgumentNullException.ThrowIfNull(mauiConfig);
-
-        var windowHandle = !string.IsNullOrWhiteSpace(mauiConfig.WindowHandle)
-            ? ParseWindowHandle(mauiConfig.WindowHandle)
-            : null;
-
-        return new MauiDriverOptions
+        ArgumentNullException.ThrowIfNull(read);
+        if (Present(read("APPIUM_PLATFORM")) is { } platform)
         {
-            Platform = mauiConfig.Platform,
-            AppPath = mauiConfig.AppPath,
-            ProcessName = mauiConfig.ProcessName,
-            WindowHandle = windowHandle,
-            DeviceName = mauiConfig.DeviceName,
-            PlatformVersion = mauiConfig.PlatformVersion,
-            AppiumServerUri = new Uri(mauiConfig.ServerUri ?? "http://127.0.0.1:4723")
-        };
+            Platform = platform.ToLowerInvariant() switch
+            {
+                "windows" => MauiPlatform.Windows,
+                "android" => MauiPlatform.Android,
+                "ios" => MauiPlatform.iOS,
+                _ => throw new InvalidOperationException(
+                    $"APPIUM_PLATFORM has unrecognized value '{platform}'. Expected 'windows', 'android', or 'ios'."),
+            };
+        }
+
+        if (Present(read("APPIUM_SERVER_URI")) is { } server)
+        {
+            AppiumServerUri = Uri.TryCreate(server, UriKind.Absolute, out var uri)
+                ? uri
+                : throw new InvalidOperationException($"APPIUM_SERVER_URI '{server}' is not an absolute URI.");
+        }
+
+        AppPath = Present(read("APPIUM_APP_PATH")) ?? AppPath;
+        DeviceName = Present(read("APPIUM_DEVICE_NAME")) ?? DeviceName;
+        PlatformVersion = Present(read("APPIUM_PLATFORM_VERSION")) ?? PlatformVersion;
+        Udid = Present(read("APPIUM_UDID")) ?? Udid;
     }
 
-    private static IntPtr? ParseWindowHandle(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return null;
-        }
-
-        var normalized = value.Trim();
-        if (normalized.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-        {
-            normalized = normalized[2..];
-        }
-
-        if (long.TryParse(normalized, System.Globalization.NumberStyles.HexNumber, null, out var hexResult))
-        {
-            return new IntPtr(hexResult);
-        }
-
-        if (long.TryParse(normalized, out var decimalResult))
-        {
-            return new IntPtr(decimalResult);
-        }
-
-        return null;
-    }
+    private static string? Present(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

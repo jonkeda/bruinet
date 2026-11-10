@@ -11,7 +11,7 @@ namespace Bruinet.Maui.Testing;
 /// Inherit from this class in your test project and implement <see cref="GetDefaultAppPath"/>.
 /// </summary>
 /// <remarks>
-/// Configuration is loaded from bruinet.maui.config.json. 
+/// Its options are loaded from bruinet.maui.config.json, which holds <see cref="MauiTestContextOptions"/>' own names. 
 /// For per-test overrides, use SetupWith() before running your test.
 /// Environment variables are still supported for backward compatibility but are deprecated.
 /// </remarks>
@@ -24,10 +24,11 @@ public abstract class MauiTestFixtureBase : IDisposable
     private IScreenshotService _screenshotService;
     private bool _disposed;
 
-    /// <summary>
-    /// Current MAUI configuration loaded from bruinet.maui.config.json
-    /// </summary>
-    protected BruinetMauiConfiguration Configuration { get; private set; }
+    /// <summary>The settings file's name, beside the test assembly.</summary>
+    public const string SettingsFile = "bruinet.maui.config.json";
+
+    /// <summary>The options as loaded from <see cref="SettingsFile"/>, before <see cref="CreateTestContextOptions"/> adjusts them.</summary>
+    protected MauiTestContextOptions Options { get; private set; }
 
 
     /// <summary>
@@ -38,9 +39,11 @@ public abstract class MauiTestFixtureBase : IDisposable
         _instanceId = Interlocked.Increment(ref _instanceCount);
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATING at {DateTime.Now:HH:mm:ss.fff}");
 
-        Configuration = BruinetMauiConfiguration.Load();
+        Options = TestContextOptionsBase.Load<MauiTestContextOptions>(SettingsFile);
+        Options.DriverOptions ??= new MauiDriverOptions();
+        Options.DriverOptions.ApplyEnvironment(Environment.GetEnvironmentVariable);
 
-        _options = Options();
+        _options = ChooseOptions();
 
         _context = new MauiTestContext(_options);
         UseTheAppsCulture();
@@ -174,7 +177,7 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// <summary>
     /// Gets the current platform: MauiHeadless on that head, else the configuration's.
     /// </summary>
-    protected MauiPlatform Platform => MauiHeads.IsHeadless ? MauiPlatform.Headless : Configuration?.Maui?.Platform ?? MauiPlatform.Windows;
+    protected MauiPlatform Platform => MauiHeads.IsHeadless ? MauiPlatform.Headless : Options.DriverOptions?.Platform ?? MauiPlatform.Windows;
 
     #region Abstract Methods
 
@@ -187,7 +190,7 @@ public abstract class MauiTestFixtureBase : IDisposable
 
     #endregion
 
-    #region Configuration Setup
+    #region Options Setup
 
     /// <summary>
     /// Allows per-test configuration overrides.
@@ -203,10 +206,10 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// // Now run your test with the customized configuration
     /// </code>
     /// </example>
-    protected void SetupWith(Action<BruinetMauiConfiguration> configureAction)
+    protected void SetupWith(Action<MauiTestContextOptions> configureAction)
     {
         ArgumentNullException.ThrowIfNull(configureAction);
-        configureAction(Configuration);
+        configureAction(Options);
     }
 
     #endregion
@@ -214,8 +217,8 @@ public abstract class MauiTestFixtureBase : IDisposable
     #region Heads
 
     // The device unless BRUINET_HEAD=headless (MauiHeads).
-    private MauiTestContextOptions Options()
-        => MauiHeads.IsHeadless ? CreateHeadlessOptions() : CreateTestContextOptions();
+    private MauiTestContextOptions ChooseOptions()
+        => MauiHeads.IsHeadless ? CreateHeadlessOptions() : CreateTestContextOptions(Options);
 
     /// <summary>
     /// The suite's MauiHeadless head (<see cref="MauiHeads"/>, docs/guides/maui-headless.md): its app's first page rendered in
@@ -229,25 +232,23 @@ public abstract class MauiTestFixtureBase : IDisposable
 
     #endregion
 
-    #region Virtual Configuration Methods
+    #region Virtual Options Methods
 
     /// <summary>
     /// Creates test context options with platform-specific capabilities.
     /// Uses configuration loaded from bruinet.maui.config.json.
     /// Override to further customize driver configuration.
     /// </summary>
-    protected virtual MauiTestContextOptions CreateTestContextOptions()
+    protected virtual MauiTestContextOptions CreateTestContextOptions(MauiTestContextOptions loaded)
     {
-        ArgumentNullException.ThrowIfNull(Configuration, nameof(Configuration));
-        ArgumentNullException.ThrowIfNull(Configuration.Maui, nameof(Configuration.Maui));
+        ArgumentNullException.ThrowIfNull(loaded);
+        var driverOptions = loaded.DriverOptions ?? new MauiDriverOptions();
+        if (string.IsNullOrWhiteSpace(driverOptions.AppPath))
+        {
+            driverOptions.AppPath = GetDefaultAppPath(driverOptions.Platform);
+        }
 
-        var driverOptions = MauiDriverOptions.FromConfiguration(Configuration.Maui);
-
-        driverOptions.AppPath = string.IsNullOrWhiteSpace(Configuration.Maui.AppPath)
-            ? GetDefaultAppPath(Configuration.Maui.Platform)
-            : Configuration.Maui.AppPath;
-
-        switch (Configuration.Maui.Platform)
+        switch (driverOptions.Platform)
         {
             case MauiPlatform.Android:
                 ConfigureAndroidOptions(driverOptions);
@@ -258,11 +259,8 @@ public abstract class MauiTestFixtureBase : IDisposable
                 // Windows uses FlaUI - no additional options needed
         }
 
-        return new MauiTestContextOptions
-        {
-
-            DriverOptions = driverOptions,
-        };
+        loaded.DriverOptions = driverOptions;
+        return loaded;
     }
 
     /// <summary>
@@ -271,11 +269,8 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// </summary>
     protected virtual void ConfigureAndroidOptions(MauiDriverOptions options)
     {
-        var serverUri = Configuration?.Maui?.ServerUri ?? "http://127.0.0.1:4723";
-        var deviceName = Configuration?.Maui?.DeviceName ?? "emulator-5554";
-
-        options.AppiumServerUri = new Uri(serverUri);
-        options.DeviceName = deviceName;
+        ArgumentNullException.ThrowIfNull(options);
+        options.DeviceName ??= "emulator-5554";
         AddUdid(options);
     }
 
@@ -285,22 +280,19 @@ public abstract class MauiTestFixtureBase : IDisposable
     /// </summary>
     protected virtual void ConfigureiOSOptions(MauiDriverOptions options)
     {
-        var serverUri = Configuration?.Maui?.ServerUri ?? "http://127.0.0.1:4723";
-        var (deviceName, platformVersion) =
-            MauiDriverFactory.IosDevice(Configuration?.Maui?.DeviceName, Configuration?.Maui?.PlatformVersion);
+        ArgumentNullException.ThrowIfNull(options);
+        var (deviceName, platformVersion) = MauiDriverFactory.IosDevice(options.DeviceName, options.PlatformVersion);
 
-
-        options.AppiumServerUri = new Uri(serverUri);
         options.DeviceName = deviceName;
         options.PlatformVersion = platformVersion;
         AddUdid(options);
     }
 
-    private void AddUdid(MauiDriverOptions options)
+    private static void AddUdid(MauiDriverOptions options)
     {
-        if (!string.IsNullOrWhiteSpace(Configuration?.Maui?.Udid))
+        if (!string.IsNullOrWhiteSpace(options.Udid))
         {
-            options.AdditionalCapabilities["udid"] = Configuration.Maui.Udid;
+            options.AdditionalCapabilities["udid"] = options.Udid;
         }
     }
 
@@ -317,7 +309,7 @@ public abstract class MauiTestFixtureBase : IDisposable
 
     protected virtual ITestArtifactPathProvider GetArtifactPathProvider()
     {
-        return DefaultTestArtifactPathProvider.Create(Configuration.Artifacts, GetType().Assembly.GetName().Name);
+        return DefaultTestArtifactPathProvider.Create(Options.Artifacts, GetType().Assembly.GetName().Name);
     }
 
     /// <summary>

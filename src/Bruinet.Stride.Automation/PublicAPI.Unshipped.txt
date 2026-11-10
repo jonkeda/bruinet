@@ -27,9 +27,8 @@ override Bruinet.Stride.Automation.AutomationGameSystem.Destroy() -> void
 override Bruinet.Stride.Automation.AutomationGameSystem.Initialize() -> void
 override Bruinet.Stride.Automation.AutomationGameSystem.Update(Stride.Games.GameTime! gameTime) -> void
 static Bruinet.Stride.Automation.AutomationServerOptions.FromCommandLine(string![]? args = null) -> Bruinet.Stride.Automation.AutomationServerOptions!
-static Bruinet.Stride.Automation.StrideAutomationExtensions.IsAutomationEnabled(Bruinet.Stride.BruinetStrideConfiguration? config = null) -> bool
+static Bruinet.Stride.Automation.StrideAutomationExtensions.IsAutomationEnabled() -> bool
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomation(this Stride.Engine.Game! game, Bruinet.Stride.Automation.IAutomationHandler! handler, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomation(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomationIfEnabled(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
-static Bruinet.Stride.Automation.StrideAutomationExtensions.UseAutomationIfEnabled(this Stride.Engine.Game! game, System.Func<Stride.UI.UIElement?>! uiRootProvider, Bruinet.Stride.BruinetStrideConfiguration? config, Bruinet.Stride.Automation.AutomationServerOptions? options = null) -> Stride.Engine.Game!
 static Bruinet.Stride.Automation.StrideUIHandler.KeyOf(Stride.UI.UIElement! element) -> string!

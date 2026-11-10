@@ -84,7 +84,7 @@ Nothing is shipped yet, so every proposal below is still free. After the first `
 
 ### 6. Configuration has too many doors
 
-Html alone has `BruinetHtmlConfiguration`, `HtmlOptions`, `HtmlTestContextOptions`, `WebAppHostOptions`, `BrowserOptions` in Core, then `BlazorOptions` and `BruinetBlazorConfiguration` on top.
+Html had `BruinetHtmlConfiguration`, `HtmlOptions`, `HtmlTestContextOptions`, `WebAppHostOptions`, `BrowserOptions` in Core, then `BlazorOptions` and `BruinetBlazorConfiguration` on top; proposal 11 left `HtmlTestContextOptions` and `WebAppHostOptions`.
 Maui has `BruinetMauiConfiguration`, `MauiOptions`, `MauiDriverOptions` and `MauiTestContextOptions`.
 Which one a test author sets, and which wins, cannot be read from the types.
 
@@ -104,7 +104,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Done: all eight rules of `proposal-8-signature-rules.md`, approved by the owner 2026-11-10, one commit each with its change-list row; the generator names the `Exists` query `Exists()`. |
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Done as proposed (the owner, 2026-11-10): `TimeoutSettings`, Stride's, Blazor's and bUnit's options are `TimeSpan`; `ToMs()` bridges to a verb; JSON keeps milliseconds. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Done as designed in `proposal-10-logger-record.md` (approved 2026-11-10): `Write(LogEvent)` and `Flush()`; the error factory is `Failed`, since `Error` is the record's exception property. |
-| 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
+| 11 | One options type per platform that a test author sets. | Done as designed in `proposal-11-one-options-type.md` (approved 2026-11-10): one base, the file binds to the context options, `docs/guides/configuration.md`. Android's fixture still builds its options in code (it never had a file). |
 | 12 | Before the first release, move the cleaned surface to `PublicAPI.Shipped.txt` and mark `[Experimental]` what is public but not promised. | Started: `BRUINET010` marks `Bdd`'s engine (`docs/experimental.md`). Left: Narrator, Contracts and the scraper support, then the move to `Shipped`. |
 | 13 | A change list and skill so the projects that use Bruinet can be refactored after each change: per change, what to search for and what to write instead. | In working order: rows to date, and `tools/Scripts/check-api-changes.ps1` (CI) fails a break without one. Left: U8.3 to U8.6 of `.my/upgrade/plan.md` (recipes, a proof on a consumer, the consumers table, links from the docs). |
 
@@ -128,5 +128,4 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposals 1, 2, 4, 7, 8, 9 and 10 are made as far as they go, 5 and 12 started, 13 in working order.
-Two need a design: the shared collection base (5) and one options type per platform (11); 11 is the larger, since every stack has three or four options types today.
+Every proposal is made as far as decided except two: the shared collection base (5) needs a design, and moving the cleaned surface to `PublicAPI.Shipped.txt` (12) waits for the first release.

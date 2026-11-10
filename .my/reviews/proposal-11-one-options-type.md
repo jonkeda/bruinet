@@ -1,6 +1,6 @@
 # Proposal 11: one options type per platform
 
-Drafted 2026-11-10 at `2014b0f0`, for the owner to approve. Nothing here is made yet.
+Drafted 2026-11-10 at `2014b0f0`; approved and made the same day. Changes from the draft: `MauiDriverOptions`' timeouts and logger stay readable for the drivers but only the context sets them; Stride's fixture budgets became its type's defaults; Maui keeps its `APPIUM_*` overrides (file, then environment, then code); rules 2 and 3 landed in one commit, since the shared base they removed broke every stack at once.
 
 ## Outcome
 
@@ -48,4 +48,4 @@ Binding through Microsoft.Extensions.Configuration was the other: it would bring
 One commit per rule, 6 and 1 first (they remove and share), then 4, then 2 and 3 together per stack, the samples' files with them.
 Each commit with its change-list row; Tomorrow's two suites build in a worktree before it is pushed.
 
-Next action: the owner approves the rules (all, or by number).
+Next action: none; this design is done.

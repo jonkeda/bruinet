@@ -1,8 +1,4 @@
 #nullable enable
-Bruinet.Wpf.BruinetWpfConfiguration
-Bruinet.Wpf.BruinetWpfConfiguration.BruinetWpfConfiguration() -> void
-Bruinet.Wpf.BruinetWpfConfiguration.Wpf.get -> Bruinet.Wpf.WpfOptions!
-Bruinet.Wpf.BruinetWpfConfiguration.Wpf.set -> void
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.Wpf.Interfaces.IWpfScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
@@ -83,17 +79,19 @@ Bruinet.Wpf.Context.WpfTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Wpf.Context.WpfTestContext.WpfTestContext(Bruinet.Wpf.Context.WpfTestContextOptions! options) -> void
 Bruinet.Wpf.Context.WpfTestContextOptions
 Bruinet.Wpf.Context.WpfTestContextOptions.Arguments.get -> string?
-Bruinet.Wpf.Context.WpfTestContextOptions.Arguments.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.Arguments.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.Driver.get -> Bruinet.Wpf.Interfaces.IWpfDriver?
-Bruinet.Wpf.Context.WpfTestContextOptions.Driver.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.Driver.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.Environment.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>?
-Bruinet.Wpf.Context.WpfTestContextOptions.Environment.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.Environment.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.ExecutablePath.get -> string?
-Bruinet.Wpf.Context.WpfTestContextOptions.ExecutablePath.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.ExecutablePath.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.ProcessId.get -> int?
-Bruinet.Wpf.Context.WpfTestContextOptions.ProcessId.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.ProcessId.set -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.ProcessName.get -> string?
+Bruinet.Wpf.Context.WpfTestContextOptions.ProcessName.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.WindowHandle.get -> nint?
-Bruinet.Wpf.Context.WpfTestContextOptions.WindowHandle.init -> void
+Bruinet.Wpf.Context.WpfTestContextOptions.WindowHandle.set -> void
 Bruinet.Wpf.Context.WpfTestContextOptions.WpfTestContextOptions() -> void
 Bruinet.Wpf.Controls.Buttons.Button<TScope>
 Bruinet.Wpf.Controls.Buttons.Button<TScope>.Button(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -441,27 +439,18 @@ Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? t
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Wpf.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Testing.WpfTestFixtureBase
-Bruinet.Wpf.Testing.WpfTestFixtureBase.Configuration.get -> Bruinet.Wpf.BruinetWpfConfiguration!
 Bruinet.Wpf.Testing.WpfTestFixtureBase.Context.get -> Bruinet.Wpf.Context.WpfTestContext!
 Bruinet.Wpf.Testing.WpfTestFixtureBase.Dispose() -> void
-Bruinet.Wpf.Testing.WpfTestFixtureBase.SetupWith(System.Action<Bruinet.Wpf.BruinetWpfConfiguration!>! configureAction) -> void
+Bruinet.Wpf.Testing.WpfTestFixtureBase.Options.get -> Bruinet.Wpf.Context.WpfTestContextOptions!
+Bruinet.Wpf.Testing.WpfTestFixtureBase.SetupWith(System.Action<Bruinet.Wpf.Context.WpfTestContextOptions!>! configureAction) -> void
 Bruinet.Wpf.Testing.WpfTestFixtureBase.WpfTestFixtureBase() -> void
-Bruinet.Wpf.WpfOptions
-Bruinet.Wpf.WpfOptions.AppPath.get -> string?
-Bruinet.Wpf.WpfOptions.AppPath.set -> void
-Bruinet.Wpf.WpfOptions.AttachToRunning.get -> bool
-Bruinet.Wpf.WpfOptions.AttachToRunning.set -> void
-Bruinet.Wpf.WpfOptions.ProcessName.get -> string?
-Bruinet.Wpf.WpfOptions.ProcessName.set -> void
-Bruinet.Wpf.WpfOptions.WindowHandle.get -> string?
-Bruinet.Wpf.WpfOptions.WindowHandle.set -> void
-Bruinet.Wpf.WpfOptions.WpfOptions() -> void
 abstract Bruinet.Wpf.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
 abstract Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Wpf.ObjectBase.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 abstract Bruinet.Wpf.Testing.WpfTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Wpf.Pages.PageObjectBase<TSelf>.BusyAutomationId = "BruinetBusy" -> string!
+const Bruinet.Wpf.Testing.WpfTestFixtureBase.SettingsFile = "bruinet.wpf.config.json" -> string!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Wpf.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
@@ -475,7 +464,6 @@ override Bruinet.Wpf.Controls.ViewBase<TScope>.Context.get -> Bruinet.Wpf.Interf
 override Bruinet.Wpf.Pages.AppRoot.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Wpf.Interfaces.IWpfTestContext!
 override Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.Wpf.BruinetWpfConfiguration.Load(string? configPath = null) -> Bruinet.Wpf.BruinetWpfConfiguration!
 static Bruinet.Wpf.Controls.ViewBase<TScope>.ResolveLocator(string! automationId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Wpf.Interfaces.WpfElementExtensions.FindElement(this Bruinet.Wpf.Interfaces.IWpfElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Wpf.Interfaces.IWpfElement!
 static Bruinet.Wpf.Testing.WpfTestFixtureBase.FindSolutionDirectory() -> string!
@@ -550,7 +538,7 @@ virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
 virtual Bruinet.Wpf.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator!
-virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.CreateTestContextOptions() -> Bruinet.Wpf.Context.WpfTestContextOptions!
+virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.CreateTestContextOptions(Bruinet.Wpf.Context.WpfTestContextOptions! loaded) -> Bruinet.Wpf.Context.WpfTestContextOptions!
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.GetScreenshotDirectory() -> string!

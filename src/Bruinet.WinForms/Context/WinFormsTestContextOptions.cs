@@ -9,22 +9,27 @@ namespace Bruinet.WinForms.Context;
 public class WinFormsTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
     /// <summary>A driver made already (a test's own, or another head's). The context does not dispose it.</summary>
-    public IWinFormsDriver? Driver { get; init; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public IWinFormsDriver? Driver { get; set; }
 
     /// <summary>The app's executable, launched when no driver, window or process is given.</summary>
-    public string? ExecutablePath { get; init; }
+    public string? ExecutablePath { get; set; }
 
     /// <summary>The app's command line.</summary>
-    public string? Arguments { get; init; }
+    public string? Arguments { get; set; }
 
     /// <summary>Variables for the launched app's process only (its launch settings, <c>BRUINET_AUT_PLACE</c>).</summary>
-    public IReadOnlyDictionary<string, string>? Environment { get; init; }
+    public IReadOnlyDictionary<string, string>? Environment { get; set; }
 
     /// <summary>A running process to attach to.</summary>
-    public int? ProcessId { get; init; }
+    public int? ProcessId { get; set; }
 
     /// <summary>A window to attach to.</summary>
-    public IntPtr? WindowHandle { get; init; }
+    [System.Text.Json.Serialization.JsonConverter(typeof(Bruinet.Core.Configuration.WindowHandleJsonConverter))]
+    public IntPtr? WindowHandle { get; set; }
+
+    /// <summary>A running process to attach to, by name, when no handle or id is given.</summary>
+    public string? ProcessName { get; set; }
 
 
 

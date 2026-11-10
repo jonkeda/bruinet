@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Logging;
 
@@ -19,6 +20,7 @@ public abstract class TestContextOptionsBase
     public TimeoutSettings Timeouts { get; set; } = TimeoutSettings.Default;
 
     /// <summary>The call log; <c>BRUINET_CALL_LOG</c>'s, or none, when null.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
     public ITestLogger? Logger { get; set; }
 
     /// <summary>The context's name, for logs and messages; the stack's own name when null.</summary>
@@ -26,4 +28,38 @@ public abstract class TestContextOptionsBase
 
     /// <summary>When a call that passed is reported as having nearly failed.</summary>
     public NearMissSettings NearMiss { get; set; } = NearMissSettings.Default;
+
+    /// <summary>Where the run's screenshots, logs and results go.</summary>
+    public ArtifactsOptions Artifacts { get; set; } = new();
+
+    private static readonly JsonSerializerOptions FileOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+    };
+
+    /// <summary>
+    /// The options in <paramref name="fileName"/> beside the test assembly, or the defaults when there is
+    /// no such file. The file holds the type's own names (<c>"BaseUrl"</c>, <c>"Timeouts": { "DefaultWait": 5000 }</c>);
+    /// a fixture adjusts what it loaded in code, which wins over the file.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The file is not valid JSON for <typeparamref name="T"/>.</exception>
+    public static T Load<T>(string fileName) where T : TestContextOptionsBase, new()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, fileName);
+        if (!File.Exists(path))
+        {
+            return new T();
+        }
+
+        try
+        {
+            return JsonSerializer.Deserialize<T>(File.ReadAllText(path), FileOptions) ?? new T();
+        }
+        catch (JsonException error)
+        {
+            throw new InvalidOperationException($"Failed to read the settings file {path}: {error.Message}", error);
+        }
+    }
 }

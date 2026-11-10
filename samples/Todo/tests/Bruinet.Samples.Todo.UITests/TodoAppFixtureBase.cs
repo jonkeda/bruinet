@@ -299,11 +299,11 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     protected virtual LaunchSettings AdjustSettings(LaunchSettings settings) => settings;
 
     /// <inheritdoc />
-    protected override MauiTestContextOptions CreateTestContextOptions()
+    protected override MauiTestContextOptions CreateTestContextOptions(MauiTestContextOptions loaded)
     {
         var settings = Arrange();
 
-        var options = base.CreateTestContextOptions();
+        var options = base.CreateTestContextOptions(loaded);
         _launchValues = options.DriverOptions!.LaunchSettings;
         foreach (var (name, value) in LaunchValuesFor(settings, Arranged.Database.Folder))
         {

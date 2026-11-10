@@ -18,10 +18,11 @@ public abstract class StrideTestFixtureBase : IDisposable
     private StrideTestContext? _context;
     private bool _disposed;
 
-    /// <summary>
-    /// Current Stride configuration loaded from bruinet.stride.config.json
-    /// </summary>
-    protected BruinetStrideConfiguration Configuration { get; private set; } = BruinetStrideConfiguration.Load();
+    /// <summary>The settings file's name, beside the test assembly.</summary>
+    public const string SettingsFile = "bruinet.stride.config.json";
+
+    /// <summary>The options as loaded from <see cref="SettingsFile"/>, before <see cref="CreateOptions"/> adjusts them.</summary>
+    protected StrideTestContextOptions Options { get; } = TestContextOptionsBase.Load<StrideTestContextOptions>(SettingsFile);
 
     /// <summary>
     /// Gets the Stride test context. Available after <see cref="InitializeAsync"/>.
@@ -48,26 +49,18 @@ public abstract class StrideTestFixtureBase : IDisposable
     /// <summary>
     /// Creates the test context options. Override to customize.
     /// </summary>
-    protected virtual StrideTestContextOptions CreateOptions()
+    protected virtual StrideTestContextOptions CreateOptions(StrideTestContextOptions loaded)
     {
-        return new StrideTestContextOptions
+        ArgumentNullException.ThrowIfNull(loaded);
+        loaded.GameExecutablePath ??= Environment.GetEnvironmentVariable("STRIDE_APP_PATH") ?? GetDefaultAppPath();
+        if (loaded.GameArguments.Length == 0)
         {
-            GameExecutablePath = GetAppPath(),
-            GameArguments = ["--automation"],
-            Timeouts = new TimeoutSettings
-            {
-                DefaultWait = TimeSpan.FromMilliseconds(10000),
-                PageLoad = TimeSpan.FromMilliseconds(15000),
-                ElementFind = TimeSpan.FromMilliseconds(1000),
-                ElementState = TimeSpan.FromMilliseconds(10000),
-                Animation = TimeSpan.FromMilliseconds(150),
-                PollingInterval = TimeSpan.FromMilliseconds(100),
-            },
-            StartupTimeout = TimeSpan.FromMilliseconds(15000),
-            ConnectionTimeout = TimeSpan.FromMilliseconds(10000),
-            ScreenshotDirectory = GetScreenshotDirectory(),
-            LogDirectory = GetArtifactPathProvider().LogsDirectory
-        };
+            loaded.GameArguments = ["--automation"];
+        }
+
+        loaded.ScreenshotDirectory = GetScreenshotDirectory();
+        loaded.LogDirectory = GetArtifactPathProvider().LogsDirectory;
+        return loaded;
     }
 
     /// <summary>
@@ -82,20 +75,20 @@ public abstract class StrideTestFixtureBase : IDisposable
 
     protected virtual ITestArtifactPathProvider GetArtifactPathProvider()
     {
-        return DefaultTestArtifactPathProvider.Create(Configuration.Artifacts, GetType().Assembly.GetName().Name);
+        return DefaultTestArtifactPathProvider.Create(Options.Artifacts, GetType().Assembly.GetName().Name);
     }
 
     #endregion
 
-    #region Configuration Setup
+    #region Options Setup
 
     /// <summary>
     /// Allows per-test configuration overrides.
     /// </summary>
-    protected void SetupWith(Action<BruinetStrideConfiguration> configureAction)
+    protected void SetupWith(Action<StrideTestContextOptions> configureAction)
     {
         ArgumentNullException.ThrowIfNull(configureAction);
-        configureAction(Configuration);
+        configureAction(Options);
     }
 
     #endregion
@@ -107,7 +100,7 @@ public abstract class StrideTestFixtureBase : IDisposable
     /// </summary>
     public async Task InitializeAsync()
     {
-        var options = CreateOptions();
+        var options = CreateOptions(Options);
 
         // Generate a unique pipe name if the fixture hasn't set a custom one,
         // preventing orphaned game processes from blocking new test runs.
@@ -155,15 +148,6 @@ public abstract class StrideTestFixtureBase : IDisposable
 
     #region Utility
 
-    /// <summary>
-    /// Gets the app path from configuration or environment variable.
-    /// </summary>
-    private string GetAppPath()
-    {
-        return Configuration?.Stride?.AppPath
-            ?? Environment.GetEnvironmentVariable("STRIDE_APP_PATH")
-            ?? GetDefaultAppPath();
-    }
 
     /// <summary>
     /// Finds the solution root directory.

@@ -1,9 +1,5 @@
 #nullable enable
 Bruinet.Stride.Automation.StrideLocators
-Bruinet.Stride.BruinetStrideConfiguration
-Bruinet.Stride.BruinetStrideConfiguration.BruinetStrideConfiguration() -> void
-Bruinet.Stride.BruinetStrideConfiguration.Stride.get -> Bruinet.Stride.StrideOptions!
-Bruinet.Stride.BruinetStrideConfiguration.Stride.set -> void
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.Stride.Interfaces.IStrideScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator) -> void
@@ -535,25 +531,15 @@ Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params Syst
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Stride.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
-Bruinet.Stride.StrideOptions
-Bruinet.Stride.StrideOptions.AppPath.get -> string?
-Bruinet.Stride.StrideOptions.AppPath.set -> void
-Bruinet.Stride.StrideOptions.AttachToRunning.get -> bool
-Bruinet.Stride.StrideOptions.AttachToRunning.set -> void
-Bruinet.Stride.StrideOptions.AutomationEnabled.get -> bool
-Bruinet.Stride.StrideOptions.AutomationEnabled.set -> void
-Bruinet.Stride.StrideOptions.ProcessName.get -> string?
-Bruinet.Stride.StrideOptions.ProcessName.set -> void
-Bruinet.Stride.StrideOptions.StrideOptions() -> void
 Bruinet.Stride.Testing.StrideTestFixtureBase
-Bruinet.Stride.Testing.StrideTestFixtureBase.Configuration.get -> Bruinet.Stride.BruinetStrideConfiguration!
 Bruinet.Stride.Testing.StrideTestFixtureBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 Bruinet.Stride.Testing.StrideTestFixtureBase.Dispose() -> void
 Bruinet.Stride.Testing.StrideTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 Bruinet.Stride.Testing.StrideTestFixtureBase.Driver.get -> Bruinet.Stride.Infrastructure.StrideGameDriver!
 Bruinet.Stride.Testing.StrideTestFixtureBase.GameWindowHandle.get -> nint
 Bruinet.Stride.Testing.StrideTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
-Bruinet.Stride.Testing.StrideTestFixtureBase.SetupWith(System.Action<Bruinet.Stride.BruinetStrideConfiguration!>! configureAction) -> void
+Bruinet.Stride.Testing.StrideTestFixtureBase.Options.get -> Bruinet.Stride.Context.StrideTestContextOptions!
+Bruinet.Stride.Testing.StrideTestFixtureBase.SetupWith(System.Action<Bruinet.Stride.Context.StrideTestContextOptions!>! configureAction) -> void
 Bruinet.Stride.Testing.StrideTestFixtureBase.StrideTestFixtureBase() -> void
 abstract Bruinet.Stride.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> TItem!
 abstract Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Self.get -> TSelf!
@@ -561,6 +547,7 @@ abstract Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Self.get
 abstract Bruinet.Stride.ObjectBase.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 abstract Bruinet.Stride.Testing.StrideTestFixtureBase.GetDefaultAppPath() -> string!
 const Bruinet.Stride.Communication.NamedPipeChannel.DefaultPipeName = "Bruinet.Stride.Automation" -> string!
+const Bruinet.Stride.Testing.StrideTestFixtureBase.SettingsFile = "bruinet.stride.config.json" -> string!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Stride.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
@@ -571,7 +558,6 @@ override Bruinet.Stride.Pages.AppRoot.Context.get -> Bruinet.Stride.Interfaces.I
 override Bruinet.Stride.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Stride.Interfaces.IStrideTestContext!
 override Bruinet.Stride.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 static Bruinet.Stride.Automation.StrideLocators.TargetOf(Bruinet.Core.Locators.Locator! locator) -> string!
-static Bruinet.Stride.BruinetStrideConfiguration.Load(string? configPath = null) -> Bruinet.Stride.BruinetStrideConfiguration!
 static Bruinet.Stride.Communication.AutomationCommand.Action(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.GameQuery(string! method, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
 static Bruinet.Stride.Communication.AutomationCommand.Query(string! method, string? target = null, params object![]! args) -> Bruinet.Stride.Communication.AutomationCommand!
@@ -622,7 +608,7 @@ virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Stride.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator!
-virtual Bruinet.Stride.Testing.StrideTestFixtureBase.CreateOptions() -> Bruinet.Stride.Context.StrideTestContextOptions!
+virtual Bruinet.Stride.Testing.StrideTestFixtureBase.CreateOptions(Bruinet.Stride.Context.StrideTestContextOptions! loaded) -> Bruinet.Stride.Context.StrideTestContextOptions!
 virtual Bruinet.Stride.Testing.StrideTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Stride.Testing.StrideTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Stride.Testing.StrideTestFixtureBase.GetScreenshotDirectory() -> string!

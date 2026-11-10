@@ -25,16 +25,11 @@ public static class StrideAutomationExtensions
     }
 
     /// <summary>
-    /// Determines if automation should be enabled based on configuration or fallbacks.
-    /// Checks in order: configuration, command line args, environment variable.
+    /// Whether the game was started for automation: the <c>--automation</c> argument, which the test
+    /// fixture passes, or <c>BRUINET_AUTOMATION=1</c>. The game reads no test settings file.
     /// </summary>
-    public static bool IsAutomationEnabled(BruinetStrideConfiguration? config = null)
+    public static bool IsAutomationEnabled()
     {
-        if (config?.Stride?.AutomationEnabled == true)
-        {
-            return true;
-        }
-
         return Environment.GetCommandLineArgs().Contains("--automation") ||
                Environment.GetEnvironmentVariable("BRUINET_AUTOMATION") == "1";
     }
@@ -46,13 +41,4 @@ public static class StrideAutomationExtensions
         return game;
     }
 
-    /// <summary>
-    /// Conditionally applies automation based on configuration or fallbacks.
-    /// </summary>
-    public static Game UseAutomationIfEnabled(this Game game, Func<UIElement?> uiRootProvider, BruinetStrideConfiguration? config, AutomationServerOptions? options = null)
-    {
-        if (IsAutomationEnabled(config))
-            return game.UseAutomation(uiRootProvider, options);
-        return game;
-    }
 }

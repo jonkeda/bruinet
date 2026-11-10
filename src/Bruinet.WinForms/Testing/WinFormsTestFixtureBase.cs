@@ -9,7 +9,7 @@ namespace Bruinet.WinForms.Testing;
 /// Inherit from this class and implement <see cref="GetDefaultAppPath"/>.
 /// </summary>
 /// <remarks>
-/// Configuration is loaded from bruinet.winforms.config.json.
+/// Its options are loaded from bruinet.winforms.config.json.
 /// For per-test overrides, use SetupWith() before running your test.
 /// Environment variables are still supported for backward compatibility but are deprecated.
 /// </remarks>
@@ -20,10 +20,11 @@ public abstract class WinFormsTestFixtureBase : IDisposable
     private readonly WinFormsTestContext _context;
     private bool _disposed;
 
-    /// <summary>
-    /// Current WinForms configuration loaded from bruinet.winforms.config.json
-    /// </summary>
-    protected BruinetWinFormsConfiguration Configuration { get; private set; }
+    /// <summary>The settings file's name, beside the test assembly.</summary>
+    public const string SettingsFile = "bruinet.winforms.config.json";
+
+    /// <summary>The options as loaded from <see cref="SettingsFile"/>, before <see cref="CreateTestContextOptions"/> adjusts them.</summary>
+    protected WinFormsTestContextOptions Options { get; }
 
     /// <summary>
     /// Initializes the fixture by loading configuration and creating the test context.
@@ -33,11 +34,11 @@ public abstract class WinFormsTestFixtureBase : IDisposable
         _instanceId = Interlocked.Increment(ref _instanceCount);
         Console.WriteLine($"[FIXTURE] {GetType().Name} #{_instanceId} CREATING at {DateTime.Now:HH:mm:ss.fff}");
 
-        Configuration = BruinetWinFormsConfiguration.Load();
+        Options = TestContextOptionsBase.Load<WinFormsTestContextOptions>(SettingsFile);
 
         // The fixture's one extension point: a derived suite's options, read before its constructor runs.
 #pragma warning disable MA0056
-        var options = CreateTestContextOptions();
+        var options = CreateTestContextOptions(Options);
 #pragma warning restore MA0056
         _context = new WinFormsTestContext(options);
 
@@ -59,15 +60,15 @@ public abstract class WinFormsTestFixtureBase : IDisposable
 
     #endregion
 
-    #region Configuration Setup
+    #region Options Setup
 
     /// <summary>
     /// Allows per-test configuration overrides.
     /// </summary>
-    protected void SetupWith(Action<BruinetWinFormsConfiguration> configureAction)
+    protected void SetupWith(Action<WinFormsTestContextOptions> configureAction)
     {
         ArgumentNullException.ThrowIfNull(configureAction);
-        configureAction(Configuration);
+        configureAction(Options);
     }
 
     #endregion
@@ -78,57 +79,18 @@ public abstract class WinFormsTestFixtureBase : IDisposable
     /// Creates test context options from configuration or environment variables.
     /// Override to further customize driver configuration.
     /// </summary>
-    protected virtual WinFormsTestContextOptions CreateTestContextOptions()
+    protected virtual WinFormsTestContextOptions CreateTestContextOptions(WinFormsTestContextOptions loaded)
     {
-        ArgumentNullException.ThrowIfNull(Configuration, nameof(Configuration));
-        ArgumentNullException.ThrowIfNull(Configuration.WinForms, nameof(Configuration.WinForms));
-
-        var attachToRunning = Configuration.WinForms.AttachToRunning;
-        var processName = Configuration.WinForms.ProcessName;
-        var windowHandleStr = Configuration.WinForms.WindowHandle;
-        var windowHandle = ParseWindowHandle(windowHandleStr);
-
-        var appPath = Configuration.WinForms.AppPath;
-        if (string.IsNullOrWhiteSpace(appPath) && !attachToRunning)
+        ArgumentNullException.ThrowIfNull(loaded);
+        var attaches = loaded.WindowHandle is { } handle && handle != IntPtr.Zero
+            || loaded.ProcessId is not null
+            || !string.IsNullOrWhiteSpace(loaded.ProcessName);
+        if (!attaches && string.IsNullOrWhiteSpace(loaded.ExecutablePath))
         {
-            appPath = GetDefaultAppPath();
+            loaded.ExecutablePath = GetDefaultAppPath();
         }
 
-        var timeouts = new TimeoutSettings
-        {
-            DefaultWait = TimeSpan.FromMilliseconds(5000),
-            PageLoad = TimeSpan.FromMilliseconds(10000),
-            ElementFind = TimeSpan.FromMilliseconds(3000),
-            ElementState = TimeSpan.FromMilliseconds(3000),
-            Animation = TimeSpan.FromMilliseconds(300),
-            PollingInterval = TimeSpan.FromMilliseconds(100)
-        };
-
-        if (attachToRunning && windowHandle != IntPtr.Zero)
-        {
-            return new WinFormsTestContextOptions
-            {
-                WindowHandle = windowHandle,
-                Timeouts = timeouts
-            };
-        }
-
-        if (attachToRunning && !string.IsNullOrWhiteSpace(processName))
-        {
-            var process = Process.GetProcessesByName(processName).FirstOrDefault()
-                ?? throw new InvalidOperationException($"Process '{processName}' not found");
-            return new WinFormsTestContextOptions
-            {
-                ProcessId = process.Id,
-                Timeouts = timeouts
-            };
-        }
-
-        return new WinFormsTestContextOptions
-        {
-            ExecutablePath = appPath,
-            Timeouts = timeouts
-        };
+        return loaded;
     }
 
     #endregion
@@ -148,7 +110,7 @@ public abstract class WinFormsTestFixtureBase : IDisposable
 
     protected virtual ITestArtifactPathProvider GetArtifactPathProvider()
     {
-        return DefaultTestArtifactPathProvider.Create(Configuration.Artifacts, GetType().Assembly.GetName().Name);
+        return DefaultTestArtifactPathProvider.Create(Options.Artifacts, GetType().Assembly.GetName().Name);
     }
 
     /// <summary>
@@ -164,25 +126,6 @@ public abstract class WinFormsTestFixtureBase : IDisposable
             dir = Directory.GetParent(dir)?.FullName;
         }
         return Directory.GetCurrentDirectory();
-    }
-
-    private static bool ParseBool(string? value)
-    {
-        return bool.TryParse(value, out var result) && result;
-    }
-
-    private static IntPtr ParseWindowHandle(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return IntPtr.Zero;
-        if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-        {
-            if (long.TryParse(value[2..], System.Globalization.NumberStyles.HexNumber, null, out var hex))
-                return new IntPtr(hex);
-        }
-        if (long.TryParse(value, out var dec))
-            return new IntPtr(dec);
-        return IntPtr.Zero;
     }
 
     #endregion

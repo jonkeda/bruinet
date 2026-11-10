@@ -19,7 +19,7 @@ public sealed class PresenterFixture : MauiTestFixtureBase
     /// <summary>Where Presenter's Record puts its videos during the suite.</summary>
     public string RecordingsFolder { get; private set; } = string.Empty;
 
-    protected override MauiTestContextOptions CreateTestContextOptions()
+    protected override MauiTestContextOptions CreateTestContextOptions(MauiTestContextOptions loaded)
     {
         var settingsDirectory = Path.Combine(
             Path.GetTempPath(),
@@ -45,7 +45,7 @@ public sealed class PresenterFixture : MauiTestFixtureBase
             AppWindow = Bruinet.Presenter.Services.PresenterAppWindow.Background,
         }));
 
-        return base.CreateTestContextOptions();
+        return base.CreateTestContextOptions(loaded);
     }
 
     protected override string GetDefaultAppPath(MauiPlatform platform)

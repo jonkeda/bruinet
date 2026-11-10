@@ -1,11 +1,4 @@
 #nullable enable
-Bruinet.Maui.Configuration.BruinetMauiConfiguration
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.ApplyEnvironment(System.Func<string!, string?>! read) -> void
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.BruinetMauiConfiguration() -> void
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.Framework.get -> Bruinet.Core.Configuration.FrameworkOptions!
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.Framework.set -> void
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.Maui.get -> Bruinet.Maui.Configuration.MauiOptions!
-Bruinet.Maui.Configuration.BruinetMauiConfiguration.Maui.set -> void
 Bruinet.Maui.Configuration.MauiDriverFactory
 Bruinet.Maui.Configuration.MauiDriverOptions
 Bruinet.Maui.Configuration.MauiDriverOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
@@ -13,6 +6,7 @@ Bruinet.Maui.Configuration.MauiDriverOptions.AppPath.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.AppPath.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.get -> System.Uri!
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.set -> void
+Bruinet.Maui.Configuration.MauiDriverOptions.ApplyEnvironment(System.Func<string!, string?>! read) -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.LaunchSettings.get -> System.Collections.Generic.Dictionary<string!, string!>!
@@ -27,28 +21,10 @@ Bruinet.Maui.Configuration.MauiDriverOptions.PlatformVersion.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.ProcessName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.ProcessName.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings?
+Bruinet.Maui.Configuration.MauiDriverOptions.Udid.get -> string?
+Bruinet.Maui.Configuration.MauiDriverOptions.Udid.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.WindowHandle.get -> nint?
 Bruinet.Maui.Configuration.MauiDriverOptions.WindowHandle.set -> void
-Bruinet.Maui.Configuration.MauiOptions
-Bruinet.Maui.Configuration.MauiOptions.AppPath.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.AppPath.set -> void
-Bruinet.Maui.Configuration.MauiOptions.AttachToRunning.get -> bool
-Bruinet.Maui.Configuration.MauiOptions.AttachToRunning.set -> void
-Bruinet.Maui.Configuration.MauiOptions.DeviceName.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.DeviceName.set -> void
-Bruinet.Maui.Configuration.MauiOptions.MauiOptions() -> void
-Bruinet.Maui.Configuration.MauiOptions.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
-Bruinet.Maui.Configuration.MauiOptions.Platform.set -> void
-Bruinet.Maui.Configuration.MauiOptions.PlatformVersion.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.PlatformVersion.set -> void
-Bruinet.Maui.Configuration.MauiOptions.ProcessName.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.ProcessName.set -> void
-Bruinet.Maui.Configuration.MauiOptions.ServerUri.get -> string!
-Bruinet.Maui.Configuration.MauiOptions.ServerUri.set -> void
-Bruinet.Maui.Configuration.MauiOptions.Udid.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.Udid.set -> void
-Bruinet.Maui.Configuration.MauiOptions.WindowHandle.get -> string?
-Bruinet.Maui.Configuration.MauiOptions.WindowHandle.set -> void
 Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>.AssertEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
@@ -179,12 +155,12 @@ Bruinet.Maui.Context.MauiTestContext.WaitFirst(int? timeoutMs, params System.Fun
 Bruinet.Maui.Context.MauiTestContext.WaitReady(int? timeoutMs = null) -> bool
 Bruinet.Maui.Context.MauiTestContextOptions
 Bruinet.Maui.Context.MauiTestContextOptions.Driver.get -> Bruinet.Maui.Interfaces.IMauiDriver?
-Bruinet.Maui.Context.MauiTestContextOptions.Driver.init -> void
+Bruinet.Maui.Context.MauiTestContextOptions.Driver.set -> void
 Bruinet.Maui.Context.MauiTestContextOptions.DriverOptions.get -> Bruinet.Maui.Configuration.MauiDriverOptions?
-Bruinet.Maui.Context.MauiTestContextOptions.DriverOptions.init -> void
+Bruinet.Maui.Context.MauiTestContextOptions.DriverOptions.set -> void
 Bruinet.Maui.Context.MauiTestContextOptions.MauiTestContextOptions() -> void
 Bruinet.Maui.Context.MauiTestContextOptions.OwnsDriver.get -> bool
-Bruinet.Maui.Context.MauiTestContextOptions.OwnsDriver.init -> void
+Bruinet.Maui.Context.MauiTestContextOptions.OwnsDriver.set -> void
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
@@ -989,14 +965,14 @@ Bruinet.Maui.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeou
 Bruinet.Maui.Testing.DeviceFactAttribute
 Bruinet.Maui.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void
 Bruinet.Maui.Testing.MauiTestFixtureBase
-Bruinet.Maui.Testing.MauiTestFixtureBase.Configuration.get -> Bruinet.Maui.Configuration.BruinetMauiConfiguration!
 Bruinet.Maui.Testing.MauiTestFixtureBase.Context.get -> Bruinet.Maui.Context.MauiTestContext!
 Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose() -> void
 Bruinet.Maui.Testing.MauiTestFixtureBase.MauiTestFixtureBase() -> void
+Bruinet.Maui.Testing.MauiTestFixtureBase.Options.get -> Bruinet.Maui.Context.MauiTestContextOptions!
 Bruinet.Maui.Testing.MauiTestFixtureBase.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
 Bruinet.Maui.Testing.MauiTestFixtureBase.RestartApp() -> void
 Bruinet.Maui.Testing.MauiTestFixtureBase.ScreenshotService.get -> Bruinet.Core.Interfaces.IScreenshotService!
-Bruinet.Maui.Testing.MauiTestFixtureBase.SetupWith(System.Action<Bruinet.Maui.Configuration.BruinetMauiConfiguration!>! configureAction) -> void
+Bruinet.Maui.Testing.MauiTestFixtureBase.SetupWith(System.Action<Bruinet.Maui.Context.MauiTestContextOptions!>! configureAction) -> void
 Bruinet.Maui.Testing.NavigationRecovery
 Bruinet.Maui.Testing.NavigationRecovery.NavigationRecovery(Bruinet.Maui.Interfaces.IMauiTestContext! context, Bruinet.Core.Interfaces.IScreenshotService? screenshotService = null, int settleTimeoutMs = 2000, int postNavigationDelayMs = 300) -> void
 Bruinet.Maui.Testing.NavigationRecovery.RegisterPages(params Bruinet.Maui.Interfaces.INavigablePage![]! pages) -> void
@@ -1012,6 +988,7 @@ abstract Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Page.get -> 
 abstract Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.SetResult.get -> TSetResult
 abstract Bruinet.Maui.ObjectBase.Context.get -> Bruinet.Maui.Interfaces.IMauiTestContext!
 abstract Bruinet.Maui.Testing.MauiTestFixtureBase.GetDefaultAppPath(Bruinet.Maui.Enums.MauiPlatform platform) -> string!
+const Bruinet.Maui.Testing.MauiTestFixtureBase.SettingsFile = "bruinet.maui.config.json" -> string!
 override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.FindContainerRootElement() -> Bruinet.Maui.Interfaces.IMauiElement!
 override Bruinet.Maui.Containers.ComponentObjectBase<TParent, TSelf>.IsCachedRootValid(Bruinet.Maui.Interfaces.IMauiElement! root) -> bool
 override Bruinet.Maui.Containers.ContainerObjectBase<TParent, TSelf>.AllowsScrollLookup.get -> bool
@@ -1087,9 +1064,7 @@ override Bruinet.Maui.Pages.PageObjectBase<TSelf>.ProbeContentReadiness(Bruinet.
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.RootNotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.SetResult.get -> TSelf!
-static Bruinet.Maui.Configuration.BruinetMauiConfiguration.Load(string? configPath = null) -> Bruinet.Maui.Configuration.BruinetMauiConfiguration!
 static Bruinet.Maui.Configuration.MauiDriverFactory.Create(Bruinet.Maui.Configuration.MauiDriverOptions! options) -> Bruinet.Maui.Interfaces.IMauiDriver!
-static Bruinet.Maui.Configuration.MauiDriverOptions.FromConfiguration(Bruinet.Maui.Configuration.MauiOptions! mauiConfig) -> Bruinet.Maui.Configuration.MauiDriverOptions!
 static Bruinet.Maui.Containers.ElementMatch.Matches(Bruinet.Maui.Interfaces.IMauiElement! element, Bruinet.Core.Locators.Locator! locator) -> bool
 static Bruinet.Maui.Containers.ItemStrategy.ByAutomationId(string! automationId) -> Bruinet.Maui.Containers.IItemStrategy!
 static Bruinet.Maui.Containers.ItemStrategy.ByIndexedId(string! prefix, int maxItems = 1000) -> Bruinet.Maui.Containers.IItemStrategy!
@@ -1276,7 +1251,7 @@ virtual Bruinet.Maui.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.ConfigureAndroidOptions(Bruinet.Maui.Configuration.MauiDriverOptions! options) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.ConfigureiOSOptions(Bruinet.Maui.Configuration.MauiDriverOptions! options) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.CreateHeadlessOptions() -> Bruinet.Maui.Context.MauiTestContextOptions!
-virtual Bruinet.Maui.Testing.MauiTestFixtureBase.CreateTestContextOptions() -> Bruinet.Maui.Context.MauiTestContextOptions!
+virtual Bruinet.Maui.Testing.MauiTestFixtureBase.CreateTestContextOptions(Bruinet.Maui.Context.MauiTestContextOptions! loaded) -> Bruinet.Maui.Context.MauiTestContextOptions!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!

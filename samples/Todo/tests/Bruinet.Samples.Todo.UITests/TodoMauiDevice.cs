@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Core.Configuration;
 using Bruinet.Core.Services;
 using Bruinet.Core.Testing;
@@ -103,15 +104,15 @@ public sealed class TodoMauiDevice : ITestApp
         };
         settings = adjust?.Invoke(settings) ?? settings;
 
-        var configuration = BruinetMauiConfiguration.Load();
-        var options = MauiDriverOptions.FromConfiguration(configuration.Maui);
+        var loaded = TestContextOptionsBase.Load<MauiTestContextOptions>(MauiTestFixtureBase.SettingsFile);
+        var options = loaded.DriverOptions ?? new MauiDriverOptions();
+        options.ApplyEnvironment(Environment.GetEnvironmentVariable);
         options.Platform = platform;
         options.AppPath = TodoMauiLaunch.AppPath(platform);
         options.Placement = placement;
         if (platform == MauiPlatform.Android)
         {
-            options.AppiumServerUri = new Uri(configuration.Maui.ServerUri ?? "http://127.0.0.1:4723");
-            options.DeviceName = configuration.Maui.DeviceName ?? "emulator-5554";
+            options.DeviceName ??= "emulator-5554";
             TodoMauiLaunch.ConfigureAndroid(options);
         }
 
@@ -123,12 +124,10 @@ public sealed class TodoMauiDevice : ITestApp
         MauiTestContext? context = null;
         try
         {
-            context = new MauiTestContext(new MauiTestContextOptions
-            {
-                DriverOptions = options,
-                Timeouts = TodoMauiLaunch.Timeouts,
-                Name = definition.Name,
-            });
+            loaded.DriverOptions = options;
+            loaded.Timeouts = TodoMauiLaunch.Timeouts;
+            loaded.Name = definition.Name;
+            context = new MauiTestContext(loaded);
             TodoMauiLaunch.WaitForTheList(context);
             return new TodoMauiDevice(definition, database, network, settings, context);
         }

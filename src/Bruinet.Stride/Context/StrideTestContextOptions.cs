@@ -6,16 +6,16 @@ namespace Bruinet.Stride.Context;
 public class StrideTestContextOptions : Bruinet.Core.Configuration.TestContextOptionsBase
 {
     /// <summary>
-    /// Stride's call budgets by default: shorter than the other stacks', since a game answers in
-    /// frames (proposal 11 put them on the shared <see cref="TestContextOptionsBase.Timeouts"/>).
+    /// Stride's call budgets by default, the ones its fixture always used: a game starts slowly and
+    /// answers in frames (proposal 11 gave them one home, here, on the shared <see cref="TestContextOptionsBase.Timeouts"/>).
     /// </summary>
     public StrideTestContextOptions()
         => Timeouts = new TimeoutSettings
         {
-            DefaultWait = TimeSpan.FromMilliseconds(3000),
-            PageLoad = TimeSpan.FromMilliseconds(10000),
+            DefaultWait = TimeSpan.FromMilliseconds(10000),
+            PageLoad = TimeSpan.FromMilliseconds(15000),
             ElementFind = TimeSpan.FromMilliseconds(1000),
-            ElementState = TimeSpan.FromMilliseconds(3000),
+            ElementState = TimeSpan.FromMilliseconds(10000),
             Animation = TimeSpan.FromMilliseconds(150),
             PollingInterval = TimeSpan.FromMilliseconds(100),
         };
@@ -24,11 +24,11 @@ public class StrideTestContextOptions : Bruinet.Core.Configuration.TestContextOp
 
     /// <summary>Timeout for game startup.</summary>
     [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan StartupTimeout { get; set; } = TimeSpan.FromMilliseconds(10000);
+    public TimeSpan StartupTimeout { get; set; } = TimeSpan.FromMilliseconds(15000);
 
     /// <summary>Timeout for connecting to the automation channel.</summary>
     [System.Text.Json.Serialization.JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(5000);
+    public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromMilliseconds(10000);
 
     #endregion
 

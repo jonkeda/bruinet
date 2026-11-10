@@ -1,10 +1,4 @@
 #nullable enable
-Bruinet.Html.BruinetHtmlConfiguration
-Bruinet.Html.BruinetHtmlConfiguration.Browser.get -> Bruinet.Core.Configuration.BrowserOptions!
-Bruinet.Html.BruinetHtmlConfiguration.Browser.set -> void
-Bruinet.Html.BruinetHtmlConfiguration.BruinetHtmlConfiguration() -> void
-Bruinet.Html.BruinetHtmlConfiguration.Html.get -> Bruinet.Html.HtmlOptions!
-Bruinet.Html.BruinetHtmlConfiguration.Html.set -> void
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.AssertItemCount(int expected, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Html.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator! itemLocator) -> void
@@ -368,12 +362,6 @@ Bruinet.Html.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int?
 Bruinet.Html.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.HtmlOptions
-Bruinet.Html.HtmlOptions.AppPath.get -> string?
-Bruinet.Html.HtmlOptions.AppPath.set -> void
-Bruinet.Html.HtmlOptions.AppUrl.get -> string!
-Bruinet.Html.HtmlOptions.AppUrl.set -> void
-Bruinet.Html.HtmlOptions.HtmlOptions() -> void
 Bruinet.Html.Interfaces.HtmlElementExtensions
 Bruinet.Html.Interfaces.IHtmlContainer<TParent, TSelf>
 Bruinet.Html.Interfaces.IHtmlContainer<TParent, TSelf>.ContainerRoot.get -> Bruinet.Html.Interfaces.IHtmlElement!
@@ -507,11 +495,11 @@ Bruinet.Html.Scopes.BusySignal.Required = 2 -> Bruinet.Html.Scopes.BusySignal
 Bruinet.Html.Testing.BrowserFactAttribute
 Bruinet.Html.Testing.BrowserFactAttribute.BrowserFactAttribute(string! reason = "it needs a browser") -> void
 Bruinet.Html.Testing.HtmlTestFixtureBase
-Bruinet.Html.Testing.HtmlTestFixtureBase.Configuration.get -> Bruinet.Html.BruinetHtmlConfiguration!
 Bruinet.Html.Testing.HtmlTestFixtureBase.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 Bruinet.Html.Testing.HtmlTestFixtureBase.HtmlTestFixtureBase() -> void
 Bruinet.Html.Testing.HtmlTestFixtureBase.NavigateTo(string! path) -> void
-Bruinet.Html.Testing.HtmlTestFixtureBase.SetupWith(System.Action<Bruinet.Html.BruinetHtmlConfiguration!>! configureAction) -> void
+Bruinet.Html.Testing.HtmlTestFixtureBase.Options.get -> Bruinet.Html.Context.HtmlTestContextOptions!
+Bruinet.Html.Testing.HtmlTestFixtureBase.SetupWith(System.Action<Bruinet.Html.Context.HtmlTestContextOptions!>! configureAction) -> void
 Bruinet.Html.Testing.WebAppHost
 Bruinet.Html.Testing.WebAppHost.BaseUrl.get -> string!
 Bruinet.Html.Testing.WebAppHost.Dispose() -> void
@@ -533,6 +521,7 @@ abstract Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Self.get -> TScope
 abstract Bruinet.Html.ObjectBase.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 abstract Bruinet.Html.Testing.HtmlTestFixtureBase.CreateContextAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Interfaces.IHtmlTestContext!>!
 const Bruinet.Html.Pages.PageObjectBase<TSelf>.BusyAttribute = "data-busy" -> string!
+const Bruinet.Html.Testing.HtmlTestFixtureBase.SettingsFile = "bruinet.html.config.json" -> string!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Collections.ItemObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Html.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> void
@@ -553,7 +542,6 @@ override Bruinet.Html.Controls.ViewBase<TScope>.Context.get -> Bruinet.Html.Inte
 override Bruinet.Html.Pages.AppRoot.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
-static Bruinet.Html.BruinetHtmlConfiguration.Load(string? configPath = null) -> Bruinet.Html.BruinetHtmlConfiguration!
 static Bruinet.Html.Controls.ViewBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Html.Interfaces.HtmlElementExtensions.FindElement(this Bruinet.Html.Interfaces.IHtmlElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 static Bruinet.Html.Interfaces.PageProbe.Navigating.get -> Bruinet.Html.Interfaces.PageProbe!
@@ -642,7 +630,7 @@ virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
 virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.Name.get -> string!
 virtual Bruinet.Html.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateBunitContext() -> Bruinet.Html.Interfaces.IHtmlTestContext!
-virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
+virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions(Bruinet.Html.Context.HtmlTestContextOptions! loaded) -> Bruinet.Html.Context.HtmlTestContextOptions!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!

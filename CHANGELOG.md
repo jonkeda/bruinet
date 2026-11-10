@@ -65,6 +65,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** one options type per platform (review proposal 11): the stacks' context options share `TestContextOptionsBase`
+  (`Timeouts`, `Logger`, `Name`, `NearMiss`, `Artifacts`), and `bruinet.{platform}.config.json` binds to them directly; the
+  `Bruinet{X}Configuration` and `{X}Options` types are gone. Code wins over the file, the file over the defaults
+  (`docs/guides/configuration.md`). `NativeAndroidDriverOptions` is `NativeAndroidTestContextOptions`.
 - **Breaking:** `ITestLogger` takes one `LogEvent` record per event (`Write`, `Flush`); the thirteen positional `Log…` methods,
   eight of which nothing called, are gone. The CSV and console output are unchanged (review proposal 10).
 - **Breaking:** time in options and settings is `TimeSpan` (`TimeoutSettings`, `StrideTestContextOptions`, `BlazorOptions`,

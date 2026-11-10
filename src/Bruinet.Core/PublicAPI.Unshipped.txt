@@ -282,24 +282,6 @@ Bruinet.Core.Configuration.ArtifactsOptions.RunId.get -> string?
 Bruinet.Core.Configuration.ArtifactsOptions.RunId.set -> void
 Bruinet.Core.Configuration.ArtifactsOptions.Suite.get -> string?
 Bruinet.Core.Configuration.ArtifactsOptions.Suite.set -> void
-Bruinet.Core.Configuration.AutomationOptions
-Bruinet.Core.Configuration.AutomationOptions.AutomationOptions() -> void
-Bruinet.Core.Configuration.AutomationOptions.Enabled.get -> bool
-Bruinet.Core.Configuration.AutomationOptions.Enabled.set -> void
-Bruinet.Core.Configuration.BrowserOptions
-Bruinet.Core.Configuration.BrowserOptions.BrowserOptions() -> void
-Bruinet.Core.Configuration.BrowserOptions.BrowserType.get -> string!
-Bruinet.Core.Configuration.BrowserOptions.BrowserType.set -> void
-Bruinet.Core.Configuration.BrowserOptions.Headless.get -> bool
-Bruinet.Core.Configuration.BrowserOptions.Headless.set -> void
-Bruinet.Core.Configuration.BruinetConfigurationBase
-Bruinet.Core.Configuration.BruinetConfigurationBase.Artifacts.get -> Bruinet.Core.Configuration.ArtifactsOptions!
-Bruinet.Core.Configuration.BruinetConfigurationBase.Artifacts.set -> void
-Bruinet.Core.Configuration.BruinetConfigurationBase.BruinetConfigurationBase() -> void
-Bruinet.Core.Configuration.FrameworkOptions
-Bruinet.Core.Configuration.FrameworkOptions.Automation.get -> Bruinet.Core.Configuration.AutomationOptions!
-Bruinet.Core.Configuration.FrameworkOptions.Automation.set -> void
-Bruinet.Core.Configuration.FrameworkOptions.FrameworkOptions() -> void
 Bruinet.Core.Configuration.MillisecondsTimeSpanConverter
 Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.MillisecondsTimeSpanConverter() -> void
 Bruinet.Core.Configuration.ScreenshotFormat
@@ -319,6 +301,8 @@ Bruinet.Core.Configuration.ScreenshotSettings.OutputDirectory.set -> void
 Bruinet.Core.Configuration.ScreenshotSettings.ScreenshotSettings() -> void
 Bruinet.Core.Configuration.ScreenshotSettings.With(string? outputDirectory = null, Bruinet.Core.Configuration.ScreenshotFormat? format = null, int? jpegQuality = null, bool? captureOnFailure = null, bool? includeTimestamp = null) -> Bruinet.Core.Configuration.ScreenshotSettings!
 Bruinet.Core.Configuration.TestContextOptionsBase
+Bruinet.Core.Configuration.TestContextOptionsBase.Artifacts.get -> Bruinet.Core.Configuration.ArtifactsOptions!
+Bruinet.Core.Configuration.TestContextOptionsBase.Artifacts.set -> void
 Bruinet.Core.Configuration.TestContextOptionsBase.Logger.get -> Bruinet.Core.Logging.ITestLogger?
 Bruinet.Core.Configuration.TestContextOptionsBase.Logger.set -> void
 Bruinet.Core.Configuration.TestContextOptionsBase.Name.get -> string?
@@ -345,6 +329,8 @@ Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.get -> System.TimeSpa
 Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.TimeoutSettings() -> void
 Bruinet.Core.Configuration.TimeoutSettings.With(System.TimeSpan? defaultWait = null, System.TimeSpan? pageLoad = null, System.TimeSpan? elementFind = null, System.TimeSpan? elementState = null, System.TimeSpan? animation = null, System.TimeSpan? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Configuration.WindowHandleJsonConverter
+Bruinet.Core.Configuration.WindowHandleJsonConverter.WindowHandleJsonConverter() -> void
 Bruinet.Core.Diagnostics.AutWindow
 Bruinet.Core.Diagnostics.DebuggedApps
 Bruinet.Core.Diagnostics.PhysicalInput
@@ -977,6 +963,8 @@ override Bruinet.Core.Calls.Observation.ToString() -> string!
 override Bruinet.Core.Collections.ItemKey.ToString() -> string!
 override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.TimeSpan
 override Bruinet.Core.Configuration.MillisecondsTimeSpanConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.TimeSpan value, System.Text.Json.JsonSerializerOptions! options) -> void
+override Bruinet.Core.Configuration.WindowHandleJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> nint?
+override Bruinet.Core.Configuration.WindowHandleJsonConverter.Write(System.Text.Json.Utf8JsonWriter! writer, nint? value, System.Text.Json.JsonSerializerOptions! options) -> void
 override Bruinet.Core.Locators.Locator.Equals(object? obj) -> bool
 override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
@@ -1031,8 +1019,8 @@ static Bruinet.Core.Composition.TestCompositionCatalog.Discover(Bruinet.Core.Com
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromFixture(System.Type! fixtureType) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromScans(System.Collections.Generic.IEnumerable<Bruinet.Core.Composition.TestModuleScanAttribute!>! scans) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
 static Bruinet.Core.Composition.TestPages.IsPage(System.Type! type) -> bool
-static Bruinet.Core.Configuration.BruinetConfigurationBase.LoadFromJson<T>(string! configFileName) -> T
 static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!
+static Bruinet.Core.Configuration.TestContextOptionsBase.Load<T>(string! fileName) -> T!
 static Bruinet.Core.Configuration.TimeSpanMilliseconds.ToMs(this System.TimeSpan value) -> int
 static Bruinet.Core.Configuration.TimeoutDefaults.Animation.get -> int
 static Bruinet.Core.Configuration.TimeoutDefaults.DefaultWait.get -> int

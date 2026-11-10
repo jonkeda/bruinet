@@ -7,36 +7,31 @@ using Bruinet.Html.Interfaces;
 namespace Bruinet.Html.Testing;
 
 /// <summary>
-/// Base fixture for HTML UI tests.
-/// Configuration is loaded from bruinet.html.config.json
+/// Base fixture for HTML UI tests. Its options are loaded from <c>bruinet.html.config.json</c> beside the
+/// test assembly, which holds <see cref="HtmlTestContextOptions"/>' own names; code wins over the file.
 /// </summary>
 public abstract class HtmlTestFixtureBase
 {
     private IHtmlTestContext? _context;
 
-    /// <summary>
-    /// Current HTML configuration loaded from bruinet.html.config.json
-    /// </summary>
-    protected BruinetHtmlConfiguration Configuration { get; } = BruinetHtmlConfiguration.Load();
+    /// <summary>The settings file's name, beside the test assembly.</summary>
+    public const string SettingsFile = "bruinet.html.config.json";
+
+    /// <summary>The options as loaded from <see cref="SettingsFile"/>, before <see cref="CreateOptions"/> adjusts them.</summary>
+    protected HtmlTestContextOptions Options { get; } = TestContextOptionsBase.Load<HtmlTestContextOptions>(SettingsFile);
 
     protected IHtmlTestContext Context => _context
         ?? throw new InvalidOperationException("Context not initialized. Ensure InitializeAsync has completed.");
 
-    /// <summary>
-    /// Allows per-test configuration overrides.
-    /// </summary>
-    protected void SetupWith(Action<BruinetHtmlConfiguration> configureAction)
+    /// <summary>Changes the loaded options in code, before the context is made.</summary>
+    protected void SetupWith(Action<HtmlTestContextOptions> configureAction)
     {
         ArgumentNullException.ThrowIfNull(configureAction);
-        configureAction(Configuration);
+        configureAction(Options);
     }
 
-    protected virtual HtmlTestContextOptions CreateOptions() => new()
-    {
-        BaseUrl = Configuration?.Html?.AppUrl,
-        Headless = Configuration?.Browser?.Headless ?? true,
-        BrowserType = Configuration?.Browser?.BrowserType ?? "chromium"
-    };
+    /// <summary>The options the context is made with: the loaded ones, which a suite may adjust.</summary>
+    protected virtual HtmlTestContextOptions CreateOptions(HtmlTestContextOptions loaded) => loaded;
 
     protected abstract Task<IHtmlTestContext> CreateContextAsync(HtmlTestContextOptions options);
 
@@ -53,7 +48,7 @@ public abstract class HtmlTestFixtureBase
     {
         _context = WebHeads.IsBunit
             ? CreateBunitContext()
-            : await CreateContextAsync(CreateOptions()).ConfigureAwait(false);
+            : await CreateContextAsync(CreateOptions(Options)).ConfigureAwait(false);
     }
 
     public virtual async Task DisposeAsync()
@@ -72,13 +67,13 @@ public abstract class HtmlTestFixtureBase
 
     protected void NavigateTo(string path)
     {
-        var options = CreateOptions();
+        var options = CreateOptions(Options);
         var baseUrl = options.BaseUrl?.TrimEnd('/') ?? string.Empty;
         Context.NavigateTo($"{baseUrl}{path}");
     }
 
     protected virtual ITestArtifactPathProvider GetArtifactPathProvider()
     {
-        return DefaultTestArtifactPathProvider.Create(Configuration.Artifacts, GetType().Assembly.GetName().Name);
+        return DefaultTestArtifactPathProvider.Create(Options.Artifacts, GetType().Assembly.GetName().Name);
     }
 }

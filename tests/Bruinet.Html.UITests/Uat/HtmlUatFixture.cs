@@ -26,21 +26,17 @@ public sealed class HtmlUatFixture : IDisposable
             return;
         }
 
-        var config = BruinetHtmlConfiguration.Load();
+        var options = TestContextOptionsBase.Load<HtmlTestContextOptions>(HtmlTestFixtureBase.SettingsFile);
         _host = WebAppHost.Start(new WebAppHostOptions
         {
-            AppPath = config?.Html?.AppPath ?? WebAppHost.FindBuiltApp("samples/Bruinet.Samples.Blazor.App"),
+            AppPath = WebAppHost.FindBuiltApp("samples/Bruinet.Samples.Blazor.App"),
             Name = "Blazor sample",
         });
         _baseUrl = _host.BaseUrl;
         try
         {
-            _context = PlaywrightTestContext.CreateAsync(new HtmlTestContextOptions
-            {
-                BaseUrl = _host.BaseUrl,
-                Headless = config?.Browser?.Headless ?? true,
-                BrowserType = config?.Browser?.BrowserType ?? "chromium"
-            }).GetAwaiter().GetResult();
+            options.BaseUrl = _host.BaseUrl;
+            _context = PlaywrightTestContext.CreateAsync(options).GetAwaiter().GetResult();
         }
         catch
         {
