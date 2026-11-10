@@ -652,3 +652,5 @@ virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions() -> Bruinet.Html
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
+Bruinet.Html.Testing.BrowserFactAttribute
+Bruinet.Html.Testing.BrowserFactAttribute.BrowserFactAttribute(string! reason = "it needs a browser") -> void

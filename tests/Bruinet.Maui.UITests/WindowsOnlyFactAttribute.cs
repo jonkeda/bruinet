@@ -1,3 +1,5 @@
+using Bruinet.Maui.Testing;
+
 namespace Bruinet.Maui.UITests;
 
 /// <summary>

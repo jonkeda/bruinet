@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Core.Locators;
 using Bruinet.Maui.Interfaces;
 using Bruinet.Maui.UITests.Pages;

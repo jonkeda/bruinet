@@ -1289,3 +1289,5 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
+Bruinet.Maui.Testing.DeviceFactAttribute
+Bruinet.Maui.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void

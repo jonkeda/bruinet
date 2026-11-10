@@ -63,7 +63,7 @@ Nothing is shipped yet, so every proposal below is still free. After the first `
 
 ### 4. Package and namespace boundaries leak
 
-- `Bruinet.Core` knows its platforms and its runner: `Core.Testing.MauiHead`, `WebHead`, `BrowserFactAttribute`, `DeviceFactAttribute`, and all the `Bdd…Attribute` step attributes live in Core, not in `Bruinet.Bdd`.
+- `Bruinet.Core` knew its platforms and its runner. The step attributes and the two fact attributes have moved out; `MauiHead` and `WebHead` stay, as the run's head setting that platform-neutral code reads.
 - Namespace `Bruinet.Stride.Automation` is now in two assemblies: the client's `StrideAutomationDriver` and `StrideElement` in `Bruinet.Stride`, the server's types in `Bruinet.Stride.Automation`.
 - Heads are packaged two ways: separate assemblies for Maui and Html (`Bruinet.Maui.Appium`, `Bruinet.Html.Playwright`), namespaces inside the platform assembly for the rest (`Bruinet.Wpf.FlaUI`, `Bruinet.WinForms.FlaUI`, `Bruinet.NativeAndroid.Appium`).
 - `Bruinet.Narrator.Windows` ships `Bruinet.Recording.Windows.WindowsCaptureRecorder`; `Bruinet.Uia.Contracts` ships namespace `Bruinet.Uia`.
@@ -100,7 +100,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 4 | One name per concept: `PageObjectBase<TSelf>`, one control root, control names with or without `Control` everywhere. | Done as far as decided: Html's page base is `PageObjectBase` and its control root `ViewBase`; Blazor keeps `BlazorPageObjectBase` on top of it; Html and Blazor keep the `Control` suffix (owner, 2026-11-10). Left: `Maui.Containers` versus `.Collections`, Stride's `ImageElement`, and the two `MauiHeadless` name clashes. |
 | 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
-| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Step attributes done in `e9d3b2c4`: package `Bruinet.Bdd.Abstractions`, namespace `Bruinet.Bdd`, referenced by Core because its controls declare the built-in phrases. Left: `MauiHead`/`WebHead`, `BrowserFact`/`DeviceFact`, `Scraping`, `Composition`, `MarkdownTable`. |
+| 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Step attributes done (`e9d3b2c4`, package `Bruinet.Bdd.Abstractions`); `DeviceFact` and `BrowserFact` moved to Maui and Html. The heads stay in Core: they are the run's `BRUINET_HEAD` setting, read by `Bdd`'s skip rules, Uat and Core's timings, none of which references a platform. Left: `Scraping`, `Composition`, `MarkdownTable`. |
 | 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Open. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
@@ -128,5 +128,5 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposal 7 continues with `MauiHead`/`WebHead` and `BrowserFact`/`DeviceFact`, which belong to their platforms; `Scraping`, `Composition` and `MarkdownTable` follow, each to the tool that uses it.
+Proposal 7's last part moves `Scraping`, `Composition` and `MarkdownTable` to the tools that use them; each needs a look at who reads it first.
 The rest of proposal 5 (the shared collection base) and proposal 11 (one options type per platform) each need a design first.

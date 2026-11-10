@@ -1,3 +1,4 @@
+
 namespace Bruinet.Core.Testing;
 
 /// <summary>How a web suite runs its pages (AD-030): in a browser, or rendered by bUnit.</summary>
@@ -12,7 +13,7 @@ public enum WebHead
 
 /// <summary>
 /// The head this run uses, from <c>BRUINET_HEAD</c> (<c>browser</c> or <c>bunit</c>; unset is the browser).
-/// One variable, so a fixture, a <see cref="BrowserFactAttribute"/> and the scenario runner agree. Not to be
+/// One variable, so a fixture, a <c>BrowserFact</c> (<c>Bruinet.Html.Testing</c>) and the scenario runner agree. Not to be
 /// confused with a UAT suite's <c>Head</c> (maui, web, mixed, service), which says which app's pages it uses.
 /// </summary>
 public static class WebHeads

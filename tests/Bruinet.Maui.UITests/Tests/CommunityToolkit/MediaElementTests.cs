@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Maui.UITests.Pages;
 
 namespace Bruinet.Maui.UITests.Tests.CommunityToolkit;

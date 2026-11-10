@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using System.Drawing;
 using Bruinet.Core.Recording;
 using Bruinet.Maui.Interfaces;

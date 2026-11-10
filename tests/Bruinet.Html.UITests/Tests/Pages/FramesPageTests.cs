@@ -1,3 +1,4 @@
+using Bruinet.Html.Testing;
 using Bruinet.Core.Testing;
 using Bruinet.Html.UITests.PageObjects;
 using Bruinet.Html.UITests.TestBase;

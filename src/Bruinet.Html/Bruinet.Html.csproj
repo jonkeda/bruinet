@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
+    <!-- BrowserFactAttribute derives from xUnit's FactAttribute, as Maui's DeviceFact does. -->
+    <PackageReference Include="xunit.extensibility.core" />
   </ItemGroup>
 
   <ItemGroup>

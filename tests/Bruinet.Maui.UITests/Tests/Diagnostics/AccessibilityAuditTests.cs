@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Core.Artifacts;
 using Bruinet.Maui.FlaUI;
 using Bruinet.Maui.FlaUI.Bridge;

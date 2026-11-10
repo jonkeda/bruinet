@@ -1,6 +1,7 @@
+using Bruinet.Core.Testing;
 using Xunit;
 
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Html.Testing;
 
 /// <summary>
 /// A test that needs a browser (layout, style sheets, script, pixels): skipped on the bUnit head with the

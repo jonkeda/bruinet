@@ -22,7 +22,7 @@ public sealed class UiFactAttribute : FactAttribute
 
     /// <summary>
     /// What the test needs a browser for, when it does: skipped on the bUnit head with the reason, as
-    /// <see cref="Bruinet.Core.Testing.BrowserFactAttribute"/> is (AD-030).
+    /// <c>BrowserFact</c> (<c>Bruinet.Html.Testing</c>) is (AD-030).
     /// </summary>
     public string? Browser
     {

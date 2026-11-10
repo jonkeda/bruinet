@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Utilities;
 using Bruinet.Maui.UITests.Pages;

@@ -1016,10 +1016,6 @@ Bruinet.Core.Settings.TestSettingsRootAttribute.TestSettingsRootAttribute() -> v
 Bruinet.Core.Settings.TestSettingsSectionAttribute
 Bruinet.Core.Settings.TestSettingsSectionAttribute.Path.get -> string!
 Bruinet.Core.Settings.TestSettingsSectionAttribute.TestSettingsSectionAttribute(string! path) -> void
-Bruinet.Core.Testing.BrowserFactAttribute
-Bruinet.Core.Testing.BrowserFactAttribute.BrowserFactAttribute(string! reason = "it needs a browser") -> void
-Bruinet.Core.Testing.DeviceFactAttribute
-Bruinet.Core.Testing.DeviceFactAttribute.DeviceFactAttribute(string! reason = "it needs a device") -> void
 Bruinet.Core.Testing.ITestApp
 Bruinet.Core.Testing.ITestApp.Definition.get -> Bruinet.Core.Testing.TestAppDefinition!
 Bruinet.Core.Testing.ITestApp.ResetAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask

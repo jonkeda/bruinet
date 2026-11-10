@@ -1,3 +1,4 @@
+
 namespace Bruinet.Core.Testing;
 
 /// <summary>How a MAUI suite runs its app (docs/guides/maui-headless.md): on a device, or rendered headless by MauiHeadless.</summary>
@@ -13,7 +14,7 @@ public enum MauiHead
 /// <summary>
 /// The MAUI head this run uses, from <c>BRUINET_HEAD</c> (<c>headless</c>; anything else is the device),
 /// the variable <see cref="WebHeads"/> reads too, so one run picks the headless head of every suite.
-/// A fixture, a <see cref="DeviceFactAttribute"/> and the scenario runner read it alike.
+/// A fixture, a <c>DeviceFact</c> (<c>Bruinet.Maui.Testing</c>) and the scenario runner read it alike.
 /// </summary>
 public static class MauiHeads
 {

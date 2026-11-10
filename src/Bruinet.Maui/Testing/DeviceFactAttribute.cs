@@ -1,11 +1,12 @@
+using Bruinet.Core.Testing;
 using Xunit;
 
-namespace Bruinet.Core.Testing;
+namespace Bruinet.Maui.Testing;
 
 /// <summary>
 /// A MAUI test that needs a device (layout, pixels, a platform's own tree or driver): skipped on the
 /// MauiHeadless head with the reason, so the run still lists it (docs/guides/maui-headless.md). The scenario's counterpart is
-/// <c>@device</c>; the web's is <see cref="BrowserFactAttribute"/>.
+/// <c>@device</c>; the web's is <c>BrowserFact</c> (<c>Bruinet.Html.Testing</c>).
 /// </summary>
 public sealed class DeviceFactAttribute : FactAttribute
 {

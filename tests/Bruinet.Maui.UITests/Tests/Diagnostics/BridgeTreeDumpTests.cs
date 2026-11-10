@@ -1,3 +1,4 @@
+using Bruinet.Maui.Testing;
 using Bruinet.Maui.FlaUI;
 using Xunit.Abstractions;
 
