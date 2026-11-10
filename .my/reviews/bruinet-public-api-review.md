@@ -101,7 +101,7 @@ The numbers are the first version's, because the api-upgrade skill's Planned row
 | 5 | Move `ItemKey`, `ItemKeyKind` and the shared half of the collection bases to Core; one shared UIA package. | UIA half done (`Bruinet.FlaUI`). `ItemKey` and `ItemKeyKind` are Core's (`Bruinet.Core.Collections`); each stack's key reader is internal. Left: the shared half of `CollectionObjectBase`, `AppRoot` and `ObjectBase`, which needs a design. |
 | 6 | One declaration of the Stride wire types. | Done in `97616d64`, in `Bruinet.Stride.Communication`. Left: the split `Bruinet.Stride.Automation` namespace. |
 | 7 | Take platforms and the runner out of Core: step attributes, `MauiHead`/`WebHead`, `Scraping`, `Composition`, `MarkdownTable`. | Done as far as it goes: the step attributes are in `Bruinet.Bdd.Abstractions` (`e9d3b2c4`), `DeviceFact` and `BrowserFact` on their platforms (`a0ffa1eb`), `Scraping` in the Scraper. Staying in Core, with reason: the heads (the run's `BRUINET_HEAD`, read by Bdd, Uat and Core), `Composition` (`[TestModuleScan]`, `TestPages`, used by every stack, Uat, Bdd and consumers) and `MarkdownTables` (Core, Bdd and the Scraper). |
-| 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Open; all six stacks are generated now, so one rule reaches all of them. |
+| 8 | Settle the signature rules and apply them through the `.tpl.cs` generators. | Done: all eight rules of `proposal-8-signature-rules.md`, approved by the owner 2026-11-10, one commit each with its change-list row; the generator names the `Exists` query `Exists()`. |
 | 9 | Decide `timeoutMs` versus `TimeSpan` once. My proposal: `int? timeoutMs` on control verbs, `TimeSpan` in options and settings types. | Done as proposed (the owner, 2026-11-10): `TimeoutSettings`, Stride's, Blazor's and bUnit's options are `TimeSpan`; `ToMs()` bridges to a verb; JSON keeps milliseconds. |
 | 10 | `ITestLogger` takes one record per event instead of positional strings. | Open. |
 | 11 | One options type per platform that a test author sets. | Open; needs a design of its own. |
@@ -128,6 +128,6 @@ Proposal 13 is what makes that cheap, and it has to be in working order before p
 
 ## Next action
 
-Proposals 1, 2, 4, 7 and 9 are made as far as they go, 5 and 12 started, 13 in working order.
-What is left needs a design before code: the shared collection base (5), the signature rules (8), the logger's record (10) and one options type per platform (11).
-Proposal 8 is next: its rules (one `Locator` on exceptions, `Exists()`, a `timeoutMs` on every read, what `expected: null` means) reach all six stacks through the `.tpl.cs` generators.
+Proposals 1, 2, 4, 7, 8 and 9 are made as far as they go, 5 and 12 started, 13 in working order.
+Three need a design first: the shared collection base (5), the logger's record (10) and one options type per platform (11).
+Proposal 10 is the smallest: one record per event changes three loggers inside Bruinet and any consumer's own.

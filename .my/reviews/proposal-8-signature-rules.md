@@ -1,6 +1,6 @@
 # Proposal 8: the signature rules
 
-Drafted 2026-11-10 at `08834828`, for the owner to approve rule by rule. Nothing here is made yet.
+Drafted 2026-11-10 at `08834828`; the owner approved all eight the same day, and all eight are made (the change list's rows name each commit).
 
 ## Outcome
 
@@ -40,4 +40,4 @@ One commit per rule, each with its change-list row, in the order 8, 2, 1, 3, 5, 
 Rules 1 to 3 go through the `.tpl.cs` generators, so all six stacks change in one regeneration; `GeneratedFilesTests` proves the `.gen.cs` files match.
 Each commit builds Tomorrow's two suites in a worktree before it is pushed, as proposals 1 to 9 did.
 
-Next action: the owner approves the rules (all, or by number), then rule 8 goes first.
+Next action: none; this design is done.
