@@ -1,5 +1,10 @@
 # AD-029: The First Model Is A Project Of Its Own
 
+**Superseded 2026-11-10.** WPF, WinForms and Stride moved onto the call model (`.my/upgrade/plan.md`,
+U3 to U6), and `Bruinet.Core.Legacy` was deleted with the last of them (U7). Every stack now stands on
+Core alone, as AD-010 says; `SolutionTests.NoProject_UsesTheFirstModel` keeps the old project from
+coming back. What follows is the record of why it was split off.
+
 `Bruinet.Core` describes the call model alone. The interfaces and waits of Bruinet's first model,
 where every lookup waits on a budget of its own, are `Bruinet.Core.Legacy`, which only the WPF,
 WinForms and Stride stacks reference: `IDriver`, `IElement`, `IElementScope`, `IPageObject`,

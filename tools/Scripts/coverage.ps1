@@ -47,10 +47,12 @@ param(
     [string[]] $Projects = @(
         'Bruinet.Core.Tests',
         'Bruinet.Maui.Tests',
+        'Bruinet.FlaUI.Tests',
         'Bruinet.Wpf.Tests',
         'Bruinet.WinForms.Tests',
         'Bruinet.Blazor.Tests',
         'Bruinet.Html.Tests',
+        'Bruinet.Stride.Tests',
         'Bruinet.Stride.Automation.Tests',
         'Bruinet.Mocking.Tests',
         'Bruinet.Uat.Tests',

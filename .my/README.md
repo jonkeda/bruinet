@@ -10,6 +10,7 @@ Headless, bunit, core, Projects and voice, closed 2026-10-30).
 
 | Topic | What is open | Status | Updated |
 | --- | --- | --- | --- |
+| [upgrade/](upgrade/plan.md) | WPF, WinForms and Stride onto the call model (AD-010 amended: Core's `IScope` and `ITestPage`, the calls layer public; `Bruinet.FlaUI` shared; `Bruinet.Core.Legacy` deleted); [baseline.md](upgrade/baseline.md) before the move | done U0 to U7; open: `DateTimePicker.SetDate` not run on an unlocked desktop, a `wpf-control` skill | 2026-11-10 |
 | [videos/](videos/plan.md) | A spoken line paid for once on every machine: a clip library committed beside the suite on top of the speech cache, a key without the endpoint, what a recording reused and paid for, a reuse-only mode, the ignore rules in the three repositories | built and proven on the Todo sample (10 lines reused, 0 asked); left: Construction's own repository (task 10) | 2026-11-06 |
 | [improvements/](improvements/README.md) | What could improve Bruinet, read from the README: say what is proven, pause new surfaces, a first preview release, tidy the root, the call model on every stack, BDD gaps, the browser in CI, a start-here path | item 4 done but Frainet (2026-10-30: `src/` and `tests/`, the root's scripts, the `docs2` row); item 6 corrected (hooks and outlines exist); the rest proposals | 2026-10-30 |
 | [bdd-gaps/](bdd-gaps/design.md) | What a Reqnroll or SpecFlow user looks for: D1 Cucumber Messages from a run folder (`bruinet report messages`), D2 several named and tagged Examples blocks, D3 a "Coming from Reqnroll" page; hooks, outlines and set comparison found built | D3 built (docs/guides/coming-from-reqnroll.md); D1 parked until a reader of its output is named; D2 built (several named, tagged Examples sections, UAT032) | 2026-10-30 |
@@ -35,7 +36,7 @@ Headless, bunit, core, Projects and voice, closed 2026-10-30).
 | --- | --- | --- |
 | `bruinet lsp` (one command line, AD-028) tried in VS Code; Visual Studio runs it | the closed `cli/` topic | to try |
 | 
-| Recorders not there: the Stride context does not name its window (`IRecordable`), no iOS simulator recorder | [screen-capture.md](https://github.com/exact-mobile-apps/test-tooling/blob/a8b3fc75/.my/narrator/screen-capture.md) | todo |
+| Recorders not there: no iOS simulator recorder (the Stride context names its window since U6, `.my/upgrade/plan.md`) | [screen-capture.md](https://github.com/exact-mobile-apps/test-tooling/blob/a8b3fc75/.my/narrator/screen-capture.md) | todo |
 | Presenter: the gesture bridge's verbs (WP2, WP3 of the proposal) | [gesture-bridge.md](https://github.com/exact-mobile-apps/test-tooling/blob/a8b3fc75/.my/present/gesture-bridge.md) of the deleted `present/` topic | partly done: `PresenterPage.xaml` publishes `GetText,SetText,ClearText` on its text fields; check the rest of WP2 and WP3 |
 | Presenter: the same baseline scenarios on every tech, or a reason per gap | [plan.md](https://github.com/exact-mobile-apps/test-tooling/blob/a8b3fc75/.my/present/plan.md), item 4 | todo |
 | Presenter: the user journeys, rewritten for the docked bar, not run | [userjourney.md](https://github.com/exact-mobile-apps/test-tooling/blob/a8b3fc75/.my/present/userjourney.md) | to run |

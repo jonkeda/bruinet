@@ -3,8 +3,7 @@ using System.Drawing;
 namespace Bruinet.Core.Interfaces;
 
 /// <summary>
-/// Geometry every stack uses. The helpers over the first model's <c>IElement</c> are in
-/// <c>Bruinet.Core.Legacy</c> (<c>LegacyElementGeometryExtensions</c>).
+/// Geometry every stack uses.
 /// </summary>
 public static class ElementGeometryExtensions
 {

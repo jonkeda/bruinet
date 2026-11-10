@@ -47,7 +47,7 @@ How this differs from the other trees:
 - [AD-026: A project earns its place](decisions/ad-026-a-project-earns-its-place.md)
 - [AD-027: The Scraper records into the project and calls no model](decisions/ad-027-the-scraper-records-into-the-project-and-calls-no-model.md)
 - [AD-028: One command line](decisions/ad-028-one-command-line.md)
-- [AD-029: The first model is a project of its own](decisions/ad-029-the-first-model-is-a-project-of-its-own.md)
+- [AD-029: The first model is a project of its own](decisions/ad-029-the-first-model-is-a-project-of-its-own.md) (superseded 2026-11-10: every stack is on the call model)
 - [AD-030: A Blazor suite runs without a browser, and the browser judges the gate](decisions/ad-030-a-blazor-suite-runs-without-a-browser.md)
 - [AD-031: A replayed test answers from the database it recorded, and the database judges the gate](decisions/ad-031-a-replayed-test-answers-from-the-database-it-recorded.md)
 - [AD-032: A MAUI suite runs without a device, and the device judges the gate](decisions/ad-032-a-maui-suite-runs-without-a-device.md)

@@ -58,23 +58,20 @@ public sealed class TestCompositionTests
         public CompositionFixture Fixture { get; }
     }
 
-    public sealed class DeviceSettingsPage : IPageObject
+    // A page found by Core's ITestPage alone, with no [TestPage]: as every stack's page base is.
+    public sealed class DeviceSettingsPage : Bruinet.Core.Scopes.ITestPage
     {
         public string Name => nameof(DeviceSettingsPage);
 
         public LocatorStrategy DefaultLocatorStrategy => LocatorStrategy.AutomationId;
 
-        public IPageObject? Page => this;
+        public Bruinet.Core.Scopes.ScopeReadiness ProbeReadiness() => Bruinet.Core.Scopes.ScopeReadiness.Ready(Name);
 
-        public bool IsLoaded(int? timeoutMs = null) => true;
+        public bool WaitReady(int? timeoutMs = null) => true;
 
-        public PageReadinessSnapshot ProbeReadiness()
-            => new(Name, PageReadinessState.Ready, BusySignalPolicy.Disabled);
+        public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => 0;
 
-        public bool IsBusy() => false;
-
-        public bool WaitBusy(bool? expected, int? timeoutMs = null)
-            => expected == null || expected == false;
+        public bool IsLoaded() => true;
 
         public bool WaitLoaded(bool? expected, int? timeoutMs = null) => true;
 
@@ -82,7 +79,15 @@ public sealed class TestCompositionTests
         {
         }
 
-        public string? GetTitle(int? timeoutMs = null) => null;
+        public bool IsBusy() => false;
+
+        public bool WaitBusy(bool? expected, int? timeoutMs = null) => expected != true;
+
+        public void AssertIdle(string? message = null, int? timeoutMs = null)
+        {
+        }
+
+        public string? GetTitle() => null;
 
         public bool WaitTitle(string? expected, int? timeoutMs = null) => true;
 
@@ -90,13 +95,9 @@ public sealed class TestCompositionTests
         {
         }
 
-        public void TakeScreenshot(string? filename = null, int? timeoutMs = null)
+        public void TakeScreenshot(string? filename = null)
         {
         }
-
-        public bool IsReady(int? timeoutMs = null) => true;
-
-        public bool WaitReady(int? timeoutMs = null) => true;
     }
 
     [TestScenarioService]

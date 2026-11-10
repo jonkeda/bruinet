@@ -3,8 +3,7 @@ using System.Diagnostics;
 namespace Bruinet.Core.Utilities;
 
 /// <summary>
-/// The poll's pause. The first model's waits (<c>WaitFor</c> and its kind, each with a budget of
-/// its own) are <c>LegacyWaitHelper</c> in <c>Bruinet.Core.Legacy</c>; a wait below a call is
+/// The poll's pause, between one attempt of a call and the next. A wait below a call is
 /// <c>Bruinet.Core.Calls.Settle</c>.
 /// </summary>
 public static class WaitHelper

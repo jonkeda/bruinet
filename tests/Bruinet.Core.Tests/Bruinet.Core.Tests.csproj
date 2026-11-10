@@ -11,7 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Core\Bruinet.Core.csproj" />
     <!-- The first model's pages, to test that composition still finds them (AD-029). -->
-    <ProjectReference Include="..\..\src\Bruinet.Core.Legacy\Bruinet.Core.Legacy.csproj" />
   </ItemGroup>
 
   <ItemGroup>

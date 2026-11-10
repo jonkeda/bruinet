@@ -58,6 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `bruinet voice --index` writes `speech-clips.md` beside a suite's video scripts: each line, where it is said and its
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
+### Removed
+- **Breaking:** `Bruinet.Core.Legacy`, the first model's interfaces and waits: every stack is on the call model (AD-029
+  superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
+
 ### Changed
 - The iOS alert button order and the full row frames are driver facts (`IMauiDriver.ListsCancelFirstInTwoButtonAlerts`,
   `ReportsFullRowFrames`); `ContentDialog` and `CollectionObjectBase` no longer branch on `MauiPlatform.iOS` (AD-010).

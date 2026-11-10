@@ -294,4 +294,23 @@ Results: new `Bruinet.Stride.Tests` 6 of 6; server tests 11 of 11; UI suite 30 o
 restored. The movement failures of the baseline are gone with the settings closed first: most likely a
 settings test before them left the overlay open, in which the game ignores movement (not proven apart).
 
-Expected next action: U7, `Bruinet.Core.Legacy` deleted.
+U7 done 2026-11-10. `Bruinet.Core.Legacy` deleted: removed from the solution and `Bruinet.Core.Tests`;
+`TestPages.IsPage` is `ITestPage` alone; `SolutionTests.NoProject_UsesTheFirstModel` replaces the call-model
+list test; AD-029 superseded, AD-010's opening covers all six stacks; Core's three doc comments that pointed
+at Legacy rewritten. The api-upgrade skill's list has a Made row per breaking change of U1 to U7, and its
+planned rows 1 (conflict: Q5 made the calls layer public), 3 (overtaken), 4, 5 (made) and 6 (partly) are
+marked. Tomorrow's UI test projects were built against the new Bruinet before this was pushed.
+
+## 8. Where it ends
+
+All steps done. What is left:
+
+- `DateTimePicker.SetDate` (WinForms) has not run on an unlocked desktop: the three WinForms tests that
+  set a date failed all night only because Windows refuses synthetic keys while the desktop is locked.
+- Proposal 1 of the public API review (`.my/reviews/bruinet-public-api-review.md`, written the same
+  evening in another session) makes `Bruinet.Core.Calls` internal, the opposite of Q5. One of them has
+  to give; Q5 is the owner's answer, so the review's row is marked as conflicting, not changed.
+- A `wpf-control` (or one `desktop-control`) skill, as Android and Html have one.
+- The 13 MAUI-on-Windows collection failures and 2 flaky tests found in U2 are MAUI's, not this plan's.
+
+Expected next action: the owner runs the WinForms suite once on an unlocked desktop.

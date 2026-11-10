@@ -3,8 +3,8 @@ namespace Bruinet.Core.Calls;
 /// <summary>
 /// A driver's short wait below a call, for the effect of what it just did (a dropdown that opens,
 /// a shell that settles): one confirmation (R3), its window cut to what the running call has left
-/// (<see cref="CallBudget.Within"/>). What replaced the first model's <c>WaitHelper.WaitFor</c> in
-/// the call-model stacks (AD-029).
+/// (<see cref="CallBudget.Within"/>). A wait with a budget of its own below a call would break the
+/// call's one budget (R1).
 /// </summary>
 public static class Settle
 {

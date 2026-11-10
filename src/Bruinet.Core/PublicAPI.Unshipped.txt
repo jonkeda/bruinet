@@ -1123,7 +1123,6 @@ const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRU
 const Bruinet.Core.Calls.FirstOutcome.Caller = "WaitFirst" -> string!
 const Bruinet.Core.Calls.NearMisses.FileName = "near-misses.md" -> string!
 const Bruinet.Core.Composition.AssemblyFile.BuiltOutputEnvironmentVariable = "BRUINET_BUILT_OUTPUT" -> string!
-const Bruinet.Core.Composition.TestPages.FirstModelPageInterface = "Bruinet.Core.Interfaces.IPageObject" -> string!
 const Bruinet.Core.Configuration.TimeoutSettings.ScaleEnvironmentVariable = "BRUINET_TIMEOUT_SCALE" -> string!
 const Bruinet.Core.Diagnostics.AutWindow.BoundsVariable = "BRUINET_AUT_BOUNDS" -> string!
 const Bruinet.Core.Diagnostics.AutWindow.Variable = "BRUINET_AUT_WINDOW" -> string!
@@ -1195,7 +1194,6 @@ static Bruinet.Core.Composition.TestComposition.ForFixture(object! fixture, Syst
 static Bruinet.Core.Composition.TestCompositionCatalog.Discover(Bruinet.Core.Composition.TestCompositionDiscoveryOptions! options) -> Bruinet.Core.Composition.TestCompositionCatalog!
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromFixture(System.Type! fixtureType) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
 static Bruinet.Core.Composition.TestCompositionDiscoveryOptions.FromScans(System.Collections.Generic.IEnumerable<Bruinet.Core.Composition.TestModuleScanAttribute!>! scans) -> Bruinet.Core.Composition.TestCompositionDiscoveryOptions!
-static Bruinet.Core.Composition.TestPages.IsFirstModelPage(System.Type! type) -> bool
 static Bruinet.Core.Composition.TestPages.IsPage(System.Type! type) -> bool
 static Bruinet.Core.Configuration.BruinetConfigurationBase.LoadFromJson<T>(string! configFileName) -> T
 static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!

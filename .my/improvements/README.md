@@ -59,13 +59,10 @@ contradicted the README's polish.
 
 ## 5. Finish the call model on every stack
 
-Html, MAUI and native Android share one call model; WPF, WinForms and Stride still stand on
-`Bruinet.Core.Legacy`. The README sells "one way to write a test", which is true for half the
-stacks.
+**Done 2026-11-10** for the stacks ([../upgrade/plan.md](../upgrade/plan.md)): WPF, WinForms and Stride are on the
+call model and `Bruinet.Core.Legacy` is gone, so "one way to write a test" holds for every stack.
 
-- Either move the three onto the call model, or label them legacy in the heads table.
-- Finish the review's Appium items (M1 to M7; one `WebDriverWait` is still in the tree).
-- Proposed: label first (item 1), move only when a user of WPF or WinForms asks.
+- Left: the review's Appium items (M1 to M7; one `WebDriverWait` is still in the tree).
 
 ## 6. Close the gaps a BDD user will look for
 

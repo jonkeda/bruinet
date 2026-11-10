@@ -28,27 +28,25 @@ public sealed class SolutionTests
     }
 
     /// <summary>
-    /// The call-model stacks stand on Core alone: the first model's interfaces and waits are
-    /// <c>Bruinet.Core.Legacy</c>, for WPF, WinForms and Stride (AD-029).
+    /// Every stack is on the call model (AD-010): the first model's project, <c>Bruinet.Core.Legacy</c>,
+    /// was deleted when WPF, WinForms and Stride moved (2026-11-10), and nothing brings it back.
     /// </summary>
     [Fact]
-    public void NoCallModelStack_ReferencesTheFirstModel()
+    public void NoProject_UsesTheFirstModel()
     {
         var root = FindRepositoryRoot();
         Assert.NotNull(root);
-        string[] callModel = ["Bruinet.Html", "Bruinet.Html.Playwright", "Bruinet.Blazor", "Bruinet.Maui", "Bruinet.Maui.Appium",
-            "Bruinet.Maui.FlaUI", "Bruinet.FlaUI", "Bruinet.Wpf", "Bruinet.WinForms", "Bruinet.Stride", "Bruinet.Stride.Automation", "Bruinet.Maui.CommunityToolkit", "Bruinet.NativeAndroid", "Bruinet.Appium", "Bruinet.Uat", "Bruinet.Bdd"];
 
-        var offenders = callModel
-            .Select(name => Path.Combine(root, "src", name, $"{name}.csproj"))
-            .Where(File.Exists)
+        Assert.False(Directory.Exists(Path.Combine(root, "src", "Bruinet.Core.Legacy")), "Bruinet.Core.Legacy is back in src.");
+        var offenders = new[] { "src", "tests", "tools", "samples" }
+            .Select(folder => Path.Combine(root, folder))
+            .Where(Directory.Exists)
+            .SelectMany(folder => Directory.EnumerateFiles(folder, "*.csproj", SearchOption.AllDirectories))
             .Where(project => File.ReadAllText(project).Contains("Bruinet.Core.Legacy", StringComparison.OrdinalIgnoreCase))
             .Select(Path.GetFileName)
             .ToList();
 
-        Assert.True(offenders.Count == 0, $"These call-model projects reference Bruinet.Core.Legacy: {string.Join(", ", offenders)}");
-        Assert.True(callModel.Count(name => File.Exists(Path.Combine(root, "src", name, $"{name}.csproj"))) >= 8,
-            "The list of call-model projects no longer matches src.");
+        Assert.True(offenders.Count == 0, $"These projects reference Bruinet.Core.Legacy: {string.Join(", ", offenders)}");
     }
 
     /// <summary>

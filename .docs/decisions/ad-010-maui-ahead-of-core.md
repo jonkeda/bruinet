@@ -6,10 +6,11 @@ implements Core's element, driver, scope and page interfaces. Since 2026-09-26
 `Bruinet.Html` does the same, with its own set (`IHtmlElement`, `IHtmlDriver`,
 `IHtmlElementScope`, `IHtmlPage`, `IHtmlTestContext`), and since 2026-10-07
 `Bruinet.NativeAndroid` (`INativeAndroidElement`, `INativeAndroidDriver`,
-`INativeAndroidElementScope`, `INativeAndroidPage`, `INativeAndroidTestContext`). The stacks where the model was
-designed and proven keep their own shapes; the other stacks (WPF, WinForms, Stride) keep the first
-model's, in `Bruinet.Core.Legacy` (AD-029), until they move. What is proven moves down to Core, one
-layer at a time, as its own step; the element and driver never do (below)
+`INativeAndroidElementScope`, `INativeAndroidPage`, `INativeAndroidTestContext`). Since 2026-11-10
+WPF, WinForms and Stride do too (`IWpf*`, `IWinForms*`, `IStride*`; `.my/upgrade/plan.md`), and the
+first model's project, `Bruinet.Core.Legacy` (AD-029, superseded), is gone: every stack is on the call
+model. What is proven moves down to Core, one layer at a time, as its own step; the element and
+driver never do (below)
 ([move-down plan](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/stale-readiness/move-down.md)).
 
 **The leaf layer has moved down** (2026-09-26, [review at 7162ac7](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/core/review-what-can-move-now.md)).
