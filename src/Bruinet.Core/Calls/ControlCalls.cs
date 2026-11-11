@@ -68,6 +68,9 @@ public interface IControlHost<TElement>
     /// <summary>The page or scope the control is on, as a message names it; null when the host cannot say.</summary>
     string? ScopeName => null;
 
+    /// <summary>The control's property name on its page object, as a message names it; null when the host cannot say.</summary>
+    string? MemberName => null;
+
     /// <summary>What the host is called in a message: "control", or "container" for a scope's root.</summary>
     string Noun => "control";
 
@@ -99,7 +102,7 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
             host.Locator,
             budgetMs,
             () => NotFound(caller, budgetMs),
-            readiness => ScopeGate.NotReady(readiness, caller, $"{host.Noun} '{host.Locator}'", budgetMs));
+            readiness => ScopeGate.NotReady(readiness, caller, Named(), budgetMs));
 
     // "Click on control 'Css:#save' of page 'CounterPage': not found within 2000 ms.": the call, the control, its page
     // and the time waited, as the scope's failure says it (review 01, finding 2). A stack's own detail follows.
@@ -107,10 +110,13 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
     {
         var own = host.NotFound();
         var page = host.ScopeName is { Length: > 0 } scope ? $" of page '{scope}'" : string.Empty;
-        var sentence = $"{caller} on {host.Noun} '{host.Locator}'{page}: not found within {budgetMs} ms.";
+        var sentence = $"{caller} on {Named()}{page}: not found within {budgetMs} ms.";
         var plain = own.Message.StartsWith("Element not found with locator", StringComparison.Ordinal);
         return new ElementNotFoundException(own.Locator ?? host.Locator, plain ? sentence : $"{sentence} {own.Message}");
     }
+
+    // "control 'Save' (Css:#save)": its name on the page object first, when the host can say it (review 01, finding 1).
+    private string Named() => host.MemberName is { Length: > 0 } member ? $"{host.Noun} '{member}' ({host.Locator})" : $"{host.Noun} '{host.Locator}'";
 
     private Observation? CheckScope() => ScopeGate.Check(host.ProbeScope());
 

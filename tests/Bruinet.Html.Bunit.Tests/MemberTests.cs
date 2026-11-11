@@ -569,7 +569,7 @@ public sealed class MemberTests : IDisposable
 
         var error = Assert.Throws<ElementNotFoundException>(() => page.Missing.Click(timeoutMs: 200));
 
-        Assert.StartsWith("Click on control 'Css:[data-testid='no-such-button']' of page 'ProbePage': not found within 200 ms.", error.Message, StringComparison.Ordinal);
+        Assert.StartsWith("Click on control 'Missing' (Css:[data-testid='no-such-button']) of page 'ProbePage': not found within 200 ms.", error.Message, StringComparison.Ordinal);
     }
 
     [Fact]

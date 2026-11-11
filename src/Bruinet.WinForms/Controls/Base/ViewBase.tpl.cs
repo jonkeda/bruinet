@@ -99,6 +99,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     string? IControlHost<IWinFormsElement>.ScopeName => _scope.Page?.GetType().Name;
 
+    string? IControlHost<IWinFormsElement>.MemberName => Bruinet.Core.Calls.ControlMembers.NameOf(_scope.Page, Locator);
+
     protected bool RunWait(Func<bool> operation, int? timeoutMs = null,
         [CallerMemberName] string? caller = null)
         => Calls.Wait(operation, timeoutMs, caller ?? nameof(RunWait));
