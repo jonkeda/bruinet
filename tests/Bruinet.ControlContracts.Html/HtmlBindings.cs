@@ -3,6 +3,7 @@ using Bruinet.Blazor.Pages;
 using Bruinet.Core.Interfaces;
 using Bruinet.ControlContracts.Html.Pages;
 using Bruinet.Html.Controls.Buttons;
+using Bruinet.Html.Controls.DateTime;
 using Bruinet.Html.Controls.Display;
 using Bruinet.Html.Controls.Range;
 using Bruinet.Html.Controls.Selection;
@@ -234,4 +235,53 @@ public abstract class HtmlRadioGroupBinding<THead> : SelectorContract<ContractPa
     protected override ISelectorControlObject<ContractPage> List => new RadioGroupControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("radios"));
 
     protected override SelectorValues Items => new(["Apple", "Banana", "Cherry"], ["a", "b", "c"], InitialIndex: 1);
+}
+
+public abstract class HtmlProgressBinding<THead> : ProgressContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()
+{
+    private readonly ContractSession<THead> _session = new(typeof(ProgressControls));
+
+    public Task InitializeAsync() => _session.OpenAsync();
+
+    public Task DisposeAsync() => _session.DisposeAsync().AsTask();
+
+    protected override ContractPage Scope => _session.Page;
+
+    protected override IProgressControlObject<ContractPage> Partial => new ProgressControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("partial"));
+
+    protected override IProgressControlObject<ContractPage> Complete => new ProgressControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("complete"));
+
+    protected override IProgressControlObject<ContractPage> Indeterminate => new ProgressControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("indeterminate"));
+
+    protected override double Fraction => 0.4;
+}
+
+public abstract class HtmlDateInputBinding<THead> : DateContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()
+{
+    private readonly ContractSession<THead> _session = new(typeof(DateTimeControls));
+
+    public Task InitializeAsync() => _session.OpenAsync();
+
+    public Task DisposeAsync() => _session.DisposeAsync().AsTask();
+
+    protected override ContractPage Scope => _session.Page;
+
+    protected override IDateControlObject<ContractPage> Picker => new DateInputControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("date"));
+
+    protected override DateTime Initial => new(2026, 5, 17, 0, 0, 0, DateTimeKind.Unspecified);
+}
+
+public abstract class HtmlTimeInputBinding<THead> : TimeContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()
+{
+    private readonly ContractSession<THead> _session = new(typeof(DateTimeControls));
+
+    public Task InitializeAsync() => _session.OpenAsync();
+
+    public Task DisposeAsync() => _session.DisposeAsync().AsTask();
+
+    protected override ContractPage Scope => _session.Page;
+
+    protected override ITimeControlObject<ContractPage> Picker => new TimeInputControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("time"));
+
+    protected override TimeSpan Initial => new(9, 15, 0);
 }

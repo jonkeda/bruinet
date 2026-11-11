@@ -32,3 +32,9 @@ public sealed class ChromiumBlazorControls : BlazorControlsBinding<ChromiumHead>
 public sealed class ChromiumSelectorEdges : HtmlSelectorEdgeBinding<ChromiumHead>;
 
 public sealed class ChromiumRangeEdges : HtmlRangeEdgeBinding<ChromiumHead>;
+
+public sealed class ChromiumProgress : HtmlProgressBinding<ChromiumHead>;
+
+public sealed class ChromiumDateInput : HtmlDateInputBinding<ChromiumHead>;
+
+public sealed class ChromiumTimeInput : HtmlTimeInputBinding<ChromiumHead>;

@@ -15,7 +15,7 @@ namespace Bruinet.Html.Controls.Display;
 /// HTML progress control. Wraps &lt;progress&gt;.
 /// </summary>
 
-public partial class ProgressControl<TScope> : ViewBase<TScope>
+public partial class ProgressControl<TScope> : ViewBase<TScope>, IProgressControlObject<TScope>
     where TScope : IHtmlScope<TScope>
 {
     #region Value (GetValue / WaitValue / AssertValue)
@@ -218,6 +218,56 @@ public partial class ProgressControl<TScope> : ViewBase<TScope>
         return RunAssertWithElement(expected,
            element => GetPercentageCore(element), (actual, expected1) => (actual <= expected1),
            message ?? $"Expected Percentage to be at most '{expected}'. Locator: {Locator}", timeoutMs);
+    }
+
+    #endregion
+    #region Progress (GetProgress / WaitProgress / AssertProgress)
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public double? GetProgress(int? timeoutMs = null)
+    {
+        return RunGetWithElement(element => GetProgressCore(element), timeoutMs);
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool WaitProgress(double? expected, int? timeoutMs = null)
+    {
+        return RunWaitWithElement(expected,
+           element => GetProgressCore(element) == expected,
+           timeoutMs);
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public TScope AssertProgress(double? expected, string? message = null, int? timeoutMs = null)
+    {
+        return RunAssertWithElement(expected,
+           element => GetProgressCore(element), (actual, expected1) => (actual == expected1),
+           message ?? $"Expected Progress to be '{expected}'. Locator: {Locator}", timeoutMs);
+    }
+
+    #endregion
+    #region Indeterminate (IsIndeterminate / WaitIndeterminate / AssertIndeterminate)
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool IsIndeterminate()
+    {
+        return IsIndeterminateCore(TryFindElement()) == true;
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool WaitIndeterminate(bool? expected = true, int? timeoutMs = null)
+    {
+        return RunWaitWithElement(expected,
+           element => IsIndeterminateCore(element) == expected!.Value,
+           timeoutMs);
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public TScope AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null)
+    {
+        return RunAssertWithElement(expected,
+           IsIndeterminateCore, (actual, expected1) => (actual == expected1),
+           message ?? $"Expected Indeterminate to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
     #endregion

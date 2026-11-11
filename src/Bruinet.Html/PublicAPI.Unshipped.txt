@@ -585,3 +585,13 @@ virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions(Bruinet.Html.Cont
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgress(int? timeoutMs = null) -> double?
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminate() -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
+virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgressCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminateCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?

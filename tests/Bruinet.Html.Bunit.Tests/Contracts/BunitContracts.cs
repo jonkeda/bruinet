@@ -85,3 +85,9 @@ public sealed class BunitBlazorControls : BlazorControlsBinding<BunitHead>
 public sealed class BunitSelectorEdges : HtmlSelectorEdgeBinding<BunitHead>;
 
 public sealed class BunitRangeEdges : HtmlRangeEdgeBinding<BunitHead>;
+
+public sealed class BunitProgress : HtmlProgressBinding<BunitHead>;
+
+public sealed class BunitDateInput : HtmlDateInputBinding<BunitHead>;
+
+public sealed class BunitTimeInput : HtmlTimeInputBinding<BunitHead>;

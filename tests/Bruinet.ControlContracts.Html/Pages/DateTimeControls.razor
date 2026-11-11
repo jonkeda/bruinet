@@ -1,0 +1,9 @@
+@page "/datetime"
+@* The date and time contracts' controls: a date at 2026-05-17 and a time at 09:15. *@
+<input type="date" data-testid="date" @bind="date" @bind:event="oninput" />
+<input type="time" data-testid="time" @bind="time" @bind:event="oninput" />
+
+@code {
+    private DateOnly date = new(2026, 5, 17);
+    private TimeOnly time = new(9, 15);
+}
