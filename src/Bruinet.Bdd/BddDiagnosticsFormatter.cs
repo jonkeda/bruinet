@@ -47,7 +47,16 @@ public static class BddDiagnosticsFormatter
             open = chain;
             var invocation = step.Invocation;
             var scope = invocation.Scope.Length > 0 ? $"[{invocation.Scope}] " : string.Empty;
-            yield return $"{Indent(chain, chain.Count)}{step.Status}: {invocation.Step.Source}: {scope}{invocation.CommandId}: {invocation.Step.Text} {step.Message}";
+            var stepIndent = Indent(chain, chain.Count);
+            yield return $"{stepIndent}{step.Status}: {invocation.Step.Source}: {scope}{invocation.CommandId}: {invocation.Step.Text}";
+            if (!string.IsNullOrWhiteSpace(step.Message))
+            {
+                // The message on lines of its own, under its step: run together with the step it was hard to find (review 01).
+                foreach (var line in step.Message.Split('\n'))
+                {
+                    yield return $"{stepIndent}    {line.TrimEnd('\r')}";
+                }
+            }
         }
     }
 
@@ -91,9 +100,9 @@ public static class BddDiagnosticsFormatter
             lines.Add($"Evidence: {evidencePath}");
         }
 
+        // Not the pages and the phrase catalog: they help a scenario that did not bind (FormatBindFailure), not a step
+        // that ran and failed, where they buried the one line that mattered (review 01, finding 3).
         lines.AddRange(context.Diagnostics);
-        lines.Add(discoveryReport);
-        lines.Add(FormatCatalog(catalog));
         return string.Join(Environment.NewLine, lines);
     }
 
