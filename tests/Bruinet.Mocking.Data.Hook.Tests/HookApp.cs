@@ -22,7 +22,8 @@ internal sealed class HookApp : IAsyncDisposable
     public Uri Address { get; }
 
     /// <param name="mode">Record or Replay; null starts it with replay off.</param>
-    public static async Task<HookApp> StartAsync(ReplayMode? mode, string recordings, string database)
+    /// <param name="key">The hook's key in the app's environment; none when left out.</param>
+    public static async Task<HookApp> StartAsync(ReplayMode? mode, string recordings, string database, string? key = null)
     {
         var start = new ProcessStartInfo("dotnet")
         {
@@ -33,6 +34,11 @@ internal sealed class HookApp : IAsyncDisposable
         };
         start.Environment.Remove(ReplayRegistry.ModeVariable);
         start.Environment.Remove(ReplayRegistry.SchemaVariable);
+        start.Environment.Remove(ReplayHook.KeyVariable);
+        if (key is not null)
+        {
+            start.Environment[ReplayHook.KeyVariable] = key;
+        }
         if (mode is { } replay)
         {
             start.Environment[ReplayRegistry.ModeVariable] = replay.ToString();

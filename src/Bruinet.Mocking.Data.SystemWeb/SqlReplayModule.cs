@@ -33,11 +33,11 @@ public sealed class SqlReplayModule : IHttpModule
     private static void BeginRequest(HttpContext context, ReplayRegistry registry)
     {
         var request = context.Request;
-        if (ReplayHook.Control(registry, request.Path, name => request.QueryString[name]) is { } control)
+        if (ReplayHook.Control(registry, request.Path, name => request.QueryString[name], name => request.Headers[name], request.IsLocal) is { } control)
         {
             if (control.Cookie is { } test)
             {
-                context.Response.Cookies.Add(new HttpCookie(ReplayHook.Cookie, test) { Path = "/", HttpOnly = true });
+                context.Response.Cookies.Add(new HttpCookie(ReplayHook.Cookie, test) { Path = "/", HttpOnly = true, Secure = request.IsSecureConnection });
             }
 
             context.Response.StatusCode = control.Status;

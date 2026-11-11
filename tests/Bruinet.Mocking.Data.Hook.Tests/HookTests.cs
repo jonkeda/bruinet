@@ -68,6 +68,22 @@ public sealed class HookTests : IDisposable
     }
 
     [Fact]
+    public async Task WithAKey_TheHook_AnswersOnlyWhoSendsIt_AsAHeaderOrInTheBeginAddress()
+    {
+        await using var app = await HookApp.StartAsync(ReplayMode.Record, Recordings, Database, key: "s3cret-key");
+        using var client = new HttpClient { BaseAddress = app.Address };
+
+        var without = await client.GetAsync(ReplayHook.BeginPath + "?test=Keyed.Test");
+        var wrong = await client.GetAsync(ReplayHook.BeginUrl(app.Address, "Keyed.Test", key: "guess"));
+        var inTheAddress = await client.GetAsync(ReplayHook.BeginUrl(app.Address, "Keyed.Test", key: "s3cret-key"));
+
+        Assert.Equal(HttpStatusCode.NotFound, without.StatusCode);
+        Assert.Equal(HttpStatusCode.NotFound, wrong.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, inTheAddress.StatusCode);
+        await ReplayHook.EndAsync(client, app.Address, "Keyed.Test", key: "s3cret-key");
+    }
+
+    [Fact]
     public async Task Off_TheAppHasNoControlPaths_AndRunsOnItsDatabase()
     {
         await using var app = await HookApp.StartAsync(null, Recordings, Database);

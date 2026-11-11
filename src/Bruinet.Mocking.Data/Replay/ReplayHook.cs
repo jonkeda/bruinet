@@ -98,6 +98,15 @@ public static class ReplayHook
 
     public const string Header = "X-Bruinet-Test";
 
+    /// <summary>The header an API client sends the hook's key in; a browser's begin address carries it as <c>key</c>.</summary>
+    public const string KeyHeader = "X-Bruinet-Key";
+
+    /// <summary>
+    /// The hook's key, in the app's environment and the test's. Unset, the control paths answer callers on this machine
+    /// only; set, they answer whoever sends it (an app on another machine) and nobody else (review 09, D4).
+    /// </summary>
+    public const string KeyVariable = "BRUINET_SQL_HOOK_KEY";
+
     public const string BeginPath = "/__bruinet/sql/begin";
 
     public const string EndPath = "/__bruinet/sql/end";
@@ -108,13 +117,26 @@ public static class ReplayHook
     public static string? TestOf(Func<string, string?> header, Func<string, string?> cookie)
         => (header(Header) is { Length: > 0 } fromHeader ? fromHeader : cookie(Cookie)) is { } test && TestId.IsMatch(test) ? test : null;
 
-    /// <summary>The answer to a control path; null for any other path, which the app serves in the test's session.</summary>
-    public static HookResponse? Control(ReplayRegistry registry, string path, Func<string, string?> query)
+    /// <summary>
+    /// The answer to a control path; null for any other path, which the app serves in the test's session. A caller the
+    /// hook does not serve (<see cref="KeyVariable"/>) gets 404, as if there were no hook.
+    /// </summary>
+    /// <param name="registry">The app's sessions.</param>
+    /// <param name="path">The request's path.</param>
+    /// <param name="query">Reads a query parameter.</param>
+    /// <param name="header">Reads a request header.</param>
+    /// <param name="loopback">Whether the caller is on this machine, or in this process.</param>
+    public static HookResponse? Control(ReplayRegistry registry, string path, Func<string, string?> query, Func<string, string?> header, bool loopback)
     {
         var begin = string.Equals(path, BeginPath, StringComparison.OrdinalIgnoreCase);
         if (!begin && !string.Equals(path, EndPath, StringComparison.OrdinalIgnoreCase))
         {
             return null;
+        }
+
+        if (!Serves(header(KeyHeader) ?? query("key"), loopback))
+        {
+            return new HookResponse(404, "Not found.", null);
         }
 
         if (query("test") is not { } test || !TestId.IsMatch(test))
@@ -144,21 +166,69 @@ public static class ReplayHook
         };
     }
 
-    /// <summary>Where a browser goes first to start <paramref name="test"/>'s session: the answer sets its cookie.</summary>
-    public static Uri BeginUrl(Uri app, string test) => new(app, BeginPath + "?test=" + Uri.EscapeDataString(CheckTest(test)));
+    /// <summary>
+    /// Where a browser goes first to start <paramref name="test"/>'s session: the answer sets its cookie. A browser's
+    /// navigation is a GET and cannot add a header, so the hook's key, when there is one, is in the address.
+    /// </summary>
+    /// <param name="app">The app's address.</param>
+    /// <param name="test">The test's id.</param>
+    /// <param name="key">The hook's key; <see cref="KeyVariable"/> when left out.</param>
+    public static Uri BeginUrl(Uri app, string test, string? key = null)
+        => new(app, BeginPath + "?test=" + Uri.EscapeDataString(CheckTest(test))
+            + (KeyOrDefault(key) is { } given ? "&key=" + Uri.EscapeDataString(given) : string.Empty));
 
     /// <summary>Starts <paramref name="test"/>'s session from an API client; it then sends <see cref="Header"/> itself.</summary>
-    public static async Task BeginAsync(HttpClient client, Uri app, string test)
+    /// <param name="client">The client.</param>
+    /// <param name="app">The app's address.</param>
+    /// <param name="test">The test's id.</param>
+    /// <param name="key">The hook's key; <see cref="KeyVariable"/> when left out.</param>
+    public static async Task BeginAsync(HttpClient client, Uri app, string test, string? key = null)
     {
-        using var response = await client.GetAsync(BeginUrl(app, test)).ConfigureAwait(false);
+        using var request = Keyed(new Uri(app, BeginPath + "?test=" + Uri.EscapeDataString(CheckTest(test))), key);
+        using var response = await client.SendAsync(request).ConfigureAwait(false);
         await Check(response, test).ConfigureAwait(false);
     }
 
     /// <summary>Ends <paramref name="test"/>'s session in the app; throws <see cref="ReplayMissException"/> with its misses.</summary>
-    public static async Task EndAsync(HttpClient client, Uri app, string test)
+    /// <param name="client">The client.</param>
+    /// <param name="app">The app's address.</param>
+    /// <param name="test">The test's id.</param>
+    /// <param name="key">The hook's key; <see cref="KeyVariable"/> when left out.</param>
+    public static async Task EndAsync(HttpClient client, Uri app, string test, string? key = null)
     {
-        using var response = await client.GetAsync(new Uri(app, EndPath + "?test=" + Uri.EscapeDataString(CheckTest(test)))).ConfigureAwait(false);
+        using var request = Keyed(new Uri(app, EndPath + "?test=" + Uri.EscapeDataString(CheckTest(test))), key);
+        using var response = await client.SendAsync(request).ConfigureAwait(false);
         await Check(response, test).ConfigureAwait(false);
+    }
+
+    private static HttpRequestMessage Keyed(Uri address, string? key)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, address);
+        if (KeyOrDefault(key) is { } given)
+        {
+            request.Headers.Add(KeyHeader, given);
+        }
+
+        return request;
+    }
+
+    private static string? KeyOrDefault(string? key)
+        => key is { Length: > 0 } ? key : Environment.GetEnvironmentVariable(KeyVariable) is { Length: > 0 } set ? set : null;
+
+    // With no key set, a caller on this machine only; with one, whoever sends it, wherever they are.
+    private static bool Serves(string? sent, bool loopback)
+        => Environment.GetEnvironmentVariable(KeyVariable) is { Length: > 0 } key ? sent is not null && Same(sent, key) : loopback;
+
+    // In constant time, so the key cannot be found a character at a time.
+    private static bool Same(string sent, string key)
+    {
+        var difference = sent.Length ^ key.Length;
+        for (var i = 0; i < Math.Min(sent.Length, key.Length); i++)
+        {
+            difference |= sent[i] ^ key[i];
+        }
+
+        return difference == 0;
     }
 
     internal static string CheckTest(string test)

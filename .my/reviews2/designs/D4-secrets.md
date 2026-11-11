@@ -28,7 +28,7 @@ Design for R2-T19, R2-T20, R2-T21, R2-T23 (review 09, P1, P2, P3, P5). Defensive
 ## SQL hook (R2-T21)
 
 - `SqlReplayHook` (AspNetCore) and `SqlReplayModule` (SystemWeb) serve `/__bruinet/sql/begin` and `/end` only when the caller is loopback, or when `BRUINET_SQL_HOOK_KEY` is set and the request carries it in `X-Bruinet-Key`. Otherwise 404, as if the hook were absent.
-- `begin` and `end` are `POST`; a `GET` is 405.
+- ~~`begin` and `end` are `POST`; a `GET` is 405.~~ Not made (R2-T21): `BeginUrl` is the address a browser navigates to first so the answer can set its cookie, and a navigation is a `GET`. The key travels in that address instead (`&key=`), and as `X-Bruinet-Key` from an API client.
 - The cookie gets `Secure` when the request is HTTPS.
 - `ReplayHook`'s 409 body for `end` keeps the misses but with redacted values (follows from the SQL rule above).
 - `Bruinet.Mocking`'s client side sends the key when the variable is set; Bruinet's own samples and tests run loopback and need nothing.

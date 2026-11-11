@@ -24,11 +24,13 @@ public static class SqlReplayHook
         return app.Use(async (context, next) =>
         {
             var request = context.Request;
-            if (ReplayHook.Control(registry, request.Path.Value ?? string.Empty, name => request.Query[name].FirstOrDefault()) is { } control)
+            var remote = context.Connection.RemoteIpAddress;
+            var loopback = remote is null || System.Net.IPAddress.IsLoopback(remote);
+            if (ReplayHook.Control(registry, request.Path.Value ?? string.Empty, name => request.Query[name].FirstOrDefault(), name => request.Headers[name].FirstOrDefault(), loopback) is { } control)
             {
                 if (control.Cookie is { } test)
                 {
-                    context.Response.Cookies.Append(ReplayHook.Cookie, test, new CookieOptions { Path = "/", HttpOnly = true, SameSite = SameSiteMode.Lax });
+                    context.Response.Cookies.Append(ReplayHook.Cookie, test, new CookieOptions { Path = "/", HttpOnly = true, SameSite = SameSiteMode.Lax, Secure = request.IsHttps });
                 }
 
                 context.Response.StatusCode = control.Status;

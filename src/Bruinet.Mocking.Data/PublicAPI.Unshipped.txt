@@ -253,6 +253,8 @@ const Bruinet.Mocking.Data.Replay.ReplayHook.BeginPath = "/__bruinet/sql/begin" 
 const Bruinet.Mocking.Data.Replay.ReplayHook.Cookie = "bruinet-test" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayHook.EndPath = "/__bruinet/sql/end" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayHook.Header = "X-Bruinet-Test" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.KeyHeader = "X-Bruinet-Key" -> string!
+const Bruinet.Mocking.Data.Replay.ReplayHook.KeyVariable = "BRUINET_SQL_HOOK_KEY" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayRegistry.FolderVariable = "BRUINET_SQL_RECORDINGS" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable = "BRUINET_SQL_REPLAY" -> string!
 const Bruinet.Mocking.Data.Replay.ReplayRegistry.SchemaVariable = "BRUINET_SQL_SCHEMA" -> string!
@@ -432,10 +434,10 @@ static Bruinet.Mocking.Data.Replay.RecordingReview.Recordings(string! folder) ->
 static Bruinet.Mocking.Data.Replay.RecordingReview.Unreviewed(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Mocking.Data.Replay.RecordingReview.VolatileValues(System.Collections.Generic.IEnumerable<Bruinet.Mocking.Data.Replay.Recording!>! recordings) -> System.Collections.Generic.IReadOnlyCollection<string!>!
 static Bruinet.Mocking.Data.Replay.RecordingReview.VolatileValues(string! folder) -> System.Collections.Generic.IReadOnlyCollection<string!>!
-static Bruinet.Mocking.Data.Replay.ReplayHook.BeginAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test) -> System.Threading.Tasks.Task!
-static Bruinet.Mocking.Data.Replay.ReplayHook.BeginUrl(System.Uri! app, string! test) -> System.Uri!
-static Bruinet.Mocking.Data.Replay.ReplayHook.Control(Bruinet.Mocking.Data.Replay.ReplayRegistry! registry, string! path, System.Func<string!, string?>! query) -> Bruinet.Mocking.Data.Replay.HookResponse?
-static Bruinet.Mocking.Data.Replay.ReplayHook.EndAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test) -> System.Threading.Tasks.Task!
+static Bruinet.Mocking.Data.Replay.ReplayHook.BeginAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test, string? key = null) -> System.Threading.Tasks.Task!
+static Bruinet.Mocking.Data.Replay.ReplayHook.BeginUrl(System.Uri! app, string! test, string? key = null) -> System.Uri!
+static Bruinet.Mocking.Data.Replay.ReplayHook.Control(Bruinet.Mocking.Data.Replay.ReplayRegistry! registry, string! path, System.Func<string!, string?>! query, System.Func<string!, string?>! header, bool loopback) -> Bruinet.Mocking.Data.Replay.HookResponse?
+static Bruinet.Mocking.Data.Replay.ReplayHook.EndAsync(System.Net.Http.HttpClient! client, System.Uri! app, string! test, string? key = null) -> System.Threading.Tasks.Task!
 static Bruinet.Mocking.Data.Replay.ReplayHook.TestOf(System.Func<string!, string?>! header, System.Func<string!, string?>! cookie) -> string?
 static Bruinet.Mocking.Data.Replay.ReplayRegistry.FromEnvironment() -> Bruinet.Mocking.Data.Replay.ReplayRegistry?
 static Bruinet.Mocking.Data.Replay.ReplayScope.Current.get -> Bruinet.Mocking.Data.Replay.ReplaySession?

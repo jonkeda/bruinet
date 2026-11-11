@@ -77,6 +77,12 @@ request after. An API test calls `ReplayHook.BeginAsync` and sends `X-Bruinet-Te
 test calls `ReplayHook.EndAsync`, which saves the recording or throws the misses. Without
 `BRUINET_SQL_REPLAY` the hook adds nothing.
 
+The control paths begin and end sessions, so they answer callers on the app's own machine only.
+An app on another machine (a shared test server) needs `BRUINET_SQL_HOOK_KEY` set in its
+environment and in the test's: `BeginAsync` and `EndAsync` then send it as `X-Bruinet-Key`, and
+`BeginUrl` puts it in the address, since a browser's first navigation cannot add a header. Anyone
+else gets 404. Never set `BRUINET_SQL_REPLAY` on a server others can reach without a key.
+
 ## Stale Recordings
 
 A recording is stamped with the objects its commands touched: tables, views and procedures, and the
