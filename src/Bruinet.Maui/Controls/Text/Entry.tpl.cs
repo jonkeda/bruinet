@@ -71,6 +71,11 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
         if (text == null)
             return;
 
+        // Refused before any head tries, as Html refuses it: Windows could not clear the field and said so
+        // in its own words, while MauiHeadless refused it (review 04, finding 2).
+        if (IsReadOnlyCore(element) == true)
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"'{Locator.Value}' is read-only: its text cannot be set.");
+
         element.Clear();
         // SetValue writes through the platform's own value mechanism, which needs no commit
         // keystroke: no trailing Tab.

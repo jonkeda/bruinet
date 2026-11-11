@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewModels="using:Bruinet.Samples.Maui.App.ViewModels"
+    xmlns:uia="clr-namespace:Bruinet.Maui.AppSupport.Uia;assembly=Bruinet.Maui.AppSupport"
     x:Class="Bruinet.Samples.Maui.App.Views2.TestViews.ButtonsView"
     BackgroundColor="{AppThemeBinding Light=White, Dark=#1F1F1F}">
 
@@ -64,7 +65,8 @@
             <Button
                 Text="Contract"
                 Command="{Binding ContractClickCommand}"
-                AutomationId="ContractButton">
+                AutomationId="ContractButton"
+                uia:GestureAutomation.Verbs="DoubleTap">
                 <Button.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding ContractDoubleTapCommand}" />
                 </Button.GestureRecognizers>

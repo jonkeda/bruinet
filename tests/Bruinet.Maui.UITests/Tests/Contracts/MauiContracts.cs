@@ -5,13 +5,11 @@ using Bruinet.Maui.UITests.Pages;
 namespace Bruinet.Maui.UITests.Tests.Contracts;
 
 // The control contracts on Bruinet.Maui's controls, on the sample app's pages: each test opens its page afresh, so
-// the controls start as the page's view model sets them. Run on MauiHeadless only so far: a run on Windows and
-// Android is still to say which tests those heads keep (a slider's step may differ); --filter "Head!=MauiHeadless"
-// leaves them out of a device run until then.
+// the controls start as the page's view model sets them. Every binding runs on every head; a test a head cannot
+// keep says so with [SkipOnFact] and why, and one no MAUI head can keep with [Fact(Skip)] (review 04, finding 5).
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiSliderContract : RangeContract<RangeTestPage>
 {
     private readonly RangeTestPage _page;
@@ -32,7 +30,6 @@ public sealed class MauiSliderContract : RangeContract<RangeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiStepperContract : RangeContract<RangeTestPage>
 {
     private readonly RangeTestPage _page;
@@ -53,7 +50,6 @@ public sealed class MauiStepperContract : RangeContract<RangeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiCheckBoxContract : ToggleContract<ToggleTestPage>
 {
     private readonly ToggleTestPage _page;
@@ -71,7 +67,6 @@ public sealed class MauiCheckBoxContract : ToggleContract<ToggleTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiSwitchContract : ToggleContract<ToggleTestPage>
 {
     private readonly ToggleTestPage _page;
@@ -89,7 +84,6 @@ public sealed class MauiSwitchContract : ToggleContract<ToggleTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiEntryContract : EditableTextContract<TextTestPage>
 {
     private readonly TextTestPage _page;
@@ -111,7 +105,6 @@ public sealed class MauiEntryContract : EditableTextContract<TextTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
 {
     private readonly TextTestPage _page;
@@ -129,7 +122,6 @@ public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiPickerContract : SelectorContract<SelectionTestPage>
 {
     private readonly SelectionTestPage _page;
@@ -153,7 +145,6 @@ public sealed class MauiPickerContract : SelectorContract<SelectionTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiElementContract : ElementContract<ButtonsTestPage>
 {
     private readonly ButtonsTestPage _page;
@@ -174,8 +165,8 @@ public sealed class MauiElementContract : ElementContract<ButtonsTestPage>
 
     protected override IControlObject<ButtonsTestPage> Missing => _page.MissingButton;
 
-    // A bindable property by its name, as MAUI's elements answer GetAttribute.
-    protected override (string Name, string Value) Attribute => ("Text", "Contract");
+    // A button's name is its text on every head (Windows answers a fixed list of names, R2-T50).
+    protected override (string Name, string Value) Attribute => ("Name", "Contract");
 
     private const string HiddenIsGone =
         "MAUI leaves a view with IsVisible false out of the tree on Windows, Android and iOS, and MauiHeadless does the same: "
@@ -199,7 +190,6 @@ public sealed class MauiElementContract : ElementContract<ButtonsTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiButtonContract : ClickableContract<ButtonsTestPage>
 {
     private readonly ButtonsTestPage _page;
@@ -218,12 +208,12 @@ public sealed class MauiButtonContract : ClickableContract<ButtonsTestPage>
 
     protected override string? LastAction() => _page.ContractAction.GetText() is { Length: > 0 } action ? action : null;
 
-    [Fact(Skip = "A pointer's right button is a device's: MauiHeadless refuses it (DeviceOnlyException).")]
+    [Fact(Skip = "MAUI's Button raises no right click the sample can record, and MauiHeadless refuses one (DeviceOnlyException).")]
     public override void RightClick_RightClicksIt()
     {
     }
 
-    [Fact(Skip = "Hover is a device's: MauiHeadless refuses it (DeviceOnlyException).")]
+    [Fact(Skip = "MAUI's Button raises no hover the sample can record, and MauiHeadless refuses one (DeviceOnlyException).")]
     public override void Hover_HoversIt()
     {
     }
@@ -236,7 +226,6 @@ public sealed class MauiButtonContract : ClickableContract<ButtonsTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiLabelContract : TextContract<ButtonsTestPage>
 {
     private readonly ButtonsTestPage _page;
@@ -258,7 +247,6 @@ public sealed class MauiLabelContract : TextContract<ButtonsTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiDatePickerContract : DateContract<DateTimeTestPage>
 {
     private readonly DateTimeTestPage _page;
@@ -282,7 +270,6 @@ public sealed class MauiDatePickerContract : DateContract<DateTimeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiTimePickerContract : TimeContract<DateTimeTestPage>
 {
     private readonly DateTimeTestPage _page;
@@ -304,7 +291,6 @@ public sealed class MauiTimePickerContract : TimeContract<DateTimeTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiProgressBarContract : ProgressContract<DisplayTestPage>
 {
     private readonly DisplayTestPage _page;
@@ -335,7 +321,6 @@ public sealed class MauiProgressBarContract : ProgressContract<DisplayTestPage>
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiExpanderContract : ExpandableContract<CommunityToolkitTestPage>
 {
     private readonly CommunityToolkitTestPage _page;
@@ -353,7 +338,6 @@ public sealed class MauiExpanderContract : ExpandableContract<CommunityToolkitTe
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiSwipeViewContract : SwipeableContract<SwipeView<ContainerTestPage>>
 {
     private readonly ContainerTestPage _page;
@@ -375,15 +359,27 @@ public sealed class MauiSwipeViewContract : SwipeableContract<SwipeView<Containe
 
     protected override (int StartX, int StartY, int EndX, int EndY) LeftwardPoints => (200, 20, 20, 20);
 
-    [Fact(Skip = "A swipe between points is a device's: MauiHeadless refuses it (DeviceOnlyException).")]
-    public override void Swipe_BetweenPoints_SwipesThatWay()
-    {
-    }
+    private const string SwipeNotOnWindows =
+        "a SwipeView is not addressable on Windows (its WinUI peer cannot be overridden); drive it by id through IMauiDriver.PerformGesture.";
+
+    [SkipOnFact(ContractHeads.Headless | ContractHeads.Windows, "a swipe between points is a device's: MauiHeadless refuses it, and Windows cannot reach a SwipeView.")]
+    public override void Swipe_BetweenPoints_SwipesThatWay() => base.Swipe_BetweenPoints_SwipesThatWay();
+
+    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    public override void SwipeLeft_SwipesLeft() => base.SwipeLeft_SwipesLeft();
+
+    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    public override void SwipeRight_SwipesRight() => base.SwipeRight_SwipesRight();
+
+    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    public override void SwipeUp_SwipesUp() => base.SwipeUp_SwipesUp();
+
+    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    public override void SwipeDown_SwipesDown() => base.SwipeDown_SwipesDown();
 }
 
 [Collection("Maui")]
 [Trait("Category", "Contract")]
-[Trait("Head", "MauiHeadless")]
 public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<ContainerTestPage>>
 {
     private readonly ContainerTestPage _page;
@@ -405,4 +401,19 @@ public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<Co
         => _page.RefreshText.GetText() is { } text && text.StartsWith("refreshed ", StringComparison.Ordinal)
             ? int.Parse(text["refreshed ".Length..], System.Globalization.CultureInfo.InvariantCulture)
             : 0;
+
+    private const string RefreshNotOnWindows =
+        "a RefreshView is not addressable on Windows (its WinUI peer cannot be overridden), so its state cannot be read; pull it by id through IMauiDriver.PerformGesture.";
+
+    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    public override void IsRefreshing_FalseAtTheStart() => base.IsRefreshing_FalseAtTheStart();
+
+    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    public override void PullToRefresh_RefreshesIt() => base.PullToRefresh_RefreshesIt();
+
+    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    public override void WaitRefreshing_TrueWhenItHolds_FalseWhenItDoesNot() => base.WaitRefreshing_TrueWhenItHolds_FalseWhenItDoesNot();
+
+    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    public override void AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot() => base.AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot();
 }
