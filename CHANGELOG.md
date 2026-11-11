@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
+  tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with
+  `UatScenarioTraits`; a trait the runner's attributes set wins. `Bruinet.Traits` now targets net8.0 and net9.0 too.
+- Scenario undo: `BddExecutionContext.RegisterUndo(...)` runs an undo after the scenario's AfterScenario hooks, last
+  first, also when a step failed. A failing undo fails a passed scenario as a setup failure, or is added to the failed
+  step's message. `ScenarioStartedUtc` says when the scenario started.
+- `MockRequests` steps (`Bruinet.Mocking.Steps.MockRequestSteps`): `no POST was sent to /path`, `one POST request was
+  sent to /path`, `2 POST requests were sent to /path`, and `the last POST to /path has` with a `Field`/`Value` table
+  (dotted JSON paths or form fields, `(absent)` for not sent). They count only this scenario's requests, on the
+  composition's `MockApiServer` or the shared one (`MockApiServer.Shared`).
+- Folder-wide format check: `UatSpecFormatTestBase.GetFolderFiles(folders)` and `AssertUatFileFormat(file)` check every
+  feature file under a folder with no list; a file opts out with the tag `no-format-check` and a `FormatCheck` reason.
 - `Bruinet.Traits` trait names: `[Ui]` writes `Pyramid=UI` and, during the move, the old `Pyramid=Hermetic UI`
   (`[HermeticUi]` now writes the same pair); `[Covers("id")]` names a coverage row, check, finding or decision and may
   repeat; `[Head("Android")]` marks a test that needs one head, with the `UatPlatforms` names; run sets

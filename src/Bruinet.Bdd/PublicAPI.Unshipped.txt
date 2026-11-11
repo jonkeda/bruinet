@@ -1215,3 +1215,6 @@ static Bruinet.Bdd.Runner.BddShadowCopy.ProcessOwner.get -> string!
 static readonly Bruinet.Bdd.BddDependency.ModesByKind -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>!
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.CancelGrace -> System.TimeSpan
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.ConnectTimeout -> System.TimeSpan
+Bruinet.Bdd.BddExecutionContext.ScenarioStartedUtc.get -> System.DateTime?
+Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.IDisposable! undo, string? name = null) -> void
+Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.Action! undo, string! name) -> void

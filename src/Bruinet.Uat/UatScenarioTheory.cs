@@ -76,6 +76,9 @@ public sealed class UatScenarioTestCase : XunitTestCase
         {
             Traits[BddScenarioAddress.Trait] = [BddScenarioAddress.Of(UatScenarioSourceFile.RelativeToConfig(file), name)];
 
+            // One runner over a folder still files each scenario under its own module, journeys and tier.
+            UatScenarioTraits.AddTo(Traits, UatScenarioTraits.Of(file, name));
+
             // A scenario its suite's config skips here (a head, @browser, a skip rule) is reported skipped with the reason, and
             // never run; reported as passed, a run's counts said it ran (.my/test-selection/next-plan.md, item 2).
             if (UatScenarioSkip.Of(file, name) is { } reason)

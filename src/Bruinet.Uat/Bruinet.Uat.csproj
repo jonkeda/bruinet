@@ -18,6 +18,8 @@
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
     <!-- BRUINET_RECORD: a run records its scenes (the narrator). -->
     <ProjectReference Include="..\Bruinet.Narrator\Bruinet.Narrator.csproj" />
+    <!-- A scenario case's traits from its file: the trait names the attributes write. -->
+    <ProjectReference Include="..\Bruinet.Traits\Bruinet.Traits.csproj" />
     <!-- [UatScenarioTheory]: a suite runs under xUnit, which brings both. -->
     <PackageReference Include="xunit.extensibility.core" PrivateAssets="all" />
     <PackageReference Include="xunit.extensibility.execution" PrivateAssets="all" />

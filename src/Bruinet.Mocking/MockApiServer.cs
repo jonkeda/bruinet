@@ -106,6 +106,18 @@ public sealed partial class MockApiServer : IDisposable
         }
     }
 
+    /// <summary>The process-wide shared server while a lease on it is held (<see cref="AcquireShared"/>); null otherwise.</summary>
+    public static MockApiServer? Shared
+    {
+        get
+        {
+            lock (SharedGate)
+            {
+                return _shared;
+            }
+        }
+    }
+
     /// <summary>
     /// Starts describing a stub for <paramref name="method"/> requests to <paramref name="path"/>.
     /// </summary>

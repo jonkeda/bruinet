@@ -6,3 +6,12 @@ Bruinet.Uat.UiSetup
 static Bruinet.Uat.UiSetup.Setup(System.Action! setup) -> void
 static Bruinet.Uat.UiSetup.Setup<T>(System.Func<T>! setup) -> T
 static Bruinet.Uat.UiSetup.SetupAsync(System.Func<System.Threading.Tasks.Task!>! setup) -> System.Threading.Tasks.Task!
+Bruinet.Uat.UatScenarioTraits
+static Bruinet.Uat.UatScenarioTraits.Of(string! file, string! scenarioName) -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!
+static Bruinet.Uat.UatScenarioTraits.Of(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! metadata, System.Collections.Generic.IEnumerable<string!>! scenarioTags) -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!
+static Bruinet.Uat.UatScenarioTraits.AddTo(System.Collections.Generic.Dictionary<string!, System.Collections.Generic.List<string!>!>! existing, System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string!, string!>>! traits) -> void
+const Bruinet.Uat.UatSpecFormatTestBase.OptOutTag = "no-format-check" -> string!
+const Bruinet.Uat.UatSpecFormatTestBase.OptOutReasonField = "FormatCheck" -> string!
+static Bruinet.Uat.UatSpecFormatTestBase.GetFolderFiles(params string![]! folderNames) -> System.Collections.Generic.IEnumerable<object![]!>!
+static Bruinet.Uat.UatSpecFormatTestBase.OptOutReason(string! filePath) -> string?
+Bruinet.Uat.UatSpecFormatTestBase.AssertUatFileFormat(string! filePath) -> void

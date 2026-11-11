@@ -22,6 +22,64 @@ public abstract class UatSpecFormatTestBase
 
     protected virtual Type? RuntimeRootType => null;
 
+    /// <summary>
+    /// The tag in a file's <c>Tags</c> metadata that leaves it out of <see cref="AssertUatFileFormat"/>, such as a draft
+    /// whose steps do not bind yet. The file must then say why in its <see cref="OptOutReasonField"/> metadata.
+    /// </summary>
+    public const string OptOutTag = "no-format-check";
+
+    /// <summary>The metadata field that says why a file carries <see cref="OptOutTag"/>.</summary>
+    public const string OptOutReasonField = "FormatCheck";
+
+    /// <summary>
+    /// Every feature file under each folder, one case per file, so a new file is checked without a list. A folder with
+    /// no file gives no case, which xUnit reports as a failure.
+    /// </summary>
+    /// <param name="folderNames">The folders, relative to the output.</param>
+    protected static IEnumerable<object[]> GetFolderFiles(params string[] folderNames)
+    {
+        ArgumentNullException.ThrowIfNull(folderNames);
+        return folderNames.SelectMany(folder => BddScenarioSource.GetScenarioFileTheoryData(folder));
+    }
+
+    /// <summary>
+    /// Checks one file of <see cref="GetFolderFiles"/>: it parses, has the required metadata and binds through the catalog,
+    /// unless it opts out with <see cref="OptOutTag"/> and a reason.
+    /// </summary>
+    /// <param name="filePath">The feature file.</param>
+    protected void AssertUatFileFormat(string filePath)
+    {
+        if (OptOutReason(filePath) is not null)
+        {
+            return;
+        }
+
+        AssertUatFileParsesAndContainsRequiredMetadata(filePath);
+        AssertUatFileBindsThroughCatalog(filePath);
+    }
+
+    /// <summary>
+    /// Why a file is left out of the format check; null when it is checked. A file that carries <see cref="OptOutTag"/>
+    /// without a reason fails.
+    /// </summary>
+    /// <param name="filePath">The feature file.</param>
+    public static string? OptOutReason(string filePath)
+    {
+        if (BddMarkdownParser.ParseFile(filePath).Document is not { } document
+            || !document.Metadata.TryGetValue(BddMetadataFields.Tags, out var tags)
+            || !tags.Split([',', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(BddTagConventions.NormalizeTag)
+                .Contains(OptOutTag, StringComparer.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        return document.Metadata.TryGetValue(OptOutReasonField, out var reason) && !string.IsNullOrWhiteSpace(reason)
+            ? reason.Trim()
+            : throw new InvalidOperationException(
+                $"{Path.GetFileName(filePath)} carries the tag '{OptOutTag}' but no reason: add the metadata field '{OptOutReasonField}' saying why.");
+    }
+
     protected static IEnumerable<object[]> GetScenarioFiles(
         string folderName = BddFileFormat.FeatureFolder,
         string? configurationFilter = null)

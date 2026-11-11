@@ -42,6 +42,56 @@ public sealed class BddExecutionContext
 
     public IList<string> Diagnostics { get; } = [];
 
+    /// <summary>
+    /// When <see cref="BddScenarioRunner.RunAsync(BddBoundScenario, CancellationToken)"/> started the scenario, in UTC: what
+    /// a step that reads what happened "in this scenario" counts from. Null when the steps are run one by one.
+    /// </summary>
+    public DateTime? ScenarioStartedUtc { get; internal set; }
+
+    private readonly List<(string Name, Action Undo)> _undos = [];
+
+    /// <summary>
+    /// Registers an undo for what a step set up: it is disposed after the scenario, after its AfterScenario hooks, also
+    /// when a step failed. Undos run in reverse order. A failing undo fails a passed scenario as a setup failure.
+    /// </summary>
+    /// <param name="undo">What to dispose, such as a mock override.</param>
+    /// <param name="name">How a failure names it; the type's name when null.</param>
+    public void RegisterUndo(IDisposable undo, string? name = null)
+    {
+        ArgumentNullException.ThrowIfNull(undo);
+        _undos.Add((name ?? undo.GetType().Name, undo.Dispose));
+    }
+
+    /// <summary>Registers an undo as an action; see <see cref="RegisterUndo(IDisposable, string?)"/>.</summary>
+    /// <param name="undo">What to run after the scenario.</param>
+    /// <param name="name">How a failure names it.</param>
+    public void RegisterUndo(Action undo, string name)
+    {
+        ArgumentNullException.ThrowIfNull(undo);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        _undos.Add((name, undo));
+    }
+
+    // Runs and forgets every undo, newest first; each failure is returned with the undo's name, and the others still run.
+    internal List<(string Name, Exception Failure)> RunUndos()
+    {
+        List<(string, Exception)> failures = [];
+        for (var i = _undos.Count - 1; i >= 0; i--)
+        {
+            try
+            {
+                _undos[i].Undo();
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+                failures.Add((_undos[i].Name, exception));
+            }
+        }
+
+        _undos.Clear();
+        return failures;
+    }
+
     /// <summary>Where the steps stop for the debugger; the IDE's step breakpoints while one is attached, null otherwise.</summary>
     public IBddBreakHook? Breaks { get; set; } = BddBreakpoints.ForDebugger();
 
@@ -166,17 +216,30 @@ public sealed class BddScenarioRunner
         CancellationToken cancellationToken = default)
     {
         var session = CreateSession(scenario);
-        if (scenario.Hooks.Count > 0 && session.HasNext)
+        _context.ScenarioStartedUtc = DateTime.UtcNow;
+        try
         {
-            return await BddHooks.RunAsync(scenario, _context, session, cancellationToken).ConfigureAwait(false);
-        }
-
-        while (session.HasNext)
-        {
-            var result = await session.RunNextAsync(cancellationToken).ConfigureAwait(false);
-            if (result.Status is BddStepResultStatus.Failed or BddStepResultStatus.Canceled)
+            if (scenario.Hooks.Count > 0 && session.HasNext)
             {
-                break;
+                await BddHooks.RunAsync(scenario, _context, session, cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                while (session.HasNext)
+                {
+                    var result = await session.RunNextAsync(cancellationToken).ConfigureAwait(false);
+                    if (result.Status is BddStepResultStatus.Failed or BddStepResultStatus.Canceled)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        finally
+        {
+            foreach (var (name, failure) in _context.RunUndos())
+            {
+                session.FailUndo(name, failure);
             }
         }
 
@@ -378,8 +441,34 @@ public sealed class BddStepExecutionSession
 
         var last = _results[^1];
         _results[^1] = last.Status == BddStepResultStatus.Passed
-            ? BddStepResult.Failed(last.Invocation, $"The step passed, but {problem}")
+            ? BddStepResult.Failed(last.Invocation, $"The steps passed, but {problem}")
             : last with { Message = $"{last.Message} Also, {problem}" };
+    }
+
+    // An undo failed after the scenario: a passed scenario fails on its last step as a setup failure; a failed one keeps
+    // its own failure, and only says so.
+    internal void FailUndo(string name, Exception failure)
+    {
+        System.Diagnostics.Trace.TraceWarning($"The undo {name} failed after the scenario: {failure}");
+        if (_results.Count == 0)
+        {
+            return;
+        }
+
+        var problem = $"the undo {name} failed after the scenario: {failure.Message}";
+        var failed = _results.FindLastIndex(result => result.Status == BddStepResultStatus.Failed);
+        if (failed >= 0)
+        {
+            _results[failed] = _results[failed] with { Message = $"{_results[failed].Message} Also, {problem}" };
+            return;
+        }
+
+        var last = _results[^1];
+        _results[^1] = BddStepResult.Failed(last.Invocation, $"The steps passed, but {problem}", new Bruinet.Core.Exceptions.UiSetupException(failure)) with
+        {
+            Duration = last.Duration,
+            LogWindow = last.LogWindow,
+        };
     }
 
     // In a scenario that uses several apps, a failure says which one it came from.

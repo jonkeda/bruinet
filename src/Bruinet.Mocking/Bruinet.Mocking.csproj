@@ -12,6 +12,8 @@
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
     <ProjectReference Include="..\Bruinet.Contracts\Bruinet.Contracts.csproj" />
     <ProjectReference Include="..\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
+    <!-- Steps/: the request steps a feature file opts into with Using MockRequests. -->
+    <ProjectReference Include="..\Bruinet.Bdd\Bruinet.Bdd.csproj" />
   </ItemGroup>
 
   <ItemGroup>

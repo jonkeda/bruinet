@@ -142,3 +142,12 @@ static readonly Bruinet.Mocking.MockApiServer.DefaultJsonOptions -> System.Text.
 static readonly Bruinet.Mocking.MockApiServer.DefaultRequestTimeout -> System.TimeSpan
 static readonly Bruinet.Mocking.MockApiServer.RequestPollInterval -> System.TimeSpan
 Bruinet.Mocking.MockApiServer.WritesSince(System.DateTime sinceUtc) -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.RecordedWrite!>!
+static Bruinet.Mocking.MockApiServer.Shared.get -> Bruinet.Mocking.MockApiServer?
+Bruinet.Mocking.Steps.MockRequestSteps
+Bruinet.Mocking.Steps.MockRequestSteps.MockRequestSteps(System.IServiceProvider! services) -> void
+Bruinet.Mocking.Steps.MockRequestSteps.NoneSent(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path) -> void
+Bruinet.Mocking.Steps.MockRequestSteps.CountSent(Bruinet.Bdd.BddExecutionContext! context, int count, string! method, string! path) -> void
+Bruinet.Mocking.Steps.MockRequestSteps.OneSent(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path) -> void
+Bruinet.Mocking.Steps.MockRequestSteps.LastHas(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path, Bruinet.Bdd.BddTable! table) -> void
+const Bruinet.Mocking.Steps.MockRequestSteps.Namespace = "MockRequests" -> string!
+const Bruinet.Mocking.Steps.MockRequestSteps.Absent = "(absent)" -> string!
