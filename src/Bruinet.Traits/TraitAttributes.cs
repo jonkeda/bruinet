@@ -14,11 +14,20 @@ public sealed class UnitAttribute() : BruinetTraitAttribute(
 public sealed class IntegrationAttribute() : BruinetTraitAttribute(
     Trait(TraitKeys.Pyramid, TierNames.Integration), Trait(TraitKeys.Category, TierNames.Integration));
 
-/// <summary>A UI test against a mock backend. Writes <c>Pyramid=Hermetic UI</c>.</summary>
+/// <summary>
+/// A UI test against a mock backend. Writes <c>Pyramid=UI</c>, and the old <c>Pyramid=Hermetic UI</c>
+/// so filters on the old name keep finding it during the move.
+/// </summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+public sealed class UiAttribute() : BruinetTraitAttribute(
+    Trait(TraitKeys.Pyramid, TierNames.Ui), Trait(TraitKeys.Pyramid, TierNames.HermeticUi));
+
+/// <summary>The old name of <see cref="UiAttribute"/>; writes the same traits.</summary>
 [TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public sealed class HermeticUiAttribute() : BruinetTraitAttribute(
-    Trait(TraitKeys.Pyramid, TierNames.HermeticUi));
+    Trait(TraitKeys.Pyramid, TierNames.Ui), Trait(TraitKeys.Pyramid, TierNames.HermeticUi));
 
 /// <summary>A test against a real backend. Writes <c>Pyramid=Live</c>.</summary>
 [TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
@@ -46,6 +55,19 @@ public sealed class UatAttribute() : BruinetTraitAttribute(Trait(TraitKeys.Categ
 [TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
 public sealed class ContractAttribute() : BruinetTraitAttribute(Trait(TraitKeys.Category, "Contract"));
+
+/// <summary>In the architecture run set. Writes <c>Category=Architecture</c>.</summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+public sealed class ArchitectureAttribute() : BruinetTraitAttribute(Trait(TraitKeys.Category, "Architecture"));
+
+/// <summary>
+/// In the review run set: accessibility, localization and screenshot checks a person reads.
+/// Writes <c>Category=Review</c>.
+/// </summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
+public sealed class ReviewAttribute() : BruinetTraitAttribute(Trait(TraitKeys.Category, "Review"));
 
 /// <summary>Owned by an app module. Writes <c>Module=name</c>.</summary>
 [TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
@@ -98,4 +120,28 @@ public sealed class JourneyAttribute(string id) : BruinetTraitAttribute(
 {
     /// <summary>The journey id.</summary>
     public string Id { get; } = id;
+}
+
+/// <summary>
+/// Names a coverage row, check, finding or decision the test proves. Writes <c>Covers=id</c>.
+/// </summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+public sealed class CoversAttribute(string id) : BruinetTraitAttribute(
+    Trait(TraitKeys.Covers, Required(id, nameof(id))))
+{
+    /// <summary>The id of the row, check, finding or decision.</summary>
+    public string Id { get; } = id;
+}
+
+/// <summary>
+/// Needs one head to run, named as in <c>UatPlatforms</c> (for example <c>Android</c>). Writes <c>Head=name</c>.
+/// </summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+public sealed class HeadAttribute(string name) : BruinetTraitAttribute(
+    Trait(TraitKeys.Head, Required(name, nameof(name))))
+{
+    /// <summary>The head name.</summary>
+    public string Name { get; } = name;
 }

@@ -36,6 +36,14 @@ public class TraitCheckTests
         => Assert.Contains(ProblemsOf(nameof(Fixtures.TwoTiers)), p => p.Contains("more than one tier: Integration, Unit", StringComparison.Ordinal));
 
     [Fact]
+    public void Check_CountsTheOldAndNewUiNameAsOneTier()
+        => Assert.Empty(ProblemsOf(nameof(UiFixtures.OldAndNewName), typeof(UiFixtures)));
+
+    [Fact]
+    public void Check_AcceptsAPlainOldUiTier()
+        => Assert.Empty(ProblemsOf(nameof(UiFixtures.PlainOldName), typeof(UiFixtures)));
+
+    [Fact]
     public void Check_ReportsAnUnknownModule()
         => Assert.Contains(ProblemsOf(nameof(Fixtures.UnknownModule)), p => p.Contains("unknown module 'Contcts'", StringComparison.Ordinal));
 
@@ -67,6 +75,16 @@ public class TraitCheckTests
 
         [Fact, Feature("Chekout")]
         public void UnknownFeature() { }
+    }
+
+    [Module("Contacts")]
+    public class UiFixtures
+    {
+        [Fact, Ui]
+        public void OldAndNewName() { }
+
+        [Fact, Trait("Pyramid", "Hermetic UI")]
+        public void PlainOldName() { }
     }
 
     public class UntaggedFixtures

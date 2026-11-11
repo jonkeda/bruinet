@@ -72,3 +72,19 @@ static Bruinet.Traits.TierNames.All.get -> System.Collections.Generic.IReadOnlyL
 static Bruinet.Traits.TraitCheck.Check(System.Reflection.Assembly! assembly, Bruinet.Traits.TraitCheckOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>!
 static Bruinet.Traits.TraitCheck.ReadTraits(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!>!
 static Bruinet.Traits.TraitCheck.Report(System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>! problems) -> string!
+Bruinet.Traits.ArchitectureAttribute
+Bruinet.Traits.ArchitectureAttribute.ArchitectureAttribute() -> void
+Bruinet.Traits.CoversAttribute
+Bruinet.Traits.CoversAttribute.CoversAttribute(string! id) -> void
+Bruinet.Traits.CoversAttribute.Id.get -> string!
+Bruinet.Traits.HeadAttribute
+Bruinet.Traits.HeadAttribute.HeadAttribute(string! name) -> void
+Bruinet.Traits.HeadAttribute.Name.get -> string!
+Bruinet.Traits.ReviewAttribute
+Bruinet.Traits.ReviewAttribute.ReviewAttribute() -> void
+Bruinet.Traits.UiAttribute
+Bruinet.Traits.UiAttribute.UiAttribute() -> void
+const Bruinet.Traits.TierNames.Ui = "UI" -> string!
+const Bruinet.Traits.TraitKeys.Covers = "Covers" -> string!
+const Bruinet.Traits.TraitKeys.Head = "Head" -> string!
+static Bruinet.Traits.TierNames.Current(string! tier) -> string!

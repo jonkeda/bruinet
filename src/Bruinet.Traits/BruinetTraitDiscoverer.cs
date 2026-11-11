@@ -9,7 +9,10 @@ public static class TraitKeys
     /// <summary>The test tier: <see cref="TierNames"/>.</summary>
     public const string Pyramid = "Pyramid";
 
-    /// <summary>The run set (Smoke, UAT, Contract), and the tier again for Unit, Integration and Video.</summary>
+    /// <summary>
+    /// The run set (Smoke, UAT, Contract, Architecture, Review), and the tier again for Unit,
+    /// Integration and Video.
+    /// </summary>
     public const string Category = "Category";
 
     /// <summary>The app module that owns the test.</summary>
@@ -26,6 +29,12 @@ public static class TraitKeys
 
     /// <summary>One user journey the test proves.</summary>
     public const string Journey = "Journey";
+
+    /// <summary>One coverage row, check, finding or decision the test proves.</summary>
+    public const string Covers = "Covers";
+
+    /// <summary>The one head the test needs.</summary>
+    public const string Head = "Head";
 }
 
 /// <summary>The values of the <see cref="TraitKeys.Pyramid"/> trait.</summary>
@@ -38,6 +47,9 @@ public static class TierNames
     public const string Integration = "Integration";
 
     /// <summary>A UI test against a mock backend.</summary>
+    public const string Ui = "UI";
+
+    /// <summary>The old name of <see cref="Ui"/>, still accepted during the move.</summary>
     public const string HermeticUi = "Hermetic UI";
 
     /// <summary>A test against a real backend.</summary>
@@ -46,8 +58,11 @@ public static class TierNames
     /// <summary>A narrated video recording.</summary>
     public const string Video = "Video";
 
-    /// <summary>Every tier.</summary>
-    public static IReadOnlyList<string> All { get; } = [Unit, Integration, HermeticUi, Live, Video];
+    /// <summary>Every tier, under its current name.</summary>
+    public static IReadOnlyList<string> All { get; } = [Unit, Integration, Ui, Live, Video];
+
+    /// <summary>Returns the current name of <paramref name="tier"/>: an old name maps to its new one.</summary>
+    public static string Current(string tier) => tier == HermeticUi ? Ui : tier;
 }
 
 /// <summary>

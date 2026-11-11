@@ -88,9 +88,10 @@ public static class TraitCheck
     private static IEnumerable<TraitProblem> CheckOne(
         string test, IReadOnlyList<KeyValuePair<string, string>> traits, TraitCheckOptions options)
     {
-        var tiers = Values(traits, TraitKeys.Pyramid);
+        // An old tier name next to its new one is one tier, not two.
+        var tiers = Values(traits, TraitKeys.Pyramid).Select(TierNames.Current).Distinct(StringComparer.Ordinal).ToList();
         if (tiers.Count == 0)
-            yield return new(test, "has no tier; add [Unit], [Integration], [HermeticUi], [Live] or [Video].");
+            yield return new(test, "has no tier; add [Unit], [Integration], [Ui], [Live] or [Video].");
         else if (tiers.Count > 1)
             yield return new(test, $"has more than one tier: {string.Join(", ", tiers)}.");
 

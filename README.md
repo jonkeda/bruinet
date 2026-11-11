@@ -88,7 +88,7 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 | `Bruinet.TestData` | Typed, validated test data and test sets |
 | `Bruinet.Logging` | An app's log kept by the step that made it, for the step's result: `AddBruinetStepLog()` |
 | `Bruinet.Mocking` | WireMock servers and mock sensors for UI tests |
-| `Bruinet.Traits` | Typed xUnit trait attributes (tier, owner, run set, journey) and `TraitCheck`, which reports tests without one tier and a known owner |
+| `Bruinet.Traits` | Typed xUnit trait attributes (tier, owner, run set, journey, covered row, head) and `TraitCheck`, which reports tests without one tier and a known owner |
 
 **Platforms**
 

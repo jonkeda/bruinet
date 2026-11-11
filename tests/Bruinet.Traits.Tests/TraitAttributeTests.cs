@@ -9,7 +9,12 @@ public class TraitAttributeTests
     [Theory]
     [InlineData(nameof(Holder.Unit), "Pyramid=Unit;Category=Unit")]
     [InlineData(nameof(Holder.Integration), "Pyramid=Integration;Category=Integration")]
-    [InlineData(nameof(Holder.HermeticUi), "Pyramid=Hermetic UI")]
+    [InlineData(nameof(Holder.Ui), "Pyramid=UI;Pyramid=Hermetic UI")]
+    [InlineData(nameof(Holder.HermeticUi), "Pyramid=UI;Pyramid=Hermetic UI")]
+    [InlineData(nameof(Holder.Architecture), "Category=Architecture")]
+    [InlineData(nameof(Holder.Review), "Category=Review")]
+    [InlineData(nameof(Holder.Covers), "Covers=CMN-CLIENTS-T04")]
+    [InlineData(nameof(Holder.Head), "Head=Android")]
     [InlineData(nameof(Holder.Live), "Pyramid=Live")]
     [InlineData(nameof(Holder.Video), "Pyramid=Video;Category=Video")]
     [InlineData(nameof(Holder.Smoke), "Category=Smoke")]
@@ -50,7 +55,12 @@ public class TraitAttributeTests
     {
         [Unit] public static void Unit() { }
         [Integration] public static void Integration() { }
+        [Ui] public static void Ui() { }
         [HermeticUi] public static void HermeticUi() { }
+        [Architecture] public static void Architecture() { }
+        [Review] public static void Review() { }
+        [Covers("CMN-CLIENTS-T04")] public static void Covers() { }
+        [Head("Android")] public static void Head() { }
         [Live] public static void Live() { }
         [Video] public static void Video() { }
         [Smoke] public static void Smoke() { }
