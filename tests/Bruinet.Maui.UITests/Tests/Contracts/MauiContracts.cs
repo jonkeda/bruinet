@@ -101,6 +101,16 @@ public sealed class MauiEntryContract : EditableTextContract<TextTestPage>
     protected override IEditableTextControlObject<TextTestPage> ReadOnlyField => _page.ReadOnlyEntry;
 
     protected override string Placeholder => "Enter text here";
+
+    private const string NotOnAndroid = "the Android head cannot tell a read-only Entry (R2-T116), so it neither reads it nor refuses a write to it.";
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void IsReadOnly_FalseEditable_TrueReadOnly() => base.IsReadOnly_FalseEditable_TrueReadOnly();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void WaitReadOnly_TrueWhenItHolds_FalseWhenItDoesNot() => base.WaitReadOnly_TrueWhenItHolds_FalseWhenItDoesNot();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void AssertReadOnly_PassesWhenItHolds_FailsWhenItDoesNot() => base.AssertReadOnly_PassesWhenItHolds_FailsWhenItDoesNot();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void SetText_OnAReadOnlyField_IsRefused_AndItKeepsItsText() => base.SetText_OnAReadOnlyField_IsRefused_AndItKeepsItsText();
 }
 
 [Collection("Maui")]
@@ -118,6 +128,10 @@ public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
     protected override TextTestPage Scope => _page;
 
     protected override IFocusableControlObject<TextTestPage> Field => _page.TestEntry;
+
+    private const string NotOnAndroid = "Appium cannot drop focus on Android; ClearFocus moves it on with Tab (R2-T116).";
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void Blur_TakesTheFocusAway() => base.Blur_TakesTheFocusAway();
 }
 
 [Collection("Maui")]
@@ -141,6 +155,28 @@ public sealed class MauiPickerContract : SelectorContract<SelectionTestPage>
     protected override SelectorValues Items => new(Texts, Texts, InitialIndex: 1);
 
     private static string[] Texts => ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"];
+
+    private const string NotOnAndroid = "the Android head reads no Picker's items or selection (R2-T116).";
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void GetItemCount_CountsThem() => base.GetItemCount_CountsThem();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void GetItemTexts_ReadsThemInOrder() => base.GetItemTexts_ReadsThemInOrder();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void GetSelected_ReadsTheSelection() => base.GetSelected_ReadsTheSelection();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void SelectByText_SelectsThatItem() => base.SelectByText_SelectsThatItem();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void SelectByValue_SelectsThatItem() => base.SelectByValue_SelectsThatItem();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void Selects_WithNull_Skip() => base.Selects_WithNull_Skip();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void WaitItemCount_TrueForTheCount_FalseForAnother() => base.WaitItemCount_TrueForTheCount_FalseForAnother();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void AssertItemCount_PassesForTheCount_FailsForAnother() => base.AssertItemCount_PassesForTheCount_FailsForAnother();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void WaitSelected_TrueForTheSelection_FalseForAnother() => base.WaitSelected_TrueForTheSelection_FalseForAnother();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void AssertSelected_PassesForTheSelection_FailsForAnother() => base.AssertSelected_PassesForTheSelection_FailsForAnother();
 }
 
 [Collection("Maui")]
@@ -222,6 +258,10 @@ public sealed class MauiButtonContract : ClickableContract<ButtonsTestPage>
     public override void LongPress_PressesIt()
     {
     }
+
+    private const string NotOnAndroid = "a MAUI Button raises no double tap on Android without a recognizer, and a recognizer swallows its clicks there.";
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void DoubleClick_DoubleClicksIt() => base.DoubleClick_DoubleClicksIt();
 }
 
 [Collection("Maui")]
@@ -317,6 +357,18 @@ public sealed class MauiProgressBarContract : ProgressContract<DisplayTestPage>
     public override void IsIndeterminate_TrueOnlyWhenIndeterminate()
     {
     }
+
+    private const string NotOnAndroid = "the Android head reads no ProgressBar's progress (R2-T116).";
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void GetProgress_ReadsTheFraction() => base.GetProgress_ReadsTheFraction();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void WaitProgress_TrueForTheFraction_FalseForAnother() => base.WaitProgress_TrueForTheFraction_FalseForAnother();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void AssertProgress_PassesForTheFraction_FailsForAnother() => base.AssertProgress_PassesForTheFraction_FailsForAnother();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void WaitComplete_TrueAtOne_FalseBefore() => base.WaitComplete_TrueAtOne_FalseBefore();
+    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
+    public override void AssertComplete_PassesAtOne_FailsBefore() => base.AssertComplete_PassesAtOne_FailsBefore();
 }
 
 [Collection("Maui")]
@@ -371,11 +423,13 @@ public sealed class MauiSwipeViewContract : SwipeableContract<SwipeView<Containe
     [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
     public override void SwipeRight_SwipesRight() => base.SwipeRight_SwipesRight();
 
-    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, SwipeNotOnWindows + " On Android, " + NotOnAndroid)]
     public override void SwipeUp_SwipesUp() => base.SwipeUp_SwipesUp();
 
-    [SkipOnFact(ContractHeads.Windows, SwipeNotOnWindows)]
+    [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, SwipeNotOnWindows + " On Android, " + NotOnAndroid)]
     public override void SwipeDown_SwipesDown() => base.SwipeDown_SwipesDown();
+
+    private const string NotOnAndroid = "a vertical swipe on Android does not open a SwipeView's top or bottom items (R2-T116).";
 }
 
 [Collection("Maui")]
@@ -402,18 +456,20 @@ public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<Co
             ? int.Parse(text["refreshed ".Length..], System.Globalization.CultureInfo.InvariantCulture)
             : 0;
 
+    private const string RefreshNotOnAndroid = "a pull does not reach the RefreshView's command and its state is not read (R2-T116).";
+
     private const string RefreshNotOnWindows =
         "a RefreshView is not addressable on Windows (its WinUI peer cannot be overridden), so its state cannot be read; pull it by id through IMauiDriver.PerformGesture.";
 
     [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
     public override void IsRefreshing_FalseAtTheStart() => base.IsRefreshing_FalseAtTheStart();
 
-    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, RefreshNotOnWindows + " On Android, " + RefreshNotOnAndroid)]
     public override void PullToRefresh_RefreshesIt() => base.PullToRefresh_RefreshesIt();
 
-    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, RefreshNotOnWindows + " On Android, " + RefreshNotOnAndroid)]
     public override void WaitRefreshing_TrueWhenItHolds_FalseWhenItDoesNot() => base.WaitRefreshing_TrueWhenItHolds_FalseWhenItDoesNot();
 
-    [SkipOnFact(ContractHeads.Windows, RefreshNotOnWindows)]
+    [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, RefreshNotOnWindows + " On Android, " + RefreshNotOnAndroid)]
     public override void AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot() => base.AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot();
 }

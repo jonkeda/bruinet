@@ -26,8 +26,6 @@ public class ButtonsViewModel : ParentViewModel
 
     public ICommand ContractClickCommand => new RelayCommand(() => ContractAction = "click");
 
-    public ICommand ContractDoubleTapCommand => new RelayCommand(() => ContractAction = "double-click");
-
     private void TestButton()
     {
         tapCount++;

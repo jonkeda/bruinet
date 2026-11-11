@@ -407,6 +407,12 @@ internal sealed class AndroidPlatform : AppiumPlatform
             { "text", text }
         });
 
+    public override void DoubleTap(AppiumMauiElement element)
+        => Script(element, "mobile: doubleClickGesture", new Dictionary<string, object> { { "elementId", element.Native.Id } });
+
+    /// <inheritdoc />
+    public override bool TypingReplaces => true;
+
     public override void LongPress(AppiumMauiElement element, int durationMs)
         => Script(element, "mobile: longClickGesture", new Dictionary<string, object>
         {

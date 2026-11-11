@@ -376,8 +376,11 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public void ClearFocus() => Marked(InteractionKind.Key, "Tab", () => SendKeys(Keys.Tab));
 
     /// <inheritdoc />
-    /// <remarks>Types the text at the end of what the field holds.</remarks>
-    public void AppendText(string text) => SendKeys(text);
+    /// <remarks>
+    /// Types the text at the end of what the field holds. UiAutomator2's typing replaces the field's text, so there the
+    /// field is given what it holds and the text together (the MAUI contracts on Android, R2-T49).
+    /// </remarks>
+    public void AppendText(string text) => SendKeys(_driver.Appium.TypingReplaces ? (Text ?? string.Empty) + text : text);
 
     #endregion
 
@@ -630,11 +633,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public void Clear() => Marked(InteractionKind.Clear, () => Live(() => _element.Clear()));
 
     /// <inheritdoc />
-    public void DoubleClick() => Marked(InteractionKind.DoubleTap, () => Live(() =>
-    {
-        var actions = new Actions(_driver.Driver);
-        actions.DoubleClick(_element).Perform();
-    }));
+    public void DoubleClick() => Marked(InteractionKind.DoubleTap, () => Live(() => _driver.Appium.DoubleTap(this)));
 
     /// <inheritdoc />
     public void RightClick()
@@ -768,23 +767,9 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     internal void WaitUntilPositionSettles()
     {
         // At most half a second, and never past what the running call has left.
-        const int IntervalMs = 50;
-        var maxChecks = Bruinet.Core.Calls.CallBudget.Within(500) / IntervalMs;
-
         try
         {
-            var previous = Rect;
-            for (var check = 0; check < maxChecks; check++)
-            {
-                Thread.Sleep(IntervalMs);
-                var current = Rect;
-                if (current == previous)
-                {
-                    return;
-                }
-
-                previous = current;
-            }
+            Bruinet.Core.Calls.Settle.Still(() => Rect, windowMs: 500, pollingIntervalMs: 50);
         }
         catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {

@@ -300,6 +300,15 @@ internal abstract class AppiumPlatform
 
     public abstract void LongPress(AppiumMauiElement element, int durationMs);
 
+    /// <summary>
+    /// Two taps on the element as the platform's own gesture: a mouse double click of two pointer-downs with no pause
+    /// between them is refused by UiAutomator2 (the MAUI contracts on Android, R2-T49).
+    /// </summary>
+    public abstract void DoubleTap(AppiumMauiElement element);
+
+    /// <summary>Whether typing into a field replaces its text (UiAutomator2) rather than adding at the end (XCUITest).</summary>
+    public abstract bool TypingReplaces { get; }
+
     /// <summary>A swipe between two screen points, in pixels, taking about <paramref name="durationMs"/>.</summary>
     public abstract void Swipe(AppiumMauiElement element, int startX, int startY, int endX, int endY, int durationMs);
 

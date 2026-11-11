@@ -490,6 +490,12 @@ internal sealed class IosPlatform : AppiumPlatform
             element.Native.SendKeys(text);
     }
 
+    public override void DoubleTap(AppiumMauiElement element)
+        => Script(element, "mobile: doubleTap", new Dictionary<string, object> { { "elementId", element.Native.Id } });
+
+    /// <inheritdoc />
+    public override bool TypingReplaces => false;
+
     public override void LongPress(AppiumMauiElement element, int durationMs)
         => Script(element, "mobile: touchAndHold", new Dictionary<string, object>
         {
