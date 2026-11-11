@@ -167,6 +167,39 @@ public sealed class MemberTests : IDisposable
         Assert.Equal("right", Echo("pointer"));
     }
 
+    // As in a browser: these bubble to the nearest element that listens (review 04, finding 6).
+    [Fact]
+    public void Click_DoubleAndRight_OnAChild_ReachTheParentsHandlers()
+    {
+        Id("pointer-inner").DoubleClick();
+        Assert.Equal("double", Echo("pointer"));
+
+        Id("pointer-inner").RightClick();
+        Assert.Equal("right", Echo("pointer"));
+    }
+
+    [Fact]
+    public void Key_OnAChild_ReachesTheParentsHandler()
+    {
+        Id("key-inner").PressKey("Escape");
+
+        Assert.Equal("Escape", Echo("keys"));
+    }
+
+    [Theory]
+    [InlineData("Enter")]
+    [InlineData(" ")]
+    public void Key_EnterOrSpace_OnAButton_IsItsClick(string key)
+    {
+        Id("wrap").PressKey(key);
+
+        Assert.Equal("1", Echo("wrap"));
+    }
+
+    [Fact]
+    public void Click_OnALabel_SaysItNeedsTheBrowser_RatherThanDoingNothing()
+        => Assert.Throws<BrowserOnlyException>(() => Id("label").Click());
+
     [Fact]
     public void Click_HandlerThrows_IsTheAppFailing()
     {

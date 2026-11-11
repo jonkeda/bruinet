@@ -121,6 +121,13 @@ internal sealed class BunitHtmlElement : IHtmlElement
     {
         var node = Node;
         var handler = Handling(node, "onclick");
+
+        // A label's click is its control's in a browser; here it would do nothing, so it is said rather than passed
+        // over (review 04, finding 6). Click the control itself.
+        if (handler is null && node.LocalName == "label" && (node.HasAttribute("for") || node.QuerySelector("input, select, textarea") is not null))
+        {
+            throw new BrowserOnlyException("Click on a label");
+        }
         if (Disabled(node) || handler is not null && Disabled(handler))
         {
             return;
@@ -186,10 +193,19 @@ internal sealed class BunitHtmlElement : IHtmlElement
         Fill(InputValue + text);
     }
 
+    // A key bubbles to the nearest element that listens, as in a browser, and Enter or Space on a button is its click
+    // (review 04, finding 6).
     public void PressKey(string key)
     {
-        Raise(Node, "onkeydown", new KeyboardEventArgs { Key = key, Code = key, Type = "keydown" });
-        Raise(Node, "onkeyup", new KeyboardEventArgs { Key = key, Code = key, Type = "keyup" });
+        var node = Node;
+        Raise(Handling(node, "onkeydown") ?? node, "onkeydown", new KeyboardEventArgs { Key = key, Code = key, Type = "keydown" });
+        Raise(Handling(Node, "onkeyup") ?? Node, "onkeyup", new KeyboardEventArgs { Key = key, Code = key, Type = "keyup" });
+        if (key is "Enter" or " " or "Space" && Node is IHtmlButtonElement)
+        {
+            Click();
+            return;
+        }
+
         if (key == "Enter" && Node is IHtmlInputElement && Node.Closest("form") is { } form)
         {
             Raise(form, "onsubmit", EventArgs.Empty);
@@ -198,9 +214,10 @@ internal sealed class BunitHtmlElement : IHtmlElement
 
     public void Clear() => Fill(string.Empty);
 
-    public void DoubleClick() => Raise(Node, "ondblclick", new MouseEventArgs { Type = "dblclick", Detail = 2 });
+    // Bubbles to the nearest element that listens, as a click does (review 04, finding 6).
+    public void DoubleClick() => Raise(Handling(Node, "ondblclick") ?? Node, "ondblclick", new MouseEventArgs { Type = "dblclick", Detail = 2 });
 
-    public void RightClick() => Raise(Node, "oncontextmenu", new MouseEventArgs { Type = "contextmenu", Button = 2 });
+    public void RightClick() => Raise(Handling(Node, "oncontextmenu") ?? Node, "oncontextmenu", new MouseEventArgs { Type = "contextmenu", Button = 2 });
 
     public void Hover() => throw new BrowserOnlyException(nameof(Hover));
 
