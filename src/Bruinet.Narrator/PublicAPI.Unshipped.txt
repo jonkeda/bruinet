@@ -623,6 +623,7 @@ Bruinet.Narrator.ClipLibrary.Mode.get -> Bruinet.Narrator.ClipLibraryMode
 Bruinet.Narrator.ClipLibrary.Mode.set -> void
 Bruinet.Narrator.ClipLibrary.PathOf(string! key) -> string!
 Bruinet.Narrator.ClipLibrary.Prune() -> int
+Bruinet.Narrator.ClipLibrary.Unreached() -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Narrator.ClipLibrary.Use.get -> Bruinet.Narrator.BddSpeechUse?
 Bruinet.Narrator.ClipLibraryMode
 Bruinet.Narrator.ClipLibraryMode.Ask = 0 -> Bruinet.Narrator.ClipLibraryMode

@@ -9,6 +9,23 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| R2-T92 | `tools/Scripts/timings.ps1` is gone: the report is a command (in scripts, `*.ps1`, `*.md`) | `timings\.ps1` | `bruinet tests timings <folder>` (`--top`, `--out`); it writes the same `timings.md` beside the timings |
+| R2-T90 | `bruinet voice` is a group of verbs: `--fill`, `--ask`, `--prune` and `--index` are gone, and `buy` and `prune` ask first (in scripts, `*.ps1`, `*.md`) | `bruinet\s+voice\b(?!\s+(list\|fill\|buy\|prune\|index)\b)` | `voice list`; `voice fill`; `voice buy --yes` for `--ask`; `voice prune --yes`; `voice index`; with no one at a terminal `buy` and `prune` need `--yes` |
+| R2-T89 | A test project's folder is `--project` in `tests` and `voice`; `--suite` is only a suite's name (in scripts, `*.ps1`, `*.md`) | `bruinet\s+(tests\s+(touch-map\|affected)\|voice)\b.*--suite\b` | `--project <folder>` |
+| R2-T89 | `scrape check --visible` is gone: a window opens by default when someone is at a terminal | `scrape\s+check\b.*--visible\b` | drop it; `--headless` for no window |
+| R2-T89 | `scenario results delete --line N` is gone: the line goes with the file | `results\s+delete\b.*--line\b` | `scenario results delete <file>:<line>` |
+| R2-T89 | `bruinet why` moved into the `scenario` group (the MCP tool `why` is unchanged) | `bruinet\s+why\b` | `bruinet scenario why <file>:<line>` |
+| R2-T89 | The recording gates are `check`, no longer `reviewed` (in CI, `*.yml`) | `\b(http\|sql)\s+reviewed\b` | `http check`, `sql check`; `--json` prints the unread list, `[]` when none |
+| R2-T89 | `diff --accept` is its own command: `diff` only reads | `\b(http\|sql)\s+diff\b.*--accept\b` | `diff` without it, then `http accept --recordings <folder>` or `sql accept --recordings <folder>` |
+| R2-T89 | `controls generate` takes its files and folders as arguments; `--input` and `-i` with `;` are gone (in `*.bat`, `*.ps1`) | `controls\s+generate\b.*(--input\|-i)\b` | `controls generate <path> [<path>…]`, each quoted |
+| R2-T89 | `sql schema` is `sql snapshot`, and its `--references` is `--references-file` | `\bsql\s+schema\b`, `--references\s+\S+\.json` | `sql snapshot … --references-file <file>` |
+| R2-T89 | `sql snapshot --data` takes one table per option: a comma no longer splits | `--data\s+\S+,` | `--data dbo.Kinds --data dbo.Places` |
+| R2-T89 | `sql stale --version` is `--stamp` | `sql\s+stale\b.*--version\b` | `--stamp name=value` |
+| R2-T89 | `sql capture start --folder` is `--server-folder` | `capture\s+start\b.*--folder\b` | `--server-folder <folder on the server>` |
+| R2-T89 | The `bruinet version` command is gone | `bruinet\s+version\b` | `bruinet --version`, which prints the version alone |
+| R2-T89 | `data`'s hidden `--format json` is gone | `bruinet\s+data\b.*--format\s+json` | `--json` |
+| R2-T89 | stdout is only the answer: `data validate --fix`'s "Renamed" and "Fixed" lines and `voice`'s summary and counts went to stderr | a script reading those lines from stdout | read stderr, or `--json` |
+| R2-T89 | `mcp` and `mcp-host` find the solution as every command does: without `--solution`, the nearest folder up with a `.sln` or `.slnx` | `"mcp"` in a `.mcp.json` with no `--solution` | nothing when started in the solution's folder; `--solution .` keeps the old meaning |
 | R2-T39 | The ten `Is…()` members of the control interfaces (`IsVisible`, `IsEnabled`, `IsClickable`, `IsReadOnly`, `IsExpanded`, `IsFocused`, `IsIndeterminate`, `IsRefreshing`, `IsSelected`, `IsChecked`) and every generated `Is…()` return `bool`: false when the element is not found, as they always answered (D1). `GetAttribute` on a missing element throws `ElementNotFoundException`, as it did. | `Is[A-Z]\w*\(\)\s*(\?\?|\.Value|\.HasValue|== null)` | The `bool` itself; `Exists()` to tell missing from hidden |
 | R2-T59 | `TimeoutSettings.ElementFind` and `ElementState`, their `With` parameters and the `TimeoutDefaults` class are gone: nothing read them. `Animation` is the scroll throttle, as its summary now says. | `\bElement(Find|State)\s*=|elementFind:|elementState:|TimeoutDefaults` | Delete the line; a wait's budget is `DefaultWait` or the call's own `timeoutMs` |
 | R2-T17 | A refusal by the platform or the app (a pattern that refused, the game refusing an action, a picker with no such item, Windows refusing a key) is `Bruinet.Core.Exceptions.ActionRefusedException`, a `BruinetException`, no longer `InvalidOperationException` | `catch \(InvalidOperationException` around a control call | `catch (ActionRefusedException …)`; an `InvalidOperationException` is now a fault |

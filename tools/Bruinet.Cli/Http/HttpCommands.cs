@@ -6,15 +6,16 @@ namespace Bruinet.Cli.Http;
 
 /// <summary>
 /// <c>bruinet http</c>: the review of a suite's HTTP recordings (AI11), as <c>bruinet sql</c>'s: which are stale after a
-/// replay, what a refresh changed against git, and the gate on recordings that went in unread.
+/// replay, what a refresh changed against git, marking them read, and the gate on recordings that went in unread.
 /// </summary>
 internal static class HttpCommands
 {
-    public static Command Build(CliIo io) => new("http", "HTTP replay's recordings: the stale ones, what a refresh changed, and the gate on recordings that went in unread.")
+    public static Command Build(CliIo io) => new("http", "HTTP replay's recordings: the stale ones, what a refresh changed, marking them read, and the gate on recordings that went in unread.")
     {
         StaleCommand(io),
         DiffCommand(io),
-        ReviewedCommand(io),
+        CheckCommand(io),
+        AcceptCommand(io),
     };
 
     private static Option<string> Recordings() => new("--recordings") { Description = "The folder of HTTP recordings (Recordings/http).", Required = true };
@@ -22,17 +23,14 @@ internal static class HttpCommands
     private static Command StaleCommand(CliIo io)
     {
         var recordings = Recordings();
-        var command = new Command("stale", "The recordings whose newest replay missed a call or left recorded calls unused: the tests to record again. Exit 1 when any.") { recordings };
-        command.Action(io, (parsed, cancellationToken) =>
+        var json = CommonOptions.Json();
+        var command = new Command("stale", "The recordings whose newest replay missed a call or left recorded calls unused: the tests to record again. Exit 1 when any.") { recordings, json };
+        command.Action(io, parsed =>
         {
             var stale = HttpRecordingReview.Stale(Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory));
-            foreach (var line in stale)
-            {
-                io.Out.WriteLine(line);
-            }
-
+            SqlCommands.Lines(io, stale, parsed.GetValue(json));
             io.Error.WriteLine(stale.Count == 0 ? "no recording stale" : $"{stale.Count} recordings stale: record them again (BRUINET_HTTP_REPLAY=Refresh)");
-            return Task.FromResult(stale.Count == 0 ? 0 : 1);
+            return stale.Count == 0 ? 0 : 1;
         });
         return command;
     }
@@ -41,8 +39,7 @@ internal static class HttpCommands
     {
         var recordings = Recordings();
         var since = new Option<string>("--base") { Description = "The git revision to compare with.", DefaultValueFactory = _ => "HEAD" };
-        var accept = new Option<bool>("--accept") { Description = "After the summary, accept every recording as it is now (reviewed.json)." };
-        var command = new Command("diff", "What each re-recorded test's calls changed against git: calls added and gone, statuses and answers. --accept marks them read.") { recordings, since, accept };
+        var command = new Command("diff", "What each re-recorded test's calls changed against git: calls added and gone, statuses and answers. bruinet http accept marks them read.") { recordings, since };
         command.Action(io, (parsed, cancellationToken) =>
         {
             var folder = Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory);
@@ -77,31 +74,36 @@ internal static class HttpCommands
             }
 
             io.Error.WriteLine($"{changed} recordings changed since {revision}");
-            if (parsed.GetValue(accept))
-            {
-                HttpRecordingReview.Accept(folder);
-                io.Error.WriteLine($"accepted: wrote {Path.Combine(folder, HttpRecordingReview.FileName)}");
-            }
-
             return Task.FromResult(0);
         });
         return command;
     }
 
-    private static Command ReviewedCommand(CliIo io)
+    private static Command AcceptCommand(CliIo io)
     {
         var recordings = Recordings();
-        var command = new Command("reviewed", "The gate: HTTP recordings that went in unread (changed since bruinet http diff --accept). Exit 1 when any.") { recordings };
-        command.Action(io, (parsed, cancellationToken) =>
+        var command = new Command("accept", "Mark every HTTP recording read as it is now (reviewed.json), after reading bruinet http diff.") { recordings };
+        command.Action(io, parsed =>
+        {
+            var folder = Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory);
+            HttpRecordingReview.Accept(folder);
+            io.Error.WriteLine($"accepted: wrote {Path.Combine(folder, HttpRecordingReview.FileName)}");
+            return 0;
+        });
+        return command;
+    }
+
+    private static Command CheckCommand(CliIo io)
+    {
+        var recordings = Recordings();
+        var json = CommonOptions.Json();
+        var command = new Command("check", "The gate: HTTP recordings that went in unread (changed since bruinet http accept). Exit 1 when any.") { recordings, json };
+        command.Action(io, parsed =>
         {
             var unread = HttpRecordingReview.Unreviewed(Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory));
-            foreach (var line in unread)
-            {
-                io.Out.WriteLine(line);
-            }
-
-            io.Error.WriteLine(unread.Count == 0 ? "every recording reviewed" : $"{unread.Count} recordings unread: bruinet http diff --recordings <folder>, then --accept");
-            return Task.FromResult(unread.Count == 0 ? 0 : 1);
+            SqlCommands.Lines(io, unread, parsed.GetValue(json));
+            io.Error.WriteLine(unread.Count == 0 ? "every recording reviewed" : $"{unread.Count} recordings unread: read bruinet http diff --recordings <folder>, then bruinet http accept");
+            return unread.Count == 0 ? 0 : 1;
         });
         return command;
     }

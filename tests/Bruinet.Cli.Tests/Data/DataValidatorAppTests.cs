@@ -46,7 +46,7 @@ public sealed class DataValidatorAppTests : IDisposable
     {
         var file = Write("broken.json", """{ "books": [ { "id": 1, "title": "A", "genre": "Drama" } ] }""");
 
-        var (exit, output, _) = Run("validate", file, "--assembly", Assembly, "--format", "json");
+        var (exit, output, _) = Run("validate", file, "--assembly", Assembly, "--json");
 
         Assert.Equal(1, exit);
         var problem = Assert.Single(JsonDocument.Parse(output).RootElement.EnumerateArray());

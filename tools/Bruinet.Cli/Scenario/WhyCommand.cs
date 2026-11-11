@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Globalization;
 using System.Text.Json.Nodes;
 using Bruinet.Bdd.LanguageServer;
 using static Bruinet.Cli.CommonOptions;
@@ -7,7 +6,7 @@ using static Bruinet.Cli.CommonOptions;
 namespace Bruinet.Cli.Scenario;
 
 /// <summary>
-/// <c>bruinet why &lt;file&gt;:&lt;line&gt;</c> (AI9): where a scenario's newest failing run first parted from its last green
+/// <c>bruinet scenario why &lt;file&gt;:&lt;line&gt;</c> (AI9): where a scenario's newest failing run first parted from its last green
 /// run, and the files changed since that touch the step; the MCP server's <c>why</c> as text.
 /// </summary>
 internal static class WhyCommand
@@ -21,14 +20,11 @@ internal static class WhyCommand
         command.Action(io, async (parsed, _) =>
         {
             var text = parsed.GetValue(at)!;
-            var colon = text.LastIndexOf(':');
-            // The last colon: a drive letter's (C:) is the first, and no line follows it.
-            if (colon <= 0 || (colon == 1 && char.IsLetter(text[0])) || !int.TryParse(text[(colon + 1)..], NumberStyles.None, CultureInfo.InvariantCulture, out var line))
+            if (Place(text, io.CurrentDirectory) is not (var path, int line))
             {
                 throw new ArgumentException($"'{text}': give the feature file and the scenario's line, file:line.");
             }
 
-            var path = Path.GetFullPath(text[..colon], io.CurrentDirectory);
             using var server = new BddMcpServer(SolutionFolder(parsed.GetValue(solution), Path.GetDirectoryName(path)!));
             var arguments = new JsonObject { ["path"] = path, ["line"] = line };
             if (parsed.GetValue(suite) is { } name)

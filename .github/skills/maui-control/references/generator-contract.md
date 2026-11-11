@@ -21,7 +21,7 @@ and `src\Bruinet.Blazor\Controls`: the contract below holds for Html controls un
 `IHtmlElement` as the element type. For one file or folder elsewhere, run `bruinet controls generate` directly:
 
 ```
-pwsh tools\Scripts\bruinet.ps1 controls generate --input <file-or-folder>[;<file-or-folder>...]
+pwsh tools\Scripts\bruinet.ps1 controls generate <file-or-folder> [<file-or-folder>...]
 ```
 
 Output is always `<name>.gen.cs` beside the input.

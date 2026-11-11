@@ -9,14 +9,14 @@ internal static class ServerCommands
     /// <summary>The Bruinet MCP server for Copilot and other agents.</summary>
     public static Command Mcp(CliIo io)
     {
-        var solution = new Option<string?>("--solution") { Description = "The solution's folder. Default: this folder." };
+        var solution = CommonOptions.Solution();
         var command = new Command("mcp", "For tools: the MCP server for agents, over stdio.") { solution };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             // The protocol owns stdout: anything else written to the console goes to stderr.
             var protocol = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
             Console.SetOut(Console.Error);
-            using var mcp = new BddMcpServer(Path.GetFullPath(parsed.GetValue(solution) ?? io.CurrentDirectory, io.CurrentDirectory));
+            using var mcp = new BddMcpServer(CommonOptions.SolutionFolder(parsed.GetValue(solution), io.CurrentDirectory));
             await mcp.RunAsync(Console.In, protocol, cancellationToken).ConfigureAwait(false);
             return 0;
         });
@@ -29,7 +29,7 @@ internal static class ServerCommands
     /// </summary>
     public static Command McpHost(CliIo io)
     {
-        var solution = new Option<string?>("--solution") { Description = "The solution's folder. Default: this folder." };
+        var solution = CommonOptions.Solution();
         var build = new Option<string>("--build") { Description = "The build folder to run and watch (.bruinet/mcp).", Required = true };
         var runs = new Option<string?>("--runs") { Description = "Where the snapshots go. Default: the build folder's sibling 'run'." };
         var command = new Command("mcp-host", "For tools: the MCP server, run from a build folder and started again on each new build there.") { solution, build, runs };
@@ -39,7 +39,7 @@ internal static class ServerCommands
             Console.SetOut(Console.Error);
             var buildFolder = Path.GetFullPath(parsed.GetValue(build)!, io.CurrentDirectory);
             var runFolder = parsed.GetValue(runs) is { } given ? Path.GetFullPath(given, io.CurrentDirectory) : Path.Combine(Path.GetDirectoryName(buildFolder.TrimEnd('\\', '/'))!, "run");
-            var solutionFolder = Path.GetFullPath(parsed.GetValue(solution) ?? io.CurrentDirectory, io.CurrentDirectory);
+            var solutionFolder = CommonOptions.SolutionFolder(parsed.GetValue(solution), io.CurrentDirectory);
             using var host = new McpReloadingHost(buildFolder, runFolder, ["mcp", "--solution", solutionFolder]);
             host.Reloaded += stamp => Console.Error.WriteLine($"bruinet mcp-host: a new build ({stamp}), the server started again.");
             await host.RunAsync(Console.In, protocol, cancellationToken).ConfigureAwait(false);

@@ -3,7 +3,7 @@ using Bruinet.Mocking.Http;
 
 namespace Bruinet.Cli.Tests.Http;
 
-// bruinet http reviewed and stale (AI11): the gate on recordings that went in unread, and the ones a replay left behind.
+// bruinet http check, accept and stale (AI11): the gate on recordings that went in unread, and the ones a replay left behind.
 public sealed class HttpCommandsTests : IDisposable
 {
     private readonly string _folder = Directory.CreateTempSubdirectory("bruinet-http-").FullName;
@@ -11,18 +11,20 @@ public sealed class HttpCommandsTests : IDisposable
     public void Dispose() => Directory.Delete(_folder, recursive: true);
 
     [Fact]
-    public async Task Reviewed_FailsOnANewRecording_UntilItIsAccepted()
+    public async Task Check_FailsOnANewRecording_UntilItIsAccepted()
     {
         var recording = Path.Combine(_folder, "Add a todo.json");
         new HttpRecording { Exchanges = [new HttpExchange { Method = "GET", Url = "https://api.test/todos", ResponseBody = "[]" }] }.Save(recording);
 
-        var unread = await Run("http", "reviewed", "--recordings", _folder);
-        HttpRecordingReview.Accept(_folder);
-        var read = await Run("http", "reviewed", "--recordings", _folder);
+        var unread = await Run("http", "check", "--recordings", _folder);
+        var accepted = await Run("http", "accept", "--recordings", _folder);
+        var read = await Run("http", "check", "--recordings", _folder, "--json");
 
         Assert.Equal(1, unread.Exit);
         Assert.Contains("new Add a todo.json", unread.Output, StringComparison.Ordinal);
+        Assert.Equal(0, accepted.Exit);
         Assert.Equal(0, read.Exit);
+        Assert.Equal("[]", read.Output.Trim());
     }
 
     [Fact]

@@ -35,6 +35,20 @@ internal static class CommonOptions
         return currentDirectory;
     }
 
+    /// <summary>A scenario's place, <c>file[:line]</c>: the file's full path, and the line when one is given.</summary>
+    public static (string Path, int? Line) Place(string text, string currentDirectory)
+    {
+        var colon = text.LastIndexOf(':');
+        // The last colon: a drive letter's (C:) is the first, and no line follows it.
+        if (colon > 0 && !(colon == 1 && char.IsLetter(text[0]))
+            && int.TryParse(text[(colon + 1)..], System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var line))
+        {
+            return (Path.GetFullPath(text[..colon], currentDirectory), line);
+        }
+
+        return (Path.GetFullPath(text, currentDirectory), null);
+    }
+
     /// <summary>Asks yes or no on the error stream; without a terminal, says to pass --yes instead.</summary>
     public static async Task<bool> ConfirmAsync(CliIo io, string question, CancellationToken cancellationToken)
     {

@@ -34,5 +34,5 @@ only what it uses.
 
 **Broken when:** replay answers a command it didn't record; a gate passes on replay alone; a test's
 session is found through a static shared by tests in parallel; a recording goes in without its
-review (`bruinet sql reviewed`); or a schema change to an object a recording touched leaves it
+review (`bruinet sql check`); or a schema change to an object a recording touched leaves it
 replaying without a stale report.

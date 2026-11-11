@@ -146,8 +146,9 @@ the same order (an app's work outlives a scenario, and a skipped one changes wha
 ```bash
 # working directory: the repository root
 bruinet http stale --recordings <suite>/Recordings/http      # misses or unused calls in the newest replay
-bruinet http diff --recordings <suite>/Recordings/http       # what a refresh changed against git; --accept marks it read
-bruinet http reviewed --recordings <suite>/Recordings/http   # the gate: exit 1 while a recording went in unread
+bruinet http diff --recordings <suite>/Recordings/http       # what a refresh changed against git
+bruinet http accept --recordings <suite>/Recordings/http     # after reading it: every recording marked read
+bruinet http check --recordings <suite>/Recordings/http      # the gate: exit 1 while a recording went in unread
 ```
 
 For agents, the MCP server's `run_scenario {replay: "record" | "replay" | "refresh"}` runs with the mode set, and

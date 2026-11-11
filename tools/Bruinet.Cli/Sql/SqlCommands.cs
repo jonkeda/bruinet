@@ -19,10 +19,11 @@ internal static class SqlCommands
 
     public static Command Build(CliIo io) => new("sql", "The SQL log: the schema snapshot, an Extended Events capture, and the report of what each test spent in the database.")
     {
-        SchemaCommand(io),
+        SnapshotCommand(io),
         StaleCommand(io),
         DiffCommand(io),
-        ReviewedCommand(io),
+        CheckCommand(io),
+        AcceptCommand(io),
         new Command("capture", "An Extended Events session on the test database: the app's commands, logged by SQL Server, the app unchanged.")
         {
             StartCommand(io),
@@ -32,17 +33,18 @@ internal static class SqlCommands
         ReportCommand(io),
     };
 
-    private static Command SchemaCommand(CliIo io)
+    private static Command SnapshotCommand(CliIo io)
     {
         var connection = Connection();
         var connectionFrom = ConnectionFrom();
         var output = new Option<string>("--out") { Description = "The snapshot's file.", DefaultValueFactory = _ => "schema.json" };
-        var references = new Option<string?>("--references") { Description = "A JSON file of references kept by hand, for dynamic SQL: { \"dbo.search\": [\"dbo.places\"] }." };
-        var data = new Option<string[]>("--data") { Description = "A table of reference data whose rows are hashed with it (repeatable, or comma-separated).", AllowMultipleArgumentsPerToken = true };
+        var references = new Option<string?>("--references-file") { Description = "A JSON file of references kept by hand, for dynamic SQL: { \"dbo.search\": [\"dbo.places\"] }." };
+        var data = new Option<string[]>("--data") { Description = "A table of reference data whose rows are hashed with it (repeatable).", AllowMultipleArgumentsPerToken = true };
         var defaultSchema = new Option<string>("--default-schema") { Description = "The app's user's default schema: a command's unqualified name is taken in it, then dbo. SQLite's is always main.", DefaultValueFactory = _ => "dbo" };
         var provider = new Option<string>("--provider") { Description = "sqlserver, or sqlite for a SQLite file (\"Data Source=<file>\"): the connection string can't tell them apart.", DefaultValueFactory = _ => "sqlserver" };
         provider.AcceptOnlyFromAmong("sqlserver", "sqlite");
-        var command = new Command("schema", "Write the database's schema snapshot: tables, views, procedures and functions, their hashes and references.") { connection, connectionFrom, output, references, data, defaultSchema, provider };
+        var json = CommonOptions.Json();
+        var command = new Command("snapshot", "Write the database's schema snapshot: tables, views, procedures and functions, their hashes and references.") { connection, connectionFrom, output, references, data, defaultSchema, provider, json };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             var sqlite = parsed.GetValue(provider) == "sqlite";
@@ -53,7 +55,7 @@ internal static class SqlCommands
             var options = new SnapshotOptions
             {
                 Provider = sqlite ? SnapshotProvider.Sqlite : SnapshotProvider.SqlServer,
-                Data = [.. (parsed.GetValue(data) ?? []).SelectMany(item => item.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))],
+                Data = [.. parsed.GetValue(data) ?? []],
                 DefaultSchema = parsed.GetValue(defaultSchema)!,
             };
             var snapshot = await SchemaSnapshot.ReadAsync(sql, options, cancellationToken);
@@ -71,7 +73,12 @@ internal static class SqlCommands
             io.Error.WriteLine($"{snapshot.Objects.Count} objects of {sql.Database}; wrote {to}");
             if (dynamic.Count > 0)
             {
-                io.Error.WriteLine($"{dynamic.Count} with dynamic SQL and no references listed (--references): {string.Join(", ", dynamic)}");
+                io.Error.WriteLine($"{dynamic.Count} with dynamic SQL and no references listed (--references-file): {string.Join(", ", dynamic)}");
+            }
+
+            if (parsed.GetValue(json))
+            {
+                io.Out.WriteLine(CommonOptions.ToJson(new { file = to, database = sql.Database, objects = snapshot.Objects.Count, dynamic }));
             }
 
             return 0;
@@ -79,12 +86,13 @@ internal static class SqlCommands
         return command;
     }
 
+    private static Option<string> Recordings() => new("--recordings") { Description = "The folder of recordings (<head>/<test>.json).", Required = true };
+
     private static Command DiffCommand(CliIo io)
     {
-        var recordings = new Option<string>("--recordings") { Description = "The folder of recordings (<head>/<test>.json).", Required = true };
+        var recordings = Recordings();
         var since = new Option<string>("--base") { Description = "The git revision to compare with.", DefaultValueFactory = _ => "HEAD" };
-        var accept = new Option<bool>("--accept") { Description = "After the summary, accept every recording as it is now (reviewed.json)." };
-        var command = new Command("diff", "What each re-recorded test changed against git: commands added and removed, rows, columns, values, errors, the stamp. --accept marks them read.") { recordings, since, accept };
+        var command = new Command("diff", "What each re-recorded test changed against git: commands added and removed, rows, columns, values, errors, the stamp. bruinet sql accept marks them read.") { recordings, since };
         command.Action(io, (parsed, cancellationToken) =>
         {
             var folder = Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory);
@@ -127,33 +135,53 @@ internal static class SqlCommands
             }
 
             io.Error.WriteLine($"{changed} recordings changed since {revision}");
-            if (parsed.GetValue(accept))
-            {
-                RecordingReview.Accept(folder);
-                io.Error.WriteLine($"accepted: wrote {Path.Combine(folder, RecordingReview.FileName)}");
-            }
-
             return Task.FromResult(0);
         });
         return command;
     }
 
-    private static Command ReviewedCommand(CliIo io)
+    private static Command AcceptCommand(CliIo io)
     {
-        var recordings = new Option<string>("--recordings") { Description = "The folder of recordings (<head>/<test>.json).", Required = true };
-        var command = new Command("reviewed", "The gate: recordings that went in unread (changed since bruinet sql diff --accept). Exit 1 when any.") { recordings };
-        command.Action(io, (parsed, cancellationToken) =>
+        var recordings = Recordings();
+        var command = new Command("accept", "Mark every recording read as it is now (reviewed.json), after reading bruinet sql diff.") { recordings };
+        command.Action(io, parsed =>
         {
-            var unread = RecordingReview.Unreviewed(Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory));
-            foreach (var line in unread)
-            {
-                io.Out.WriteLine(line);
-            }
-
-            io.Error.WriteLine(unread.Count == 0 ? "every recording reviewed" : $"{unread.Count} recordings unread: bruinet sql diff --recordings <folder>, then --accept");
-            return Task.FromResult(unread.Count == 0 ? 0 : 1);
+            var folder = Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory);
+            RecordingReview.Accept(folder);
+            io.Error.WriteLine($"accepted: wrote {Path.Combine(folder, RecordingReview.FileName)}");
+            return 0;
         });
         return command;
+    }
+
+    private static Command CheckCommand(CliIo io)
+    {
+        var recordings = Recordings();
+        var json = CommonOptions.Json();
+        var command = new Command("check", "The gate: recordings that went in unread (changed since bruinet sql accept). Exit 1 when any.") { recordings, json };
+        command.Action(io, parsed =>
+        {
+            var unread = RecordingReview.Unreviewed(Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory));
+            Lines(io, unread, parsed.GetValue(json));
+            io.Error.WriteLine(unread.Count == 0 ? "every recording reviewed" : $"{unread.Count} recordings unread: read bruinet sql diff --recordings <folder>, then bruinet sql accept");
+            return unread.Count == 0 ? 0 : 1;
+        });
+        return command;
+    }
+
+    /// <summary>A gate's list on stdout: a line each, or one JSON array (<c>[]</c> when empty).</summary>
+    internal static void Lines(CliIo io, IEnumerable<string> lines, bool json)
+    {
+        if (json)
+        {
+            io.Out.WriteLine(CommonOptions.ToJson(lines.ToList()));
+            return;
+        }
+
+        foreach (var line in lines)
+        {
+            io.Out.WriteLine(line);
+        }
     }
 
     internal static string GitText(string directory, params string[] arguments)
@@ -174,9 +202,10 @@ internal static class SqlCommands
     private static Command StaleCommand(CliIo io)
     {
         var schema = new Option<string>("--schema") { Description = "The schema snapshot now.", Required = true };
-        var recordings = new Option<string>("--recordings") { Description = "The folder of recordings (<head>/<test>.json).", Required = true };
-        var versions = new Option<string[]>("--version") { Description = "A version that shapes the SQL, name=value (ef=10.0.12); compared with the recordings' (repeatable).", AllowMultipleArgumentsPerToken = true };
-        var command = new Command("stale", "The recordings a schema change made stale, and what changed, from their stamps without replaying: the tests to re-record. Exit 1 when any is stale.") { schema, recordings, versions };
+        var recordings = Recordings();
+        var versions = new Option<string[]>("--stamp") { Description = "A version that shapes the SQL, name=value (ef=10.0.12); compared with the recordings' (repeatable).", AllowMultipleArgumentsPerToken = true };
+        var json = CommonOptions.Json();
+        var command = new Command("stale", "The recordings a schema change made stale, and what changed, from their stamps without replaying: the tests to re-record. Exit 1 when any is stale.") { schema, recordings, versions, json };
         command.Action(io, (parsed, cancellationToken) =>
         {
             var snapshot = SchemaSnapshot.Load(Path.GetFullPath(parsed.GetValue(schema)!, io.CurrentDirectory));
@@ -184,12 +213,21 @@ internal static class SqlCommands
                 .ToDictionary(parts => parts[0], parts => parts[1], StringComparer.Ordinal);
             var folder = Path.GetFullPath(parsed.GetValue(recordings)!, io.CurrentDirectory);
             var states = RecordingCheck.Check(folder, snapshot.ToSchema(given));
-            foreach (var state in states.Where(state => state.IsStale))
+            if (parsed.GetValue(json))
             {
-                io.Out.WriteLine(Path.GetRelativePath(folder, state.Path));
-                foreach (var difference in state.Differences)
+                io.Out.WriteLine(CommonOptions.ToJson(states.Where(state => state.IsStale)
+                    .Select(state => new { recording = Path.GetRelativePath(folder, state.Path).Replace('\\', '/'), differences = state.Differences })
+                    .ToList()));
+            }
+            else
+            {
+                foreach (var state in states.Where(state => state.IsStale))
                 {
-                    io.Out.WriteLine("  " + difference);
+                    io.Out.WriteLine(Path.GetRelativePath(folder, state.Path));
+                    foreach (var difference in state.Differences)
+                    {
+                        io.Out.WriteLine("  " + difference);
+                    }
                 }
             }
 
@@ -213,7 +251,7 @@ internal static class SqlCommands
     {
         var connection = Connection();
         var connectionFrom = ConnectionFrom();
-        var folder = new Option<string?>("--folder") { Description = "A folder on the server for the session's files. Default: the server's log folder." };
+        var folder = new Option<string?>("--server-folder") { Description = "A folder on the server for the session's files. Default: the server's log folder." };
         var state = State();
         var like = new Option<string?>("--database-like") { Description = "Capture every database whose name is LIKE this (TestDb_%), for a suite that makes one per run; default: the connection's." };
         var command = new Command("start", "Start the session on the connection's database and send the marker that lines the clocks up. Needs ALTER ANY EVENT SESSION.") { connection, connectionFrom, folder, state, like };

@@ -106,19 +106,19 @@ A recording is stamped with the objects its commands touched: tables, views and 
 tables their bodies reach. The stamp comes from a schema snapshot kept in git:
 
 ```bash
-bruinet sql schema --connection-from TEST_DATABASE --out Recordings/schema.json --data dbo.Kinds --references references.json
+bruinet sql snapshot --connection-from TEST_DATABASE --out Recordings/schema.json --data dbo.Kinds --references-file references.json
 bruinet sql stale --schema Recordings/schema.json --recordings Recordings
 ```
 
 `stale` lists the recordings a schema change reached, and why, without replaying them. A table's
 triggers, defaults and checks count as the table. `--data` hashes a reference table's rows with it.
 Dynamic SQL (`sp_executesql`) has no dependencies SQL Server can read: list what it reads in
-`--references`, or a change to those tables is missed. `--default-schema` is the app's user's.
+`--references-file`, or a change to those tables is missed. `--default-schema` is the app's user's.
 
 On SQLite, add `--provider sqlite` (the connection string can't tell the two apart):
 
 ```bash
-bruinet sql schema --provider sqlite --connection "Data Source=<file>" --out Recordings/schema.json --data Kinds
+bruinet sql snapshot --provider sqlite --connection "Data Source=<file>" --out Recordings/schema.json --data Kinds
 ```
 
 Objects are the tables and views in `main` (`main.places`). A table's hash is its `CREATE TABLE`
@@ -132,13 +132,13 @@ A re-record changes files nobody reads line by line. Read the summary, then acce
 
 ```bash
 bruinet sql diff --recordings Recordings
-bruinet sql diff --recordings Recordings --accept
-bruinet sql reviewed --recordings Recordings
+bruinet sql accept --recordings Recordings
+bruinet sql check --recordings Recordings
 ```
 
 `diff` shows each changed test against git: commands added and removed, rows, columns, the columns
-whose values changed, rows affected and errors. `--accept` writes `Recordings/reviewed.json`;
-`reviewed` fails while a recording went in unread, and `RecordingReview.Unreviewed` does the same in
+whose values changed, rows affected and errors. `accept` writes `Recordings/reviewed.json`;
+`check` fails while a recording went in unread, and `RecordingReview.Unreviewed` does the same in
 a test. A re-record that comes out the same needs no review: volatile values and how often a read
 repeats don't count.
 

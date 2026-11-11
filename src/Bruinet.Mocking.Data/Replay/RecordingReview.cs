@@ -6,7 +6,7 @@ namespace Bruinet.Mocking.Data.Replay;
 
 /// <summary>
 /// The gate on re-records: <c>&lt;folder&gt;/reviewed.json</c> holds each recording's content hash as a person accepted it
-/// (<c>bruinet sql diff --accept</c>, after reading the summary). A recording whose hash differs went in unread. A
+/// (<c>bruinet sql accept</c>, after reading <c>bruinet sql diff</c>). A recording whose hash differs went in unread. A
 /// re-record that comes out the same keeps its hash, so only real changes ask for a reading.
 /// </summary>
 public static class RecordingReview

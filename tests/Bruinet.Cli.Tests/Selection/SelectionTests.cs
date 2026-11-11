@@ -103,6 +103,21 @@ public sealed class SelectionTests : IDisposable
         => Assert.Equal(["[data-testid='increment-btn']"], Map().Tests.Single(test => test.Name == "Shop.UITests.Tests.CounterTests.Visible").Controls);
 
     [Fact]
+    public async Task Timings_WritesTheReport_BesideTheTimings()
+    {
+        var errors = new StringWriter();
+        var exit = await BruinetCommand.RunAsync(["tests", "timings", "timings", "--top", "2"], new CliIo(TextReader.Null, TextWriter.Null, errors, _root, Interactive: false));
+
+        Assert.Equal(0, exit);
+        var report = File.ReadAllText(At("timings/" + TimingsReport.FileName));
+        Assert.StartsWith("# Timings", report, StringComparison.Ordinal);
+        Assert.Contains("| call |", report, StringComparison.Ordinal);
+        Assert.Contains("| Shop.UITests.Tests.CounterTests.Title |", report, StringComparison.Ordinal);
+        Assert.Equal(2, report.Split("## The slowest call")[1].Split('\n').Count(line => line.StartsWith("| 1 |", StringComparison.Ordinal)));
+        Assert.Contains("wrote", errors.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void TouchMap_SavedAndLoaded_IsTheSame()
     {
         var map = Map();
@@ -284,11 +299,11 @@ public sealed class SelectionTests : IDisposable
     public async Task TheCommands_WriteTheMap_ThenPrintTheFilterWithWhy()
     {
         var io = new CliIo(TextReader.Null, new StringWriter(), new StringWriter(), _root, Interactive: false);
-        Assert.Equal(0, await BruinetCommand.RunAsync(["tests", "touch-map", "timings", "--suite", "Shop.UITests"], io));
+        Assert.Equal(0, await BruinetCommand.RunAsync(["tests", "touch-map", "timings", "--project", "Shop.UITests"], io));
         Assert.True(File.Exists(Path.Combine(_suite, TouchMap.FileName)));
 
         var output = new StringWriter();
-        var exit = await BruinetCommand.RunAsync(["tests", "affected", "--suite", "Shop.UITests", "--files", "Shop.UITests/PageObjects/CounterPage.cs"],
+        var exit = await BruinetCommand.RunAsync(["tests", "affected", "--project", "Shop.UITests", "--files", "Shop.UITests/PageObjects/CounterPage.cs"],
             io with { Out = output });
 
         Assert.Equal(0, exit);

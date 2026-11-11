@@ -21,7 +21,8 @@ comes from a full run's timings. Commit it.
 
 ```bash
 $env:BRUINET_TIMINGS = "<folder>"; dotnet test <suite>
-bruinet tests touch-map <folder> --suite <suite>
+bruinet tests touch-map <folder> --project <suite>
+bruinet tests timings <folder>    # timings.md beside them: where the run's time went
 ```
 
 Scenarios name themselves in the timings. Plain `[Fact]` tests need `[assembly: TestScope]`
@@ -32,7 +33,7 @@ it in the filter yourself.
 ## What A Change Reaches
 
 ```bash
-bruinet tests affected --suite <suite> [--base <rev> | --files <paths>] [--always "Gate=Smoke"]
+bruinet tests affected --project <suite> [--base <rev> | --files <paths>] [--always "Gate=Smoke"]
 ```
 
 The command takes the files changed since `--base` (default `HEAD`), including uncommitted

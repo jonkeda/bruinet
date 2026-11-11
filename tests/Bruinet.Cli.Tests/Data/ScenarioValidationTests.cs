@@ -93,7 +93,7 @@ public sealed class ScenarioValidationTests : IDisposable
             When I lend "Dune" to Carol until 12-May-2026
             """);
 
-        var (exit, output, _) = Run("validate", file, "--format", "json");
+        var (exit, output, _) = Run("validate", file, "--json");
 
         Assert.Equal(1, exit);
         var problem = Assert.Single(JsonDocument.Parse(output).RootElement.EnumerateArray());
@@ -108,10 +108,10 @@ public sealed class ScenarioValidationTests : IDisposable
             And I lend "Dune" to Eva until 3-jan-2027
             """);
 
-        var (exit, output, _) = Run("validate", "--fix");
+        var (exit, _, fixes) = Run("validate", "--fix");
 
         Assert.Equal(0, exit);
-        Assert.Contains("Fixed 1 value(s) in Features/library.feature.md.", output);
+        Assert.Contains("Fixed 1 value(s) in Features/library.feature.md.", fixes);
         var text = File.ReadAllText(file);
         Assert.Contains("until 12-May-2026", text);
         Assert.Contains("until 3-jan-2027", text);
@@ -151,10 +151,10 @@ public sealed class ScenarioValidationTests : IDisposable
         Assert.Equal(1, exit);
         Assert.Contains("UAT029 The folder 'Scenarios' is the old name of 'Features'", output);
 
-        (exit, output, _) = Run("validate", "--fix");
+        (exit, output, var fixes) = Run("validate", "--fix");
 
         Assert.True(exit == 0, output);
-        Assert.Contains("Renamed Features/library.uat.md to library.feature.md.", output);
+        Assert.Contains("Renamed Features/library.uat.md to library.feature.md.", fixes);
         Assert.StartsWith("# Feature: Library", File.ReadAllText(Path.Combine(_folder, "Features", "library.feature.md")));
         var steps = File.ReadAllText(Path.Combine(_folder, "Features", "Library.steps.md"));
         Assert.StartsWith("# Steps: Library", steps);
@@ -177,10 +177,10 @@ public sealed class ScenarioValidationTests : IDisposable
         Assert.Equal(1, exit);
         Assert.Contains("UAT007 Scenario section must contain at least one step. " + BddFileFormat.FenceHint, output);
 
-        (exit, output, _) = Run("validate", "--fix");
+        (exit, output, var fixes) = Run("validate", "--fix");
 
         Assert.True(exit == 0, output);
-        Assert.Contains("Put the steps of 1 section(s) in a gherkin block in Features/library.feature.md.", output);
+        Assert.Contains("Put the steps of 1 section(s) in a gherkin block in Features/library.feature.md.", fixes);
         Assert.Contains("```gherkin\nWhen I lend \"Dune\" to Eva until 12-May-2026\n```", File.ReadAllText(file).ReplaceLineEndings("\n"));
     }
 
@@ -212,10 +212,10 @@ public sealed class ScenarioValidationTests : IDisposable
         Assert.Contains("Features/Library.steps.md:9: UATC001", errors);
         Assert.Contains("does not copy to its output", errors);
 
-        (exit, output, _) = Run("validate", "--fix");
+        (exit, _, var fixes) = Run("validate", "--fix");
 
         Assert.Equal(0, exit);
-        Assert.Contains("Fixed 1 value(s) in Features/library.feature.md.", output);
+        Assert.Contains("Fixed 1 value(s) in Features/library.feature.md.", fixes);
         Assert.Contains("Given a loan of \"Dune\" to Eva on 12-May-2026", File.ReadAllText(file));
     }
 

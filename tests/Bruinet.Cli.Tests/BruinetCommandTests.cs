@@ -61,8 +61,9 @@ public sealed class BruinetCommandTests : IDisposable
     [Theory]
     [InlineData(new[] { "nope" }, "See 'bruinet --help'.")]
     [InlineData(new[] { "scrape", "explore", "--max-pages", "0" }, "See 'bruinet scrape explore --help'.")]
-    [InlineData(new[] { "data", "validate", "--format" }, "See 'bruinet data validate --help'.")]
-    [InlineData(new[] { "controls", "generate" }, "--input")]
+    [InlineData(new[] { "data", "validate", "--format", "json" }, "See 'bruinet data validate --help'.")]
+    [InlineData(new[] { "version" }, "See 'bruinet --help'.")]
+    [InlineData(new[] { "controls", "generate" }, "See 'bruinet controls generate --help'.")]
     public async Task A_wrong_call_exits_2_and_says_where_help_is(string[] args, string message)
     {
         var (exit, _, errors) = await Run(_solution, args);
@@ -80,13 +81,28 @@ public sealed class BruinetCommandTests : IDisposable
     [InlineData("scrape config set Explore MaxPages 20")]
     [InlineData("scrape config add \"Explore hosts\" shop.example")]
     [InlineData("scrape record --by-hand --session first --url https://x")]
-    [InlineData("data validate Features/TOD.01.feature.md --format json --fix --assembly a.dll --assembly b.dll --config uat.config.md")]
+    [InlineData("data validate Features/TOD.01.feature.md --json --fix --assembly a.dll --assembly b.dll --config uat.config.md")]
     [InlineData("data phrases --keyword When --json")]
     [InlineData("data snippet Features/TOD.01.feature.md:14")]
     [InlineData("data schema --check")]
     [InlineData("scenario preview Features/TOD.01.feature.md --suite Todo --out page.html --host")]
-    [InlineData("scenario results delete Features/TOD.01.feature.md --line 12 --yes")]
-    [InlineData("controls generate -i src/Controls;more --members state")]
+    [InlineData("scenario results delete Features/TOD.01.feature.md:12 --yes")]
+    [InlineData("scenario why Features/TOD.01.feature.md:12 --suite Todo --json")]
+    [InlineData("scrape check --headless --json")]
+    [InlineData("sql snapshot --connection-from DB --references-file refs.json --data dbo.Kinds --data dbo.Places --json")]
+    [InlineData("sql stale --schema schema.json --recordings Recordings --stamp ef=10.0.12 --json")]
+    [InlineData("sql capture start --connection-from DB --server-folder D:/xe")]
+    [InlineData("sql check --recordings Recordings --json")]
+    [InlineData("sql accept --recordings Recordings")]
+    [InlineData("http check --recordings Recordings --json")]
+    [InlineData("http accept --recordings Recordings")]
+    [InlineData("tests timings TestResults/timings --top 5")]
+    [InlineData("tests affected --project Shop.UITests --json")]
+    [InlineData("data list --json")]
+    [InlineData("data describe TodoDto --json")]
+    [InlineData("data references Backend --json")]
+    [InlineData("mcp-host --build .bruinet/mcp --solution .")]
+    [InlineData("controls generate src/Controls more --members state")]
     [InlineData("mcp --solution .")]
     [InlineData("lsp")]
     public void A_documented_example_parses(string line)
@@ -154,20 +170,35 @@ public sealed class BruinetCommandTests : IDisposable
     }
 
     [Fact]
-    public async Task Version_prints_bruinet_and_its_version()
+    public async Task The_version_option_prints_the_version()
     {
-        var (exit, output, _) = await Run(_solution, "version");
+        var (exit, output, _) = await Run(_solution, "--version");
 
         Assert.Equal(0, exit);
-        Assert.Matches(@"^bruinet \d+\.\d+", output);
+        Assert.Matches(@"^\d+\.\d+\.\d+", output);
     }
 
     [Fact]
     public async Task Generate_writes_each_template_s_output_and_exits_2_for_a_missing_input()
     {
-        var (exit, _, errors) = await Run(_solution, "controls", "generate", "--input", Path.Combine(_solution, "nowhere"));
+        var (exit, _, errors) = await Run(_solution, "controls", "generate", Path.Combine(_solution, "nowhere"));
 
         Assert.Equal(2, exit);
-        Assert.Contains("Input not found", errors);
+        Assert.Contains("bruinet: No file or folder", errors);
+    }
+
+    // A gate with nothing to report still prints one JSON document: a script never parses an empty stdout.
+    [Theory]
+    [InlineData("sql", "check")]
+    [InlineData("http", "check")]
+    [InlineData("http", "stale")]
+    public async Task A_gate_s_json_with_nothing_found_is_an_empty_list(string group, string gate)
+    {
+        var recordings = Directory.CreateDirectory(Path.Combine(_solution, "Recordings")).FullName;
+
+        var (exit, output, _) = await Run(_solution, group, gate, "--recordings", recordings, "--json");
+
+        Assert.Equal(0, exit);
+        Assert.Equal("[]", output.Trim());
     }
 }

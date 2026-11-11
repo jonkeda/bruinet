@@ -262,18 +262,19 @@ Speech: 46 lines, 45 reused, 1 asked (38 characters)
 
 With `BRUINET_VOICE_REUSE=1` a line found nowhere fails the recording instead of being paid for.
 
-`bruinet voice --suite <folder>` goes through the lines of a suite's scripts without recording:
+`bruinet voice` goes through the lines of a test project's scripts without recording (`--project <folder>`, default
+the current one):
 
 | Command | What it does |
 | --- | --- |
-| `bruinet voice` | lists the lines with no clip and their characters; exit 1 when there are any |
-| `bruinet voice --fill` | adds what the local cache holds, for free |
-| `bruinet voice --ask` | as `--fill`, and buys the rest |
-| `bruinet voice --prune` | deletes the clips no script says any more; refused when a script has errors |
-| `bruinet voice --index` | writes `speech-clips.md` beside the scripts: per video, each line, where it is said, and its clip |
+| `bruinet voice list` | lists the lines with no clip and their characters; exit 1 when there are any |
+| `bruinet voice fill` | adds what the local cache holds, for free |
+| `bruinet voice buy` | as `fill`, and buys the rest; asks first, `--yes` skips the question |
+| `bruinet voice prune` | deletes the clips no script says any more; asks first, and refused when a script has errors |
+| `bruinet voice index` | writes `speech-clips.md` beside the scripts: per video, each line, where it is said, and its clip |
 
-The clip names are hashes, so `--index` is how a person sees which clip says what. Run it with
-`--fill` after recording and commit the lists with the clips; a reworded line changes its row.
+The clip names are hashes, so `index` is how a person sees which clip says what. Run `fill` and `index` after
+recording and commit the lists with the clips; a reworded line changes its row.
 
 ## Azure Speech
 

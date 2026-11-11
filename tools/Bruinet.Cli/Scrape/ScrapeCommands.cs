@@ -133,12 +133,12 @@ internal static class ScrapeCommands
     private static Command Check(CliIo io)
     {
         var (solution, project, json) = (Solution(), Project(), Json());
-        var visible = new Option<bool>("--visible") { Description = "Show the browser, to sign in." };
-        var command = new Command("check", "Open the start URL: does the app answer, signed in, on a host Explore may go to.") { project, solution, visible, json };
+        var headless = Headless();
+        var command = new Command("check", "Open the start URL: does the app answer, signed in, on a host Explore may go to.") { project, solution, headless, json };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             await using var service = Service(io, parsed.GetValue(solution));
-            var check = await service.CheckAppAsync(ProjectName(service, parsed.GetValue(project), io), parsed.GetValue(visible), cancellationToken).ConfigureAwait(false);
+            var check = await service.CheckAppAsync(ProjectName(service, parsed.GetValue(project), io), !parsed.GetValue(headless) && io.Interactive, cancellationToken).ConfigureAwait(false);
             if (parsed.GetValue(json))
                 await io.Out.WriteLineAsync(ToJson(check)).ConfigureAwait(false);
             else

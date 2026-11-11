@@ -1,6 +1,5 @@
 using System.CommandLine;
 using System.CommandLine.Help;
-using System.Reflection;
 using Bruinet.Bdd.Workspace;
 using Bruinet.Cli.Data;
 using Bruinet.Cli.Generate;
@@ -43,10 +42,8 @@ internal static class BruinetCommand
             SelectionCommands.Build(io),
             Sql.SqlCommands.Build(io),
             Http.HttpCommands.Build(io),
-            Scenario.WhyCommand.Build(io),
             Scenario.VoiceCommand.Build(io),
             GenerateCommand.Build(io),
-            Version(io),
             ServerCommands.Mcp(io),
             ServerCommands.McpHost(io),
             ServerCommands.Lsp(),
@@ -71,9 +68,8 @@ internal static class BruinetCommand
         return await parsed.InvokeAsync(new InvocationConfiguration { Output = io.Out, Error = io.Error, EnableDefaultExceptionHandler = false }, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Runs a command's work: a problem it can name is a message and exit 2, not a stack trace.</summary>
     /// <summary>
-    /// The exit codes every command keeps (D3): 0 ran and found nothing, 1 ran and found something, 2 could not run, 130
+    /// Runs a command's work. The exit codes every command keeps (D3): 0 ran and found nothing, 1 ran and found something, 2 could not run, 130
     /// stopped by Ctrl+C. Anything a command throws is "could not run": one line on stderr, the stack trace only with
     /// <c>BRUINET_DEBUG=1</c>.
     /// </summary>
@@ -127,19 +123,6 @@ internal static class BruinetCommand
     /// <summary>Runs a command's work that needs no awaiting.</summary>
     public static void Action(this Command command, CliIo io, Func<ParseResult, int> action) =>
         command.Action(io, (parsed, _) => Task.FromResult(action(parsed)));
-
-    private static Command Version(CliIo io)
-    {
-        var command = new Command("version", "The version of this bruinet.");
-        command.Action(io, _ =>
-        {
-            var assembly = typeof(BruinetCommand).Assembly;
-            var version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? assembly.GetName().Version?.ToString() ?? "unknown";
-            io.Out.WriteLine($"bruinet {version.Split('+')[0]}");
-            return 0;
-        });
-        return command;
-    }
 
     // A group on its own (bruinet, bruinet scrape) shows what comes next.
     private static void HelpWhenBare(Command command)

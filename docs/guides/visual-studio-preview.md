@@ -278,7 +278,7 @@ VS Code) and any other MCP client:
   part (its page, the controls it drove, what the app said, what a page showed, its status), a kind (`page-changed`,
   `data-changed`, `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green
   run's commit that touch that step or an earlier one, with changes of comments only set apart; it builds and runs the
-  scenario first when no failure of it is traced. A failure in `run_scenario` carries the short form, `sinceGreen`. `bruinet why <file>:<line>` prints the same;
+  scenario first when no failure of it is traced. A failure in `run_scenario` carries the short form, `sinceGreen`. `bruinet scenario why <file>:<line>` prints the same;
 - a failure from `run_scenario` gives, as `appSource`, the app lines (`.razor`, `.cshtml`, XAML, code) that render the
   element its locator names, the suite's own app first;
 - `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines

@@ -8,9 +8,10 @@ namespace Bruinet.Cli.Scenario;
 /// <summary><c>bruinet scenario</c>: feature files through the same server methods an IDE uses.</summary>
 internal static class ScenarioCommands
 {
-    public static Command Build(CliIo io) => new("scenario", "Feature files: a preview page, and deleting old results.")
+    public static Command Build(CliIo io) => new("scenario", "Feature files: a preview page, why a scenario fails, and deleting old results.")
     {
         Preview(io),
+        WhyCommand.Build(io),
         new Command("results", "A scenario's, a feature file's or a suite's run results.") { DeleteResults(io) },
     };
 
@@ -50,27 +51,32 @@ internal static class ScenarioCommands
 
     private static Command DeleteResults(CliIo io)
     {
-        var file = new Argument<string?>("file") { Description = "The feature file whose results go. Leave out with --suite.", Arity = ArgumentArity.ZeroOrOne };
-        var line = new Option<int?>("--line") { Description = "Only the scenario whose heading is on this line of the file." };
+        var file = new Argument<string?>("file[:line]") { Description = "The feature file whose results go; with :line, only the scenario whose heading is on that line. Leave out with --suite.", Arity = ArgumentArity.ZeroOrOne };
         var suite = new Option<string?>("--suite") { Description = "Every result of this suite (or the suite picked for a linked file)." };
         var (solution, yes, json) = (Solution(), Yes(), Json());
-        var command = new Command("delete", "Delete old results from every run, for good: reports and screenshots; a run left empty goes.") { file, line, suite, solution, yes, json };
+        var command = new Command("delete", "Delete old results from every run, for good: reports and screenshots; a run left empty goes.") { file, suite, solution, yes, json };
         command.Action(io, async (parsed, cancellationToken) =>
         {
-            var path = parsed.GetValue(file) is { } given ? Path.GetFullPath(given, io.CurrentDirectory) : null;
-            var scope = path is null ? "suite" : parsed.GetValue(line) is null ? "file" : "scenario";
+            var (path, line) = parsed.GetValue(file) is { } given ? Place(given, io.CurrentDirectory) : (null, null);
+            var scope = path is null ? "suite" : line is null ? "file" : "scenario";
             if (scope == "suite" && parsed.GetValue(suite) is null)
                 throw new ArgumentException("Say what to delete: a feature file, or --suite.");
             using var server = Server(SolutionFolder(parsed.GetValue(solution), path is null ? io.CurrentDirectory : Path.GetDirectoryName(path)!), images: false);
             DeleteResultsResult Delete(bool dryRun) =>
-                server.DeleteResults(new DeleteResultsParams(scope, path is null ? null : new Uri(path).AbsoluteUri, parsed.GetValue(line), parsed.GetValue(suite), dryRun));
+                server.DeleteResults(new DeleteResultsParams(scope, path is null ? null : new Uri(path).AbsoluteUri, line, parsed.GetValue(suite), dryRun));
 
             var count = Delete(dryRun: true);
             if (!count.Done)
                 throw new ArgumentException(count.Reason ?? "Nothing to delete.");
             await io.Error.WriteLineAsync($"{count.What} in {count.Suite}: {count.FilesDeleted} files, {count.RunsDeleted} runs left empty.").ConfigureAwait(false);
             if (count.FilesDeleted == 0)
+            {
+                // Under --json, never an empty stdout: the count that found nothing.
+                if (parsed.GetValue(json))
+                    await io.Out.WriteLineAsync(ToJson(count)).ConfigureAwait(false);
                 return 0;
+            }
+
             if (!parsed.GetValue(yes) && !await ConfirmAsync(io, "Delete them?", cancellationToken).ConfigureAwait(false))
             {
                 await io.Error.WriteLineAsync("Nothing deleted.").ConfigureAwait(false);

@@ -28,4 +28,4 @@ SQLite file.
   which a replay does not run; such a scenario needs the stub.
 
 **Broken when:** replay answers a call it did not record; a recording is saved with a secret in it; a hermetic suite
-reaches the network; a gate passes on replay alone; or a recording goes in without its review (`bruinet http reviewed`).
+reaches the network; a gate passes on replay alone; or a recording goes in without its review (`bruinet http check`).

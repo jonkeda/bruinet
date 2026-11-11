@@ -51,7 +51,7 @@ public static class DataValidatorApp
 
         if (options.Argument is null && options.ConfigPath is { } project)
         {
-            diagnostics.AddRange(CheckOldForms(options, project, output));
+            diagnostics.AddRange(CheckOldForms(options, project, errors));
         }
 
         if (scenarioFile is null && (options.Assemblies.Count > 0 || HasTestData(options) || options.ConfigPath is null || !ScenarioCheck.CanCheck(options.ConfigPath)))
@@ -97,7 +97,7 @@ public static class DataValidatorApp
                     }
                 }
 
-                diagnostics.AddRange(CheckScenarios(options, catalogs, files, output, errors));
+                diagnostics.AddRange(CheckScenarios(options, catalogs, files, errors));
                 scenarios = files.Count;
             }
             else if (scenarioFile is not null)
@@ -141,7 +141,7 @@ public static class DataValidatorApp
     // A file named or headed in the form before feature files: --fix renames it, rewrites its
     // headings and puts bare steps in gherkin blocks (AD-023); otherwise each old name is an error
     // (old headings and bare steps are the parser's).
-    private static IEnumerable<TestDataDiagnostic> CheckOldForms(ToolOptions options, string config, TextWriter output)
+    private static IEnumerable<TestDataDiagnostic> CheckOldForms(ToolOptions options, string config, TextWriter errors)
     {
         var folder = ScenarioCheck.ScenarioFolder(config);
         var oldFolder = Path.Combine(Path.GetDirectoryName(folder)!, BddFileFormat.OldFeatureFolder);
@@ -155,7 +155,7 @@ public static class DataValidatorApp
             }
 
             Directory.Move(oldFolder, folder);
-            output.WriteLine($"Renamed the folder {BddFileFormat.OldFeatureFolder} to {BddFileFormat.FeatureFolder}; update the csproj's globs.");
+            errors.WriteLine($"Renamed the folder {BddFileFormat.OldFeatureFolder} to {BddFileFormat.FeatureFolder}; update the csproj's globs.");
         }
 
         if (!Directory.Exists(folder))
@@ -178,7 +178,7 @@ public static class DataValidatorApp
         {
             var renamed = BddFileFormat.NewFileName(file)!;
             File.Move(file, renamed);
-            output.WriteLine($"Renamed {Display(options, file)} to {Path.GetFileName(renamed)}.");
+            errors.WriteLine($"Renamed {Display(options, file)} to {Path.GetFileName(renamed)}.");
         }
 
         foreach (var file in Directory.EnumerateFiles(folder, BddFileFormat.FeatureFilePattern, SearchOption.AllDirectories)
@@ -188,12 +188,12 @@ public static class DataValidatorApp
             var (fenced, sections) = BddFileFormat.FenceSteps(text);
             if (count > 0)
             {
-                output.WriteLine($"Fixed {count} heading(s) in {Display(options, file)}.");
+                errors.WriteLine($"Fixed {count} heading(s) in {Display(options, file)}.");
             }
 
             if (sections > 0)
             {
-                output.WriteLine($"Put the steps of {sections} section(s) in a gherkin block in {Display(options, file)}.");
+                errors.WriteLine($"Put the steps of {sections} section(s) in a gherkin block in {Display(options, file)}.");
             }
 
             if (count + sections > 0)
@@ -207,7 +207,7 @@ public static class DataValidatorApp
 
     // Every problem of the scenario files, the same checks the xUnit gate runs; --fix first rewrites
     // what has one right answer, then checks the file again.
-    private static IEnumerable<TestDataDiagnostic> CheckScenarios(ToolOptions options, BddCatalogSet catalogs, IReadOnlyList<string> files, TextWriter output, TextWriter errors)
+    private static IEnumerable<TestDataDiagnostic> CheckScenarios(ToolOptions options, BddCatalogSet catalogs, IReadOnlyList<string> files, TextWriter errors)
     {
         foreach (var file in files)
         {
@@ -218,7 +218,7 @@ public static class DataValidatorApp
                 if (count > 0)
                 {
                     File.WriteAllText(file, text);
-                    output.WriteLine($"Fixed {count} value(s) in {Display(options, file)}.");
+                    errors.WriteLine($"Fixed {count} value(s) in {Display(options, file)}.");
                     found = UatScenarioCheck.CheckFile(file, catalogs);
                 }
             }
@@ -313,11 +313,10 @@ public static class DataValidatorApp
     {
         var config = options.ConfigPath ?? throw new ToolException($"No {ConfigFileName} here. Run from a UAT project folder, or pass --config.");
         var name = BddNamespaces.Normalize(options.Argument ?? throw new ToolException("references needs a namespace, e.g. 'bruinet data references Backend'."));
-        var found = 0;
+        var found = new List<(string File, string Reason)>();
         if (BddConfigParser.ParseFile(config).Usings.Contains(name, StringComparer.OrdinalIgnoreCase))
         {
-            output.WriteLine($"{Display(options, config)}: ## Using");
-            found++;
+            found.Add((Display(options, config), "## Using"));
         }
 
         foreach (var file in ScenarioCheck.Files(config))
@@ -328,12 +327,22 @@ public static class DataValidatorApp
                 : null;
             if (reason is not null)
             {
-                output.WriteLine($"{Display(options, file)}: {reason}");
-                found++;
+                found.Add((Display(options, file), reason));
             }
         }
 
-        output.WriteLine(found == 0 ? $"Nothing uses {name}." : $"{found} use(s) of {name}.");
+        if (options.Json)
+        {
+            output.WriteLine(JsonSerializer.Serialize(found.Select(use => new { file = use.File, reason = use.Reason }), OutputJson));
+            return 0;
+        }
+
+        foreach (var (file, reason) in found)
+        {
+            output.WriteLine($"{file}: {reason}");
+        }
+
+        output.WriteLine(found.Count == 0 ? $"Nothing uses {name}." : $"{found.Count} use(s) of {name}.");
         return 0;
     }
 
@@ -381,6 +390,17 @@ public static class DataValidatorApp
         }
 
         var fields = TestDataTypes.FieldsOf(match.Definition.JsonOptions, match.Type);
+        if (options.Json)
+        {
+            output.WriteLine(JsonSerializer.Serialize(new
+            {
+                type = match.Type.Name,
+                fullName = match.Type.FullName,
+                fields = fields.Select(field => new { name = field.JsonName, type = field.TypeName, field.Required, field.Nullable, field.Values }),
+            }, OutputJson));
+            return 0;
+        }
+
         output.WriteLine($"{match.Type.Name} ({match.Type.FullName})");
         var width = fields.Max(f => f.JsonName.Length) + 2;
         var typeWidth = fields.Max(f => f.TypeName.Length) + 2;
@@ -407,6 +427,17 @@ public static class DataValidatorApp
     {
         var definitions = LoadDefinitions(options, errors);
         var references = options.ConfigPath is { } config ? ReferenceCheck.Find(config) : [];
+        List<string> UsedBy(string name) => references.Where(r => r.Name == name).Select(r => Display(options, r.File)).Distinct().ToList();
+        if (options.Json)
+        {
+            output.WriteLine(JsonSerializer.Serialize(definitions.Select(definition => new
+            {
+                definition.Name,
+                folder = Display(options, definition.Folder),
+                sets = definition.TestSetNames.Select(name => new { name, counts = Counts(definition.FileOf(name)), usedBy = UsedBy(name) }),
+            }), OutputJson));
+            return 0;
+        }
 
         foreach (var definition in definitions)
         {
@@ -414,7 +445,7 @@ public static class DataValidatorApp
             var width = definition.TestSetNames.DefaultIfEmpty(string.Empty).Max(n => n.Length) + 2;
             foreach (var name in definition.TestSetNames)
             {
-                var usedBy = references.Where(r => r.Name == name).Select(r => Display(options, r.File)).Distinct().ToList();
+                var usedBy = UsedBy(name);
                 var used = usedBy.Count == 0 ? string.Empty : $"   used by: {string.Join(", ", usedBy)}";
                 output.WriteLine($"  {name.PadRight(width)}{Counts(definition.FileOf(name))}{used}");
             }

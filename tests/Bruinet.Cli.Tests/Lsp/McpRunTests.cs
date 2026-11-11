@@ -459,7 +459,7 @@ public sealed class McpRunTests : IDisposable
 
             // The command line gives the same, as text.
             var output = new StringWriter();
-            var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["why", $"{Feature}:41", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
+            var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:41", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
             Assert.Equal(0, exit);
             Assert.StartsWith("Parts: page-changed at line 45", output.ToString(), StringComparison.Ordinal);
         }

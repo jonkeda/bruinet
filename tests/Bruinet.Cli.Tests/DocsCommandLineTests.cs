@@ -41,6 +41,49 @@ public sealed partial class DocsCommandLineTests
         Assert.True(failures.Count == 0, "These documented command lines do not parse:" + Environment.NewLine + string.Join(Environment.NewLine, failures));
     }
 
+    // R2-T91: a command added to the tree is a row in docs/run/cli.md, and a row names a command the tree has.
+    [Fact]
+    public void EveryCommand_HasARowInTheCommandLineGuide()
+    {
+        var documented = File.ReadAllLines(Path.Combine(RepositoryRoot(), "docs", "run", "cli.md"))
+            .Select(line => Row().Match(line))
+            .Where(match => match.Success)
+            .SelectMany(match => Paths(match.Groups["command"].Value))
+            .ToHashSet(StringComparer.Ordinal);
+        var tree = Leaves(BruinetCommand.Build(new CliIo(TextReader.Null, TextWriter.Null, TextWriter.Null, RepositoryRoot(), Interactive: false)), []).ToList();
+
+        Assert.Empty(tree.Except(documented));
+        Assert.Empty(documented.Except(tree));
+    }
+
+    // The commands that run something: a group's own action only prints its help.
+    private static IEnumerable<string> Leaves(System.CommandLine.Command command, List<string> path)
+    {
+        if (command.Subcommands.Count == 0)
+        {
+            yield return string.Join(' ', path);
+            yield break;
+        }
+
+        foreach (var sub in command.Subcommands)
+        {
+            foreach (var leaf in Leaves(sub, [.. path, sub.Name]))
+            {
+                yield return leaf;
+            }
+        }
+    }
+
+    // A row's command words, up to its first argument or option; "config get\|set" is two commands.
+    private static IEnumerable<string> Paths(string command)
+    {
+        var words = command.Split(' ', StringSplitOptions.RemoveEmptyEntries).TakeWhile(word => char.IsLetter(word[0])).ToList();
+        return words[^1].Split("\\|").Select(last => string.Join(' ', words[..^1].Append(last)));
+    }
+
+    [GeneratedRegex(@"^\|\s*`bruinet (?<command>[^`]+)`")]
+    private static partial Regex Row();
+
     // A command line as the docs write it: the shell comment, the [optional] parts and the <placeholders> made plain.
     private static string[] Arguments(string line)
     {

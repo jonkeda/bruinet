@@ -5,10 +5,10 @@ Everything Bruinet runs from a command line is a command of it:
 
 | Decision | What holds |
 | --- | --- |
-| **One executable** | `bruinet scrape …`, `bruinet data …` (test data and scenario checks), `bruinet scenario …` (preview, deleting results), `bruinet controls generate`, and the servers other programs start: `bruinet lsp` (the IDE extensions) and `bruinet mcp` (agents). The language server, the data validator and the control generator are folders of the one project (`Lsp/`, `Data/`, `Generate/`), tested by one test project. |
+| **One executable** | `bruinet scrape …`, `bruinet data …` (test data and scenario checks), `bruinet scenario …` (preview, why a scenario fails, deleting results), `bruinet tests …` (timings, touch map, the tests a change reaches), `bruinet sql …` and `bruinet http …` (replay's recordings and their gates), `bruinet voice …` (a video's speech clips), `bruinet controls generate`, and the servers other programs start: `bruinet lsp` (the IDE extensions), `bruinet mcp` and `bruinet mcp-host` (agents). `docs/run/cli.md` has a row per command, and a test keeps it so. The language server, the data validator and the control generator are folders of the one project (`Lsp/`, `Data/`, `Generate/`), tested by one test project. |
 | **Groups are nouns, commands verbs** | `bruinet <group> <command> [argument] [options]`. A group on its own, and `--help` anywhere, shows what comes next. |
 | **The same words everywhere** | `--solution` (default: the nearest folder up with a `.sln`/`.slnx`), `--project` (default: the project the current folder is in), `--json` (one JSON document on stdout), `--yes`, `--headless`. Results go to stdout; progress, questions and problems to stderr. |
-| **Exit codes mean the same** | 0 fine; 1 problems found (data problems, members verify did not find, a guard that stopped explore); 2 it could not run (a wrong call, a missing project, no browser). |
+| **Exit codes mean the same** | 0 ran and found nothing; 1 ran and found something (data problems, stale or unread recordings, members verify did not find, a guard that stopped explore); 2 it could not run (a wrong call, a missing project, no browser, not confirmed); 130 stopped by Ctrl+C. |
 | **No one to ask, no question** | With stdin redirected, a command that would ask does not start without `--yes`, and no browser window opens. |
 | **Thin** | A command parses, calls the service the IDEs and MCP call (`ScraperService`, `BddLanguageServer`, `DataValidatorApp`, the generator), and prints. Parsing is System.CommandLine. |
 

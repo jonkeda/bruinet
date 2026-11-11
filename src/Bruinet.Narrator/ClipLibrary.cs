@@ -45,7 +45,7 @@ public sealed record ClipLine(string Key, string Said);
 /// <summary>A line no clip was found for, in a recording that may not spend.</summary>
 /// <param name="line">What is said.</param>
 public sealed class VoiceLineMissingException(string line)
-    : Exception($"No clip for \"{line}\", and {ClipLibrary.ReuseVariable} says not to ask the service. `bruinet voice <suite>` lists every missing line, `--ask` buys them.");
+    : Exception($"No clip for \"{line}\", and {ClipLibrary.ReuseVariable} says not to ask the service. `bruinet voice list` lists every missing line, `bruinet voice buy` buys them.");
 
 /// <summary>Turns a WAV into a library's clip, and back.</summary>
 internal interface IClipCodec
@@ -206,16 +206,28 @@ public sealed class ClipLibrary
     /// <returns>How many went.</returns>
     public int Prune()
     {
-        if (!Directory.Exists(Folder))
+        var left = Unreached();
+        foreach (var clip in left)
         {
-            return 0;
+            File.Delete(clip);
         }
 
-        var left = Directory.GetFiles(Folder, "*" + Extension)
-            .Where(clip => !_reached.Contains(Path.GetFileNameWithoutExtension(clip)))
-            .ToList();
-        left.ForEach(File.Delete);
         return left.Count;
+    }
+
+    /// <summary>The clips no line of this pass reached: what <see cref="Prune"/> would delete.</summary>
+    /// <returns>Their files.</returns>
+    public IReadOnlyList<string> Unreached()
+    {
+        if (!Directory.Exists(Folder))
+        {
+            return [];
+        }
+
+        lock (_gate)
+        {
+            return [.. Directory.GetFiles(Folder, "*" + Extension).Where(clip => !_reached.Contains(Path.GetFileNameWithoutExtension(clip)))];
+        }
     }
 
     internal void Saw(string key, string said)

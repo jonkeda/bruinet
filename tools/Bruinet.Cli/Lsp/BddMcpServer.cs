@@ -1174,7 +1174,7 @@ public sealed class BddMcpServer : IDisposable
         var map = Path.Combine(folder, Bruinet.Cli.Selection.TouchMap.FileName);
         if (!File.Exists(map))
         {
-            throw new ToolProblem($"No touch map at {map}: run the suite whole once with BRUINET_TIMINGS=1, then 'bruinet tests touch-map <timings> --suite {folder}'.");
+            throw new ToolProblem($"No touch map at {map}: run the suite whole once with BRUINET_TIMINGS=1, then 'bruinet tests touch-map <timings> --project {folder}'.");
         }
 
         List<string> changed;

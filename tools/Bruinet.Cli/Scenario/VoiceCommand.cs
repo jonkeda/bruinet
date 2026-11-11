@@ -4,41 +4,96 @@ using Bruinet.Narrator;
 
 namespace Bruinet.Cli.Scenario;
 
-/// <summary><c>bruinet voice</c>: a suite's voice clips against its video scripts, without recording anything.</summary>
+/// <summary>What <c>bruinet voice</c> does with a test project's clips.</summary>
+internal enum VoiceAct
+{
+    /// <summary>Lists the lines with no clip; writes nothing.</summary>
+    List,
+
+    /// <summary>Adds what the local speech cache holds; costs nothing.</summary>
+    Fill,
+
+    /// <summary>As <see cref="Fill"/>, and buys the rest, after asking.</summary>
+    Buy,
+
+    /// <summary>Deletes the clips no script says, after asking.</summary>
+    Prune,
+
+    /// <summary>Writes the index beside the scripts.</summary>
+    Index,
+}
+
+/// <summary><c>bruinet voice</c>: a test project's voice clips against its video scripts, without recording anything.</summary>
 internal static class VoiceCommand
 {
-    public static Command Build(CliIo io)
+    public static Command Build(CliIo io) => new("voice", "A test project's voice clips against its video scripts, without recording anything.")
     {
-        var suite = new Option<string?>("--suite") { Description = "The suite's project folder. Default: this one." };
-        var fill = new Option<bool>("--fill") { Description = "Add what the local speech cache holds to the library. Costs nothing." };
-        var ask = new Option<bool>("--ask") { Description = "As --fill, and buy the lines found nowhere from the voice's service." };
-        var prune = new Option<bool>("--prune") { Description = "Delete the clips no script says any more." };
-        var index = new Option<bool>("--index") { Description = $"Write {IndexFile} beside the video scripts: which clip says which line." };
-        var command = new Command("voice", "List the lines of a suite's video scripts that have no clip in its speech folder, and what they would cost.")
+        Make(io, "list", VoiceAct.List, "List the lines of the video scripts that have no clip in the speech folder, and what they would cost."),
+        Make(io, "fill", VoiceAct.Fill, "Add what the local speech cache holds to the speech folder. Costs nothing."),
+        Make(io, "buy", VoiceAct.Buy, "As fill, and buy the lines found nowhere from the voice's service. Asks first."),
+        Make(io, "prune", VoiceAct.Prune, "Delete the clips no script says any more. Asks first."),
+        Make(io, "index", VoiceAct.Index, $"Write {IndexFile} beside the video scripts: which clip says which line."),
+    };
+
+    private static Command Make(CliIo io, string name, VoiceAct act, string description)
+    {
+        var project = new Option<string?>("--project", "-p") { Description = "The test project's folder. Default: this one." };
+        var yes = act is VoiceAct.Buy or VoiceAct.Prune ? CommonOptions.Yes() : null;
+        var command = new Command(name, description) { project };
+        if (yes is not null)
         {
-            suite,
-            fill,
-            ask,
-            prune,
-            index,
-        };
-        command.Action(io, (parsed, cancellationToken) =>
-        {
-            var folder = Path.GetFullPath(parsed.GetValue(suite) ?? ".", io.CurrentDirectory);
-            var mode = parsed.GetValue(ask) ? ClipLibraryMode.Buy : parsed.GetValue(fill) ? ClipLibraryMode.Fill : ClipLibraryMode.Count;
-            return RunAsync(io, folder, mode, parsed.GetValue(prune), Environment.GetEnvironmentVariable, cancellationToken, parsed.GetValue(index));
-        });
+            command.Add(yes);
+        }
+
+        command.Action(io, (parsed, cancellationToken) => RunAsync(
+            io, Path.GetFullPath(parsed.GetValue(project) ?? ".", io.CurrentDirectory), act, yes is not null && parsed.GetValue(yes), Environment.GetEnvironmentVariable, cancellationToken));
         return command;
     }
 
     /// <summary>The list of a folder's clips, beside its video scripts.</summary>
     internal const string IndexFile = "speech-clips.md";
 
-    /// <summary>Goes through every line of the suite's scripts. Exit 0 when every line has a clip, 1 when some have none, 2 when a script could not be read.</summary>
-    internal static async Task<int> RunAsync(CliIo io, string folder, ClipLibraryMode mode, bool prune, Func<string, string?> read, CancellationToken cancellationToken, bool index = false)
+    /// <summary>
+    /// Goes through every line of the project's scripts and does <paramref name="act"/>. Exit 0 when done and nothing is
+    /// missing, 1 when lines have no clip or a script has errors, 2 when not confirmed.
+    /// </summary>
+    internal static async Task<int> RunAsync(CliIo io, string folder, VoiceAct act, bool yes, Func<string, string?> read, CancellationToken cancellationToken)
     {
-        var library = ClipLibrary.Find(folder, read)!;
+        var library = Library(folder, read, act == VoiceAct.Fill ? ClipLibraryMode.Fill : ClipLibraryMode.Count);
+        var pass = await PassAsync(io, library, folder, read, cancellationToken).ConfigureAwait(false);
+        switch (act)
+        {
+            case VoiceAct.Buy:
+                return await BuyAsync(io, library, folder, read, pass.Problems, yes, cancellationToken).ConfigureAwait(false);
+            case VoiceAct.Prune:
+                return await PruneAsync(io, library, pass.Problems, yes, cancellationToken).ConfigureAwait(false);
+            case VoiceAct.Index:
+                foreach (var group in pass.Indexed.GroupBy(script => Path.GetDirectoryName(script.Script)!, StringComparer.OrdinalIgnoreCase))
+                {
+                    var file = Path.Combine(group.Key, IndexFile);
+                    await File.WriteAllTextAsync(file, Index(group.Key, group.ToList(), library), cancellationToken).ConfigureAwait(false);
+                    await io.Out.WriteLineAsync(Path.GetRelativePath(folder, file)).ConfigureAwait(false);
+                }
+
+                return pass.Problems > 0 ? 1 : 0;
+            default:
+                return await ReportAsync(io, library, pass.Problems).ConfigureAwait(false);
+        }
+    }
+
+    private static ClipLibrary Library(string folder, Func<string, string?> read, ClipLibraryMode mode)
+    {
+        var library = ClipLibrary.Find(folder, read)
+            ?? throw new ArgumentException($"No speech folder for {folder}: it is in no project, and {ClipLibrary.Variable} is not set.");
         library.Mode = mode;
+        return library;
+    }
+
+    private sealed record Pass(int Problems, IReadOnlyList<(string Script, string Title, IReadOnlyList<IndexRow> Rows)> Indexed);
+
+    // Every script's lines through the library; a script with errors is left out and counted.
+    private static async Task<Pass> PassAsync(CliIo io, ClipLibrary library, string folder, Func<string, string?> read, CancellationToken cancellationToken)
+    {
         var problems = 0;
         var indexed = new List<(string Script, string Title, IReadOnlyList<IndexRow> Rows)>();
         var scratch = Directory.CreateTempSubdirectory("bruinet-voice-").FullName;
@@ -85,18 +140,60 @@ internal static class VoiceCommand
             Directory.Delete(scratch, recursive: true);
         }
 
-        var exit = await ReportAsync(io, library, prune, problems).ConfigureAwait(false);
-        if (index)
+        return new Pass(problems, indexed);
+    }
+
+    // The count pass says what buying costs; only then, asked, the pass that buys.
+    private static async Task<int> BuyAsync(CliIo io, ClipLibrary counted, string folder, Func<string, string?> read, int problems, bool yes, CancellationToken cancellationToken)
+    {
+        var missing = counted.Missing.Distinct(StringComparer.Ordinal).ToList();
+        if (missing.Count == 0)
         {
-            foreach (var group in indexed.GroupBy(script => Path.GetDirectoryName(script.Script)!, StringComparer.OrdinalIgnoreCase))
-            {
-                var file = Path.Combine(group.Key, IndexFile);
-                await File.WriteAllTextAsync(file, Index(group.Key, group.ToList(), library), cancellationToken).ConfigureAwait(false);
-                await io.Out.WriteLineAsync($"Wrote {Path.GetRelativePath(folder, file)}.").ConfigureAwait(false);
-            }
+            return await ReportAsync(io, counted, problems).ConfigureAwait(false);
         }
 
-        return exit;
+        await io.Error.WriteLineAsync($"{missing.Count} lines have no clip anywhere ({missing.Sum(line => line.Length)} characters).").ConfigureAwait(false);
+        if (!yes && !await CommonOptions.ConfirmAsync(io, "Buy them from the voice's service?", cancellationToken).ConfigureAwait(false))
+        {
+            await io.Error.WriteLineAsync("Nothing bought.").ConfigureAwait(false);
+            return 2;
+        }
+
+        var library = Library(folder, read, ClipLibraryMode.Buy);
+        var pass = await PassAsync(io, library, folder, read, cancellationToken).ConfigureAwait(false);
+        return await ReportAsync(io, library, pass.Problems).ConfigureAwait(false);
+    }
+
+    private static async Task<int> PruneAsync(CliIo io, ClipLibrary library, int problems, bool yes, CancellationToken cancellationToken)
+    {
+        // A script left out would lose the clips only it says.
+        if (problems > 0)
+        {
+            await io.Error.WriteLineAsync("Nothing pruned: not every script could be read.").ConfigureAwait(false);
+            return 1;
+        }
+
+        var unreached = library.Unreached();
+        await io.Error.WriteLineAsync($"{unreached.Count} clips no script says.").ConfigureAwait(false);
+        if (unreached.Count == 0)
+        {
+            return 0;
+        }
+
+        if (!yes && !await CommonOptions.ConfirmAsync(io, "Delete them?", cancellationToken).ConfigureAwait(false))
+        {
+            await io.Error.WriteLineAsync("Nothing deleted.").ConfigureAwait(false);
+            return 2;
+        }
+
+        library.Prune();
+        foreach (var clip in unreached)
+        {
+            await io.Out.WriteLineAsync(Path.GetFileName(clip)).ConfigureAwait(false);
+        }
+
+        await io.Error.WriteLineAsync($"{unreached.Count} clips no script says were deleted.").ConfigureAwait(false);
+        return 0;
     }
 
     /// <summary>A line of the index: where in the video it is said, and its clip.</summary>
@@ -128,8 +225,8 @@ internal static class VoiceCommand
         var clips = Path.GetRelativePath(folder, library.Folder).Replace('\\', '/');
         var text = new System.Text.StringBuilder();
         text.Append("# Speech clips\n\n");
-        text.Append(CultureInfo.InvariantCulture, $"Written by `bruinet voice --index`; do not edit it by hand. The clips are in [{clips}]({clips}), one `.opus` per spoken line. ");
-        text.Append("A clip is named by a hash of the voice and the words, so a reworded line gets a new clip and the old one goes with `bruinet voice --prune`.\n");
+        text.Append(CultureInfo.InvariantCulture, $"Written by `bruinet voice index`; do not edit it by hand. The clips are in [{clips}]({clips}), one `.opus` per spoken line. ");
+        text.Append("A clip is named by a hash of the voice and the words, so a reworded line gets a new clip and the old one goes with `bruinet voice prune`.\n");
         foreach (var (script, title, rows) in scripts.OrderBy(script => script.Script, StringComparer.Ordinal))
         {
             text.Append(CultureInfo.InvariantCulture, $"\n## {title}\n\nScript: [{Path.GetFileName(script)}]({Path.GetFileName(script)})\n\n");
@@ -146,31 +243,19 @@ internal static class VoiceCommand
 
     private static string Cell(string text) => string.Join(' ', text.Split((char[])['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)).Replace("|", "\\|", StringComparison.Ordinal);
 
-    private static async Task<int> ReportAsync(CliIo io, ClipLibrary library, bool prune, int problems)
+    // The lines with no clip on stdout, the answer; the counts on stderr.
+    private static async Task<int> ReportAsync(CliIo io, ClipLibrary library, int problems)
     {
-        await io.Out.WriteLineAsync((library.Use ?? new BddSpeechUse(0, 0, 0)).Summary).ConfigureAwait(false);
+        await io.Error.WriteLineAsync((library.Use ?? new BddSpeechUse(0, 0, 0)).Summary).ConfigureAwait(false);
         var missing = library.Missing.Distinct(StringComparer.Ordinal).ToList();
         foreach (var line in missing)
         {
-            await io.Out.WriteLineAsync($"  no clip: {line}").ConfigureAwait(false);
+            await io.Out.WriteLineAsync($"no clip: {line}").ConfigureAwait(false);
         }
 
         if (missing.Count > 0)
         {
-            await io.Out.WriteLineAsync($"{missing.Count} lines have no clip ({missing.Sum(line => line.Length)} characters).").ConfigureAwait(false);
-        }
-
-        if (prune)
-        {
-            // A script left out would lose the clips only it says.
-            if (problems > 0)
-            {
-                await io.Error.WriteLineAsync("Nothing pruned: not every script could be read.").ConfigureAwait(false);
-            }
-            else
-            {
-                await io.Out.WriteLineAsync($"{library.Prune()} clips no script says were deleted.").ConfigureAwait(false);
-            }
+            await io.Error.WriteLineAsync($"{missing.Count} lines have no clip ({missing.Sum(line => line.Length)} characters).").ConfigureAwait(false);
         }
 
         // A script with errors is something found, as a failing check is (D3): 1, not "could not run".

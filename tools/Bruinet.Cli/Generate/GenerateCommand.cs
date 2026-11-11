@@ -13,18 +13,18 @@ internal static class GenerateCommand
 
     public static Command Build(CliIo io)
     {
-        var input = new Option<string>("--input", "-i") { Description = $"Files and folders, separated by ';'. Folders are searched for {TemplateExtension} files; each is written next to its input as <name>{GeneratedExtension}.", Required = true };
+        var paths = new Argument<string[]>("paths") { Description = $"Files and folders. Folders are searched for {TemplateExtension} files; each is written next to its input as <name>{GeneratedExtension}.", Arity = ArgumentArity.OneOrMore };
         var members = new Option<string>("--members") { Description = "Which members to generate.", DefaultValueFactory = _ => "all" };
         members.AcceptOnlyFromAmong("all", "actions", "state");
-        var generate = new Command("generate", $"Generate ControlObject members: each {TemplateExtension} to its {GeneratedExtension}.") { input, members };
-        generate.Action(io, parsed => Run(parsed.GetValue(input)!, parsed.GetValue(members)!, io.Out, io.Error));
+        var generate = new Command("generate", $"Generate ControlObject members: each {TemplateExtension} to its {GeneratedExtension}.") { paths, members };
+        generate.Action(io, parsed => Run(parsed.GetValue(paths)!.Select(path => Path.GetFullPath(path, io.CurrentDirectory)).ToList(), parsed.GetValue(members)!, io.Out, io.Error));
         return new Command("controls", "ControlObjects.") { generate };
     }
 
-    public static int Run(string input, string members, TextWriter output, TextWriter errors)
+    public static int Run(IReadOnlyList<string> paths, string members, TextWriter output, TextWriter errors)
     {
         var inputFiles = new List<string>();
-        foreach (var entry in input.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (var entry in paths)
         {
             if (Directory.Exists(entry))
             {
@@ -42,8 +42,7 @@ internal static class GenerateCommand
             }
             else
             {
-                errors.WriteLine($"Error: Input not found: {entry}");
-                return 2;
+                throw new ArgumentException($"No file or folder {entry}.");
             }
         }
 
@@ -55,8 +54,7 @@ internal static class GenerateCommand
 
         if (inputFiles.Count == 0)
         {
-            errors.WriteLine($"Error: No {TemplateExtension} files found for --input '{input}'");
-            return 2;
+            throw new ArgumentException($"No {TemplateExtension} files in {string.Join(", ", paths)}.");
         }
 
         var generator = BuildGenerator(members);

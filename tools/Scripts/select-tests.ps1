@@ -65,18 +65,25 @@ foreach ($name in $names) {
         $timings = Join-Path ([IO.Path]::GetTempPath()) "bruinet-timings-$name-$(Get-Date -Format yyyyMMdd-HHmmss)"
         $env:BRUINET_TIMINGS = $timings
         try { Test-Suite $project @() } finally { Remove-Item Env:BRUINET_TIMINGS }
-        & $bruinet tests touch-map $timings --suite $project
+        & $bruinet tests touch-map $timings --project $project
+        if ($LASTEXITCODE -ne 0) { throw "bruinet tests touch-map failed for $name." }
         continue
     }
 
-    $arguments = @('tests', 'affected', '--suite', $project)
+    $arguments = @('tests', 'affected', '--project', $project, '--json')
     $arguments += if ($Files) { @('--files') + ($Files | ForEach-Object { Join-Path $root $_ }) } else { @('--base', $Base) }
     Push-Location $root
-    try { $lines = & $bruinet @arguments } finally { Pop-Location }
+    try { $json = & $bruinet @arguments } finally { Pop-Location }
     if ($LASTEXITCODE -ne 0) { throw "bruinet tests affected failed for $name." }
-    $lines | ForEach-Object { Write-Host $_ }
+    $affected = ($json -join "`n") | ConvertFrom-Json
+    $affected.notes | ForEach-Object { Write-Host "  $_" }
+    if ($affected.whole) { Write-Host "The whole suite: $($affected.whole)." }
+    elseif ($affected.filter) {
+        $affected.picked | ForEach-Object { Write-Host "$($_.name): $($_.why)" }
+        Write-Host "--filter `"$($affected.filter)`""
+    }
+    else { Write-Host "Nothing to run: $($affected.changed) changed files reach no test of the suite." }
     if (-not $Run) { continue }
-    $filter = $lines | Select-String '^--filter "(.*)"$' | Select-Object -First 1
-    if ($lines -match '^The whole suite') { Test-Suite $project @() }
-    elseif ($filter) { Test-Suite $project @('--filter', $filter.Matches[0].Groups[1].Value) }
+    if ($affected.whole) { Test-Suite $project @() }
+    elseif ($affected.filter) { Test-Suite $project @('--filter', $affected.filter) }
 }
