@@ -81,3 +81,7 @@ public sealed class BunitBlazorControls : BlazorControlsBinding<BunitHead>
     [Fact(Skip = NoScript)]
     public override void Audio_VolumeAndMute() => base.Audio_VolumeAndMute();
 }
+
+public sealed class BunitSelectorEdges : HtmlSelectorEdgeBinding<BunitHead>;
+
+public sealed class BunitRangeEdges : HtmlRangeEdgeBinding<BunitHead>;

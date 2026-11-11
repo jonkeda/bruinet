@@ -147,6 +147,18 @@ public abstract class HtmlTextInputBinding<THead> : EditableTextContract<Contrac
 
         Shows("submitted Mia", () => new LabelControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("submitted")).GetText());
     }
+
+    /// <summary>Enter in a form's field submits the form, in a browser as on bUnit (review 04, finding 13).</summary>
+    [Fact]
+    public void PressKey_EnterInAFormsField_SubmitsIt()
+    {
+        var field = new TextInputControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("form-field"));
+
+        field.SetText("Noor");
+        field.PressKey("Enter");
+
+        Shows("submitted Noor", () => new LabelControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("submitted")).GetText());
+    }
 }
 
 public abstract class HtmlTextAreaBinding<THead> : EditableTextContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()

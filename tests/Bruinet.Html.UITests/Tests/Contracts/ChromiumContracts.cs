@@ -28,3 +28,7 @@ public sealed class ChromiumSelectContract : HtmlSelectBinding<ChromiumHead>;
 public sealed class ChromiumRadioGroupContract : HtmlRadioGroupBinding<ChromiumHead>;
 
 public sealed class ChromiumBlazorControls : BlazorControlsBinding<ChromiumHead>;
+
+public sealed class ChromiumSelectorEdges : HtmlSelectorEdgeBinding<ChromiumHead>;
+
+public sealed class ChromiumRangeEdges : HtmlRangeEdgeBinding<ChromiumHead>;
