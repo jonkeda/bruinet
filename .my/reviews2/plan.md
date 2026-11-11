@@ -131,13 +131,13 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 7: packages, command line, MCP tools
 
-- [ ] R2-T80 One package list: README's table is the packable projects. R11 P3.
+- [x] R2-T80 One package list: README's table is the packable projects. R11 P3. README's table is the packable projects: Bdd.Abstractions, Mocking.Http and Contracts added; Bdd.Workspace, Scraper and Presenter out, with a line on how they reach a user.
 - [ ] R2-T81 xUnit declared by Core and Uat, or `ScreenshotTestAttribute` leaves Core. R11 P4.
 - [ ] R2-T82 Readme and tags per package. R11 P6.
 - [ ] R2-T83 Appium out of `Bruinet.Maui`. R11 P7. kofflard.
 - [ ] R2-T84 The game free of the test client (`Bruinet.Stride.Automation`). R11 P8.
 - [ ] R2-T85 `Bruinet.Cli` slimmer. R11 P9.
-- [ ] R2-T86 Frameworks and feeds told truly in README and `VERSIONING.md`. R11 P10.
+- [x] R2-T86 Frameworks and feeds told truly in README and `VERSIONING.md`. R11 P10. README lists each package's frameworks as its project has them (fourteen on net8 to net10, fourteen net10 only, six Windows, Mocking.Data's netstandard2.0 and net48) and names the feed; VERSIONING.md is rewritten against release.yml and ci.yml, 34 lines for 438.
 - [ ] R2-T87 `controls generate` writes only changed files; the `Create….Bat` scripts count. R11 P11, R10 P10.
 - [ ] R2-T88 Command line per D3: exit codes, Ctrl+C, what 2 covers. R10 P1–P3. Needs D3. tomorrow (`Select-Tests.ps1`, `Update-BruinetMcp.ps1`).
 - [ ] R2-T89 Command line per D3: renames, shared `--solution`, `--json`, stderr for progress. R10 P4, P6–P8. Needs D3. tomorrow, construction.

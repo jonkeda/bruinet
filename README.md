@@ -76,7 +76,16 @@ or MSTest, with no Bruinet in it.
 
 ## Packages
 
-Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.json`.
+The SDK is pinned in `global.json`. What each package targets (review 11, proposal 10):
+
+- `net8.0`, `net9.0` and `net10.0`: Core, Bdd, Bdd.Abstractions, Uat, Traits, Logging, Html, Html.Playwright, Blazor,
+  Appium, NativeAndroid, Stride, Recording and Narrator.
+- `net10.0` only: Maui, Maui.Appium, Maui.Headless, Maui.CommunityToolkit, MauiHeadless, Html.Bunit, TestData,
+  Mocking, Mocking.Http, the Mocking.Data hooks for EF Core and ASP.NET Core, Contracts and Stride.Automation.
+- `net10.0-windows`: FlaUI, Maui.FlaUI, Wpf, WinForms, Uia.Contracts, and Narrator.Windows (`net10.0-windows10.0.19041.0`).
+- Mocking.Data also `netstandard2.0`, and its `.SystemWeb` hook `net48`, for apps on the .NET Framework.
+
+The packages come from this organisation's GitHub Packages feed, not nuget.org: see [VERSIONING](VERSIONING.md).
 
 **Core**
 
@@ -84,10 +93,13 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 | --- | --- |
 | `Bruinet.Core` | Contracts, locators, waits, the call model, artifacts, settings and test attributes |
 | `Bruinet.Bdd` | Markdown feature files: parse, bind, values, tables, callable steps and run, with no UI |
+| `Bruinet.Bdd.Abstractions` | The step attributes alone, for a page-object project that declares phrases without running them |
 | `Bruinet.Uat` | Markdown-driven UAT scenario runtime for xUnit |
 | `Bruinet.TestData` | Typed, validated test data and test sets |
 | `Bruinet.Logging` | An app's log kept by the step that made it, for the step's result: `AddBruinetStepLog()` |
 | `Bruinet.Mocking` | WireMock servers and mock sensors for UI tests |
+| `Bruinet.Mocking.Http` | HTTP replay: an app's calls recorded once against the real services and answered from the recording |
+| `Bruinet.Contracts` | API contract checks against the real service: each response against the DTO the app reads it into |
 | `Bruinet.Traits` | Typed xUnit trait attributes (tier, owner, run set, journey, covered row, head) and `TraitCheck`, which reports tests without one tier and a known owner |
 
 **Platforms**
@@ -115,11 +127,12 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 
 | Package | Purpose |
 | --- | --- |
-| `Bruinet.Bdd.Workspace` | What every tool shares: a suite loaded one way, and a feature, step or video file rendered as the preview shows it |
-| `Bruinet.Scraper` | The Scraper's engine: recordings, patterns, matching, diff and code output |
 | `Bruinet.Recording`, `Bruinet.Narrator`, `Bruinet.Narrator.Windows` | Screen recording, narrated recordings with their voices, and the Windows recorder and voices |
-| `Bruinet.Presenter` | The desktop presenter |
 | `Bruinet.Cli` | The `bruinet` command line, a .NET tool |
+
+The table is the packable projects, no more (review 11, proposal 3). `Bruinet.Bdd.Workspace` (what the tools share),
+`Bruinet.Scraper` (the Scraper's engine) and `Bruinet.Presenter` (the desktop presenter) are built in this repository
+and reach a user through the `bruinet` tool and the IDE extensions, not as packages.
 
 ## Repository layout
 
