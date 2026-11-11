@@ -15,7 +15,7 @@ Branch `reviews` (worktree `E:\repos\Private\bru-reviews`), pushed to origin's `
 
 ## Beside construction's plan
 
-Construction runs `E:epos\MainConstruction\construction\.myruinet@-Plan-Test-Changes.md`, which commits to Bruinet's `move` (its submodule `Brinell`) step by step. Its Bruinet steps:
+Construction runs `E:\repos\MainConstruction\construction\.my\bruinet\100-Plan-Test-Changes.md`, which commits to Bruinet's `move` (its submodule `Brinell`) step by step. Its Bruinet steps:
 
 | Step | Bruinet files | State 2026-11-11 |
 | --- | --- | --- |
