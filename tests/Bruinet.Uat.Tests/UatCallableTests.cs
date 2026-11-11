@@ -264,6 +264,57 @@ public sealed class UatCallableTests
         Assert.Equal("UATA007", Assert.Single(Bind("Given todos for Eva", PerRow)).Code);
     }
 
+    /// <summary>
+    /// A block the phrase does not take, or one it needs and does not get, is reported with what the phrase passes on,
+    /// at the block's line when there is one (review 08, finding 12: these messages and lines had no test).
+    /// </summary>
+    [Fact]
+    public void ABlockThePhraseDoesNotTake_OrNeeds_IsReportedWithWhatItPassesOn()
+    {
+        const string Server = """
+            ## Step: the server knows
+
+            ```gherkin
+            Given the server has todos
+              <table>
+            ```
+            """;
+        const string PerRow = """
+            ## Step for each row: todos for {who}
+
+            ```gherkin
+            When I assign <title> to <who> due <due> for 1 hours as Open
+            ```
+            """;
+
+        var needsTable = Assert.Single(Bind("Given the server knows", Server));
+        Assert.Equal("UATA007", needsTable.Code);
+        Assert.Contains("needs a table under it, which 'the server knows' passes on", needsTable.Message, StringComparison.Ordinal);
+
+        var needsRows = Assert.Single(Bind("Given todos for Eva", PerRow));
+        Assert.Contains("runs once per row, with the columns", needsRows.Message, StringComparison.Ordinal);
+
+        var tableNotTaken = Assert.Single(Bind("""
+            Given a todo "Tea" for Eva with 1 hours
+              | Title |
+              | ----- |
+              | Tea   |
+            """, Assigned));
+        Assert.Equal("UATB004", tableNotTaken.Code);
+        Assert.Contains("does not accept a table", tableNotTaken.Message, StringComparison.Ordinal);
+        Assert.Equal(6, tableNotTaken.Location.LineNumber);
+
+        var textNotTaken = Assert.Single(Bind(""""
+            Given a todo "Tea" for Eva with 1 hours
+              """
+              some text
+              """
+            """", Assigned));
+        Assert.Equal("UATB004", textNotTaken.Code);
+        Assert.Contains("does not accept a doc string", textNotTaken.Message, StringComparison.Ordinal);
+        Assert.Equal(5, textNotTaken.Location.LineNumber);
+    }
+
     [Fact]
     public async Task ACallableCanCallAnother_ButNotItself_AndNotTooDeep()
     {

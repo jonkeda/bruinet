@@ -47,10 +47,11 @@ $ErrorActionPreference = 'Stop'
 $root = Resolve-Path (Join-Path $PSScriptRoot '../..')
 Set-Location $root
 
-# library under src/ -> its unit test project under tests/
+# library under src/ -> its unit test projects under tests/, the first one's folder the run's. Bruinet.Bdd's binder and
+# callables are tested from Bruinet.Uat.Tests too, which a run on Bdd.Tests alone counted as survivors (review 08, finding 13).
 $libraries = [ordered]@{
     'Bruinet.Core'         = 'Bruinet.Core.Tests'
-    'Bruinet.Bdd'          = 'Bruinet.Bdd.Tests'
+    'Bruinet.Bdd'          = @('Bruinet.Bdd.Tests', 'Bruinet.Uat.Tests')
     'Bruinet.TestData'     = 'Bruinet.TestData.Tests'
     'Bruinet.Traits'       = 'Bruinet.Traits.Tests'
     'Bruinet.Mocking.Data' = 'Bruinet.Mocking.Data.Tests'
@@ -82,8 +83,13 @@ foreach ($current in $libraries.Keys) {
         foreach ($file in $files) { $arguments += '--mutate', ('**/' + $file.Substring("src/$current/".Length)) }
     }
 
+    $tests = @($libraries[$current])
+    if ($tests.Count -gt 1) {
+        foreach ($test in $tests) { $arguments += '--test-project', (Join-Path $root "tests/$test/$test.csproj") }
+    }
+
     Write-Host "== $current"
-    Push-Location (Join-Path $root "tests/$($libraries[$current])")
+    Push-Location (Join-Path $root "tests/$($tests[0])")
     $head = $env:BRUINET_HEAD
     try {
         if ($heads[$current]) { $env:BRUINET_HEAD = $heads[$current] }

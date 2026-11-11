@@ -121,13 +121,13 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T70 Tests a tier too high moved down. R08 P9. The Presenter's service tests move to a new Bruinet.Presenter.Tests (86, in coverage.ps1), apart from its UAT suite; FixtureInspectorTests stays there, as it inspects that suite's fixture. TestTimingReportTests already runs (the MAUI suite runs headless in CI) and TestTimings is internal to it; Uia's ContractTests runs in coverage.ps1's default list. Both left.
 - [x] R2-T71 Probes behind an opt-in attribute or deleted. R08 P10. Five probes are ProbeFact (Maui.UITests has its own file, Uia.Tests its own copy); the bUnit one went with the spike. The WinForms password test asserts the sample's status, which now says the password's length; the empty LoginPage one is gone.
 - [x] R2-T72 Leftovers: `Bruinet.Sql.Spike.Tests`, bUnit `SpikeTests.cs`. R08 P11. Sql.Spike.Tests deleted with its recordings (out of the solution and coverage.ps1); bUnit SpikeTests keeps its two named tests; the skipped RightClick_ReturnsPageInstance is gone. The .my citations were left: .my is the owner's.
-- [ ] R2-T73 Runner tests with the runner; binder and formatter tests for the survivors. R08 P12, P13.
-- [ ] R2-T74 Legacy globalconfig narrowed to `Bruinet.Mocking.Data` or deleted. R12 P1.
-- [ ] R2-T75 A reason per disabled rule, or AD-033 allows one per group. R12 P2.
-- [ ] R2-T76 Code style: rules raised to `warning`, or "code style" out of AD-033. R12 P3. Decide with the owner.
-- [ ] R2-T77 BRUINET001 out of `NoWarn`; BRUINET010 scoped to `src` and `tools`. R12 P4.
-- [ ] R2-T78 AD-033's counts and restores corrected. R12 P5.
-- [ ] R2-T79 CA1707, CA1051, MA0025 tried for `src`. R12 P6.
+- [x] R2-T73 Runner tests with the runner; binder and formatter tests for the survivors. R08 P12, P13. The runner's two classes stay in Uat.Tests: both need Uat types (RunnerProcessFixture, UatScenarioResults). mutate.ps1 gives Bruinet.Bdd both test projects, which took BddBinder from 29 to 67 % (the binder's callable tests are in Uat.Tests); a block test covers CheckBlocks' messages and lines; BddDiagnosticsFormatterTests (5) tests every formatter.
+- [x] R2-T74 Legacy globalconfig narrowed to `Bruinet.Mocking.Data` or deleted. R12 P1. Legacy for Bruinet.Mocking.Data only; the net48 and netstandard-only projects build without it.
+- [x] R2-T75 A reason per disabled rule, or AD-033 allows one per group. R12 P2. AD-033 allows a group of like rules under one comment with their why (the performance hints).
+- [x] R2-T76 Code style: rules raised to `warning`, or "code style" out of AD-033. R12 P3. Decide with the owner. Decided: code style is not an error, and AD-033's first sentence says so; raising .editorconfig's rules would be hundreds of findings with no defect behind them. For the owner to overturn.
+- [x] R2-T77 BRUINET001 out of `NoWarn`; BRUINET010 scoped to `src` and `tools`. R12 P4. BRUINET001 in Bruinet.Mocking.Tests' own .globalconfig; BRUINET010 off for src and tools only, the 18 test and sample projects that use Bdd's engine opting in in their own files.
+- [x] R2-T78 AD-033's counts and restores corrected. R12 P5. AD-033 says 19 methods; the two file-wide pragmas scoped to their lines with a restore (SpatialReplay, HeadlessBehaviors).
+- [x] R2-T79 CA1707, CA1051, MA0025 tried for `src`. R12 P6. CA1051 and MA0025 off for test projects only (src clean; the MAUI sample's converters now throw NotSupportedException); CA1707 stays off everywhere, its reason now naming Win32's HRESULT names in Uia.Contracts.
 
 ## Phase 7: packages, command line, MCP tools
 
