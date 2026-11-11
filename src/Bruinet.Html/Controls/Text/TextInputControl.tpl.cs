@@ -51,6 +51,10 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
         if (text == null)
             return;
 
+        // A browser waits for an editable field and times out; bUnit would write. Both refuse at once (review 04).
+        if (element.GetAttribute("readonly") is not null)
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"'{Locator}' is read-only: it takes no text.");
+
         ActAndConfirm(
             "Fill", () => element.Fill(text),
             () => element.InputValue, value => value == text,

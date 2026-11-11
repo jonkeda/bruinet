@@ -220,6 +220,12 @@ internal sealed class BunitHtmlElement : IHtmlElement
     public void Fill(string value)
     {
         var node = Node;
+        if (node.HasAttribute("readonly"))
+        {
+            // As a browser: no text goes into a read-only field (review 04, finding 3).
+            throw new Bruinet.Core.Exceptions.ActionRefusedException("The element is read-only: a browser types nothing into it.");
+        }
+
         var input = Handles(node, "oninput");
         var change = Handles(node, "onchange");
         Entering(value, () =>
@@ -236,7 +242,16 @@ internal sealed class BunitHtmlElement : IHtmlElement
         });
     }
 
-    public void SelectOption(string value) => Entering(value, () => Raise(Node, "onchange", new ChangeEventArgs { Value = value }));
+    public void SelectOption(string value)
+    {
+        // As a browser: only a value one of its options has can be selected (review 04, finding 2).
+        if (Node is AngleSharp.Html.Dom.IHtmlSelectElement select && !select.Options.Any(option => option.Value == value))
+        {
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"The select has no option with value '{value}'.");
+        }
+
+        Entering(value, () => Raise(Node, "onchange", new ChangeEventArgs { Value = value }));
+    }
 
     public void SelectOption(string[] values) => Raise(Node, "onchange", new ChangeEventArgs { Value = values });
 

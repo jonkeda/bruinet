@@ -80,6 +80,16 @@ public abstract class EditableTextContract<TScope> : ControlContract<TScope> whe
         Assert.True(ReadOnlyField.IsReadOnly());
     }
 
+    /// <summary>A read-only field refuses text, and keeps its own (review 04, finding 3).</summary>
+    [Fact]
+    public virtual void SetText_OnAReadOnlyField_IsRefused_AndItKeepsItsText()
+    {
+        var before = ReadOnlyField.GetText();
+
+        Assert.ThrowsAny<Bruinet.Core.Exceptions.BruinetException>(() => ReadOnlyField.SetText("Changed", ShortTimeoutMs));
+        Assert.Equal(before, ReadOnlyField.GetText());
+    }
+
     [Fact]
     public virtual void WaitReadOnly_TrueWhenItHolds_FalseWhenItDoesNot()
     {

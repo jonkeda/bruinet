@@ -67,6 +67,16 @@ public abstract class SelectorContract<TScope> : ControlContract<TScope> where T
         Assert.Equal(Other, List.GetSelectedIndex());
     }
 
+    /// <summary>A value no item has is refused, and the selection stays (review 04, finding 2).</summary>
+    [Fact]
+    public virtual void SelectByValue_AValueNoItemHas_IsRefused_AndTheSelectionStays()
+    {
+        var before = List.GetSelectedIndex();
+
+        Assert.ThrowsAny<Bruinet.Core.Exceptions.BruinetException>(() => List.SelectByValue("no-such-value", ShortTimeoutMs));
+        Assert.Equal(before, List.GetSelectedIndex());
+    }
+
     [Fact]
     public virtual void Selects_WithNull_Skip()
     {

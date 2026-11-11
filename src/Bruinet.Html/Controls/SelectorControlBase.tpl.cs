@@ -53,6 +53,10 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
         if (value == null)
             return;
 
+        // A browser waits for an option with the value and times out; bUnit would store any value (review 04).
+        if (!element.FindElements(Options).Any(option => (option.GetAttribute("value") ?? option.Text) == value))
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"'{Locator}' has no option with value '{value}'.");
+
         SelectValue(element, value, timeoutMs);
     }
 
