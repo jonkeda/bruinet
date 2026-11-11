@@ -13,4 +13,6 @@ public sealed class ProbePage(IHtmlTestContext context) : BlazorPageObjectBase<P
     public ButtonControl<ProbePage> Increment => new(this, "[data-testid='inc']");
 
     public LabelControl<ProbePage> Count => new(this, "[data-testid='count']");
+
+    public ButtonControl<ProbePage> Missing => new(this, "[data-testid='no-such-button']");
 }

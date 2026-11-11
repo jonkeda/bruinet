@@ -1213,3 +1213,5 @@ Bruinet.Core.Exceptions.UiSetupException.UiSetupException(System.Exception! caus
 Bruinet.Core.Exceptions.ActionRefusedException
 Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message) -> void
 Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Calls.IControlHost<TElement>.ScopeName.get -> string?
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, string! message) -> void

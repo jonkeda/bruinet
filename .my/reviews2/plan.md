@@ -68,7 +68,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 3: what a failure says
 
-- [ ] R2-T29 "Not found" as the scope sentence, with page and time waited. R01 P1. tomorrow, kofflard, construction read messages only by eye.
+- [x] R2-T29 "Not found" as the scope sentence, with page and time waited. R01 P1. tomorrow, kofflard, construction read messages only by eye.
 - [ ] R2-T30 Controls carry their member name (`[CallerMemberName]`) into messages and the log. R01 P2.
 - [ ] R2-T31 Catalog printed only for a bind error. R01 P3.
 - [ ] R2-T32 A bind failure writes a result (kind `bind`). R01 P4.

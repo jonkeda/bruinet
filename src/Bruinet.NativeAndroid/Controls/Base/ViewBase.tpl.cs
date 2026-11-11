@@ -102,6 +102,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     ElementNotFoundException IControlHost<INativeAndroidElement>.NotFound() => NotFound();
 
+    string? IControlHost<INativeAndroidElement>.ScopeName => _scope.Page?.GetType().Name;
+
     // A control below the fold is not in the tree: scroll it in, throttled as a scroll into view is.
     private INativeAndroidElement? FindOrScrollTo(AttemptContext attempt)
     {

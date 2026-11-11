@@ -96,6 +96,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     ElementNotFoundException IControlHost<IStrideElement>.NotFound() => NotFound();
 
+    string? IControlHost<IStrideElement>.ScopeName => _scope.Page?.GetType().Name;
+
     protected bool RunWait(Func<bool> operation, int? timeoutMs = null,
         [CallerMemberName] string? caller = null)
         => Calls.Wait(operation, timeoutMs, caller ?? nameof(RunWait));

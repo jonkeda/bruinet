@@ -31,6 +31,15 @@ public class ElementNotFoundException : BruinetException
         Locator = locator;
     }
 
+    /// <summary>A control's element was not found: <paramref name="message"/> says by which call, where and how long.</summary>
+    /// <param name="locator">The locator searched with.</param>
+    /// <param name="message">The whole message.</param>
+    public ElementNotFoundException(Locator locator, string message)
+        : base(message)
+    {
+        Locator = locator;
+    }
+
     public ElementNotFoundException(string message, Exception innerException)
         : base(message, innerException) { }
 }
