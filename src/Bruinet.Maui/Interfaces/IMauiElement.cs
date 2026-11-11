@@ -36,7 +36,16 @@ public interface IMauiElement
     /// <summary>The bounding rectangle of the element.</summary>
     Rectangle Rect { get; }
 
-    /// <summary>Gets an attribute value from the element, or null if not present.</summary>
+    /// <summary>
+    /// An attribute of the element, or null when it has none. Every head answers the same names, spelled as here
+    /// (Windows and MauiHeadless also in any case; on Appium a lowercase name is the driver's own) (review 04,
+    /// finding 10): <c>Name</c>, <c>AutomationId</c>, <c>ClassName</c> (the platform's
+    /// class: <c>Button</c> headless, the WinUI class on Windows), <c>ControlType</c>, <c>Enabled</c> and
+    /// <c>Visible</c> (<c>True</c> or <c>False</c>), <c>HelpText</c>, and the scroll values
+    /// <c>scroll.verticalscrollpercent</c>, <c>scroll.horizontalscrollpercent</c>, <c>scroll.verticallyscrollable</c>
+    /// and <c>scroll.horizontallyscrollable</c> where the head has a layout (not MauiHeadless). Another name is the
+    /// head's own: MauiHeadless reads a bindable property by its name, Appium asks the driver, Windows answers null.
+    /// </summary>
     /// <param name="name">The attribute name.</param>
     string? GetAttribute(string name);
 

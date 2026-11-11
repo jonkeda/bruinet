@@ -112,15 +112,23 @@ internal sealed class MauiHeadlessElement : IMauiElement
 
     public Rectangle Rect => Visible ? new Rectangle(0, 0, 1, 1) : Rectangle.Empty;
 
+    /// <remarks>The names every MAUI head answers (IMauiElement.GetAttribute), then any bindable property by its name.</remarks>
     public string? GetAttribute(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
-        if (name is "ClassName" or "class")
-            return TagName;
-        if (name is "Name" or "name")
-            return Name;
-
-        return BindableValue(name);
+        return name.ToLowerInvariant() switch
+        {
+            "classname" or "class" or "controltype" => TagName,
+            "name" => Name,
+            "automationid" => AutomationId,
+            "enabled" => Enabled.ToString(),
+            "visible" => Visible.ToString(),
+            "helptext" => SemanticProperties.GetHint(Element) ?? AutomationProperties.GetHelpText(Element),
+            // No layout here, so no scroll position to give.
+            "scroll.verticalscrollpercent" or "scroll.horizontalscrollpercent"
+                or "scroll.verticallyscrollable" or "scroll.horizontallyscrollable" => null,
+            _ => BindableValue(name),
+        };
     }
 
     public string? ReadState(string property)

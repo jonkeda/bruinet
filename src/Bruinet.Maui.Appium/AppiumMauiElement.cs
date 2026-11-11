@@ -881,13 +881,21 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// raises <c>NotImplementedException</c> for anything outside its fixed list, so a control
     /// probing several candidate names — as the progress and placeholder readers do — would abort
     /// on the first miss, while the same probe returns null on Windows.
-    /// UI Automation's <c>Name</c> reads as <see cref="Name"/>, the accessible name: XCUITest's
-    /// own <c>name</c> is the AutomationId, and it has no attribute spelled <c>Name</c>.
+    /// The names every MAUI head answers (IMauiElement.GetAttribute) are read here, spelled as there: <c>Name</c> is
+    /// <see cref="Name"/>, the accessible name. A lowercase name is the driver's own attribute, as UiAutomator2 and
+    /// XCUITest spell theirs: XCUITest's <c>name</c> is the AutomationId, Android's <c>class</c> the widget's class.
     /// </remarks>
-    public string? GetAttribute(string attributeName)
-        => attributeName == "Name"
-        ? Name
-        : Read<string?>(() =>
+    public string? GetAttribute(string attributeName) => attributeName switch
+    {
+        "Name" => Name,
+        "AutomationId" => AutomationId,
+        "ClassName" or "ControlType" => TagName,
+        "Enabled" => Enabled.ToString(),
+        "Visible" => Visible.ToString(),
+        _ => DriverAttribute(attributeName),
+    };
+
+    private string? DriverAttribute(string attributeName) => Read<string?>(() =>
     {
         try
         {
