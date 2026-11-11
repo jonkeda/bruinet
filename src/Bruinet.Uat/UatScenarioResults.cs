@@ -18,7 +18,10 @@ public static class UatScenarioResults
     /// <summary>A run in the suite's runner process, driven by a host (the Presenter, an IDE).</summary>
     public const string RunnerMode = "runner";
 
-    /// <summary>Writes the report and the manifest record; never changes the scenario's outcome.</summary>
+    /// <summary>
+    /// Writes the report and the manifest record. A disk or folder that will not take them leaves the outcome as it is
+    /// and says so on stderr; a fault in building them is thrown.
+    /// </summary>
     /// <param name="runtime">The suite's runtime: its config, discovery and output folder.</param>
     /// <param name="catalog">The command catalog, for a report with the runtime trace.</param>
     /// <param name="scenario">The scenario that ran.</param>
@@ -27,7 +30,7 @@ public static class UatScenarioResults
     /// <param name="suite">The suite's name: its project's assembly.</param>
     /// <param name="evidenceName">The scenario's name as files are named after it.</param>
     /// <param name="mode"><see cref="TestMode"/> or <see cref="RunnerMode"/>.</param>
-    /// <returns>The report's path; null when it could not be written.</returns>
+    /// <returns>The report's path; null when the disk or folder would not take it.</returns>
     public static string? Record(
         UatRuntime runtime,
         BddCommandCatalog catalog,
@@ -82,9 +85,12 @@ public static class UatScenarioResults
                 });
             return reportPath;
         }
-        catch (Exception)
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            // Whatever stops the report, it does not change the scenario's outcome.
+            // A disk or folder that will not take the report does not change the scenario's outcome, but it is said:
+            // without this file the tools read the previous run's, and could take it for this one. Any other
+            // exception is a fault in building the report and fails the test like any other (AD-009).
+            Console.Error.WriteLine($"bruinet: the result of '{scenario.Source.Name}' was not written: {exception.Message}");
             return null;
         }
     }
