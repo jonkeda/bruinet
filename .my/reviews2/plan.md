@@ -73,7 +73,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T31 Catalog printed only for a bind error. R01 P3.
 - [x] R2-T32 A bind failure writes a result (kind `bind`). R01 P4.
 - [x] R2-T33 UATB001 names up to three nearest phrases. R01 P5.
-- [ ] R2-T34 A closing "what to try" line per failure kind. R01 P6.
+- [x] R2-T34 A closing "what to try" line per failure kind. R01 P6.
 - [ ] R2-T35 One typed navigation failure on both Html heads; bUnit refuses a foreign host; `PageLoadException` thrown or deleted. R01 P7.
 - [ ] R2-T36 Locator carried on `ControlAssertionException` and `ScopeNotReadyException`; regex in `UatStepFailure` goes. R01 P8.
 - [ ] R2-T37 `IsFramework` counts `Bruinet.Uat` as framework; `frames` names the page object member. R01 P9.

@@ -101,6 +101,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     string? IControlHost<IWpfElement>.MemberName => Bruinet.Core.Calls.ControlMembers.NameOf(_scope.Page, Locator);
 
+    IReadOnlyList<string> IControlHost<IWpfElement>.ShownControls => Bruinet.Core.Calls.ControlMembers.ShownOf(_scope.Page);
+
     protected bool RunWait(Func<bool> operation, int? timeoutMs = null,
         [CallerMemberName] string? caller = null)
         => Calls.Wait(operation, timeoutMs, caller ?? nameof(RunWait));

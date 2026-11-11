@@ -106,6 +106,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     string? IControlHost<INativeAndroidElement>.MemberName => Bruinet.Core.Calls.ControlMembers.NameOf(_scope.Page, Locator);
 
+    IReadOnlyList<string> IControlHost<INativeAndroidElement>.ShownControls => Bruinet.Core.Calls.ControlMembers.ShownOf(_scope.Page);
+
     // A control below the fold is not in the tree: scroll it in, throttled as a scroll into view is.
     private INativeAndroidElement? FindOrScrollTo(AttemptContext attempt)
     {

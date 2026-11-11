@@ -44,5 +44,16 @@ public static class ScopeGate
         => new(readiness,
             $"Scope '{readiness.ScopeName}' did not become ready for {caller} on {subject} within {budgetMs} ms. " +
             $"Last readiness state: {readiness.State}" +
-            (readiness.Detail is null ? "." : $" ({readiness.Detail})."));
+            (readiness.Detail is null ? "." : $" ({readiness.Detail}).") +
+            (Hint(readiness.State) is { } hint ? " " + hint : string.Empty));
+
+    // One closing line per kind of not ready: what to look at next (review 01, proposal 6).
+    private static string? Hint(ScopeReadinessState state) => state switch
+    {
+        ScopeReadinessState.NotLoaded => "Is the app on this page? Its ready element did not show: the step before may have gone elsewhere.",
+        ScopeReadinessState.MissingRoot or ScopeReadinessState.StaleRoot => "Its root element was not there: the container may be closed, or not open yet.",
+        ScopeReadinessState.Busy => "The page stayed busy: what keeps it busy (a spinner, a pending call) shows in the step's trace.",
+        ScopeReadinessState.ContentNotReady => "Its content check did not hold: the data it waits for did not come.",
+        _ => null,
+    };
 }

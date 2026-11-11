@@ -1218,3 +1218,5 @@ Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruine
 Bruinet.Core.Calls.ControlMembers
 static Bruinet.Core.Calls.ControlMembers.NameOf(object? page, Bruinet.Core.Locators.Locator! locator) -> string?
 Bruinet.Core.Calls.IControlHost<TElement>.MemberName.get -> string?
+static Bruinet.Core.Calls.ControlMembers.ShownOf(object? page, int most = 12, System.TimeSpan? budget = null) -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Calls.IControlHost<TElement>.ShownControls.get -> System.Collections.Generic.IReadOnlyList<string!>!

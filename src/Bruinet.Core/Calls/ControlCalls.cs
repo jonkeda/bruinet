@@ -71,6 +71,9 @@ public interface IControlHost<TElement>
     /// <summary>The control's property name on its page object, as a message names it; null when the host cannot say.</summary>
     string? MemberName => null;
 
+    /// <summary>The names of the page's controls that are shown now, for a "not found" to name; empty when the host cannot say.</summary>
+    IReadOnlyList<string> ShownControls => [];
+
     /// <summary>What the host is called in a message: "control", or "container" for a scope's root.</summary>
     string Noun => "control";
 
@@ -112,7 +115,9 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
         var page = host.ScopeName is { Length: > 0 } scope ? $" of page '{scope}'" : string.Empty;
         var sentence = $"{caller} on {Named()}{page}: not found within {budgetMs} ms.";
         var plain = own.Message.StartsWith("Element not found with locator", StringComparison.Ordinal);
-        return new ElementNotFoundException(own.Locator ?? host.Locator, plain ? sentence : $"{sentence} {own.Message}");
+        var shown = host.ShownControls;
+        var hint = shown.Count == 0 ? string.Empty : $" Shown on the page: {string.Join(", ", shown)}.";
+        return new ElementNotFoundException(own.Locator ?? host.Locator, (plain ? sentence : $"{sentence} {own.Message}") + hint);
     }
 
     // "control 'Save' (Css:#save)": its name on the page object first, when the host can say it (review 01, finding 1).
