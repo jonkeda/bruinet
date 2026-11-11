@@ -46,18 +46,6 @@ public class DateInputControlTests
         Assert.Equal(new DateOnly(2030, 12, 31), _page.TestDateInput.GetMaximum());
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestDateInput.Exists());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenEnabled_ReturnsTrue()
-    {
-        Assert.True(_page.TestDateInput.IsEnabled());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

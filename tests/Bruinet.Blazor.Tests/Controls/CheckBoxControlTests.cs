@@ -81,18 +81,6 @@ public class CheckBoxControlTests
         _mockElement.Verify(e => e.Click(), Times.Once);
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestCheckBox.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestCheckBox.IsVisible());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

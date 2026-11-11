@@ -96,7 +96,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T51 WPF and WinForms bind the contracts on their fake apps; `ControlTests.cs` copies join. R04 P10, R08 P3.
 - [ ] R2-T52 Stride and native Android bind the contracts on their fakes. R08 P3.
 - [ ] R2-T53 Call model tests move to `Bruinet.Core.Tests`; per-stack files keep only their own. R08 P4. Then `mutate.ps1 -Library Bruinet.Core -Mutate '**/Calls/*.cs'`. R08 P12.
-- [ ] R2-T54 The 35 Moq `Is…` tests in `Bruinet.Blazor.Tests` go once the binding covers them. R08 P6.
+- [x] R2-T54 The 35 Moq `Is…` tests in `Bruinet.Blazor.Tests` go once the binding covers them. R08 P6. All 35 went: each read the shared view base's presence answer, which Html's ElementContract proves on bUnit and Chromium; none proved an argument or a call count. SelectByValue's Moq test gives its select the option R2-T41 now asks for.
 - [ ] R2-T55 UI suite duplicates joined (WinForms roles, Html/Blazor visible and enabled). R08 P7.
 
 ## Phase 5: waits

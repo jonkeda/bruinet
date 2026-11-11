@@ -78,12 +78,6 @@ public class VideoControlTests
         Assert.Equal(0.8, _page.TestVideo.GetVolume());
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestVideo.Exists());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

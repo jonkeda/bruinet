@@ -19,6 +19,11 @@ public class SelectControlTests
     [Fact]
     public void SelectByValue_CallsSelectOption()
     {
+        // A value no option has is refused (review 04, finding 2), so the select has the option.
+        var option = MockHtmlFactory.CreateMockElement("Option 1");
+        option.Setup(e => e.GetAttribute("value")).Returns("opt1");
+        _mockElement.Setup(e => e.FindElements(It.IsAny<Locator>())).Returns([option.Object]);
+
         _page.TestSelect.SelectByValue("opt1");
 
         _mockElement.Verify(e => e.SelectOption("opt1"), Times.Once);
@@ -60,12 +65,6 @@ public class SelectControlTests
             .Returns(new List<IHtmlElement>().AsReadOnly());
 
         Assert.Throws<InvalidOperationException>(() => _page.TestSelect.SelectByText("Nonexistent"));
-    }
-
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestSelect.Exists());
     }
 
     [Fact]

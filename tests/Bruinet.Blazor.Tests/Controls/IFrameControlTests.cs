@@ -104,12 +104,6 @@ public class IFrameControlTests
         _page.TestIFrame.AssertSourceContains("frame.html");
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestIFrame.Exists());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

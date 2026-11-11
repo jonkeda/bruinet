@@ -61,20 +61,6 @@ public class ListControlTests
         Assert.Equal("Item 3", texts[2]);
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestList.Exists());
-    }
-
-    [Fact]
-    public void IsExists_WhenNotFound_ReturnsFalse()
-    {
-        MockHtmlFactory.SetupElementNotFound(_mockContext);
-
-        Assert.False(_page.TestList.Exists());
-    }
-
     private static Mock<IHtmlElement> CreateChildElement(string? text)
     {
         var mock = new Mock<IHtmlElement>();

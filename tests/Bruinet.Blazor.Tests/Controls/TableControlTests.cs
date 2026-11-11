@@ -94,20 +94,6 @@ public class TableControlTests
         Assert.Equal("Cell2", texts[1]);
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestTable.Exists());
-    }
-
-    [Fact]
-    public void IsExists_WhenNotFound_ReturnsFalse()
-    {
-        MockHtmlFactory.SetupElementNotFound(_mockContext);
-
-        Assert.False(_page.TestTable.Exists());
-    }
-
     private static Mock<IHtmlElement> CreateChildElement(string? text)
     {
         var mock = new Mock<IHtmlElement>();

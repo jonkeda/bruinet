@@ -46,18 +46,6 @@ public class TimeInputControlTests
         Assert.Equal(new TimeOnly(17, 0), _page.TestTimeInput.GetMaximum());
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestTimeInput.Exists());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenEnabled_ReturnsTrue()
-    {
-        Assert.True(_page.TestTimeInput.IsEnabled());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

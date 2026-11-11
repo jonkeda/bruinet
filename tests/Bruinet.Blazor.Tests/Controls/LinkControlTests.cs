@@ -36,24 +36,6 @@ public class LinkControlTests
         Assert.Equal("https://example.com", _page.TestLink.GetHref());
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestLink.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestLink.IsVisible());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenEnabled_ReturnsTrue()
-    {
-        Assert.True(_page.TestLink.IsEnabled());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

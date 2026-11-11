@@ -38,18 +38,6 @@ public class TextAreaControlTests
     }
 
     [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestTextArea.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestTextArea.IsVisible());
-    }
-
-    [Fact]
     public void Clear_CallsElementClear()
     {
         _page.TestTextArea.Clear();

@@ -76,20 +76,6 @@ public class RangeInputControlTests
         _mockElement.Verify(e => e.Fill("42"), Times.Once);
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestRange.Exists());
-    }
-
-    [Fact]
-    public void IsExists_WhenNotFound_ReturnsFalse()
-    {
-        MockHtmlFactory.SetupElementNotFound(_mockContext);
-
-        Assert.False(_page.TestRange.Exists());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

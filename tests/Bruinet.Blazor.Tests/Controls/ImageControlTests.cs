@@ -93,12 +93,6 @@ public class ImageControlTests
         Assert.Throws<ControlAssertionException>(() => _page.TestImage.AssertAltText("Nice image"));
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestImage.Exists());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

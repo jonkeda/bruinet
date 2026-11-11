@@ -44,24 +44,6 @@ public class RadioButtonControlTests
         _mockElement.Verify(e => e.Click(), Times.Once);
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestRadio.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestRadio.IsVisible());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenEnabled_ReturnsTrue()
-    {
-        Assert.True(_page.TestRadio.IsEnabled());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

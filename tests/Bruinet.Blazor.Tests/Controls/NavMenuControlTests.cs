@@ -114,12 +114,6 @@ public class NavMenuControlTests
         Assert.Throws<ControlAssertionException>(() => _page.TestNav.AssertItemsHasItem("Missing", timeoutMs: 0));
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestNav.Exists());
-    }
-
     private static Mock<IHtmlElement> CreateNavItem(string text)
     {
         var mock = new Mock<IHtmlElement>();

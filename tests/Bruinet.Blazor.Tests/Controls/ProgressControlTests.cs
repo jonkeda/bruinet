@@ -55,12 +55,6 @@ public class ProgressControlTests
         Assert.Equal(0, _page.TestProgress.GetValue());
     }
 
-    [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestProgress.Exists());
-    }
-
     private sealed class TestPage : BlazorPageObjectBase<TestPage>
     {
         public TestPage(IHtmlTestContext context) : base(context) { }

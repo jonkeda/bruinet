@@ -23,48 +23,6 @@ public class ButtonControlTests
     }
 
     [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestButton.Exists());
-    }
-
-    [Fact]
-    public void IsExists_WhenNotFound_ReturnsFalse()
-    {
-        MockHtmlFactory.SetupElementNotFound(_mockContext);
-
-        Assert.False(_page.TestButton.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestButton.IsVisible());
-    }
-
-    [Fact]
-    public void IsVisible_WhenNotVisible_ReturnsFalse()
-    {
-        _mockElement.Setup(e => e.Visible).Returns(false);
-
-        Assert.False(_page.TestButton.IsVisible());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenEnabled_ReturnsTrue()
-    {
-        Assert.True(_page.TestButton.IsEnabled());
-    }
-
-    [Fact]
-    public void IsEnabled_WhenDisabled_ReturnsFalse()
-    {
-        _mockElement.Setup(e => e.Enabled).Returns(false);
-
-        Assert.False(_page.TestButton.IsEnabled());
-    }
-
-    [Fact]
     public void GetText_ReturnsText()
     {
         Assert.Equal("Test Text", _page.TestButton.GetText());

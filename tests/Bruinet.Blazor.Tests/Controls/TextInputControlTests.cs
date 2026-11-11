@@ -37,18 +37,6 @@ public class TextInputControlTests
     }
 
     [Fact]
-    public void IsExists_WhenExists_ReturnsTrue()
-    {
-        Assert.True(_page.TestTextInput.Exists());
-    }
-
-    [Fact]
-    public void IsVisible_WhenVisible_ReturnsTrue()
-    {
-        Assert.True(_page.TestTextInput.IsVisible());
-    }
-
-    [Fact]
     public void GetText_ReturnsText()
     {
         Assert.Equal("Test Text", _page.TestTextInput.GetText());
