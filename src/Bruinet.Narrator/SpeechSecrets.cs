@@ -288,7 +288,7 @@ internal static class VoiceFile
         }
     }
 
-    /// <summary>Writes the file whole, readable by the current user only on Windows.</summary>
+    /// <summary>Writes the file whole, readable by the current user only.</summary>
     internal static void Write(string path, JsonObject root)
     {
         var folder = Path.GetDirectoryName(Path.GetFullPath(path))!;
@@ -298,6 +298,11 @@ internal static class VoiceFile
         if (OperatingSystem.IsWindows())
         {
             OwnerOnly(partial);
+        }
+        else
+        {
+            // macOS and Linux: mode 600, before the key is moved into place (review 09).
+            File.SetUnixFileMode(partial, UnixFileMode.UserRead | UnixFileMode.UserWrite);
         }
 
         File.Move(partial, path, overwrite: true);

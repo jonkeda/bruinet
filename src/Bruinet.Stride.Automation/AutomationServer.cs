@@ -108,7 +108,8 @@ public sealed class AutomationServer : IDisposable
                     PipeDirection.InOut,
                     _options.MaxConnections,
                     PipeTransmissionMode.Byte,
-                    PipeOptions.Asynchronous);
+                    // Only this user's processes may drive the game: the default pipe name is fixed (review 09).
+                    PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
 
                 Log("Waiting for connection...");
                 consecutiveErrors = 0;

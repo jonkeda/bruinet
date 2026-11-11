@@ -683,6 +683,7 @@ internal sealed class PreviewController : IVsSelectionEvents, IVsUpdateSolutionE
                 if ((string?)preview["resultsHost"] is { } host && (string?)preview["resultsRoot"] is { } root)
                 {
                     target.MapResults(host, root);
+                    _resultsRoot = root;
                 }
 
                 target.Post(preview);
@@ -768,7 +769,7 @@ internal sealed class PreviewController : IVsSelectionEvents, IVsUpdateSolutionE
             case "record" when _path is { } file:
                 Record(file, (int?)message["line"]);
                 break;
-            case "watch" when (string?)message["path"] is { } video && File.Exists(video):
+            case "watch" when (string?)message["path"] is { } video && File.Exists(video) && IsRecording(video):
                 // The system's video player: Visual Studio has none.
                 using (Process.Start(new ProcessStartInfo(video) { UseShellExecute = true }))
                 {
@@ -1078,6 +1079,26 @@ internal sealed class PreviewController : IVsSelectionEvents, IVsUpdateSolutionE
 #pragma warning disable VSTHRD010
     private void Log(string line) => _output?.OutputStringThreadSafe(line + Environment.NewLine);
 #pragma warning restore VSTHRD010
+
+    // The suite's results root, from the last preview: where its recordings are.
+    private string? _resultsRoot;
+
+    // A path the page asks to open with the shell: only a video, and only one of this suite's recordings, so a page
+    // that is made to send another path cannot start any file (review 09).
+    private bool IsRecording(string path)
+    {
+        if (!path.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var full = Path.GetFullPath(path);
+        var configured = ((BruinetBddPackage)_package).Options.RecordingsFolder;
+        return new[] { _resultsRoot, string.IsNullOrWhiteSpace(configured) ? null : configured }
+            .Where(folder => !string.IsNullOrEmpty(folder))
+            .Select(folder => Path.GetFullPath(folder!).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar)
+            .Any(folder => full.StartsWith(folder, StringComparison.OrdinalIgnoreCase));
+    }
 
     // A video script previews too, as the scenes it will record; it has no step breakpoints.
     internal static bool IsPreviewable(string path)
