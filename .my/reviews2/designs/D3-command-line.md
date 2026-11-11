@@ -2,6 +2,8 @@
 
 Design for R2-T88, R2-T89 (review 10, P1–P4, P6–P8, and its Renames table). `bruinet` in `tools/Bruinet.Cli`.
 
+**Approved by the owner as proposed, 2026-11-11.**
+
 ## Decisions asked
 
 1. **Exit codes.** My proposal: the table below, and nothing else ever exits 1.

@@ -2,6 +2,8 @@
 
 Design for R2-T19, R2-T20, R2-T21, R2-T23 (review 09, P1, P2, P3, P5). Defensive: what Bruinet writes to disk and git, and who may switch replay on.
 
+**Approved by the owner as proposed, 2026-11-11.**
+
 ## Decisions asked
 
 1. **Redaction is on by default, by name, and a save that still holds a secret fails.** My proposal: yes, for SQL as HTTP already does. A suite opts out per name, never wholesale.

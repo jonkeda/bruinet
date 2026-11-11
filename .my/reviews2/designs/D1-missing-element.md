@@ -2,6 +2,8 @@
 
 Design for R2-T39 (review 04 P8, review 08 P5). On `reviews` after the rebase onto `origin/move` at `930610b1`.
 
+**Approved by the owner as proposed, 2026-11-11.**
+
 ## Decision asked
 
 What `Is…()` answers when its element is not there. **My proposal: false, and the members become `bool`.**

@@ -155,7 +155,7 @@ Branch `reviews` (worktree `E:\repos\Private\bru-reviews`), pushed to origin's `
 
 ## Open with the owner
 
-- D1–D4 written; each opens with its decisions and my proposal. Their tasks wait for the owner's yes.
+- D1–D4: approved by the owner as proposed on 2026-11-11; their tasks are no longer blocked on them.
 - R07's five questions (exception name, R5, `copilot-instructions.md`, scenario-or-test rule, `.my` index): my proposals stand in the review.
 - R2-T76 code style, R2-T93 two scripts, Selenium (`WebDriverManager` too).
 - Pushing `reviews` to the jonkeda mirror: blocked by the permission check on 2026-11-11, not retried.

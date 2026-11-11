@@ -2,6 +2,8 @@
 
 Design for R2-T94, R2-T95, R2-T96 (review 03, M1–M11). The detail per proposal is in `03-mcp-tools.md` § Proposals; this file decides the shape, the order and who must change with it.
 
+**Approved by the owner as proposed, 2026-11-11.**
+
 ## Decisions asked
 
 1. **Rename now, all at once, no aliases.** My proposal: yes, in one commit before the first `Shipped` line; an old name answers nothing. Why: every later rename breaks every skill again, and an alias doubles a list that is already too long for an agent to choose from.
