@@ -135,6 +135,18 @@ public abstract class HtmlTextInputBinding<THead> : EditableTextContract<Contrac
     protected override IEditableTextControlObject<ContractPage> ReadOnlyField => new TextInputControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("readonly"));
 
     protected override string Placeholder => "Your name";
+
+    /// <summary>Submit raises the form's submit event, so the app's handler runs, in a browser as on bUnit (review 04, finding 1).</summary>
+    [Fact]
+    public void Submit_RunsTheFormsHandler()
+    {
+        var field = new TextInputControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("form-field"));
+
+        field.SetText("Mia");
+        field.Submit();
+
+        Shows("submitted Mia", () => new LabelControl<ContractPage>(_session.Page, ContractSession<THead>.Selector("submitted")).GetText());
+    }
 }
 
 public abstract class HtmlTextAreaBinding<THead> : EditableTextContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()

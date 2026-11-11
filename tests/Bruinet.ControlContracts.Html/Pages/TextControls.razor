@@ -7,8 +7,17 @@
 <input data-testid="readonly" readonly value="Fixed" />
 <textarea data-testid="area" placeholder="Your notes" @bind="area" @bind:event="oninput"></textarea>
 <textarea data-testid="readonly-area" readonly>Fixed</textarea>
+@* A form whose submit the app handles: Submit() runs the handler on both heads (review 04, finding 1). *@
+<form data-testid="form" @onsubmit="Submitted">
+    <input data-testid="form-field" @bind="formField" @bind:event="oninput" />
+</form>
+<span data-testid="submitted">@submitted</span>
 
 @code {
     private string field = string.Empty;
     private string area = string.Empty;
+    private string formField = string.Empty;
+    private string submitted = "not yet";
+
+    private void Submitted() => submitted = $"submitted {formField}";
 }

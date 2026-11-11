@@ -180,8 +180,10 @@ internal sealed class PlaywrightHtmlElement : IHtmlElement
     public string? GetCssValue(string propertyName)
         => Read(timeout => _locator.EvaluateAsync<string>("(el, propertyName) => getComputedStyle(el).getPropertyValue(propertyName)", propertyName, new() { Timeout = timeout }));
 
+    // requestSubmit, not submit: submit() raises no submit event and runs no validation, so an app's handler (a Blazor
+    // EditForm's) never ran in the browser while it did on bUnit (review 04, finding 1).
     public void Submit()
-        => Marked(InteractionKind.Key, () => Evaluate("el => { const form = el.form || el.closest('form'); if (form) form.submit(); }"), key: "Submit");
+        => Marked(InteractionKind.Key, () => Evaluate("el => { const form = el.form || el.closest('form'); if (form) form.requestSubmit(); }"), key: "Submit");
 
     public string InnerHtml => Read(timeout => _locator.InnerHTMLAsync(new() { Timeout = timeout }));
 
