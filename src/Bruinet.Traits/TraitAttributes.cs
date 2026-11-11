@@ -57,6 +57,19 @@ public sealed class ModuleAttribute(string name) : BruinetTraitAttribute(
     public string Name { get; } = name;
 }
 
+/// <summary>
+/// Owned by a feature. Writes <c>Feature=name</c>. Use it instead of <see cref="ModuleAttribute"/> when
+/// the app calls its parts features, or beside it for a feature that spans modules.
+/// </summary>
+[TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+public sealed class FeatureAttribute(string name) : BruinetTraitAttribute(
+    Trait(TraitKeys.Feature, Required(name, nameof(name))))
+{
+    /// <summary>The feature name.</summary>
+    public string Name { get; } = name;
+}
+
 /// <summary>Owned by a shared component. Writes <c>Component=name</c>.</summary>
 [TraitDiscoverer(BruinetTraitDiscoverer.TypeName, BruinetTraitDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]

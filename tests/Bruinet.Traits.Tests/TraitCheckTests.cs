@@ -4,11 +4,19 @@ namespace Bruinet.Traits.Tests;
 
 public class TraitCheckTests
 {
-    private static readonly TraitCheckOptions Options = new() { KnownModules = ["Contacts"] };
+    private static readonly TraitCheckOptions Options = new() { KnownModules = ["Contacts"], KnownFeatures = ["Checkout"] };
 
     [Fact]
     public void Check_AcceptsOneTierAndAKnownOwner()
         => Assert.DoesNotContain(Problems(), p => p.Test.EndsWith($"{nameof(Fixtures)}.{nameof(Fixtures.Tagged)}", StringComparison.Ordinal));
+
+    [Fact]
+    public void Check_AcceptsAFeatureAsTheOwner()
+        => Assert.Empty(ProblemsOf(nameof(Fixtures.FeatureOwned)));
+
+    [Fact]
+    public void Check_ReportsAnUnknownFeature()
+        => Assert.Contains(ProblemsOf(nameof(Fixtures.UnknownFeature)), p => p.Contains("unknown feature 'Chekout'", StringComparison.Ordinal));
 
     [Fact]
     public void Check_ReadsPlainTraitsAndTheBaseClass()
@@ -53,6 +61,12 @@ public class TraitCheckTests
 
         [Fact, Module("Contcts")]
         public void UnknownModule() { }
+
+        [Fact, Feature("Checkout")]
+        public void FeatureOwned() { }
+
+        [Fact, Feature("Chekout")]
+        public void UnknownFeature() { }
     }
 
     public class UntaggedFixtures

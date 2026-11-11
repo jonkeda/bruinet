@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   gesture verbs for every element matching a rule. Moved from Exact Construction.
 - `Bruinet.Traits`: typed trait attributes for xUnit 2. Tiers `[Unit]`, `[Integration]`, `[HermeticUi]`, `[Live]` and
   `[Video]` write `Pyramid` (Unit, Integration and Video also write the matching `Category`); owners `[Module]`,
-  `[Component]` and `[CommonArea]`; run sets `[Smoke]`, `[Uat]` and `[Contract]`; and `[Journey]`. `TraitCheck`
+    `[Feature]`, `[Component]` and `[CommonArea]`; run sets `[Smoke]`, `[Uat]` and `[Contract]`; and `[Journey]`. `TraitCheck`
   reports tests with no tier, more than one, or no known owner, reading plain `[Trait]` too.
 - Bruinet.Contracts: `LocalAccountStore` reads named test accounts (`{PREFIX}_{ACCOUNT}_USERNAME`, `_PASSWORD`,
   `_ORGANIZATION`) from a git-ignored `.env.local`, and `LiveContractGate.SkipReason` decides whether a live

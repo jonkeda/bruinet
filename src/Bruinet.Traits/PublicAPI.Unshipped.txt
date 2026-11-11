@@ -12,6 +12,9 @@ Bruinet.Traits.ComponentAttribute.ComponentAttribute(string! name) -> void
 Bruinet.Traits.ComponentAttribute.Name.get -> string!
 Bruinet.Traits.ContractAttribute
 Bruinet.Traits.ContractAttribute.ContractAttribute() -> void
+Bruinet.Traits.FeatureAttribute
+Bruinet.Traits.FeatureAttribute.FeatureAttribute(string! name) -> void
+Bruinet.Traits.FeatureAttribute.Name.get -> string!
 Bruinet.Traits.HermeticUiAttribute
 Bruinet.Traits.HermeticUiAttribute.HermeticUiAttribute() -> void
 Bruinet.Traits.IntegrationAttribute
@@ -33,6 +36,8 @@ Bruinet.Traits.TraitCheckOptions.KnownCommonAreas.get -> System.Collections.Gene
 Bruinet.Traits.TraitCheckOptions.KnownCommonAreas.init -> void
 Bruinet.Traits.TraitCheckOptions.KnownComponents.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
 Bruinet.Traits.TraitCheckOptions.KnownComponents.init -> void
+Bruinet.Traits.TraitCheckOptions.KnownFeatures.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
+Bruinet.Traits.TraitCheckOptions.KnownFeatures.init -> void
 Bruinet.Traits.TraitCheckOptions.KnownModules.get -> System.Collections.Generic.IReadOnlyCollection<string!>?
 Bruinet.Traits.TraitCheckOptions.KnownModules.init -> void
 Bruinet.Traits.TraitCheckOptions.TraitCheckOptions() -> void
@@ -59,6 +64,7 @@ const Bruinet.Traits.TierNames.Video = "Video" -> string!
 const Bruinet.Traits.TraitKeys.Category = "Category" -> string!
 const Bruinet.Traits.TraitKeys.CommonArea = "CommonArea" -> string!
 const Bruinet.Traits.TraitKeys.Component = "Component" -> string!
+const Bruinet.Traits.TraitKeys.Feature = "Feature" -> string!
 const Bruinet.Traits.TraitKeys.Journey = "Journey" -> string!
 const Bruinet.Traits.TraitKeys.Module = "Module" -> string!
 const Bruinet.Traits.TraitKeys.Pyramid = "Pyramid" -> string!

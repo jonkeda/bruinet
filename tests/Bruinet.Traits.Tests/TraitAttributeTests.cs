@@ -16,6 +16,7 @@ public class TraitAttributeTests
     [InlineData(nameof(Holder.Uat), "Category=UAT")]
     [InlineData(nameof(Holder.Contract), "Category=Contract")]
     [InlineData(nameof(Holder.Module), "Module=Contacts")]
+    [InlineData(nameof(Holder.Feature), "Feature=Checkout")]
     [InlineData(nameof(Holder.Component), "Component=Favorites")]
     [InlineData(nameof(Holder.CommonArea), "CommonArea=Sync")]
     [InlineData(nameof(Holder.Journey), "Journey=CTS.02.1")]
@@ -56,6 +57,7 @@ public class TraitAttributeTests
         [Uat] public static void Uat() { }
         [Contract] public static void Contract() { }
         [Module("Contacts")] public static void Module() { }
+        [Feature("Checkout")] public static void Feature() { }
         [Component("Favorites")] public static void Component() { }
         [CommonArea("Sync")] public static void CommonArea() { }
         [Journey("CTS.02.1")] public static void Journey() { }

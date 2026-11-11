@@ -15,6 +15,9 @@ public static class TraitKeys
     /// <summary>The app module that owns the test.</summary>
     public const string Module = "Module";
 
+    /// <summary>The feature that owns the test, for apps that name their parts features.</summary>
+    public const string Feature = "Feature";
+
     /// <summary>The shared component that owns the test.</summary>
     public const string Component = "Component";
 

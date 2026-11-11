@@ -14,6 +14,9 @@ public sealed class TraitCheckOptions
     /// <summary>The module names the app knows, or <c>null</c> to accept any.</summary>
     public IReadOnlyCollection<string>? KnownModules { get; init; }
 
+    /// <summary>The feature names the app knows, or <c>null</c> to accept any.</summary>
+    public IReadOnlyCollection<string>? KnownFeatures { get; init; }
+
     /// <summary>The component names the app knows, or <c>null</c> to accept any.</summary>
     public IReadOnlyCollection<string>? KnownComponents { get; init; }
 
@@ -95,12 +98,14 @@ public static class TraitCheck
             yield return new(test, $"has unknown tier '{tier}'.");
 
         var modules = Values(traits, TraitKeys.Module);
+        var features = Values(traits, TraitKeys.Feature);
         var components = Values(traits, TraitKeys.Component);
         var areas = Values(traits, TraitKeys.CommonArea);
-        if (modules.Count + components.Count + areas.Count == 0)
-            yield return new(test, "has no owner; add [Module], [Component] or [CommonArea].");
+        if (modules.Count + features.Count + components.Count + areas.Count == 0)
+            yield return new(test, "has no owner; add [Module], [Feature], [Component] or [CommonArea].");
 
         foreach (var problem in Unknown(test, "module", modules, options.KnownModules)
+                     .Concat(Unknown(test, "feature", features, options.KnownFeatures))
                      .Concat(Unknown(test, "component", components, options.KnownComponents))
                      .Concat(Unknown(test, "Common area", areas, options.KnownCommonAreas)))
             yield return problem;
