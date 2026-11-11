@@ -49,7 +49,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T13 Delete `UatControlAssertions` (no caller in Bruinet, Tomorrow, Kofflard, construction). R05 P5.
 - [x] R2-T14 Bridge keeps the app's exception message. R05 P6.
 - [x] R2-T15 `UatScenarioResults.Record` catches file errors only and traces them. R05 P7.
-- [ ] R2-T16 The small catches. R05 P10.
+- [x] R2-T16 The small catches. R05 P10.
 - [ ] R2-T17 A typed "refused" exception in Core in place of `InvalidOperationException`. R05 P8.
 - [ ] R2-T18 Check that fails a new bare catch or unfiltered `catch (Exception)` outside an allowed list. R05 P9.
 

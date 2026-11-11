@@ -31,6 +31,19 @@ public class MockAudioSourceTests
     }
 
     [Fact]
+    public async Task A_Handler_ThatThrows_StopsTheAudio_AndStopAsyncRaisesIt()
+    {
+        using var source = new MockAudioSource(new byte[320000], chunkIntervalMs: 5);
+        source.ChunkEmitted += (_, _) => throw new InvalidOperationException("the app's audio handler failed");
+
+        await source.StartAsync();
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => source.StopAsync());
+
+        Assert.Equal("the app's audio handler failed", error.Message);
+        Assert.False(source.IsEmitting);
+    }
+
+    [Fact]
     public void SimulateDisconnect_FiresEvent()
     {
         var disconnected = false;

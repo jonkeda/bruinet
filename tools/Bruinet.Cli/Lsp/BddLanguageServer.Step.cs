@@ -286,8 +286,24 @@ public sealed partial class BddLanguageServer
 
         run.Debugged = true;
 
-        // Queued before the move the IDE sends once attached: that move's step waits for the break.
-        _ = runner.RequestAsync(new BddRunnerBreak(DebugAttachWait.TotalSeconds), run.Cancel.Token);
+        // Queued before the move the IDE sends once attached: that move's step waits for the break. The runner's
+        // "no debugger attached in time" lets the run go on without one; a runner that cannot be asked at all ends
+        // the run with why, as a failed move does, or the IDE would wait for a break that never comes.
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await runner.RequestAsync(new BddRunnerBreak(DebugAttachWait.TotalSeconds), run.Cancel.Token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (run.Cancel.IsCancellationRequested)
+            {
+                // Stopped: the stop ends the run and says so.
+            }
+            catch (Exception exception) when (exception is not OutOfMemoryException)
+            {
+                await EndStepAsync(run, "error", $"The runner did not take the debugger's break: {exception.Message}").ConfigureAwait(false);
+            }
+        });
         return new StepDebugResult(runner.Process.Id, null);
     }
 

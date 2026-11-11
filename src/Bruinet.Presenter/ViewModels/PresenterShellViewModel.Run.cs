@@ -422,23 +422,40 @@ public sealed partial class PresenterShellViewModel
     /// <inheritdoc />
     public async void RunUntil(BddStepRowViewModel row)
     {
-        if (_activeSession is null)
+        try
         {
-            await StartPausedAsync(SelectedScenario).ConfigureAwait(true);
-        }
+            if (_activeSession is null)
+            {
+                await StartPausedAsync(SelectedScenario).ConfigureAwait(true);
+            }
 
-        if (CurrentRow is { } at && row.Index > at.Index)
+            if (CurrentRow is { } at && row.Index > at.Index)
+            {
+                await MoveAsync(PresenterMove.Step, until: row).ConfigureAwait(true);
+            }
+        }
+        catch (Exception exception)
         {
-            await MoveAsync(PresenterMove.Step, until: row).ConfigureAwait(true);
+            // async void from the step list: shown, as DebugFrom does, rather than taking the Presenter down.
+            StatusSummary = $"Run to here: {exception.Message}";
         }
     }
 
     /// <inheritdoc />
     public async void RunFrom(BddStepRowViewModel row)
     {
-        if (CanRunFrom(row))
+        if (!CanRunFrom(row))
+        {
+            return;
+        }
+
+        try
         {
             await MoveAsync(PresenterMove.Play, from: row).ConfigureAwait(true);
+        }
+        catch (Exception exception)
+        {
+            StatusSummary = $"Run from here: {exception.Message}";
         }
     }
 

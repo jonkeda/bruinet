@@ -198,10 +198,13 @@ public static class ProviderRules
     {
         try
         {
-            return reader.GetFieldType(ordinal).FullName!;
+            // A UDT (geography, hierarchyid) whose CLR type is not loaded here has no type: SqlClient answers null.
+            return reader.GetFieldType(ordinal)?.FullName ?? typeof(SqlBytes).FullName!;
         }
-        catch (Exception)
+        catch (Exception error) when (error is FileNotFoundException or FileLoadException or TypeLoadException or InvalidCastException)
         {
+            // A provider that throws instead for such a type: kept as its bytes too. Any other provider error would
+            // record a wrong column type, so it is thrown (review 05, finding 12).
             return typeof(SqlBytes).FullName!;
         }
     }

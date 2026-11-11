@@ -487,13 +487,25 @@ public static class Interactions
         if (!back.CanGoBack)
             throw new ElementNotInteractableException("Cannot press back: there is nothing to go back to.", InteractionRefusal.Hidden);
 
+        Task? popped = null;
         Act(back, "press back", () =>
         {
             if (back.Window.Navigation.ModalStack.Count > 0)
-                _ = back.Window.Navigation.PopModalAsync();
+                popped = back.Window.Navigation.PopModalAsync();
             else
                 back.Window.Page?.SendBackButtonPressed();
         });
+
+        // The pop is awaited: what the app throws while the page leaves (OnDisappearing, a Popped handler)
+        // fails the test, as a posted callback's exception does, instead of staying in a task nobody reads.
+        if (popped is not null)
+        {
+            var context = MauiTestContext.Of(back);
+            if (context is not null && !context.Dispatcher.WaitFor(() => popped.IsCompleted, context.Options.WaitTimeout))
+                throw new TimeoutException($"Could not press back: the modal page did not leave within {context.Options.WaitTimeout.TotalMilliseconds:0} ms.");
+            popped.GetAwaiter().GetResult();
+        }
+
         return back;
     }
 

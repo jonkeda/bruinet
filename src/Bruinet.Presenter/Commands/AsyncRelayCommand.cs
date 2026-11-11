@@ -16,6 +16,12 @@ public sealed class AsyncRelayCommand : ICommand
 
     public event EventHandler? CanExecuteChanged;
 
+    /// <summary>
+    /// Raised when a command's work throws. The shell shows it; without a handler the exception goes on, as an
+    /// <c>async void</c> one did before (review 05, finding 14).
+    /// </summary>
+    public static event Action<Exception>? Failed;
+
     public bool CanExecute(object? parameter)
     {
         return !_isRunning && (_canExecute?.Invoke() ?? true);
@@ -33,6 +39,11 @@ public sealed class AsyncRelayCommand : ICommand
             _isRunning = true;
             NotifyCanExecuteChanged();
             await _execute().ConfigureAwait(true);
+        }
+        catch (Exception error) when (Failed is not null)
+        {
+            // The top of a UI command: nothing awaits it, so an error is shown here or takes the app down.
+            Failed(error);
         }
         finally
         {

@@ -64,7 +64,7 @@ public static partial class UatScenarioCheck
         {
             return host.ModulesFor(new TestAppDefinition(app.Name, app.User, app.Head, app.Values));
         }
-        catch (Exception exception) when (exception is NotSupportedException or NullReferenceException or InvalidOperationException)
+        catch (Exception exception) when (exception is NotSupportedException or InvalidOperationException)
         {
             // A head whose modules need a started fixture: its steps bind against the suite's catalog.
             return null;

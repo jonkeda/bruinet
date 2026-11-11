@@ -108,6 +108,7 @@ public sealed partial class PresenterShellViewModel : ViewModelBase, IStepRowHos
         _folderPickerService = folderPickerService;
         _settingsService = settingsService;
 
+        AsyncRelayCommand.Failed += error => StatusSummary = $"{error.GetType().Name}: {error.Message}";
         OpenFolderCommand = new AsyncRelayCommand(OpenFolderAsync);
         ToggleRecentFoldersCommand = new RelayCommand(() => IsRecentFoldersExpanded = !IsRecentFoldersExpanded);
         ReloadCommand = new RelayCommand(ReloadWorkspace, () => WorkspacePath is not null);

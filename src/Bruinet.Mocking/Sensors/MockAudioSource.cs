@@ -11,6 +11,9 @@ public class MockAudioSource : IDisposable
     private readonly int _chunkIntervalMs;
     private CancellationTokenSource? _cts;
 
+    // The emit loop, kept so StopAsync can raise what a ChunkEmitted handler threw (review 05, finding 14).
+    private Task _emitting = Task.CompletedTask;
+
     public bool IsEmitting { get; private set; }
     public int ChunksEmitted { get; private set; }
     public bool FinishedPlaying { get; private set; }
@@ -42,15 +45,22 @@ public class MockAudioSource : IDisposable
         IsEmitting = true;
         ChunksEmitted = 0;
         FinishedPlaying = false;
-        _ = EmitChunksAsync(_cts.Token);
+        _emitting = EmitChunksAsync(_cts.Token);
         return Task.CompletedTask;
     }
 
-    public Task StopAsync()
+    /// <summary>Stops the audio; raises what the app's <see cref="ChunkEmitted"/> handler threw, if it did.</summary>
+    public async Task StopAsync()
     {
         _cts?.Cancel();
-        IsEmitting = false;
-        return Task.CompletedTask;
+        try
+        {
+            await _emitting.ConfigureAwait(false);
+        }
+        finally
+        {
+            IsEmitting = false;
+        }
     }
 
     public void SimulateDisconnect()
@@ -69,22 +79,30 @@ public class MockAudioSource : IDisposable
 
     private async Task EmitChunksAsync(CancellationToken ct)
     {
+        await Task.Yield();
         var offset = 0;
-        while (!ct.IsCancellationRequested && offset < _pcmData.Length)
+        try
         {
-            var remaining = _pcmData.Length - offset;
-            var size = Math.Min(_chunkSize, remaining);
-            var chunk = new byte[size];
-            Array.Copy(_pcmData, offset, chunk, 0, size);
-            ChunkEmitted?.Invoke(this, chunk);
-            ChunksEmitted++;
-            offset += size;
-            try
-            { await Task.Delay(_chunkIntervalMs, ct).ConfigureAwait(false); }
-            catch (OperationCanceledException) { break; }
+            while (!ct.IsCancellationRequested && offset < _pcmData.Length)
+            {
+                var remaining = _pcmData.Length - offset;
+                var size = Math.Min(_chunkSize, remaining);
+                var chunk = new byte[size];
+                Array.Copy(_pcmData, offset, chunk, 0, size);
+                ChunkEmitted?.Invoke(this, chunk);
+                ChunksEmitted++;
+                offset += size;
+                try
+                { await Task.Delay(_chunkIntervalMs, ct).ConfigureAwait(false); }
+                catch (OperationCanceledException) { break; }
+            }
+
+            FinishedPlaying = true;
         }
-        FinishedPlaying = true;
-        IsEmitting = false;
+        finally
+        {
+            IsEmitting = false;
+        }
     }
 
     public void Dispose()

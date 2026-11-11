@@ -10,19 +10,12 @@ public class TemplateWriter
 
     public TemplateWriter(Type aClass, string name)
     {
-        try
-        {
-            var assembly = aClass.Assembly;
-            using (var stream = assembly.GetManifestResourceStream(name))
-            using (var reader = new StreamReader(stream ?? throw new InvalidOperationException(), System.Text.Encoding.UTF8))
-            {
-                template = reader.ReadToEnd();
-            }
-        }
-        catch (Exception)
-        {
-            // Handle the exception as needed.
-        }
+        // A missing template is a fault in the build of the tool, not an empty file to write (review 05, finding 14).
+        var assembly = aClass.Assembly;
+        using var stream = assembly.GetManifestResourceStream(name)
+            ?? throw new InvalidOperationException($"No embedded template '{name}' in {assembly.GetName().Name}.");
+        using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+        template = reader.ReadToEnd();
     }
 
     public void Replace(string variable, string value)
