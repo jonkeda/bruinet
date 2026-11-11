@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);maui;headless;component-testing</PackageTags>
     <!-- MAUI 10 ships its plain (no platform) assemblies for net10.0 only. -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>MauiHeadless</RootNamespace>

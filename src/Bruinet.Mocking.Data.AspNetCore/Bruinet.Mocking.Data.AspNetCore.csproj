@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;sql;aspnetcore</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Mocking.Data.AspNetCore</RootNamespace>
     <Description>The SQL replay test-id hook for an ASP.NET Core app in a process of its own: each request recorded or replayed in its test's session.</Description>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);winforms;desktop;flaui</PackageTags>
     <TargetFrameworks>net10.0-windows</TargetFrameworks>
     <RootNamespace>Bruinet.WinForms</RootNamespace>
     <Description>WinForms UI testing on the call model (AD-010), through UI Automation's patterns over Bruinet.FlaUI: generated controls with WinForms' names, pages, containers and collections, one call per member.</Description>

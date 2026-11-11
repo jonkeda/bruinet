@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;wiremock;sensors</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Mocking</RootNamespace>
     <Description>API mocking infrastructure for UI tests. Provides WireMock-based mock servers for simulating backend services during testing.</Description>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);android;appium</PackageTags>
     <RootNamespace>Bruinet.NativeAndroid</RootNamespace>
     <Description>Page objects, controls and the Appium driver for native Android apps (UiAutomator2), in the shape of Bruinet's MAUI and Html stacks.</Description>
     <PackageId>Bruinet.NativeAndroid</PackageId>

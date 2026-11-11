@@ -79,7 +79,7 @@ or MSTest, with no Bruinet in it.
 The SDK is pinned in `global.json`. What each package targets (review 11, proposal 10):
 
 - `net8.0`, `net9.0` and `net10.0`: Core, Bdd, Bdd.Abstractions, Uat, Traits, Logging, Html, Html.Playwright, Blazor,
-  Appium, NativeAndroid, Stride, Recording and Narrator.
+  Appium, NativeAndroid, Stride, Stride.Protocol, Recording and Narrator.
 - `net10.0` only: Maui, Maui.Appium, Maui.Headless, Maui.CommunityToolkit, MauiHeadless, Html.Bunit, TestData,
   Mocking, Mocking.Http, the Mocking.Data hooks for EF Core and ASP.NET Core, Contracts and Stride.Automation.
 - `net10.0-windows`: FlaUI, Maui.FlaUI, Wpf, WinForms, Uia.Contracts, and Narrator.Windows (`net10.0-windows10.0.19041.0`).
@@ -114,7 +114,7 @@ The packages come from this organisation's GitHub Packages feed, not nuget.org: 
 | `Bruinet.Html.Bunit`, `Bruinet.Blazor` | The bUnit head, and Blazor helpers |
 | `Bruinet.Wpf`, `Bruinet.WinForms` | Desktop automation through FlaUI |
 | `Bruinet.NativeAndroid` | Native Android apps through Appium |
-| `Bruinet.Stride`, `Bruinet.Stride.Automation` | Stride game UI testing: the client, and the server inside the game |
+| `Bruinet.Stride`, `Bruinet.Stride.Automation`, `Bruinet.Stride.Protocol` | Stride game UI testing: the client, the server inside the game, and the wire both speak (the game takes no test client) |
 | `Bruinet.Appium`, `Bruinet.FlaUI`, `Bruinet.Uia.Contracts` | What the Appium stacks share, what the FlaUI stacks share (MAUI on Windows, WPF, WinForms), and the wire contract of the custom UI Automation pattern |
 
 **Data**

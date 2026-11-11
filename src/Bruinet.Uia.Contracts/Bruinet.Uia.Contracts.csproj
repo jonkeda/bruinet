@@ -4,6 +4,7 @@
   <Import Project="Bruinet.Uia.Bridge.props" />
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);uia;contracts</PackageTags>
     <!--
       Single-targeted, unlike the rest of src. Everything here is Win32/COM interop
       against UIAutomationCore, so a net8.0 or net9.0 flavour would have no meaning.

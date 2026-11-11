@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);stride;games;server</PackageTags>
     <!-- Stride packages only support net10.0 -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Stride.Automation</RootNamespace>
@@ -15,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Bruinet.Core/Bruinet.Core.csproj" />
-    <ProjectReference Include="../Bruinet.Stride/Bruinet.Stride.csproj" />
+    <!-- Only the wire: the game takes no test client and no Core (review 11, proposal 8). -->
+    <ProjectReference Include="../Bruinet.Stride.Protocol/Bruinet.Stride.Protocol.csproj" />
   </ItemGroup>
 
 </Project>

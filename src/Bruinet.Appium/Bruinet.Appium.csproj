@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);appium</PackageTags>
     <RootNamespace>Bruinet.Appium</RootNamespace>
     <Description>What the Appium stacks share: Appium's error mapping, the emulator's host address and adb reverse, and the Android screen recorder.</Description>
     <PackageId>Bruinet.Appium</PackageId>

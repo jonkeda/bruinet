@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;sql;efcore</PackageTags>
     <!-- EF Core 10 runs on .NET 10 only. -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Mocking.Data.EntityFrameworkCore</RootNamespace>

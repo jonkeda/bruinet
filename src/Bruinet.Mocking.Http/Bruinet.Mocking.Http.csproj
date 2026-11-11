@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;http;replay</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Mocking.Http</RootNamespace>
     <Description>HTTP replay: an app's outgoing calls recorded once against the real services and answered from the recording after, in the test process (a DelegatingHandler) or through MockApiServer. SQL replay's conventions: a recording per test, volatile values from recording twice, a miss names the call.</Description>

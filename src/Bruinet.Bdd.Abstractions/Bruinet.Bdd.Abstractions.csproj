@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);bdd;gherkin;attributes</PackageTags>
     <RootNamespace>Bruinet.Bdd</RootNamespace>
     <Description>The step attributes of Bruinet's Markdown feature files (BddGiven, BddWhen, BddThen, BddState, BddNamespace), for page-object and control projects that declare phrases without running them.</Description>
     <PackageId>Bruinet.Bdd.Abstractions</PackageId>

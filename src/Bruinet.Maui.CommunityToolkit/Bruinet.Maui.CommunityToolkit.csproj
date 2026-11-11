@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);maui;communitytoolkit</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Maui.CommunityToolkit</RootNamespace>
     <Description>CommunityToolkit.Maui controls for Bruinet UI testing framework.</Description>

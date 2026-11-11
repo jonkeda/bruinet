@@ -2,6 +2,7 @@
 
   <!-- System.Web runs on .NET Framework only: Windows, so outside Bruinet.sln like the net48 tests; dotnet build this project. -->
   <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;sql;systemweb</PackageTags>
     <TargetFrameworks>net48</TargetFrameworks>
     <RootNamespace>Bruinet.Mocking.Data.SystemWeb</RootNamespace>
     <ImplicitUsings>disable</ImplicitUsings>

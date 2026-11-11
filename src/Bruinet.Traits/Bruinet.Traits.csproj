@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);xunit;traits</PackageTags>
     <RootNamespace>Bruinet.Traits</RootNamespace>
     <Description>Typed xUnit trait attributes for the test tier, owner, journey and run set, and a check that every test in an assembly carries one tier and one owner.</Description>
     <PackageId>Bruinet.Traits</PackageId>

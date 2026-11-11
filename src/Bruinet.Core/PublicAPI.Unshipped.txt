@@ -956,8 +956,6 @@ Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Device = 0 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Headless = 1 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHeads
-Bruinet.Core.Testing.ScreenshotTestAttribute
-Bruinet.Core.Testing.ScreenshotTestAttribute.ScreenshotTestAttribute() -> void
 Bruinet.Core.Testing.TestAppCapture
 Bruinet.Core.Testing.TestAppCapture.App.get -> string!
 Bruinet.Core.Testing.TestAppCapture.App.init -> void
@@ -1058,8 +1056,6 @@ override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
 override Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ScopeName.get -> string!
 override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
-override Bruinet.Core.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
-override Bruinet.Core.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
 override sealed Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.Context.get -> TContext
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(Bruinet.Core.Configuration.ArtifactsOptions! artifacts, string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
@@ -1182,11 +1178,6 @@ static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.Tes
 static Bruinet.Core.Testing.MauiHeads.Current.get -> Bruinet.Core.Testing.MauiHead
 static Bruinet.Core.Testing.MauiHeads.IsHeadless.get -> bool
 static Bruinet.Core.Testing.MauiHeads.Parse(string? value) -> Bruinet.Core.Testing.MauiHead
-static Bruinet.Core.Testing.ScreenshotTestAttribute.CaptureIfFailed(System.Exception? exception) -> string!
-static Bruinet.Core.Testing.ScreenshotTestAttribute.CaptureManual(string? description = null) -> string!
-static Bruinet.Core.Testing.ScreenshotTestAttribute.CurrentService.get -> Bruinet.Core.Interfaces.IScreenshotService?
-static Bruinet.Core.Testing.ScreenshotTestAttribute.SetApps(Bruinet.Core.Testing.TestAppSet? apps) -> void
-static Bruinet.Core.Testing.ScreenshotTestAttribute.SetService(Bruinet.Core.Interfaces.IScreenshotService? service) -> void
 static Bruinet.Core.Testing.TestAppDefinition.FromCells(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! cells) -> Bruinet.Core.Testing.TestAppDefinition!
 static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdown(string! markdown) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
 static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdownFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!

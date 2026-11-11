@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);flaui;desktop;uia</PackageTags>
     <TargetFrameworks>net10.0-windows</TargetFrameworks>
     <RootNamespace>Bruinet.FlaUI</RootNamespace>
     <Description>What the UI Automation stacks share over FlaUI (MAUI on Windows, WPF, WinForms): the desktop app session (launch, attach, the quiet foreground, window placement, screenshots), how a removed element is reported, the runtime id as an element's identity, one-attempt lookups and locators.</Description>

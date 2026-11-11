@@ -1264,3 +1264,12 @@ Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertIndeterminate(bool? expe
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitComplete(int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
 virtual Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminateCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
+Bruinet.Maui.Testing.ScreenshotTestAttribute
+Bruinet.Maui.Testing.ScreenshotTestAttribute.ScreenshotTestAttribute() -> void
+override Bruinet.Maui.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
+override Bruinet.Maui.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureIfFailed(System.Exception? exception) -> string!
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureManual(string? description = null) -> string!
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CurrentService.get -> Bruinet.Core.Interfaces.IScreenshotService?
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetApps(Bruinet.Core.Testing.TestAppSet? apps) -> void
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetService(Bruinet.Core.Interfaces.IScreenshotService? service) -> void

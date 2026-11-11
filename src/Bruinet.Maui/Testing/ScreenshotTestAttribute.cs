@@ -2,7 +2,9 @@ using System.Reflection;
 using Bruinet.Core.Interfaces;
 using Xunit.Sdk;
 
-namespace Bruinet.Core.Testing;
+using Bruinet.Core.Testing;
+
+namespace Bruinet.Maui.Testing;
 
 /// <summary>
 /// xUnit attribute that captures screenshots on test failure.

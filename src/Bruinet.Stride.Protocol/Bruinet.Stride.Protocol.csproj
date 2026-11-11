@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);stride;games;protocol</PackageTags>
+    <RootNamespace>Bruinet.Stride.Communication</RootNamespace>
+    <Description>The wire between a Stride game and its tests: the automation commands, responses and element states, and the named pipe that carries them. Shared by Bruinet.Stride (the test client) and Bruinet.Stride.Automation (the server in the game), so the game takes no test client.</Description>
+  </PropertyGroup>
+
+</Project>

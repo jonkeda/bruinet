@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);logging;steps</PackageTags>
     <RootNamespace>Bruinet.Logging</RootNamespace>
     <Description>An app's log during a Bruinet test, kept by the step that made it: an ILoggerProvider to add to the app's services.</Description>
     <PackageId>Bruinet.Logging</PackageId>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);narration;windows</PackageTags>
     <TargetFrameworks>net10.0-windows10.0.19041.0</TargetFrameworks>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <RootNamespace>Bruinet.Narrator.Windows</RootNamespace>

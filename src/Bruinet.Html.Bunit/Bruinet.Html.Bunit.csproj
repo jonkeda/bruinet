@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);web;blazor;bunit</PackageTags>
     <!-- One framework while the head is a spike (AD-030): bUnit pins the components' version. -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Html.Bunit</RootNamespace>

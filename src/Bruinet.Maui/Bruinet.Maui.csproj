@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);maui;mobile;page-object</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Bruinet.Maui</RootNamespace>
@@ -14,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Still needed for control implementations that catch StaleElementReferenceException, etc. -->
-    <PackageReference Include="Appium.WebDriver" />
-    <!-- Required for BeforeAfterTestAttribute base class used by ScreenshotTestAttribute -->
+    <!-- [ScreenshotTest] derives from xUnit's BeforeAfterTestAttribute: declared, so a MAUI suite gets it (review 11, proposal 4). -->
     <PackageReference Include="xunit.extensibility.core" />
   </ItemGroup>
 

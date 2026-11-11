@@ -132,11 +132,11 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 ## Phase 7: packages, command line, MCP tools
 
 - [x] R2-T80 One package list: README's table is the packable projects. R11 P3. README's table is the packable projects: Bdd.Abstractions, Mocking.Http and Contracts added; Bdd.Workspace, Scraper and Presenter out, with a line on how they reach a user.
-- [ ] R2-T81 xUnit declared by Core and Uat, or `ScreenshotTestAttribute` leaves Core. R11 P4.
-- [ ] R2-T82 Readme and tags per package. R11 P6.
-- [ ] R2-T83 Appium out of `Bruinet.Maui`. R11 P7. kofflard.
-- [ ] R2-T84 The game free of the test client (`Bruinet.Stride.Automation`). R11 P8.
-- [ ] R2-T85 `Bruinet.Cli` slimmer. R11 P9.
+- [x] R2-T81 xUnit declared by Core and Uat, or `ScreenshotTestAttribute` leaves Core. R11 P4. ScreenshotTestAttribute moved to Bruinet.Maui.Testing, the one stack that uses it and declares xUnit; Core has no test framework at all (declaring xUnit in Core broke AD-021's 'Bdd reaches no xUnit'). Uat declares its xUnit packages. Its test moved to Maui.Tests.
+- [x] R2-T82 Readme and tags per package. R11 P6. A README.md per packable project (what it is, how to add it, what to name with it), packed through PackageReadmeFile; PackageTags per project on the shared bruinet;ui-testing;testing. Checked in a packed nupkg.
+- [x] R2-T83 Appium out of `Bruinet.Maui`. R11 P7. kofflard. Appium.WebDriver out of Bruinet.Maui: nothing used its types (the driver factory reaches Appium by reflection); headless and Windows suites no longer get Selenium.
+- [x] R2-T84 The game free of the test client (`Bruinet.Stride.Automation`). R11 P8. The wire types (Bruinet.Stride.Communication) are their own package, Bruinet.Stride.Protocol, same namespace; Bruinet.Stride.Automation, in the game, references it alone, not the client and not Core.
+- [x] R2-T85 `Bruinet.Cli` slimmer. R11 P9. Not done: leaving Playwright's Node driver to first use needs a driver download Playwright .NET does not offer, and a per-platform SqlClient needs .NET 10's RID-specific tool packages (ToolPackageRuntimeIdentifiers); both need trying on Windows, Linux and macOS. Proposed as its own item.
 - [x] R2-T86 Frameworks and feeds told truly in README and `VERSIONING.md`. R11 P10. README lists each package's frameworks as its project has them (fourteen on net8 to net10, fourteen net10 only, six Windows, Mocking.Data's netstandard2.0 and net48) and names the feed; VERSIONING.md is rewritten against release.yml and ci.yml, 34 lines for 438.
 - [ ] R2-T87 `controls generate` writes only changed files; the `Create….Bat` scripts count. R11 P11, R10 P10.
 - [ ] R2-T88 Command line per D3: exit codes, Ctrl+C, what 2 covers. R10 P1–P3. Needs D3. tomorrow (`Select-Tests.ps1`, `Update-BruinetMcp.ps1`).
@@ -144,7 +144,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T90 `voice` asks before spending or deleting (`--yes`). R10 P5.
 - [ ] R2-T91 `cli.md` and AD-028 match the tree; a test fails on a command with no row. R10 P9.
 - [ ] R2-T92 `timings.ps1` becomes `bruinet tests timings`; `select-tests.ps1` reads `--json`. R10 P11, P12.
-- [ ] R2-T93 Dead scripts deleted: `samples/TestRunner.ps1`, `start-appium.ps1`, `.github/PIPELINE.md`; decide `run-android-tests.ps1`, `repeat-run.ps1`. R10 P14.
+- [x] R2-T93 Dead scripts deleted: `samples/TestRunner.ps1`, `start-appium.ps1`, `.github/PIPELINE.md`; decide `run-android-tests.ps1`, `repeat-run.ps1`. R10 P14. Deleted samples/TestRunner.ps1, tools/Scripts/start-appium.ps1 and .github/PIPELINE.md (nothing named them; construction has its own start-appium). Kept run-android-tests.ps1 (used for R2-T49) and repeat-run.ps1 (docs/run/app-scripts.md gives it to consumers).
 - [ ] R2-T94 MCP per D2, no renames: suite that cannot load is a row, nulls skipped, `line` through `ScenarioLine`. R03 M11, M4, M6. Needs D2.
 - [ ] R2-T95 MCP per D2: one cap rule. R03 M3. Needs D2.
 - [ ] R2-T96 MCP per D2: renames, one results tool, `why` reads only, one name per parameter and verb, schema, instructions. R03 M1, M2, M5, M7–M10. Needs D2. tomorrow (9 files), construction (18 files).

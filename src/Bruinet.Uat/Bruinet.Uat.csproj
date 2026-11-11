@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);bdd;uat;xunit;markdown</PackageTags>
     <RootNamespace>Bruinet.Uat</RootNamespace>
     <Description>Markdown-driven UAT parsing and execution core for Bruinet.</Description>
     <PackageId>Bruinet.Uat</PackageId>
@@ -20,9 +21,9 @@
     <ProjectReference Include="..\Bruinet.Narrator\Bruinet.Narrator.csproj" />
     <!-- A scenario case's traits from its file: the trait names the attributes write. -->
     <ProjectReference Include="..\Bruinet.Traits\Bruinet.Traits.csproj" />
-    <!-- [UatScenarioTheory]: a suite runs under xUnit, which brings both. -->
-    <PackageReference Include="xunit.extensibility.core" PrivateAssets="all" />
-    <PackageReference Include="xunit.extensibility.execution" PrivateAssets="all" />
+    <!-- [UatScenarioTheory]: a suite runs under xUnit; declared, not private, so the package says so (review 11, proposal 4). -->
+    <PackageReference Include="xunit.extensibility.core" />
+    <PackageReference Include="xunit.extensibility.execution" />
     <InternalsVisibleTo Include="Bruinet.Uat.Tests" />
     <InternalsVisibleTo Include="bruinet" />
     <InternalsVisibleTo Include="Bruinet.Cli.Tests" />

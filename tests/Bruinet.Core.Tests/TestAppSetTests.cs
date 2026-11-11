@@ -124,26 +124,6 @@ public sealed class TestAppSetTests
     }
 
     [Fact]
-    public async Task AFailedTest_WithAppsRegistered_CapturesEveryStartedApp()
-    {
-        await using var set = CreateSet([]);
-        set.Get("Eva");
-        set.Get("Daan's PC");
-        ScreenshotTestAttribute.SetApps(set);
-        try
-        {
-            var captured = ScreenshotTestAttribute.CaptureIfFailed(new InvalidOperationException("boom"));
-
-            Assert.Contains("Eva/Unknown-Unknown-failure.png", captured);
-            Assert.Contains("Daan's PC/Unknown-Unknown-failure.png", captured);
-        }
-        finally
-        {
-            ScreenshotTestAttribute.SetApps(null);
-        }
-    }
-
-    [Fact]
     public void TwoAppsWithOneName_AreRefused()
     {
         var apps = TestAppDefinition.ReadMarkdown(AppsMarkdown).Append(TestAppDefinition.FromCells(new Dictionary<string, string> { ["Name"] = "eva" }));

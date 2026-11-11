@@ -32,7 +32,9 @@
     <PackageProjectUrl>https://github.com/exact-mobile-apps/test-tooling</PackageProjectUrl>
     <RepositoryUrl>https://github.com/exact-mobile-apps/test-tooling</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>ui-testing;automation;wpf;maui;blazor;playwright;testing;page-object</PackageTags>
+    <PackageTags>bruinet;ui-testing;testing</PackageTags>
+    <!-- Each package's README.md says what it is and what to name with it (review 11, proposal 6). -->
+    <PackageReadmeFile Condition="Exists('$(MSBuildProjectDirectory)/README.md')">README.md</PackageReadmeFile>
     
     <!-- Source Link -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -48,6 +50,10 @@
 
   <!-- A shipped package's public API is declared in PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt
        beside its project (AD-033); a change to it that the files do not show stops the build (RS0016, RS0017). -->
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/README.md')">
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(IsPackable)' != 'false' and '$(OutputType)' != 'Exe' and '$(OutputType)' != 'WinExe'">
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildProjectDirectory)/PublicAPI.Shipped.txt;$(MSBuildProjectDirectory)/PublicAPI.Unshipped.txt" />

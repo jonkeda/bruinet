@@ -1,7 +1,5 @@
 using Stride.Engine;
 using Stride.UI;
-using Bruinet.Core.Configuration;
-using Bruinet.Stride;
 
 namespace Bruinet.Stride.Automation;
 

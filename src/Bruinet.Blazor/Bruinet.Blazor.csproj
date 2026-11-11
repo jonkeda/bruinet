@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);web;blazor</PackageTags>
     <RootNamespace>Bruinet.Blazor</RootNamespace>
     <Description>Blazor UI testing automation using Playwright. Provides controls and page objects for Blazor Server and WebAssembly application testing.</Description>
     <PackageId>Bruinet.Blazor</PackageId>

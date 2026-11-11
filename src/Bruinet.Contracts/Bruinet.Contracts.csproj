@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);api;contracts</PackageTags>
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.Contracts</RootNamespace>
     <Description>API contract checks against the real service: each response against the DTO the app reads it into, each write against the request a reference client sends, created values read back unchanged, and one report per run that lists what was validated, mismatched, blocked or skipped.</Description>

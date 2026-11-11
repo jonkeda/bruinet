@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);test-data</PackageTags>
     <!-- Schema export and strict constructor-parameter handling need System.Text.Json 9+. -->
     <TargetFrameworks>net10.0</TargetFrameworks>
     <RootNamespace>Bruinet.TestData</RootNamespace>

@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);recording;video</PackageTags>
     <RootNamespace>Bruinet.Recording</RootNamespace>
     <Description>Screen recording for Bruinet: one recorder API, a registry of recorders per platform, the shared clock and the ffmpeg encoder.</Description>
     <PackageId>Bruinet.Recording</PackageId>

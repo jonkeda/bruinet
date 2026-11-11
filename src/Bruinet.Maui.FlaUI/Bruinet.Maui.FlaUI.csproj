@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);maui;windows;flaui</PackageTags>
     <TargetFrameworks>net10.0-windows</TargetFrameworks>
     <RootNamespace>Bruinet.Maui.FlaUI</RootNamespace>
     <Description>FlaUI-based driver implementation for MAUI UI testing on Windows platform.</Description>

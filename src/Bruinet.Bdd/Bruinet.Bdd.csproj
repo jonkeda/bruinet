@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageTags>$(PackageTags);bdd;gherkin;markdown;uat</PackageTags>
     <RootNamespace>Bruinet.Bdd</RootNamespace>
     <Description>Markdown feature files for Bruinet: parse, bind, values, tables, callable steps, namespaces and run, with no UI.</Description>
     <PackageId>Bruinet.Bdd</PackageId>
