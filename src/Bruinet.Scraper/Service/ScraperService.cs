@@ -761,7 +761,20 @@ public sealed partial class ScraperService : IAsyncDisposable
     private void OnActed(object? sender, ScrapeAction action)
     {
         if (_recording is { } recording)
-            recording.Then(() => SaveActionAsync(recording, action));
+            recording.Then(() => SaveActionReportedAsync(recording, action));
+    }
+
+    // The top of the save queue: nothing awaits it, so a save that fails is reported here or not at all.
+    private async Task SaveActionReportedAsync(Recording recording, ScrapeAction action)
+    {
+        try
+        {
+            await SaveActionAsync(recording, action).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Failed, recording.State, null, $"The {action.Kind} action was not saved: {e.Message}"));
+        }
     }
 
     // The capture taken for the action first (unless the page is unchanged since its last capture), then
@@ -796,11 +809,6 @@ public sealed partial class ScraperService : IAsyncDisposable
                 Checked = action.Checked,
                 Accepted = action.Accepted,
             });
-        }
-        catch (ArgumentException e)
-        {
-            Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Failed, recording.State, null, e.Message));
-            return;
         }
         finally
         {
@@ -902,7 +910,7 @@ public enum ScraperChangeKind
     /// <summary>A recording stopped.</summary>
     Stopped,
 
-    /// <summary>A capture on a transition failed.</summary>
+    /// <summary>A capture on a transition, or the save of a recorded action, failed: the message says which.</summary>
     Failed,
 
     /// <summary>Explore reached a sign-in page and waits for the person to sign in and continue.</summary>
