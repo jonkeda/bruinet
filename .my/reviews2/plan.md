@@ -47,7 +47,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T11 Appium classes catch `WebDriverException` with `IsGone`; the two bare catches go. R05 P3. **android**; kofflard.
 - [x] R2-T12 Scraper save queue observes faults and reports them through `Changed`. R05 P4.
 - [x] R2-T13 Delete `UatControlAssertions` (no caller in Bruinet, Tomorrow, Kofflard, construction). R05 P5.
-- [ ] R2-T14 **desk** (the message crossing UIA on a failed call is only provable cross-process). Bridge keeps the app's exception message. R05 P6.
+- [x] R2-T14 Bridge keeps the app's exception message. R05 P6.
 - [x] R2-T15 `UatScenarioResults.Record` catches file errors only and traces them. R05 P7.
 - [ ] R2-T16 The small catches. R05 P10.
 - [ ] R2-T17 A typed "refused" exception in Core in place of `InvalidOperationException`. R05 P8.

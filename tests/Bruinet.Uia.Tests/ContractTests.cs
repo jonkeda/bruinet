@@ -247,6 +247,7 @@ public class ContractTests
             BruinetVerb.GetCapabilities,
             BruinetVerb.GetProtocolVersion,
             BruinetVerb.GetBounds,
+            BruinetVerb.GetLastFailure,
             BruinetVerb.Ping,
             BruinetVerb.IsFocused,
             BruinetVerb.GetText,

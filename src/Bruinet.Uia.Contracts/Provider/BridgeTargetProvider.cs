@@ -19,6 +19,9 @@ internal sealed class BridgeTargetProvider
     /// <summary>Set once the target has been withdrawn; the provider then answers nothing.</summary>
     private volatile bool _retired;
 
+    // What the target threw the last time a verb failed, for GetLastFailure: E_FAIL alone says nothing.
+    private volatile string? _lastFailure;
+
     /// <summary>
     /// Stops this provider answering for its target, without disconnecting it from UI Automation.
     /// </summary>
@@ -186,10 +189,12 @@ internal sealed class BridgeTargetProvider
         {
             return _target.Invoke(kind, arg1, arg2);
         }
-        catch (Exception)
+        catch (Exception error)
         {
             // The target contract says implementations do not throw. This is what happens when
-            // one does anyway, and it is not allowed to become a COM failure of its own.
+            // one does anyway, and it is not allowed to become a COM failure of its own; what it
+            // threw is kept for GetLastFailure.
+            _lastFailure = Failure(kind, error);
             return HResults.E_FAIL;
         }
     }
@@ -228,6 +233,10 @@ internal sealed class BridgeTargetProvider
 
             case BruinetVerb.GetBounds:
                 return ReadBounds(out result);
+
+            case BruinetVerb.GetLastFailure:
+                result = _lastFailure ?? string.Empty;
+                return HResults.S_OK;
         }
 
         if (!_target.IsAvailable)
@@ -246,12 +255,15 @@ internal sealed class BridgeTargetProvider
             result = targetResult ?? string.Empty;
             return hr;
         }
-        catch (Exception)
+        catch (Exception error)
         {
+            _lastFailure = Failure(kind, error);
             result = string.Empty;
             return HResults.E_FAIL;
         }
     }
+
+    private static string Failure(BruinetVerb verb, Exception error) => $"{verb} threw {error.GetType().Name}: {error.Message}";
 
     private int ReadBounds(out string result)
     {

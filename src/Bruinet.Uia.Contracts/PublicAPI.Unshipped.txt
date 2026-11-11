@@ -19,6 +19,7 @@ Bruinet.Uia.BruinetVerb.DismissAlert = 901 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.DoubleTap = 101 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.Focus = 200 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.GetBounds = 4 -> Bruinet.Uia.BruinetVerb
+Bruinet.Uia.BruinetVerb.GetLastFailure = 5 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.GetCapabilities = 1 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.GetProtocolVersion = 2 -> Bruinet.Uia.BruinetVerb
 Bruinet.Uia.BruinetVerb.GetState = 600 -> Bruinet.Uia.BruinetVerb

@@ -56,6 +56,11 @@ internal sealed class RecordingTarget : IBruinetVerbTarget
             return arg2;
         }
 
+        if (arg1 == HostTargets.ThrowOnInvoke)
+        {
+            throw new InvalidOperationException(HostTargets.ThrownMessage);
+        }
+
         lock (_gate)
         {
             _log.Add(string.Create(

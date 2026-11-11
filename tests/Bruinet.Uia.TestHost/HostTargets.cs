@@ -33,4 +33,11 @@ public static class HostTargets
     /// Automation, which is why step 26 measured both and found them to agree.
     /// </remarks>
     public const string ReturnHResultPrefix = "return-hresult:";
+
+    /// <summary>An <c>Invoke</c> whose first argument is this makes the target throw, as an app's handler can.</summary>
+    /// <remarks>What the bridge does then: <c>E_FAIL</c>, and the exception's message kept for <c>GetLastFailure</c>.</remarks>
+    public const int ThrowOnInvoke = unchecked((int)0xB121DE12);
+
+    /// <summary>The message the target throws with on <see cref="ThrowOnInvoke"/>.</summary>
+    public const string ThrownMessage = "the app's handler failed";
 }

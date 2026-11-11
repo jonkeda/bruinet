@@ -97,7 +97,7 @@ internal static class BridgeVerbRunner
             BruinetVerbFailure.Succeeded(hr),
             hr,
             string.Empty,
-            BruinetVerbFailure.Describe(verb, hr));
+            Describe(pattern!, verb, hr));
     }
 
     /// <summary>
@@ -129,7 +129,7 @@ internal static class BridgeVerbRunner
             BruinetVerbFailure.Succeeded(hr),
             hr,
             value,
-            BruinetVerbFailure.Describe(verb, hr));
+            Describe(pattern!, verb, hr));
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ internal static class BridgeVerbRunner
             BruinetVerbFailure.Succeeded(hr),
             hr,
             string.Empty,
-            BruinetVerbFailure.Describe(verb, hr));
+            Describe(pattern!, verb, hr));
     }
 
     /// <summary>
@@ -233,7 +233,7 @@ internal static class BridgeVerbRunner
             BruinetVerbFailure.Succeeded(hr),
             hr,
             value,
-            BruinetVerbFailure.Describe(verb, hr));
+            Describe(pattern!, verb, hr));
     }
 
     /// <summary>Sends a verb on whichever of the two contract methods it travels on.</summary>
@@ -388,11 +388,11 @@ internal static class BridgeVerbRunner
 
             if (hr == HResults.S_OK)
             {
-                return new BridgeVerbResult(true, hr, string.Empty, BruinetVerbFailure.Describe(verb, hr));
+                return new BridgeVerbResult(true, hr, string.Empty, Describe(pattern!, verb, hr));
             }
 
             declined++;
-            lastReason = BruinetVerbFailure.Describe(verb, hr);
+            lastReason = Describe(pattern!, verb, hr);
         }
 
         return declined == 0
@@ -440,7 +440,7 @@ internal static class BridgeVerbRunner
             if (hr == HResults.S_OK)
             {
                 return new BridgeVerbResult(
-                    true, hr, answer, BruinetVerbFailure.Describe(verb, hr));
+                    true, hr, answer, Describe(pattern!, verb, hr));
             }
 
             // Remembered, not discarded. A target that answered something other than S_OK said
@@ -460,6 +460,22 @@ internal static class BridgeVerbRunner
                 : $"{declined} element(s) were asked and none answered. The last said: "
                   + BruinetVerbFailure.Describe(verb, declinedHr),
             declined);
+    }
+
+    // What a failed verb means, and for E_FAIL what the app threw, when the app's bridge can say
+    // (GetLastFailure; an app built before it refuses the verb and the plain reason stands).
+    private static string Describe(IBruinetAutomationPattern pattern, BruinetVerb verb, int hr)
+    {
+        var reason = BruinetVerbFailure.Describe(verb, hr);
+        if (hr != HResults.E_FAIL)
+        {
+            return reason;
+        }
+
+        return pattern.Exchange((int)BruinetVerb.GetLastFailure, string.Empty, out var thrown) == HResults.S_OK
+               && !string.IsNullOrEmpty(thrown)
+            ? $"{reason} The app said: {thrown}"
+            : reason;
     }
 
     /// <summary>

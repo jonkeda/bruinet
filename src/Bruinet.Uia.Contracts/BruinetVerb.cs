@@ -45,6 +45,16 @@ public enum BruinetVerb
     /// </remarks>
     GetBounds = 4,
 
+    /// <summary>
+    /// Returns what the target threw the last time a verb failed with <c>E_FAIL</c> ("Tap threw
+    /// InvalidOperationException: …"), or an empty string when nothing has.
+    /// </summary>
+    /// <remarks>
+    /// Answered for every target, declared or not. An app built before it refuses it as unknown, and the
+    /// client then says only that the verb failed (review 05, finding 8).
+    /// </remarks>
+    GetLastFailure = 5,
+
     // ---- 100-199: gestures ---------------------------------------------------------
 
     /// <summary>Single tap.</summary>
@@ -313,6 +323,7 @@ public static class BruinetVerbs
         BruinetVerb.GetCapabilities => BruinetVerbTransport.Exchange,
         BruinetVerb.GetProtocolVersion => BruinetVerbTransport.Exchange,
         BruinetVerb.GetBounds => BruinetVerbTransport.Exchange,
+        BruinetVerb.GetLastFailure => BruinetVerbTransport.Exchange,
         BruinetVerb.Ping => BruinetVerbTransport.Invoke,
 
         // Focus. IsFocused answers with a string, the other two do not.
@@ -405,6 +416,7 @@ public static class BruinetVerbs
         BruinetVerb.GetCapabilities => BruinetVerbKind.Read,
         BruinetVerb.GetProtocolVersion => BruinetVerbKind.Read,
         BruinetVerb.GetBounds => BruinetVerbKind.Read,
+        BruinetVerb.GetLastFailure => BruinetVerbKind.Read,
         BruinetVerb.Ping => BruinetVerbKind.Read,
 
         // Reads. Each names a question about current state; none of them changes it.

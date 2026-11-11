@@ -157,4 +157,23 @@ public class HResultCrossingTests
         return BridgeClient.FindByAutomationId(raw, bridge!, wanted)
             ?? throw new InvalidOperationException($"No bridge element for '{wanted}'.");
     }
+
+    /// <summary>
+    /// A verb the app's own handler threw on answers <c>E_FAIL</c>, and what it threw crosses to the client
+    /// through <c>GetLastFailure</c>, so a test can say the app threw rather than "none answered" (review 05, finding 8).
+    /// </summary>
+    [Fact]
+    public void A_Verb_ThatThrew_IsEFail_AndGetLastFailure_SaysWhat()
+    {
+        Assert.True(BridgeClient.TryGetPattern(Target(), out var pattern));
+
+        var hr = pattern!.Invoke((int)BruinetVerb.Tap, HostTargets.ThrowOnInvoke, 0);
+        var asked = pattern.Exchange((int)BruinetVerb.GetLastFailure, string.Empty, out var said);
+
+        _output.WriteLine($"invoke 0x{hr:X8}  last failure 0x{asked:X8} '{said}'");
+        Assert.Equal(HResults.E_FAIL, hr);
+        Assert.Equal(HResults.S_OK, asked);
+        Assert.Contains("Tap threw InvalidOperationException", said, StringComparison.Ordinal);
+        Assert.Contains(HostTargets.ThrownMessage, said, StringComparison.Ordinal);
+    }
 }
