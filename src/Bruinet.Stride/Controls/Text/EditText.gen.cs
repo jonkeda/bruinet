@@ -74,7 +74,7 @@ public partial class EditText<TScope> : ClickableControlBase<TScope>, IEditableT
     #region ReadOnly (IsReadOnly / WaitReadOnly / AssertReadOnly)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsReadOnly()
+    public bool IsReadOnly()
     {
         return IsReadOnlyCore(TryFindElement()) == true;
     }

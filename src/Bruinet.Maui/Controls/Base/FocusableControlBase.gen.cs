@@ -36,7 +36,7 @@ public abstract partial class FocusableControlBase<TScope> : ViewBase<TScope>, I
     #region Focused (IsFocused / WaitFocused / AssertFocused)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsFocused()
+    public bool IsFocused()
     {
         return IsFocusedCore(TryFindElement()) == true;
     }

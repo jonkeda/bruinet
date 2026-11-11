@@ -148,7 +148,7 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     #region ReadOnly (IsReadOnly / WaitReadOnly / AssertReadOnly)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsReadOnly()
+    public bool IsReadOnly()
     {
         return IsReadOnlyCore(TryFindElement()) == true;
     }

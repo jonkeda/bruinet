@@ -472,7 +472,7 @@ Bruinet.Core.Interfaces.IClickableControlObject<TScope>.AssertClickable(bool? ex
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.Click(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.Hover(int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IClickableControlObject<TScope>.IsClickable() -> bool?
+Bruinet.Core.Interfaces.IClickableControlObject<TScope>.IsClickable() -> bool
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.RightClick(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IClickableControlObject<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
@@ -493,7 +493,7 @@ Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.AssertReadOnly(bool? 
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.Clear(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
-Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.IsReadOnly() -> bool?
+Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.IsReadOnly() -> bool
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IEditableTextControlObject<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
@@ -502,8 +502,8 @@ Bruinet.Core.Interfaces.IElementObject<TScope>.AssertEnabled(bool? expected = tr
 Bruinet.Core.Interfaces.IElementObject<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IElementObject<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IElementObject<TScope>.Exists() -> bool
-Bruinet.Core.Interfaces.IElementObject<TScope>.IsEnabled() -> bool?
-Bruinet.Core.Interfaces.IElementObject<TScope>.IsVisible() -> bool?
+Bruinet.Core.Interfaces.IElementObject<TScope>.IsEnabled() -> bool
+Bruinet.Core.Interfaces.IElementObject<TScope>.IsVisible() -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IElementObject<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
@@ -511,14 +511,14 @@ Bruinet.Core.Interfaces.IExpandableControlObject<TScope>
 Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.AssertExpanded(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.Collapse(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.Expand(int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.IsExpanded() -> bool?
+Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.IsExpanded() -> bool
 Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.ToggleExpanded(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IExpandableControlObject<TScope>.WaitExpanded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Blur(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.Focus(int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.IsFocused() -> bool?
+Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.IsFocused() -> bool
 Bruinet.Core.Interfaces.IFocusableControlObject<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IPressableControlObject<TScope>
 Bruinet.Core.Interfaces.IPressableControlObject<TScope>.Press(int? timeoutMs = null) -> TScope
@@ -526,7 +526,7 @@ Bruinet.Core.Interfaces.IProgressControlObject<TScope>
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.GetProgress(int? timeoutMs = null) -> double?
-Bruinet.Core.Interfaces.IProgressControlObject<TScope>.IsIndeterminate() -> bool?
+Bruinet.Core.Interfaces.IProgressControlObject<TScope>.IsIndeterminate() -> bool
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitComplete(int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IProgressControlObject<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IRangeControlObject<TScope>
@@ -543,7 +543,7 @@ Bruinet.Core.Interfaces.IRangeControlObject<TScope>.WaitValue(double? expected, 
 Bruinet.Core.Interfaces.IRangeControlObject<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>
 Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.AssertRefreshing(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.IsRefreshing() -> bool?
+Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.IsRefreshing() -> bool
 Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.PullToRefresh(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IRefreshableControlObject<TScope>.WaitRefreshing(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.IScreenshotService
@@ -586,7 +586,7 @@ Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeRight(int? timeoutM
 Bruinet.Core.Interfaces.ISwipeableControlObject<TScope>.SwipeUp(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.ITabControlObject<TScope>
 Bruinet.Core.Interfaces.ITabControlObject<TScope>.AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.ITabControlObject<TScope>.IsSelected() -> bool?
+Bruinet.Core.Interfaces.ITabControlObject<TScope>.IsSelected() -> bool
 Bruinet.Core.Interfaces.ITabControlObject<TScope>.Title.get -> string!
 Bruinet.Core.Interfaces.ITabControlObject<TScope>.WaitSelected(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Core.Interfaces.ITestContext
@@ -617,7 +617,7 @@ Bruinet.Core.Interfaces.ITimeControlObject<TScope>.WaitTime(System.TimeSpan? exp
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Check(int? timeoutMs = null) -> TScope
-Bruinet.Core.Interfaces.IToggleControlObject<TScope>.IsChecked() -> bool?
+Bruinet.Core.Interfaces.IToggleControlObject<TScope>.IsChecked() -> bool
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Toggle(int? timeoutMs = null) -> TScope
 Bruinet.Core.Interfaces.IToggleControlObject<TScope>.Uncheck(int? timeoutMs = null) -> TScope
@@ -846,7 +846,7 @@ Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsReady() -> bool
-Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsVisible() -> bool?
+Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.IsVisible() -> bool
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ParentScope.get -> TParentScope
 Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness

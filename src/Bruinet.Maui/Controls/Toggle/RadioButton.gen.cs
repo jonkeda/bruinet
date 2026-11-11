@@ -18,7 +18,7 @@ public partial class RadioButton<TScope> : Base.ToggleControlBase<TScope>
     #region Selected (IsSelected / WaitSelected / AssertSelected)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsSelected()
+    public bool IsSelected()
     {
         return IsSelectedCore(TryFindElement()) == true;
     }

@@ -10,13 +10,13 @@ public interface IProgressControlObject<TScope> : IControlObject<TScope>
     /// <summary>
     /// Checks if the progress is indeterminate (unknown duration).
     /// </summary>
-    /// <returns>True if indeterminate, false if determinate, null if element not found.</returns>
-    bool? IsIndeterminate();
+    /// <returns>True if indeterminate, false if determinate, false when the element is not found.</returns>
+    bool IsIndeterminate();
 
     /// <summary>
     /// Gets the current progress value (0.0 to 1.0).
     /// </summary>
-    /// <returns>Progress value between 0.0 and 1.0, or null if element not found.</returns>
+    /// <returns>Progress value between 0.0 and 1.0, or false when the element is not found.</returns>
     double? GetProgress(int? timeoutMs = null);
 
     /// <summary>

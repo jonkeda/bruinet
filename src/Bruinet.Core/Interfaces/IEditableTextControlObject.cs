@@ -62,9 +62,9 @@ public interface IEditableTextControlObject<TScope> : ITextControlObject<TScope>
 
     /// <summary>
     /// Check if the control is read-only.
-    /// Returns null if element not found.
+    /// False when the element is not found.
     /// </summary>
-    bool? IsReadOnly();
+    bool IsReadOnly();
 
     /// <summary>
     /// Wait until read-only state matches expected value.

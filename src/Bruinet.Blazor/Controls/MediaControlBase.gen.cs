@@ -41,7 +41,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #region Playing (IsPlaying / WaitPlaying / AssertPlaying)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsPlaying()
+    public bool IsPlaying()
     {
         return IsPlayingCore(TryFindElement()) == true;
     }
@@ -66,7 +66,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #region Paused (IsPaused / WaitPaused / AssertPaused)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsPaused()
+    public bool IsPaused()
     {
         return IsPausedCore(TryFindElement()) == true;
     }
@@ -91,7 +91,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #region Ended (IsEnded / WaitEnded / AssertEnded)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsEnded()
+    public bool IsEnded()
     {
         return IsEndedCore(TryFindElement()) == true;
     }
@@ -241,7 +241,7 @@ public abstract partial class MediaControlBase<TScope> : ClickableControlBase<TS
     #region Muted (IsMuted / WaitMuted / AssertMuted)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsMuted()
+    public bool IsMuted()
     {
         return IsMutedCore(TryFindElement()) == true;
     }

@@ -102,8 +102,8 @@ public class ProductCollectionTests
     {
         Page.Products.Item(0).Selected.SetChecked(true);
 
-        Assert.Equal(true, Page.Products.Item(0).Selected.IsChecked());
-        Assert.Equal(false, Page.Products.Item(1).Selected.IsChecked());
+        Assert.True(Page.Products.Item(0).Selected.IsChecked());
+        Assert.False(Page.Products.Item(1).Selected.IsChecked());
 
         return Task.CompletedTask;
     }

@@ -15,8 +15,8 @@ public interface ITabControlObject<TScope> : IClickableControlObject<TScope>
     /// <summary>
     /// Checks if the tab is currently selected.
     /// </summary>
-    /// <returns>True if selected, false if not, null if element not found.</returns>
-    bool? IsSelected();
+    /// <returns>True if selected, false if not, false when the element is not found.</returns>
+    bool IsSelected();
 
     /// <summary>
     /// Waits for the tab to be selected or unselected.

@@ -216,7 +216,7 @@ public class Test<TScope> {
 
         var generated = _generator.Generate(info, context);
 
-        Assert.Contains("public bool? IsVisible()", generated);
+        Assert.Contains("public bool IsVisible()", generated);
         Assert.Contains("public bool WaitVisible(bool? expected = true, int? timeoutMs = null)", generated);
         Assert.Contains("public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)", generated);
     }
@@ -316,9 +316,9 @@ public abstract class StateControl<TScope>
         var generated = generator.Generate(code, new GeneratorOptions());
 
         // Assert
-        Assert.Contains("public bool? IsVisible()", generated);
-        Assert.Contains("public bool? IsEnabled()", generated);
-        Assert.Contains("public bool? Exists()", generated);
+        Assert.Contains("public bool IsVisible()", generated);
+        Assert.Contains("public bool IsEnabled()", generated);
+        Assert.Contains("public bool Exists()", generated);
 
         Assert.Contains("public bool WaitVisible(", generated);
         Assert.Contains("public bool WaitEnabled(", generated);
@@ -374,8 +374,8 @@ public abstract class StateControl<TScope>
         Assert.Contains("public TScope SendKeys(string keys)", content);
 
         // Is/Wait/Assert family
-        Assert.Contains("public bool? IsVisible()", content);
-        Assert.Contains("public bool? IsEnabled()", content);
+        Assert.Contains("public bool IsVisible()", content);
+        Assert.Contains("public bool IsEnabled()", content);
         Assert.Contains("public bool Exists()", content);
 
         Assert.Contains("public bool WaitVisible(bool? expected = true, int? timeoutMs = null)", content);

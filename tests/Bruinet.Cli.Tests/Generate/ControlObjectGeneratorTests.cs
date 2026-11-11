@@ -146,7 +146,7 @@ public class ControlObjectGeneratorTests
         Assert.Contains("RunDoWithElement", generatedCode);
 
         // Assert - Is/Wait/Assert trio
-        Assert.Contains("public bool? IsVisible()", generatedCode);
+        Assert.Contains("public bool IsVisible()", generatedCode);
         Assert.Contains("public bool WaitVisible(bool? expected = true, int? timeoutMs = null)", generatedCode);
         Assert.Contains("public TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null)", generatedCode);
     }
@@ -189,7 +189,7 @@ public class ControlObjectGeneratorTests
         var generatedCode = generator.Generate(SampleCodeFixtures.MixedControlClass, Options());
 
         // Assert
-        Assert.Contains("public bool? IsVisible()", generatedCode);
+        Assert.Contains("public bool IsVisible()", generatedCode);
         Assert.DoesNotContain("public TScope Click", generatedCode);
     }
 }

@@ -55,7 +55,7 @@ public class DateInputControlTests
     [Fact]
     public void IsEnabled_WhenEnabled_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestDateInput.IsEnabled());
+        Assert.True(_page.TestDateInput.IsEnabled());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

@@ -56,7 +56,7 @@ Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTextInside(string! selector, in
 Bruinet.Blazor.Controls.IFrameControl<TScope>.GetTitle(int? timeoutMs = null) -> string?
 Bruinet.Blazor.Controls.IFrameControl<TScope>.IFrameControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Blazor.Controls.IFrameControl<TScope>.IFrameControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
-Bruinet.Blazor.Controls.IFrameControl<TScope>.IsElementInside(string! selector) -> bool?
+Bruinet.Blazor.Controls.IFrameControl<TScope>.IsElementInside(string! selector) -> bool
 Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitElementInside(string! selector, bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitName(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Blazor.Controls.IFrameControl<TScope>.WaitSource(string? expected, int? timeoutMs = null) -> bool
@@ -76,7 +76,7 @@ Bruinet.Blazor.Controls.ImageControl<TScope>.GetNaturalWidth(int? timeoutMs = nu
 Bruinet.Blazor.Controls.ImageControl<TScope>.GetSource(int? timeoutMs = null) -> string?
 Bruinet.Blazor.Controls.ImageControl<TScope>.ImageControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Blazor.Controls.ImageControl<TScope>.ImageControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
-Bruinet.Blazor.Controls.ImageControl<TScope>.IsLoaded() -> bool?
+Bruinet.Blazor.Controls.ImageControl<TScope>.IsLoaded() -> bool
 Bruinet.Blazor.Controls.ImageControl<TScope>.WaitAltText(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Blazor.Controls.ImageControl<TScope>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Blazor.Controls.ImageControl<TScope>.WaitNaturalHeight(int? expected, int? timeoutMs = null) -> bool
@@ -105,10 +105,10 @@ Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetCurrentTime(int? timeoutMs =
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetDuration(int? timeoutMs = null) -> double?
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetSource(int? timeoutMs = null) -> string?
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.GetVolume(int? timeoutMs = null) -> double?
-Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsEnded() -> bool?
-Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsMuted() -> bool?
-Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPaused() -> bool?
-Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPlaying() -> bool?
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsEnded() -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsMuted() -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPaused() -> bool
+Bruinet.Blazor.Controls.MediaControlBase<TScope>.IsPlaying() -> bool
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.MediaControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.MediaControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
 Bruinet.Blazor.Controls.MediaControlBase<TScope>.Mute(int? timeoutMs = null) -> TScope

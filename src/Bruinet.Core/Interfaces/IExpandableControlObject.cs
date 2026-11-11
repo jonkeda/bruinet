@@ -10,8 +10,8 @@ public interface IExpandableControlObject<TScope> : IClickableControlObject<TSco
     /// <summary>
     /// Checks if the control is currently expanded.
     /// </summary>
-    /// <returns>True if expanded, false if collapsed, null if element not found.</returns>
-    bool? IsExpanded();
+    /// <returns>True if expanded, false if collapsed, false when the element is not found.</returns>
+    bool IsExpanded();
 
     /// <summary>
     /// Waits for the control to be expanded or collapsed.

@@ -19,7 +19,7 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     #region Expanded (IsExpanded / WaitExpanded / AssertExpanded)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsExpanded()
+    public bool IsExpanded()
     {
         return IsExpandedCore(TryFindElement()) == true;
     }

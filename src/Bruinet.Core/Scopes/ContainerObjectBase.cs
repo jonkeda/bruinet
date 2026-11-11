@@ -92,8 +92,8 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
     /// <summary>Whether the container's root element exists, now. <see cref="WaitExists"/> waits.</summary>
     public bool Exists() => TryFindRootElement() != null;
 
-    /// <summary>Whether the container's root element is shown, now; null when it does not exist.</summary>
-    public bool? IsVisible() => TryFindRootElement() is { } root ? IsShown(root) : null;
+    /// <summary>Whether the container's root element is shown, now; false when it does not exist (D1).</summary>
+    public bool IsVisible() => TryFindRootElement() is { } root && IsShown(root);
 
     /// <summary>Waits until the container's existence matches <paramref name="expected"/>; null skips.</summary>
     public bool WaitExists(bool? expected = true, int? timeoutMs = null)

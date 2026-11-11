@@ -10,8 +10,8 @@ public interface IRefreshableControlObject<TScope> : IControlObject<TScope>
     /// <summary>
     /// Checks if the control is currently refreshing.
     /// </summary>
-    /// <returns>True if refreshing, false if not, null if element not found.</returns>
-    bool? IsRefreshing();
+    /// <returns>True if refreshing, false if not, false when the element is not found.</returns>
+    bool IsRefreshing();
 
     /// <summary>
     /// Waits for refresh state to match expected.

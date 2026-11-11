@@ -81,7 +81,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 4: heads agree, contracts bound
 
-- [ ] R2-T39 Missing element per D1: generated `ViewBase` or the contract changes; three skips in `HtmlBindings.cs` go. R04 P8, R08 P5. Needs D1. All three consumers.
+- [x] R2-T39 Missing element per D1: generated `ViewBase` or the contract changes; three skips in `HtmlBindings.cs` go. R04 P8, R08 P5. Needs D1. All three consumers.
 - [ ] R2-T40 Playwright `Submit` uses `requestSubmit()`; `Submit` test on both Html heads. R04 P1.
 - [ ] R2-T41 bUnit refuses an absent option and `readonly` writes; Selector and EditableText contracts ask. R04 P2. tomorrow (studio on bUnit).
 - [ ] R2-T42 bUnit bubbles double click, right click, keys; label click and Enter/Space on a button, or `BrowserOnlyException`. R04 P3. tomorrow.

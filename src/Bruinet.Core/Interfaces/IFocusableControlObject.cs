@@ -9,8 +9,8 @@ public interface IFocusableControlObject<TScope> : IControlObject<TScope>
     /// <summary>
     /// Checks if the control currently has focus.
     /// </summary>
-    /// <returns>True if focused, false if not, null if element not found.</returns>
-    bool? IsFocused();
+    /// <returns>True if focused, false if not, false when the element is not found.</returns>
+    bool IsFocused();
 
     /// <summary>
     /// Waits for the control to have or lose focus.

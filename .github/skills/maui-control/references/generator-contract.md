@@ -129,8 +129,9 @@ means "this question has an answer when the element is missing":
   element.
 
 Use it for existence-like reads (`IsOpen`, `IsShown`, `IsShowing`) and reads where "none"
-is a valid state. Plain `IsVisible` is not absence tolerant: it answers null, not false,
-for a missing element, so `AssertVisible(false)` never passes on one. A control that must
+is a valid state. Plain `IsVisible` is not absence tolerant: it answers false for a missing
+element, but its `Wait` and `Assert` find the element first, so `AssertVisible(false)` never
+passes on a missing one. A control that must
 answer "not shown" declares its own absence-tolerant read.
 
 ## Inside a Core method

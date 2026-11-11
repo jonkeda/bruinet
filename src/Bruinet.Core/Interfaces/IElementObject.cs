@@ -16,15 +16,15 @@ public interface IElementObject<TScope>
 
     /// <summary>
     /// Check if the element is visible.
-    /// Returns null if element doesn't exist.
+    /// False when the element is not found.
     /// </summary>
-    bool? IsVisible();
+    bool IsVisible();
 
     /// <summary>
     /// Check if the element is enabled.
-    /// Returns null if element doesn't exist.
+    /// False when the element is not found.
     /// </summary>
-    bool? IsEnabled();
+    bool IsEnabled();
 
     /// <summary>
     /// Wait until element existence matches expected value.

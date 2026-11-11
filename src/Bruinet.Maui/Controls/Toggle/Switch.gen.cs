@@ -18,7 +18,7 @@ public partial class Switch<TScope> : Base.ToggleControlBase<TScope>
     #region On (IsOn / WaitOn / AssertOn)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsOn()
+    public bool IsOn()
     {
         return IsOnCore(TryFindElement()) == true;
     }

@@ -63,7 +63,7 @@ Bruinet.Wpf.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.W
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
-Bruinet.Wpf.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Wpf.Controls.ClickableControlBase<TScope>.IsClickable() -> bool
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
@@ -85,7 +85,7 @@ Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.Collapse(int? timeoutMs = nul
 Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.Expand(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.ExpandableControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.ExpandableControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
-Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.IsExpanded() -> bool?
+Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.IsExpanded() -> bool
 Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.ToggleExpanded(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ExpandableControlBase<TScope>.WaitExpanded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Controls.FocusableControlBase<TScope>
@@ -94,7 +94,7 @@ Bruinet.Wpf.Controls.FocusableControlBase<TScope>.Blur(int? timeoutMs = null) ->
 Bruinet.Wpf.Controls.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Wpf.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
-Bruinet.Wpf.Controls.FocusableControlBase<TScope>.IsFocused() -> bool?
+Bruinet.Wpf.Controls.FocusableControlBase<TScope>.IsFocused() -> bool
 Bruinet.Wpf.Controls.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Wpf.Controls.Range.ProgressBar<TScope>
 Bruinet.Wpf.Controls.Range.ProgressBar<TScope>.ProgressBar(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -147,7 +147,7 @@ Bruinet.Wpf.Controls.Selection.ListBox<TScope>.ListBox(Bruinet.Wpf.Interfaces.IW
 Bruinet.Wpf.Controls.Selection.ListBox<TScope>.ListBox(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
 Bruinet.Wpf.Controls.Selection.TabItem<TScope>
 Bruinet.Wpf.Controls.Selection.TabItem<TScope>.AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Wpf.Controls.Selection.TabItem<TScope>.IsSelected() -> bool?
+Bruinet.Wpf.Controls.Selection.TabItem<TScope>.IsSelected() -> bool
 Bruinet.Wpf.Controls.Selection.TabItem<TScope>.TabItem(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Wpf.Controls.Selection.TabItem<TScope>.TabItem(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
 Bruinet.Wpf.Controls.Selection.TabItem<TScope>.Title.get -> string!
@@ -187,7 +187,7 @@ Bruinet.Wpf.Controls.Text.TextBox<TScope>.AssertReadOnly(bool? expected = true, 
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.Clear(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
-Bruinet.Wpf.Controls.Text.TextBox<TScope>.IsReadOnly() -> bool?
+Bruinet.Wpf.Controls.Text.TextBox<TScope>.IsReadOnly() -> bool
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.TextBox(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Wpf.Controls.Text.TextBox<TScope>.TextBox(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, string! automationId) -> void
@@ -205,7 +205,7 @@ Bruinet.Wpf.Controls.Toggle.ToggleButton<TScope>.ToggleButton(Bruinet.Wpf.Interf
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
-Bruinet.Wpf.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.Wpf.Controls.ToggleControlBase<TScope>.IsChecked() -> bool
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
 Bruinet.Wpf.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.Wpf.Interfaces.IWpfScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -233,8 +233,8 @@ Bruinet.Wpf.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Wpf.Interfaces.IW
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetHelpText(int? timeoutMs = null) -> string?
 Bruinet.Wpf.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Wpf.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Wpf.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.Wpf.Controls.ViewBase<TScope>.IsEnabled() -> bool
+Bruinet.Wpf.Controls.ViewBase<TScope>.IsVisible() -> bool
 Bruinet.Wpf.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Wpf.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
 Bruinet.Wpf.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.Wpf.Interfaces.IWpfElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

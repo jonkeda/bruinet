@@ -223,25 +223,16 @@ public class EntryTests
     /// A read-only entry reports itself read-only, and an ordinary one does not.
     /// </summary>
     /// <remarks>
-    /// Windows answers through the Value pattern. Android publishes no editability, so the test
-    /// asks the element whether the pattern is there at all and asserts nothing when it is not -
-    /// what each platform can actually know, rather than a platform branch.
+    /// Windows answers through the Value pattern, and the headless head from the Entry itself. Android
+    /// and iOS publish no editability, so there IsReadOnly answers false (D1) and the test does not run.
     /// </remarks>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [WindowsOnlyFact("Android and iOS publish no editability, so IsReadOnly answers false there (D1)", Timeout = TestConstants.DefaultTestTimeoutMs)]
     [Trait("Method", "IsReadOnly")]
     public Task Entry_ReadOnly_IsReported()
     {
         var page = GetPage();
 
-        // null means the platform publishes no editability, so there is nothing to assert. The
-        // tri-state answers the capability question directly - no need to reach for the element
-        // and ask it about its patterns.
-        var readOnly = page.ReadOnlyEntry.IsReadOnly();
-        if (readOnly == null)
-        {
-            return Task.CompletedTask;
-        }
-
+        Assert.True(page.ReadOnlyEntry.IsReadOnly());
         page.ReadOnlyEntry.AssertReadOnly(true)
             .TestEntry.AssertReadOnly(false);
 

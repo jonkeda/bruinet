@@ -55,7 +55,7 @@ public class TimeInputControlTests
     [Fact]
     public void IsEnabled_WhenEnabled_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestTimeInput.IsEnabled());
+        Assert.True(_page.TestTimeInput.IsEnabled());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

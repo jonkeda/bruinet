@@ -51,7 +51,7 @@ public abstract partial class ToggleControlBase<TScope> : FocusableControlBase<T
     #region Checked (IsChecked / WaitChecked / AssertChecked)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsChecked()
+    public bool IsChecked()
     {
         return IsCheckedCore(TryFindElement()) == true;
     }

@@ -74,7 +74,7 @@ public abstract partial class ClickableControlBase<TScope> : FocusableControlBas
     #region Clickable (IsClickable / WaitClickable / AssertClickable)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsClickable()
+    public bool IsClickable()
     {
         return IsClickableCore(TryFindElement()) == true;
     }

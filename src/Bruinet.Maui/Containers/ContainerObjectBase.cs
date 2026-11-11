@@ -396,7 +396,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
     /// Whether the container's root element is visible, now; null when it does not exist.
     /// <see cref="WaitVisible"/> waits.
     /// </summary>
-    public bool? IsVisible() => TryGetContainerRoot()?.Visible;
+    public bool IsVisible() => TryGetContainerRoot()?.Visible == true;
 
     /// <summary>
     /// Waits until the container's existence matches <paramref name="expected"/>.

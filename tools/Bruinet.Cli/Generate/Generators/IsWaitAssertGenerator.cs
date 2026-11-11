@@ -568,8 +568,10 @@ public class IsWaitAssertGenerator : IMemberGenerator
     {
         var parameters = string.Join(", ", coreMethod.Parameters.Select(p => $"{p.TypeName} {p.ParameterName}"));
 
+        // A missing element answers false, so the member says bool: a bool? promised a null nobody returned (D1).
+        var returnType = coreMethod.ReturnType == "bool?" ? "bool" : coreMethod.ReturnType;
         writer.WriteLine(GeneratedMember.Attribute);
-        writer.WriteLine($"public {coreMethod.ReturnType} {StateQueryName(propertyName)}({parameters})");
+        writer.WriteLine($"public {returnType} {StateQueryName(propertyName)}({parameters})");
         writer.Open();
         writer.WriteLine($"return {coreMethod.MethodName}(TryFindElement(){BuildLambdaArguments(coreMethod)}) == true;");
         writer.Close();

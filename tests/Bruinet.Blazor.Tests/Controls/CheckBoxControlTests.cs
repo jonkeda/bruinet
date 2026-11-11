@@ -90,7 +90,7 @@ public class CheckBoxControlTests
     [Fact]
     public void IsVisible_WhenVisible_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestCheckBox.IsVisible());
+        Assert.True(_page.TestCheckBox.IsVisible());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

@@ -141,7 +141,7 @@ public partial class Entry<TScope> : Base.FocusableControlBase<TScope>, IEditabl
     }
 
     /// <summary>Whether the entry is read-only; null when the platform cannot tell.</summary>
-    public bool? IsReadOnly() => IsReadOnlyCore(TryFindElement());
+    public bool IsReadOnly() => IsReadOnlyCore(TryFindElement()) == true;
 
     public bool WaitReadOnly(bool? expected = true, int? timeoutMs = null)
         => RunWaitWithElement(expected,

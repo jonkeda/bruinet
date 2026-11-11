@@ -10,9 +10,9 @@ public interface IClickableControlObject<TScope> : IControlObject<TScope>
 {
     /// <summary>
     /// Check if the control is clickable (visible and enabled).
-    /// Returns null if element not found.
+    /// False when the element is not found.
     /// </summary>
-    bool? IsClickable();
+    bool IsClickable();
 
     /// <summary>
     /// Perform a single click on the control.

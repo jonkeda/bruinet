@@ -71,18 +71,6 @@ public abstract class HtmlElementBinding<THead> : ElementContract<ContractPage>,
 
     private ButtonControl<ContractPage> Button(string testId) => new(_session.Page, ContractSession<THead>.Selector(testId));
 
-    /// <summary>Open in .my/coverage/plan.md: the docs or the generated controls change.</summary>
-    private const string MissingDiffers = "A missing element: Core's docs say null; Html's generated controls answer false "
-        + "(IsVisible, IsEnabled) and throw (GetAttribute), as Maui's do; Wpf and WinForms answer null.";
-
-    [Fact(Skip = MissingDiffers)]
-    public override void IsVisible_TrueShown_FalseHidden_NullMissing() => base.IsVisible_TrueShown_FalseHidden_NullMissing();
-
-    [Fact(Skip = MissingDiffers)]
-    public override void IsEnabled_TrueEnabled_FalseDisabled_NullMissing() => base.IsEnabled_TrueEnabled_FalseDisabled_NullMissing();
-
-    [Fact(Skip = MissingDiffers)]
-    public override void GetAttribute_ReadsIt_NullWhenAbsent() => base.GetAttribute_ReadsIt_NullWhenAbsent();
 }
 
 public abstract class HtmlClickableBinding<THead> : ClickableContract<ContractPage>, IAsyncLifetime where THead : IContractHead, new()

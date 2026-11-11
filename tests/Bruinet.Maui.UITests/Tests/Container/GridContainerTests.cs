@@ -168,10 +168,10 @@ public class GridContainerTests
 
         ProductOptionsContainer options = form.Options.InStockCheckBox.SetChecked(false);
         Assert.Same(form, options.Parent);
-        Assert.Equal(false, options.InStockCheckBox.IsChecked());
+        Assert.False(options.InStockCheckBox.IsChecked());
 
         options.InStockCheckBox.SetChecked(true);
-        Assert.Equal(true, options.InStockCheckBox.IsChecked());
+        Assert.True(options.InStockCheckBox.IsChecked());
 
         return Task.CompletedTask;
     }

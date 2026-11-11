@@ -156,7 +156,7 @@ public partial class IFrameControl<TScope> : ViewBase<TScope>
     #region ElementInside (IsElementInside / WaitElementInside / AssertElementInside)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsElementInside(string selector)
+    public bool IsElementInside(string selector)
     {
         return IsElementInsideCore(TryFindElement(), selector) == true;
     }

@@ -46,7 +46,7 @@ public class TextAreaControlTests
     [Fact]
     public void IsVisible_WhenVisible_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestTextArea.IsVisible());
+        Assert.True(_page.TestTextArea.IsVisible());
     }
 
     [Fact]

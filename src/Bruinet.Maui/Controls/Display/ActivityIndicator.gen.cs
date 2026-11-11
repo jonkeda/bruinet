@@ -18,7 +18,7 @@ public partial class ActivityIndicator<TScope> : Base.ViewBase<TScope>
     #region Running (IsRunning / WaitRunning / AssertRunning)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsRunning()
+    public bool IsRunning()
     {
         return IsRunningCore(TryFindElement()) == true;
     }

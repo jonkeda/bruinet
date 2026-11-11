@@ -18,7 +18,7 @@ public partial class Image<TScope> : Base.ViewBase<TScope>
     #region Loaded (IsLoaded / WaitLoaded / AssertLoaded)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsLoaded()
+    public bool IsLoaded()
     {
         return IsLoadedCore(TryFindElement()) == true;
     }

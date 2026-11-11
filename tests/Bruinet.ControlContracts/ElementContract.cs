@@ -30,19 +30,19 @@ public abstract class ElementContract<TScope> : ControlContract<TScope> where TS
     }
 
     [Fact]
-    public virtual void IsVisible_TrueShown_FalseHidden_NullMissing()
+    public virtual void IsVisible_TrueShown_FalseHidden_FalseMissing()
     {
         Assert.True(Shown.IsVisible());
         Assert.False(Hidden.IsVisible());
-        Assert.Null(Missing.IsVisible());
+        Assert.False(Missing.IsVisible());
     }
 
     [Fact]
-    public virtual void IsEnabled_TrueEnabled_FalseDisabled_NullMissing()
+    public virtual void IsEnabled_TrueEnabled_FalseDisabled_FalseMissing()
     {
         Assert.True(Shown.IsEnabled());
         Assert.False(Disabled.IsEnabled());
-        Assert.Null(Missing.IsEnabled());
+        Assert.False(Missing.IsEnabled());
     }
 
     [Fact]
@@ -102,10 +102,10 @@ public abstract class ElementContract<TScope> : ControlContract<TScope> where TS
     }
 
     [Fact]
-    public virtual void GetAttribute_ReadsIt_NullWhenAbsent()
+    public virtual void GetAttribute_ReadsIt_NullWhenAbsent_AndAMissingElementFails()
     {
         Assert.Equal(Attribute.Value, Shown.GetAttribute(Attribute.Name, null));
         Assert.Null(Shown.GetAttribute("data-no-such-attribute", ShortTimeoutMs));
-        Assert.Null(Missing.GetAttribute(Attribute.Name, ShortTimeoutMs));
+        Assert.ThrowsAny<Bruinet.Core.Exceptions.ElementNotFoundException>(() => Missing.GetAttribute(Attribute.Name, ShortTimeoutMs));
     }
 }

@@ -25,7 +25,7 @@ public abstract partial class MixedControl<TScope> : Base<TScope>
     #region Visible (IsVisible / WaitVisible / AssertVisible)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsVisible()
+    public bool IsVisible()
     {
         return IsVisibleCore(TryFindElement()) == true;
     }

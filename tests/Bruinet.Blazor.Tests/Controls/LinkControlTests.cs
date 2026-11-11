@@ -45,13 +45,13 @@ public class LinkControlTests
     [Fact]
     public void IsVisible_WhenVisible_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestLink.IsVisible());
+        Assert.True(_page.TestLink.IsVisible());
     }
 
     [Fact]
     public void IsEnabled_WhenEnabled_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestLink.IsEnabled());
+        Assert.True(_page.TestLink.IsEnabled());
     }
 
     private sealed class TestPage : BlazorPageObjectBase<TestPage>

@@ -36,7 +36,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     #region FlyoutOpen (IsFlyoutOpen / WaitFlyoutOpen / AssertFlyoutOpen)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsFlyoutOpen()
+    public bool IsFlyoutOpen()
     {
         return IsFlyoutOpenCore(TryFindElement()) == true;
     }

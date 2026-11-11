@@ -31,7 +31,7 @@ public partial class MediaPlayPauseButton<TScope> : Button<TScope>
     #region Playing (IsPlaying / WaitPlaying / AssertPlaying)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsPlaying()
+    public bool IsPlaying()
     {
         return IsPlayingCore(TryFindElement()) == true;
     }

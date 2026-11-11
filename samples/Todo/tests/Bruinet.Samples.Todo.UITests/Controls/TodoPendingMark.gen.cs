@@ -23,7 +23,7 @@ public partial class TodoPendingMark<TScope> : Label<TScope>
     #region Shown (IsShown / WaitShown / AssertShown)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsShown()
+    public bool IsShown()
     {
         return IsShownCore(TryFindElement()) == true;
     }

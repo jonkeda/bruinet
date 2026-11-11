@@ -42,7 +42,7 @@ Bruinet.Html.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.
 Bruinet.Html.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
 Bruinet.Html.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Html.Controls.ClickableControlBase<TScope>.IsClickable() -> bool
 Bruinet.Html.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
@@ -161,7 +161,7 @@ Bruinet.Html.Controls.FocusableControlBase<TScope>.Blur(int? timeoutMs = null) -
 Bruinet.Html.Controls.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
-Bruinet.Html.Controls.FocusableControlBase<TScope>.IsFocused() -> bool?
+Bruinet.Html.Controls.FocusableControlBase<TScope>.IsFocused() -> bool
 Bruinet.Html.Controls.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Range.RangeInputControl<TScope>
 Bruinet.Html.Controls.Range.RangeInputControl<TScope>.RangeInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -245,7 +245,7 @@ Bruinet.Html.Controls.Text.TextInputControl<TScope>.Clear(int? timeoutMs = null)
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetValue(int? timeoutMs = null) -> string?
-Bruinet.Html.Controls.Text.TextInputControl<TScope>.IsReadOnly() -> bool?
+Bruinet.Html.Controls.Text.TextInputControl<TScope>.IsReadOnly() -> bool
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.Submit(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -266,7 +266,7 @@ Bruinet.Html.Controls.Toggle.RadioButtonControl<TScope>.Select(int? timeoutMs = 
 Bruinet.Html.Controls.ToggleControlBase<TScope>
 Bruinet.Html.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.Html.Controls.ToggleControlBase<TScope>.IsChecked() -> bool
 Bruinet.Html.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -291,8 +291,8 @@ Bruinet.Html.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Html.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Html.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.Html.Controls.ViewBase<TScope>.IsEnabled() -> bool
+Bruinet.Html.Controls.ViewBase<TScope>.IsVisible() -> bool
 Bruinet.Html.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Html.Controls.ViewBase<TScope>.PressKey(string! key, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

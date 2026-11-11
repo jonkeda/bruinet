@@ -23,7 +23,7 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
     #region Visible (IsVisible / WaitVisible / AssertVisible)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsVisible()
+    public bool IsVisible()
     {
         return IsVisibleCore(TryFindElement()) == true;
     }
@@ -48,7 +48,7 @@ public abstract partial class ViewBase<TScope> : IElementObject<TScope>, IContro
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsEnabled()
+    public bool IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }

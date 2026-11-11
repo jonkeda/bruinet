@@ -33,7 +33,7 @@ public partial class SwipeView<TParent, TSelf> : ContainerObjectBase<TParent, TS
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsEnabled()
+    public bool IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }

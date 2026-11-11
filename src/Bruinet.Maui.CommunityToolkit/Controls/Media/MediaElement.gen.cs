@@ -24,7 +24,7 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
 {
     #region IsPlaying (shortcut to PlayPauseButton.IsPlaying)
 
-    public bool? IsPlaying()
+    public bool IsPlaying()
        => PlayPauseButton.IsPlaying();
 
     public bool WaitPlaying(bool? expected = true, int? timeoutMs = null)

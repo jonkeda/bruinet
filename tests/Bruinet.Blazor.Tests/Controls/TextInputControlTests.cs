@@ -45,7 +45,7 @@ public class TextInputControlTests
     [Fact]
     public void IsVisible_WhenVisible_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestTextInput.IsVisible());
+        Assert.True(_page.TestTextInput.IsVisible());
     }
 
     [Fact]

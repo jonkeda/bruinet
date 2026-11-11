@@ -39,7 +39,7 @@ public class ButtonControlTests
     [Fact]
     public void IsVisible_WhenVisible_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestButton.IsVisible());
+        Assert.True(_page.TestButton.IsVisible());
     }
 
     [Fact]
@@ -47,13 +47,13 @@ public class ButtonControlTests
     {
         _mockElement.Setup(e => e.Visible).Returns(false);
 
-        Assert.Equal(false, _page.TestButton.IsVisible());
+        Assert.False(_page.TestButton.IsVisible());
     }
 
     [Fact]
     public void IsEnabled_WhenEnabled_ReturnsTrue()
     {
-        Assert.Equal(true, _page.TestButton.IsEnabled());
+        Assert.True(_page.TestButton.IsEnabled());
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class ButtonControlTests
     {
         _mockElement.Setup(e => e.Enabled).Returns(false);
 
-        Assert.Equal(false, _page.TestButton.IsEnabled());
+        Assert.False(_page.TestButton.IsEnabled());
     }
 
     [Fact]

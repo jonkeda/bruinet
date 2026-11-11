@@ -27,7 +27,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
         var generated = Generate(
             "protected virtual bool? IsShowingCore(IMauiElement? element, string viewAutomationId) => null;");
 
-        Assert.Contains("public bool? IsShowing(string viewAutomationId) { return IsShowingCore(TryFindElement(), viewAutomationId) == true; }", generated);
+        Assert.Contains("public bool IsShowing(string viewAutomationId) { return IsShowingCore(TryFindElement(), viewAutomationId) == true; }", generated);
         Assert.Contains("public bool WaitShowing(string viewAutomationId, bool? expected = true, int? timeoutMs = null)", generated);
         Assert.Contains("element => IsShowingCore(element, viewAutomationId) == expected!.Value,", generated);
         Assert.Contains("public TScope AssertShowing(string viewAutomationId, bool? expected = true, string? message = null, int? timeoutMs = null)", generated);
@@ -39,7 +39,7 @@ public abstract class S<TScope> where TScope : IScope<TScope>
     {
         var generated = Generate("protected virtual bool? IsOpenCore(IMauiElement? element) => null;");
 
-        Assert.Contains("public bool? IsOpen() { return IsOpenCore(TryFindElement()) == true; }", generated);
+        Assert.Contains("public bool IsOpen() { return IsOpenCore(TryFindElement()) == true; }", generated);
         Assert.Contains("public bool WaitOpen(bool? expected = true, int? timeoutMs = null)", generated);
         // The method group, not a lambda: existing output does not move.
         Assert.Contains("RunAssertWithElement(expected, IsOpenCore, (actual, expected1)", generated);

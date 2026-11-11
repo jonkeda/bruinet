@@ -7,9 +7,9 @@ Bruinet.Maui.Configuration.MauiDriverOptions.AppPath.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.get -> System.Uri!
 Bruinet.Maui.Configuration.MauiDriverOptions.AppiumServerUri.set -> void
 Bruinet.Maui.Configuration.MauiDriverOptions.ApplyEnvironment(System.Func<string!, string?>! read) -> void
-Bruinet.Maui.Configuration.MauiDriverOptions.ForwardEnvironment(params string![]! names) -> Bruinet.Maui.Configuration.MauiDriverOptions!
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.get -> string?
 Bruinet.Maui.Configuration.MauiDriverOptions.DeviceName.set -> void
+Bruinet.Maui.Configuration.MauiDriverOptions.ForwardEnvironment(params string![]! names) -> Bruinet.Maui.Configuration.MauiDriverOptions!
 Bruinet.Maui.Configuration.MauiDriverOptions.LaunchSettings.get -> System.Collections.Generic.Dictionary<string!, string!>!
 Bruinet.Maui.Configuration.MauiDriverOptions.Logger.get -> Bruinet.Core.Logging.ITestLogger?
 Bruinet.Maui.Configuration.MauiDriverOptions.MauiDriverOptions() -> void
@@ -103,7 +103,7 @@ Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Entry(string! automat
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Exists() -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.InvalidateCache() -> void
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsReady() -> bool
-Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsVisible() -> bool?
+Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.IsVisible() -> bool
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.Label(string! automationId) -> Bruinet.Maui.Controls.Display.Label<TSelf!>!
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.RootedScopeBase() -> void
 Bruinet.Maui.Containers.RootedScopeBase<TSelf, TSetResult>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TSelf!
@@ -168,7 +168,7 @@ Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.ClickableControlBase(Bru
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.IsClickable() -> bool
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.Press(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
@@ -181,7 +181,7 @@ Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.AssertTextEmpty
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.Click(int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.ClickableItemBase(TCollection collection, Bruinet.Maui.Interfaces.IMauiElement! itemRoot, int index) -> void
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.IsEnabled() -> bool?
+Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.IsEnabled() -> bool
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.WaitText(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Base.ClickableItemBase<TCollection, TSelf>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
@@ -192,7 +192,7 @@ Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.Blur(int? timeoutMs = nu
 Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.IsFocused() -> bool?
+Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.IsFocused() -> bool
 Bruinet.Maui.Controls.Base.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Base.RangeControlBase<TScope>
 Bruinet.Maui.Controls.Base.RangeControlBase<TScope>.AssertMaximum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -224,7 +224,7 @@ Bruinet.Maui.Controls.Base.RangeControlBase<TScope>.WaitValueLessThan(double? ex
 Bruinet.Maui.Controls.Base.RangeControlBase<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>
 Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
-Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.IsSelected() -> bool?
+Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.IsSelected() -> bool
 Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.SelectableItemBase(TCollection collection, Bruinet.Maui.Interfaces.IMauiElement! itemRoot, int index) -> void
 Bruinet.Maui.Controls.Base.SelectableItemBase<TCollection, TSelf>.WaitSelected(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Base.SelectorControlBase<TScope>
@@ -254,7 +254,7 @@ Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.AssertChecked(bool? expecte
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.AssertChecked(string? message, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.IsChecked() -> bool
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.SetCheckedDirectly(Bruinet.Maui.Interfaces.IMauiElement! element, bool checked, int? timeoutMs) -> void
 Bruinet.Maui.Controls.Base.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
@@ -276,8 +276,8 @@ Bruinet.Maui.Controls.Base.ViewBase<TScope>.DefaultTimeoutMs.get -> int
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.Exists() -> bool
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.FindElement() -> Bruinet.Maui.Interfaces.IMauiElement!
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
-Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsEnabled() -> bool
+Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsVisible() -> bool
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.IsVisibleAfterScroll() -> bool?
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Maui.Controls.Base.ViewBase<TScope>.MauiScope.get -> Bruinet.Maui.Interfaces.IMauiScope<TScope>!
@@ -382,8 +382,8 @@ Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.AssertRefreshing(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.AssertRefreshing(string? message, int? timeoutMs = null) -> TSelf!
-Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsEnabled() -> bool?
-Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsRefreshing() -> bool?
+Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsEnabled() -> bool
+Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsRefreshing() -> bool
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.PullToRefresh(int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.RefreshView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.RefreshView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
@@ -404,7 +404,7 @@ Bruinet.Maui.Controls.Container.ScrollView<TParent>.ScrollView(Bruinet.Maui.Inte
 Bruinet.Maui.Controls.Container.ScrollView<TParent>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>
 Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
-Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.IsEnabled() -> bool?
+Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.IsEnabled() -> bool
 Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.Swipe(int startX, int startY, int endX, int endY, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.SwipeDown(int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.SwipeLeft(int? timeoutMs = null) -> TSelf!
@@ -489,7 +489,7 @@ Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.ActivityIndicator(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.ActivityIndicator(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.AssertRunning(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.IsRunning() -> bool?
+Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.IsRunning() -> bool
 Bruinet.Maui.Controls.Display.ActivityIndicator<TScope>.WaitRunning(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.Image<TScope>
 Bruinet.Maui.Controls.Display.Image<TScope>.AssertHeight(int? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -501,7 +501,7 @@ Bruinet.Maui.Controls.Display.Image<TScope>.GetSource(int? timeoutMs = null) -> 
 Bruinet.Maui.Controls.Display.Image<TScope>.GetWidth(int? timeoutMs = null) -> int?
 Bruinet.Maui.Controls.Display.Image<TScope>.Image(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Display.Image<TScope>.Image(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
-Bruinet.Maui.Controls.Display.Image<TScope>.IsLoaded() -> bool?
+Bruinet.Maui.Controls.Display.Image<TScope>.IsLoaded() -> bool
 Bruinet.Maui.Controls.Display.Image<TScope>.WaitHeight(int? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.Image<TScope>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.Image<TScope>.WaitSource(string? expected, int? timeoutMs = null) -> bool
@@ -567,7 +567,7 @@ Bruinet.Maui.Controls.Media.WebView<TScope>.WebView(Bruinet.Maui.Interfaces.IMau
 Bruinet.Maui.Controls.Media.WebView<TScope>.WebView(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! automationId) -> void
 Bruinet.Maui.Controls.Navigation.Menu<TParent>
 Bruinet.Maui.Controls.Navigation.Menu<TParent>.AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.Controls.Navigation.Menu<TParent>!
-Bruinet.Maui.Controls.Navigation.Menu<TParent>.IsOpen() -> bool?
+Bruinet.Maui.Controls.Navigation.Menu<TParent>.IsOpen() -> bool
 Bruinet.Maui.Controls.Navigation.Menu<TParent>.Menu(Bruinet.Maui.Interfaces.IMauiScope<TParent>! scope, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? triggerLocator = null, Bruinet.Core.Locators.Locator? itemsHostLocator = null, Bruinet.Maui.Containers.IItemStrategy? itemStrategy = null) -> void
 Bruinet.Maui.Controls.Navigation.Menu<TParent>.Menu(Bruinet.Maui.Interfaces.IMauiScope<TParent>! scope, string! automationId, Bruinet.Core.Locators.Locator? triggerLocator = null, Bruinet.Core.Locators.Locator? itemsHostLocator = null, Bruinet.Maui.Containers.IItemStrategy? itemStrategy = null) -> void
 Bruinet.Maui.Controls.Navigation.Menu<TParent>.Open(int? timeoutMs = null) -> Bruinet.Maui.Controls.Navigation.Menu<TParent>!
@@ -581,7 +581,7 @@ Bruinet.Maui.Controls.Navigation.Shell<TParent>.Tabs.get -> Bruinet.Maui.Control
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.AssertOpen(bool? expected = true, string? message = null, int? timeoutMs = null) -> Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>!
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.Close(int? timeoutMs = null) -> Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>!
-Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.IsOpen() -> bool?
+Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.IsOpen() -> bool
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.Open(int? timeoutMs = null) -> Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>!
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.ShellFlyout(Bruinet.Maui.Interfaces.IMauiScope<TParent>! scope, Bruinet.Maui.Interfaces.ShellChromeLocators! chrome) -> void
 Bruinet.Maui.Controls.Navigation.ShellFlyout<TParent>.WaitOpen(bool? expected = true, int? timeoutMs = null) -> bool
@@ -630,7 +630,7 @@ Bruinet.Maui.Controls.Selection.Picker<TScope>.AssertTitle(string? expected, str
 Bruinet.Maui.Controls.Selection.Picker<TScope>.CloseFlyout(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Selection.Picker<TScope>.GetDropdownItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
 Bruinet.Maui.Controls.Selection.Picker<TScope>.GetTitle(int? timeoutMs = null) -> string?
-Bruinet.Maui.Controls.Selection.Picker<TScope>.IsFlyoutOpen() -> bool?
+Bruinet.Maui.Controls.Selection.Picker<TScope>.IsFlyoutOpen() -> bool
 Bruinet.Maui.Controls.Selection.Picker<TScope>.OpenFlyout(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Selection.Picker<TScope>.Picker(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Selection.Picker<TScope>.Picker(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
@@ -676,7 +676,7 @@ Bruinet.Maui.Controls.Text.Entry<TScope>.Entry(Bruinet.Maui.Interfaces.IMauiScop
 Bruinet.Maui.Controls.Text.Entry<TScope>.Entry(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Text.Entry<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
 Bruinet.Maui.Controls.Text.Entry<TScope>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Maui.Controls.Text.Entry<TScope>.IsReadOnly() -> bool?
+Bruinet.Maui.Controls.Text.Entry<TScope>.IsReadOnly() -> bool
 Bruinet.Maui.Controls.Text.Entry<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Text.Entry<TScope>.Submit(int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Text.Entry<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
@@ -701,7 +701,7 @@ Bruinet.Maui.Controls.Toggle.RadioButton<TScope>
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.AssertNotSelected(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.AssertSelected(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.AssertSelected(string? message, int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.IsSelected() -> bool?
+Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.IsSelected() -> bool
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.RadioButton(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Toggle.RadioButton<TScope>.Select(int? timeoutMs = null) -> TScope
@@ -710,7 +710,7 @@ Bruinet.Maui.Controls.Toggle.Switch<TScope>
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.AssertOff(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.AssertOn(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.AssertOn(string? message, int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Toggle.Switch<TScope>.IsOn() -> bool?
+Bruinet.Maui.Controls.Toggle.Switch<TScope>.IsOn() -> bool
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.SetOn(bool? on, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.Switch(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Toggle.Switch<TScope>.Switch(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void

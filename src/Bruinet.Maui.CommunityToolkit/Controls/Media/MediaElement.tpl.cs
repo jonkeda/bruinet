@@ -105,7 +105,7 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     #region Shortcuts
 
     /// <summary>Whether media is playing, as the play/pause button shows it.</summary>
-    protected bool? IsPlayingShortcut() => PlayPauseButton.IsPlaying();
+    protected bool IsPlayingShortcut() => PlayPauseButton.IsPlaying();
 
     /// <summary>Pauses playback. No-op when not playing.</summary>
     protected MediaElement<TScope> PauseShortcut(int? timeoutMs = null) => PlayPauseButton.Pause(timeoutMs);

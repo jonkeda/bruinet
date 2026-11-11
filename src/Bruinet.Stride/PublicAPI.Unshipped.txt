@@ -175,7 +175,7 @@ Bruinet.Stride.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruine
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
-Bruinet.Stride.Controls.ClickableControlBase<TScope>.IsClickable() -> bool?
+Bruinet.Stride.Controls.ClickableControlBase<TScope>.IsClickable() -> bool
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
@@ -225,7 +225,7 @@ Bruinet.Stride.Controls.Text.EditText<TScope>.EditText(Bruinet.Stride.Interfaces
 Bruinet.Stride.Controls.Text.EditText<TScope>.EditText(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, string! automationId) -> void
 Bruinet.Stride.Controls.Text.EditText<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.Text.EditText<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
-Bruinet.Stride.Controls.Text.EditText<TScope>.IsReadOnly() -> bool?
+Bruinet.Stride.Controls.Text.EditText<TScope>.IsReadOnly() -> bool
 Bruinet.Stride.Controls.Text.EditText<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.Text.EditText<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Stride.Controls.Text.EditText<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
@@ -235,7 +235,7 @@ Bruinet.Stride.Controls.Toggle.ToggleButton<TScope>.ToggleButton(Bruinet.Stride.
 Bruinet.Stride.Controls.ToggleControlBase<TScope>
 Bruinet.Stride.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
-Bruinet.Stride.Controls.ToggleControlBase<TScope>.IsChecked() -> bool?
+Bruinet.Stride.Controls.ToggleControlBase<TScope>.IsChecked() -> bool
 Bruinet.Stride.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
 Bruinet.Stride.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.Stride.Interfaces.IStrideScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -260,8 +260,8 @@ Bruinet.Stride.Controls.ViewBase<TScope>.Exists() -> bool
 Bruinet.Stride.Controls.ViewBase<TScope>.FindElement() -> Bruinet.Stride.Interfaces.IStrideElement!
 Bruinet.Stride.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
 Bruinet.Stride.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
-Bruinet.Stride.Controls.ViewBase<TScope>.IsEnabled() -> bool?
-Bruinet.Stride.Controls.ViewBase<TScope>.IsVisible() -> bool?
+Bruinet.Stride.Controls.ViewBase<TScope>.IsEnabled() -> bool
+Bruinet.Stride.Controls.ViewBase<TScope>.IsVisible() -> bool
 Bruinet.Stride.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
 Bruinet.Stride.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
 Bruinet.Stride.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.Stride.Interfaces.IStrideElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope

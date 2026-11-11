@@ -27,7 +27,7 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsEnabled()
+    public bool IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
@@ -61,7 +61,7 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
     #region Refreshing (IsRefreshing / WaitRefreshing / AssertRefreshing)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsRefreshing()
+    public bool IsRefreshing()
     {
         return IsRefreshingCore(TryFindElement()) == true;
     }

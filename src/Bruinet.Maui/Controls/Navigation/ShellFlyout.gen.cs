@@ -24,7 +24,7 @@ public partial class ShellFlyout<TParent> : CollectionObjectBase<TParent, ShellF
     #region Open (IsOpen / WaitOpen / AssertOpen)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsOpen()
+    public bool IsOpen()
     {
         return IsOpenCore(TryFindElement()) == true;
     }

@@ -10,9 +10,9 @@ public interface IToggleControlObject<TScope> : IControlObject<TScope>
 {
     /// <summary>
     /// Check if the control is in checked/on state.
-    /// Returns null if element not found.
+    /// False when the element is not found.
     /// </summary>
-    bool? IsChecked();
+    bool IsChecked();
 
     /// <summary>
     /// Toggle the control state.

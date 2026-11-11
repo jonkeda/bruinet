@@ -92,7 +92,7 @@ public abstract partial class ClickableItemBase<TCollection, TSelf> : ItemObject
     #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
-    public bool? IsEnabled()
+    public bool IsEnabled()
     {
         return IsEnabledCore(TryFindElement()) == true;
     }
