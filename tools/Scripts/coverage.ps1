@@ -69,7 +69,14 @@ param(
         'Bruinet.Narrator.Tests',
         'Bruinet.Recording.Tests',
         'Bruinet.Scraper.Tests',
-        'Bruinet.Uia.Tests'
+        'Bruinet.Uia.Tests',
+        'Bruinet.Contracts.Tests',
+        'Bruinet.Logging.Tests',
+        'Bruinet.Mocking.Http.Tests',
+        'Bruinet.Traits.Tests',
+        'MauiHeadless.Tests',
+        'MauiHeadless.Tests.MSTest',
+        'MauiHeadless.Tests.NUnit'
     ),
     [switch] $Headless,
     [switch] $Browser,
@@ -82,7 +89,7 @@ $ErrorActionPreference = 'Stop'
 $root = Resolve-Path (Join-Path $PSScriptRoot '../..')
 Set-Location $root
 
-if ($Browser) { $Projects += 'Bruinet.Html.UITests', 'Bruinet.Blazor.UITests' }
+if ($Browser) { $Projects += 'Bruinet.Html.UITests', 'Bruinet.Blazor.UITests', 'Bruinet.Bdd.Workspace.UITests' }
 if ($Desktop) { $Projects += 'Bruinet.Wpf.UITests', 'Bruinet.WinForms.UITests' }
 
 # A rerun starts clean: old coverage files would be merged into the new report.

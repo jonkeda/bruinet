@@ -27,6 +27,47 @@ public sealed class SolutionTests
         Assert.True(missing.Count == 0, $"Add these projects to Bruinet.sln, in their area's folder: {string.Join(", ", missing)}");
     }
 
+    // The projects under tests/ that no run takes, and why (review 08, finding 8).
+    private static readonly Dictionary<string, string> NotRun = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Bruinet.ControlContracts"] = "a library: the contracts, bound by the stacks' test projects",
+        ["Bruinet.ControlContracts.Html"] = "a library: the Html bindings",
+        ["Bruinet.ControlContracts.Html.Site"] = "the Html bindings' pages",
+        ["Bruinet.Uia.TestHost"] = "the app Bruinet.Uia.Tests drives",
+        ["Bruinet.Scraper.TestSite"] = "the site Bruinet.Scraper.Tests scrapes",
+        ["Bruinet.Maui.UITests"] = "a device suite: test-maui-headless.ps1 runs it on MauiHeadless",
+        ["Bruinet.Maui.UITests.Mobile"] = "the device suite on Android or iOS: run-android-tests.ps1",
+        ["Bruinet.NativeAndroid.UITests"] = "a device suite: a phone or emulator",
+        ["Bruinet.Stride.UITests"] = "a game suite: the Stride sample running",
+        ["Bruinet.Bdd.VisualStudio.UITests"] = "Visual Studio's own suite: an experimental instance",
+        ["Bruinet.Presenter.Bdd.Tests"] = "drives the Presenter app; its cloud voice scenario reads this machine's secrets",
+    };
+
+    /// <summary>
+    /// Every project under tests/ is run by coverage.ps1 (or its -Browser and -Desktop switches, or
+    /// test-maui-headless.ps1), or named above with why not: a new project is not left out unnoticed (review 08,
+    /// finding 8).
+    /// </summary>
+    [Fact]
+    public void EveryTestProject_IsRun_OrNamedAsNotRun()
+    {
+        var root = FindRepositoryRoot();
+        Assert.NotNull(root);
+        var scripts = File.ReadAllText(Path.Combine(root, "tools", "Scripts", "coverage.ps1"))
+                      + File.ReadAllText(Path.Combine(root, "tools", "Scripts", "test-maui-headless.ps1"));
+
+        var unrun = Directory.GetDirectories(Path.Combine(root, "tests"))
+            .Select(Path.GetFileName)
+            .OfType<string>()
+            .Where(name => File.Exists(Path.Combine(root, "tests", name, name + ".csproj")))
+            .Where(name => !NotRun.ContainsKey(name) && !scripts.Contains($"'{name}'", StringComparison.Ordinal))
+            .Order()
+            .ToList();
+
+        Assert.True(unrun.Count == 0,
+            $"No script runs these test projects: {string.Join(", ", unrun)}. Add each to coverage.ps1's list, or to NotRun with why.");
+    }
+
     /// <summary>
     /// Every stack is on the call model (AD-010): the first model's project, <c>Bruinet.Core.Legacy</c>,
     /// was deleted when WPF, WinForms and Stride moved (2026-11-10), and nothing brings it back.
