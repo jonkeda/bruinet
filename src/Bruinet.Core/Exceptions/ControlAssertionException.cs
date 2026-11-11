@@ -19,7 +19,7 @@ public class ControlAssertionException : BruinetException
     public object? Actual { get; }
 
     /// <summary>The locator of the control asserted on, when the caller supplied one.</summary>
-    public Locator? Locator { get; }
+    public Locator? Locator { get; init; }
 
     public ControlAssertionException(string message) : base(message) { }
 

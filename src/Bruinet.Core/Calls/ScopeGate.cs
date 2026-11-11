@@ -40,12 +40,16 @@ public static class ScopeGate
     /// <param name="caller">The public member.</param>
     /// <param name="subject">"control 'AutomationId:X'" or "container 'AutomationId:Y'".</param>
     /// <param name="budgetMs">The call's budget.</param>
-    public static ScopeNotReadyException NotReady(ScopeReadiness readiness, string caller, string subject, int budgetMs)
+    /// <param name="locator">The control's locator, kept on the exception for a tool to read whole.</param>
+    public static ScopeNotReadyException NotReady(ScopeReadiness readiness, string caller, string subject, int budgetMs, Bruinet.Core.Locators.Locator? locator = null)
         => new(readiness,
             $"Scope '{readiness.ScopeName}' did not become ready for {caller} on {subject} within {budgetMs} ms. " +
             $"Last readiness state: {readiness.State}" +
             (readiness.Detail is null ? "." : $" ({readiness.Detail}).") +
-            (Hint(readiness.State) is { } hint ? " " + hint : string.Empty));
+            (Hint(readiness.State) is { } hint ? " " + hint : string.Empty))
+        {
+            Locator = locator,
+        };
 
     // One closing line per kind of not ready: what to look at next (review 01, proposal 6).
     private static string? Hint(ScopeReadinessState state) => state switch

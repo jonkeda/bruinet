@@ -132,7 +132,7 @@ public class MauiTestContext : IMauiTestContext, Bruinet.Core.Recording.IRecorda
 
     /// <inheritdoc />
     public ElementNotFoundException DescribeMiss(Locator locator)
-        => new($"Element not found with locator: {locator}");
+        => new(locator, $"Element not found with locator: {locator}");
 
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator)

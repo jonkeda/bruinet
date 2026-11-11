@@ -121,6 +121,7 @@ Bruinet.Core.Calls.ControlCalls<TElement>.Wait(System.Func<bool>! operation, int
 Bruinet.Core.Calls.ControlCalls<TElement>.WaitForValue(System.Func<TElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs, string! caller) -> bool
 Bruinet.Core.Calls.ControlCalls<TElement>.WaitWithElement(System.Func<TElement!, bool>! operation, int? timeoutMs, string! caller) -> bool
 Bruinet.Core.Calls.ControlCalls<TElement>.WaitWithOptionalElement(System.Func<TElement?, bool>! operation, int? timeoutMs, string! caller, System.Func<TElement?>? resolve = null) -> bool
+Bruinet.Core.Calls.ControlMembers
 Bruinet.Core.Calls.Deadline
 Bruinet.Core.Calls.Deadline.BudgetMs.get -> int
 Bruinet.Core.Calls.Deadline.Deadline() -> void
@@ -138,6 +139,7 @@ Bruinet.Core.Calls.IControlHost<TElement>.InstanceKey(TElement! element) -> stri
 Bruinet.Core.Calls.IControlHost<TElement>.IsVisible(TElement! element) -> bool?
 Bruinet.Core.Calls.IControlHost<TElement>.Locate(Bruinet.Core.Calls.AttemptContext! attempt) -> TElement?
 Bruinet.Core.Calls.IControlHost<TElement>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.Core.Calls.IControlHost<TElement>.MemberName.get -> string?
 Bruinet.Core.Calls.IControlHost<TElement>.NewCall() -> Bruinet.Core.Calls.ControlCall!
 Bruinet.Core.Calls.IControlHost<TElement>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 Bruinet.Core.Calls.IControlHost<TElement>.Noun.get -> string!
@@ -145,8 +147,10 @@ Bruinet.Core.Calls.IControlHost<TElement>.OnStale() -> void
 Bruinet.Core.Calls.IControlHost<TElement>.PollingIntervalMs.get -> int
 Bruinet.Core.Calls.IControlHost<TElement>.ProbeScope() -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Core.Calls.IControlHost<TElement>.ScopeIsAbsent() -> bool
+Bruinet.Core.Calls.IControlHost<TElement>.ScopeName.get -> string?
 Bruinet.Core.Calls.IControlHost<TElement>.ScrollIntoView(TElement! element, int timeoutMs) -> void
 Bruinet.Core.Calls.IControlHost<TElement>.ScrollKey(TElement! element) -> string!
+Bruinet.Core.Calls.IControlHost<TElement>.ShownControls.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Core.Calls.IControlHost<TElement>.TryFind() -> TElement?
 Bruinet.Core.Calls.NearMissSettings
 Bruinet.Core.Calls.NearMissSettings.BudgetShare.get -> double
@@ -208,6 +212,7 @@ Bruinet.Core.Calls.ObservationLog.Summary() -> string!
 Bruinet.Core.Calls.ObservationLog.ToException(Bruinet.Core.Locators.Locator? locator, int budgetMs, System.Func<Bruinet.Core.Exceptions.ElementNotFoundException!>! notFound, System.Func<Bruinet.Core.Scopes.ScopeReadiness, System.Exception!>! scopeNotReady) -> System.Exception!
 Bruinet.Core.Calls.ObservationLog.Unexpected(System.Exception! error, string! subject, int budgetMs) -> System.Exception!
 Bruinet.Core.Calls.Poller
+Bruinet.Core.Calls.ReadsInPlace
 Bruinet.Core.Calls.ScopeGate
 Bruinet.Core.Calls.Settle
 Bruinet.Core.Collections.CollectionObjectBase<TContext, TElement, TParentScope, TSelf, TItem>
@@ -373,6 +378,9 @@ Bruinet.Core.Diagnostics.PhysicalInputUse.Count.init -> void
 Bruinet.Core.Diagnostics.PhysicalInputUse.PhysicalInputUse(string! CallSite, string! Replacement, int Count) -> void
 Bruinet.Core.Diagnostics.PhysicalInputUse.Replacement.get -> string!
 Bruinet.Core.Diagnostics.PhysicalInputUse.Replacement.init -> void
+Bruinet.Core.Exceptions.ActionRefusedException
+Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message) -> void
+Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message, System.Exception! innerException) -> void
 Bruinet.Core.Exceptions.AppUnavailableException
 Bruinet.Core.Exceptions.AppUnavailableException.AppUnavailableException(string! detail, System.Exception? platformError = null) -> void
 Bruinet.Core.Exceptions.BruinetException
@@ -386,9 +394,11 @@ Bruinet.Core.Exceptions.ControlAssertionException.ControlAssertionException(stri
 Bruinet.Core.Exceptions.ControlAssertionException.ControlAssertionException(string! message, object? expected, object? actual, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Core.Exceptions.ControlAssertionException.Expected.get -> object?
 Bruinet.Core.Exceptions.ControlAssertionException.Locator.get -> Bruinet.Core.Locators.Locator?
+Bruinet.Core.Exceptions.ControlAssertionException.Locator.init -> void
 Bruinet.Core.Exceptions.ElementNotFoundException
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, int timeoutMs) -> void
+Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, string! message) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(string! message, System.Exception! innerException) -> void
 Bruinet.Core.Exceptions.ElementNotFoundException.Locator.get -> Bruinet.Core.Locators.Locator?
@@ -416,11 +426,15 @@ Bruinet.Core.Exceptions.PhysicalInputRefusedException.Replacement.get -> string!
 Bruinet.Core.Exceptions.RouteUnavailableException
 Bruinet.Core.Exceptions.RouteUnavailableException.RouteUnavailableException(string! message) -> void
 Bruinet.Core.Exceptions.ScopeNotReadyException
+Bruinet.Core.Exceptions.ScopeNotReadyException.Locator.get -> Bruinet.Core.Locators.Locator?
+Bruinet.Core.Exceptions.ScopeNotReadyException.Locator.init -> void
 Bruinet.Core.Exceptions.ScopeNotReadyException.Readiness.get -> Bruinet.Core.Scopes.ScopeReadiness
 Bruinet.Core.Exceptions.ScopeNotReadyException.ScopeNotReadyException(Bruinet.Core.Scopes.ScopeReadiness readiness, string! message) -> void
 Bruinet.Core.Exceptions.StaleElementException
 Bruinet.Core.Exceptions.StaleElementException.Locator.get -> Bruinet.Core.Locators.Locator?
 Bruinet.Core.Exceptions.StaleElementException.StaleElementException(Bruinet.Core.Locators.Locator? locator = null, System.Exception? platformError = null, string? detail = null) -> void
+Bruinet.Core.Exceptions.UiSetupException
+Bruinet.Core.Exceptions.UiSetupException.UiSetupException(System.Exception! cause) -> void
 Bruinet.Core.Exceptions.WaitTimeoutException
 Bruinet.Core.Exceptions.WaitTimeoutException.Condition.get -> string?
 Bruinet.Core.Exceptions.WaitTimeoutException.TimeoutMs.get -> int
@@ -1068,6 +1082,8 @@ static Bruinet.Core.Calls.AttemptMemo.Remember<T>(object! subject, string! quest
 static Bruinet.Core.Calls.CallBudget.RemainingOr(int outsideACallMs) -> int
 static Bruinet.Core.Calls.CallBudget.Within(int windowMs) -> int
 static Bruinet.Core.Calls.Confirmer.Run<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int budgetMs, int pollingIntervalMs) -> Bruinet.Core.Calls.Confirmation<T>
+static Bruinet.Core.Calls.ControlMembers.NameOf(object? page, Bruinet.Core.Locators.Locator! locator) -> string?
+static Bruinet.Core.Calls.ControlMembers.ShownOf(object? page, int most = 12, System.TimeSpan? budget = null) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Core.Calls.Deadline.In(int milliseconds) -> Bruinet.Core.Calls.Deadline
 static Bruinet.Core.Calls.FirstOutcome.Wait(Bruinet.Core.Calls.ControlCall! call, System.Func<Bruinet.Core.Scopes.ScopeReadiness>! appReadiness, System.Func<bool>![]! outcomes, int budgetMs, int animationMs, int pollingIntervalMs) -> int
 static Bruinet.Core.Calls.NearMissSettings.Default.get -> Bruinet.Core.Calls.NearMissSettings!
@@ -1085,9 +1101,11 @@ static Bruinet.Core.Calls.Observation.ScopeNotReady(Bruinet.Core.Scopes.ScopeRea
 static Bruinet.Core.Calls.Observation.Stale(Bruinet.Core.Exceptions.StaleElementException! error, string? instanceKey) -> Bruinet.Core.Calls.Observation
 static Bruinet.Core.Calls.Poller.IsFatal(System.Exception! error) -> bool
 static Bruinet.Core.Calls.Poller.Until(System.Func<Bruinet.Core.Calls.AttemptContext!, Bruinet.Core.Calls.Observation>! attempt, Bruinet.Core.Calls.AttemptContext! context, int pollingIntervalMs, System.Func<Bruinet.Core.Calls.Observation, bool>? stop = null) -> bool
+static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
+static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
 static Bruinet.Core.Calls.ScopeGate.Check(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Calls.Observation?
 static Bruinet.Core.Calls.ScopeGate.Misconfigured(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
-static Bruinet.Core.Calls.ScopeGate.NotReady(Bruinet.Core.Scopes.ScopeReadiness readiness, string! caller, string! subject, int budgetMs) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
+static Bruinet.Core.Calls.ScopeGate.NotReady(Bruinet.Core.Scopes.ScopeReadiness readiness, string! caller, string! subject, int budgetMs, Bruinet.Core.Locators.Locator? locator = null) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
 static Bruinet.Core.Calls.Settle.Until(System.Func<bool>! condition, int windowMs, int pollingIntervalMs = 50) -> bool
 static Bruinet.Core.Collections.ItemKey.AutomationId(string! automationId) -> Bruinet.Core.Collections.ItemKey
 static Bruinet.Core.Collections.ItemKey.Logical(int index) -> Bruinet.Core.Collections.ItemKey
@@ -1205,18 +1223,3 @@ virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
-Bruinet.Core.Calls.ReadsInPlace
-static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
-static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
-Bruinet.Core.Exceptions.UiSetupException
-Bruinet.Core.Exceptions.UiSetupException.UiSetupException(System.Exception! cause) -> void
-Bruinet.Core.Exceptions.ActionRefusedException
-Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message) -> void
-Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message, System.Exception! innerException) -> void
-Bruinet.Core.Calls.IControlHost<TElement>.ScopeName.get -> string?
-Bruinet.Core.Exceptions.ElementNotFoundException.ElementNotFoundException(Bruinet.Core.Locators.Locator! locator, string! message) -> void
-Bruinet.Core.Calls.ControlMembers
-static Bruinet.Core.Calls.ControlMembers.NameOf(object? page, Bruinet.Core.Locators.Locator! locator) -> string?
-Bruinet.Core.Calls.IControlHost<TElement>.MemberName.get -> string?
-static Bruinet.Core.Calls.ControlMembers.ShownOf(object? page, int most = 12, System.TimeSpan? budget = null) -> System.Collections.Generic.IReadOnlyList<string!>!
-Bruinet.Core.Calls.IControlHost<TElement>.ShownControls.get -> System.Collections.Generic.IReadOnlyList<string!>!

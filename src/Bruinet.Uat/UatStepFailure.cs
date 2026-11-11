@@ -139,9 +139,9 @@ internal static partial class UatStepFailure
     }
 
     /// <summary>The control's locator: an exception's own, else the <c>Locator: ...</c> a control's message names it by.</summary>
+    // From the exceptions themselves, whole: a regex over the message cut a selector at its first space (review 01).
     internal static string? Locate(IReadOnlyList<Exception> exceptions)
-        => exceptions.Select(Locator).FirstOrDefault(locator => locator is not null)
-            ?? exceptions.Select(exception => LocatorInMessage().Match(exception.Message)).FirstOrDefault(match => match.Success)?.Groups[1].Value;
+        => exceptions.Select(Locator).FirstOrDefault(locator => locator is not null);
 
     private static string? Locator(Exception exception) => exception switch
     {
@@ -149,6 +149,7 @@ internal static partial class UatStepFailure
         ElementNotFoundException notFound => notFound.Locator?.ToString(),
         ElementNotReadyException notReady => notReady.Locator.ToString(),
         StaleElementException stale => stale.Locator?.ToString(),
+        ScopeNotReadyException scope => scope.Locator?.ToString(),
         _ => null,
     };
 
@@ -212,9 +213,6 @@ internal static partial class UatStepFailure
         IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
         _ => value.ToString(),
     };
-
-    [GeneratedRegex(@"Locator: (\S+)")]
-    private static partial Regex LocatorInMessage();
 
     // <Method>d__3 (a state machine) or <Method>b__0_0 (a lambda): the method's own name.
     [GeneratedRegex(@"^<([^>]+)>")]

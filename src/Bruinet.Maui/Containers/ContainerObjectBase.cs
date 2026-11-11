@@ -248,7 +248,7 @@ public abstract class RootedScopeBase<TSelf, TSetResult>
 
     /// <inheritdoc />
     public virtual ElementNotFoundException DescribeMiss(Locator locator)
-        => new($"Element not found within {ScopeName}. Child locator: {locator}");
+        => new(locator, $"Element not found within {ScopeName}. Child locator: {locator}");
 
     /// <inheritdoc />
     public virtual IReadOnlyList<IMauiElement> FindElements(Locator locator)

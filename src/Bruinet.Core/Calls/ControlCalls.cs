@@ -105,7 +105,7 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
             host.Locator,
             budgetMs,
             () => NotFound(caller, budgetMs),
-            readiness => ScopeGate.NotReady(readiness, caller, Named(), budgetMs));
+            readiness => ScopeGate.NotReady(readiness, caller, Named(), budgetMs, host.Locator));
 
     // "Click on control 'Css:#save' of page 'CounterPage': not found within 2000 ms.": the call, the control, its page
     // and the time waited, as the scope's failure says it (review 01, finding 2). A stack's own detail follows.
@@ -342,14 +342,15 @@ public sealed class ControlCalls<TElement>(IControlHost<TElement> host)
                 return ScopeGate.Check(readiness)!.Value;
             }
 
-            return Compare(getActual(find()), expected, compare, message, null);
+            return Compare(getActual(find()), expected, compare, message, null, host.Locator);
         });
     }
 
-    private static Observation Compare<T>(T? actual, T? expected, Func<T?, T?, bool> compare, string? message, string? key)
+    // The locator on the exception itself, so a tool reads it whole, not from the message (review 01, finding 6).
+    private static Observation Compare<T>(T? actual, T? expected, Func<T?, T?, bool> compare, string? message, string? key, Locator? locator = null)
         => compare(actual, expected)
             ? Observation.Done()
-            : Observation.Mismatch(new ControlAssertionException(message ?? "Assert exception", expected, actual), key);
+            : Observation.Mismatch(new ControlAssertionException(message ?? "Assert exception", expected, actual) { Locator = locator }, key);
 
     private void AssertPolling(string caller, int? timeoutMs, Func<AttemptContext, Observation> attemptOnce)
     {

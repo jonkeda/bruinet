@@ -36,10 +36,12 @@ public sealed class UatStepFailureTests
     }
 
     [Fact]
-    public void TheLocator_IsTheExceptionsOwn_ElseTheOneItsMessageNames()
+    public void TheLocator_IsTheExceptionsOwn_WholeAndNeverReadFromItsMessage()
     {
+        var css = Bruinet.Core.Locators.Locator.ByCss("li[data-row='2'] .status");
         Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new ControlAssertionException("Expected Text to be 'Done'.", "Done", "Overdue", Bruinet.Core.Locators.Locator.ByAutomationId("StatusText"))]));
-        Assert.Equal("AutomationId:StatusText", (string?)UatStepFailure.Locate([new InvalidOperationException("Failed to run 'AssertRowStatus' on control 'Todos': Expected Text to be 'Done'. Locator: AutomationId:StatusText\r\nActual: 'Overdue'.")]));
+        Assert.Equal(css.ToString(), (string?)UatStepFailure.Locate([new InvalidOperationException("Failed to run 'AssertRowStatus' on control 'Todos'."), new ControlAssertionException("Expected Text to be 'Done'.", "Done", "Overdue") { Locator = css }]));
+        Assert.Null(UatStepFailure.Locate([new InvalidOperationException("Failed: Expected Text to be 'Done'. Locator: AutomationId:StatusText")]));
         Assert.Null(UatStepFailure.Locate([new FormatException("Not a date.")]));
     }
 

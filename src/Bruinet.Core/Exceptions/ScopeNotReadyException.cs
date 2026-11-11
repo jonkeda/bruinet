@@ -19,4 +19,8 @@ public sealed class ScopeNotReadyException : BruinetException
 
     /// <summary>The last readiness answer: which scope, and what it found.</summary>
     public ScopeReadiness Readiness { get; }
+
+    /// <summary>The control or container whose call waited for the scope, when the call knows it.</summary>
+    public Bruinet.Core.Locators.Locator? Locator { get; init; }
 }
+
