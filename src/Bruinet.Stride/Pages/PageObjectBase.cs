@@ -186,7 +186,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IStridePage<TSelf>
             {
                 var actual = GetTitle();
                 return new ControlAssertionException(
-                    message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
+                    message ?? $"Expected page title '{expected}'.", expected, actual);
             });
     }
 

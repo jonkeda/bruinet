@@ -74,7 +74,7 @@ public abstract class ContainerObjectBase<TContext, TElement, TParentScope, TSco
 
         return TryFindRootElement() is { } root
             ? ProbeContentReadiness(root)
-            : new ScopeReadiness(ScopeName, ScopeReadinessState.MissingRoot);
+            : new ScopeReadiness(ScopeName, ScopeReadinessState.MissingRoot, $"'{Locator}' is not there");
     }
 
     /// <summary>Whether this scope is ready now. One look.</summary>

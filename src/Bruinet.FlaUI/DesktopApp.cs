@@ -124,7 +124,7 @@ public sealed class DesktopApp : IDisposable
         var automation = new UIA3Automation();
         var application = Application.Attach(process);
         var main = application.GetMainWindow(automation, TimeSpan.FromSeconds(30))
-            ?? throw new InvalidOperationException("Failed to get main window");
+            ?? throw new InvalidOperationException($"The process '{process.ProcessName}' ({process.Id}) showed no main window within 30 s.");
         return new DesktopApp(automation, application, new AppWindow(automation, main), null);
     }
 

@@ -49,6 +49,12 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
     /// <summary>How this page reads <c>data-busy</c>. Html pages: optional; Blazor pages: required.</summary>
     protected virtual BusySignal BusySignal => BusySignal.Optional;
 
+    // What a page that is not loaded was waiting for: its address, when it has one and the browser is elsewhere.
+    private string NotLoadedDetail()
+        => Url is { } expected && !CompareUrl()
+            ? $"the address is {_context.CurrentUrl}, not {expected}"
+            : "the document has not finished loading";
+
     protected virtual bool CompareUrl()
     {
         if (Url is null)
@@ -113,7 +119,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
     {
         if (!IsLoaded())
         {
-            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded);
+            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded, NotLoadedDetail());
         }
 
         if (BusySignal == BusySignal.Ignore)
@@ -245,7 +251,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
             {
                 var actual = GetTitle();
                 return new ControlAssertionException(
-                    message ?? $"Expected page title '{expected}' but got '{actual ?? "(null)"}'.", expected, actual);
+                    message ?? $"Expected page title '{expected}'.", expected, actual);
             });
     }
 

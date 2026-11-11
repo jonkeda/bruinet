@@ -77,7 +77,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T35 One typed navigation failure on both Html heads; bUnit refuses a foreign host; `PageLoadException` thrown or deleted. R01 P7.
 - [x] R2-T36 Locator carried on `ControlAssertionException` and `ScopeNotReadyException`; regex in `UatStepFailure` goes. R01 P8.
 - [x] R2-T37 `IsFramework` counts `Bruinet.Uat` as framework; `frames` names the page object member. R01 P9.
-- [ ] R2-T38 Wording tidy. R01 P10.
+- [x] R2-T38 Wording tidy. R01 P10.
 
 ## Phase 4: heads agree, contracts bound
 

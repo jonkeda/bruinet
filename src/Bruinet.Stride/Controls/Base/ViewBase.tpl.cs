@@ -281,7 +281,7 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
     {
         if (IsEnabledCore(element) != true)
         {
-            throw new ElementNotReadyException(Locator, NotReadyReason.Disabled, "not enabled");
+            throw new ElementNotReadyException(Locator, NotReadyReason.Disabled);
         }
     }
 
