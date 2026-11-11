@@ -62,6 +62,7 @@ internal static class GenerateCommand
         var generator = BuildGenerator(members);
         var failed = 0;
         var warnings = 0;
+        var written = 0;
 
         foreach (var inputFile in inputFiles)
         {
@@ -69,7 +70,6 @@ internal static class GenerateCommand
 
             try
             {
-                output.WriteLine($"Analyzing {inputFile}...");
 
                 var options = new GeneratorOptions
                 {
@@ -78,13 +78,17 @@ internal static class GenerateCommand
                     IncludeGeneratedHeader = true,
                 };
 
-                generator.GenerateToFile(inputFile, outputFile, options);
-                output.WriteLine($"Successfully generated: {outputFile}");
+                // Progress and warnings on stderr: stdout is the answer (D3), the files written.
+                if (generator.GenerateToFile(inputFile, outputFile, options))
+                {
+                    written++;
+                    output.WriteLine(outputFile);
+                }
 
                 foreach (var warning in generator.Warnings)
                 {
                     warnings++;
-                    output.WriteLine($"Warning: {inputFile}: {warning}");
+                    errors.WriteLine($"Warning: {inputFile}: {warning}");
                 }
             }
             catch (InvalidOperationException ex)
@@ -94,18 +98,17 @@ internal static class GenerateCommand
                 failed++;
                 errors.WriteLine($"Error processing {inputFile}: {ex.Message}");
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException or NotSupportedException)
             {
                 failed++;
                 errors.WriteLine($"Error processing {inputFile}: {ex.Message}");
-                if (!string.IsNullOrEmpty(ex.StackTrace))
-                    errors.WriteLine(ex.StackTrace);
             }
         }
 
+        errors.WriteLine($"{written} of {inputFiles.Count} file(s) changed.");
         if (warnings > 0)
         {
-            output.WriteLine($"{warnings} warning(s). Generation continued; see the lines starting 'Warning:'.");
+            errors.WriteLine($"{warnings} warning(s). Generation continued; see the lines starting 'Warning:'.");
         }
 
         if (failed > 0)

@@ -173,7 +173,8 @@ internal static class VoiceCommand
             }
         }
 
-        return problems > 0 ? 2 : missing.Count > 0 ? 1 : 0;
+        // A script with errors is something found, as a failing check is (D3): 1, not "could not run".
+        return problems > 0 || missing.Count > 0 ? 1 : 0;
     }
 
     private static IEnumerable<string> Scripts(string folder)

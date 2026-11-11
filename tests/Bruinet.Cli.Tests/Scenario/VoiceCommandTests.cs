@@ -61,7 +61,7 @@ public sealed class VoiceCommandTests : IDisposable
 
         var (exit, _, errors) = await Run(ClipLibraryMode.Count, prune: true);
 
-        Assert.Equal(2, exit);
+        Assert.Equal(1, exit);
         Assert.Contains("Nothing pruned", errors, StringComparison.Ordinal);
         Assert.True(File.Exists(kept));
     }

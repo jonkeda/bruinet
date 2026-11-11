@@ -42,5 +42,4 @@
 2 src/Bruinet.Uia.Contracts/BruinetAutomationPatternHandler.cs
 1 src/Bruinet.Uia.Contracts/BruinetPatternRegistration.cs
 3 src/Bruinet.Uia.Contracts/Provider/BridgeTargetProvider.cs
-1 tools/Bruinet.Cli/Generate/GenerateCommand.cs
 1 tools/Bruinet.Cli/Generate/Generation/CodeFormatter.cs

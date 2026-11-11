@@ -67,10 +67,16 @@ internal static class BruinetCommand
             return 2;
         }
 
-        return await parsed.InvokeAsync(new InvocationConfiguration { Output = io.Out, Error = io.Error }, cancellationToken).ConfigureAwait(false);
+        // The tool's own handler, not System.CommandLine's, which exits 1 on an exception: 1 means "found" (D3).
+        return await parsed.InvokeAsync(new InvocationConfiguration { Output = io.Out, Error = io.Error, EnableDefaultExceptionHandler = false }, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Runs a command's work: a problem it can name is a message and exit 2, not a stack trace.</summary>
+    /// <summary>
+    /// The exit codes every command keeps (D3): 0 ran and found nothing, 1 ran and found something, 2 could not run, 130
+    /// stopped by Ctrl+C. Anything a command throws is "could not run": one line on stderr, the stack trace only with
+    /// <c>BRUINET_DEBUG=1</c>.
+    /// </summary>
     public static void Action(this Command command, CliIo io, Func<ParseResult, CancellationToken, Task<int>> action) =>
         command.SetAction(async (parsed, cancellationToken) =>
         {
@@ -80,25 +86,43 @@ internal static class BruinetCommand
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
-                await io.Error.WriteLineAsync("Stopped.").ConfigureAwait(false);
-                return 1;
+                await io.Error.WriteLineAsync("bruinet: stopped.").ConfigureAwait(false);
+                return Stopped;
             }
-            catch (PlaywrightException e)
+            catch (Exception e) when (e is PlaywrightException or TimeoutException)
             {
-                await io.Error.WriteLineAsync($"The browser could not open the app: {e.Message.ReplaceLineEndings(" ")}").ConfigureAwait(false);
-                return 2;
+                return await CouldNotRun(io, $"the browser could not open the app: {e.Message.ReplaceLineEndings(" ")}", e).ConfigureAwait(false);
             }
-            catch (TimeoutException e)
+            catch (Exception e) when (e is not OutOfMemoryException)
             {
-                await io.Error.WriteLineAsync($"The browser could not open the app: {e.Message.ReplaceLineEndings(" ")}").ConfigureAwait(false);
-                return 2;
-            }
-            catch (Exception e) when (e is ScraperProblem or ToolException or BddWorkspaceException or FormatException or FileNotFoundException or DirectoryNotFoundException or ArgumentException or InvalidOperationException)
-            {
-                await io.Error.WriteLineAsync(e.Message).ConfigureAwait(false);
-                return 2;
+                // The tool's boundary: whatever a command throws ends here as "could not run".
+                return await CouldNotRun(io, Plain(e), e).ConfigureAwait(false);
             }
         });
+
+    /// <summary>The exit code of a command stopped by Ctrl+C, as shells give it.</summary>
+    public const int Stopped = 130;
+
+    // A database, a file or a JSON that failed says so in a sentence; the rest say their own message.
+    private static string Plain(Exception e) => e switch
+    {
+        Microsoft.Data.SqlClient.SqlException sql => $"the database answered: {sql.Message}",
+        System.Text.Json.JsonException json => $"the JSON could not be read: {json.Message}",
+        IOException file => $"a file could not be read or written: {file.Message}",
+        System.ComponentModel.Win32Exception process => $"a program could not be started: {process.Message}",
+        _ => e.Message,
+    };
+
+    private static async Task<int> CouldNotRun(CliIo io, string message, Exception e)
+    {
+        await io.Error.WriteLineAsync($"bruinet: {message.ReplaceLineEndings(" ")}").ConfigureAwait(false);
+        if (Environment.GetEnvironmentVariable("BRUINET_DEBUG") == "1")
+        {
+            await io.Error.WriteLineAsync(e.ToString()).ConfigureAwait(false);
+        }
+
+        return 2;
+    }
 
     /// <summary>Runs a command's work that needs no awaiting.</summary>
     public static void Action(this Command command, CliIo io, Func<ParseResult, int> action) =>

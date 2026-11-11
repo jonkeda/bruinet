@@ -124,7 +124,11 @@ public sealed class ControlObjectGenerator
     /// <param name="inputFilePath">Path to the source file.</param>
     /// <param name="outputFilePath">Path to write the generated file.</param>
     /// <param name="options">Generation options.</param>
-    public void GenerateToFile(string inputFilePath, string outputFilePath, GeneratorOptions options)
+    /// <summary>
+    /// Writes the generated file only when its content changed, compared without line endings, so a run over every
+    /// template leaves the untouched files untouched (review 11, proposal 11). True when it wrote.
+    /// </summary>
+    public bool GenerateToFile(string inputFilePath, string outputFilePath, GeneratorOptions options)
     {
         if (!File.Exists(inputFilePath))
             throw new FileNotFoundException($"Input file not found: {inputFilePath}");
@@ -132,7 +136,14 @@ public sealed class ControlObjectGenerator
         var sourceCode = File.ReadAllText(inputFilePath);
         var generatedCode = Generate(sourceCode, options);
 
+        if (File.Exists(outputFilePath)
+            && string.Equals(File.ReadAllText(outputFilePath).ReplaceLineEndings("\n"), generatedCode.ReplaceLineEndings("\n"), StringComparison.Ordinal))
+        {
+            return false;
+        }
+
         File.WriteAllText(outputFilePath, generatedCode);
+        return true;
     }
 
     /// <summary>
