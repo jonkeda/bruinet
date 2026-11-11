@@ -203,6 +203,49 @@ public static class BddBinder
         return true;
     }
 
+    // " The nearest are 'a', 'b'.": up to three phrases of the step's keyword, closest by edit distance over words, and only
+    // ones near enough to be a typo or a forgotten word (review 01, finding 4). Empty when none is.
+    private static string Nearest(BddCommandCatalog catalog, BddStep step)
+    {
+        var text = Words(step.Text);
+        var nearest = catalog.Patterns
+            .Where(pattern => pattern.Keyword == step.EffectiveKeyword)
+            .Select(pattern => pattern.Phrase)
+            .Distinct(StringComparer.Ordinal)
+            .Select(phrase => (Phrase: phrase, Distance: Distance(text, Words(phrase))))
+            .Where(candidate => candidate.Distance <= Math.Max(2, text.Length / 2))
+            .OrderBy(candidate => candidate.Distance)
+            .ThenBy(candidate => candidate.Phrase, StringComparer.Ordinal)
+            .Take(3)
+            .Select(candidate => $"'{candidate.Phrase}'")
+            .ToList();
+        return nearest.Count == 0 ? string.Empty : $" The nearest are {string.Join(", ", nearest)}.";
+    }
+
+    // A phrase's words, its {parameters} and a step's quoted values read alike as one placeholder word.
+    private static string[] Words(string text)
+        => System.Text.RegularExpressions.Regex.Replace(text, @"\{[^}]*\}|""[^""]*""|'[^']*'", "#")
+            .ToLowerInvariant()
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+    private static int Distance(string[] a, string[] b)
+    {
+        var row = Enumerable.Range(0, b.Length + 1).ToArray();
+        for (var i = 1; i <= a.Length; i++)
+        {
+            var previous = row[0];
+            row[0] = i;
+            for (var j = 1; j <= b.Length; j++)
+            {
+                var kept = row[j];
+                row[j] = Math.Min(Math.Min(row[j] + 1, row[j - 1] + 1), previous + (a[i - 1] == b[j - 1] ? 0 : 1));
+                previous = kept;
+            }
+        }
+
+        return row[b.Length];
+    }
+
     private static IReadOnlyList<string> NamedPhrases(BddCommandCatalog catalog, BddEffectiveStepKeyword keyword)
         => catalog.Patterns
             .Where(pattern => pattern.Keyword == keyword && FirstParameterName(pattern) == UserParameter)
@@ -309,7 +352,7 @@ public static class BddBinder
                     diagnostics.Add(Error(
                         "UATB001",
                         subject.Length == 0
-                            ? $"No command binding matches step '{step.Text}'."
+                            ? $"No command binding matches step '{step.Text}'." + Nearest(catalogs.CatalogFor(app), step)
                             : $"No command binding matches step '{step.Text}'. A step that names {subject} binds only to a phrase declared with {{{UserParameter}}} first; "
                               + (named.Count == 0
                                   ? $"no {step.EffectiveKeyword} phrase is."

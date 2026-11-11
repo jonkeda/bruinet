@@ -142,6 +142,43 @@ public sealed class BddBinderTests
     }
 
     [Fact]
+    public void Bind_AStepWithATypo_NamesTheNearestPhrases()
+    {
+        var document = ParseValid("""
+            # Feature: Unknown
+
+            ## Scenario: A typo
+
+            ```gherkin
+            When I enter "Mia" in Name
+            ```
+            """);
+
+        var result = BddBinder.Bind(document, CreateBasicCatalog());
+
+        var unknown = Assert.Single(result.Diagnostics, x => x.Code == "UATB001");
+        Assert.Contains("The nearest are 'I enter {value} into {control}'", unknown.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Bind_AStepLikeNoPhrase_NamesNone()
+    {
+        var document = ParseValid("""
+            # Feature: Unknown
+
+            ## Scenario: Nothing like it
+
+            ```gherkin
+            When the moon turns purple over the harbour tonight
+            ```
+            """);
+
+        var result = BddBinder.Bind(document, CreateBasicCatalog());
+
+        Assert.DoesNotContain("nearest", Assert.Single(result.Diagnostics, x => x.Code == "UATB001").Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Bind_AmbiguousExactStep_ReturnsDiagnostic()
     {
         var document = ParseValid("""
