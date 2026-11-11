@@ -26,7 +26,7 @@ namespace Bruinet.Maui.AppSupport;
 /// </para>
 /// <para>
 /// <b>Two supported ways to use this.</b> Reference this project and call
-/// <see cref="AddBruinetAutomationHandlers"/>, or copy the <c>Handlers</c> folder and
+/// <see cref="AddBruinetAutomationHandlers(Microsoft.Maui.Hosting.IMauiHandlersCollection)"/>, or copy the <c>Handlers</c> folder and
 /// this file directly into the app under test. Both are expected: the app under test
 /// is not always one you can add a project reference to.
 /// </para>
