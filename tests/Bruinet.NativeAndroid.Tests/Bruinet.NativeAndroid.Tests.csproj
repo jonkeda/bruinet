@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.NativeAndroid\Bruinet.NativeAndroid.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

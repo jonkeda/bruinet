@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Stride\Bruinet.Stride.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
   </ItemGroup>
 
 </Project>

@@ -134,6 +134,9 @@ public sealed class FakeGame
 
     public string? Text(string name) => _elements[name].Text;
 
+    /// <summary>The state the game keeps for <paramref name="name"/>, for a test to set.</summary>
+    public ElementState Element(string name) => _elements[name];
+
     private ElementState State(string target)
     {
         var name = target.StartsWith(StrideElement.KeyPrefix, StringComparison.Ordinal)
