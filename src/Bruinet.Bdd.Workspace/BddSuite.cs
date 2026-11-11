@@ -158,15 +158,23 @@ public sealed class BddSuite : IDisposable
     /// The catalogs the suite's steps bind against, built from its fixture type without starting
     /// it. Loaded once, from a shadow copy of the build output, and kept until <see cref="Reload"/>.
     /// </summary>
-    /// <exception cref="BddWorkspaceException">The config names no fixture, or nothing is built yet.</exception>
+    /// <exception cref="BddWorkspaceException">The config names no fixture, nothing is built yet, or the build does not fit this Bruinet.</exception>
     public BddCatalogSet Catalogs
     {
         get
         {
             lock (_gate)
             {
-                _load ??= Load();
-                return _load.Catalogs;
+                try
+                {
+                    _load ??= Load();
+                    return _load.Catalogs;
+                }
+                catch (Exception exception) when (exception is TypeLoadException or System.Reflection.ReflectionTypeLoadException or MissingMemberException or FileLoadException)
+                {
+                    // A build made against an older Bruinet; one such suite must not stop the others.
+                    throw new BddWorkspaceException($"The build of {Name} does not fit this Bruinet ({exception.Message}). Build the suite again.");
+                }
             }
         }
     }

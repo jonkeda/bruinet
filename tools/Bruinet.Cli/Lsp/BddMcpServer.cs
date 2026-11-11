@@ -44,6 +44,8 @@ public sealed class BddMcpServer : IDisposable
         ("list_pages", "A UI suite's pages and their controls: the names {page} and {control} take.", Schema(("suite", "string", "A suite name; the first suite when left out."))),
         ("list_test_sets", "A suite's test sets: the values of a feature file's TestData metadata.", Schema(("suite", "string", "A suite name; the first suite when left out."))),
         ("validate_scenario", "Checks a feature or step file as the xUnit gate would, with its words: every step must bind. Give 'path' (where the file is, or will be, in a suite's Features folder) and 'text' for a draft; without 'text' the file on disk is checked.", Schema(("path", "string", "The file's path; required."), ("text", "string", "The draft's text; the file on disk when left out."))),
+        ("draft_feature", "Drafts a feature file from a C# UI test, to start converting it: each statement becomes the suite phrase whose words match it best, or a commented gap when none does, so the draft binds as it is. Gives the draft, where it would go, validate_scenario's answer, the gaps (the steps the suite lacks, each with its statement) and the phrases that differ only in a value. Writes nothing.", Schema(("path", "string", "The C# test file; required."), ("method", "string", "The test method; the file's first test when left out."), ("feature", "string", "Where the feature file would go; the module's Features folder when left out."))),
+        ("similar_steps", "The phrases of a suite that differ only in one value (a name or a number), each group with the phrase with a {value} placeholder that could stand for them all.", Schema(("suite", "string", "A suite name; the first suite when left out."), ("query", "string", "Words a phrase of the group must hold."))),
         ("find_step_usages", "The steps across every suite that use a C# member: a step definition, a page phrase or a page object's control, as Namespace.Type.Member.", Schema(("symbol", "string", "Namespace.Type.Member; required."))),
         ("record_video", "Records a video script (*.video.md), or the scenario at 'line' of a feature file, on video with its voice-over: builds the suite, runs the scenes with BRUINET_RECORD, and gives the video, its captions (.srt) and its timeline. Needs ffmpeg; says how to get it when it is missing. Takes minutes: one scene is one scenario run.", Schema(("path", "string", "The video script or the feature file; required."), ("line", "integer", "The scenario heading's line, for a feature file."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("recordingsFolder", "string", "Where the video goes; the suite's TestResults/recordings when left out."), ("voice", "string", "The voice, when the script names none."))),
         ("review_page", "Writes the review page an agent hands over when a feature is done: what it did, what changed, and each recorded video with captions, chapters and every step's result. Give the videos record_video made. Returns the page's path, to open in a browser.", Schema(("title", "string", "What the work was; required."), ("summary", "string", "A paragraph or two on what was done."), ("changes", "array", "What changed, a line each; code spans in backticks are kept."), ("videos", "array", "The videos (.mp4) record_video made; required."), ("path", "string", "Where the page goes; beside the first video when left out."))),
@@ -141,7 +143,7 @@ public sealed class BddMcpServer : IDisposable
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
                     ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; last_runs gives the newest results; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states). Never invent a phrase: leave a step that has none as a marked gap. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; last_runs gives the newest results; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states). Never invent a phrase: leave a step that has none as a marked gap. To turn a C# UI test into a feature file: draft_feature, and similar_steps for phrases that differ only in a value. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
                 },
                 "ping" => new JsonObject(),
                 "tools/list" => new JsonObject
@@ -181,6 +183,8 @@ public sealed class BddMcpServer : IDisposable
                 "list_pages" => ListPages(Suite(arguments)),
                 "list_test_sets" => TestSets(Suite(arguments)),
                 "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
+                "draft_feature" => DraftFeature(Required(arguments, "path"), (string?)arguments["method"], (string?)arguments["feature"]),
+                "similar_steps" => SimilarSteps(Suite(arguments), (string?)arguments["query"]),
                 "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
                 "run_scenario" => RunScenario(arguments),
                 "coverage" => Coverage(arguments),
@@ -1473,6 +1477,65 @@ public sealed class BddMcpServer : IDisposable
                 Controls = page.Controls.Select(control => new { control.Name, Type = control.ControlType.Name, control.NavigatesTo }).ToList(),
             })
             .ToList();
+
+    private object DraftFeature(string path, string? method, string? feature)
+    {
+        var source = Path.GetFullPath(Path.IsPathRooted(path) ? path : Path.Combine(_solutionDir, path));
+        if (!File.Exists(source))
+        {
+            throw new ToolProblem($"'{source}' does not exist.");
+        }
+
+        var suite = _server.Explorer(new ExplorerParams(null, null)).Suites
+            .Select(SuiteNamed)
+            .Where(candidate => source.StartsWith(Path.GetDirectoryName(candidate.ConfigPath)! + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(candidate => candidate.ConfigPath.Length)
+            .FirstOrDefault() ?? throw new ToolProblem($"'{source}' is in no suite's folder.");
+        var phrases = DraftPhrases(suite);
+
+        FeatureDraft draft;
+        try
+        {
+            draft = CSharpTestDraft.Draft(File.ReadAllText(source), method, phrases);
+        }
+        catch (ArgumentException exception)
+        {
+            throw new ToolProblem(exception.Message);
+        }
+
+        var suiteDir = Path.GetDirectoryName(suite.ConfigPath)!;
+        var moduleDir = draft.Module is null ? null : Path.Combine(suiteDir, "Modules", draft.Module);
+        var target = feature is not null
+            ? Path.GetFullPath(Path.IsPathRooted(feature) ? feature : Path.Combine(_solutionDir, feature))
+            : Path.Combine(moduleDir is not null && Directory.Exists(moduleDir) ? Path.Combine(moduleDir, "Features") : Path.Combine(suiteDir, "Features"), draft.Name + ".feature.md");
+        var used = draft.Text.Split('\n').Select(line => line.Trim()).ToHashSet(StringComparer.Ordinal);
+        return new
+        {
+            Feature = target,
+            draft.Text,
+            Validation = Validate(target, draft.Text),
+            Lacks = draft.Gaps,
+            Cleanup = draft.Skipped,
+            Similar = CSharpTestDraft.Similar(phrases)
+                .Where(similar => similar.Phrases.Any(phrase => used.Any(line => line.EndsWith(" " + phrase, StringComparison.Ordinal))))
+                .ToList(),
+        };
+    }
+
+    private static object SimilarSteps(BddSuite suite, string? query)
+    {
+        var words = (query ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var similar = CSharpTestDraft.Similar(DraftPhrases(suite))
+            .Where(group => group.Phrases.Any(phrase => words.All(word => phrase.Contains(word, StringComparison.OrdinalIgnoreCase))))
+            .ToList();
+        return new { Suite = suite.Name, Count = similar.Count, Groups = similar };
+    }
+
+    // The suite's own phrases: step definitions, not page or control grammar or callable steps.
+    private static List<DraftPhrase> DraftPhrases(BddSuite suite)
+        => [.. Catalogs(suite).Default.Patterns
+            .Where(pattern => pattern.Callable is null && pattern.ControlVerb is null && pattern.Page is null)
+            .Select(pattern => new DraftPhrase(pattern.Keyword.ToString(), pattern.Phrase, pattern.Namespace))];
 
     // The draft checked in the suite that holds its path, as the editor checks unsaved text.
     private Validation Validate(string path, string? text)

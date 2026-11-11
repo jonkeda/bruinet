@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- MCP `draft_feature`: a feature file drafted from a C# UI test, each statement as the suite phrase that matches its words or a commented gap, validated as the gate would, with its gaps, its finally-block cleanup and phrases that differ only in a value. MCP `similar_steps`: the phrases that could be one phrase with a placeholder. A suite built against an older Bruinet now reports that as its reason instead of failing every tool.
 - One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
   tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with
   `UatScenarioTraits`; a trait the runner's attributes set wins. `Bruinet.Traits` now targets net8.0 and net9.0 too.
