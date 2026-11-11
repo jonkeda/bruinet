@@ -1,0 +1,46 @@
+# The broad catches each file may still hold: a bare `catch`, or `catch (Exception)` with no `when` filter.
+# BroadCatchTests fails on a file with more, and asks for its line here to be lowered when it has fewer.
+# A new one belongs at the top of a background task or a UI command, with a comment saying where the error goes.
+# Review 05 (.my/reviews2/05-swallowed-errors.md), R2-T18. Count, then the file.
+1 src/Bruinet.Bdd.Workspace/BddSuite.cs
+1 src/Bruinet.Bdd/BddExecution.cs
+2 src/Bruinet.Bdd/BddStepDefinitionRuntime.cs
+1 src/Bruinet.Bdd/Runner/BddRunnerClient.cs
+1 src/Bruinet.Bdd/Runner/BddWarmRunners.cs
+1 src/Bruinet.Core/Artifacts/TestArtifactManifestWriter.cs
+1 src/Bruinet.Core/Calls/ControlCall.cs
+2 src/Bruinet.Core/Services/ScreenshotService.cs
+1 src/Bruinet.Core/Testing/TestApps.cs
+1 src/Bruinet.FlaUI/DesktopApp.cs
+1 src/Bruinet.FlaUI/Windowing/AppWindow.cs
+4 src/Bruinet.FlaUI/Windowing/QuietWindow.cs
+2 src/Bruinet.FlaUI/Windowing/WindowPlacement.cs
+1 src/Bruinet.Html.Playwright/PlaywrightRecorder.cs
+1 src/Bruinet.Maui.FlaUI/Bridge/AccessibilityAudit.cs
+10 src/Bruinet.Maui.FlaUI/Bridge/BruinetBridgeLookup.cs
+1 src/Bruinet.Maui.FlaUI/FlaUIDeclaredElement.cs
+1 src/Bruinet.Maui.FlaUI/FlaUIMauiDriver.cs
+1 src/Bruinet.Maui/Context/MauiTestContext.cs
+1 src/Bruinet.Maui/Testing/MauiTestFixtureBase.cs
+1 src/Bruinet.Narrator.Windows/WindowsCaptureRecorder.cs
+1 src/Bruinet.Presenter/Services/BddExecutionService.cs
+1 src/Bruinet.Presenter/Services/MsBuildProjectBuilder.cs
+1 src/Bruinet.Presenter/Services/PresenterUserSettingsService.cs
+4 src/Bruinet.Presenter/ViewModels/PresenterShellViewModel.Narrator.cs
+3 src/Bruinet.Presenter/ViewModels/PresenterShellViewModel.Recording.cs
+4 src/Bruinet.Presenter/ViewModels/PresenterShellViewModel.Run.cs
+5 src/Bruinet.Presenter/ViewModels/PresenterShellViewModel.cs
+1 src/Bruinet.Recording/FfmpegRegionRecorder.cs
+3 src/Bruinet.Scraper/Service/ScraperService.cs
+1 src/Bruinet.Stride.Automation/AutomationGameSystem.cs
+3 src/Bruinet.Stride.Automation/AutomationServer.cs
+2 src/Bruinet.Stride.Automation/StrideUIHandler.cs
+1 src/Bruinet.Stride/Infrastructure/StrideGameDriver.cs
+4 src/Bruinet.Uat/Runner/BddRunnerHost.cs
+2 src/Bruinet.Uat/UatReflectionRuntime.cs
+2 src/Bruinet.Uat/UatScenarioTestBase.cs
+2 src/Bruinet.Uia.Contracts/BruinetAutomationPatternHandler.cs
+1 src/Bruinet.Uia.Contracts/BruinetPatternRegistration.cs
+3 src/Bruinet.Uia.Contracts/Provider/BridgeTargetProvider.cs
+1 tools/Bruinet.Cli/Generate/GenerateCommand.cs
+1 tools/Bruinet.Cli/Generate/Generation/CodeFormatter.cs
