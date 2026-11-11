@@ -187,4 +187,27 @@ public class InputControlTests
             Assert.Equal(port, page.GetPort());
         }
     }
+
+    // From ContainerControlTests, whose other tests repeated these (review 08, finding 7).
+    [Fact]
+    public void Form_ProgressBar_ReadsValue()
+    {
+        var page = new LoginPage(_fixture.Context);
+        var progress = page.GetProgress();
+        Assert.NotNull(progress);
+        Assert.InRange(progress.Value, 0, 100);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(25)]
+    [InlineData(50)]
+    [InlineData(75)]
+    [InlineData(100)]
+    public void Form_VolumeSelection_AllLevels(int volume)
+    {
+        var page = GetPage();
+        page.SetVolume(volume);
+        Assert.Equal(volume, page.GetVolume());
+    }
 }

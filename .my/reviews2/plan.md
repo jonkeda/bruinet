@@ -97,7 +97,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T52 Stride and native Android bind the contracts on their fakes. R08 P3.
 - [ ] R2-T53 Call model tests move to `Bruinet.Core.Tests`; per-stack files keep only their own. R08 P4. Then `mutate.ps1 -Library Bruinet.Core -Mutate '**/Calls/*.cs'`. R08 P12.
 - [x] R2-T54 The 35 Moq `Is…` tests in `Bruinet.Blazor.Tests` go once the binding covers them. R08 P6. All 35 went: each read the shared view base's presence answer, which Html's ElementContract proves on bUnit and Chromium; none proved an argument or a call count. SelectByValue's Moq test gives its select the option R2-T41 now asks for.
-- [ ] R2-T55 UI suite duplicates joined (WinForms roles, Html/Blazor visible and enabled). R08 P7.
+- [x] R2-T55 UI suite duplicates joined (WinForms roles, Html/Blazor visible and enabled). R08 P7. WinForms: ContainerControlTests folded into InputControlTests (its progress and volume tests kept), one role theory and one clear test left. Html's ButtonControlTests went; Blazor keeps the counter clicks without the visible and enabled checks. The WinForms suite: 47 of 48, the one failing before too (R2-T117).
 
 ## Phase 5: waits
 
@@ -169,6 +169,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T113 A step test in `Bruinet.Cli.Tests` (`StepTests.RunOfTheFile_…`, about 12 s) fails now and then while other builds run, and passes alone and on the next run; timing on a busy machine, noted, not chased (2026-11-11).
 - [ ] R2-T114 `Bruinet.Cli.Tests`' config and MCP tests read the Todo sample's built suite (`samples/Todo/tests/Bruinet.Samples.Todo.Uat`) and fail with empty lists when it was built against an older Core or Bdd; the test project does not build it. Fold into R2-T67 (a CI step builds it first) or R2-T94 (a suite that cannot load is a row). Found 2026-11-11.
 - [ ] R2-T115 MAUI `ScrollView` implements `IScrollableControlObject` (top, end, by, position, can-scroll, on every MAUI head) and binds `ScrollableContract`; until then no head binds it. Found in R2-T47.
+- [ ] R2-T117 `Bruinet.WinForms.UITests`' `DateTimePicker_SetDate_SetsDateCorrectly` fails on this machine at 86995566 and after (2026-11-11): the picker "accepted SetDate and did not take it", reading today's date. Not investigated.
 
 ## Phase 9: consumers, after the merge into `move`
 

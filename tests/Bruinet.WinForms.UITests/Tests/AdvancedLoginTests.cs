@@ -60,26 +60,6 @@ public class AdvancedLoginTests
     }
 
     [Fact]
-    public void AdvancedLogin_FormReset()
-    {
-        var page = GetPage();
-        page.EnterUsername("testuser");
-        page.EnterPassword("password");
-        page.SetRememberMe(true);
-        page.SelectRole("Admin");
-
-        Assert.NotEmpty(page.GetUsername());
-        Assert.True(page.IsRememberMeChecked());
-
-        page.ClickClear();
-        page.WaitForFormCleared();
-
-        Assert.Equal(string.Empty, page.GetUsername());
-        Assert.False(page.IsRememberMeChecked());
-        Assert.Contains("Ready", page.GetStatusMessage());
-    }
-
-    [Fact]
     public void AdvancedLogin_MultipleLogins()
     {
         var page = GetPage();

@@ -72,35 +72,10 @@ public class LoginPageTests
     }
 
     [Fact]
-    public void LoginPage_CanClearForm()
-    {
-        var page = GetPage();
-        page.EnterUsername("testuser");
-        page.SetRememberMe(true);
-
-        page.ClickClear();
-        page.WaitForFormCleared();
-
-        Assert.Equal(string.Empty, page.GetUsername());
-        Assert.False(page.IsRememberMeChecked());
-    }
-
-    [Fact]
     public void LoginPage_StatusLabelShowsReadyInitially()
     {
         var page = GetPage();
         Assert.Contains("Ready", page.GetStatusMessage());
-    }
-
-    [Theory]
-    [InlineData("Admin")]
-    [InlineData("User")]
-    [InlineData("Guest")]
-    public void LoginPage_CanSelectMultipleRoles(string role)
-    {
-        var page = GetPage();
-        page.SelectRole(role);
-        Assert.Equal(role, page.GetSelectedRole());
     }
 
     [Fact]
