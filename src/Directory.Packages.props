@@ -39,6 +39,9 @@
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.12" />
     <!-- WireMock for API mocking -->
     <PackageVersion Include="WireMock.Net" Version="2.15.0" />
+    <!-- WireMock.Net 2.15.0 brings Microsoft.AspNetCore.WebUtilities 2.3.0 (GHSA-6527-9fp8-r4x6, fixed in 2.3.14);
+         pinned where WireMock.Net is referenced until WireMock.Net's own dependency moves past it. -->
+    <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
     <!-- Stride 3D Engine -->
     <PackageVersion Include="Stride.Engine" Version="4.3.0.2507" />
     <PackageVersion Include="Stride.UI" Version="4.3.0.2507" />

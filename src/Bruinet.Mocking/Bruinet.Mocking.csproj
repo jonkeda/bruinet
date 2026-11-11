@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <PackageReference Include="WireMock.Net" />
+    <!-- Pinned past GHSA-6527-9fp8-r4x6; see Directory.Packages.props. -->
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
   </ItemGroup>
 
   <ItemGroup>

@@ -50,6 +50,9 @@
     <PackageVersion Include="CommunityToolkit.Maui.MediaElement" Version="10.0.0" />
     <!-- WireMock for API mocking -->
     <PackageVersion Include="WireMock.Net" Version="2.15.0" />
+    <!-- WireMock.Net 2.15.0 brings Microsoft.AspNetCore.WebUtilities 2.3.0 (GHSA-6527-9fp8-r4x6, fixed in 2.3.14);
+         pinned where WireMock.Net is referenced until WireMock.Net's own dependency moves past it. -->
+    <PackageVersion Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
     <!-- Source Link -->
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
     <!-- Transitive packages pinned past a security advisory, until their parents carry the fix:

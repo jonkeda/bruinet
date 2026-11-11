@@ -11,6 +11,7 @@
   <ItemGroup>
     <!-- The real service a test records: a WireMock server, stopped before the replay. -->
     <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
     <PackageReference Include="Microsoft.Extensions.Http" />
   </ItemGroup>
 
