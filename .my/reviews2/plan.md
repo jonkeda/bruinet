@@ -17,14 +17,14 @@ Branch `reviews` (worktree `E:\repos\Private\bru-reviews`), pushed to origin's `
 
 Construction runs `E:\repos\MainConstruction\construction\.my\bruinet\100-Plan-Test-Changes.md`, which commits to Bruinet's `move` (its submodule `Brinell`) step by step. Its Bruinet steps:
 
-| Step | Bruinet files | State 2026-11-11 |
+| Step | Bruinet files | State |
 | --- | --- | --- |
-| T4 write check, "setup" label | `MockApiServer`, Uat failure kind, `failing`, `why` | committed in `Brinell` (`92d0d47c`), not pushed |
-| T19 trait names | `Bruinet.Traits` | partly on origin, rest not pushed (`40f5451b`) |
-| T16 scenario engine | feature-file traits, scenario undo, mock request steps in `Bruinet.Mocking.Http`, format check | next |
-| T18 conversion tool | new MCP tool in `BddMcpServer` | after T16 |
+| T4 write check, "setup" label | `MockApiServer`, Uat failure kind, `failing`, `why` | on `origin/move` (`92d0d47c`) |
+| T19 trait names | `Bruinet.Traits` | on `origin/move` (`40f5451b`) |
+| T16 scenario engine | feature-file traits, scenario undo, mock request steps (in `Bruinet.Mocking`, `Steps/`), format check | on `origin/move` (`c03119c7`) |
+| T18 conversion tools | `draft_feature`, `similar_steps` in `BddMcpServer` | on `origin/move` (`1ec3e616`) |
 
-Rows marked **⏸ construction** wait until construction's T4, T16 and T18 are on `origin/move`, then rebase and go. Everything else runs now.
+Rows were held for construction's T4, T16 and T18. All three are on `origin/move` (`1ec3e616`, 2026-11-11) and `reviews` is rebased on it, so nothing is held now. Read what they added before the tasks that meet it: the `setup` failure kind and `failureKind` in the results (phase 3), `Bruinet.Mocking`'s request steps under `Steps/` (R2-T23), and the `draft_feature` and `similar_steps` MCP tools (R2-T94 to T96).
 The `voice` rename (D3) reaches construction's `module-videos` skill, used in its per-Module phase 2: it lands only at a submodule bump construction plans for (phase 9).
 
 ## Phase 0: base
@@ -59,25 +59,25 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T20 Traces mask password fields and listed controls. R09 P2. Needs D4.
 - [ ] R2-T21 SQL hook refuses outside a test setup; `begin`/`end` are `POST`. R09 P3. Needs D4.
 - [ ] R2-T22 MCP `base` refused when it starts with `-`, passed after `--end-of-options`; `review_page` and `record_video` paths confined to the solution. R09 P4.
-- [ ] R2-T23 ⏸ construction. HTTP redaction: streamed parts, XML, `Location` query, more default names. R09 P5. Needs D4.
+- [ ] R2-T23 HTTP redaction: streamed parts, XML, `Location` query, more default names. R09 P5. Needs D4.
 - [ ] R2-T24 Voice key file owner-only on Unix. R09 P6.
 - [ ] R2-T25 Stride pipe `PipeOptions.CurrentUserOnly`. R09 P7.
 - [ ] R2-T26 VS `watch` opens only `.mp4` under the recordings folder. R09 P8.
 - [ ] R2-T27 `bruinet sql --connection-from <VAR>`. R09 P9.
 - [ ] R2-T28 Guide page "What Bruinet writes". R09 P10.
 
-## Phase 3: what a failure says (⏸ construction: T4 and T16 change the same Uat failure and result files)
+## Phase 3: what a failure says
 
-- [ ] R2-T29 ⏸ construction. "Not found" as the scope sentence, with page and time waited. R01 P1. tomorrow, kofflard, construction read messages only by eye.
-- [ ] R2-T30 ⏸ construction. Controls carry their member name (`[CallerMemberName]`) into messages and the log. R01 P2.
-- [ ] R2-T31 ⏸ construction. Catalog printed only for a bind error. R01 P3.
-- [ ] R2-T32 ⏸ construction. A bind failure writes a result (kind `bind`). R01 P4.
-- [ ] R2-T33 ⏸ construction. UATB001 names up to three nearest phrases. R01 P5.
-- [ ] R2-T34 ⏸ construction. A closing "what to try" line per failure kind. R01 P6.
-- [ ] R2-T35 ⏸ construction. One typed navigation failure on both Html heads; bUnit refuses a foreign host; `PageLoadException` thrown or deleted. R01 P7.
-- [ ] R2-T36 ⏸ construction. Locator carried on `ControlAssertionException` and `ScopeNotReadyException`; regex in `UatStepFailure` goes. R01 P8.
-- [ ] R2-T37 ⏸ construction. `IsFramework` counts `Bruinet.Uat` as framework; `frames` names the page object member. R01 P9.
-- [ ] R2-T38 ⏸ construction. Wording tidy. R01 P10.
+- [ ] R2-T29 "Not found" as the scope sentence, with page and time waited. R01 P1. tomorrow, kofflard, construction read messages only by eye.
+- [ ] R2-T30 Controls carry their member name (`[CallerMemberName]`) into messages and the log. R01 P2.
+- [ ] R2-T31 Catalog printed only for a bind error. R01 P3.
+- [ ] R2-T32 A bind failure writes a result (kind `bind`). R01 P4.
+- [ ] R2-T33 UATB001 names up to three nearest phrases. R01 P5.
+- [ ] R2-T34 A closing "what to try" line per failure kind. R01 P6.
+- [ ] R2-T35 One typed navigation failure on both Html heads; bUnit refuses a foreign host; `PageLoadException` thrown or deleted. R01 P7.
+- [ ] R2-T36 Locator carried on `ControlAssertionException` and `ScopeNotReadyException`; regex in `UatStepFailure` goes. R01 P8.
+- [ ] R2-T37 `IsFramework` counts `Bruinet.Uat` as framework; `frames` names the page object member. R01 P9.
+- [ ] R2-T38 Wording tidy. R01 P10.
 
 ## Phase 4: heads agree, contracts bound
 
@@ -139,30 +139,31 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T85 `Bruinet.Cli` slimmer. R11 P9.
 - [ ] R2-T86 Frameworks and feeds told truly in README and `VERSIONING.md`. R11 P10.
 - [ ] R2-T87 `controls generate` writes only changed files; the `Create….Bat` scripts count. R11 P11, R10 P10.
-- [ ] R2-T88 ⏸ construction. Command line per D3: exit codes, Ctrl+C, what 2 covers. R10 P1–P3. Needs D3. tomorrow (`Select-Tests.ps1`, `Update-BruinetMcp.ps1`).
-- [ ] R2-T89 ⏸ construction. Command line per D3: renames, shared `--solution`, `--json`, stderr for progress. R10 P4, P6–P8. Needs D3. tomorrow, construction.
+- [ ] R2-T88 Command line per D3: exit codes, Ctrl+C, what 2 covers. R10 P1–P3. Needs D3. tomorrow (`Select-Tests.ps1`, `Update-BruinetMcp.ps1`).
+- [ ] R2-T89 Command line per D3: renames, shared `--solution`, `--json`, stderr for progress. R10 P4, P6–P8. Needs D3. tomorrow, construction.
 - [ ] R2-T90 `voice` asks before spending or deleting (`--yes`). R10 P5.
 - [ ] R2-T91 `cli.md` and AD-028 match the tree; a test fails on a command with no row. R10 P9.
 - [ ] R2-T92 `timings.ps1` becomes `bruinet tests timings`; `select-tests.ps1` reads `--json`. R10 P11, P12.
 - [ ] R2-T93 Dead scripts deleted: `samples/TestRunner.ps1`, `start-appium.ps1`, `.github/PIPELINE.md`; decide `run-android-tests.ps1`, `repeat-run.ps1`. R10 P14.
-- [ ] R2-T94 ⏸ construction. MCP per D2, no renames: suite that cannot load is a row, nulls skipped, `line` through `ScenarioLine`. R03 M11, M4, M6. Needs D2.
-- [ ] R2-T95 ⏸ construction. MCP per D2: one cap rule. R03 M3. Needs D2.
-- [ ] R2-T96 ⏸ construction. MCP per D2: renames, one results tool, `why` reads only, one name per parameter and verb, schema, instructions. R03 M1, M2, M5, M7–M10. Needs D2. tomorrow (9 files), construction (18 files).
+- [ ] R2-T94 MCP per D2, no renames: suite that cannot load is a row, nulls skipped, `line` through `ScenarioLine`. R03 M11, M4, M6. Needs D2.
+- [ ] R2-T95 MCP per D2: one cap rule. R03 M3. Needs D2.
+- [ ] R2-T96 MCP per D2: renames, one results tool, `why` reads only, one name per parameter and verb, schema, instructions. R03 M1, M2, M5, M7–M10. Needs D2. tomorrow (9 files), construction (18 files).
 
-## Phase 8: docs, skills, instructions (after the renames; ⏸ construction)
+## Phase 8: docs, skills, instructions (after the renames)
 
-- [ ] R2-T97 ⏸ construction. Docs findings 2–6 by hand: quick start, Selenium, links, paths, old names. R06 P1.
-- [ ] R2-T98 ⏸ construction. `docs/controls/Shell.md` deleted or rewritten. R06 P2.
-- [ ] R2-T99 ⏸ construction. Docs check in the test step: links, paths, `bruinet` lines. R06 P3.
-- [ ] R2-T100 ⏸ construction. Docs samples from compiled files; AD-033 row. R06 P4, P5.
-- [ ] R2-T101 ⏸ construction. A quick start per stack, compiled in CI. R11 P5.
-- [ ] R2-T102 ⏸ construction. Skills and instructions: names gone or wrong (R07 first table).
-- [ ] R2-T103 ⏸ construction. Skills: the six disagreeing rules made one, per the owner's answers to R07's five questions.
-- [ ] R2-T104 ⏸ construction. Skills: the ~1,400 words that can go; `copilot-instructions.md` per the owner's answer.
+- [ ] R2-T97 Docs findings 2–6 by hand: quick start, Selenium, links, paths, old names. R06 P1.
+- [ ] R2-T98 `docs/controls/Shell.md` deleted or rewritten. R06 P2.
+- [ ] R2-T99 Docs check in the test step: links, paths, `bruinet` lines. R06 P3.
+- [ ] R2-T100 Docs samples from compiled files; AD-033 row. R06 P4, P5.
+- [ ] R2-T101 A quick start per stack, compiled in CI. R11 P5.
+- [ ] R2-T102 Skills and instructions: names gone or wrong (R07 first table).
+- [ ] R2-T103 Skills: the six disagreeing rules made one, per the owner's answers to R07's five questions.
+- [ ] R2-T104 Skills: the ~1,400 words that can go; `copilot-instructions.md` per the owner's answer.
 
 ## Found while working
 
 - [ ] R2-T109 `TOD.08.8 Offline disables Sync…` in `Bruinet.Samples.Todo.Web.Uat` fails in a full run on the bUnit head ("Last Sync" reads "Synced 10:00", expected "Offline") and passes alone, with and without R2-T15: state left by an earlier scenario. Found 2026-11-11.
+- [ ] R2-T110 `ArchitectureTests.OnlyBruinetUat_DeclaresUatNames` fails on `move` since `039d9b1b`: `Bruinet.Traits`' `UatAttribute` (`TraitAttributes.cs:52`) is a `Uat` name outside `Bruinet.Uat` (AD-021). Construction's plan drops `[Uat]` in its T10; until then it is red in `Bruinet.Core.Tests`. Not ours to change: told to the owner 2026-11-11.
 
 ## Phase 9: consumers, after the merge into `move`
 
