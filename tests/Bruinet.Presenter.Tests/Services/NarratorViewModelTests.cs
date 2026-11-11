@@ -1,7 +1,7 @@
 using Bruinet.Presenter.Models;
 using Bruinet.Presenter.ViewModels;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>
 /// Narrator mode's script: opened from its file, its suite found by walking up to the config, its

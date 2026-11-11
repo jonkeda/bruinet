@@ -76,7 +76,8 @@ param(
         'Bruinet.Traits.Tests',
         'MauiHeadless.Tests',
         'MauiHeadless.Tests.MSTest',
-        'MauiHeadless.Tests.NUnit'
+        'MauiHeadless.Tests.NUnit',
+        'Bruinet.Presenter.Tests'
     ),
     [switch] $Headless,
     [switch] $Browser,

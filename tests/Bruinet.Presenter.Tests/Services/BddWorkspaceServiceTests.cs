@@ -2,7 +2,7 @@ using Bruinet.Bdd.Preview;
 using Bruinet.Bdd.Workspace;
 using Bruinet.Presenter.Services;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 public sealed class BddWorkspaceServiceTests
 {

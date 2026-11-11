@@ -1,7 +1,7 @@
 using Bruinet.Presenter.Services;
 using Bruinet.Uat;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>
 /// The real evaluator against real projects. These spawn <c>dotnet msbuild</c>, which is

@@ -2,7 +2,7 @@ using Bruinet.Bdd;
 using Bruinet.Presenter.Services;
 using Bruinet.Uat;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 public sealed class BddExecutionServiceTargetTests
 {

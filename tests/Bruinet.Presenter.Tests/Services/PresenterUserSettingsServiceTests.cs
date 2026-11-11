@@ -2,7 +2,7 @@ using Bruinet.Presenter.Models;
 using Bruinet.Presenter.Services;
 using Bruinet.Presenter.ViewModels;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 public sealed class PresenterUserSettingsServiceTests
 {

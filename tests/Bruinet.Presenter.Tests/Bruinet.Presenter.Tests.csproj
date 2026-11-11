@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The Presenter's services, apart from its UAT suite (Bruinet.Presenter.Bdd.Tests), so they run with the unit tests (review 08, finding 9). -->
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.Presenter.Tests</RootNamespace>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <!--
+      This is a test host, not an app: it needs no image assets of its own. Left on, the
+      resizetizer collects MauiIcon items from every referenced project - the Presenter and the
+      sample app both ship an `appicon` - and fails the build on the duplicate output name.
+    -->
+    <DisableResizetizer>true</DisableResizetizer>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Maui\Bruinet.Maui.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Maui.FlaUI\Bruinet.Maui.FlaUI.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Presenter\Bruinet.Presenter.csproj" />
+    <!-- Built first, not referenced: it is Presenter's default workspace. Private=false keeps its config and feature files out of this project's output, which has its own. -->
+    <ProjectReference Include="..\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <!-- Built first, not referenced: the workspace, inspector and evaluator tests read the Todo UAT suite's build output, and failed whenever nothing else had built it yet. -->
+    <ProjectReference Include="..\..\samples\Todo\tests\Bruinet.Samples.Todo.Uat\Bruinet.Samples.Todo.Uat.csproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="BuildPresenterSampleAut" BeforeTargets="Build">
+    <MSBuild Projects="..\..\samples\Bruinet.Samples.Maui.App\Bruinet.Samples.Maui.App.csproj" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=net10.0-windows10.0.19041.0" />
+  </Target>
+
+  <ItemGroup>
+    <Using Include="Bruinet.Bdd" />
+  </ItemGroup>
+
+</Project>

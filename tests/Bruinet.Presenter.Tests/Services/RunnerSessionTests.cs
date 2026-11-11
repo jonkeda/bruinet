@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Bruinet.Bdd.Runner;
 using Bruinet.Presenter.Services;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>
 /// A run must not make its own workspace unbuildable, nor grow Presenter: a session's scenario

@@ -1,7 +1,7 @@
 using Bruinet.Narrator;
 using Bruinet.Narrator.Windows;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>Windows' own voices follow the SSML a script holds: a pause is audible in the clip's length, and no caption holds a tag. Offline; needs a Windows voice.</summary>
 public sealed class WindowsSsmlTests : IDisposable

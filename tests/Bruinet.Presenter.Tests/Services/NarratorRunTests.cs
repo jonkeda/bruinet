@@ -3,7 +3,7 @@ using Bruinet.Presenter.Models;
 using Bruinet.Presenter.Services;
 using Bruinet.Presenter.ViewModels;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>
 /// Run in Narrator mode: the checked scenes, in the script's order, a session each; a scene that

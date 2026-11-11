@@ -1,6 +1,6 @@
 using Bruinet.Presenter.Services;
 
-namespace Bruinet.Presenter.Bdd.Tests.Services;
+namespace Bruinet.Presenter.Tests.Services;
 
 /// <summary>
 /// How a <c>Runtime Project</c> row resolves to the Pages assembly, and what it reports when
