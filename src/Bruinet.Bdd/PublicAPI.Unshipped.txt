@@ -465,7 +465,7 @@ Bruinet.Bdd.BddPreparedCallables.Get(Bruinet.Bdd.BddCallable! callable) -> Bruin
 Bruinet.Bdd.BddPreparedCallables.TypeNamed(string! name) -> System.Type?
 Bruinet.Bdd.BddReplayFields
 Bruinet.Bdd.BddReportingSettings
-Bruinet.Bdd.BddReportingSettings.BddReportingSettings(string! OutputDirectory, bool ScreenshotOnFailure = false, bool IncludeRuntimeTrace = false) -> void
+Bruinet.Bdd.BddReportingSettings.BddReportingSettings(string! OutputDirectory, bool ScreenshotOnFailure = false, bool IncludeRuntimeTrace = false, System.Collections.Generic.IReadOnlyList<string!>? TraceMask = null) -> void
 Bruinet.Bdd.BddReportingSettings.IncludeRuntimeTrace.get -> bool
 Bruinet.Bdd.BddReportingSettings.IncludeRuntimeTrace.init -> void
 Bruinet.Bdd.BddReportingSettings.OutputDirectory.get -> string!
@@ -1218,3 +1218,5 @@ static readonly Bruinet.Bdd.Runner.BddRunnerClient.ConnectTimeout -> System.Time
 Bruinet.Bdd.BddExecutionContext.ScenarioStartedUtc.get -> System.DateTime?
 Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.IDisposable! undo, string? name = null) -> void
 Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.Action! undo, string! name) -> void
+Bruinet.Bdd.BddReportingSettings.TraceMask.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Bdd.BddReportingSettings.TraceMask.init -> void

@@ -166,6 +166,7 @@ feature file is the project's own, the case's source is the scenario's line in i
 | OutputDirectory | $(BruinetTestResults)/uat |
 | ScreenshotOnFailure | true |
 | IncludeRuntimeTrace | true |
+| TraceMask | Iban, Bsn |
 
 ## Settings
 
@@ -471,7 +472,9 @@ failure in the same run folder does not overwrite. `BRUINET_TRACE=all` reads the
 nothing. The MCP server's `get_trace` reads a trace, and its `why` compares a failure with the last green run; a failed
 scenario's line in `summary.md` says where it first parted from that run. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
-discovery data, and command catalog data. Scenario result files are also registered in the
+discovery data, and command catalog data. A trace writes `***` for the value of a control whose
+member or type names a secret (Password, Pin, Secret, Token, Api Key), for the controls `TraceMask` lists, and for the
+quoted values of a step that names one. Scenario result files are also registered in the
 shared artifact manifest as `uat-scenario` artifacts, with the suite, file and line in their
 metadata.
 

@@ -26,6 +26,7 @@ public sealed class UatRuntime
         _reflectionRuntime = Composition is null
             ? UatReflectionRuntime.FromRoot(root)
             : UatReflectionRuntime.FromComposition(root, Composition);
+        _reflectionRuntime.TraceMask = Config.Reporting.TraceMask ?? [];
     }
 
     public string ConfigFilePath { get; }

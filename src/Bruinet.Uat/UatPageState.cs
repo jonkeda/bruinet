@@ -29,7 +29,8 @@ internal static class UatPageState
     /// <param name="instance">The page object.</param>
     /// <param name="most">The most controls read; the rest are left out, and the reason says so.</param>
     /// <param name="budget">How long the reads may take in all; the controls not reached by then are left out.</param>
-    public static BddRunnerPageState Read(UatRuntimePage? page, object? instance, int most = int.MaxValue, TimeSpan? budget = null)
+    /// <param name="masked">Controls whose value is written <c>***</c>, by name, beside the password fields (<see cref="UatTraceMask"/>).</param>
+    public static BddRunnerPageState Read(UatRuntimePage? page, object? instance, int most = int.MaxValue, TimeSpan? budget = null, IReadOnlyCollection<string>? masked = null)
     {
         if (page is null || instance is null)
         {
@@ -62,7 +63,7 @@ internal static class UatPageState
                 continue;
             }
 
-            controls.Add(ReadControl(binding.Name, control));
+            controls.Add(ReadControl(binding.Name, control, masked ?? []));
         }
 
         return new BddRunnerPageState(page.Name, controls, null);
@@ -96,7 +97,7 @@ internal static class UatPageState
     }
 
     // rows: whether a collection's rows are read; not for a row's own controls, which may lead back to the list.
-    private static BddRunnerControlState ReadControl(string name, object control, bool rows = true)
+    private static BddRunnerControlState ReadControl(string name, object control, IReadOnlyCollection<string> masked, bool rows = true)
     {
         var type = control.GetType();
         var kind = Plain(type.Name);
@@ -114,7 +115,7 @@ internal static class UatPageState
             var value = shown == false ? null
                 : reader.Member is not null ? Text(Invoke(control, reader.Member, reader.TakesTimeout))
                 : Text(Invoke(control, "GetText", takesTimeout: true) ?? Invoke(control, "GetText", takesTimeout: false));
-            return new BddRunnerControlState(name, kind, shown, value, null);
+            return new BddRunnerControlState(name, kind, shown, value is not null && UatTraceMask.Hides(name, type, masked) ? UatTraceMask.Masked : value, null);
         }
         catch (Exception exception) when (exception is not OutOfMemoryException)
         {
@@ -162,7 +163,7 @@ internal static class UatPageState
                 continue;
             }
 
-            var state = ReadControl(property.Name, control, rows: false);
+            var state = ReadControl(property.Name, control, [], rows: false);
             if (state.Shown != false && state.Value is { Length: > 0 } value)
             {
                 yield return $"{property.Name} '{value}'";

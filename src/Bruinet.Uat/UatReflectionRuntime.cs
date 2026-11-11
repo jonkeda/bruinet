@@ -783,6 +783,9 @@ public sealed class UatReflectionRuntime
         return methods.Length == 0 ? "(none)" : string.Join(", ", methods);
     }
 
+    /// <summary>The controls a trace writes as <c>***</c>, by name: the suite's <c>TraceMask</c>.</summary>
+    internal IReadOnlyCollection<string> TraceMask { get; set; } = [];
+
     /// <summary>The current page's controls and what each shows, for a paused Step-through.</summary>
     /// <param name="context">The scenario's context.</param>
     /// <param name="most">The most controls read.</param>
@@ -798,7 +801,7 @@ public sealed class UatReflectionRuntime
             && _pages.Values.FirstOrDefault(each => string.Equals(each.PageType.Name, drivenLast, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(each.Name.Replace(" ", string.Empty, StringComparison.Ordinal), drivenLast.Replace(" ", string.Empty, StringComparison.Ordinal), StringComparison.OrdinalIgnoreCase)) is { } driven)
         {
-            var read = UatPageState.Read(driven, GetPageInstance(context, driven), most, budget);
+            var read = UatPageState.Read(driven, GetPageInstance(context, driven), most, budget, TraceMask);
             return read with { Reason = $"No step made a page current: {driven.Name} is the page the last step drove." + (read.Reason is { } more ? " " + more : string.Empty) };
         }
 
@@ -807,7 +810,7 @@ public sealed class UatReflectionRuntime
             var loaded = UatPageState.Loaded(_pages.Values.Distinct().Select(each => (each, (Func<object?>)(() => GetPageInstance(context, each)))));
             if (loaded is [var showing])
             {
-                var read = UatPageState.Read(showing, GetPageInstance(context, showing), most, budget);
+                var read = UatPageState.Read(showing, GetPageInstance(context, showing), most, budget, TraceMask);
                 return read with { Reason = $"No step made a page current: {showing.Name} is the page that says it is loaded." + (read.Reason is { } more ? " " + more : string.Empty) };
             }
 
@@ -817,7 +820,7 @@ public sealed class UatReflectionRuntime
             }
         }
 
-        return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page), most, budget);
+        return UatPageState.Read(page, page is null ? null : GetPageInstance(context, page), most, budget, TraceMask);
     }
 
     private static object? GetPageInstance(BddExecutionContext context, UatRuntimePage page)

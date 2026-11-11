@@ -163,7 +163,8 @@ public sealed record BddDiscoverySettings(
 public sealed record BddReportingSettings(
     string OutputDirectory,
     bool ScreenshotOnFailure = false,
-    bool IncludeRuntimeTrace = false)
+    bool IncludeRuntimeTrace = false,
+    IReadOnlyList<string>? TraceMask = null)
 {
     public static BddReportingSettings CreateDefault(string? suiteName = null)
     {
@@ -397,7 +398,12 @@ public static class BddConfigParser
                     ReadString(reporting, "OutputDirectory", string.Empty),
                     suiteName),
                 ReadBool(reporting, "ScreenshotOnFailure", defaultValue: false),
-                ReadBool(reporting, "IncludeRuntimeTrace", defaultValue: false)),
+                ReadBool(reporting, "IncludeRuntimeTrace", defaultValue: false),
+                ReadString(reporting, "TraceMask", string.Empty)
+                    .Split(',')
+                    .Select(name => name.Trim())
+                    .Where(name => name.Length > 0)
+                    .ToList()),
             new BddSettingsConfig(
                 ReadString(settings, "Root", BddSettingsConfig.Default.Root),
                 ReadString(settings, "DefaultFile", BddSettingsConfig.Default.DefaultFile),

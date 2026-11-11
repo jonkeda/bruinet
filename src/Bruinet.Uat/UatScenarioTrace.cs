@@ -51,7 +51,7 @@ internal static class UatScenarioTrace
             ["line"] = source.LineNumber,
             ["file"] = UatScenarioReport.Relative(configDirectory, source.FilePath),
             ["callLine"] = step.Invocation.Call?.Chain.FirstOrDefault()?.Call.Source.LineNumber,
-            ["text"] = step.Invocation.Step.Text,
+            ["text"] = UatTraceMask.Step(step.Invocation.Step.Text),
             ["status"] = step.Status.ToString(),
             ["durationMs"] = step.Duration is { } duration ? (long)duration.TotalMilliseconds : null,
             ["page"] = step.PageAfter?.Page ?? calls.LastOrDefault()?.Page,

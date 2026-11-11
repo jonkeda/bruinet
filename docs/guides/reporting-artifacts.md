@@ -81,6 +81,10 @@ Supported path tokens:
 Both resolve to the provider suite directory. UAT scenario result files are
 registered as `uat-scenario` artifacts.
 
+A step trace holds each step's text and, after a failed step, what every control on the page
+showed. Password fields, the controls `TraceMask` lists and a secret step's quoted values are
+written `***`, but anything else on the page is kept: `TestResults` is not for public upload.
+
 ## Source Files
 
 - `src/Bruinet.Core/Artifacts/TestArtifactOptions.cs`

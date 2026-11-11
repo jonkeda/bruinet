@@ -56,7 +56,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 ## Phase 2: secrets and what Bruinet writes
 
 - [x] R2-T19 SQL recordings redact by name, guide warns. R09 P1. Needs D4.
-- [ ] R2-T20 Traces mask password fields and listed controls. R09 P2. Needs D4.
+- [x] R2-T20 Traces mask password fields and listed controls. R09 P2. Needs D4.
 - [x] R2-T21 SQL hook refuses outside a test setup; `begin`/`end` are `POST`. R09 P3. Needs D4.
 - [x] R2-T22 MCP `base` refused when it starts with `-`, passed after `--end-of-options`; `review_page` and `record_video` paths confined to the solution. R09 P4.
 - [ ] R2-T23 HTTP redaction: streamed parts, XML, `Location` query, more default names. R09 P5. Needs D4.
