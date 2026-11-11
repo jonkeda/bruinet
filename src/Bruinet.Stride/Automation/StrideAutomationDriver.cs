@@ -50,7 +50,7 @@ internal sealed class StrideAutomationDriver : IStrideDriver
         var response = Send(AutomationCommand.Action(method, target, args));
         if (!response.Success)
         {
-            throw new InvalidOperationException($"The game refused {method} on '{target}': {response.Error}");
+            throw new ActionRefusedException($"The game refused {method} on '{target}': {response.Error}");
         }
     }
 

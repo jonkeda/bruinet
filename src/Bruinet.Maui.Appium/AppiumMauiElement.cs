@@ -666,7 +666,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             if (_element.Displayed)
                 return;
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // Continue with scroll attempt
         }
@@ -683,7 +683,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         {
             return _element.Displayed;
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return false;
         }
@@ -721,7 +721,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             _driver.Driver.ExecuteScript(script, arguments);
             return true;
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // This way does not apply here; the next is tried, and the caller's poll sees whether
             // the element came into view.
@@ -759,7 +759,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
 
             WaitUntilPositionSettles();
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // Not being able to move it is not a reason to refuse to act on it.
         }
@@ -786,7 +786,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 previous = current;
             }
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // A position we cannot read is one we cannot wait on; let the caller proceed.
         }
@@ -860,7 +860,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         {
             active = _driver.Driver.SwitchTo().ActiveElement();
         }
-        catch (WebDriverException)
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return false;
         }
@@ -968,7 +968,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             return value.Equals("true", StringComparison.OrdinalIgnoreCase)
                 || value.Equals("1", StringComparison.Ordinal);
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // A driver may throw rather than return null for an absent attribute.
             return null;
@@ -999,7 +999,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
             return !string.IsNullOrEmpty(value)
                 && value.Equals("true", StringComparison.OrdinalIgnoreCase);
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return false;
         }
@@ -1182,7 +1182,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         => WithOpenPicker(nameof(SelectByText), items =>
         {
             var item = items.FirstOrDefault(i => i.Text == text)
-                ?? throw new InvalidOperationException(
+                ?? throw new ActionRefusedException(
                     $"'{AutomationId}' has no item with text '{text}' among the {items.Count} its dialog shows.");
 
             item.Click();
@@ -1243,7 +1243,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
                 _driver.Driver.Navigate().Back();
             }
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // The failure that brought us here is the one worth reporting.
         }

@@ -1001,7 +1001,7 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
             });
             return true;
         }
-        catch (Exception error) when (error is NotSupportedException or InvalidOperationException)
+        catch (Exception error) when (error is NotSupportedException or ActionRefusedException)
         {
             // The platform could not scroll this row into view: an answer. A row that is gone is
             // not - it propagates as StaleElementException.
@@ -1346,12 +1346,12 @@ public abstract class CollectionObjectBase<TParent, TSelf, TItem>
         try
         {
             // A candidate may be the wrong element, so a failure here is an answer, not a fault:
-            // the pattern is absent (NotSupported) or refused (InvalidOperation). A candidate that
+            // the pattern is absent (NotSupported) or refused (ActionRefused). A candidate that
             // is gone is not an answer - it propagates as StaleElementException.
             element.Select();
             return true;
         }
-        catch (Exception error) when (error is NotSupportedException or InvalidOperationException)
+        catch (Exception error) when (error is NotSupportedException or ActionRefusedException)
         {
             return false;
         }

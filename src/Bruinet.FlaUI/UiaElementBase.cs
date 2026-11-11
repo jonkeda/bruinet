@@ -259,7 +259,7 @@ public abstract class UiaElementBase
         }
         catch (System.ComponentModel.Win32Exception refused)
         {
-            throw new InvalidOperationException(
+            throw new ActionRefusedException(
                 $"Windows refused the key '{key}' for {this} ({refused.Message}): synthetic input is refused while the "
                 + "desktop is locked, or when the app runs elevated and the test does not.", refused);
         }

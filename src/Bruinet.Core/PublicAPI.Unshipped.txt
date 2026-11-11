@@ -1210,3 +1210,6 @@ static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
 static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
 Bruinet.Core.Exceptions.UiSetupException
 Bruinet.Core.Exceptions.UiSetupException.UiSetupException(System.Exception! cause) -> void
+Bruinet.Core.Exceptions.ActionRefusedException
+Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message) -> void
+Bruinet.Core.Exceptions.ActionRefusedException.ActionRefusedException(string! message, System.Exception! innerException) -> void

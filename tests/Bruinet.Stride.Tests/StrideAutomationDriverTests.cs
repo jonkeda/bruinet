@@ -71,4 +71,22 @@ public sealed class StrideAutomationDriverTests
 
         Assert.True(Driver.IsGameBusy());
     }
+
+    [Fact]
+    public void An_Action_TheGameRefuses_IsARefusal_NotAFault()
+    {
+        Answer(AutomationResponse.Fail("NotFound:Save:Click"));
+
+        var error = Assert.Throws<ActionRefusedException>(() => Driver.Act("Click", "Save"));
+        Assert.Contains("refused Click", error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_Read_TheGameCouldNotAnswer_IsAFault_NotARefusal()
+    {
+        Answer(AutomationResponse.Fail("Error: handler threw"));
+
+        var error = Assert.Throws<InvalidOperationException>(() => Driver.GetState("Save"));
+        Assert.IsNotType<ActionRefusedException>(error);
+    }
 }

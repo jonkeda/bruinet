@@ -452,7 +452,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
 
         if (!run())
         {
-            throw new InvalidOperationException(
+            throw new ActionRefusedException(
                 $"The UI Automation {pattern} on '{name}' was available but refused to {operation}.");
         }
     });
@@ -1715,7 +1715,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             if (!SelectFromDropdown(items => items.FirstOrDefault(i => i.Name == text || i.Text == text)))
             {
-                throw new InvalidOperationException($"'{AutomationId}' has no item with text '{text}'.");
+                throw new ActionRefusedException($"'{AutomationId}' has no item with text '{text}'.");
             }
 
             return;

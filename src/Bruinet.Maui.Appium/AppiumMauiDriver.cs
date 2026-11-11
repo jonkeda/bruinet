@@ -311,7 +311,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
 
             return true;
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return false;
         }
@@ -453,7 +453,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
             Bruinet.Core.Calls.AttemptMemo.Forget();
             return true;
         }
-        catch (WebDriverException)
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return false;
         }
@@ -817,7 +817,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
                 {
                     return _driver.ExecuteScript("mobile: scrollGesture", parameters) is true;
                 }
-                catch (Exception error) when (!AppiumErrors.IsGone(error))
+                catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
                 {
                     return null;
                 }
@@ -1005,7 +1005,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
                         break;
                     }
                 }
-                catch (Exception error) when (!AppiumErrors.IsGone(error))
+                catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
                 {
                     return null;
                 }
@@ -1062,7 +1062,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
                 .OrderByDescending(element => element.Size.Height)
                 .FirstOrDefault();
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return null;
         }
@@ -1077,7 +1077,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
                 .Take(3)
                 .Select(child => $"{child.GetAttribute("name")}@{child.Location.Y}"));
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             return string.Empty;
         }
@@ -1147,8 +1147,9 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
             var resourceId = container.GetAttribute("resource-id");
             return string.IsNullOrEmpty(resourceId) ? null : resourceId;
         }
-        catch
+        catch (Exception error) when (error is WebDriverException or StaleElementException && !AppiumErrors.IsGone(error))
         {
+            // A container without the attribute, or one replaced since it was found: no id. A lost session goes on.
             return null;
         }
     }
@@ -1178,8 +1179,9 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
 
             return element;
         }
-        catch
+        catch (Exception error) when (error is WebDriverException or StaleElementException && !AppiumErrors.IsGone(error))
         {
+            // Not found in this look, or replaced while it settled: none. A lost session goes on.
             return null;
         }
     }

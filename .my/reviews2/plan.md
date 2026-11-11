@@ -44,13 +44,13 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T08 Stride start-up wait throws `TimeoutException` naming `StartupTimeout`. R02 P2.
 - [x] R2-T09 `DesktopApp.WaitForInputIdle` bounded, failure names the app. R02 P3. Launch path not run here (**desk**); unit tests green.
 - [x] R2-T10 `FlaUIMauiElement`: 14 reads, 4 action helpers and `TrySetTextValue` catch FlaUI's not-supported exceptions only. R05 P2. **desk**; kofflard.
-- [ ] R2-T11 Appium classes catch `WebDriverException` with `IsGone`; the two bare catches go. R05 P3. **android**; kofflard.
+- [x] R2-T11 Appium classes catch `WebDriverException` with `IsGone`; the two bare catches go. R05 P3. **android**; kofflard.
 - [x] R2-T12 Scraper save queue observes faults and reports them through `Changed`. R05 P4.
 - [x] R2-T13 Delete `UatControlAssertions` (no caller in Bruinet, Tomorrow, Kofflard, construction). R05 P5.
 - [x] R2-T14 Bridge keeps the app's exception message. R05 P6.
 - [x] R2-T15 `UatScenarioResults.Record` catches file errors only and traces them. R05 P7.
 - [x] R2-T16 The small catches. R05 P10.
-- [ ] R2-T17 A typed "refused" exception in Core in place of `InvalidOperationException`. R05 P8.
+- [x] R2-T17 A typed "refused" exception in Core in place of `InvalidOperationException`. R05 P8.
 - [ ] R2-T18 Check that fails a new bare catch or unfiltered `catch (Exception)` outside an allowed list. R05 P9.
 
 ## Phase 2: secrets and what Bruinet writes
@@ -58,11 +58,11 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T19 SQL recordings redact by name, guide warns. R09 P1. Needs D4.
 - [ ] R2-T20 Traces mask password fields and listed controls. R09 P2. Needs D4.
 - [ ] R2-T21 SQL hook refuses outside a test setup; `begin`/`end` are `POST`. R09 P3. Needs D4.
-- [ ] R2-T22 MCP `base` refused when it starts with `-`, passed after `--end-of-options`; `review_page` and `record_video` paths confined to the solution. R09 P4.
+- [x] R2-T22 MCP `base` refused when it starts with `-`, passed after `--end-of-options`; `review_page` and `record_video` paths confined to the solution. R09 P4.
 - [ ] R2-T23 HTTP redaction: streamed parts, XML, `Location` query, more default names. R09 P5. Needs D4.
-- [ ] R2-T24 Voice key file owner-only on Unix. R09 P6.
-- [ ] R2-T25 Stride pipe `PipeOptions.CurrentUserOnly`. R09 P7.
-- [ ] R2-T26 VS `watch` opens only `.mp4` under the recordings folder. R09 P8.
+- [x] R2-T24 Voice key file owner-only on Unix. R09 P6.
+- [x] R2-T25 Stride pipe `PipeOptions.CurrentUserOnly`. R09 P7.
+- [x] R2-T26 VS `watch` opens only `.mp4` under the recordings folder. R09 P8.
 - [ ] R2-T27 `bruinet sql --connection-from <VAR>`. R09 P9.
 - [ ] R2-T28 Guide page "What Bruinet writes". R09 P10.
 
@@ -165,6 +165,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T109 `TOD.08.8 Offline disables Sync…` in `Bruinet.Samples.Todo.Web.Uat` fails in a full run on the bUnit head ("Last Sync" reads "Synced 10:00", expected "Offline") and passes alone, with and without R2-T15: state left by an earlier scenario. Found 2026-11-11.
 - [ ] R2-T110 `ArchitectureTests.OnlyBruinetUat_DeclaresUatNames` fails on `move` since `039d9b1b`: `Bruinet.Traits`' `UatAttribute` (`TraitAttributes.cs:52`) is a `Uat` name outside `Bruinet.Uat` (AD-021). Construction's plan drops `[Uat]` in its T10; until then it is red in `Bruinet.Core.Tests`. Not ours to change: told to the owner 2026-11-11.
 - [ ] R2-T111 Sixteen MAUI Windows UI tests fail on this machine with and without R2-T10 (2026-11-11): `ProductCollectionTests` (9, "No item at index 0 … materialized items: 0"), `RowTapTests` (2, `ItemTemplateContext` has no InvokePattern), `MediaElementTests` (5, `TimeRemainingElement` not visible); `ItemWhere_ScrollsToFindOffscreenRow` failed once without it and passed with it. 415 of 434 pass.
+- [ ] R2-T112 45 of 382 MAUI tests fail on the Android emulator (`Brinell_Android`, API 36) with R2-T11, and the 37 tests of five of those classes fail the same way without it (26 failed, 11 passed both times): Carousel, RatingView, MediaElement, DrawingView, Picker and Entry contracts, nested refresh, paged list. Found 2026-11-11; not investigated.
 
 ## Phase 9: consumers, after the merge into `move`
 

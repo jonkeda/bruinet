@@ -61,9 +61,9 @@ internal sealed partial class AppiumMauiElement
         {
             wheel.SendKeys(text);
         }
-        catch (WebDriverException error)
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
-            throw new InvalidOperationException($"'{AutomationId}' has no item with text '{text}'.", error);
+            throw new ActionRefusedException($"'{AutomationId}' has no item with text '{text}'.", error);
         }
     }
 
@@ -186,16 +186,23 @@ internal sealed partial class AppiumMauiElement
             var shown = string.Join(", ", wheels.Select(w => w.GetAttribute("value")));
             // UIKit turns a wheel past MinimumDate or MaximumDate back by itself; put the old date
             // back so nothing changes, then refuse as Windows and Android do.
+            var notBack = new List<string>();
             for (var i = 0; i < wheels.Count; i++)
             {
-                TrySend(wheels[i], before[i]);
+                if (TrySend(wheels[i], before[i]) is { } why)
+                {
+                    notBack.Add($"wheel {i + 1} ({before[i]}): {why}");
+                }
             }
 
             PressDone();
             throw new BruinetException(
                 $"'{name}' was asked for {date:yyyy-MM-dd}, which its date wheels did not keep: "
                 + $"it is outside the picker's MinimumDate and MaximumDate, or the app changes a picked date "
-                + $"while the wheels turn (the wheels showed {shown}). Nothing was changed.");
+                + $"while the wheels turn (the wheels showed {shown}). "
+                + (notBack.Count == 0
+                    ? "Nothing was changed."
+                    : $"Putting the old date back failed, so the picker may show another date: {string.Join("; ", notBack)}."));
         }
 
         PressDone();
@@ -268,13 +275,14 @@ internal sealed partial class AppiumMauiElement
         {
             _driver.Driver.FindElements(IosDone).FirstOrDefault()?.Click();
         }
-        catch (WebDriverException)
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // Closing is a courtesy to the next test; a failure being reported is the real one.
         }
     }
 
-    private static void TrySend(IWebElement wheel, string? value)
+    // Null when the wheel took the value (or there was none to give); else why it did not. A lost session goes on.
+    private static string? TrySend(IWebElement wheel, string? value)
     {
         try
         {
@@ -282,9 +290,12 @@ internal sealed partial class AppiumMauiElement
             {
                 wheel.SendKeys(value);
             }
+
+            return null;
         }
-        catch (WebDriverException)
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
+            return error.Message;
         }
     }
 

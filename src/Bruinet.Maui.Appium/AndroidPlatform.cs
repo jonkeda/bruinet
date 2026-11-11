@@ -147,7 +147,7 @@ internal sealed class AndroidPlatform : AppiumPlatform
             element.Driver.ScrollUntil(region, directions, element.IsDisplayedNow, budgetMs, atLeastOneSwipe: true,
                 new System.Drawing.Rectangle(50, 150, windowSize.Width - 100, windowSize.Height - 300));
         }
-        catch (Exception error) when (!AppiumErrors.IsGone(error))
+        catch (WebDriverException error) when (!AppiumErrors.IsGone(error))
         {
             // Scroll attempt failed: the caller's poll sees it still not visible.
         }
