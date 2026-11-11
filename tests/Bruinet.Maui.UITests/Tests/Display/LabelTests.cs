@@ -25,32 +25,6 @@ public class LabelTests
     }
 
     /// <summary>
-    /// Verifies that the Label exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Label_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestLabel.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Label is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Label_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestLabel.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that the Label displays text correctly.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

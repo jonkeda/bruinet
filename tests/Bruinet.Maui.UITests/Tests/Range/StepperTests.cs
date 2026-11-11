@@ -26,32 +26,6 @@ public class StepperTests
         return new(_fixture.Context);
     }
 
-    /// <summary>
-    /// Verifies that the Stepper exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Stepper_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestStepper.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Stepper is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Stepper_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestStepper.AssertVisible();
-        return Task.CompletedTask;
-    }
-
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     [Trait("Pattern", "Probe")]
     public Task StepperButtons_ReportInvokeBehavior()
@@ -79,19 +53,6 @@ public class StepperTests
         var after = value?.Text ?? value?.Name;
         _output.WriteLine($"Plus Invoke {result}; value before='{before}', after='{after}'.");
 
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Stepper is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Stepper_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestStepper.AssertEnabled();
         return Task.CompletedTask;
     }
 

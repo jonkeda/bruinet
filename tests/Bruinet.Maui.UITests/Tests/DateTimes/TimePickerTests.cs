@@ -29,45 +29,6 @@ public class TimePickerTests
     }
 
     /// <summary>
-    /// Verifies that the TimePicker control exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task TimePicker_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestTimePicker.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the TimePicker is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task TimePicker_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestTimePicker.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the TimePicker is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task TimePicker_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestTimePicker.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that selecting a time updates the displayed time status.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

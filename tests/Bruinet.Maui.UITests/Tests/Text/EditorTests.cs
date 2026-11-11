@@ -26,45 +26,6 @@ public class EditorTests
     }
 
     /// <summary>
-    /// Verifies that the Editor control exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Editor_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEditor.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Editor control is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Editor_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEditor.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Editor control is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Editor_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEditor.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that single-line text can be entered into the Editor control.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

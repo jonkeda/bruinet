@@ -24,45 +24,6 @@ public class SliderTests
     }
 
     /// <summary>
-    /// Verifies that the Slider exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Slider_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSlider.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Slider is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Slider_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSlider.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Slider is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Slider_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSlider.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that the Slider value updates when set.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

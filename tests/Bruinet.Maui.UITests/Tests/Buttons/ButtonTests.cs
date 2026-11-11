@@ -25,45 +25,6 @@ public class ButtonTests
     }
 
     /// <summary>
-    /// Verifies that the Button exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Button_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestButton.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Button is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Button_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestButton.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Button is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Button_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestButton.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that tapping the Button executes its command.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

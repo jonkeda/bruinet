@@ -24,19 +24,6 @@ public class SwitchTests
     }
 
     /// <summary>
-    /// Verifies that the Switch exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Switch_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSwitch.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that toggling the Switch to ON updates the status.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

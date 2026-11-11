@@ -88,7 +88,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T43 bUnit reads `aria-disabled`, `aria-checked`; `Text` leaves hidden children out; `docs/guides/bunit.md` lists the rest. R04 P4. tomorrow.
 - [x] R2-T44 Html edge tests and `PressKey` into the bindings, both heads. R04 P9.
 - [x] R2-T45 Html bindings for Progress, Date, Time, Tab, Scrollable. R04 P11, R08 P1. Done for Progress (Html `ProgressControl` now implements `IProgressControlObject`; no class did before), Date and Time, on both heads. Html's tab and scroll are containers, not control objects, so `TabContract` and `ScrollableContract` wait for MAUI (R2-T47).
-- [ ] R2-T46 MAUI binds Element, Clickable, Text (MauiHeadless); the 42 `Is…_ReturnsTrue` tests go. R04 P6, R08 P2.
+- [x] R2-T46 MAUI binds Element, Clickable, Text (MauiHeadless); the 42 `Is…_ReturnsTrue` tests go. R04 P6, R08 P2. Element, Button and Label bound on the Buttons page; on MAUI a hidden view is gone on every head, so the three hidden-control tests skip with why. MAUI's `Label` now declares `ITextControlObject`.
 - [ ] R2-T47 MAUI binds the eight unbound contracts on MauiHeadless; a contract no head binds is deleted. R08 P1.
 - [ ] R2-T48 MAUI contracts run once on Windows; per-test skips replace the `Head=MauiHeadless` trait. R04 P5. **desk**.
 - [ ] R2-T49 MAUI contracts run on Android. **android**. iOS noted as not run (**mac**).

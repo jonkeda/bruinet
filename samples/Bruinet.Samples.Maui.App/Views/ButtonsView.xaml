@@ -59,6 +59,22 @@
                 Padding="10"
                 BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2F2F2F}" />
 
+            <!-- The control contracts' controls (review 08, finding 2): one that records what happened to it, a hidden
+                 and a disabled one, and a label with no text. -->
+            <Button
+                Text="Contract"
+                Command="{Binding ContractClickCommand}"
+                AutomationId="ContractButton">
+                <Button.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding ContractDoubleTapCommand}" />
+                </Button.GestureRecognizers>
+            </Button>
+            <Label Text="{Binding ContractAction}" AutomationId="ContractAction" />
+            <Button Text="Hidden" AutomationId="HiddenButton" IsVisible="False" />
+            <Button Text="Disabled" AutomationId="DisabledButton" IsEnabled="False" />
+            <Label Text="Contract label" AutomationId="ContractLabel" />
+            <Label Text="" AutomationId="EmptyLabel" />
+
             <!-- Reset Button -->
             <Button 
                 Text="Reset" 

@@ -25,43 +25,9 @@ public class EntryTests
     }
 
     /// <summary>
-    /// Verifies that the Entry control exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Entry_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEntry.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that the Entry control is visible.
     /// </summary>
     /*[Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Entry_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEntry.AssertVisible();
-        return Task.CompletedTask;
-    }*/
-
-    /// <summary>
-    /// Verifies that the Entry control is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Entry_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestEntry.AssertEnabled();
-        return Task.CompletedTask;
-    }
 
     /// <summary>
     /// Verifies that text can be entered into the Entry control.

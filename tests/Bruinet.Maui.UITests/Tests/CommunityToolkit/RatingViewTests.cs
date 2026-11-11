@@ -21,14 +21,6 @@ public class RatingViewTests
     private CommunityToolkitTestPage GetPage() => new(_fixture.Context);
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task RatingView_IsExists_ReturnsTrue()
-    {
-        GetPage().TestRatingView.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     [Trait("Method", "GetValue")]
     public Task RatingView_ReadsInitialRangeFromApp()
     {

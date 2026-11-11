@@ -25,19 +25,6 @@ public class ActivityIndicatorTests
     }
 
     /// <summary>
-    /// Verifies that the ActivityIndicator exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task ActivityIndicator_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestActivityIndicator.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that the ActivityIndicator is visible when running.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

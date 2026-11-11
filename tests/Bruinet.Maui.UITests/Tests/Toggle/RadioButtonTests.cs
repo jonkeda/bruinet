@@ -24,21 +24,6 @@ public class RadioButtonTests
     }
 
     /// <summary>
-    /// Verifies that RadioButton controls exist on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task RadioButton_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestRadioButton1.AssertExists();
-        page.TestRadioButton2.AssertExists();
-        page.TestRadioButton3.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that selecting Option 1 updates the status.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

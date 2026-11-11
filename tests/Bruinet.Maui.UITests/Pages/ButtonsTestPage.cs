@@ -32,6 +32,18 @@ public class ButtonsTestPage : PageObjectBase<ButtonsTestPage>
     /// </summary>
     public Button<ButtonsTestPage> ResetButton => new(this, "ResetButton");
 
+    /// <summary>The control contracts' button; <see cref="ContractAction"/> says what happened to it.</summary>
+    public Button<ButtonsTestPage> ContractButton => new(this, "ContractButton");
+
+    /// <summary>On the page, not visible.</summary>
+    public Button<ButtonsTestPage> HiddenButton => new(this, "HiddenButton");
+
+    /// <summary>Visible, not enabled.</summary>
+    public Button<ButtonsTestPage> DisabledButton => new(this, "DisabledButton");
+
+    /// <summary>Not on the page.</summary>
+    public Button<ButtonsTestPage> MissingButton => new(this, "NoSuchButton");
+
     #endregion
 
     #region Labels
@@ -40,6 +52,15 @@ public class ButtonsTestPage : PageObjectBase<ButtonsTestPage>
     /// The status message label showing test results.
     /// </summary>
     public Label<ButtonsTestPage> StatusLabel => new(this, "StatusLabel");
+
+    /// <summary>What happened to <see cref="ContractButton"/> last.</summary>
+    public Label<ButtonsTestPage> ContractAction => new(this, "ContractAction");
+
+    /// <summary>Shows "Contract label".</summary>
+    public Label<ButtonsTestPage> ContractLabel => new(this, "ContractLabel");
+
+    /// <summary>A label with no text.</summary>
+    public Label<ButtonsTestPage> EmptyLabel => new(this, "EmptyLabel");
 
     #endregion
 }

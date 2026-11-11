@@ -24,45 +24,6 @@ public class PickerTests
     }
 
     /// <summary>
-    /// Verifies that the Picker exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Picker_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestPicker.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Picker is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task Picker_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestPicker.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the Picker is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task Picker_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestPicker.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that selecting an item in the Picker updates the status message.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

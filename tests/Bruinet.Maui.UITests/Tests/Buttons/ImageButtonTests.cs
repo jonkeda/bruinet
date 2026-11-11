@@ -25,45 +25,6 @@ public class ImageButtonTests
     }
 
     /// <summary>
-    /// Verifies that the ImageButton exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task ImageButton_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        Assert.True(page.TestImageButton.Exists());
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the ImageButton is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task ImageButton_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestImageButton.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the ImageButton is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task ImageButton_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestImageButton.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that tapping the ImageButton executes its command.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

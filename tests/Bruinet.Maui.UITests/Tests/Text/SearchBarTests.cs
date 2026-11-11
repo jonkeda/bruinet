@@ -25,58 +25,6 @@ public class SearchBarTests
     }
 
     /// <summary>
-    /// Verifies that the SearchBar control exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task SearchBar_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSearchBar.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the SearchBar control is visible once scrolled to.
-    /// </summary>
-    /// <remarks>
-    /// The scroll is the point of the test, not boilerplate around it. The text page is a
-    /// <c>ScrollView</c> and the SearchBar sits below the fold, so it genuinely reports
-    /// <c>IsOffscreen</c> with a zero bounding rectangle until something scrolls to it - which
-    /// is what a user does before looking at it.
-    /// <para>
-    /// Actions do this on their own: every path through <c>RunDoWithElement</c> calls
-    /// <c>EnsureVisible</c> first, which is why <c>SetText</c> on this same control passes
-    /// without a scroll. <c>IsVisible</c> is a query, and a query reports what is on screen
-    /// rather than quietly changing it.
-    /// </para>
-    /// </remarks>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task SearchBar_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-
-        // Assert
-        page.TestSearchBar.AssertVisibleAfterScroll();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the SearchBar control is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task SearchBar_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestSearchBar.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that search text can be entered into the SearchBar control.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

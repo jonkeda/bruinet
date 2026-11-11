@@ -7,7 +7,7 @@ using Bruinet.Maui.Interfaces;
 /// Uses generated GetText(), AssertText(), and AssertTextContains() members.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public partial class Label<TScope> : Base.ViewBase<TScope>
+public partial class Label<TScope> : Base.ViewBase<TScope>, Bruinet.Core.Interfaces.ITextControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>

@@ -21,14 +21,6 @@ public class ExpanderTests
     private CommunityToolkitTestPage GetPage() => new(_fixture.Context);
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task Expander_IsExists_ReturnsTrue()
-    {
-        GetPage().TestExpander.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     [Trait("Method", "IsExpanded")]
     public Task Expander_StartsCollapsed()
     {

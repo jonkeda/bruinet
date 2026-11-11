@@ -32,45 +32,6 @@ public class DatePickerTests
     }
 
     /// <summary>
-    /// Verifies that the DatePicker control exists on the page.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "Exists")]
-    public Task DatePicker_IsExists_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestDatePicker.AssertExists();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the DatePicker is visible.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsVisible")]
-    public Task DatePicker_IsVisible_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestDatePicker.AssertVisible();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Verifies that the DatePicker is enabled.
-    /// </summary>
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
-    [Trait("Method", "IsEnabled")]
-    public Task DatePicker_IsEnabled_ReturnsTrue()
-    {
-        var page = GetPage();
-        // Assert
-        page.TestDatePicker.AssertEnabled();
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Verifies that selecting a date updates the displayed date status.
     /// </summary>
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]

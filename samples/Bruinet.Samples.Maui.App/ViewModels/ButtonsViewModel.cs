@@ -15,6 +15,19 @@ public class ButtonsViewModel : ParentViewModel
     public ICommand TestImageButtonCommand => new RelayCommand(TestImageButton);
     public ICommand ResetCommand => new RelayCommand(Reset);
 
+    private string contractAction = string.Empty;
+
+    /// <summary>What happened to the contract's button last: "click" or "double-click".</summary>
+    public string ContractAction
+    {
+        get => contractAction;
+        set => SetProperty(ref contractAction, value);
+    }
+
+    public ICommand ContractClickCommand => new RelayCommand(() => ContractAction = "click");
+
+    public ICommand ContractDoubleTapCommand => new RelayCommand(() => ContractAction = "double-click");
+
     private void TestButton()
     {
         tapCount++;
