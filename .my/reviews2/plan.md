@@ -89,7 +89,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T44 Html edge tests and `PressKey` into the bindings, both heads. R04 P9.
 - [x] R2-T45 Html bindings for Progress, Date, Time, Tab, Scrollable. R04 P11, R08 P1. Done for Progress (Html `ProgressControl` now implements `IProgressControlObject`; no class did before), Date and Time, on both heads. Html's tab and scroll are containers, not control objects, so `TabContract` and `ScrollableContract` wait for MAUI (R2-T47).
 - [x] R2-T46 MAUI binds Element, Clickable, Text (MauiHeadless); the 42 `Is…_ReturnsTrue` tests go. R04 P6, R08 P2. Element, Button and Label bound on the Buttons page; on MAUI a hidden view is gone on every head, so the three hidden-control tests skip with why. MAUI's `Label` now declares `ITextControlObject`.
-- [ ] R2-T47 MAUI binds the eight unbound contracts on MauiHeadless; a contract no head binds is deleted. R08 P1.
+- [x] R2-T47 MAUI binds the eight unbound contracts on MauiHeadless; a contract no head binds is deleted. R08 P1. Six bound on MauiHeadless: Date, Time, Progress (indeterminate skips: MAUI's ProgressBar never is), Expandable (the toolkit's Expander), Swipeable and Refreshable (`RefreshView.IsRefreshing` read the view for the first time). Tab waits for WPF and WinForms (R2-T51); Scrollable needs new MAUI API (R2-T115). No contract is deleted.
 - [ ] R2-T48 MAUI contracts run once on Windows; per-test skips replace the `Head=MauiHeadless` trait. R04 P5. **desk**.
 - [ ] R2-T49 MAUI contracts run on Android. **android**. iOS noted as not run (**mac**).
 - [ ] R2-T50 MAUI `GetAttribute`: one vocabulary, or off the page-object surface. R04 P7. kofflard.
@@ -168,6 +168,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T112 45 of 382 MAUI tests fail on the Android emulator (`Brinell_Android`, API 36) with R2-T11, and the 37 tests of five of those classes fail the same way without it (26 failed, 11 passed both times): Carousel, RatingView, MediaElement, DrawingView, Picker and Entry contracts, nested refresh, paged list. Found 2026-11-11; not investigated.
 - [ ] R2-T113 A step test in `Bruinet.Cli.Tests` (`StepTests.RunOfTheFile_…`, about 12 s) fails now and then while other builds run, and passes alone and on the next run; timing on a busy machine, noted, not chased (2026-11-11).
 - [ ] R2-T114 `Bruinet.Cli.Tests`' config and MCP tests read the Todo sample's built suite (`samples/Todo/tests/Bruinet.Samples.Todo.Uat`) and fail with empty lists when it was built against an older Core or Bdd; the test project does not build it. Fold into R2-T67 (a CI step builds it first) or R2-T94 (a suite that cannot load is a row). Found 2026-11-11.
+- [ ] R2-T115 MAUI `ScrollView` implements `IScrollableControlObject` (top, end, by, position, can-scroll, on every MAUI head) and binds `ScrollableContract`; until then no head binds it. Found in R2-T47.
 
 ## Phase 9: consumers, after the merge into `move`
 

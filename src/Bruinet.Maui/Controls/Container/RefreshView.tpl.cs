@@ -54,13 +54,10 @@ public partial class RefreshView<TParent, TSelf> : ContainerObjectBase<TParent, 
     /// Reads the refreshing state from the pre-found element.
     /// </summary>
     /// <param name="element">The pre-found element (may be null).</param>
-    /// <returns>Null: the refreshing state is unknown.</returns>
+    /// <returns>The view's IsRefreshing where the head reads it (MauiHeadless does); null when it cannot tell.</returns>
     [AbsenceTolerant]
     protected virtual bool? IsRefreshingCore(IMauiElement? element)
-    {
-        // To make this real, watch the refresh indicator the way ActivityIndicator does.
-        return null;
-    }
+        => bool.TryParse(element?.GetAttribute("IsRefreshing"), out var refreshing) ? refreshing : null;
 
     #endregion
 

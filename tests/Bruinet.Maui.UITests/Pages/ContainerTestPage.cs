@@ -47,6 +47,9 @@ public class ContainerTestPage : PageObjectBase<ContainerTestPage>
     /// <summary>Reflects how many refreshes have completed.</summary>
     public Label<ContainerTestPage> RefreshText => new(this, "RefreshContentLabel");
 
+    /// <summary>Which way <c>ContractSwipeView</c> was swiped last.</summary>
+    public Label<ContainerTestPage> ContractSwipeDirection => new(this, "ContractSwipeDirection");
+
     /// <summary>Completes a refresh without needing a pull gesture.</summary>
     public Button<ContainerTestPage> TriggerRefreshButton => new(this, "TriggerRefreshButton");
 

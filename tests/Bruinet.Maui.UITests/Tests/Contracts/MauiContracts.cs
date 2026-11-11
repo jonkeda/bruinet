@@ -350,3 +350,59 @@ public sealed class MauiExpanderContract : ExpandableContract<CommunityToolkitTe
 
     protected override IExpandableControlObject<CommunityToolkitTestPage> Expander => _page.TestExpander;
 }
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiSwipeViewContract : SwipeableContract<SwipeView<ContainerTestPage>>
+{
+    private readonly ContainerTestPage _page;
+    private readonly SwipeView<ContainerTestPage> _view;
+
+    public MauiSwipeViewContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.Container);
+        _page = new ContainerTestPage(fixture.Context);
+        _view = new SwipeView<ContainerTestPage>(_page, "ContractSwipeView");
+    }
+
+    // A container is its own scope: its actions return it.
+    protected override SwipeView<ContainerTestPage> Scope => _view;
+
+    protected override ISwipeableControlObject<SwipeView<ContainerTestPage>> Card => _view;
+
+    protected override string? LastSwipe() => _page.ContractSwipeDirection.GetText() is { Length: > 0 } direction ? direction : null;
+
+    protected override (int StartX, int StartY, int EndX, int EndY) LeftwardPoints => (200, 20, 20, 20);
+
+    [Fact(Skip = "A swipe between points is a device's: MauiHeadless refuses it (DeviceOnlyException).")]
+    public override void Swipe_BetweenPoints_SwipesThatWay()
+    {
+    }
+}
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<ContainerTestPage>>
+{
+    private readonly ContainerTestPage _page;
+    private readonly RefreshView<ContainerTestPage> _view;
+
+    public MauiRefreshViewContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.Container);
+        _page = new ContainerTestPage(fixture.Context);
+        _view = new RefreshView<ContainerTestPage>(_page, "TestRefreshView");
+    }
+
+    protected override RefreshView<ContainerTestPage> Scope => _view;
+
+    protected override IRefreshableControlObject<RefreshView<ContainerTestPage>> View => _view;
+
+    // ContainerViewModel says "refreshed N" after N refreshes, "not refreshed" before.
+    protected override int Refreshes()
+        => _page.RefreshText.GetText() is { } text && text.StartsWith("refreshed ", StringComparison.Ordinal)
+            ? int.Parse(text["refreshed ".Length..], System.Globalization.CultureInfo.InvariantCulture)
+            : 0;
+}

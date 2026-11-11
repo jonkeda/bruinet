@@ -148,6 +148,22 @@
                 </Grid>
             </SwipeView>
 
+            <!-- The swipeable contract's view (review 08, finding 1): items on all four sides, and the label
+                 says which way the last swipe went, from a device's SwipeEnded or an Open request. -->
+            <SwipeView AutomationId="ContractSwipeView"
+                       uia:GestureAutomation.Verbs="SwipeLeft,SwipeRight,SwipeUp,SwipeDown"
+                       SwipeEnded="OnContractSwipeEnded"
+                       OpenRequested="OnContractOpenRequested">
+                <SwipeView.LeftItems><SwipeItems><SwipeItem Text="L" /></SwipeItems></SwipeView.LeftItems>
+                <SwipeView.RightItems><SwipeItems><SwipeItem Text="R" /></SwipeItems></SwipeView.RightItems>
+                <SwipeView.TopItems><SwipeItems><SwipeItem Text="T" /></SwipeItems></SwipeView.TopItems>
+                <SwipeView.BottomItems><SwipeItems><SwipeItem Text="B" /></SwipeItems></SwipeView.BottomItems>
+                <Grid HeightRequest="44">
+                    <Label Text="Swipe any way" VerticalOptions="Center" Margin="10,0" />
+                </Grid>
+            </SwipeView>
+            <Label AutomationId="ContractSwipeDirection" x:Name="ContractSwipeDirection" Text="" />
+
             <!-- ===================== RefreshView =====================
                  Pull-to-refresh, driven by the same mechanism. The second bridge element on
                  this page, and deliberately a different control type answering a different
