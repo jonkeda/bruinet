@@ -87,8 +87,15 @@ internal static class SelectionCommands
     // The files changed since the commit, the working tree's included, and the new files git does not ignore.
     internal static List<string> Changed(string currentDirectory, string since)
     {
+        // A revision that starts with '-' is read by git as an option (--output=<file> writes a file); it comes
+        // from the command line or an MCP argument, so it is refused, and passed after --end-of-options (review 09).
+        if (since.StartsWith('-'))
+        {
+            throw new InvalidOperationException($"'{since}' is not a commit: a base names a commit, branch or tag.");
+        }
+
         var root = Git(currentDirectory, "rev-parse", "--show-toplevel").Single();
-        return Git(currentDirectory, "diff", "--name-only", since)
+        return Git(currentDirectory, "diff", "--name-only", "--end-of-options", since)
             .Concat(Git(currentDirectory, "ls-files", "--others", "--exclude-standard", "--full-name", ":/"))
             .Select(file => Path.GetFullPath(file, root))
             .Distinct(StringComparer.OrdinalIgnoreCase)

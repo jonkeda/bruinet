@@ -150,6 +150,48 @@ public sealed class SelectionTests : IDisposable
         Assert.Contains("BRUINET_TIMINGS=1", Tool(server, "tests_affected", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["files"] = new System.Text.Json.Nodes.JsonArray("Lib/Control.cs") }));
     }
 
+    [Fact]
+    public void TheMcpServersTestsAffected_RefusesABase_GitWouldReadAsAnOption()
+    {
+        Map().Save(At("Shop.UITests/" + TouchMap.FileName));
+        using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
+
+        var result = Result(server, "tests_affected", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["base"] = "--output=written.txt" });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("not a commit", (string?)result["content"]![0]!["text"], StringComparison.Ordinal);
+        Assert.False(File.Exists(Path.Combine(_root, "written.txt")));
+    }
+
+    [Fact]
+    public void TheMcpServersReviewPage_RefusesAPath_OutsideTheSolution()
+    {
+        var video = At("Shop.UITests/TestResults/recordings/how.mp4");
+        Directory.CreateDirectory(Path.GetDirectoryName(video)!);
+        File.WriteAllBytes(video, []);
+        using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
+
+        var result = Result(server, "review_page", new System.Text.Json.Nodes.JsonObject
+        {
+            ["title"] = "Outside",
+            ["videos"] = new System.Text.Json.Nodes.JsonArray(video),
+            ["path"] = "../outside-review.html",
+        });
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("outside the solution", (string?)result["content"]![0]!["text"], StringComparison.Ordinal);
+        Assert.False(File.Exists(Path.Combine(Path.GetDirectoryName(_root)!, "outside-review.html")));
+    }
+
+    private static System.Text.Json.Nodes.JsonNode Result(Bruinet.Bdd.LanguageServer.BddMcpServer server, string name, System.Text.Json.Nodes.JsonObject arguments)
+        => server.Handle(new System.Text.Json.Nodes.JsonObject
+        {
+            ["jsonrpc"] = "2.0",
+            ["id"] = 1,
+            ["method"] = "tools/call",
+            ["params"] = new System.Text.Json.Nodes.JsonObject { ["name"] = name, ["arguments"] = arguments },
+        }.ToJsonString())!["result"]!;
+
     private static string Tool(Bruinet.Bdd.LanguageServer.BddMcpServer server, string name, System.Text.Json.Nodes.JsonObject arguments)
         => (string)server.Handle(new System.Text.Json.Nodes.JsonObject
         {

@@ -1311,7 +1311,7 @@ public sealed class BddMcpServer : IDisposable
     private object RecordVideo(JsonObject arguments)
     {
         var path = Path.GetFullPath(Required(arguments, "path"), _solutionDir);
-        var recordingsFolder = (string?)arguments["recordingsFolder"];
+        var recordingsFolder = (string?)arguments["recordingsFolder"] is { Length: > 0 } folder ? InSolution(folder, "recordingsFolder") : null;
         var suite = (string?)arguments["suite"];
         var target = _server.RecordTarget(new RecordTargetParams(new Uri(path).AbsoluteUri, (int?)arguments["line"], suite, recordingsFolder, (string?)arguments["voice"], null));
         if (!target.CanRecord || target.Project is not { } project || target.Filter is not { } filter)
@@ -1345,7 +1345,7 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    private static object ReviewPage(JsonObject arguments)
+    private object ReviewPage(JsonObject arguments)
     {
         var videos = (arguments["videos"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(Path.GetFullPath).ToList() ?? [];
         if (videos.Count == 0)
@@ -1360,11 +1360,25 @@ public sealed class BddMcpServer : IDisposable
         }
 
         var page = (string?)arguments["path"] is { Length: > 0 } named
-            ? Path.GetFullPath(named)
+            ? InSolution(named, "path")
             : Path.Combine(Path.GetDirectoryName(videos[0])!, $"review-{DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture)}.html");
         var changes = (arguments["changes"] as JsonArray)?.Select(node => (string?)node).OfType<string>().ToList() ?? [];
         BddReviewPage.Write(page, Required(arguments, "title"), (string?)arguments["summary"], changes, videos);
         return new { Page = page, Url = new Uri(page).AbsoluteUri };
+    }
+
+    // A path an agent gave for a file the tool writes: relative to the solution, and inside it, as write_code's
+    // are (review 09, finding 4). An agent following text it found elsewhere cannot write over files outside.
+    private string InSolution(string path, string name)
+    {
+        var full = Path.GetFullPath(path, _solutionDir);
+        var relative = Path.GetRelativePath(_solutionDir, full);
+        if (Path.IsPathRooted(relative) || relative == ".." || relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
+        {
+            throw new ToolProblem($"'{name}' is outside the solution ({full}): give a path inside {_solutionDir}.");
+        }
+
+        return full;
     }
 
     // A process to its end, its output kept: the last lines say why a build or a run failed.
