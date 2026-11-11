@@ -798,8 +798,8 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
     /// <param name="bounds">
     /// The scrolled area, or null. A swipe that starts on a view that keeps drags for itself (a
     /// signature pad) does not move the page and reads as the end. With the area known, such a
-    /// swipe is tried again from further along it (<see cref="LaterStarts"/>) before a direction is
-    /// given up; a start that moves the page is kept.
+    /// swipe is tried again from further along it (<see cref="LaterStarts"/>) once every direction's
+    /// plain swipe has stopped; a start that moves the page is kept.
     /// </param>
     /// <param name="position">
     /// Where the scroller stands, or null to trust the gesture's answer. UiAutomator2 answers false
@@ -811,79 +811,111 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
     internal bool ScrollUntil(IReadOnlyDictionary<string, object> gesture, IReadOnlyList<string> directions,
         Func<bool> found, int budgetMs, bool atLeastOneSwipe, System.Drawing.Rectangle? bounds = null,
         Func<string?>? position = null, Action<string>? foundIn = null)
+        => Sweep(parameters =>
+            {
+                try
+                {
+                    return _driver.ExecuteScript("mobile: scrollGesture", parameters) is true;
+                }
+                catch (Exception error) when (!AppiumErrors.IsGone(error))
+                {
+                    return null;
+                }
+            },
+            ScrollMemory.Moved, gesture, directions, found, budgetMs, atLeastOneSwipe, bounds, position, foundIn);
+
+    /// <summary>
+    /// <see cref="ScrollUntil"/> over any swipe. Two passes: every direction with the plain swipe,
+    /// then, with <paramref name="bounds"/> known, every direction again from the later starts. A
+    /// blocked swipe at a list's end costs about 2 s on Android; spending the later starts there
+    /// first used up the budget before the search turned (D24).
+    /// </summary>
+    /// <param name="swipe">One <c>mobile: scrollGesture</c>: whether it can move further, or null when it failed.</param>
+    /// <param name="moved">Told each direction that moved the content.</param>
+    /// <param name="gesture"><inheritdoc cref="ScrollUntil" path="/param[@name='gesture']"/></param>
+    /// <param name="directions"><inheritdoc cref="ScrollUntil" path="/param[@name='directions']"/></param>
+    /// <param name="found"><inheritdoc cref="ScrollUntil" path="/param[@name='found']"/></param>
+    /// <param name="budgetMs"><inheritdoc cref="ScrollUntil" path="/param[@name='budgetMs']"/></param>
+    /// <param name="atLeastOneSwipe"><inheritdoc cref="ScrollUntil" path="/param[@name='atLeastOneSwipe']"/></param>
+    /// <param name="bounds"><inheritdoc cref="ScrollUntil" path="/param[@name='bounds']"/></param>
+    /// <param name="position"><inheritdoc cref="ScrollUntil" path="/param[@name='position']"/></param>
+    /// <param name="foundIn"><inheritdoc cref="ScrollUntil" path="/param[@name='foundIn']"/></param>
+    internal static bool Sweep(Func<IReadOnlyDictionary<string, object>, bool?> swipe, Action<string> moved,
+        IReadOnlyDictionary<string, object> gesture, IReadOnlyList<string> directions,
+        Func<bool> found, int budgetMs, bool atLeastOneSwipe, System.Drawing.Rectangle? bounds = null,
+        Func<string?>? position = null, Action<string>? foundIn = null)
     {
         var where = position?.Invoke();
         var clock = System.Diagnostics.Stopwatch.StartNew();
         var swiped = false;
-        foreach (var direction in directions)
+
+        // A position check ends a direction on its own; such a scroller has no later starts.
+        var passes = bounds is null || position is not null ? 1 : 2;
+        for (var pass = 0; pass < passes; pass++)
         {
-            var starts = new List<IReadOnlyDictionary<string, object>> { gesture };
-            if (bounds is { } area)
+            foreach (var direction in directions)
             {
-                starts.AddRange(LaterStarts(area, direction));
-            }
+                var starts = pass == 0
+                    ? new List<IReadOnlyDictionary<string, object>> { gesture }
+                    : [.. LaterStarts(bounds!.Value, direction), gesture];
 
-            var start = 0;
-            var blocked = 0;
-            for (var swipe = 0; swipe < MaxScrollSwipes; swipe++)
-            {
-                if ((swiped || !atLeastOneSwipe) && clock.ElapsedMilliseconds >= budgetMs)
+                var start = 0;
+                var blocked = 0;
+                for (var step = 0; step < MaxScrollSwipes; step++)
                 {
-                    return false;
-                }
+                    if ((swiped || !atLeastOneSwipe) && clock.ElapsedMilliseconds >= budgetMs)
+                    {
+                        return false;
+                    }
 
-                bool more;
-                try
-                {
                     var parameters = new Dictionary<string, object>(starts[start])
                     {
                         ["direction"] = direction,
                         ["percent"] = ScrollPercent,
                     };
-                    more = _driver.ExecuteScript("mobile: scrollGesture", parameters) is true;
-                }
-                catch (Exception error) when (!AppiumErrors.IsGone(error))
-                {
-                    return false;
-                }
+                    if (swipe(parameters) is not { } more)
+                    {
+                        return false;
+                    }
 
-                swiped = true;
-                var hit = found();
-                if (more || hit)
-                {
-                    ScrollMemory.Moved(direction);
-                }
+                    swiped = true;
+                    var hit = found();
+                    if (more || hit)
+                    {
+                        moved(direction);
+                    }
 
-                if (hit)
-                {
-                    foundIn?.Invoke(direction);
-                    return true;
-                }
+                    if (hit)
+                    {
+                        foundIn?.Invoke(direction);
+                        return true;
+                    }
 
-                if (position is not null)
-                {
-                    var now = position();
-                    if (now == where)
+                    if (position is not null)
+                    {
+                        var now = position();
+                        if (now == where)
+                        {
+                            break;
+                        }
+
+                        where = now;
+                        continue;
+                    }
+
+                    if (more)
+                    {
+                        blocked = 0;
+                        continue;
+                    }
+
+                    if (++blocked >= starts.Count)
                     {
                         break;
                     }
 
-                    where = now;
-                    continue;
+                    start = (start + 1) % starts.Count;
                 }
-
-                if (more)
-                {
-                    blocked = 0;
-                    continue;
-                }
-
-                if (++blocked >= starts.Count)
-                {
-                    break;
-                }
-
-                start = (start + 1) % starts.Count;
             }
         }
 
