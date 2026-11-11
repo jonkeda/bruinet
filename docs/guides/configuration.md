@@ -9,7 +9,7 @@ All derive from `TestContextOptionsBase`, which holds what every platform shares
 
 | Setting | Default |
 | --- | --- |
-| `Timeouts` (`DefaultWait`, `PageLoad`, `ElementFind`, `ElementState`, `Animation`, `PollingInterval`) | `TimeoutSettings.Default`; Stride's own longer budgets |
+| `Timeouts` (`DefaultWait`, `PageLoad`, `Animation` (the scroll throttle), `PollingInterval`) | `TimeoutSettings.Default`; Stride's own longer budgets |
 | `Name`, `Logger`, `NearMiss` | the platform's name, no log (or `BRUINET_CALL_LOG`'s), the shared near-miss rule |
 | `Artifacts` (`RootDirectory`, `RunId`, `Suite`) | the run's results folder |
 

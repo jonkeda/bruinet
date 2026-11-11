@@ -33,7 +33,8 @@ public sealed class DesktopApp : IDisposable
     }
 
     // How long a launched app may take to be ready for input and show its main window.
-    private static readonly TimeSpan LaunchTimeout = TimeSpan.FromSeconds(30);
+    /// <summary>How long a launch waits for the app to be ready and show its main window, unless told otherwise.</summary>
+    public static readonly TimeSpan DefaultStartTimeout = TimeSpan.FromSeconds(30);
 
     // The least the main-window search is given when becoming ready used most of the launch's time.
     private static readonly TimeSpan MinimumWindowWait = TimeSpan.FromSeconds(2);
@@ -48,9 +49,10 @@ public sealed class DesktopApp : IDisposable
     /// changed, so each launch carries its own settings (a stack's launch settings, a bridge's
     /// switch, <c>BRUINET_AUT_PLACE</c>).
     /// </param>
+    /// <param name="startTimeout">How long the app may take to be ready and show its main window; <see cref="DefaultStartTimeout"/> when null. Scaled by <c>BRUINET_TIMEOUT_SCALE</c>.</param>
     /// <returns>The app, its main window found.</returns>
-    /// <exception cref="InvalidOperationException">The process did not start, was not ready for input, or showed no main window, within 30 s of starting.</exception>
-    public static DesktopApp Launch(string executablePath, string? arguments = null, IReadOnlyDictionary<string, string>? environment = null)
+    /// <exception cref="InvalidOperationException">The process did not start, was not ready for input, or showed no main window, within the start timeout.</exception>
+    public static DesktopApp Launch(string executablePath, string? arguments = null, IReadOnlyDictionary<string, string>? environment = null, TimeSpan? startTimeout = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(executablePath);
         var automation = new UIA3Automation();
@@ -87,18 +89,21 @@ public sealed class DesktopApp : IDisposable
         // A test being debugged: the IDE attaches to the app too.
         DebuggedApps.Announce(process, Path.GetFileNameWithoutExtension(executablePath));
 
-        // One budget for the whole launch: ready for input, then a main window, within LaunchTimeout.
+        // One budget for the whole launch: ready for input, then a main window, within the start timeout, scaled as
+        // every budget is on a slow machine (review 02, findings 8 and 9).
+        var launchTimeout = TimeSpan.FromMilliseconds(
+            Bruinet.Core.Calls.CallBudget.Scaled((int)(startTimeout ?? DefaultStartTimeout).TotalMilliseconds));
         var app = Path.GetFileName(executablePath);
         var launched = Stopwatch.StartNew();
-        if (!process.WaitForInputIdle(LaunchTimeout))
+        if (!process.WaitForInputIdle(launchTimeout))
         {
-            throw new InvalidOperationException($"'{app}' was not ready for input within {LaunchTimeout.TotalSeconds:0} s of starting.");
+            throw new InvalidOperationException($"'{app}' was not ready for input within {launchTimeout.TotalSeconds:0} s of starting.");
         }
 
         var application = Application.Attach(process);
-        var left = LaunchTimeout - launched.Elapsed;
+        var left = launchTimeout - launched.Elapsed;
         var main = application.GetMainWindow(automation, left > MinimumWindowWait ? left : MinimumWindowWait)
-            ?? throw new InvalidOperationException($"'{app}' showed no main window within {LaunchTimeout.TotalSeconds:0} s of starting.");
+            ?? throw new InvalidOperationException($"'{app}' showed no main window within {launchTimeout.TotalSeconds:0} s of starting.");
         var window = new AppWindow(automation, main);
 
         WindowPlacement.ApplyRequested(window, environment);

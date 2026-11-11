@@ -15,7 +15,7 @@ const heading = 15;
 // Named waits: the first stop comes after a build, the runner's start and the app's.
 const firstStopMs = 5 * 60_000;
 const nextStopMs = 60_000;
-// How long VS Code's file watcher takes to report a write.
+// At most how long the language server takes to look at a written file.
 const watcherSettleMs = 1_000;
 const breakpointsFile = path.join(process.env.LOCALAPPDATA!, "Bruinet", "bdd-breakpoints.json");
 
@@ -114,8 +114,17 @@ export async function run(): Promise<void> {
   assert.deepStrictEqual(builds, [true], "The first Step-through run builds the suite's project.");
 
   // I1: the runner reads the scenario files from the source, so a change to one alone needs no build.
+  // Waited on the language server's next look at the file, bounded, rather than a guess (review 02, finding 12).
+  const looked = new Promise<void>((resolve) => {
+    const watching = vscode.languages.onDidChangeDiagnostics((change) => {
+      if (change.uris.some((uri) => uri.fsPath === vscode.Uri.file(feature).fsPath)) {
+        watching.dispose();
+        resolve();
+      }
+    });
+  });
   fs.writeFileSync(feature, fs.readFileSync(feature));
-  await new Promise((resolve) => setTimeout(resolve, watcherSettleMs));
+  await Promise.race([looked, new Promise((resolve) => setTimeout(resolve, watcherSettleMs))]);
   const again = await vscode.commands.executeCommand<string | undefined>("bruinetBdd.stepThrough", vscode.Uri.file(feature), heading);
   assert.strictEqual(again, undefined, `The second Step-through run did not start: ${again}`);
   await pausedAt(18, firstStopMs);

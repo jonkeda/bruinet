@@ -345,22 +345,17 @@ Bruinet.Core.Configuration.TestContextOptionsBase.TestContextOptionsBase() -> vo
 Bruinet.Core.Configuration.TestContextOptionsBase.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Core.Configuration.TestContextOptionsBase.Timeouts.set -> void
 Bruinet.Core.Configuration.TimeSpanMilliseconds
-Bruinet.Core.Configuration.TimeoutDefaults
 Bruinet.Core.Configuration.TimeoutSettings
 Bruinet.Core.Configuration.TimeoutSettings.Animation.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.Animation.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.DefaultWait.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.ElementFind.get -> System.TimeSpan
-Bruinet.Core.Configuration.TimeoutSettings.ElementFind.set -> void
-Bruinet.Core.Configuration.TimeoutSettings.ElementState.get -> System.TimeSpan
-Bruinet.Core.Configuration.TimeoutSettings.ElementState.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.PageLoad.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.PageLoad.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.get -> System.TimeSpan
 Bruinet.Core.Configuration.TimeoutSettings.PollingInterval.set -> void
 Bruinet.Core.Configuration.TimeoutSettings.TimeoutSettings() -> void
-Bruinet.Core.Configuration.TimeoutSettings.With(System.TimeSpan? defaultWait = null, System.TimeSpan? pageLoad = null, System.TimeSpan? elementFind = null, System.TimeSpan? elementState = null, System.TimeSpan? animation = null, System.TimeSpan? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.Core.Configuration.TimeoutSettings.With(System.TimeSpan? defaultWait = null, System.TimeSpan? pageLoad = null, System.TimeSpan? animation = null, System.TimeSpan? pollingInterval = null) -> Bruinet.Core.Configuration.TimeoutSettings!
 Bruinet.Core.Configuration.WindowHandleJsonConverter
 Bruinet.Core.Configuration.WindowHandleJsonConverter.WindowHandleJsonConverter() -> void
 Bruinet.Core.Diagnostics.AutWindow
@@ -1121,12 +1116,6 @@ static Bruinet.Core.Composition.TestPages.IsPage(System.Type! type) -> bool
 static Bruinet.Core.Configuration.ScreenshotSettings.Default.get -> Bruinet.Core.Configuration.ScreenshotSettings!
 static Bruinet.Core.Configuration.TestContextOptionsBase.Load<T>(string! fileName) -> T!
 static Bruinet.Core.Configuration.TimeSpanMilliseconds.ToMs(this System.TimeSpan value) -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.Animation.get -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.DefaultWait.get -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.ElementFind.get -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.ElementState.get -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.PageLoad.get -> int
-static Bruinet.Core.Configuration.TimeoutDefaults.PollingInterval.get -> int
 static Bruinet.Core.Configuration.TimeoutSettings.Default.get -> Bruinet.Core.Configuration.TimeoutSettings!
 static Bruinet.Core.Configuration.TimeoutSettings.Fast.get -> Bruinet.Core.Configuration.TimeoutSettings!
 static Bruinet.Core.Configuration.TimeoutSettings.Scale.get -> double
@@ -1223,3 +1212,6 @@ virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
+static Bruinet.Core.Calls.Settle.Read<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int windowMs, int pollingIntervalMs = 50) -> T?
+static Bruinet.Core.Calls.Settle.Still<T>(System.Func<T>! read, int windowMs, int pollingIntervalMs = 50, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> bool
+static Bruinet.Core.Calls.CallBudget.Scaled(int windowMs) -> int

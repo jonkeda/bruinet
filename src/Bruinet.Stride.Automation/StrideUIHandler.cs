@@ -598,7 +598,11 @@ public class StrideUIHandler : IAutomationHandler
         ShowWindow(hwnd, SW_RESTORE);
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         SetForegroundWindow(hwnd);
-        Thread.Sleep(200);
+
+        // Wait on what the copy needs rather than a guess (review 02, finding 1): the window in front, then one
+        // frame composed since, so the pixels copied are the game's and not what covered it.
+        SpinWait.SpinUntil(() => GetForegroundWindow() == hwnd, millisecondsTimeout: 1_000);
+        _ = DwmFlush();
     }
 
     #endregion
@@ -624,6 +628,13 @@ public class StrideUIHandler : IAutomationHandler
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetForegroundWindow();
+
+    // Blocks until the desktop compositor presents its next frame.
+    [DllImport("dwmapi.dll")]
+    private static extern int DwmFlush();
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

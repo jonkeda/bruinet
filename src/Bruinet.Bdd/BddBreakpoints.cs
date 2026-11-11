@@ -102,8 +102,8 @@ public sealed class BddBreakpoints : IBddBreakHook
     public BddBreakpoints(string path, Func<string, string?>? read = null, Action<string, string?>? write = null, Action? stop = null)
     {
         _path = path;
-        _read = read ?? ReadWhole;
-        _write = write ?? WriteWhole;
+        _read = read ?? ReadShared;
+        _write = write ?? WriteShared;
         _stop = stop ?? Debugger.Break;
     }
 
@@ -309,10 +309,15 @@ public sealed class BddBreakpoints : IBddBreakHook
             IsCall = true,
         };
 
-    // Written beside and moved into place, so a reader never sees half a file. The IDE, or a virus
-    // scan, may hold the file for a moment: the write is tried again, and then given up, since
-    // these files only inform the IDE and must never fail the step the run is on.
-    private static void WriteWhole(string file, string? content)
+    /// <summary>
+    /// Writes a file another process reads (the breakpoint and break files the IDE and the Presenter share): beside
+    /// it and moved into place, so a reader never sees half a file. The IDE, or a virus scan, may hold the file for a
+    /// moment: the write is tried again, and then given up with a trace warning, since these files only inform and
+    /// must never fail the step the run is on. The one retry for these files (review 02, finding 11).
+    /// </summary>
+    /// <param name="file">The file.</param>
+    /// <param name="content">Its whole content; null deletes it.</param>
+    public static void WriteShared(string file, string? content)
     {
         for (var attempt = 1; ; attempt++)
         {
@@ -343,8 +348,9 @@ public sealed class BddBreakpoints : IBddBreakHook
         }
     }
 
-    // A file the IDE is replacing just now is read again, as a write is.
-    private static string? ReadWhole(string file)
+    /// <summary>Reads a file another process writes, again when it is being replaced just now; null when it is absent or stays held.</summary>
+    /// <param name="file">The file.</param>
+    public static string? ReadShared(string file)
     {
         for (var attempt = 1; ; attempt++)
         {

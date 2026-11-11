@@ -1220,3 +1220,5 @@ Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.IDisposable! undo, string? n
 Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.Action! undo, string! name) -> void
 Bruinet.Bdd.BddReportingSettings.TraceMask.get -> System.Collections.Generic.IReadOnlyList<string!>?
 Bruinet.Bdd.BddReportingSettings.TraceMask.init -> void
+static Bruinet.Bdd.BddBreakpoints.ReadShared(string! file) -> string?
+static Bruinet.Bdd.BddBreakpoints.WriteShared(string! file, string? content) -> void

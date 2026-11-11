@@ -21,6 +21,14 @@ public class WpfTestContextOptions : Bruinet.Core.Configuration.TestContextOptio
     /// <summary>Variables for the launched app's process only (its launch settings, <c>BRUINET_AUT_PLACE</c>).</summary>
     public IReadOnlyDictionary<string, string>? Environment { get; set; }
 
+    /// <summary>
+    /// How long a launched app may take to be ready for input and show its main window, as Stride's
+    /// <c>StartupTimeout</c> and <c>WebAppHost</c>'s <c>StartTimeout</c> (review 02, finding 9). Scaled by
+    /// <c>BRUINET_TIMEOUT_SCALE</c>.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonConverter(typeof(Bruinet.Core.Configuration.MillisecondsTimeSpanConverter))]
+    public TimeSpan StartTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
     /// <summary>A running process to attach to.</summary>
     public int? ProcessId { get; set; }
 

@@ -37,7 +37,7 @@ public sealed class WinFormsTestContext : IWinFormsTestContext, IRecordable
                 { ProcessName: { Length: > 0 } name } => FlaUIWinFormsDriver.Attach(
                     Process.GetProcessesByName(name).FirstOrDefault()
                     ?? throw new InvalidOperationException($"No running process is named '{name}'.")),
-                { ExecutablePath: { Length: > 0 } path } => FlaUIWinFormsDriver.Launch(path, options.Arguments, options.Environment),
+                { ExecutablePath: { Length: > 0 } path } => FlaUIWinFormsDriver.Launch(path, options.Arguments, options.Environment, options.StartTimeout),
                 _ => throw new ArgumentException("Either Driver, WindowHandle, ProcessId, ProcessName, or ExecutablePath must be provided.", nameof(options)),
             };
             _ownsDriver = true;

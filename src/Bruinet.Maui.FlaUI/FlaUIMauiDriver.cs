@@ -190,22 +190,10 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     internal IMauiElement FindChrome(Locator locator, int timeoutMs)
     {
         var condition = locator.ToCondition(ConditionFactory);
-        timeoutMs = Bruinet.Core.Calls.CallBudget.Within(timeoutMs);
-        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        var found = Bruinet.Core.Calls.Settle.Read(
+            () => RootElement.FindFirstDescendant(condition), element => element is not null, timeoutMs, pollingIntervalMs: 100);
 
-        do
-        {
-            var found = RootElement.FindFirstDescendant(condition);
-            if (found != null)
-            {
-                return new FlaUIMauiElement(found, this);
-            }
-
-            Thread.Sleep(100);
-        }
-        while (stopwatch.ElapsedMilliseconds < timeoutMs);
-
-        throw new ElementNotFoundException(locator);
+        return found is not null ? new FlaUIMauiElement(found, this) : throw new ElementNotFoundException(locator);
     }
 
     #endregion
@@ -429,39 +417,19 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <inheritdoc />
     public int NavigationDepth()
     {
-        var transitionBudgetMs = Bruinet.Core.Calls.CallBudget.Within(2_000);
-        const int pollMs = 25;
-
-        var clock = System.Diagnostics.Stopwatch.StartNew();
-        Bridge.BridgeVerbResult answer;
+        // Any non-delivery is retried, including "nothing published answers GetState at all".
+        //
+        // That case looks like a configuration error and usually is one - but measured, it is
+        // also what a page transition produces: the outgoing page has withdrawn and the
+        // incoming one has not published yet, so for a few milliseconds the bridge is empty
+        // and there is nobody to ask. Distinguishing them by the count was tried and is
+        // wrong. An app that really declares no GetState pays the budget once and then gets
+        // the message below, which names the fix.
+        var answer = Bruinet.Core.Calls.Settle.Read(
+            () => Exchange(BruinetVerb.GetState, "NavigationDepth"),
+            reply => reply.Delivered && int.TryParse(reply.Value, System.Globalization.CultureInfo.InvariantCulture, out _),
+            windowMs: 2_000, pollingIntervalMs: 25);
         int depth;
-
-        while (true)
-        {
-            answer = Exchange(BruinetVerb.GetState, "NavigationDepth");
-
-            if (answer.Delivered
-                && int.TryParse(
-                    answer.Value, System.Globalization.CultureInfo.InvariantCulture, out depth))
-            {
-                break;
-            }
-
-            // Any non-delivery is retried, including "nothing published answers GetState at all".
-            //
-            // That case looks like a configuration error and usually is one - but measured, it is
-            // also what a page transition produces: the outgoing page has withdrawn and the
-            // incoming one has not published yet, so for a few milliseconds the bridge is empty
-            // and there is nobody to ask. Distinguishing them by the count was tried and is
-            // wrong. An app that really declares no GetState pays the budget once and then gets
-            // the message below, which names the fix.
-            if (clock.ElapsedMilliseconds >= transitionBudgetMs)
-            {
-                break;
-            }
-
-            Thread.Sleep(pollMs);
-        }
 
         if (!answer.Delivered
             || !int.TryParse(answer.Value, System.Globalization.CultureInfo.InvariantCulture, out depth))
@@ -496,32 +464,17 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     public void NavigateBack()
     {
         using var mark = Bruinet.Core.Recording.Interactions.Report(Bruinet.Core.Recording.InteractionKind.Key, () => System.Drawing.Rectangle.Empty, key: "Back");
-        var publishWindowMs = Bruinet.Core.Calls.CallBudget.Within(1_000);
-        const int pollMs = 25;
 
-        var clock = System.Diagnostics.Stopwatch.StartNew();
-        Bridge.BridgeVerbResult result;
-
-        while (true)
+        // Something asked and refused is the app's answer, and the answer is no. Nothing asked at all means no
+        // page has published yet, which a page transition produces for a few milliseconds and a misconfigured
+        // app produces forever: the window tells them apart without needing to know which.
+        var result = Bruinet.Core.Calls.Settle.Read(
+            () => Bridge.BridgeVerbRunner.InvokeAnywhere(RootElement, Automation, BruinetVerb.NavigateBack),
+            sent => sent.Delivered || sent.Declined > 0,
+            windowMs: 1_000, pollingIntervalMs: 25);
+        if (result.Delivered)
         {
-            result = Bridge.BridgeVerbRunner.InvokeAnywhere(
-                RootElement, Automation, BruinetVerb.NavigateBack);
-
-            if (result.Delivered)
-            {
-                return;
-            }
-
-            // Something was asked and refused: the app has answered, and the answer is no.
-            // Nothing was asked at all means no page has published yet, which a page transition
-            // produces for a few milliseconds and a misconfigured app produces forever - the
-            // budget tells them apart without needing to know which.
-            if (result.Declined > 0 || clock.ElapsedMilliseconds >= publishWindowMs)
-            {
-                break;
-            }
-
-            Thread.Sleep(pollMs);
+            return;
         }
 
         throw new BruinetException(
@@ -778,13 +731,10 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 
         timeoutMs = Bruinet.Core.Calls.CallBudget.Within(timeoutMs);
         var stopwatch = Stopwatch.StartNew();
-        AutomationElement? dialog;
-        while ((dialog = TryFindFileDialog(stopwatch.ElapsedMilliseconds > FileDialogDesktopSearchAfterMs)) is null)
-        {
-            if (stopwatch.ElapsedMilliseconds >= timeoutMs)
-                throw new ElementNotFoundException(Locator.ByClassName(FileDialogClass), timeoutMs);
-            Thread.Sleep(100);
-        }
+        var dialog = Bruinet.Core.Calls.Settle.Read(
+                         () => TryFindFileDialog(stopwatch.ElapsedMilliseconds > FileDialogDesktopSearchAfterMs),
+                         found => found is not null, timeoutMs, pollingIntervalMs: 100)
+                     ?? throw new ElementNotFoundException(Locator.ByClassName(FileDialogClass), timeoutMs);
 
         var nameBox = dialog.FindFirstDescendant(ConditionFactory.ByControlType(ControlType.Edit)
                           .And(ConditionFactory.ByAutomationId(FileNameBoxId)))
@@ -800,13 +750,11 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             throw new RouteUnavailableException("The file dialog's Open button offers no Invoke pattern.");
         invoke.Invoke();
 
-        var closeBy = Math.Max(timeoutMs, stopwatch.ElapsedMilliseconds + 2_000);
-        while (TryFindFileDialog(searchDesktop: false) is not null)
-        {
-            if (stopwatch.ElapsedMilliseconds >= closeBy)
-                throw new BruinetException($"The file dialog did not close after choosing '{Path.GetFileName(path)}'.");
-            Thread.Sleep(100);
-        }
+        // Within what the call has left, as every wait below a call (review 02, finding 5): a dialog found late has
+        // only that to close in.
+        var leftMs = (int)Math.Max(0, timeoutMs - stopwatch.ElapsedMilliseconds);
+        if (!Bruinet.Core.Calls.Settle.Until(() => TryFindFileDialog(searchDesktop: false) is null, leftMs, pollingIntervalMs: 100))
+            throw new BruinetException($"The file dialog did not close after choosing '{Path.GetFileName(path)}'.");
     }
 
     private const string FileDialogClass = "#32770";

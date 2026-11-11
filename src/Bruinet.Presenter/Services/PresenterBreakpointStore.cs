@@ -11,8 +11,6 @@ namespace Bruinet.Presenter.Services;
 /// <param name="path">The breakpoints file; the IDEs' by default.</param>
 public sealed class PresenterBreakpointStore(string? path = null)
 {
-    private const int Attempts = 10;
-
     /// <summary>The breakpoints file.</summary>
     public string Path { get; } = path ?? BddBreakpoints.DefaultPath;
 
@@ -69,39 +67,18 @@ public sealed class PresenterBreakpointStore(string? path = null)
     }
 
     // Another process (an IDE, a test that is reading it) may hold the file for a moment.
+    // Read and written as the run reads and writes it: one retry for the file, in Bruinet.Bdd.
     private JsonObject? Read()
     {
-        for (var attempt = 1; ; attempt++)
+        try
         {
-            try
-            {
-                return File.Exists(Path) ? JsonNode.Parse(File.ReadAllText(Path)) as JsonObject : null;
-            }
-            catch (JsonException)
-            {
-                return null;
-            }
-            catch (IOException) when (attempt < Attempts)
-            {
-                Thread.Sleep(20);
-            }
+            return Bruinet.Bdd.BddBreakpoints.ReadShared(Path) is { } json ? JsonNode.Parse(json) as JsonObject : null;
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 
-    private void Write(string json)
-    {
-        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Path)!);
-        for (var attempt = 1; ; attempt++)
-        {
-            try
-            {
-                File.WriteAllText(Path, json);
-                return;
-            }
-            catch (IOException) when (attempt < Attempts)
-            {
-                Thread.Sleep(20);
-            }
-        }
-    }
+    private void Write(string json) => Bruinet.Bdd.BddBreakpoints.WriteShared(Path, json);
 }

@@ -101,8 +101,6 @@ public sealed class FakeGame
             {
                 DefaultWait = TimeSpan.FromMilliseconds(1000),
                 PageLoad = TimeSpan.FromMilliseconds(1000),
-                ElementFind = TimeSpan.FromMilliseconds(1000),
-                ElementState = TimeSpan.FromMilliseconds(1000),
                 Animation = TimeSpan.FromMilliseconds(150),
                 PollingInterval = TimeSpan.FromMilliseconds(1),
             },

@@ -81,7 +81,7 @@ internal sealed class AppWindow
     /// </summary>
     private static AutomationElement Attach(UIA3Automation automation, IntPtr windowHandle)
     {
-        const int timeoutMs = 10_000;
+        var timeoutMs = Bruinet.Core.Calls.CallBudget.Scaled(10_000);
         const int pollMs = 20;
 
         var clock = System.Diagnostics.Stopwatch.StartNew();

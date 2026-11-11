@@ -513,3 +513,5 @@ virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.CreateTestContextOption
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetScreenshotDirectory() -> string!
+Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.get -> System.TimeSpan
+Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.set -> void

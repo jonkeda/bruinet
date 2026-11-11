@@ -1,0 +1,6 @@
+M:System.Threading.Thread.Sleep(System.Int32);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)
+M:System.Threading.Thread.Sleep(System.TimeSpan);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)
+M:System.Threading.Tasks.Task.Delay(System.Int32);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)
+M:System.Threading.Tasks.Task.Delay(System.Int32,System.Threading.CancellationToken);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)
+M:System.Threading.Tasks.Task.Delay(System.TimeSpan,System.Threading.CancellationToken);Wait on a condition: a call's poll, or Settle below a call; a pacing or poll file is listed in src/.editorconfig (AD-004)

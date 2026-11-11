@@ -707,19 +707,10 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// <returns>True if it moved; false if it stayed put for the whole window.</returns>
     private static bool WaitForScrollChange(IScrollPattern scroll, (double Vertical, double Horizontal) before)
     {
-        var budgetMs = Bruinet.Core.Calls.CallBudget.Within(500);
-        const int intervalMs = 25;
-
-        for (var waited = 0; waited < budgetMs; waited += intervalMs)
-        {
-            if (Math.Abs(scroll.VerticalScrollPercent.ValueOrDefault - before.Vertical) > 0.01
-                || Math.Abs(scroll.HorizontalScrollPercent.ValueOrDefault - before.Horizontal) > 0.01)
-                return true;
-
-            Thread.Sleep(intervalMs);
-        }
-
-        return false;
+        return Bruinet.Core.Calls.Settle.Until(
+            () => Math.Abs(scroll.VerticalScrollPercent.ValueOrDefault - before.Vertical) > 0.01
+                  || Math.Abs(scroll.HorizontalScrollPercent.ValueOrDefault - before.Horizontal) > 0.01,
+            windowMs: 500, pollingIntervalMs: 25);
     }
 
     /// <summary>
@@ -1537,25 +1528,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             return;
         }
 
-        var budgetMs = Bruinet.Core.Calls.CallBudget.Within(2_000);
-        const int pollMs = 25;
-
-        var clock = System.Diagnostics.Stopwatch.StartNew();
-        var previous = ReadScrollPosition();
-
-        while (clock.ElapsedMilliseconds < budgetMs)
-        {
-            Thread.Sleep(pollMs);
-
-            var current = ReadScrollPosition();
-
-            if (current.X == previous.X && current.Y == previous.Y)
-            {
-                return;
-            }
-
-            previous = current;
-        }
+        Bruinet.Core.Calls.Settle.Still(() => ReadScrollPosition(), windowMs: 2_000, pollingIntervalMs: 25);
     }
 
     /// <inheritdoc />

@@ -140,14 +140,22 @@ try {
     if ($StartAppium) {
         Write-Host "  Starting Appium server..." -ForegroundColor Yellow
         Start-Process -FilePath "appium" -ArgumentList "--base-path", "/" -WindowStyle Minimized
-        Start-Sleep -Seconds 5
-        
-        try {
-            $status = Invoke-RestMethod "http://127.0.0.1:4723/status" -TimeoutSec 5
-            $appiumRunning = $true
+
+        # Asked until it answers, at most 30 s, rather than a guess at how long it takes (review 02, finding 12).
+        $deadline = (Get-Date).AddSeconds(30)
+        while (-not $appiumRunning -and (Get-Date) -lt $deadline) {
+            try {
+                $status = Invoke-RestMethod "http://127.0.0.1:4723/status" -TimeoutSec 2
+                $appiumRunning = $true
+            } catch {
+                Start-Sleep -Milliseconds 250
+            }
+        }
+
+        if ($appiumRunning) {
             Write-Host "  Appium server started!" -ForegroundColor Green
-        } catch {
-            Write-Error "Failed to start Appium server. Start it manually: appium --base-path /"
+        } else {
+            Write-Error "Appium did not answer within 30 s. Start it manually: appium --base-path /"
             exit 1
         }
     } else {

@@ -42,7 +42,6 @@ public class CallModelPinTests
         {
             DefaultWait = TimeSpan.FromMilliseconds(1000),
             PageLoad = TimeSpan.FromMilliseconds(1000),
-            ElementFind = TimeSpan.FromMilliseconds(1000),
             PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         _context.Setup(c => c.Logger).Returns(_logger.Object);
@@ -121,10 +120,10 @@ public class CallModelPinTests
         return locator;
     }
 
-    private static PlaywrightTestContext PlaywrightContext(IPage page, int elementFind = 1000)
+    private static PlaywrightTestContext PlaywrightContext(IPage page)
         => PlaywrightTestContext.ForPage(page, new HtmlTestContextOptions
         {
-            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(1000), ElementFind = TimeSpan.FromMilliseconds(elementFind), PollingInterval = TimeSpan.FromMilliseconds(10) },
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(1000), PollingInterval = TimeSpan.FromMilliseconds(10) },
         });
 
     #endregion
@@ -247,15 +246,14 @@ public class CallModelPinTests
     #region (f)-(i): nothing below the call outlasts it; non-Try members wait
 
     /// <summary>
-    /// (f1) A missing control honours the caller's budget. Fails today:
-    /// <c>PlaywrightTestContext.FindElement</c> waits ElementFind (3000 ms) inside every attempt.
+    /// (f1) A missing control honours the caller's budget: no find inside an attempt waits a budget of its own.
     /// </summary>
     [Fact]
     [Trait("Pin", "step4")]
     public void F1_MissingControl_HonoursTheCallersTimeout_OnThePlaywrightContext()
     {
         var page = PageAnswering(PlaywrightElement(count: 0));
-        using var context = PlaywrightContext(page.Object, elementFind: 3000);
+        using var context = PlaywrightContext(page.Object);
 
         var elapsed = Timed(() => new PinPage(context).Status.GetText(timeoutMs: 300));
 

@@ -19,7 +19,6 @@ public sealed class FakeApp
         {
             DefaultWait = TimeSpan.FromMilliseconds(1000),
             PageLoad = TimeSpan.FromMilliseconds(1000),
-            ElementFind = TimeSpan.FromMilliseconds(1000),
             PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         Context.Setup(c => c.Logger).Returns(Logger.Object);

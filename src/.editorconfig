@@ -1,0 +1,60 @@
+# The files under src/ that may sleep or delay (AD-004; review 02, finding 13). BannedSymbols.Src.txt stops a
+# Thread.Sleep or Task.Delay anywhere else in src/: a wait waits on a condition, through a call's poll or Settle.
+# Each file below is one of the kinds review 02 counted: a poll with a condition and a bound, a watcher, a retry,
+# a timeout arm, or pacing, where the time is the product. A new one is added here with its kind.
+
+# Polls: the pause between two looks, with a condition and a deadline.
+[Bruinet.Core/Utilities/WaitHelper.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Maui/Containers/CollectionObjectBase.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Maui/Testing/NavigationRecovery.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Mocking/MockApiServer.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Html/Testing/WebAppHost.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.FlaUI/Windowing/AppWindow.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Mocking.Data/SqliteTemplate.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Uat/Runner/BddRunnerHost.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Stride/Infrastructure/StrideGameDriver.cs]
+dotnet_diagnostic.RS0030.severity = none
+
+# Watchers: a background loop's period.
+[Bruinet.FlaUI/Windowing/QuietWindow.cs]
+dotnet_diagnostic.RS0030.severity = none
+
+# Retries: a file or service that was busy.
+[Bruinet.Mocking/NetworkStateFile.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Bdd/BddBreakpoints.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Narrator/CloudVoice.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Stride.Automation/AutomationServer.cs]
+dotnet_diagnostic.RS0030.severity = none
+
+# Timeout arms: a delay raced against the real event.
+[Bruinet.Narrator.Windows/WindowsSpeech.cs]
+dotnet_diagnostic.RS0030.severity = none
+
+# Pacing: the time is the product (AD-024).
+[Bruinet.Core/Recording/ActionPacing.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Narrator/BddNarrationPacer.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Recording/PacedVideo.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Presenter/ViewModels/PresenterShellViewModel.Run.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Mocking.Http/HttpReplaySession.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Mocking/Sensors/MockAudioSource.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.FlaUI/UiaElementBase.cs]
+dotnet_diagnostic.RS0030.severity = none
+[Bruinet.Scraper/Explore/Explorer.cs]
+dotnet_diagnostic.RS0030.severity = none

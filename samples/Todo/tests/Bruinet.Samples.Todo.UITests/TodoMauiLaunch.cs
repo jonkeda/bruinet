@@ -22,8 +22,6 @@ public static class TodoMauiLaunch
     {
         DefaultWait = TimeSpan.FromMilliseconds(5000),
         PageLoad = TimeSpan.FromMilliseconds(10000),
-        ElementFind = TimeSpan.FromMilliseconds(3000),
-        ElementState = TimeSpan.FromMilliseconds(3000),
         Animation = TimeSpan.FromMilliseconds(300),
         PollingInterval = TimeSpan.FromMilliseconds(100),
     };

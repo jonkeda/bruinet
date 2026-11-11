@@ -19,7 +19,6 @@ public class PredicateWaitTests
         {
             DefaultWait = TimeSpan.FromMilliseconds(1000),
             PageLoad = TimeSpan.FromMilliseconds(1000),
-            ElementFind = TimeSpan.FromMilliseconds(1000),
             PollingInterval = TimeSpan.FromMilliseconds(1),
         });
         _context.Setup(c => c.Logger).Returns(_logger.Object);

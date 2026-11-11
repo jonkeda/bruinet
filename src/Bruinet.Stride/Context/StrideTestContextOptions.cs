@@ -14,8 +14,6 @@ public class StrideTestContextOptions : Bruinet.Core.Configuration.TestContextOp
         {
             DefaultWait = TimeSpan.FromMilliseconds(10000),
             PageLoad = TimeSpan.FromMilliseconds(15000),
-            ElementFind = TimeSpan.FromMilliseconds(1000),
-            ElementState = TimeSpan.FromMilliseconds(10000),
             Animation = TimeSpan.FromMilliseconds(150),
             PollingInterval = TimeSpan.FromMilliseconds(100),
         };

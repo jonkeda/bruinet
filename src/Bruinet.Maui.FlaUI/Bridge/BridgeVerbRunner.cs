@@ -325,25 +325,12 @@ internal static class BridgeVerbRunner
     /// </param>
     private static BridgeVerbResult UntilPublished(Func<BridgeVerbResult> send, Func<bool>? declared = null)
     {
-        var publishWindowMs = Bruinet.Core.Calls.CallBudget.Within(1_000);
-        const int pollMs = 25;
-
-        var clock = System.Diagnostics.Stopwatch.StartNew();
-
-        while (true)
-        {
-            var result = send();
-
-            if (result.Delivered
-                || result.HResult != HResults.UIA_E_ELEMENTNOTAVAILABLE
-                || declared?.Invoke() == false
-                || clock.ElapsedMilliseconds >= publishWindowMs)
-            {
-                return result;
-            }
-
-            Thread.Sleep(pollMs);
-        }
+        return Bruinet.Core.Calls.Settle.Read(
+            send,
+            result => result.Delivered
+                      || result.HResult != HResults.UIA_E_ELEMENTNOTAVAILABLE
+                      || declared?.Invoke() == false,
+            windowMs: 1_000, pollingIntervalMs: 25);
     }
 
     /// <summary>The bridge's targets, the most recently published first.</summary>

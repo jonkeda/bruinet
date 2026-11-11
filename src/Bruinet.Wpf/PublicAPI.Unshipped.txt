@@ -490,3 +490,5 @@ virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.CreateTestContextOptions(Bruinet.
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Wpf.Testing.WpfTestFixtureBase.GetScreenshotDirectory() -> string!
+Bruinet.Wpf.Context.WpfTestContextOptions.StartTimeout.get -> System.TimeSpan
+Bruinet.Wpf.Context.WpfTestContextOptions.StartTimeout.set -> void

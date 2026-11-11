@@ -14,8 +14,8 @@ public class TimeoutSettings
     public const string ScaleEnvironmentVariable = "BRUINET_TIMEOUT_SCALE";
 
     /// <summary>
-    /// The run's scale on the waits a call takes from these settings (<see cref="DefaultWait"/>,
-    /// <see cref="PageLoad"/>, <see cref="ElementFind"/>, <see cref="ElementState"/>), read once from
+    /// The run's scale on the waits a call takes from these settings (<see cref="DefaultWait"/> and
+    /// <see cref="PageLoad"/>), read once from
     /// <see cref="ScaleEnvironmentVariable"/>; 1 when it is unset or not a factor from 0.1 to 20. A
     /// <c>timeoutMs</c> a test passes to a call is its own and is not scaled; polling and animation
     /// are not either.
@@ -43,19 +43,10 @@ public class TimeoutSettings
 
     private TimeSpan _pageLoad = TimeSpan.FromMilliseconds(10000);
 
-    /// <summary>Timeout for element finding.</summary>
-    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan ElementFind { get => Scaled(_elementFind); set => _elementFind = value; }
-
-    private TimeSpan _elementFind = TimeSpan.FromMilliseconds(3000);
-
-    /// <summary>Timeout for element state changes.</summary>
-    [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
-    public TimeSpan ElementState { get => Scaled(_elementState); set => _elementState = value; }
-
-    private TimeSpan _elementState = TimeSpan.FromMilliseconds(3000);
-
-    /// <summary>Delay for animation settling.</summary>
+    /// <summary>
+    /// The scroll throttle: how long a call leaves between two scrolls (or sweeps) of the same container while it
+    /// looks for a control, so a list has time to move. Nothing sleeps for it (review 02, finding 7).
+    /// </summary>
     [JsonConverter(typeof(MillisecondsTimeSpanConverter))]
     public TimeSpan Animation { get; set; } = TimeSpan.FromMilliseconds(300);
 
@@ -75,8 +66,6 @@ public class TimeoutSettings
     {
         DefaultWait = TimeSpan.FromMilliseconds(2000),
         PageLoad = TimeSpan.FromMilliseconds(5000),
-        ElementFind = TimeSpan.FromMilliseconds(1000),
-        ElementState = TimeSpan.FromMilliseconds(1000),
         Animation = TimeSpan.FromMilliseconds(150),
         PollingInterval = TimeSpan.FromMilliseconds(50)
     };
@@ -88,8 +77,6 @@ public class TimeoutSettings
     {
         DefaultWait = TimeSpan.FromMilliseconds(15000),
         PageLoad = TimeSpan.FromMilliseconds(30000),
-        ElementFind = TimeSpan.FromMilliseconds(10000),
-        ElementState = TimeSpan.FromMilliseconds(10000),
         Animation = TimeSpan.FromMilliseconds(500),
         PollingInterval = TimeSpan.FromMilliseconds(200)
     };
@@ -100,8 +87,6 @@ public class TimeoutSettings
     public TimeoutSettings With(
         TimeSpan? defaultWait = null,
         TimeSpan? pageLoad = null,
-        TimeSpan? elementFind = null,
-        TimeSpan? elementState = null,
         TimeSpan? animation = null,
         TimeSpan? pollingInterval = null)
     {
@@ -110,8 +95,6 @@ public class TimeoutSettings
             // The settings as set, not as scaled: the copy is scaled once, when read.
             DefaultWait = defaultWait ?? _defaultWait,
             PageLoad = pageLoad ?? _pageLoad,
-            ElementFind = elementFind ?? _elementFind,
-            ElementState = elementState ?? _elementState,
             Animation = animation ?? Animation,
             PollingInterval = pollingInterval ?? PollingInterval
         };

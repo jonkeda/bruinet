@@ -22,8 +22,9 @@ internal sealed class FlaUIWpfDriver : IWpfDriver, IRecordable
     /// <param name="executablePath">The app's executable.</param>
     /// <param name="arguments">Its command line, or null.</param>
     /// <param name="environment">Variables for the app's process only, or null.</param>
-    public static FlaUIWpfDriver Launch(string executablePath, string? arguments = null, IReadOnlyDictionary<string, string>? environment = null)
-        => new(DesktopApp.Launch(executablePath, arguments, environment));
+    /// <param name="startTimeout">How long the app may take to be ready and show its main window; 30 s when null.</param>
+    public static FlaUIWpfDriver Launch(string executablePath, string? arguments = null, IReadOnlyDictionary<string, string>? environment = null, TimeSpan? startTimeout = null)
+        => new(DesktopApp.Launch(executablePath, arguments, environment, startTimeout));
 
     /// <summary>Attaches to the window <paramref name="windowHandle"/>.</summary>
     public static FlaUIWpfDriver Attach(IntPtr windowHandle) => new(DesktopApp.Attach(windowHandle));

@@ -74,7 +74,7 @@ const Bruinet.FlaUI.FlaUIErrors.ElementNotAvailable = -2147220991 -> int
 override Bruinet.FlaUI.UiaElementBase.ToString() -> string!
 static Bruinet.FlaUI.DesktopApp.Attach(System.Diagnostics.Process! process) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.DesktopApp.Attach(nint windowHandle) -> Bruinet.FlaUI.DesktopApp!
-static Bruinet.FlaUI.DesktopApp.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null) -> Bruinet.FlaUI.DesktopApp!
+static Bruinet.FlaUI.DesktopApp.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null, System.TimeSpan? startTimeout = null) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.FlaUIErrors.IsElementGone(System.Exception! error) -> bool
 static Bruinet.FlaUI.LocatorExtensions.ToCondition(this Bruinet.Core.Locators.Locator! locator, FlaUI.Core.Conditions.ConditionFactory! conditionFactory) -> FlaUI.Core.Conditions.ConditionBase!
 static Bruinet.FlaUI.UiaElements.FindAll(Bruinet.FlaUI.DesktopApp! app, FlaUI.Core.AutomationElements.AutomationElement! within, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<FlaUI.Core.AutomationElements.AutomationElement!>!
@@ -86,3 +86,4 @@ static Bruinet.FlaUI.UiaElements.Live<T>(Bruinet.FlaUI.DesktopApp! app, System.F
 static Bruinet.FlaUI.Windowing.PhysicalPixels.Read<T>(System.Func<T>! read) -> T
 const Bruinet.FlaUI.FlaUIErrors.NotSupported = -2147220988 -> int
 static Bruinet.FlaUI.FlaUIErrors.IsNotSupported(System.Exception! error) -> bool
+static readonly Bruinet.FlaUI.DesktopApp.DefaultStartTimeout -> System.TimeSpan

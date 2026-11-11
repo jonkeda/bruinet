@@ -51,7 +51,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T15 `UatScenarioResults.Record` catches file errors only and traces them. R05 P7.
 - [x] R2-T16 The small catches. R05 P10.
 - [x] R2-T17 A typed "refused" exception in Core in place of `InvalidOperationException`. R05 P8.
-- [ ] R2-T18 Check that fails a new bare catch or unfiltered `catch (Exception)` outside an allowed list. R05 P9.
+- [x] R2-T18 Check that fails a new bare catch or unfiltered `catch (Exception)` outside an allowed list. R05 P9.
 
 ## Phase 2: secrets and what Bruinet writes
 
@@ -101,17 +101,17 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 5: waits
 
-- [ ] R2-T56 Stride screenshot: wait for foreground and one frame, or read the back buffer. R02 P1.
-- [ ] R2-T57 Nine MAUI `Thread.Sleep` loops onto `Settle.Until`; a "reads agree" variant. R02 P4. **desk**, **android**.
-- [ ] R2-T58 File dialog close inside the budget. R02 P5.
-- [ ] R2-T59 Delete `TimeoutDefaults`, `ElementFind`, `ElementState`. R02 P6.
-- [ ] R2-T60 `Animation` renamed `ScrollThrottle` or its summary fixed. R02 P7.
-- [ ] R2-T61 Fixed windows and launch waits scale with `TimeoutSettings.Scale`. R02 P8.
-- [ ] R2-T62 `StartTimeout` on the desktop stacks' options. R02 P9.
-- [ ] R2-T63 `WaitHelper.Pause` internal. R02 P10.
-- [ ] R2-T64 One retry for the breakpoint file. R02 P11.
-- [ ] R2-T65 Poll, not sleep, in `run-android-tests.ps1` and the VS Code test. R02 P12.
-- [ ] R2-T66 Banned-API rule for `Thread.Sleep` and `Task.Delay` in `src/`, allowed files listed. R02 P13.
+- [x] R2-T56 Stride screenshot: wait for foreground and one frame, or read the back buffer. R02 P1. Waits for the window in front (at most 1 s), then one composed frame (DwmFlush); the back-buffer read was not taken.
+- [x] R2-T57 Nine MAUI `Thread.Sleep` loops onto `Settle.Until`; a "reads agree" variant. R02 P4. **desk**, **android**. Settle.Read and Settle.Still (two looks agree) join Settle.Until; the nine loops use them; no sleep is left in MAUI's device heads. Run on Windows and Android with the contracts.
+- [x] R2-T58 File dialog close inside the budget. R02 P5. The close waits in what the call has left.
+- [x] R2-T59 Delete `TimeoutDefaults`, `ElementFind`, `ElementState`. R02 P6. Gone, with their With parameters; a changes.md row. The table's 24 lost \b in its regexes restored on the way.
+- [x] R2-T60 `Animation` renamed `ScrollThrottle` or its summary fixed. R02 P7. Summary fixed rather than renamed: the name is in consumers' settings files.
+- [x] R2-T61 Fixed windows and launch waits scale with `TimeoutSettings.Scale`. R02 P8. CallBudget.Within scales every fixed window; CallBudget.Scaled for the launch and attach waits.
+- [x] R2-T62 `StartTimeout` on the desktop stacks' options. R02 P9. WPF and WinForms options; DesktopApp.Launch takes it. MAUI's Windows launch keeps the default, scaled.
+- [x] R2-T63 `WaitHelper.Pause` internal. R02 P10. Already internal; CollectionObjectBase keeps its own pause, listed as a poll in src/.editorconfig.
+- [x] R2-T64 One retry for the breakpoint file. R02 P11. BddBreakpoints.ReadShared and WriteShared, used by the Presenter. The Visual Studio extension is net48 and keeps its copy.
+- [x] R2-T65 Poll, not sleep, in `run-android-tests.ps1` and the VS Code test. R02 P12.
+- [x] R2-T66 Banned-API rule for `Thread.Sleep` and `Task.Delay` in `src/`, allowed files listed. R02 P13. BannedSymbols.Src.txt for the repository's src/ projects; src/.editorconfig lists the 23 allowed files by kind.
 
 ## Phase 6: CI, tests and quality
 

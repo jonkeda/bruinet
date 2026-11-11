@@ -31,6 +31,13 @@
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.UiTests.txt" />
   </ItemGroup>
+  <!-- The library waits on conditions, never on a guess (AD-004; review 02, finding 13): BannedSymbols.Src.txt
+       stops a Thread.Sleep or Task.Delay in src/, and src/.editorconfig lists the files whose pause is a poll's,
+       a retry's or pacing. -->
+  <ItemGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src')) and !$(MSBuildProjectName.Contains('UITests')) and !$(MSBuildProjectName.EndsWith('.Uat'))">
+    <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.Src.txt" />
+  </ItemGroup>
   <ItemGroup Condition="$(TargetFrameworks.Contains('netstandard')) or $(TargetFrameworks.Contains('net4')) or $(TargetFramework.StartsWith('net4'))">
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Legacy.globalconfig" />
   </ItemGroup>

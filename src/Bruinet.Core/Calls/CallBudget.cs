@@ -16,7 +16,19 @@ public static class CallBudget
     /// <summary>
     /// A wait's own window, cut to what is left of the running call's budget: a driver's wait for
     /// a page to publish or a dropdown to open never outlasts the caller's timeout, and keeps its
-    /// window outside a call.
+    /// window outside a call. The window is scaled by <see cref="Configuration.TimeoutSettings.Scale"/>,
+    /// as the budgets are, since a slow machine is where a fixed window bites (review 02, finding 8).
     /// </summary>
-    public static int Within(int windowMs) => Math.Min(windowMs, RemainingOr(windowMs));
+    public static int Within(int windowMs)
+    {
+        var scaled = Scaled(windowMs);
+        return Math.Min(scaled, RemainingOr(scaled));
+    }
+
+    /// <summary>A fixed window scaled by <see cref="Configuration.TimeoutSettings.Scale"/>.</summary>
+    /// <param name="windowMs">The window at scale 1.</param>
+    public static int Scaled(int windowMs)
+        => Configuration.TimeoutSettings.Scale == 1 || windowMs <= 0
+            ? windowMs
+            : (int)Math.Min(int.MaxValue, Math.Round(windowMs * Configuration.TimeoutSettings.Scale));
 }

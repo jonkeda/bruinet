@@ -42,7 +42,6 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
         {
             DefaultWait = TimeSpan.FromMilliseconds(1000),
             PageLoad = TimeSpan.FromMilliseconds(1000),
-            ElementFind = TimeSpan.FromMilliseconds(1000),
             PollingInterval = TimeSpan.FromMilliseconds(1),
             Animation = TimeSpan.FromMilliseconds(300)
         });
@@ -311,7 +310,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
 
     /// <summary>
     /// (f) A control on AppRoot honours the caller's budget when it is missing. Fails today:
-    /// MauiTestContext.FindElement waits ElementFind (3000 ms) inside every poll tick.
+    /// MauiTestContext.FindElement waited a budget of its own inside every poll tick.
     /// </summary>
     [Fact]
     [Trait("Pin", "step4")]
@@ -324,7 +323,7 @@ public class StaleReadinessPinTests : SemanticControlTestsBase
         using var context = new MauiTestContext(new MauiTestContextOptions
         {
             Driver = driver.Object,
-            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(5000), ElementFind = TimeSpan.FromMilliseconds(3000), PollingInterval = TimeSpan.FromMilliseconds(10) }
+            Timeouts = new TimeoutSettings { DefaultWait = TimeSpan.FromMilliseconds(5000), PollingInterval = TimeSpan.FromMilliseconds(10) }
         });
         var button = new Button<AppRoot>(new AppRoot(context), "Missing");
 
