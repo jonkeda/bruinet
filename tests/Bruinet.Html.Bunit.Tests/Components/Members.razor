@@ -35,6 +35,10 @@
 <div data-testid="pointer" @ondblclick="Double" @oncontextmenu="Right">Pointer <span data-testid="pointer-inner">inside</span></div>
 <div data-testid="key-row" @onkeydown="e => keys += e.Key"><span data-testid="key-inner" tabindex="0">Row</span></div>
 <label data-testid="label" for="labelled">Labelled</label><input id="labelled" type="checkbox" />
+<div data-testid="aria-off" role="button" aria-disabled="true">Off by ARIA</div>
+<div data-testid="div-disabled" disabled>A div's disabled is no state</div>
+<div data-testid="aria-switch" role="switch" aria-checked="true">On</div>
+<div data-testid="hidden-children">Shown<span hidden> secret</span><span style="display: none"> gone</span></div>
 <span data-testid="pointer-echo">@pointer</span>
 
 <input data-testid="keys" @onkeydown="e => keys += e.Key" @onfocus="FocusIn" @onblur="FocusOut" />

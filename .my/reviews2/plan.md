@@ -85,7 +85,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T40 Playwright `Submit` uses `requestSubmit()`; `Submit` test on both Html heads. R04 P1.
 - [x] R2-T41 bUnit refuses an absent option and `readonly` writes; Selector and EditableText contracts ask. R04 P2. tomorrow (studio on bUnit).
 - [x] R2-T42 bUnit bubbles double click, right click, keys; label click and Enter/Space on a button, or `BrowserOnlyException`. R04 P3. tomorrow.
-- [ ] R2-T43 bUnit reads `aria-disabled`, `aria-checked`; `Text` leaves hidden children out; `docs/guides/bunit.md` lists the rest. R04 P4. tomorrow.
+- [x] R2-T43 bUnit reads `aria-disabled`, `aria-checked`; `Text` leaves hidden children out; `docs/guides/bunit.md` lists the rest. R04 P4. tomorrow.
 - [ ] R2-T44 Html edge tests and `PressKey` into the bindings, both heads. R04 P9.
 - [ ] R2-T45 Html bindings for Progress, Date, Time, Tab, Scrollable. R04 P11, R08 P1.
 - [ ] R2-T46 MAUI binds Element, Clickable, Text (MauiHeadless); the 42 `Is…_ReturnsTrue` tests go. R04 P6, R08 P2.

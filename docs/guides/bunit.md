@@ -83,9 +83,13 @@ waiting out the budget.
 - **Visible** means no `hidden` attribute and no inline `display:none` or `visibility:hidden` on the
   element or its parents, not a hidden input, not folded in a closed `<details>` (its first `<summary>` shows),
   and not in a `<dialog>` without `open`. A class that hides through a style sheet still counts as visible;
-  Blazor's error banner (`#blazor-error-ui`) never does.
-- **Enabled** means no `disabled` attribute, and for a form control no disabled `<fieldset>` around it outside
-  that fieldset's first `<legend>`.
+  Blazor's error banner (`#blazor-error-ui`) never does. An empty element (an empty message area) is visible here;
+  a browser wants a box with a size.
+- **Enabled** means no `aria-disabled="true"`, and for a form control no `disabled` attribute and no disabled
+  `<fieldset>` around it outside that fieldset's first `<legend>`; `disabled` on a `<div>` is no state, as in a browser.
+- **Checked** reads the `checked` state, and `aria-checked` on an element made a switch or check box by ARIA.
+- **Text** is the element's text without its hidden children (the `hidden` attribute, inline `display:none`), with
+  white space folded to single spaces: a `<br>` or a block child is a space here and a line break in a browser.
 - **`NavigateTo` is a page load**, as in a browser: a fresh root and scope, still signed in. A link clicked
   in the page navigates inside it; the app's own `NavigateTo(..., forceLoad: true)` is a page load too, on the
   next look at the page. A page load of an address no component serves (a Razor Page, an endpoint) ends the
@@ -93,7 +97,10 @@ waiting out the budget.
 - **History:** the page's `history.back()` goes back in its circuit, and an entry replaced (`replace: true`) is
   gone, as in a browser.
 - **A click bubbles** through every handler around the element until one stops it (`@onclick:stopPropagation`),
-  as bUnit raises it.
+  as bUnit raises it; a double click, right click and key go to the nearest element that listens.
+- **Enter or Space** on a button is its click. **A click on a label** with a field throws `BrowserOnlyException`:
+  click the field itself.
+- **A read-only field** refuses text, and a select refuses a value none of its options has, as a browser does.
 - **`Fill`** raises the input event where the element listens to one, then the change event; with
   `TextInputMethod.Keys`, `SendKeys` also raises key events per character.
 - **A value the user entered** stays until a render changes that attribute, as Blazor's diff leaves the DOM,

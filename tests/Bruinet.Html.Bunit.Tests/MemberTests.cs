@@ -200,6 +200,16 @@ public sealed class MemberTests : IDisposable
     public void Click_OnALabel_SaysItNeedsTheBrowser_RatherThanDoingNothing()
         => Assert.Throws<BrowserOnlyException>(() => Id("label").Click());
 
+    // As a browser reads them (review 04, findings 4 and 5).
+    [Fact]
+    public void State_ReadsAriaAndLeavesHiddenTextOut()
+    {
+        Assert.False(Id("aria-off").Enabled);
+        Assert.True(Id("div-disabled").Enabled);
+        Assert.True(Id("aria-switch").IsChecked);
+        Assert.Equal("Shown", Id("hidden-children").Text);
+    }
+
     [Fact]
     public void Click_HandlerThrows_IsTheAppFailing()
     {

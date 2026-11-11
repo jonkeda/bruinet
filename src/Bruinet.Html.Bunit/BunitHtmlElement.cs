@@ -41,6 +41,18 @@ internal sealed class BunitHtmlElement : IHtmlElement
 
     #region State
 
+    private static string ShownText(INode node)
+    {
+        if (node is IElement element && (element.HasAttribute("hidden") || HidesItself(element.GetAttribute("style"))))
+        {
+            return string.Empty;
+        }
+
+        return node.NodeType == NodeType.Text
+            ? node.TextContent
+            : string.Concat(node.ChildNodes.Select(ShownText));
+    }
+
     public bool Visible
     {
         get
@@ -68,7 +80,9 @@ internal sealed class BunitHtmlElement : IHtmlElement
 
     public bool Selected => Node is IHtmlOptionElement option ? option.IsSelected : Node.HasAttribute("selected");
 
-    public string? Text => BunitLocators.Normalize(Node.TextContent);
+    // As a browser's innerText leaves them out: the text of children hidden by the hidden attribute or an inline
+    // display:none is not the element's text (review 04, finding 4).
+    public string? Text => BunitLocators.Normalize(ShownText(Node));
 
     public string? TagName => Node.TagName.ToLowerInvariant();
 
@@ -97,7 +111,10 @@ internal sealed class BunitHtmlElement : IHtmlElement
 
     public string OuterHtml => Node.OuterHtml;
 
-    public bool IsChecked => Node is IHtmlInputElement input ? input.IsChecked || Node.HasAttribute("checked") : Node.HasAttribute("checked");
+    // A switch or check box made of ARIA (role and aria-checked) is checked as a browser reads it (review 04, finding 5).
+    public bool IsChecked => Node is IHtmlInputElement input
+        ? input.IsChecked || Node.HasAttribute("checked")
+        : Node.HasAttribute("checked") || string.Equals(Node.GetAttribute("aria-checked"), "true", StringComparison.OrdinalIgnoreCase);
 
     // What the user entered, while no render has changed the value attribute since (BunitTestContext.EnteredValue); else the DOM's.
     public string InputValue
@@ -508,16 +525,23 @@ internal sealed class BunitHtmlElement : IHtmlElement
 
     // As a browser's :disabled: the element's own attribute, or a form control in a disabled fieldset, outside that fieldset's
     // first legend.
+    // As a browser: aria-disabled="true" on any element, and the disabled attribute on a form control only; a
+    // component library's disabled div is aria-disabled (review 04, finding 5).
     private static bool Disabled(IElement node)
     {
-        if (node.HasAttribute("disabled"))
+        if (string.Equals(node.GetAttribute("aria-disabled"), "true", StringComparison.OrdinalIgnoreCase))
         {
             return true;
         }
 
-        if (node is not (IHtmlButtonElement or IHtmlInputElement or IHtmlSelectElement or IHtmlTextAreaElement))
+        if (node is not (IHtmlButtonElement or IHtmlInputElement or IHtmlSelectElement or IHtmlTextAreaElement or IHtmlOptionElement or IHtmlFieldSetElement))
         {
             return false;
+        }
+
+        if (node.HasAttribute("disabled"))
+        {
+            return true;
         }
 
         for (var (below, at) = (node, node.ParentElement); at is not null; (below, at) = (at, at.ParentElement))
