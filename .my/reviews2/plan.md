@@ -15,13 +15,14 @@ Branch `reviews` (worktree `E:\repos\Private\bru-reviews`), pushed to origin's `
 
 ## Phase 0: base
 
-- [x] R2-T00 Reviews and index committed and pushed (`e2244701`).
-- [x] R2-T02 Packages: `pack.ps1` packs every packable project; `check-packages.ps1` restores and builds a consumer per framework; CI and release run it. R11 P1, P2 (`e25a935f`).
-- [ ] R2-T01 Rebase `reviews` onto `origin/move` (six commits on, among them `Bruinet.Traits`); pack and check again; push `reviews` with `--force-with-lease`.
-- [ ] R2-T03 Design D1, a missing element: null or false. R04 P8, R08 P5. → `designs/D1-missing-element.md`
-- [ ] R2-T04 Design D2, the MCP tools: renames, results, caps, schema. R03 M1–M11. → `designs/D2-mcp-tools.md`
-- [ ] R2-T05 Design D3, the command line: exit codes, shared options, `--json`, renames. R10 P1–P8. → `designs/D3-command-line.md`
-- [ ] R2-T06 Design D4, secrets in recordings and traces, and the SQL hook. R09 P1–P3, P5. → `designs/D4-secrets.md`
+- [x] R2-T00 Reviews and index committed and pushed (`8b299fb1` after the rebase).
+- [x] R2-T02 Packages: `pack.ps1` packs every packable project; `check-packages.ps1` restores and builds a consumer per framework; CI and release run it. R11 P1, P2 (`4af3cbf7` after the rebase).
+- [x] R2-T01 Rebase `reviews` onto `origin/move` at `930610b1` (six commits on, among them `Bruinet.Traits`, which `pack.ps1` now packs); pack and check again; push `reviews` with `--force-with-lease`.
+- [x] R2-T01b Pin `Microsoft.AspNetCore.WebUtilities` 2.3.14 where WireMock.Net is referenced: GHSA-6527-9fp8-r4x6 (published 2026-11-10) made NuGet's audit fail every build of `Bruinet.Mocking`, on `move` too. Mocking and HTTP replay tests green.
+- [x] R2-T03 Design D1, a missing element: null or false. R04 P8, R08 P5. → `designs/D1-missing-element.md`
+- [x] R2-T04 Design D2, the MCP tools: renames, results, caps, schema. R03 M1–M11. → `designs/D2-mcp-tools.md`
+- [x] R2-T05 Design D3, the command line: exit codes, shared options, `--json`, renames. R10 P1–P8. → `designs/D3-command-line.md`
+- [x] R2-T06 Design D4, secrets in recordings and traces, and the SQL hook. R09 P1–P3, P5. → `designs/D4-secrets.md`
 
 ## Phase 1: a test must not pass on a fault
 
@@ -154,7 +155,7 @@ Branch `reviews` (worktree `E:\repos\Private\bru-reviews`), pushed to origin's `
 
 ## Open with the owner
 
-- D1–D4: yes or changes, before their tasks.
+- D1–D4 written; each opens with its decisions and my proposal. Their tasks wait for the owner's yes.
 - R07's five questions (exception name, R5, `copilot-instructions.md`, scenario-or-test rule, `.my` index): my proposals stand in the review.
 - R2-T76 code style, R2-T93 two scripts, Selenium (`WebDriverManager` too).
 - Pushing `reviews` to the jonkeda mirror: blocked by the permission check on 2026-11-11, not retried.
