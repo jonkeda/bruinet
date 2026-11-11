@@ -195,7 +195,10 @@ internal static partial class UatStepFailure
             || (name.StartsWith("Bruinet.", StringComparison.Ordinal)
                 && !name.Contains(".Samples.", StringComparison.Ordinal)
                 && !name.EndsWith("Tests", StringComparison.Ordinal)
-                && !name.EndsWith(".Uat", StringComparison.Ordinal));
+                && (!name.EndsWith(".Uat", StringComparison.Ordinal) || name == FrameworkUat));
+
+    // Bruinet's own UAT engine ends in .Uat as a suite's project does; its frames are framework (review 01, finding 1).
+    private const string FrameworkUat = "Bruinet.Uat";
 
     private static bool IsRuntime(Type type)
         => type.Assembly.GetName().Name is not { } name

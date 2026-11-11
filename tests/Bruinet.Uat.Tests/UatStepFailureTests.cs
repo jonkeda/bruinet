@@ -36,6 +36,15 @@ public sealed class UatStepFailureTests
     }
 
     [Fact]
+    public void TheFrames_LeaveOutBruinetsOwnUatEngine()
+    {
+        var frames = UatStepFailure.Frames([Thrown(() => UatScenarioResults.Record(null!, null!, null!, null!, TimeSpan.Zero, null, "x", "test"))]).ToList();
+
+        Assert.DoesNotContain(frames, frame => frame.StartsWith("UatScenarioResults.", StringComparison.Ordinal));
+        Assert.Contains(frames, frame => frame.StartsWith("UatStepFailureTests.", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void TheLocator_IsTheExceptionsOwn_WholeAndNeverReadFromItsMessage()
     {
         var css = Bruinet.Core.Locators.Locator.ByCss("li[data-row='2'] .status");
