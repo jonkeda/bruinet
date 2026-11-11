@@ -239,14 +239,32 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
     {
         using var span = Bruinet.Core.Logging.Timing.Span("navigate", nameof(NavigateTo));
         ArgumentException.ThrowIfNullOrWhiteSpace(destination);
-        _driver.GoTo(destination);
+        try
+        {
+            _driver.GoTo(destination);
+        }
+        catch (Exception error) when (error is PlaywrightException or TimeoutException && error is not AppUnavailableException)
+        {
+            throw NotOpened(destination, error);
+        }
     }
 
     public async Task NavigateToAsync(string destination)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(destination);
-        await _page.GotoAsync(destination).ConfigureAwait(false);
+        try
+        {
+            await _page.GotoAsync(destination).ConfigureAwait(false);
+        }
+        catch (Exception error) when (error is PlaywrightException or TimeoutException)
+        {
+            throw NotOpened(destination, error);
+        }
     }
+
+    // The browser's own reason (net::ERR_CONNECTION_REFUSED, a timeout) kept as the inner error, the address in front.
+    private static PageLoadException NotOpened(string destination, Exception error)
+        => new($"Could not open {destination}: {error.Message.Split('\n')[0].Trim()} Is the app running at that address?", error);
 
     public void NavigateBack()
     {

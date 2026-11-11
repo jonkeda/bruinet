@@ -131,9 +131,33 @@ public sealed class BunitTestContext : IHtmlTestContext, IHtmlPageProbe, Bruinet
     {
         using var span = Bruinet.Core.Logging.Timing.Span("navigate", nameof(NavigateTo));
         ArgumentException.ThrowIfNullOrWhiteSpace(destination);
+        RefuseAnotherApp(destination);
         _back.Add(CurrentUrl);
         _forward.Clear();
         Restart(destination);
+    }
+
+    // bUnit renders this app's components only: an address on another host, or one that is no page (about:blank), would
+    // render nothing or fail later without a word, so it is refused by name, as a browser's failed navigation is.
+    private void RefuseAnotherApp(string destination)
+    {
+        if (!Uri.TryCreate(destination, UriKind.Absolute, out var target) || target.Scheme is not ("http" or "https"))
+        {
+            if (Uri.TryCreate(destination, UriKind.Relative, out _) && !destination.Contains(':', StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            throw new PageLoadException($"Could not open {destination}: the bUnit head renders this app's pages only, by a path or an http address.");
+        }
+
+        if (Uri.TryCreate(string.IsNullOrEmpty(_options.BaseUrl) ? Navigation.BaseUri : _options.BaseUrl, UriKind.Absolute, out var home)
+            && !string.Equals(target.Authority, home.Authority, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new PageLoadException(
+                $"Could not open {destination}: the bUnit head renders the app at {home.GetLeftPart(UriPartial.Authority)} only; "
+                + "another host's page needs the browser head.");
+        }
     }
 
     /// <summary>A link followed inside the page: the router's navigation in the same circuit, as Blazor's script does it.</summary>

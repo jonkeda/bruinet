@@ -33,6 +33,30 @@ public sealed class ContextTests
 
     #region Navigation
 
+    [Theory]
+    [InlineData("https://elsewhere.test/login", "another host's page needs the browser head")]
+    [InlineData("about:blank", "this app's pages only")]
+    public void Navigate_ToAnAddressThisHeadCannotRender_IsAPageLoadFailure_NamingIt(string address, string why)
+    {
+        using var context = Sample();
+
+        var error = Assert.Throws<PageLoadException>(() => context.NavigateTo(address));
+
+        Assert.Contains(address, error.Message, StringComparison.Ordinal);
+        Assert.Contains(why, error.Message, StringComparison.Ordinal);
+        Assert.IsAssignableFrom<BruinetException>(error);
+    }
+
+    [Fact]
+    public void Navigate_ToAPath_RendersThePage()
+    {
+        using var context = Sample();
+
+        context.NavigateTo("/counter");
+
+        Assert.Equal("Current count: 0", Text(context, "count-display"));
+    }
+
     [Fact]
     public void Navigate_ToRoute_RendersThePage()
     {

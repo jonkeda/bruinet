@@ -1,9 +1,10 @@
 namespace Bruinet.Core.Exceptions;
 
 /// <summary>
-/// Thrown when a page fails to load within the expected time or conditions.
+/// An address could not be opened: the app did not answer, refused it, or is not the app this head renders. Both Html
+/// heads throw it for a navigation that failed, with the address and why (review 01, finding 5).
 /// </summary>
-public class PageLoadException : Exception
+public class PageLoadException : BruinetException
 {
     /// <summary>
     /// Creates a new PageLoadException with the specified message.
