@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Core\Bruinet.Core.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Wpf\Bruinet.Wpf.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
