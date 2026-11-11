@@ -99,17 +99,43 @@ public class StrideGameDriver : IDisposable
         _gameProcess = Process.Start(startInfo)
             ?? throw new InvalidOperationException("Failed to start game process");
 
-        var startTime = DateTime.UtcNow;
-        while (DateTime.UtcNow - startTime < _options.StartupTimeout)
+        var game = _gameProcess;
+        await WaitForWindowAsync(
+            gamePath,
+            () => game.HasExited ? game.ExitCode : null,
+            () =>
+            {
+                game.Refresh();
+                return game.MainWindowHandle != IntPtr.Zero;
+            },
+            _options.StartupTimeout,
+            cancellationToken);
+    }
+
+    /// <summary>
+    /// Waits until the started game shows its window. A game that exits first, or shows none within
+    /// <paramref name="startupTimeout"/>, fails here by name rather than later as a pipe error.
+    /// </summary>
+    /// <param name="gamePath">The game's executable, for the message.</param>
+    /// <param name="exitCode">The game's exit code once it has exited; null while it runs.</param>
+    /// <param name="hasWindow">Whether the game shows its main window.</param>
+    /// <param name="startupTimeout">How long the game may take (<see cref="StrideTestContextOptions.StartupTimeout"/>).</param>
+    /// <param name="cancellationToken">Stops the wait.</param>
+    internal static async Task WaitForWindowAsync(string gamePath, Func<int?> exitCode, Func<bool> hasWindow, TimeSpan startupTimeout, CancellationToken cancellationToken)
+    {
+        var started = System.Diagnostics.Stopwatch.StartNew();
+        while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (_gameProcess.HasExited)
-                throw new InvalidOperationException($"Game process exited unexpectedly with code {_gameProcess.ExitCode}");
+            if (exitCode() is { } code)
+                throw new InvalidOperationException($"The game '{Path.GetFileName(gamePath)}' exited with code {code} before it showed a window.");
 
-            _gameProcess.Refresh();
-            if (_gameProcess.MainWindowHandle != IntPtr.Zero)
-                break;
+            if (hasWindow())
+                return;
+
+            if (started.Elapsed >= startupTimeout)
+                throw new TimeoutException($"The game '{Path.GetFileName(gamePath)}' showed no window within StartupTimeout ({startupTimeout.TotalSeconds:0.#} s).");
 
             await Task.Delay(100, cancellationToken);
         }
