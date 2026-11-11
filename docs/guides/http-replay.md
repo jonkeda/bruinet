@@ -61,8 +61,13 @@ Each answer's duration is recorded; `| HttpReplayPace | recorded |` waits it out
 - `Authorization`, `api-key`, `X-Api-Key`, `Ocp-Apim-Subscription-Key`, cookies and named query parameters and JSON
   fields (`password`, `client_secret`, tokens) are written as `***`, and a `***` matches whatever the live call sends.
 - `| HttpRedact | x-functions-key |` adds a suite's own.
-- Before saving, a recording is scanned for what looks like a key (model and cloud keys, tokens, private keys); one
-  found stops the save, naming the exchange and where in it.
+- The same names are redacted inside XML and SOAP bodies (an element's text, an attribute's value) and in each part of
+  a streamed answer, and a `Location` header's query is redacted too, its OAuth `code` included. Elsewhere `code` is
+  kept: in a body it is too often an error or country code, which replay hands back to the app.
+- Before saving, a recording is scanned for what looks like a key (model and cloud keys, tokens, private keys, an Azure
+  resource key after a key-like name); one found stops the save, naming the exchange and where in it.
+- A body is otherwise kept whole: names, emails and prompts sent to a model go into git with the recording. Record
+  against test data.
 
 ## Streamed Answers
 

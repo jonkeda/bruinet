@@ -39,7 +39,8 @@ public sealed class HttpReplayOptions
 
     /// <summary>The query parameters and JSON body fields never written.</summary>
     public static readonly IReadOnlyList<string> DefaultRedactedFields =
-        ["api-key", "api_key", "apikey", "sig", "password", "client_secret", "access_token", "refresh_token", "id_token"];
+        ["api-key", "api_key", "apikey", "sig", "password", "client_secret", "access_token", "refresh_token", "id_token",
+            "token", "secret", "code_verifier", "assertion", "client_assertion", "subscription-key"];
 
     /// <summary>Every call answered in the process: a call to a host the recording does not know fails by name.</summary>
     public bool Hermetic { get; set; }

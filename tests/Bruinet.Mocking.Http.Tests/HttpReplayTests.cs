@@ -140,7 +140,7 @@ public sealed class HttpReplayTests : IDisposable
     public async Task A_recording_holding_what_looks_like_a_key_is_not_saved()
     {
         _service.Given(Request.Create().WithPath("/config").UsingGet())
-            .RespondWith(Response.Create().WithBody("""{"token":"sk-proj-abcdefghijklmnopqrstuvwxyz0123"}"""));
+            .RespondWith(Response.Create().WithBody("""{"note":"sk-proj-abcdefghijklmnopqrstuvwxyz0123"}"""));
 
         var session = new HttpReplaySession(HttpReplayMode.Record, Recording);
         using (var client = new HttpClient(HttpReplayHandler.Create(session)))

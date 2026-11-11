@@ -29,7 +29,11 @@ internal static partial class HttpRedaction
         ("a JSON web token", JsonWebToken()),
         ("a private key", PrivateKey()),
         ("an Azure storage key", AzureStorageKey()),
+        ("an Azure resource key", AzureResourceKey()),
     ];
+
+    // An OAuth redirect's code is a secret in a Location; elsewhere "code" is too often an error or country code to hide.
+    private static readonly string[] LocationFields = ["code"];
 
     /// <summary>Replaces the named values of <paramref name="exchange"/> with <c>***</c>.</summary>
     public static void Redact(HttpExchange exchange, HttpReplayOptions options)
@@ -45,6 +49,11 @@ internal static partial class HttpRedaction
         }
 
         exchange.Url = RedactQuery(exchange.Url, options.RedactedFields);
+        if (exchange.ResponseHeaders.TryGetValue("Location", out var location))
+        {
+            exchange.ResponseHeaders["Location"] = RedactQuery(location, new HashSet<string>(options.RedactedFields.Concat(LocationFields), StringComparer.OrdinalIgnoreCase));
+        }
+
         if (exchange.RequestBodyEncoding is null)
         {
             exchange.RequestBody = RedactBody(exchange.RequestBody, exchange.RequestHeaders, options.RedactedFields);
@@ -53,6 +62,12 @@ internal static partial class HttpRedaction
         if (exchange.ResponseBodyEncoding is null)
         {
             exchange.ResponseBody = RedactBody(exchange.ResponseBody, exchange.ResponseHeaders, options.RedactedFields);
+        }
+
+        // A streamed answer's parts: each server-sent event's data, as a body.
+        foreach (var chunk in exchange.Chunks ?? [])
+        {
+            chunk.Data = RedactStreamed(chunk.Data, options.RedactedFields);
         }
     }
 
@@ -129,6 +144,11 @@ internal static partial class HttpRedaction
         }
 
         var trimmed = body.TrimStart();
+        if (trimmed.StartsWith('<'))
+        {
+            return RedactXml(body, fields);
+        }
+
         if (!trimmed.StartsWith('{') && !trimmed.StartsWith('['))
         {
             return body;
@@ -145,6 +165,44 @@ internal static partial class HttpRedaction
         }
 
         return RedactNode(node, fields) ? node!.ToJsonString() : body;
+    }
+
+    // A server-sent event's lines: each "data: <json>" redacted as a JSON body; other lines as they are.
+    private static string RedactStreamed(string data, ISet<string> fields)
+    {
+        if (string.IsNullOrEmpty(data))
+        {
+            return data;
+        }
+
+        var lines = data.Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (lines[i].StartsWith("data:", StringComparison.Ordinal))
+            {
+                var payload = lines[i]["data:".Length..].TrimStart();
+                var redacted = RedactBody(payload, new Dictionary<string, string>(), fields);
+                if (!ReferenceEquals(redacted, payload) && redacted != payload)
+                {
+                    lines[i] = "data: " + redacted;
+                }
+            }
+        }
+
+        return string.Join("\n", lines);
+    }
+
+    // An XML or SOAP body: a named element's text and a named attribute's value, by local name.
+    private static string RedactXml(string body, ISet<string> fields)
+    {
+        foreach (var field in fields)
+        {
+            var name = Regex.Escape(field);
+            body = Regex.Replace(body, $@"(<(?:[\w.-]+:)?{name}(?:\s[^>]*)?>)[^<]*(</(?:[\w.-]+:)?{name}>)", "${1}" + Redacted + "${2}", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
+            body = Regex.Replace(body, $@"(\s{name}\s*=\s*"")[^""]*("")", "${1}" + Redacted + "${2}", RegexOptions.IgnoreCase, TimeSpan.FromSeconds(1));
+        }
+
+        return body;
     }
 
     private static bool RedactNode(JsonNode? node, ISet<string> fields)
@@ -178,6 +236,10 @@ internal static partial class HttpRedaction
 
         return changed;
     }
+
+    // 32 hex characters after a key-like name: an Azure resource (Cognitive Services, Foundry) key.
+    [GeneratedRegex(@"(?i)(key|secret|token|password)[""':=\s]{1,4}[0-9a-f]{32}\b")]
+    private static partial Regex AzureResourceKey();
 
     [GeneratedRegex(@"\bsk-(?:proj-|ant-)?[A-Za-z0-9_\-]{20,}")]
     private static partial Regex OpenAiKey();
