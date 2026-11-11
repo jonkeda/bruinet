@@ -35,7 +35,16 @@ Set-Location (Resolve-Path (Join-Path $PSScriptRoot '../..'))
 $changeList = '.github/skills/api-upgrade/references/changes.md'
 [string[]] $range = if ($Head) { $Base, $Head } else { $Base }
 
+# A git that failed (a base not fetched) is not "nothing changed" (review 10, finding 13).
+function Assert-Git([string] $what) {
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "git $what failed (exit $LASTEXITCODE): is the base revision fetched?" -ErrorAction Continue
+        exit 2
+    }
+}
+
 $files = @(git diff --name-only @range -- 'src/*/PublicAPI.Unshipped.txt')
+Assert-Git 'diff'
 if ($files.Count -eq 0) {
     Write-Host 'API change list: no public API file changed.'
     exit 0
@@ -103,6 +112,7 @@ if ($breaks.Count -eq 0) {
 }
 
 $listed = @(git diff --name-only @range -- $changeList).Count -gt 0
+Assert-Git 'diff'
 if ($listed) {
     Write-Host "API change list: $($breaks.Count) breaking line(s), and $changeList is changed with them."
     exit 0

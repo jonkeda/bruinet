@@ -64,7 +64,17 @@ if (-not $Reason -and $Head) {
     if ($trailer) { $Reason = ($trailer -replace '^\s*Test-Guard-Reason:\s*', '').Trim() }
 }
 
-$status = git diff -M --name-status @range | ForEach-Object {
+# A git that failed (a base not fetched) is not "nothing changed" (review 10, finding 13).
+function Assert-Git([string] $what) {
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "git $what failed (exit $LASTEXITCODE): is the base revision fetched?" -ErrorAction Continue
+        exit 2
+    }
+}
+
+$diff = @(git diff -M --name-status @range)
+Assert-Git 'diff'
+$status = $diff | ForEach-Object {
     $parts = $_ -split "`t"
     [pscustomobject]@{ Status = $parts[0].Substring(0, 1); Path = $parts[-1]; Old = $parts[1] }
 }
@@ -81,6 +91,7 @@ foreach ($file in $status | Where-Object { & $isTest $_.Path }) {
     if ($file.Path -notlike '*.cs' -and $file.Path -notlike '*.feature.md') { continue }
 
     $lines = git diff -M -U0 -w @range -- $file.Path
+    Assert-Git 'diff'
     $removed = @($lines | Where-Object { $_ -match '^-(?!--)' })
     $added = @($lines | Where-Object { $_ -match '^\+(?!\+\+)' })
     $count = { param($set, $pattern) @($set | Where-Object { $_ -match $pattern }).Count }

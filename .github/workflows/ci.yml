@@ -17,12 +17,16 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 jobs:
-  # A pull request that takes tests away (deleted, fewer, skipped, fewer assertions) fails unless
-  # its description says why; the script's -Reason is that why (AD-033).
+  # A pull request, or a push, that takes tests away (deleted, fewer, skipped, fewer assertions)
+  # fails unless it says why: the pull request's description, or a "Test-Guard-Reason:" line in a
+  # pushed commit's message (AD-033). Pushes too, since work lands without pull requests (review 12,
+  # finding 7); a push that opens a branch has nothing to compare with and is skipped.
   test-guard:
     name: Test guard
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000')
     runs-on: ubuntu-latest
+    env:
+      BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,12 +38,12 @@ jobs:
           BODY: ${{ github.event.pull_request.body }}
         run: |
           $reason = if ($env:BODY -match 'Tests removed because:\s*(.+)') { $Matches[1] } else { '' }
-          ./tools/Scripts/check-test-guard.ps1 -Base origin/${{ github.base_ref }} -Head HEAD -Reason $reason
-      # A pull request that breaks the public API carries its row in the consumers' change list
+          ./tools/Scripts/check-test-guard.ps1 -Base $env:BASE -Head HEAD -Reason $reason
+      # A change that breaks the public API carries its row in the consumers' change list
       # (skill api-upgrade).
       - name: API changes listed for consumers
         shell: pwsh
-        run: ./tools/Scripts/check-api-changes.ps1 -Base origin/${{ github.base_ref }} -Head HEAD
+        run: ./tools/Scripts/check-api-changes.ps1 -Base $env:BASE -Head HEAD
 
   build-and-test:
     name: Build and unit test

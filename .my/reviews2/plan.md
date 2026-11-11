@@ -116,8 +116,8 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 ## Phase 6: CI, tests and quality
 
 - [ ] R2-T67 Six unrun test projects into `coverage.ps1`; `Bdd.Workspace.UITests` under `-Browser`; a test fails when a project is in no list. R08 P8.
-- [ ] R2-T68 Guard scripts fail when `git diff` fails (exit 2). R10 P13.
-- [ ] R2-T69 Test guard and API check run on pushes too. R12 P7.
+- [x] R2-T68 Guard scripts fail when `git diff` fails (exit 2). R10 P13. Each git diff checked: exit 2 with the cause, tried on a base that does not exist.
+- [x] R2-T69 Test guard and API check run on pushes too. R12 P7. The test-guard job runs on a push as well, against the push's before; a push that opens a branch is skipped. CI's push trigger stays main only (Actions minutes are scarce), so this guards what CI already runs.
 - [ ] R2-T70 Tests a tier too high moved down. R08 P9.
 - [x] R2-T71 Probes behind an opt-in attribute or deleted. R08 P10. Five probes are ProbeFact (Maui.UITests has its own file, Uia.Tests its own copy); the bUnit one went with the spike. The WinForms password test asserts the sample's status, which now says the password's length; the empty LoginPage one is gone.
 - [x] R2-T72 Leftovers: `Bruinet.Sql.Spike.Tests`, bUnit `SpikeTests.cs`. R08 P11. Sql.Spike.Tests deleted with its recordings (out of the solution and coverage.ps1); bUnit SpikeTests keeps its two named tests; the skipped RightClick_ReturnsPageInstance is gone. The .my citations were left: .my is the owner's.
