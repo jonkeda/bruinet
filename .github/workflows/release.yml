@@ -48,6 +48,11 @@ jobs:
         shell: pwsh
         run: ./tools/Scripts/pack.ps1 -Version "${{ steps.version.outputs.value }}" -Output artifacts
 
+      # Nothing is pushed unless a consumer restores and builds every library from the artifacts alone.
+      - name: Check the packages install
+        shell: pwsh
+        run: ./tools/Scripts/check-packages.ps1 -Packages artifacts -Version "${{ steps.version.outputs.value }}"
+
       - name: Push to GitHub Packages
         shell: pwsh
         run: |

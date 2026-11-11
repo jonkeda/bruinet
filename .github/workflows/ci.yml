@@ -162,6 +162,11 @@ jobs:
         shell: pwsh
         run: ./tools/Scripts/pack.ps1 -Version "0.1.0-ci.${{ github.run_number }}" -Output artifacts
 
+      # A consumer restores and builds every library from the artifacts alone (review 11, 2026-11-11).
+      - name: Check the packages install
+        shell: pwsh
+        run: ./tools/Scripts/check-packages.ps1 -Packages artifacts -Version "0.1.0-ci.${{ github.run_number }}"
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
