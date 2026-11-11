@@ -12,7 +12,7 @@ namespace Bruinet.Maui.Controls.Display;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 
-public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
+public partial class ProgressBar<TScope> : Base.ViewBase<TScope>, Bruinet.Core.Interfaces.IProgressControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     #region Progress (GetProgress / WaitProgress / AssertProgress)
@@ -37,6 +37,31 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
         return RunAssertWithElement(expected,
            element => GetProgressCore(element), (actual, expected1) => (actual == expected1),
            message ?? $"Expected Progress to be '{expected}'. Locator: {Locator}", timeoutMs);
+    }
+
+    #endregion
+    #region Indeterminate (IsIndeterminate / WaitIndeterminate / AssertIndeterminate)
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool IsIndeterminate()
+    {
+        return IsIndeterminateCore(TryFindElement()) == true;
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool WaitIndeterminate(bool? expected = true, int? timeoutMs = null)
+    {
+        return RunWaitWithElement(expected,
+           element => IsIndeterminateCore(element) == expected!.Value,
+           timeoutMs);
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public TScope AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null)
+    {
+        return RunAssertWithElement(expected,
+           IsIndeterminateCore, (actual, expected1) => (actual == expected1),
+           message ?? $"Expected Indeterminate to be '{expected}'. Locator: {Locator}", timeoutMs);
     }
 
     #endregion

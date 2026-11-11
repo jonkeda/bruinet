@@ -36,6 +36,9 @@ public class DisplayTestPage : PageObjectBase<DisplayTestPage>
     /// </summary>
     public ProgressBar<DisplayTestPage> TestProgressBar => new(this, "TestProgressBar");
 
+    /// <summary>A progress bar at 1.</summary>
+    public ProgressBar<DisplayTestPage> CompleteProgressBar => new(this, "CompleteProgressBar");
+
     #endregion
 
     #region Buttons

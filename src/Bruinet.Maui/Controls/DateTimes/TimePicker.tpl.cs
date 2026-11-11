@@ -9,7 +9,7 @@ namespace Bruinet.Maui.Controls.DateTimes;
 /// Provides GetTime, SetTime, and time assertion methods.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
+public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>, Bruinet.Core.Interfaces.ITimeControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>
@@ -186,6 +186,13 @@ public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
             },
             message ?? $"Expected time {expected:hh\\:mm}. Locator: {Locator}", timeoutMs);
     }
+
+    // Core's time capability compares to the minute (ITimeControlObject); a picker may hold seconds.
+    bool Bruinet.Core.Interfaces.ITimeControlObject<TScope>.WaitTime(TimeSpan? expected, int? timeoutMs)
+        => WaitTime(expected, 59, timeoutMs);
+
+    TScope Bruinet.Core.Interfaces.ITimeControlObject<TScope>.AssertTime(TimeSpan? expected, string? message, int? timeoutMs)
+        => AssertTime(expected, 59, message, timeoutMs);
 
     /// <summary>
     /// Gets the hours component of the selected time.

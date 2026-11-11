@@ -6,7 +6,7 @@ namespace Bruinet.Maui.CommunityToolkit.Controls.Views;
 /// Routes and platform limits: <c>docs/controls/community-toolkit.md</c>.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TScope>
+public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>, Bruinet.Core.Interfaces.IExpandableControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>
@@ -180,4 +180,8 @@ public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TSco
     }
 
     #endregion
+
+    /// <summary>Taps the header once, turning the expander over (<see cref="Bruinet.Core.Interfaces.IExpandableControlObject{TScope}"/>).</summary>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    public TScope ToggleExpanded(int? timeoutMs = null) => Toggle(timeoutMs);
 }

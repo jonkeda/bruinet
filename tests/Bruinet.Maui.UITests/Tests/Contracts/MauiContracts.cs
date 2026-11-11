@@ -255,3 +255,98 @@ public sealed class MauiLabelContract : TextContract<ButtonsTestPage>
 
     protected override string Text => "Contract label";
 }
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiDatePickerContract : DateContract<DateTimeTestPage>
+{
+    private readonly DateTimeTestPage _page;
+
+    // The sample allows today to 30 days on; the contract starts the picker two days on, as it cannot know today.
+    public MauiDatePickerContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.DateTime);
+        _page = new DateTimeTestPage(fixture.Context);
+        _page.TestDatePicker.SetDate(Initial);
+    }
+
+    protected override DateTimeTestPage Scope => _page;
+
+    protected override IDateControlObject<DateTimeTestPage> Picker => _page.TestDatePicker;
+
+    protected override DateTime Initial => DateTime.Today.AddDays(2);
+
+    protected override DateTime Target => DateTime.Today.AddDays(9);
+}
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiTimePickerContract : TimeContract<DateTimeTestPage>
+{
+    private readonly DateTimeTestPage _page;
+
+    // The sample starts at the time it opened; the contract starts the picker at a time of its own.
+    public MauiTimePickerContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.DateTime);
+        _page = new DateTimeTestPage(fixture.Context);
+        _page.TestTimePicker.SetTime(Initial);
+    }
+
+    protected override DateTimeTestPage Scope => _page;
+
+    protected override ITimeControlObject<DateTimeTestPage> Picker => _page.TestTimePicker;
+
+    protected override TimeSpan Initial => new(9, 15, 0);
+}
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiProgressBarContract : ProgressContract<DisplayTestPage>
+{
+    private readonly DisplayTestPage _page;
+
+    public MauiProgressBarContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.Display);
+        _page = new DisplayTestPage(fixture.Context);
+    }
+
+    protected override DisplayTestPage Scope => _page;
+
+    protected override IProgressControlObject<DisplayTestPage> Partial => _page.TestProgressBar;
+
+    protected override IProgressControlObject<DisplayTestPage> Complete => _page.CompleteProgressBar;
+
+    // MAUI's ProgressBar is never indeterminate; its test skips.
+    protected override IProgressControlObject<DisplayTestPage> Indeterminate => _page.TestProgressBar;
+
+    // DisplayViewModel starts at 50 of 100.
+    protected override double Fraction => 0.5;
+
+    [Fact(Skip = "MAUI's ProgressBar always shows a value; its indeterminate progress is an ActivityIndicator, which is not a progress control.")]
+    public override void IsIndeterminate_TrueOnlyWhenIndeterminate()
+    {
+    }
+}
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+[Trait("Head", "MauiHeadless")]
+public sealed class MauiExpanderContract : ExpandableContract<CommunityToolkitTestPage>
+{
+    private readonly CommunityToolkitTestPage _page;
+
+    public MauiExpanderContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.CommunityToolkit);
+        _page = new CommunityToolkitTestPage(fixture.Context);
+    }
+
+    protected override CommunityToolkitTestPage Scope => _page;
+
+    protected override IExpandableControlObject<CommunityToolkitTestPage> Expander => _page.TestExpander;
+}

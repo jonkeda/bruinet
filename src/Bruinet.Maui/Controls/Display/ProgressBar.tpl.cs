@@ -5,7 +5,7 @@ namespace Bruinet.Maui.Controls.Display;
 /// Provides GetProgress(), IsIndeterminate(), and progress assertions.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
+public partial class ProgressBar<TScope> : Base.ViewBase<TScope>, Bruinet.Core.Interfaces.IProgressControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>
@@ -68,10 +68,25 @@ public partial class ProgressBar<TScope> : Base.ViewBase<TScope>
 
     #region Indeterminate - Core Methods
 
+    /// <summary>
+    /// Whether the progress is indeterminate: never for MAUI's ProgressBar, which always shows a value
+    /// (an ActivityIndicator is MAUI's indeterminate progress).
+    /// </summary>
+    /// <param name="element">The pre-found element (may be null).</param>
+    protected virtual bool? IsIndeterminateCore(IMauiElement? element) => element == null ? null : false;
 
     #endregion
 
     #region Hand-written Convenience Members
+
+    /// <summary>Waits for the progress to reach 1.</summary>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    public bool WaitComplete(int? timeoutMs = null) => WaitProgress(1, timeoutMs);
+
+    /// <summary>Asserts the progress is at 1.</summary>
+    /// <param name="message">Optional custom assertion message.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    public TScope AssertComplete(string? message = null, int? timeoutMs = null) => AssertProgress(1, message, timeoutMs);
 
     // Tolerance-based comparisons stay hand-written; they overload the generated
     // exact-equality AssertProgress/WaitProgress.

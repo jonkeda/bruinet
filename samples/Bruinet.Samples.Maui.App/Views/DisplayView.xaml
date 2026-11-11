@@ -123,6 +123,9 @@
                 uia:GestureAutomation.Verbs="GetState"
                 AutomationId="TestProgressBar" />
 
+            <!-- The progress contract's complete bar (review 08, finding 1). -->
+            <ProgressBar Progress="1" uia:GestureAutomation.Verbs="GetState" AutomationId="CompleteProgressBar" />
+
             <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                 <Button 
                     Text="Decrease" 

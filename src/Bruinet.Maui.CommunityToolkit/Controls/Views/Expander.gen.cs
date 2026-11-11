@@ -13,7 +13,7 @@ namespace Bruinet.Maui.CommunityToolkit.Controls.Views;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 
-public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ViewBase<TScope>
+public partial class Expander<TScope> : Bruinet.Maui.Controls.Base.ClickableControlBase<TScope>, Bruinet.Core.Interfaces.IExpandableControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     #region Expanded (IsExpanded / WaitExpanded / AssertExpanded)

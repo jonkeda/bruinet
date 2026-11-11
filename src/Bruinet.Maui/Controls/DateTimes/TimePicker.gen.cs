@@ -16,7 +16,7 @@ namespace Bruinet.Maui.Controls.DateTimes;
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 
-public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>
+public partial class TimePicker<TScope> : Base.FocusableControlBase<TScope>, Bruinet.Core.Interfaces.ITimeControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     #region SetTime

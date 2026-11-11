@@ -1258,3 +1258,9 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminate() -> bool
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
+virtual Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminateCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?

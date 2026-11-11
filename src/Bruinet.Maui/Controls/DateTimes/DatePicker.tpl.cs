@@ -9,7 +9,7 @@ namespace Bruinet.Maui.Controls.DateTimes;
 /// Provides GetDate, SetDate, and date assertion methods.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
-public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>
+public partial class DatePicker<TScope> : Base.FocusableControlBase<TScope>, Bruinet.Core.Interfaces.IDateControlObject<TScope>
     where TScope : IMauiScope<TScope>
 {
     /// <summary>

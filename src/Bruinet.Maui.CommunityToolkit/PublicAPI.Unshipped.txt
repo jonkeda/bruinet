@@ -192,3 +192,4 @@ virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.ToggleCore
 virtual Bruinet.Maui.CommunityToolkit.Controls.Views.Popup<TParent, TSelf>.IsOpenCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.IsReadOnlyCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.CommunityToolkit.Controls.Views.RatingView<TScope>.TapStarCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? star, int? timeoutMs = null) -> void
+Bruinet.Maui.CommunityToolkit.Controls.Views.Expander<TScope>.ToggleExpanded(int? timeoutMs = null) -> TScope
