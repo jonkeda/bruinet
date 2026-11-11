@@ -35,19 +35,20 @@ internal static class SqlCommands
     private static Command SchemaCommand(CliIo io)
     {
         var connection = Connection();
+        var connectionFrom = ConnectionFrom();
         var output = new Option<string>("--out") { Description = "The snapshot's file.", DefaultValueFactory = _ => "schema.json" };
         var references = new Option<string?>("--references") { Description = "A JSON file of references kept by hand, for dynamic SQL: { \"dbo.search\": [\"dbo.places\"] }." };
         var data = new Option<string[]>("--data") { Description = "A table of reference data whose rows are hashed with it (repeatable, or comma-separated).", AllowMultipleArgumentsPerToken = true };
         var defaultSchema = new Option<string>("--default-schema") { Description = "The app's user's default schema: a command's unqualified name is taken in it, then dbo. SQLite's is always main.", DefaultValueFactory = _ => "dbo" };
         var provider = new Option<string>("--provider") { Description = "sqlserver, or sqlite for a SQLite file (\"Data Source=<file>\"): the connection string can't tell them apart.", DefaultValueFactory = _ => "sqlserver" };
         provider.AcceptOnlyFromAmong("sqlserver", "sqlite");
-        var command = new Command("schema", "Write the database's schema snapshot: tables, views, procedures and functions, their hashes and references.") { connection, output, references, data, defaultSchema, provider };
+        var command = new Command("schema", "Write the database's schema snapshot: tables, views, procedures and functions, their hashes and references.") { connection, connectionFrom, output, references, data, defaultSchema, provider };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             var sqlite = parsed.GetValue(provider) == "sqlite";
             await using System.Data.Common.DbConnection sql = sqlite
-                ? new Microsoft.Data.Sqlite.SqliteConnection(parsed.GetValue(connection)!)
-                : new SqlConnection(parsed.GetValue(connection)!);
+                ? new Microsoft.Data.Sqlite.SqliteConnection(ConnectionString(parsed, connection, connectionFrom))
+                : new SqlConnection(ConnectionString(parsed, connection, connectionFrom));
             await sql.OpenAsync(cancellationToken);
             var options = new SnapshotOptions
             {
@@ -211,13 +212,14 @@ internal static class SqlCommands
     private static Command StartCommand(CliIo io)
     {
         var connection = Connection();
+        var connectionFrom = ConnectionFrom();
         var folder = new Option<string?>("--folder") { Description = "A folder on the server for the session's files. Default: the server's log folder." };
         var state = State();
         var like = new Option<string?>("--database-like") { Description = "Capture every database whose name is LIKE this (TestDb_%), for a suite that makes one per run; default: the connection's." };
-        var command = new Command("start", "Start the session on the connection's database and send the marker that lines the clocks up. Needs ALTER ANY EVENT SESSION.") { connection, folder, state, like };
+        var command = new Command("start", "Start the session on the connection's database and send the marker that lines the clocks up. Needs ALTER ANY EVENT SESSION.") { connection, connectionFrom, folder, state, like };
         command.Action(io, async (parsed, cancellationToken) =>
         {
-            await using var sql = await OpenAsync(parsed.GetValue(connection)!, cancellationToken);
+            await using var sql = await OpenAsync(ConnectionString(parsed, connection, connectionFrom), cancellationToken);
             var where = parsed.GetValue(folder) ?? await DefaultFolderAsync(sql, cancellationToken);
             var started = await ExtendedEvents.StartAsync(sql, where, cancellationToken, parsed.GetValue(like));
             var to = Path.GetFullPath(parsed.GetValue(state)!, io.CurrentDirectory);
@@ -231,12 +233,13 @@ internal static class SqlCommands
     private static Command StopCommand(CliIo io)
     {
         var connection = Connection();
+        var connectionFrom = ConnectionFrom();
         var state = State();
-        var command = new Command("stop", "Stop and drop the session; its files stay for read.") { connection, state };
+        var command = new Command("stop", "Stop and drop the session; its files stay for read.") { connection, connectionFrom, state };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             var started = CaptureState.Load(Path.GetFullPath(parsed.GetValue(state)!, io.CurrentDirectory));
-            await using var sql = await OpenAsync(parsed.GetValue(connection)!, cancellationToken);
+            await using var sql = await OpenAsync(ConnectionString(parsed, connection, connectionFrom), cancellationToken);
             await ExtendedEvents.StopAsync(sql, started.Database, cancellationToken);
             io.Error.WriteLine($"Session {started.Session} stopped.");
             return 0;
@@ -247,13 +250,14 @@ internal static class SqlCommands
     private static Command ReadCommand(CliIo io)
     {
         var connection = Connection();
+        var connectionFrom = ConnectionFrom();
         var state = State();
         var output = new Option<string>("--out") { Description = "The log folder to write to.", DefaultValueFactory = _ => "sql-log" };
-        var command = new Command("read", "Read the session's files through the server into the log, on this machine's clock.") { connection, state, output };
+        var command = new Command("read", "Read the session's files through the server into the log, on this machine's clock.") { connection, connectionFrom, state, output };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             var started = CaptureState.Load(Path.GetFullPath(parsed.GetValue(state)!, io.CurrentDirectory));
-            await using var sql = await OpenAsync(parsed.GetValue(connection)!, cancellationToken);
+            await using var sql = await OpenAsync(ConnectionString(parsed, connection, connectionFrom), cancellationToken);
             var entries = await ExtendedEvents.ReadAsync(sql, started, cancellationToken);
             var folder = Path.GetFullPath(parsed.GetValue(output)!, io.CurrentDirectory);
             var log = new SqlLog(folder);
@@ -292,7 +296,26 @@ internal static class SqlCommands
         return command;
     }
 
-    private static Option<string> Connection() => new("--connection") { Description = "A connection string to the test database.", Required = true };
+    private static Option<string?> Connection() => new("--connection") { Description = "A connection string to the test database. Prefer --connection-from: this one lands in shell history and the process list." };
+
+    private static Option<string?> ConnectionFrom() => new("--connection-from") { Description = "The environment variable that holds the connection string, so a password stays off the command line." };
+
+    // The one connection string the command was given: by value or by variable, not both and not neither.
+    private static string ConnectionString(ParseResult parsed, Option<string?> connection, Option<string?> from)
+    {
+        var given = parsed.GetValue(connection);
+        var variable = parsed.GetValue(from);
+        if (given is { Length: > 0 } == variable is { Length: > 0 })
+        {
+            throw new ArgumentException("Give the test database as --connection-from <variable> or --connection <string>, one of them.");
+        }
+
+        return given is { Length: > 0 }
+            ? given
+            : Environment.GetEnvironmentVariable(variable!) is { Length: > 0 } value
+                ? value
+                : throw new ArgumentException($"The environment variable {variable} is not set: it holds the test database's connection string.");
+    }
 
     private static Option<string> State() => new("--state") { Description = "The capture's state file.", DefaultValueFactory = _ => StateFile };
 

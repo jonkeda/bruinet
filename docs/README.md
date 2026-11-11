@@ -72,6 +72,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   files, typed mock bodies (`BRUINET001`)
 - [Test Settings](guides/settings.md)
 - [Reporting And Artifacts](guides/reporting-artifacts.md)
+- [What Bruinet Writes](guides/what-bruinet-writes.md)
 - [Migration Notes](guides/migration.md)
 - [Troubleshooting](guides/troubleshooting.md)
 

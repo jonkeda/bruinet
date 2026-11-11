@@ -63,8 +63,8 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T24 Voice key file owner-only on Unix. R09 P6.
 - [x] R2-T25 Stride pipe `PipeOptions.CurrentUserOnly`. R09 P7.
 - [x] R2-T26 VS `watch` opens only `.mp4` under the recordings folder. R09 P8.
-- [ ] R2-T27 `bruinet sql --connection-from <VAR>`. R09 P9.
-- [ ] R2-T28 Guide page "What Bruinet writes". R09 P10.
+- [x] R2-T27 `bruinet sql --connection-from <VAR>`. R09 P9.
+- [x] R2-T28 Guide page "What Bruinet writes". R09 P10.
 
 ## Phase 3: what a failure says
 
@@ -166,6 +166,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T110 `ArchitectureTests.OnlyBruinetUat_DeclaresUatNames` fails on `move` since `039d9b1b`: `Bruinet.Traits`' `UatAttribute` (`TraitAttributes.cs:52`) is a `Uat` name outside `Bruinet.Uat` (AD-021). Construction's plan drops `[Uat]` in its T10; until then it is red in `Bruinet.Core.Tests`. Not ours to change: told to the owner 2026-11-11.
 - [ ] R2-T111 Sixteen MAUI Windows UI tests fail on this machine with and without R2-T10 (2026-11-11): `ProductCollectionTests` (9, "No item at index 0 … materialized items: 0"), `RowTapTests` (2, `ItemTemplateContext` has no InvokePattern), `MediaElementTests` (5, `TimeRemainingElement` not visible); `ItemWhere_ScrollsToFindOffscreenRow` failed once without it and passed with it. 415 of 434 pass.
 - [ ] R2-T112 45 of 382 MAUI tests fail on the Android emulator (`Brinell_Android`, API 36) with R2-T11, and the 37 tests of five of those classes fail the same way without it (26 failed, 11 passed both times): Carousel, RatingView, MediaElement, DrawingView, Picker and Entry contracts, nested refresh, paged list. Found 2026-11-11; not investigated.
+- [ ] R2-T113 A step test in `Bruinet.Cli.Tests` (`StepTests.RunOfTheFile_…`, about 12 s) fails now and then while other builds run, and passes alone and on the next run; timing on a busy machine, noted, not chased (2026-11-11).
 
 ## Phase 9: consumers, after the merge into `move`
 

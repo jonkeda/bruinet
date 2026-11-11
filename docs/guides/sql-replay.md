@@ -24,11 +24,14 @@ values. EF Core: `options.UseSqlLog(log)`. ADO.NET: wrap the connection in `Logg
 An app you can't change is logged by SQL Server itself:
 
 ```bash
-bruinet sql capture start --connection "<test database>"
-bruinet sql capture stop --connection "<test database>"
-bruinet sql capture read --connection "<test database>" --out sql-log
+bruinet sql capture start --connection-from TEST_DATABASE
+bruinet sql capture stop --connection-from TEST_DATABASE
+bruinet sql capture read --connection-from TEST_DATABASE --out sql-log
 bruinet sql report --log sql-log --timings <timings> --schema schema.json
 ```
+
+`TEST_DATABASE` is an environment variable holding the connection string: `--connection-from` keeps a password out of
+shell history and the process list (`--connection "<string>"` works too).
 
 ## Recording And Replaying
 
@@ -103,7 +106,7 @@ A recording is stamped with the objects its commands touched: tables, views and 
 tables their bodies reach. The stamp comes from a schema snapshot kept in git:
 
 ```bash
-bruinet sql schema --connection "<test database>" --out Recordings/schema.json --data dbo.Kinds --references references.json
+bruinet sql schema --connection-from TEST_DATABASE --out Recordings/schema.json --data dbo.Kinds --references references.json
 bruinet sql stale --schema Recordings/schema.json --recordings Recordings
 ```
 

@@ -31,6 +31,20 @@ public sealed class BruinetCommandTests : IDisposable
         return (exit, output.ToString(), errors.ToString());
     }
 
+    [Fact]
+    public async Task Sql_TakesItsConnection_FromAVariable_AndSaysWhichIsMissing()
+    {
+        var unset = await Run(_solution, "sql", "capture", "start", "--connection-from", "BRUINET_TEST_NO_SUCH_VARIABLE");
+        var neither = await Run(_solution, "sql", "capture", "start");
+        var both = await Run(_solution, "sql", "capture", "start", "--connection", "Server=.", "--connection-from", "PATH");
+
+        Assert.Equal(2, unset.Exit);
+        Assert.Contains("BRUINET_TEST_NO_SUCH_VARIABLE is not set", unset.Errors, StringComparison.Ordinal);
+        Assert.Equal(2, neither.Exit);
+        Assert.Contains("one of them", neither.Errors, StringComparison.Ordinal);
+        Assert.Equal(2, both.Exit);
+    }
+
     [Theory]
     [InlineData(new string[0], "scrape")]
     [InlineData(new[] { "scrape" }, "install-browser")]
