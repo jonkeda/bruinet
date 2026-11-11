@@ -33,6 +33,7 @@ public sealed class SolutionTests
         ["Bruinet.ControlContracts"] = "a library: the contracts, bound by the stacks' test projects",
         ["Bruinet.ControlContracts.Html"] = "a library: the Html bindings",
         ["Bruinet.ControlContracts.Html.Site"] = "the Html bindings' pages",
+        ["Bruinet.Docs.Samples"] = "the docs' samples: compiled with the build, never run (DocsSamplesTests)",
         ["Bruinet.Uia.TestHost"] = "the app Bruinet.Uia.Tests drives",
         ["Bruinet.Scraper.TestSite"] = "the site Bruinet.Scraper.Tests scrapes",
         ["Bruinet.Maui.UITests"] = "a device suite: test-maui-headless.ps1 runs it on MauiHeadless",

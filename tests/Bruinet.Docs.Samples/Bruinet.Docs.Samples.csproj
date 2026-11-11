@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The docs' code samples, compiled with the build and never run (review 06, proposal 4): a doc's block follows a
+       "sample: <file>#<name>" marker comment and must equal that file's #region docs:<name> (DocsSamplesTests);
+       tools/Scripts/update-doc-samples.ps1 rewrites the blocks from the regions. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Html\Bruinet.Html.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Html.Playwright\Bruinet.Html.Playwright.csproj" />
+  </ItemGroup>
+
+</Project>

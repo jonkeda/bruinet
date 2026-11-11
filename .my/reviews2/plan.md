@@ -153,9 +153,9 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 - [x] R2-T97 Docs findings 2–6 by hand: quick start, Selenium, links, paths, old names. R06 P1. Findings 2 to 6 fixed: the quick start's page object compiles to today's API; Selenium is out of the docs, as no web head uses it, and WebDriverManager out of the package list; the docs2 links, the .my index, a dead anchor and the Uat paths of Bdd files fixed; the internal driver members gone from troubleshooting; the four quoting samples match their source.
 - [x] R2-T98 `docs/controls/Shell.md` deleted or rewritten. R06 P2. Deleted: every sample on it failed and no page linked it.
-- [ ] R2-T99 Docs check in the test step: links, paths, `bruinet` lines. R06 P3.
-- [ ] R2-T100 Docs samples from compiled files; AD-033 row. R06 P4, P5.
-- [ ] R2-T101 A quick start per stack, compiled in CI. R11 P5.
+- [x] R2-T99 Docs check in the test step: links, paths, `bruinet` lines. R06 P3. DocsTests (Core.Tests): every relative link and repository path in README.md and docs/ exists. DocsCommandLineTests (Cli.Tests): the 29 bruinet lines parse against the command tree. Old names are left to the review's one-off search: the change list's Find patterns match too much prose.
+- [x] R2-T100 Docs samples from compiled files; AD-033 row. R06 P4, P5. The mechanism: tests/Bruinet.Docs.Samples (compiled, never run), a sample marker per block, DocsSamplesTests, tools/Scripts/update-doc-samples.ps1, an AD-033 row. Only the new Html quick start uses it so far; moving the other 61 blocks is R2-T118.
+- [x] R2-T101 A quick start per stack, compiled in CI. R11 P5. Html's quick start (docs/getting-started/quick-start-html.md): feed, project, one package and the browser install, a page object and test from compiled files. The other stacks' are R2-T118.
 - [ ] R2-T102 Skills and instructions: names gone or wrong (R07 first table).
 - [ ] R2-T103 Skills: the six disagreeing rules made one, per the owner's answers to R07's five questions.
 - [ ] R2-T104 Skills: the ~1,400 words that can go; `copilot-instructions.md` per the owner's answer.
@@ -171,6 +171,8 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T115 MAUI `ScrollView` implements `IScrollableControlObject` (top, end, by, position, can-scroll, on every MAUI head) and binds `ScrollableContract`; until then no head binds it. Found in R2-T47.
 - [ ] R2-T116 The Android head's missing reads, skipped in the MAUI contracts with this id: a Picker's items and selection, a ProgressBar's progress, an Entry's read-only state (so a write to it is not refused), a RefreshView's state and pull, a SwipeView's top and bottom items, and dropping focus. Found in R2-T49; the Picker part is R2-T112's too.
 - [ ] R2-T117 `Bruinet.WinForms.UITests`' `DateTimePicker_SetDate_SetsDateCorrectly` fails on this machine at 86995566 and after (2026-11-11): the picker "accepted SetDate and did not take it", reading today's date. Not investigated.
+- [ ] R2-T118 The docs' other 61 C# blocks from compiled files (R2-T100's mechanism), and a compiled quick start for MAUI, WPF, WinForms, native Android, Stride and UAT (R2-T101 did Html).
+- [ ] R2-T119 A slimmer Bruinet.Cli (R2-T85): RID-specific tool packages (ToolPackageRuntimeIdentifiers) for SqlClient's native files, and Playwright's Node driver fetched at the Scraper's first use; to try on Windows, Linux and macOS.
 
 ## Phase 9: consumers, after the merge into `move`
 
