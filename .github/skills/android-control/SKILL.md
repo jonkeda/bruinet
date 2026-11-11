@@ -6,8 +6,8 @@ description: Create or extend a Bruinet native Android ControlObject - a simple 
 # Write a native Android ControlObject
 
 Native Android controls are generated, as MAUI's and Html's are: a template `Foo.tpl.cs` holds the
-constructors, `*Core` methods and hand-written members, and `Bruinet.Generator` writes the public
-API into `Foo.gen.cs`. The rules are the call model's (`.docs/contracts/call-model.md`,
+constructors, `*Core` methods and hand-written members, and `bruinet controls generate` writes the
+public API into `Foo.gen.cs`. The rules are the call model's (`.docs/contracts/call-model.md`,
 `.docs/contracts/control-object.md`) and the generator contract
 ([generator-contract.md](../maui-control/references/generator-contract.md)), with
 `INativeAndroidElement` as the element type. Controls are named after Android's widgets
@@ -51,8 +51,10 @@ Declare `protected virtual` `*Core` methods, element first, and generate (from t
 tools\Scripts\CreateNativeAndroid.Bat
 ```
 
-A control with no `*Core` methods of its own (only constructors) is still a template with an
-empty generated partial, or a plain `.cs` for a container.
+A control with no `*Core` methods or shortcuts of its own is a plain `.cs` (R5 in
+[generator-contract.md](../maui-control/references/generator-contract.md#generate)). The existing
+templates with an empty generated partial (`SeekBar.tpl.cs` and others) predate the rule: debt,
+not a model.
 
 - **`Get*Core` / `Is*Core` give `GetX`/`WaitX`/`AssertX`**, with `[GenerateComparisons]` and
   `[AbsenceTolerant]` as on MAUI.

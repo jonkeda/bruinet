@@ -1,8 +1,8 @@
 # The generator contract
 
 A ControlObject is a template, `Foo.tpl.cs`, holding constructors, `*Core` methods,
-`*Shortcut` methods and any hand-written members. `Bruinet.Generator` reads it and writes
-the public API into `Foo.gen.cs`, a second `partial` of the same class. The template holds
+`*Shortcut` methods and any hand-written members. `bruinet controls generate` (in
+`tools/Bruinet.Cli`) reads it and writes the public API into `Foo.gen.cs`, a second `partial` of the same class. The template holds
 the "how"; the generated file holds the "what".
 
 This file is the single statement of the contract. The `maui-control`, `convert-control`
@@ -37,8 +37,10 @@ comm -23 <(git diff --name-only -- '*.gen.cs' | sort) <(git diff --ignore-cr-at-
 Then `git status` shows only the `.gen.cs` files you meant to change.
 
 - Never edit a `.gen.cs` by hand. Never commit a `.tpl.cs` change without regenerating.
-- A class with Core methods or shortcuts is a `.tpl.cs`; a class with neither stays a
-  plain `.cs` (a page, an app container with only named children).
+- **R5.** A class with Core methods or shortcuts is a `.tpl.cs`; a class with neither is a
+  plain `.cs` (a page, an app container with only named children, a control that only inherits).
+  This holds for MAUI, Html and Android alike. The templates with an empty `.gen.cs` that exist
+  today (`Border.tpl.cs`, `Button.tpl.cs`, `SeekBar.tpl.cs` and others) predate R5: debt, not a model.
 - A `.tpl.cs` class must be `partial`.
 
 ## What is matched
@@ -110,7 +112,7 @@ protected virtual string? GetTextCore(IMauiElement element) => element.Text;
 
 | Flag | Emits | For |
 | --- | --- | --- |
-| `Equals` | `AssertX`, `WaitX` | anything |
+| `EqualTo` | `AssertX`, `WaitX` | anything |
 | `Contains`, `StartsWith`, `EndsWith` | `AssertXContains`, ... | strings |
 | `Empty` | `AssertXEmpty` | strings, collections |
 | `SequenceEquals` | element-wise equality | collections |

@@ -6,8 +6,8 @@ Routine actions use semantic control APIs and UI Automation patterns.
 moves the pointer, types, writes the clipboard or takes the foreground. Every action is a
 UI Automation pattern or a verb the app answers through the gesture bridge
 ([AD-008](ad-008-gestures-and-semantic-actions-go-through-ui-automation.md)), and an
-action with neither throws `NotSupportedException` - or `GestureUnavailableException` for a
-gesture - naming the route the app would have to offer. There is no setting that brings
+action with neither throws `RouteUnavailableException`, naming the route the app would have to
+offer; the call does not retry it, as it would a plain `NotSupportedException` (`Poller.IsFatal`). There is no setting that brings
 physical input back, and no test of real input runs on Windows; such a test belongs on the
 mobile head, where Appium injects input inside the device.
 

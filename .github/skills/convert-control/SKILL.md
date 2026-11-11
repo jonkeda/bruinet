@@ -1,6 +1,6 @@
 ---
 name: convert-control
-description: Convert a hand-written Bruinet MAUI control object (e.g. ImageButton.cs, Entry.cs, Label.cs) to the generatable .tpl.cs / .gen.cs format used under src/Bruinet.Maui*/Controls. Use when asked to "convert", "migrate", or "update to the new generatable format" a MAUI control object, or to make a control work with Bruinet.Generator.
+description: Convert a hand-written Bruinet MAUI control object (e.g. ImageButton.cs, Entry.cs, Label.cs) to the generatable .tpl.cs / .gen.cs format used under src/Bruinet.Maui*/Controls. Use when asked to "convert", "migrate", or "update to the new generatable format" a MAUI control object, or to make a control work with the generator (bruinet controls generate).
 ---
 
 # Convert a control object to the generatable format
@@ -94,17 +94,3 @@ behaviour.
 Say which members were generated, which stayed hand-written and why, and any public API that
 changed shape. Then run the control's tests: `Bruinet.Maui.Tests` for unit tests, and tier 1 of
 the UI tests (`--filter "Control=Foo"`) after rebuilding the sample app.
-
-## Worked example
-
-`ClickableControlBase` (`Controls/ClickableControlBase.cs` -> `Controls/Base/ClickableControlBase.tpl.cs`):
-
-- Deleted six hand-written wrappers (`Click`, `DoubleClick`, `RightClick`, `Hover`, `LongPress`,
-  `Press`), all regenerated from their Core methods.
-- Moved `EnsureClickableCore(element)` from each wrapper into each Core body.
-- `PressCore` went `private` -> `protected virtual` so the generator could see it.
-- `HoverCore` / `LongPressCore` gained `int? timeoutMs = null` to match interface signatures.
-- `IsClickableCore` gained `virtual` so the Is/Wait/Assert trio would generate.
-- `EnsureEnabledCore` / `EnsureClickableCore` stay `protected virtual`: the `Ensure` prefix keeps
-  them out of the public API.
-- `AssertClickable` lost its custom failure message: an accepted limit, flagged to the user.

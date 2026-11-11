@@ -29,15 +29,8 @@ needs something they do not offer, add it there first; never reach past them.
 
 ## A UI test or a scenario, not both
 
-A behaviour is checked once: by a UAT scenario (`Features/*.feature.md`) or by a code UI test (`Tests/`), never by both.
-
-- A scenario holds what a user does and sees, step by step, in words a reader checks against what was asked for.
-- A code UI test holds what a scenario says badly: layout at a size, an old link landing on its page, a lockout, a head's
-  own detail.
-- Before writing either, look for the same behaviour in the other: the feature files' steps (MCP `list_steps`,
-  `find_step_usages`) and the test classes.
-- Where both exist, move the code test's extra checks into the scenario as steps and delete the code test. A smoke test
-  that goes is replaced in the smoke filter by its scenario, by name (`DisplayName~<id>`).
+A behaviour is checked once, by a UAT scenario or by a code UI test: the rule and what goes where are in
+[AGENTS.md, "A UAT scenario or a code UI test"](../../../AGENTS.md#a-uat-scenario-or-a-code-ui-test).
 
 ## Test shape
 
@@ -128,8 +121,8 @@ public class MediaElementTests
 
 `Bruinet.Maui.UITests` and the Todo sample's `Bruinet.Samples.Todo.UITests` and `.Uat` run on both
 unchanged (AD-032, [docs/run/MAUI.md](../../../docs/run/MAUI.md)): the device (Windows through FlaUI,
-Android and iOS through Appium) and MauiHeadless, the app rendered in the test process from its build for
-plain `net10.0` (`samples/*.MauiHeadless`). Write every MAUI test so it can run on both.
+Android and iOS through Appium) and MauiHeadless, the app rendered in the test process from each sample
+app's own `net10.0` target. Write every MAUI test so it can run on both.
 
 - **A test that needs a device** says so: `[DeviceFact("why")]` instead of `[Fact]` (it takes the same
   `Timeout`), `[WindowsOnlyFact(Device = "why")]` for one that is Windows-only as well, `@device` on a
@@ -152,20 +145,14 @@ plain `net10.0` (`samples/*.MauiHeadless`). Write every MAUI test so it can run 
 - **Never change what a test checks to make it pass on one head.** A test that passes on the device and
   fails on MauiHeadless is a head gap or a device-only test: mark it, or fix the head in
   `src/Bruinet.Maui.Headless` (or MauiHeadless itself in `src/MauiHeadless`). A page added to the sample
-  app is in its MauiHeadless build already, which links its sources; a new fixture names its MauiHeadless app
-  in `CreateHeadlessOptions`.
+  app is in its `net10.0` target already; a new fixture names its MauiHeadless app in `CreateHeadlessOptions`.
 
 ## The never-list
 
-In tests, page objects' public members, app containers and test helpers, do not use:
-
-| Forbidden | Instead |
-| --- | --- |
-| `Context.Driver`, any `IMauiDriver` member | a control or page member; add one if missing |
-| a variable, parameter or return of type `IMauiElement`, or its members (`.Text`, `.Invoke()`, `.ReadState()`, `.PerformGesture()`) | the control's `Get*`/`Is*`/action |
-| `FindElement`, `FindElements`, `TryFindElement` on a page, container, context or `AppRoot` | a named control property, `Child<T>(id)`, or a collection's `Item`/`Items`/`ItemWhere` |
-| `ContainerRoot`, `AppElement`, `TryGetItemRoot`, `ScrollingRoot` | a container, collection, or `AppRoot`-scoped control |
-| `new Locator(...)` / `Locator.By*` in a test method | a page-object property |
+In tests, page objects' public members, app containers and test helpers, use none of the APIs in
+[forbidden-apis.md](references/forbidden-apis.md): the driver, `IMauiElement`, `Find*`, the raw roots
+(`ContainerRoot`, `AppElement`, `TryGetItemRoot`, `ScrollingRoot`), a `Locator` built in a test method,
+sleeps, a raised timeout without its comment, and try/catch around a control call. That table is the list.
 
 One structural exception: a collection row's constructor takes `IMauiElement itemRoot` and
 passes it to `ItemObjectBase` untouched; the collection's item factory does the same. Never
@@ -176,8 +163,8 @@ allowed in a test. Prefer a named property for anything the page or container ow
 is right when naming it would mislead, such as proving a control outside a container is *not*
 found through it.
 
-Why, and the one exception (framework tests of the driver and bridge themselves):
-[forbidden-apis.md](references/forbidden-apis.md). Existing tests that break these rules are not
+Why, and the one exception (framework tests of the driver and bridge themselves), are in
+[forbidden-apis.md](references/forbidden-apis.md) too. Existing tests that break these rules are not
 a model; do not copy them.
 
 ## Control unit tests

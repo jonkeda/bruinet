@@ -12,7 +12,8 @@ collections in test projects, do not use:
 | `FindElement`, `FindElements`, `TryFindElement` on a page, container, context or `AppRoot` | a named control property, `Child<T>(id)`, or a collection's `Item` / `Items` / `ItemWhere` |
 | `ContainerRoot`, `AppElement`, `TryGetItemRoot`, `ScrollingRoot` | a container, a collection, or an `AppRoot`-scoped control |
 | `new Locator(...)` / `Locator.By*` in a test method | a page-object property |
-| `Thread.Sleep`, `Task.Delay`, a raised timeout | an `Assert*` or `Wait*` on the state you expect |
+| `Thread.Sleep`, `Task.Delay` | an `Assert*` or `Wait*` on the state you expect |
+| a raised `timeoutMs` to hide a flake | fix the control; raise one only for an operation long by nature (scrolling a long list, a search through it), with a comment saying so |
 | try/catch around a control call | an `Assert*(false)`, `TryItem`, or `Assert.Throws<...>` |
 
 Inside a ControlObject, `IMauiElement` and `Find*` are the implementation: that is where they

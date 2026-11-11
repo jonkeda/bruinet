@@ -6,7 +6,7 @@ description: Create or extend a Bruinet Html ControlObject - a simple control, a
 # Write an Html ControlObject
 
 Html controls are generated, as MAUI's are: a template `Foo.tpl.cs` holds the constructors,
-`*Core` methods and hand-written members, and `Bruinet.Generator` writes the public API into
+`*Core` methods and hand-written members, and `bruinet controls generate` writes the public API into
 `Foo.gen.cs`. The rules are MAUI's (`.docs/contracts/call-model.md`,
 `.docs/contracts/control-object.md`), and so is the generator contract
 ([generator-contract.md](../maui-control/references/generator-contract.md)), with `IHtmlElement` as
@@ -37,8 +37,8 @@ tools\Scripts\CreateHtml.Bat
 ```
 
 It regenerates every `.tpl.cs` under `src\Bruinet.Html\Controls` and
-`src\Bruinet.Blazor\Controls`. A control with no `*Core` methods of its own (only
-constructors) stays a plain `.cs`.
+`src\Bruinet.Blazor\Controls`. A control with no `*Core` methods or shortcuts of its own is a
+plain `.cs` (R5 in [generator-contract.md](../maui-control/references/generator-contract.md#generate)).
 
 - **`Get*Core` / `Is*Core` give `GetX`/`WaitX`/`AssertX`**, with `[GenerateComparisons]` for
   `Contains`, `GreaterThan` and the rest; `[AbsenceTolerant]` when "absent" is an answer. An
@@ -47,10 +47,12 @@ constructors) stays a plain `.cs`.
   the Core method with
   `ActAndConfirm("Fill", () => e.Fill(v), () => e.InputValue, x => x == v, $"'{v}'", timeoutMs)`.
   Never loop over the action.
-- **Hand-written members** (an alias such as `Check()`, a member spanning parts) call the same
-  `Run*` helpers as the generated ones: `RunGetWithElement`, `RunWaitWithElement(expected, ...)`,
-  `RunAssertWithElement(expected, ...)`, their `Optional` forms, `RunDoWithElement`,
-  `RunSetWithElement`. `Try*` members answer about now.
+- **Hand-written members** follow the contract's
+  [Hand-written members](../maui-control/references/generator-contract.md#hand-written-members): a member
+  spanning parts is plain calls in sequence, with no `Run*` wrapper. A member on the control's own
+  element (an alias such as `Check()`) calls a generated member or the same `Run*` helpers the
+  generated ones use (`RunGetWithElement`, `RunDoWithElement` and the rest). `Try*` members answer
+  about now.
 - **Readiness before acting** goes in `EnsureReadyForActionCore` (enabled, for example), and
   throws `ElementNotReadyException`.
 - **Every public member takes `int? timeoutMs = null`.** A wait below the call (a scroll) takes

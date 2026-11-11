@@ -7,10 +7,8 @@ description: Local entry point for AI agents working in the Bruinet submodule
 
 ## Read First
 
-For Bruinet work, read:
-
-- [.github/copilot-instructions.md](.github/copilot-instructions.md)
-- [docs/README.md](docs/README.md)
+This file is the one rule book for every agent; `.github/copilot-instructions.md` only points here.
+For Bruinet work, read [docs/README.md](docs/README.md).
 
 Then read the focused doc for the task:
 
@@ -19,16 +17,6 @@ Then read the focused doc for the task:
 - controls: [docs/controls/index.md](docs/controls/index.md)
 - UAT: [docs/guides/uat-template-guide.md](docs/guides/uat-template-guide.md)
 - commands: [docs/run/build-and-test.md](docs/run/build-and-test.md)
-
-The previous docs tree is preserved in [docs2](docs2/README.md). Treat it as an
-archive, not the active source of truth.
-
-## Scope
-
-- Bruinet-only work stays inside `Bruinet/`.
-- Parent BodyCam work follows `../.github/copilot-instructions.md`.
-- Exact.Construction, `.cnv2`, or sibling conversion references are optional and
-  task-specific; do not require missing files for normal Bruinet work.
 
 ## Skills
 
@@ -58,8 +46,15 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
 - [ai-item](.github/skills/ai-item/SKILL.md) - build one item of the AI improvements plan
   (`.my/aiimprovements/plan.md`) through design, test-first build, checks, an agent check,
   review and close.
+- [api-upgrade](.github/skills/api-upgrade/SKILL.md) - keep and apply the list of public API
+  changes that projects using Bruinet must follow (any `PublicAPI.Unshipped.txt` edit).
+- [decision-record](.github/skills/decision-record/SKILL.md) - record a decision that rules
+  something out, once, in `.docs/decisions/`.
+- [docs-upkeep](.github/skills/docs-upkeep/SKILL.md) - the documentation checklist when a piece
+  of work lands.
 
-Read the matching skill before doing that task.
+Read the matching skill, and the reference it points to, before doing that task; if your tool
+does not load skills, open the `SKILL.md` directly.
 
 ## Never In Tests
 
@@ -68,19 +63,24 @@ fix:
 
 - no `Context.Driver` or other `IMauiDriver` member;
 - no `IMauiElement` variables, parameters, returns or members;
-- no `FindElement` / `FindElements` / `TryFindElement`, `ContainerRoot`, `AppElement` or
-  `TryGetItemRoot`;
-- no `Locator` construction in a test method.
+- no `FindElement` / `FindElements` / `TryFindElement`, `ContainerRoot`, `AppElement`,
+  `TryGetItemRoot` or `ScrollingRoot`;
+- no `Locator` construction in a test method;
+- no `Thread.Sleep` or `Task.Delay`, no try/catch around a control call, and no raised
+  `timeoutMs` except for an operation long by nature, with a comment saying so.
 
-Use or add a page-object or control member instead. The reasons and the one exception
-(driver and bridge framework tests) are in
-[forbidden-apis.md](.github/skills/maui-ui-test/references/forbidden-apis.md). The same holds
+Use or add a page-object or control member instead. The full list, the reasons and the one
+exception (driver and bridge framework tests) are in [forbidden-apis.md](.github/skills/maui-ui-test/references/forbidden-apis.md): that file is
+the list. The same holds
 for Html (`IHtmlElement`, `IHtmlDriver`, Playwright types):
 [Html forbidden-apis.md](.github/skills/html-ui-test/references/forbidden-apis.md).
 
 ## Core Rules
 
-- Build tests through Bruinet page objects and ControlObjects.
+- Keep `Bruinet.Core` platform-neutral: shared contracts, locators, waits, artifacts and base
+  abstractions live there; driver-specific element handling lives in the matching platform project.
+- Build tests through Bruinet page objects and ControlObjects. Page objects own a page's or
+  screen's structure.
 - Put repeated interaction behavior in Bruinet controls, not local test helpers.
 - Keep test methods focused on user intent and assertions.
 - Prefer semantic operations such as `Click`, `SetText`, `SelectItem`,
@@ -109,30 +109,49 @@ for Html (`IHtmlElement`, `IHtmlDriver`, Playwright types):
 ## Code Style
 
 - Use xUnit `Assert`; do not add FluentAssertions.
-- Do not add empty catches. Optional platform probing belongs in named `Try*`
-  helpers with clear fallback behavior.
-- Keep platform element types out of `Bruinet.Core`.
+- Keep fixture constructors to runtime setup; no ad-hoc cleanup or back-navigation loops inside
+  test methods.
 - Match existing project layout under `src/` and `tests/`.
+
+## Error Handling
+
+- Do not add empty catches. Optional platform probing that may throw belongs in a named `Try*`
+  helper that returns a clear fallback.
+- Do not use exceptions for normal control flow.
+- When wrapping an exception, include the page, control and locator.
+
+## Packages
+
+- Package versions belong in `Directory.Packages.props`; no per-project version pins unless
+  deliberately required.
+- Keep package names aligned with the `PackageId` values in `src/**/*.csproj`.
+
+## Git Safety
+
+- Do not revert unrelated user changes.
+- Do not use destructive git commands unless explicitly asked.
+- If the tree is already dirty, work with the existing changes and mention them in the final
+  summary when relevant.
 
 ## Docs Rules
 
-Five trees, each with one job:
+Four trees, each with one job:
 
 - **`.docs/`** - decisions, invariants and contracts: what must stay true. Read it before
   changing Bruinet. A decision is recorded **once**, here, never also in code prose.
 - `docs/` - active guides for someone *using* Bruinet.
-- `.my/` - plans, analyses and reviews for work in flight, indexed in `.my/README.md`.
+- `.my/` - plans, analyses and reviews for work in flight, one folder per topic.
   When the work is done: extract, then delete. Move its decisions to `.docs/` and anything a
   user needs to `docs/`, repoint the links, then delete the topic. An AD that needs the
   evidence links to it at its last commit. Code comments never point into `.my/`.
 - `.guides/` - user guides: step-by-step how-tos for a task, such as adding controls for a new
   control library. Linked from `docs/README.md`.
-- `docs2/` - historical archive.
 
 - Keep links valid and relative.
 - Use `Bruinet.*` namespaces in examples.
 - Mark commands with their working directory.
 - Update `docs/README.md` when adding or moving active docs.
+- A spec under `docs/specs/` carries a status: proposed, active, implemented, superseded or archived.
 
 Comment policy (full version in
 [.github/instructions/csharp-comments.instructions.md](.github/instructions/csharp-comments.instructions.md)):
@@ -148,6 +167,7 @@ Commands are from the Bruinet root:
 dotnet build Bruinet.sln -v:minimal /nr:false
 dotnet test tests\Bruinet.Core.Tests\Bruinet.Core.Tests.csproj -v:minimal /nr:false
 dotnet test tests\Bruinet.Maui.Tests\Bruinet.Maui.Tests.csproj -v:minimal /nr:false
+dotnet test tests\Bruinet.Uat.Tests\Bruinet.Uat.Tests.csproj -v:minimal /nr:false
 dotnet build src\Bruinet.Maui.FlaUI\Bruinet.Maui.FlaUI.csproj -f net10.0-windows -v:minimal /nr:false
 dotnet test tests\Bruinet.Html.Tests\Bruinet.Html.Tests.csproj -v:minimal /nr:false
 dotnet test tests\Bruinet.Blazor.Tests\Bruinet.Blazor.Tests.csproj -v:minimal /nr:false
@@ -161,6 +181,10 @@ They also run without a browser, on the **bUnit head**: `$env:BRUINET_HEAD = "bu
 sample's components in the test process (about 2 s for the Blazor suite against about 40 s in a
 browser). Tests that need a browser are `[BrowserFact]`, scenarios `@browser`, and are skipped there
 ([the guide](docs/guides/bunit.md), AD-030).
+
+`Bruinet.sln` holds every project in the repository, in folders by area. The two Visual Studio
+extension projects are in it but not built by it: they need Visual Studio's MSBuild, and build from
+`tools\Bruinet.Bdd.VisualStudio\Bruinet.Bdd.VisualStudio.slnx`.
 
 ### Match the test scope to the change
 
@@ -185,7 +209,12 @@ narrower tier fails in a way that suggests wider breakage.
 For the Html and Blazor suites, the same rule with two heads: while working, run the
 narrowest filter on the bUnit head (`$env:BRUINET_HEAD = "bunit"`); before reporting the work
 done, run that filter once in the browser (unset the variable). The browser judges: a pass on
-bUnit alone is not done, because bUnit has no layout, style sheets or script.
+bUnit alone is not done, because bUnit has no layout, style sheets or script. Never make a test pass on
+one head by changing what it checks.
+
+For MAUI, the same with MauiHeadless (AD-032): run the tier with `$env:BRUINET_HEAD = "headless"` first, in seconds
+and with no app built, then the same filter on the device. The device judges at a gate. The platform run guides are
+under `docs/run/` ([MAUI](docs/run/MAUI.md)).
 
 The narrowest filter comes from the change: `pwsh tools/Scripts/select-tests.ps1` (`bruinet tests affected`,
 `docs/run/cli.md`) follows the working tree's changed files through each suite's `touch-map.json` to the tests and
@@ -197,9 +226,6 @@ Notes:
 
 - A platform's UAT suite lives in its `*.UITests` project (`uat.config.md`, `Features/`, `Uat/`):
   `--filter "Category=UAT"` runs it alone, `--filter "Category!=UAT"` the UI tests alone.
-- A behaviour is checked by a UAT scenario or by a code UI test, never both: a scenario for what a user does and sees,
-  a code UI test for what a scenario says badly (layout at a size, a redirect, a head's detail). Where both exist, the
-  code test's extra checks move into the scenario and the code test goes (the `*-ui-test` skills).
 - `dotnet test` takes **one** `--filter`; passing two silently drops the first. Use
   `|` for OR and `&` for AND inside a single filter string.
 - The full suite is expected to be **green with nothing set**: 0 failed. The only deliberate
@@ -217,3 +243,16 @@ Notes:
   timings report is the framework starting to wait for something.
 - A mechanical refactor (moving files, extracting a project) is verified by *the same
   tests passing identically*, not by running more of them.
+
+### A UAT scenario or a code UI test
+
+A behaviour is checked once: by a UAT scenario (`Features/*.feature.md`) or by a code UI test (`Tests/`), never by
+both. This is the one statement of the rule; the `*-ui-test` skills point here.
+
+- A scenario holds what a user does and sees, step by step, in words a reader checks against what was asked for.
+- A code UI test holds what a scenario says badly: layout at a size, an old link landing on its page, a lockout, a
+  head's own detail.
+- Before writing either, look for the same behaviour in the other: the feature files' steps (MCP `list_steps`,
+  `find_step_usages`) and the test classes.
+- Where both exist, move the code test's extra checks into the scenario as steps and delete the code test. A smoke
+  test that goes is replaced in the smoke filter by its scenario, by name (`DisplayName~<id>`).

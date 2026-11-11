@@ -32,15 +32,8 @@ something they do not offer, add it there first; never reach past them.
 
 ## A UI test or a scenario, not both
 
-A behaviour is checked once: by a UAT scenario (`Features/*.feature.md`) or by a code UI test (`Tests/`), never by both.
-
-- A scenario holds what a user does and sees, step by step, in words a reader checks against what was asked for.
-- A code UI test holds what a scenario says badly: layout at a size, an old link landing on its page, a lockout, a head's
-  own detail.
-- Before writing either, look for the same behaviour in the other: the feature files' steps (MCP `list_steps`,
-  `find_step_usages`) and the test classes.
-- Where both exist, move the code test's extra checks into the scenario as steps and delete the code test. A smoke test
-  that goes is replaced in the smoke filter by its scenario, by name (`DisplayName~<id>`).
+A behaviour is checked once, by a UAT scenario or by a code UI test: the rule and what goes where are in
+[AGENTS.md, "A UAT scenario or a code UI test"](../../../AGENTS.md#a-uat-scenario-or-a-code-ui-test).
 
 ## Test shape
 
@@ -82,7 +75,8 @@ public sealed class FramesPageTests : BlazorSampleTestBase
 ## Two heads: browser and bUnit
 
 `Bruinet.Html.UITests` and `Bruinet.Blazor.UITests` run on both heads unchanged ([the guide](../../../docs/guides/bunit.md),
-AD-030); the Todo web suites have no bUnit head yet. Write every web test so it can.
+AD-030), and so does the Todo sample's `Bruinet.Samples.Todo.Web.UITests` (`TodoWebHead`). Write every web
+test so it can.
 
 - **A test that needs a browser** says so: `[BrowserFact("an iframe is its own document")]`
   instead of `[Fact]`, `[UiFact(Browser = "why")]` for a `UiFact`, `@browser` on a scenario. It is skipped on the bUnit head with the reason.

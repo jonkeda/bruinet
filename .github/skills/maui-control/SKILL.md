@@ -68,20 +68,11 @@ Tie-breakers:
   `(IMauiScope<TScope> scope, string locatorValue)`. Public on concrete classes, protected on
   abstract bases.
 
-### Generator contract (full text: [generator-contract.md](references/generator-contract.md))
+### Generator contract
 
-- Behaviour lives in `protected virtual *Core` methods whose first parameter is the element.
-  `Is*Core` -> `IsX / WaitX / AssertX`; `Get*Core` -> `GetX / WaitX / AssertX`;
-  `Set*Core(element, T? value, int? timeoutMs = null)` -> `SetX`; any other `*Core` -> an
-  action returning the scope.
-- Declare `int? timeoutMs = null` on every Core method whose public form takes a timeout.
-- `[GenerateComparisons(...)]` for Contains/StartsWith/Empty/ordered variants;
-  `[AbsenceTolerant]` (with a nullable element) when the question has an answer for a missing
-  element; `[SkipGeneration("reason")]` when the public member is hand-written.
-- Guards are `Ensure*Core`, called inside the Core body. Readiness that should be waited for
-  goes in `EnsureReadyForActionCore`.
-- A near-miss Core method or a malformed shortcut fails generation. A nested unit of work is a
-  warning; fix it anyway.
+Read [generator-contract.md](references/generator-contract.md) before writing a template: what is
+matched, what is emitted, the attributes, shortcuts, and what fails generation. It is the one
+statement of the contract; this skill does not repeat it.
 
 ### One unit of work per public call
 
@@ -97,7 +88,8 @@ Tie-breakers:
   it through `*Shortcut` methods.
 - **R4.** A member that needs two parts (or a child and the root) is hand-written as plain calls
   in sequence, with a remark naming the parts.
-- **R5.** A class is a `.tpl.cs` if it declares Core methods or shortcuts; otherwise a plain `.cs`.
+- **R5.** A class is a `.tpl.cs` if it declares Core methods or shortcuts; otherwise a plain `.cs`
+  ([generator-contract.md](references/generator-contract.md#generate)).
 - **R6.** Public members take ids and values, never `Locator`s.
 
 ### Semantics
@@ -107,8 +99,9 @@ Tie-breakers:
 - **Actions confirm their effect**: after acting, wait for the read-back to change, and throw
   naming what did not happen, the before-and-after state, and the `Locator`.
 - **Reads return null** when the platform does not publish the value. Never fabricate a value.
-- **An action with no route throws** `NotSupportedException` naming the route the app would have
-  to offer (a pattern, a verb, a handler).
+- **An action with no route throws** `RouteUnavailableException` naming the route the app would
+  have to offer (a pattern, a verb, a handler). A plain `NotSupportedException` is retried until
+  the budget runs out.
 - **Every error message includes the `Locator`.**
 - **No member the platform cannot answer.** Say so in a comment instead.
 
@@ -131,20 +124,13 @@ A control's route/evidence `<remarks>` is the one sanctioned `<remarks>` use: it
 measured, per-platform facts that cannot be re-derived from the code. Do not add `<remarks>`
 that merely restate what a member does.
 
-- `<summary>` on every member, written for the caller of the generated member.
+- `<summary>` on every public and protected member, Core methods included: the generated member's
+  doc comes from it, so write it for that member's caller.
 - `<remarks>` records the route per platform and the measured evidence ("Windows: no
   ExpandCollapse pattern; the app declares `Tap,GetState`. Android: touch; no state read, so
   IsExpanded is null").
 - The class remarks name every app-side requirement: handler registration, bridge verbs,
   properties the app must set (`ShouldShowPlaybackControls`).
-
-### Proof
-
-- The sample element and status label (workflow step 3).
-- Page-object members and tests, with the `maui-ui-test` skill. A missing member is added to the
-  control, never worked around in the test.
-- Build, regenerate, rebuild the sample app, run tier 1, and tier 2b if a verb was added.
-  One UI test process at a time, and never build while it runs.
 
 ## Report
 

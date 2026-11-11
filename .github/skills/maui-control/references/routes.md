@@ -79,9 +79,10 @@ sample app's markup, and run tier 2b (`--filter "Stage=Background"`).
 
 ## When there is no route
 
-Throw `NotSupportedException` (or `GestureUnavailableException` for a gesture) naming the
-route the app would have to offer: the pattern, the verb, the handler, the sink. Do not
-fall back to something that works on one machine.
+Throw `RouteUnavailableException` naming the route the app would have to offer: the pattern,
+the verb, the handler, the sink. It ends the call at once (`Poller.IsFatal`); a plain
+`NotSupportedException` is retried until the budget runs out. Do not fall back to something
+that works on one machine.
 
 Do not add a member the platform cannot answer at all; say so in a comment where a reader
 would look for it:
