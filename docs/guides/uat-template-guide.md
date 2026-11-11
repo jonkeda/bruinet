@@ -97,7 +97,7 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTest();
 
     protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
-        new(Target: "MAUI", Fixture: "FlaUI");
+        new(Target: "MAUI", Fixture: "TodoUatFixture");
 }
 ```
 
@@ -262,8 +262,7 @@ The scenario parser supports this document shape:
 - `## Scenario Outline: <name>` expands one scenario per row in a required
   `### Examples` table. Step text and step table cells can reference example
   columns with `<columnName>` placeholders.
-- **Everything else is prose** (AD-023), in any Markdown form, anywhere: see
-  [Prose](#prose).
+- **Everything else is prose** (AD-023), in any Markdown form, anywhere.
 
 Scenario discovery scans `Features/**/*.feature.md` recursively, so larger apps
 can keep executable specs in module folders such as

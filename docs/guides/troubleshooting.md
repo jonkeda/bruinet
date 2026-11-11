@@ -89,10 +89,9 @@ identically from a test:
   the tree; the driver waits through that, so a persistent failure is one of the above.
 
 Set `BRUINET_UIA_LOG` to a file and rerun: the app records whether the bridge is on,
-what it published, and every call it answered. `FlaUIMauiDriver.DescribeGestureBridge()`
-prints the raw tree under the window.
+what it published, and every call it answered.
 
 **If every test after some point fails in milliseconds,** check the driver's root
 element before the app: UI Automation can retire a cached element for a live window.
-The driver now re-attaches (`FlaUIMauiDriver.RootReattachments` counts it); a count
-that keeps growing means something is invalidating it again.
+The driver re-attaches by itself; if it keeps happening, the `BRUINET_UIA_LOG` file
+shows each re-attach, and something is invalidating the root again.

@@ -151,8 +151,8 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 8: docs, skills, instructions (after the renames)
 
-- [ ] R2-T97 Docs findings 2–6 by hand: quick start, Selenium, links, paths, old names. R06 P1.
-- [ ] R2-T98 `docs/controls/Shell.md` deleted or rewritten. R06 P2.
+- [x] R2-T97 Docs findings 2–6 by hand: quick start, Selenium, links, paths, old names. R06 P1. Findings 2 to 6 fixed: the quick start's page object compiles to today's API; Selenium is out of the docs, as no web head uses it, and WebDriverManager out of the package list; the docs2 links, the .my index, a dead anchor and the Uat paths of Bdd files fixed; the internal driver members gone from troubleshooting; the four quoting samples match their source.
+- [x] R2-T98 `docs/controls/Shell.md` deleted or rewritten. R06 P2. Deleted: every sample on it failed and no page linked it.
 - [ ] R2-T99 Docs check in the test step: links, paths, `bruinet` lines. R06 P3.
 - [ ] R2-T100 Docs samples from compiled files; AD-033 row. R06 P4, P5.
 - [ ] R2-T101 A quick start per stack, compiled in CI. R11 P5.

@@ -76,4 +76,4 @@ UAT attaches resolved settings to `BddExecutionContext`; commands can retrieve
 - `src/Bruinet.Core/Settings/JsonTestSettingsProvider.cs`
 - `src/Bruinet.Core/Settings/TestSettingsRequest.cs`
 - `src/Bruinet.Core/Settings/TestSettingsSectionAttribute.cs`
-- `src/Bruinet.Uat/BddExecutionContextSettingsExtensions.cs`
+- `src/Bruinet.Bdd/BddExecutionContextSettingsExtensions.cs`

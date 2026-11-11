@@ -17,7 +17,7 @@ Bruinet uses .NET with central package management.
 | Tests | xUnit, Microsoft.NET.Test.Sdk, coverlet |
 | Mocking | Moq, NSubstitute, AutoFixture, Bogus |
 | Desktop UI | FlaUI.Core, FlaUI.UIA3 |
-| Web | Selenium.WebDriver, Selenium.Support, WebDriverManager, Microsoft.Playwright |
+| Web | Microsoft.Playwright, bUnit |
 | MAUI | Microsoft.Maui.Controls, Appium.WebDriver, CommunityToolkit.Maui |
 | Backend mocking | WireMock.Net |
 | Stride | Stride.Engine, Stride.UI, Stride.Graphics, Stride.Rendering |

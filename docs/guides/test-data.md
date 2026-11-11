@@ -34,7 +34,8 @@ One file per test set, in the test-support project's `TestData/` folder. The Tod
 
 ## Describing The Test Data
 
-An app describes its test sets once, in its test-support project:
+An app describes its test sets once, in its test-support project (shortened from the Todo sample's
+`TodoTestDataDefinition`, which also names the user tables and their rules):
 
 ```csharp
 public sealed class TodoTestDataDefinition : TestDataDefinition<TodoTestSetFile>

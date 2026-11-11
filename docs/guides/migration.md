@@ -17,7 +17,6 @@ Replace old namespaces and project names with current `Bruinet.*` names.
 ## Docs
 
 - Active docs live under `docs/`.
-- Preserved old docs live under `docs2/`.
 - Do not copy old links forward unless the target exists.
 - Prefer short current docs over large copied legacy pages.
 

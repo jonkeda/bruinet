@@ -11,7 +11,7 @@ Tests and UAT scenarios
   Page objects and fixture/runtime glue
     Bruinet controls and platform contexts
       Bruinet.Core interfaces, locators, waits, artifacts
-        Platform drivers: FlaUI, Playwright, Selenium, Appium, Stride, Android
+        Platform drivers: FlaUI, Playwright, Appium, Stride, Android, MauiHeadless, bUnit
 ```
 
 ## Project Families

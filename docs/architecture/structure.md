@@ -11,8 +11,7 @@ Working directory for paths in this document: Bruinet root.
 | `samples/` | Sample applications used by UI tests and demos |
 | `tools/` | Developer tools: `bruinet`, the command line (`tools/Bruinet.Cli`: the Scraper, test data, control generation, the language and MCP servers), and the IDE extensions |
 | `docs/` | Active curated documentation |
-| `docs2/` | Preserved previous documentation tree |
-| `.my/` | Plans for work in flight, indexed in `.my/README.md` |
+| `.my/` | Plans for work in flight |
 | `Bruinet.sln` | The solution: every project, in folders by area, each test project beside the one it is named after. Tests and the Presenter also find the repository root by it |
 
 The two Visual Studio extension projects are in the solution but not built by it; they build from

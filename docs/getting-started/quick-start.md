@@ -37,20 +37,18 @@ For repo-local tests, prefer project references to `src/*` projects.
 Page objects should expose user intent and hide locator plumbing.
 
 ```csharp
-using Bruinet.Core.Locators;
+using Bruinet.Maui.Controls.Buttons;
 using Bruinet.Maui.Controls.Text;
+using Bruinet.Maui.Interfaces;
 using Bruinet.Maui.Pages;
 
-public sealed class LoginPage : PageObjectBase<LoginPage>
+public sealed class LoginPage(IMauiTestContext context) : PageObjectBase<LoginPage>(context)
 {
-    public LoginPage(MauiTestContext context)
-        : base(context, "Login")
-    {
-    }
+    public override string Name => "Login";
 
-    public Entry Username => Get<Entry>(Locator.ByAutomationId("UsernameEntry"));
-    public Entry Password => Get<Entry>(Locator.ByAutomationId("PasswordEntry"));
-    public Button SignIn => Get<Button>(Locator.ByAutomationId("SignInButton"));
+    public Entry<LoginPage> Username => Entry("UsernameEntry");
+    public Entry<LoginPage> Password => Entry("PasswordEntry");
+    public Button<LoginPage> SignIn => Button("SignInButton");
 
     public void SignInAs(string username, string password)
     {

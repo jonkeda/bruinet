@@ -12,7 +12,7 @@ needs no database, test selection from a change, and narrated video recordings o
 
 | You want to | Bruinet gives you |
 | --- | --- |
-| Test an app through its UI, on any stack | Page objects and ControlObjects over FlaUI, Appium, Playwright, Selenium, Stride and Android drivers |
+| Test an app through its UI, on any stack | Page objects and ControlObjects over FlaUI, Appium, Playwright, Stride and Android drivers |
 | Write tests a product owner can read | Markdown scenarios (`*.feature.md`) with `Given`, `When`, `Then`, bound to your page objects |
 | Run fast, without the device | The **MauiHeadless** and **bUnit** heads render pages in the test process; the **service** head runs below the UI |
 | Keep the real device as the judge | The same scenarios and page objects on Windows, Android and iOS, the default head |
@@ -40,7 +40,7 @@ Tests and UAT scenarios
   Page objects and fixture glue
     Bruinet controls and platform contexts
       Bruinet.Core: interfaces, locators, waits, artifacts
-        Drivers: FlaUI, Appium, Playwright, Selenium, Stride, Android, MauiHeadless, bUnit
+        Drivers: FlaUI, Appium, Playwright, Stride, Android, MauiHeadless, bUnit
 ```
 
 ## Where it runs: the heads
@@ -51,7 +51,7 @@ work on every head of its stack. The device or browser stays the judge at a gate
 | Stack | Heads |
 | --- | --- |
 | MAUI | Windows (FlaUI), Android and iOS (Appium), **MauiHeadless** (`headless`: no device, emulator or window) |
-| Web | Playwright and Selenium in a browser, **bUnit** (`bunit`: a Blazor component, no browser) |
+| Web | Playwright in a browser, **bUnit** (`bunit`: a Blazor component, no browser) |
 | WPF, WinForms | FlaUI on Windows |
 | Native Android | Appium with UiAutomator2 |
 | Stride | An in-game automation server and a test client |
@@ -131,7 +131,7 @@ Packages target `net8.0`, `net9.0` and `net10.0`; the SDK is pinned in `global.j
 | `tools/` | The CLI, the Visual Studio and VS Code extensions, and scripts |
 | `docs/` | Guides for using Bruinet; `.docs/` holds the decisions and invariants behind it |
 | `Scraper.Sites/` | What the Scraper makes of public sites, one page per technology |
-| `.my/` | Plans for work in flight, indexed in `.my/README.md` |
+| `.my/` | Plans for work in flight |
 
 ## Get started
 

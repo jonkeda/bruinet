@@ -17,7 +17,7 @@ drivers.
 - screenshot and artifact services;
 - shared test attributes and exceptions.
 
-Core should not know about Appium, FlaUI, Playwright, Selenium, Stride, or UI
+Core should not know about Appium, FlaUI, Playwright, Stride, or UI
 framework-specific element types.
 
 ## Settings
@@ -33,7 +33,7 @@ Platform packages translate core concepts into driver-specific behavior:
 
 - MAUI controls and page objects in `src/Bruinet.Maui`;
 - WPF and WinForms through FlaUI;
-- HTML and Blazor through Selenium or Playwright;
+- HTML and Blazor through Playwright, or bUnit without a browser;
 - Stride through automation hooks and named-pipe style integration;
 - native Android through Android-specific driver helpers.
 

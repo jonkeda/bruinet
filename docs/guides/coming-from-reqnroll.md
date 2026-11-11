@@ -71,7 +71,7 @@ public class StoredDataSteps(ITodoArrangement fixture)
 }
 
 // Bruinet (samples/Todo/tests/Bruinet.Samples.Todo.TestSupport/Uat/StoredDataPhrases.cs)
-[BddStepDefinitions]
+[BddStepDefinitions(Namespace = "StoredData")]
 public sealed class StoredDataPhrases(ITodoArrangement fixture) : BddStepDefinitionsBase
 {
     [BddThen("the database should have todos")]

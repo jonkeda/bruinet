@@ -888,7 +888,7 @@ which a method carries as a second keyword attribute beside its `I` form:
 ```csharp
 [BddWhen("I set {control} to {value}", CommandId = "Control.SetText")]
 [BddWhen("{user} sets {control} to {value}", CommandId = "Control.SetText")]
-void SetText(string text, int? timeoutMs = null);
+TScope SetText(string? text, int? timeoutMs = null);
 ```
 
 The engine infers no verb forms: `Daan tap Save` binds to nothing, and so does any `I` phrase
@@ -941,19 +941,18 @@ The rule is [AD-015](../../.docs/decisions/ad-015-a-steps-subject-picks-its-app.
 - `src/Bruinet.Bdd.Abstractions/BddStepAttribute.cs` and `BddKeywordAttributes.cs` — the step attributes
 - `src/Bruinet.Core/Interfaces/*.cs` — the built-in control-verb declarations
 - `src/Bruinet.Uat/UatCatalogBuilder.cs` — the discovery pass and both projections
-- `src/Bruinet.Uat/BddMarkdownParser.cs`
-- `src/Bruinet.Uat/BddCommandCatalog.cs`
-- `src/Bruinet.Uat/BddBinder.cs` — binding, subjects, the current app, and expanding calls
-- `src/Bruinet.Uat/UatCallables.cs`, `BddPreparedCallables.cs` — callable phrases, their types and problems
-- `src/Bruinet.Uat/BddScenarioFiles.cs` — loading a scenario file with the phrase files it sees
-- `src/Bruinet.Uat/BddCatalogSet.cs` — the catalogs per head, and what a step can see
-- `src/Bruinet.Uat/BddValues.cs` — how every scenario value is read and written
-- `src/Bruinet.Uat/BddPhraseDeclarations.cs` — a method's phrases, parameters and problems
-- `src/Bruinet.Uat/BddArguments.cs` — the bind-time check and the run-time read
-- `src/Bruinet.Uat/BddArgumentTypes.cs` — `BddUserRole`, `[BddArgumentType]`, converters
+- `src/Bruinet.Bdd/BddMarkdownParser.cs`
+- `src/Bruinet.Bdd/BddCommandCatalog.cs`
+- `src/Bruinet.Bdd/BddBinder.cs` — binding, subjects, the current app, and expanding calls
+- `src/Bruinet.Bdd/BddPreparedCallables.cs` — callable phrases, their types and problems
+- `src/Bruinet.Bdd/BddScenarioFiles.cs` — loading a scenario file with the phrase files it sees
+- `src/Bruinet.Bdd/BddCatalogSet.cs` — the catalogs per head, and what a step can see
+- `src/Bruinet.Bdd/BddValues.cs` — how every scenario value is read and written
+- `src/Bruinet.Bdd/BddPhraseDeclarations.cs` — a method's phrases, parameters and problems
+- `src/Bruinet.Bdd/BddArguments.cs` — the bind-time check and the run-time read (internal)
+- `src/Bruinet.Bdd/BddArgumentTypes.cs` — `BddUserRole`, `[BddArgumentType]`, converters
 - `src/Bruinet.Uat/UatScenarioCheck.cs` — checking files without running them (`bruinet data`)
 - `src/Bruinet.Uat/UatSessions.cs` — `IBddSessionHost`, `IUatAppsHost`
-- `src/Bruinet.Uat/UatExecution.cs`
 - `src/Bruinet.Uat/UatCatalogBuilder.cs`
 - `src/Bruinet.Uat/UatReflectionRuntime.cs`
 - `src/Bruinet.Uat/UatScenarioTestBase.cs`
