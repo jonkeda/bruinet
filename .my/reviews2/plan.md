@@ -43,7 +43,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [x] R2-T07 Stride `Read<T>` and `IsTrue` throw on a failed response. R05 P1.
 - [x] R2-T08 Stride start-up wait throws `TimeoutException` naming `StartupTimeout`. R02 P2.
 - [x] R2-T09 `DesktopApp.WaitForInputIdle` bounded, failure names the app. R02 P3. Launch path not run here (**desk**); unit tests green.
-- [ ] R2-T10 `FlaUIMauiElement`: 14 reads, 4 action helpers and `TrySetTextValue` catch FlaUI's not-supported exceptions only. R05 P2. **desk**; kofflard.
+- [x] R2-T10 `FlaUIMauiElement`: 14 reads, 4 action helpers and `TrySetTextValue` catch FlaUI's not-supported exceptions only. R05 P2. **desk**; kofflard.
 - [ ] R2-T11 Appium classes catch `WebDriverException` with `IsGone`; the two bare catches go. R05 P3. **android**; kofflard.
 - [x] R2-T12 Scraper save queue observes faults and reports them through `Changed`. R05 P4.
 - [x] R2-T13 Delete `UatControlAssertions` (no caller in Bruinet, Tomorrow, Kofflard, construction). R05 P5.
@@ -164,6 +164,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 - [ ] R2-T109 `TOD.08.8 Offline disables Sync…` in `Bruinet.Samples.Todo.Web.Uat` fails in a full run on the bUnit head ("Last Sync" reads "Synced 10:00", expected "Offline") and passes alone, with and without R2-T15: state left by an earlier scenario. Found 2026-11-11.
 - [ ] R2-T110 `ArchitectureTests.OnlyBruinetUat_DeclaresUatNames` fails on `move` since `039d9b1b`: `Bruinet.Traits`' `UatAttribute` (`TraitAttributes.cs:52`) is a `Uat` name outside `Bruinet.Uat` (AD-021). Construction's plan drops `[Uat]` in its T10; until then it is red in `Bruinet.Core.Tests`. Not ours to change: told to the owner 2026-11-11.
+- [ ] R2-T111 Sixteen MAUI Windows UI tests fail on this machine with and without R2-T10 (2026-11-11): `ProductCollectionTests` (9, "No item at index 0 … materialized items: 0"), `RowTapTests` (2, `ItemTemplateContext` has no InvokePattern), `MediaElementTests` (5, `TimeRemainingElement` not visible); `ItemWhere_ScrollsToFindOffscreenRow` failed once without it and passed with it. 415 of 434 pass.
 
 ## Phase 9: consumers, after the merge into `move`
 

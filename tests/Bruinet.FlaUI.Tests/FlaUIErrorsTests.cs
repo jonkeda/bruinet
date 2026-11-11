@@ -37,4 +37,34 @@ public class FlaUIErrorsTests
     [Fact]
     public void AnUnrelatedException_IsNotElementGone()
         => Assert.False(FlaUIErrors.IsElementGone(new InvalidOperationException("not supported")));
+
+    // What a route that is not there looks like, against a fault (review 05, findings 2 to 4; AD-009).
+
+    [Fact]
+    public void A_Pattern_ThePlatformDoesNotHave_IsNotSupported()
+        => Assert.True(FlaUIErrors.IsNotSupported(new global::FlaUI.Core.Exceptions.PatternNotSupportedException()));
+
+    [Fact]
+    public void A_Property_ThePlatformDoesNotHave_IsNotSupported()
+        => Assert.True(FlaUIErrors.IsNotSupported((Exception)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(global::FlaUI.Core.Exceptions.PropertyNotSupportedException))));
+
+    [Fact]
+    public void A_Method_ThePlatformDoesNotHave_IsNotSupported()
+        => Assert.True(FlaUIErrors.IsNotSupported(new global::FlaUI.Core.Exceptions.MethodNotSupportedException()));
+
+    [Fact]
+    public void UiaNotSupported_IsNotSupported()
+        => Assert.True(FlaUIErrors.IsNotSupported(new COMException("not supported", unchecked((int)0x80040204))));
+
+    [Theory]
+    [InlineData(unchecked((int)0x80040201))] // UIA_E_ELEMENTNOTAVAILABLE: gone, not unsupported
+    [InlineData(unchecked((int)0x80131505))] // UIA_E_TIMEOUT
+    [InlineData(unchecked((int)0x800706BA))] // RPC_S_SERVER_UNAVAILABLE: the app is going
+    [InlineData(unchecked((int)0x80004005))] // E_FAIL: the app's handler threw
+    public void Other_ComErrors_AreNotNotSupported(int hresult)
+        => Assert.False(FlaUIErrors.IsNotSupported(new COMException("fault", hresult)));
+
+    [Fact]
+    public void An_InvalidOperation_IsNotNotSupported()
+        => Assert.False(FlaUIErrors.IsNotSupported(new InvalidOperationException("refused")));
 }

@@ -136,7 +136,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                     return value;
                 }
             }
-            catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+            catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
             {
                 // This ancestor does not publish the optional set property.
             }
@@ -157,7 +157,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             return _element.Patterns.SelectionItem.IsSupported
                    && _element.Patterns.SelectionItem.Pattern.IsSelected.Value;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }
@@ -170,7 +170,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return _element.Properties.AutomationId.ValueOrDefault;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -194,7 +194,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 var nested = FindNestedTextBoxElement();
                 return nested?.Patterns.Value.IsSupported == true ? nested : null;
             }
-            catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+            catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
             {
                 return null;
             }
@@ -208,7 +208,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return ValuePatternElement?.Patterns.Value.Pattern.Value.Value;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -221,7 +221,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return ValuePatternElement?.Patterns.Value.Pattern.IsReadOnly.Value;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -236,7 +236,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return _element.Properties.HelpText.ValueOrDefault;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -266,7 +266,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 return true;
             }
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             // Fall through to the app's own answer, which is the better one anyway.
         }
@@ -283,7 +283,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return _element.Properties.Name.ValueOrDefault;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -323,7 +323,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             // Fallback to Name property with safe access
             return _element.Properties.Name.ValueOrDefault;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -875,7 +875,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 _ => null
             };
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -1020,7 +1020,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 ? _element.Patterns.Toggle.Pattern.ToggleState.Value == ToggleState.On
                 : null;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -1050,7 +1050,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             _element.Patterns.Toggle.Pattern.Toggle();
             return true;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }
@@ -1066,7 +1066,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
         {
             return probe();
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }
@@ -1082,7 +1082,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             _element.Patterns.Invoke.Pattern.Invoke();
             return true;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }
@@ -1098,7 +1098,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             _element.Patterns.SelectionItem.Pattern.Select();
             return true;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }
@@ -1144,7 +1144,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
                 ? read(_element.Patterns.RangeValue.Pattern)
                 : null;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -1232,7 +1232,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             var selection = _element.Patterns.Selection.Pattern.Selection.Value;
             return selection is { Length: > 0 } ? selection[0].Name : null;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -1332,7 +1332,7 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             return _element.FindFirstDescendant(cf =>
                 cf.ByControlType(global::FlaUI.Core.Definitions.ControlType.Edit));
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return null;
         }
@@ -1369,10 +1369,27 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             if (pattern.IsReadOnly.Value)
                 return false;
 
-            pattern.SetValue(text);
+            var before = pattern.Value.ValueOrDefault;
+            try
+            {
+                pattern.SetValue(text);
+            }
+            catch (Exception error) when (!FlaUIErrors.IsElementGone(error) && !FlaUIErrors.IsNotSupported(error))
+            {
+                // WinUI answers a value it will not take (longer than MaxLength) with a bare E_FAIL, the code any
+                // other fault has. The field tells them apart: left as it was, the write was refused and nothing
+                // happened, so the next route is not a repeat (AD-009); changed, it was a fault part-way.
+                if (pattern.Value.ValueOrDefault == before)
+                    return false;
+
+                throw new InvalidOperationException(
+                    "The UI Automation Value pattern failed while it changed the field's text, so the write is not tried again another way.",
+                    error);
+            }
+
             return true;
         }
-        catch (Exception error) when (!FlaUIErrors.IsElementGone(error))
+        catch (Exception error) when (FlaUIErrors.IsNotSupported(error))
         {
             return false;
         }

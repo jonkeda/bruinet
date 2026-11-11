@@ -12,7 +12,8 @@ public static class UiaElements
 
     /// <summary>
     /// Runs a UI Automation read or action, reporting a removed element as
-    /// <see cref="StaleElementException"/> and a closed app as <see cref="AppUnavailableException"/>.
+    /// <see cref="StaleElementException"/> and a closed app as <see cref="AppUnavailableException"/>,
+    /// whatever error UI Automation gave for it. Any other error is the call's to see.
     /// </summary>
     /// <typeparam name="T">What the read answers.</typeparam>
     /// <param name="app">The app the element belongs to, asked whether it has exited.</param>
@@ -33,6 +34,11 @@ public static class UiaElements
             }
 
             throw new StaleElementException(platformError: error);
+        }
+        catch (Exception error) when (error is not (AppUnavailableException or StaleElementException) && app.HasExited)
+        {
+            // Whatever UI Automation says while the app is going (an RPC error, a timeout), the cause is the app.
+            throw new AppUnavailableException("the application process has exited.", error);
         }
     }
 

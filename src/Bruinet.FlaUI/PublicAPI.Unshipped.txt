@@ -84,3 +84,5 @@ static Bruinet.FlaUI.UiaElements.IsAttached(Bruinet.FlaUI.DesktopApp! app, FlaUI
 static Bruinet.FlaUI.UiaElements.Live(Bruinet.FlaUI.DesktopApp! app, System.Action! touch) -> void
 static Bruinet.FlaUI.UiaElements.Live<T>(Bruinet.FlaUI.DesktopApp! app, System.Func<T>! touch) -> T
 static Bruinet.FlaUI.Windowing.PhysicalPixels.Read<T>(System.Func<T>! read) -> T
+const Bruinet.FlaUI.FlaUIErrors.NotSupported = -2147220988 -> int
+static Bruinet.FlaUI.FlaUIErrors.IsNotSupported(System.Exception! error) -> bool
