@@ -12,6 +12,7 @@ Design for R2-T19, R2-T20, R2-T21, R2-T23 (review 09, P1, P2, P3, P5). Defensive
 
 ## SQL recordings (R2-T19)
 
+- As made (R2-T19): secret-named parameters are `***` and volatile by default; result columns only by name (`BRUINET_SQL_REDACT`), not by default, because replay hands a column back to the app and a redacted `PasswordHash` fails every replayed sign-in. The scan has five key shapes, in `SqlRedaction`, not a type shared with HTTP (Mocking.Data references neither Mocking nor Mocking.Http). The original text follows.
 - `ReplaySession` gets `Redact`: column and parameter names whose values are written as `***`. Default: `PasswordHash`, `SecurityStamp`, `ConcurrencyStamp`, `AuthenticatorKey`, `TwoFactorSecret`, and any name matching `password|secret|token|apikey|api_key` (case-insensitive).
 - A redacted value matches anything on replay, as HTTP's `***` does; a miss message prints `***`, never the live value.
 - Before `Save`, the same scan HTTP runs (`HttpRedaction`'s patterns, moved to one shared internal type in `Bruinet.Mocking`) stops the save and names the table, column and row.

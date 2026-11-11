@@ -469,3 +469,9 @@ static Bruinet.Mocking.Data.Statements.Projection(string! normalized) -> Bruinet
 static Bruinet.Mocking.Data.Statements.WithoutLiterals(string! text) -> string!
 static readonly Bruinet.Mocking.Data.SqliteTemplate.LockPollInterval -> System.TimeSpan
 static readonly Bruinet.Mocking.Data.SqliteTemplate.LockTimeout -> System.TimeSpan
+Bruinet.Mocking.Data.Replay.SqlRecordingSecretException
+Bruinet.Mocking.Data.Replay.SqlRecordingSecretException.SqlRecordingSecretException(string! message) -> void
+Bruinet.Mocking.Data.Replay.SqlRedaction
+const Bruinet.Mocking.Data.Replay.SqlRedaction.ColumnsVariable = "BRUINET_SQL_REDACT" -> string!
+const Bruinet.Mocking.Data.Replay.SqlRedaction.Redacted = "***" -> string!
+static Bruinet.Mocking.Data.Replay.SqlRedaction.IsSecretName(string! name) -> bool

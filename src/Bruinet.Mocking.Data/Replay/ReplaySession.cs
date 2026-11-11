@@ -115,6 +115,7 @@ public sealed class ReplaySession
             }
 
             _recording.Stamp = _schema?.StampFor(_recording.Exchanges.SelectMany(exchange => _schema.Named(exchange.Text)));
+            SqlRedaction.Apply(_recording, Path);
             _recording.Save(Path);
         }
     }
@@ -362,7 +363,7 @@ public sealed class ReplaySession
     }
 
     private static string Show(Dictionary<string, JsonNode?> parameters)
-        => "{" + string.Join(", ", parameters.Select(pair => $"{pair.Key}={Values.Canonical(pair.Value) ?? "null"}")) + "}";
+        => "{" + string.Join(", ", parameters.Select(pair => $"{pair.Key}={Values.Canonical(SqlRedaction.Shown(pair.Key, pair.Value)) ?? "null"}")) + "}";
 }
 
 /// <summary>

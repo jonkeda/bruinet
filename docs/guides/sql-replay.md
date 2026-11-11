@@ -83,6 +83,20 @@ environment and in the test's: `BeginAsync` and `EndAsync` then send it as `X-Br
 `BeginUrl` puts it in the address, since a browser's first navigation cannot add a header. Anyone
 else gets 404. Never set `BRUINET_SQL_REPLAY` on a server others can reach without a key.
 
+## What A Recording Holds
+
+A recording keeps each command's text, its parameters and every row it read, and it goes into git.
+Record against seeded test data only, never a copy of production.
+
+- A parameter named like a secret (`password`, `secret`, `token`, `apikey`, `SecurityStamp`,
+  `AuthenticatorKey`) is written `***` and is volatile: replay binds the live value, it does not match it.
+- A result column is kept as it was read, because replay gives it back to the app: a `PasswordHash`
+  written `***` would fail every replayed sign-in. Name a column to redact in the app's environment,
+  `BRUINET_SQL_REDACT=Pin,Iban`; the app then reads `***` in replay.
+- A value that still looks like a key (a JSON web token, a private key, an AWS, OpenAI or GitHub
+  key) stops the save, naming the exchange and column.
+- A miss message shows a secret-named parameter as `***`.
+
 ## Stale Recordings
 
 A recording is stamped with the objects its commands touched: tables, views and procedures, and the
