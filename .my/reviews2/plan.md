@@ -42,7 +42,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 - [x] R2-T07 Stride `Read<T>` and `IsTrue` throw on a failed response. R05 P1.
 - [x] R2-T08 Stride start-up wait throws `TimeoutException` naming `StartupTimeout`. R02 P2.
-- [ ] R2-T09 `DesktopApp.WaitForInputIdle` bounded, failure names the app. R02 P3.
+- [x] R2-T09 `DesktopApp.WaitForInputIdle` bounded, failure names the app. R02 P3. Launch path not run here (**desk**); unit tests green.
 - [ ] R2-T10 `FlaUIMauiElement`: 14 reads, 4 action helpers and `TrySetTextValue` catch FlaUI's not-supported exceptions only. R05 P2. **desk**; kofflard.
 - [ ] R2-T11 Appium classes catch `WebDriverException` with `IsGone`; the two bare catches go. R05 P3. **android**; kofflard.
 - [ ] R2-T12 Scraper save queue observes faults and reports them through `Changed`. R05 P4.

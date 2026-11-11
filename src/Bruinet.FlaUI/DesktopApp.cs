@@ -32,6 +32,12 @@ public sealed class DesktopApp : IDisposable
         ConditionFactory = new ConditionFactory(automation.PropertyLibrary);
     }
 
+    // How long a launched app may take to be ready for input and show its main window.
+    private static readonly TimeSpan LaunchTimeout = TimeSpan.FromSeconds(30);
+
+    // The least the main-window search is given when becoming ready used most of the launch's time.
+    private static readonly TimeSpan MinimumWindowWait = TimeSpan.FromSeconds(2);
+
     /// <summary>
     /// Launches the app and attaches to its main window.
     /// </summary>
@@ -43,7 +49,7 @@ public sealed class DesktopApp : IDisposable
     /// switch, <c>BRUINET_AUT_PLACE</c>).
     /// </param>
     /// <returns>The app, its main window found.</returns>
-    /// <exception cref="InvalidOperationException">The process did not start, or showed no main window within 30 s.</exception>
+    /// <exception cref="InvalidOperationException">The process did not start, was not ready for input, or showed no main window, within 30 s of starting.</exception>
     public static DesktopApp Launch(string executablePath, string? arguments = null, IReadOnlyDictionary<string, string>? environment = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(executablePath);
@@ -81,11 +87,18 @@ public sealed class DesktopApp : IDisposable
         // A test being debugged: the IDE attaches to the app too.
         DebuggedApps.Announce(process, Path.GetFileNameWithoutExtension(executablePath));
 
-        process.WaitForInputIdle();
+        // One budget for the whole launch: ready for input, then a main window, within LaunchTimeout.
+        var app = Path.GetFileName(executablePath);
+        var launched = Stopwatch.StartNew();
+        if (!process.WaitForInputIdle(LaunchTimeout))
+        {
+            throw new InvalidOperationException($"'{app}' was not ready for input within {LaunchTimeout.TotalSeconds:0} s of starting.");
+        }
 
         var application = Application.Attach(process);
-        var main = application.GetMainWindow(automation, TimeSpan.FromSeconds(30))
-            ?? throw new InvalidOperationException("Failed to get main window");
+        var left = LaunchTimeout - launched.Elapsed;
+        var main = application.GetMainWindow(automation, left > MinimumWindowWait ? left : MinimumWindowWait)
+            ?? throw new InvalidOperationException($"'{app}' showed no main window within {LaunchTimeout.TotalSeconds:0} s of starting.");
         var window = new AppWindow(automation, main);
 
         WindowPlacement.ApplyRequested(window, environment);
