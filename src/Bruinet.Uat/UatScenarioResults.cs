@@ -159,6 +159,72 @@ public static class UatScenarioResults
             : "failed";
     }
 
+    /// <summary>
+    /// Writes the result of a scenario that did not bind, so the tools that read a run's results (failing, last_runs,
+    /// get_trace) show it as failed with kind <c>bind</c>, not as never run (review 01, finding 4). One failed step at
+    /// the first error's line, its message the diagnostics; the disk refusing it changes nothing, as for a run.
+    /// </summary>
+    /// <param name="runtime">The suite's runtime: its config and output folder.</param>
+    /// <param name="scenario">The scenario, as the file was parsed.</param>
+    /// <param name="diagnostics">Why it did not bind.</param>
+    /// <param name="suite">The suite's name: its project's assembly.</param>
+    /// <param name="mode"><see cref="TestMode"/> or <see cref="RunnerMode"/>.</param>
+    /// <returns>The report's path; null when the disk or folder would not take it.</returns>
+    public static string? RecordBindFailure(UatRuntime runtime, BddScenario scenario, IReadOnlyList<BddDiagnostic> diagnostics, string? suite, string mode)
+    {
+        ArgumentNullException.ThrowIfNull(runtime);
+        ArgumentNullException.ThrowIfNull(scenario);
+        ArgumentNullException.ThrowIfNull(diagnostics);
+        try
+        {
+            var directory = runtime.Config.Reporting.OutputDirectory;
+            Directory.CreateDirectory(directory);
+            var file = scenario.Source.FilePath;
+            var invalid = Path.GetInvalidFileNameChars();
+            var name = string.Concat(scenario.Name.Select(ch => invalid.Contains(ch) ? '_' : ch));
+            name = name.Length <= 80 ? name : name[..80];
+            var reportPath = Path.Combine(directory, UatScenarioReport.FileName(file, name));
+            var errors = diagnostics.Where(diagnostic => diagnostic.Severity == BddDiagnosticSeverity.Error).ToList();
+            var first = errors.FirstOrDefault()?.Location.LineNumber ?? scenario.Source.LineNumber;
+            var message = string.Join("\n", errors.Select(diagnostic => $"{diagnostic.Code} line {diagnostic.Location.LineNumber}: {diagnostic.Message}"));
+            var relative = file is null ? null : Path.GetRelativePath(runtime.ConfigDirectory, Path.GetFullPath(file)).Replace('\\', '/');
+            var report = new System.Text.Json.Nodes.JsonObject
+            {
+                ["scenario"] = scenario.Name,
+                ["status"] = "failed",
+                ["durationMs"] = 0,
+                ["steps"] = new System.Text.Json.Nodes.JsonArray(new System.Text.Json.Nodes.JsonObject
+                {
+                    ["line"] = first,
+                    ["file"] = relative,
+                    ["status"] = "Failed",
+                    ["message"] = message,
+                    ["failure"] = new System.Text.Json.Nodes.JsonObject { ["kind"] = "bind", ["message"] = message },
+                }),
+            };
+            File.WriteAllText(reportPath, report.ToJsonString(new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            TestArtifactManifestWriter.RecordArtifact(
+                reportPath,
+                "uat-scenario",
+                scenario.Name,
+                "failed",
+                new Dictionary<string, string?>
+                {
+                    ["suite"] = suite,
+                    ["file"] = relative,
+                    ["line"] = scenario.Source.LineNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    ["mode"] = mode,
+                    ["failureKind"] = "bind",
+                });
+            return reportPath;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            Console.Error.WriteLine($"bruinet: the result of '{scenario.Name}' was not written: {exception.Message}");
+            return null;
+        }
+    }
+
     /// <summary>A scenario's name as files are named after it: no characters a path refuses, and not too long.</summary>
     /// <param name="scenario">The scenario.</param>
     /// <param name="maxLength">The longest name.</param>

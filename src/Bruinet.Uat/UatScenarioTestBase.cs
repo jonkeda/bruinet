@@ -496,6 +496,12 @@ public abstract class UatScenarioTestBase<TFixture>
 
         if (!bind.Success || bind.Document is null)
         {
+            // A result for each scenario that did not bind, so the tools show it as failed with kind bind (review 01).
+            foreach (var scenario in file.Document!.Scenarios.Where(each => only is null || each.Name == only))
+            {
+                UatScenarioResults.RecordBindFailure(runtime, scenario, bind.Diagnostics, GetType().Assembly.GetName().Name, UatScenarioResults.TestMode);
+            }
+
             throw new InvalidOperationException(
                 BddDiagnosticsFormatter.FormatBindFailure(
                     bind.Diagnostics,

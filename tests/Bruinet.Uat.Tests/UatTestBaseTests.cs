@@ -157,6 +157,39 @@ public sealed class UatTestBaseTests
     }
 
     [Fact]
+    public async Task ScenarioTestBase_AScenarioThatDoesNotBind_LeavesAFailedResultOfKindBind()
+    {
+        var directory = CreateTempDirectory();
+        try
+        {
+            var configFilePath = WriteConfig(directory);
+            var scenarioFilePath = WriteScenario(directory, """
+                # Feature: Base Harness
+
+                ## Scenario: A phrase nobody wrote
+
+                ```gherkin
+                When I do what no step says
+                ```
+                """);
+            var harness = new ScenarioHarness(new HarnessFixture(), configFilePath, new BddCommandCatalog());
+
+            await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenarioAsync(scenarioFilePath, "A phrase nobody wrote"));
+
+            var result = Directory.EnumerateFiles(Path.Combine(directory, "uat"), "*__result.json").Single();
+            var report = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(result))!;
+            Assert.Equal("A phrase nobody wrote", (string?)report["scenario"]);
+            Assert.Equal("failed", (string?)report["status"]);
+            Assert.Equal("bind", (string?)report["steps"]![0]!["failure"]!["kind"]);
+            Assert.Contains("UATB", (string?)report["steps"]![0]!["message"], StringComparison.Ordinal);
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task ScenarioTestBase_TheReport_NamesItsFileAndLines_WithoutTheTrace()
     {
         var directory = CreateTempDirectory();
