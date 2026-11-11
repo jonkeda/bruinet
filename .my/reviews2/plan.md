@@ -40,7 +40,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 
 ## Phase 1: a test must not pass on a fault
 
-- [ ] R2-T07 Stride `Read<T>` and `IsTrue` throw on a failed response. R05 P1.
+- [x] R2-T07 Stride `Read<T>` and `IsTrue` throw on a failed response. R05 P1.
 - [ ] R2-T08 Stride start-up wait throws `TimeoutException` naming `StartupTimeout`. R02 P2.
 - [ ] R2-T09 `DesktopApp.WaitForInputIdle` bounded, failure names the app. R02 P3.
 - [ ] R2-T10 `FlaUIMauiElement`: 14 reads, 4 action helpers and `TrySetTextValue` catch FlaUI's not-supported exceptions only. R05 P2. **desk**; kofflard.

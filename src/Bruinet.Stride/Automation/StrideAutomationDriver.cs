@@ -6,6 +6,8 @@ namespace Bruinet.Stride.Automation;
 /// The automation pipe to the Stride game, as the call model asks of a driver: each read and lookup
 /// one command, actions that fail loudly, and a game that is gone (the pipe broken or closed)
 /// reported as <see cref="AppUnavailableException"/> rather than as an element that is not there.
+/// The game answers a missing element as a success with <c>Exists = false</c>, so a failed answer to
+/// a read is a fault in the game and is raised too, never read as absent or idle (AD-009).
 /// </summary>
 internal sealed class StrideAutomationDriver : IStrideDriver
 {
@@ -53,10 +55,10 @@ internal sealed class StrideAutomationDriver : IStrideDriver
     }
 
     /// <inheritdoc />
-    public bool IsGameReady() => IsTrue(Send(AutomationCommand.Query("IsGameReady")));
+    public bool IsGameReady() => IsTrue(AutomationCommand.Query("IsGameReady"));
 
     /// <inheritdoc />
-    public bool IsGameBusy() => IsTrue(Send(AutomationCommand.Query("IsBusy")));
+    public bool IsGameBusy() => IsTrue(AutomationCommand.Query("IsBusy"));
 
     /// <inheritdoc />
     public void PressKey(VirtualKey key) => Act("SimulateKeyPress", string.Empty, StrideKeyName(key));
@@ -87,8 +89,8 @@ internal sealed class StrideAutomationDriver : IStrideDriver
     private T? Read<T>(AutomationCommand command)
         where T : class
     {
-        var response = Send(command);
-        if (!response.Success || response.Result is null)
+        var response = Answered(command);
+        if (response.Result is null)
             return null;
 
         var json = response.Result is JsonElement element ? element.GetRawText() : JsonSerializer.Serialize(response.Result, Json);
@@ -117,10 +119,23 @@ internal sealed class StrideAutomationDriver : IStrideDriver
         return response;
     }
 
+    // One read the game answered; a game that could not answer raises, as an action it refused does.
+    private AutomationResponse Answered(AutomationCommand command)
+    {
+        var response = Send(command);
+        if (!response.Success)
+        {
+            var target = string.IsNullOrEmpty(command.Target) ? string.Empty : $" for '{command.Target}'";
+            throw new InvalidOperationException($"The game could not answer {command.Method}{target}: {response.Error}");
+        }
+
+        return response;
+    }
+
     private static ElementState Missing(string target) => new() { AutomationId = target, Exists = false };
 
-    private static bool IsTrue(AutomationResponse response)
-        => response.Success && response.Result switch
+    private bool IsTrue(AutomationCommand command)
+        => Answered(command).Result switch
         {
             bool value => value,
             JsonElement { ValueKind: JsonValueKind.True } => true,
