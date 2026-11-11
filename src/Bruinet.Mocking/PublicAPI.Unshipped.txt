@@ -141,3 +141,4 @@ static Bruinet.Mocking.Sensors.MockFrameSource.FromDirectory(string! path, strin
 static readonly Bruinet.Mocking.MockApiServer.DefaultJsonOptions -> System.Text.Json.JsonSerializerOptions!
 static readonly Bruinet.Mocking.MockApiServer.DefaultRequestTimeout -> System.TimeSpan
 static readonly Bruinet.Mocking.MockApiServer.RequestPollInterval -> System.TimeSpan
+Bruinet.Mocking.MockApiServer.WritesSince(System.DateTime sinceUtc) -> System.Collections.Generic.IReadOnlyList<Bruinet.Contracts.RecordedWrite!>!

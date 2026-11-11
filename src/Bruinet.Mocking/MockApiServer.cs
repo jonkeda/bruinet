@@ -154,6 +154,38 @@ public sealed partial class MockApiServer : IDisposable
             .ToList();
 
     /// <summary>
+    /// Every write (any method but <c>GET</c>) received since <paramref name="sinceUtc"/>, oldest first, in the
+    /// shape <see cref="Bruinet.Contracts.ExpectedRequestMockCheck"/> compares with each contract's expected
+    /// request: a multipart body is described part by part.
+    /// </summary>
+    /// <param name="sinceUtc">The moment the test started, in UTC.</param>
+    public IReadOnlyList<Bruinet.Contracts.RecordedWrite> WritesSince(DateTime sinceUtc)
+        => _server.LogEntries
+            .Select(entry => entry.RequestMessage)
+            .Where(message => message is not null && message.DateTime >= sinceUtc
+                && !string.Equals(message.Method, "GET", StringComparison.OrdinalIgnoreCase))
+            .OrderBy(message => message!.DateTime)
+            .Select(message => Write(message!))
+            .ToList();
+
+    private static Bruinet.Contracts.RecordedWrite Write(WireMock.IRequestMessage message)
+    {
+        var contentType = message.Headers?
+            .FirstOrDefault(header => string.Equals(header.Key, "Content-Type", StringComparison.OrdinalIgnoreCase))
+            .Value?.FirstOrDefault();
+        var mediaType = contentType?.Split(';', 2)[0].Trim();
+        var text = !string.IsNullOrEmpty(message.Body) ? message.Body
+            : !string.IsNullOrEmpty(message.BodyData?.BodyAsString) ? message.BodyData.BodyAsString
+            : message.BodyAsBytes is { Length: > 0 } bytes ? System.Text.Encoding.UTF8.GetString(bytes)
+            : null;
+        var body = string.Equals(mediaType, "multipart/form-data", StringComparison.OrdinalIgnoreCase)
+            ? Bruinet.Contracts.ExpectedRequestCheck.DescribeMultipart(contentType!,
+                message.BodyAsBytes ?? message.BodyData?.BodyAsBytes ?? System.Text.Encoding.UTF8.GetBytes(text ?? string.Empty))
+            : text;
+        return new Bruinet.Contracts.RecordedWrite(message.Method, message.Path, mediaType, body);
+    }
+
+    /// <summary>
     /// The requests received for <paramref name="method"/> and <paramref name="path"/>, oldest first.
     /// </summary>
     /// <param name="method">The HTTP method; <c>null</c> for any.</param>

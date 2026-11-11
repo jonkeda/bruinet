@@ -118,11 +118,25 @@ public sealed class UiTestInvoker(
     /// <inheritdoc />
     protected override async Task<decimal> InvokeTestMethodAsync(object testClassInstance)
     {
+        var checks = ConstructorArguments.Prepend(testClassInstance).OfType<IUiTestCheck>().Distinct().ToList();
+        foreach (var check in checks)
+        {
+            check.BeginTest();
+        }
+
         decimal time;
         using (Bruinet.Core.Testing.TestScope.EnterTest(TestScopeAttribute.NameOf(TestMethod)))
         using (Bruinet.Core.Logging.Timing.Span("test", TestMethod.Name))
         {
             time = await base.InvokeTestMethodAsync(testClassInstance).ConfigureAwait(false);
+        }
+
+        foreach (var check in checks)
+        {
+            if (!Aggregator.HasExceptions)
+            {
+                Aggregator.Run(check.CheckPassedTest);
+            }
         }
 
         if (Aggregator.HasExceptions)

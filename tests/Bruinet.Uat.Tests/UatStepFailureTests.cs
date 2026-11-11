@@ -59,6 +59,23 @@ public sealed class UatStepFailureTests
     public void AStepWithNoDefinition_IsABindFailure()
         => Assert.Equal("bind", UatStepFailure.Kind([], bound: false));
 
+    [Fact]
+    public void ASetupFailure_IsASetupFailure_WhateverWentWrongInside()
+    {
+        var setup = Assert.Throws<UiSetupException>(() => UiSetup.Setup(() => throw new ElementNotFoundException("Not found: #new.")));
+
+        Assert.Equal("setup", UatStepFailure.Kind([.. UatStepFailure.Chain(setup)], bound: true));
+        Assert.IsType<ElementNotFoundException>(setup.InnerException);
+    }
+
+    [Fact]
+    public void AFailedGivenStep_IsASetupFailure()
+        => Assert.Equal("setup", UatStepFailure.Kind([new ElementNotFoundException("Not found: #new.")], bound: true, given: true));
+
+    [Fact]
+    public async Task SetupAsync_KeepsACancellation_AsItIs()
+        => await Assert.ThrowsAsync<OperationCanceledException>(() => UiSetup.SetupAsync(() => throw new OperationCanceledException()));
+
     private static async Task SaveAsync()
     {
         await Task.Yield();

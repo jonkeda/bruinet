@@ -298,5 +298,23 @@ public sealed class MockApiServerTests : IDisposable
         Assert.Equal("/api/items/4", (await waiting).Path);
     }
 
+    [Fact]
+    public async Task WritesSince_GivesEveryWriteAfterTheMoment_NoGets_OldestFirst()
+    {
+        _server.Post("/api/items").ReturnsStatus(201);
+        _server.Get("/api/items").ReturnsJson(Array.Empty<Item>());
+        _server.Delete("/api/items/*").ReturnsStatus(204);
+        var before = DateTime.UtcNow.AddSeconds(-1);
+
+        await _client.PostAsJsonAsync("/api/items", new Item(1, "First"));
+        await _client.GetAsync("/api/items");
+        await _client.DeleteAsync("/api/items/1");
+
+        var writes = _server.WritesSince(before);
+        Assert.Equal([("POST", "/api/items"), ("DELETE", "/api/items/1")], writes.Select(write => (write.Method, write.Path)));
+        Assert.Equal(("application/json", """{"id":1,"name":"First"}"""), (writes[0].ContentType, writes[0].Body));
+        Assert.Empty(_server.WritesSince(DateTime.UtcNow.AddMinutes(1)));
+    }
+
     private sealed record Item(int Id, string Name);
 }

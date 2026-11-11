@@ -171,7 +171,11 @@ public static class TestArtifactManifestWriter
 
             foreach (var artifact in suite.Artifacts)
             {
-                builder.AppendLine(CultureInfo.InvariantCulture, $"- {artifact.Kind}: {artifact.Name} ({artifact.Reason}) - {artifact.Path}");
+                // A failure says its kind beside its status (failed: setup), when its writer gave one.
+                var reason = artifact.Metadata.GetValueOrDefault("failureKind") is { Length: > 0 } failureKind
+                    ? $"{artifact.Reason}: {failureKind}"
+                    : artifact.Reason;
+                builder.AppendLine(CultureInfo.InvariantCulture, $"- {artifact.Kind}: {artifact.Name} ({reason}) - {artifact.Path}");
 
                 // A line more about it, when its writer gave one (a UAT failure: where it parted from its last green run).
                 if (artifact.Metadata.GetValueOrDefault("detail") is { Length: > 0 } detail)

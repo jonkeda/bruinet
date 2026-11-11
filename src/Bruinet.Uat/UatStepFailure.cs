@@ -47,12 +47,20 @@ internal static partial class UatStepFailure
     private static JsonObject Describe(BddStepResult step)
     {
         var exceptions = Chain(step.Exception).ToList();
+        var bound = step.Invocation.Command.Handler is not null;
+        var kind = Kind(exceptions, bound, given: step.Invocation.Step.EffectiveKeyword == BddEffectiveStepKeyword.Given);
         var node = new JsonObject
         {
-            ["kind"] = Kind(exceptions, bound: step.Invocation.Command.Handler is not null),
-            ["exception"] = exceptions.LastOrDefault(exception => exception is not TargetInvocationException)?.GetType().Name,
+            ["kind"] = kind,
+            ["exception"] = exceptions.LastOrDefault(exception => exception is not TargetInvocationException and not UiSetupException)?.GetType().Name,
             ["binding"] = step.Invocation.CommandId,
         };
+
+        // A setup failure keeps what went wrong inside it: setup that timed out, or could not find a control.
+        if (kind == SetupKind)
+        {
+            node["cause"] = Kind([.. exceptions.Where(exception => exception is not UiSetupException)], bound);
+        }
 
         if (exceptions.OfType<ControlAssertionException>().FirstOrDefault() is { } assertion)
         {
@@ -81,12 +89,20 @@ internal static partial class UatStepFailure
         return node;
     }
 
-    /// <summary>assertion, locator-not-found, timeout, app-unavailable, bind, app-exception or error.</summary>
-    internal static string Kind(IReadOnlyList<Exception> exceptions, bool bound)
+    /// <summary>The kind of a failure while setting up: a <see cref="UiSetupException"/>, or a failed Given step.</summary>
+    internal const string SetupKind = "setup";
+
+    /// <summary>setup, assertion, locator-not-found, timeout, app-unavailable, bind, app-exception or error.</summary>
+    internal static string Kind(IReadOnlyList<Exception> exceptions, bool bound, bool given = false)
     {
         if (exceptions.Count == 0)
         {
             return bound ? "error" : "bind";
+        }
+
+        if (given || exceptions.Any(exception => exception is UiSetupException))
+        {
+            return SetupKind;
         }
 
         if (exceptions.Any(exception => exception is ControlAssertionException || exception.GetType().FullName?.StartsWith("Xunit.", StringComparison.Ordinal) == true))

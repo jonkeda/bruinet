@@ -1,1 +1,8 @@
 #nullable enable
+Bruinet.Uat.IUiTestCheck
+Bruinet.Uat.IUiTestCheck.BeginTest() -> void
+Bruinet.Uat.IUiTestCheck.CheckPassedTest() -> void
+Bruinet.Uat.UiSetup
+static Bruinet.Uat.UiSetup.Setup(System.Action! setup) -> void
+static Bruinet.Uat.UiSetup.Setup<T>(System.Func<T>! setup) -> T
+static Bruinet.Uat.UiSetup.SetupAsync(System.Func<System.Threading.Tasks.Task!>! setup) -> System.Threading.Tasks.Task!

@@ -1208,3 +1208,5 @@ virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
 Bruinet.Core.Calls.ReadsInPlace
 static Bruinet.Core.Calls.ReadsInPlace.Active.get -> bool
 static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
+Bruinet.Core.Exceptions.UiSetupException
+Bruinet.Core.Exceptions.UiSetupException.UiSetupException(System.Exception! cause) -> void

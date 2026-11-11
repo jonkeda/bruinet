@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `Bruinet.Traits` trait names: `[Ui]` writes `Pyramid=UI` and, during the move, the old `Pyramid=Hermetic UI`
+  (`[HermeticUi]` now writes the same pair); `[Covers("id")]` names a coverage row, check, finding or decision and may
+  repeat; `[Head("Android")]` marks a test that needs one head, with the `UatPlatforms` names; run sets
+  `[Architecture]` and `[Review]`. `TraitCheck` counts `UI` and `Hermetic UI` as one tier, and `TierNames.Current`
+  maps an old tier name to its new one.
+- Write check and setup label: `MockApiServer.WritesSince(sinceUtc)` gives each write since a moment as a
+  `Bruinet.Contracts.RecordedWrite`, ready for `ExpectedRequestMockCheck`. A fixture that is an `IUiTestCheck` gets
+  `BeginTest` before each `[UiFact]` test and `CheckPassedTest` after it passed; a throw fails the test.
+  `UiSetup.Setup(...)` and `SetupAsync(...)` wrap a test's setup, so a failure there is a `UiSetupException`. Such a
+  failure, and any failed Given step, has kind `setup` (with its `cause`) in the scenario report, the `failing` and
+  `why` MCP tools, and the run's `summary.md` (`failed: setup`).
 - Scripts for an app's own test runs (`docs/run/app-scripts.md`): `run-maui-headless.ps1` and `run-maui-android.ps1`,
   `RunGuards.psm1` (`Stop-LeftoverApp`, `Test-BruinetSubmodule`), `coverage-areas.ps1` (line coverage per source folder)
   and `mutate-folder.ps1` (Stryker on one folder through a harness library). Moved from Exact Construction.

@@ -58,6 +58,9 @@ public static class UatScenarioResults
 
             // Since last green (AI9): where a failure first went another way than the newest earlier pass, for summary.md.
             var why = status == "failed" && tracePath is not null ? Why(tracePath) : null;
+            var failureKind = status == "failed"
+                ? (string?)execution.Result.Steps.Select(UatStepFailure.Of).FirstOrDefault(failure => failure is not null)?["kind"]
+                : null;
 
             // The suite, file and line let a tool find the newest run of a file's scenarios (P5, AD-007).
             TestArtifactManifestWriter.RecordArtifact(
@@ -75,6 +78,7 @@ public static class UatScenarioResults
                     ["line"] = scenario.Source.Source.LineNumber.ToString(System.Globalization.CultureInfo.InvariantCulture),
                     ["mode"] = mode,
                     ["detail"] = why,
+                    ["failureKind"] = failureKind,
                 });
             return reportPath;
         }

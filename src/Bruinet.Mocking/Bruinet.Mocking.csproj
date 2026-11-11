@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
+    <ProjectReference Include="..\Bruinet.Contracts\Bruinet.Contracts.csproj" />
     <ProjectReference Include="..\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
   </ItemGroup>
 
