@@ -26,7 +26,7 @@ public class StepperTests
         return new(_fixture.Context);
     }
 
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [ProbeFact("reports what invoking a stepper's buttons does", Timeout = TestConstants.DefaultTestTimeoutMs)]
     [Trait("Pattern", "Probe")]
     public Task StepperButtons_ReportInvokeBehavior()
     {

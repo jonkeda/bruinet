@@ -93,7 +93,7 @@ public class NavigationProbeTests
     /// Measures page-level toolbar and menu chrome and reports a table. Records findings;
     /// does not fail on a negative, because a negative is the answer we came for.
     /// </summary>
-    [Fact(Timeout = TestConstants.LongTestTimeoutMs)]
+    [ProbeFact("reports which page chrome is addressable", Timeout = TestConstants.LongTestTimeoutMs)]
     public Task PageChrome_ReportsAddressability()
     {
         var report = new System.Text.StringBuilder();

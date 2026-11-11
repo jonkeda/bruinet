@@ -188,7 +188,7 @@ partial class MainForm : Form
             var username = usernameBox.Text;
             var role = roleCombo.SelectedItem?.ToString() ?? "Unknown";
             var port = portNumeric.Value;
-            statusLabel.Text = $"Status: Logged in as {username} ({role}) on port {port}";
+            statusLabel.Text = $"Status: Logged in as {username} ({role}) on port {port}, with a {passwordBox.Text.Length}-character password";
             statusLabel.ForeColor = System.Drawing.Color.Green;
         };
         panel.Controls.Add(loginButton);

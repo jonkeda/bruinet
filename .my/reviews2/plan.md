@@ -119,8 +119,8 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T68 Guard scripts fail when `git diff` fails (exit 2). R10 P13.
 - [ ] R2-T69 Test guard and API check run on pushes too. R12 P7.
 - [ ] R2-T70 Tests a tier too high moved down. R08 P9.
-- [ ] R2-T71 Probes behind an opt-in attribute or deleted. R08 P10.
-- [ ] R2-T72 Leftovers: `Bruinet.Sql.Spike.Tests`, bUnit `SpikeTests.cs`. R08 P11.
+- [x] R2-T71 Probes behind an opt-in attribute or deleted. R08 P10. Five probes are ProbeFact (Maui.UITests has its own file, Uia.Tests its own copy); the bUnit one went with the spike. The WinForms password test asserts the sample's status, which now says the password's length; the empty LoginPage one is gone.
+- [x] R2-T72 Leftovers: `Bruinet.Sql.Spike.Tests`, bUnit `SpikeTests.cs`. R08 P11. Sql.Spike.Tests deleted with its recordings (out of the solution and coverage.ps1); bUnit SpikeTests keeps its two named tests; the skipped RightClick_ReturnsPageInstance is gone. The .my citations were left: .my is the owner's.
 - [ ] R2-T73 Runner tests with the runner; binder and formatter tests for the survivors. R08 P12, P13.
 - [ ] R2-T74 Legacy globalconfig narrowed to `Bruinet.Mocking.Data` or deleted. R12 P1.
 - [ ] R2-T75 A reason per disabled rule, or AD-033 allows one per group. R12 P2.

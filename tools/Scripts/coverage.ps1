@@ -19,9 +19,8 @@
 
 .PARAMETER Projects
     The test projects under tests/. Default: every unit test project. Left out: the *.UITests
-    suites (the switches below), Presenter.Bdd.Tests (drives the Presenter app; its cloud voice
-    scenario reads this machine's voice.secrets.json) and Sql.Spike.Tests (a spike, its UI tests
-    need a database).
+    suites (the switches below) and Presenter.Bdd.Tests (drives the Presenter app; its cloud voice
+    scenario reads this machine's voice.secrets.json).
 
 .PARAMETER Headless
     Also the MAUI suites on MauiHeadless (test-maui-headless.ps1's list): no app, no window.

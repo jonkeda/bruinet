@@ -37,14 +37,6 @@ public class LoginPageTests
     }
 
     [Fact]
-    public void LoginPage_CanEnterPassword()
-    {
-        var page = GetPage();
-        // Password field masks text — verify it accepts input without error
-        page.EnterPassword("password123");
-    }
-
-    [Fact]
     public void LoginPage_CanToggleRememberMe()
     {
         var page = GetPage();

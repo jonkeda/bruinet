@@ -42,10 +42,12 @@ public class InputControlTests
     [Fact]
     public void PasswordBox_Enter_AcceptsPassword()
     {
+        // A password field reads as nothing through UI Automation; the app says what it was given.
         var page = GetPage();
         page.EnterPassword("secret123");
         page.EnterUsername("testuser");
-        Assert.Equal("testuser", page.GetUsername());
+        page.ClickLogin();
+        Assert.Contains("with a 9-character password", page.GetStatusMessage(), StringComparison.Ordinal);
     }
 
     [Fact]

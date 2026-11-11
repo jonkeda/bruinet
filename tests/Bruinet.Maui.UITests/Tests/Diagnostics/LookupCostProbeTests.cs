@@ -5,18 +5,6 @@ using Xunit.Abstractions;
 
 namespace Bruinet.Maui.UITests.Tests.Diagnostics;
 
-/// <summary>A measurement, not a test: runs only with <c>BRUINET_PROBE=1</c>.</summary>
-public sealed class ProbeFactAttribute : FactAttribute
-{
-    public ProbeFactAttribute()
-    {
-        if (Environment.GetEnvironmentVariable("BRUINET_PROBE") != "1")
-        {
-            Skip = "A measurement for the stale-readiness plan. Set BRUINET_PROBE=1 to run it.";
-        }
-    }
-}
-
 /// <summary>
 /// What one lookup and one alive check cost against the real app.
 /// </summary>

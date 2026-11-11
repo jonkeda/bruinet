@@ -65,7 +65,7 @@ public class BridgeTreeDumpTests
     /// visible: the <c>SwipeView</c> publishes no <c>AutomationId</c> on Windows, so the only
     /// way to see whether the swipe took is to look at what appeared. This prints it.
     /// </remarks>
-    [DeviceFact("it drives the Windows driver (FlaUI) itself", Timeout = TestConstants.LongTestTimeoutMs)]
+    [ProbeFact("prints what a SwipeView shows on Windows after a swipe", Timeout = TestConstants.LongTestTimeoutMs)]
     public Task DumpSwipeViewAfterOpening()
     {
         var driver = (FlaUIMauiDriver)_fixture.Context.Driver;

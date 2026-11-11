@@ -135,7 +135,7 @@ public class BridgeVisibilityTests
     /// the extension has to supply one; if it walks raw, callers can use the ordinary search.
     /// Reported either way, and asserted only on the part that must hold.
     /// </remarks>
-    [Fact]
+    [ProbeFact("reports whether an ordinary search reaches the bridge")]
     public void OrdinarySearch_ReachesTheBridgeOrDoesNot()
     {
         AutomationElement? found;

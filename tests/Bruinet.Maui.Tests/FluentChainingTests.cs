@@ -63,20 +63,6 @@ public class FluentChainingTests
         Assert.Same(_testPage, result);
     }
 
-    [Fact(Skip = "RightClick uses Selenium Actions which requires real IWebDriver/IWebElement - integration test only")]
-    public void RightClick_ReturnsPageInstance()
-    {
-        // Arrange
-        var mockElement = SetupMockElement("TestButton");
-        SetupActionsForRightClick(mockElement);
-
-        // Act
-        var result = _testPage.TestButton.RightClick();
-
-        // Assert
-        Assert.Same(_testPage, result);
-    }
-
     #endregion
 
     #region Text Entry Chaining Tests
@@ -331,17 +317,6 @@ public class FluentChainingTests
         // Set up the container element to find the child element
         containerMock.Setup(e => e.TryFindElement(It.Is<Locator>(l => l.Value.Contains(childAutomationId))))
             .Returns(childMockElement.Object);
-    }
-
-    private void SetupActionsForRightClick(Mock<IMauiElement> mockElement)
-    {
-        // Set up mock driver with UnwrapDriver
-        var mockDriver = new Mock<IMauiDriver>();
-        _mockContext.Setup(c => c.Driver).Returns(mockDriver.Object);
-
-        // Note: RightClick uses Selenium Actions which require real IWebDriver/IWebElement
-        // For unit tests, we skip RightClick or use integration tests
-        // This test is expected to fail until we have real Appium instances
     }
 
     #endregion
