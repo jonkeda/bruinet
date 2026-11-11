@@ -1,4 +1,3 @@
-#pragma warning disable EF1001 // SQL Server's spatial mapping is internal API: the hook a provider-only reader method needs.
 using System.Data.Common;
 using System.Data.SqlTypes;
 using System.Reflection;
@@ -11,6 +10,7 @@ using NetTopologySuite.Geometries;
 
 namespace Bruinet.Mocking.Data.EntityFrameworkCore.SqlServer;
 
+#pragma warning disable EF1001 // SQL Server's spatial mapping is internal API: the hook a provider-only reader method needs.
 /// <summary>
 /// How EF reads spatial columns from a <see cref="Bruinet.Mocking.Data.Replay.ReplayDataReader"/>. SQL Server's geometry mapping reads with
 /// <c>SqlDataReader.GetSqlBytes</c>, a cast EF compiles into the query's shaper, so any other reader fails. This swaps
@@ -85,3 +85,4 @@ public sealed class ReplayGeometryMapping<TGeometry> : SqlServerGeometryTypeMapp
         }
     }
 }
+#pragma warning restore EF1001

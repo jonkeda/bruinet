@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Mocking.Tests</RootNamespace>
-    <!-- These tests exercise the mock server itself with throwaway bodies, not an API's contract (AD-012). -->
-    <NoWarn>$(NoWarn);BRUINET001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

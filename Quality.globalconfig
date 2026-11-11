@@ -4,7 +4,7 @@ is_global = true
 # AnalysisLevel latest-recommended and Meziantou stays on, an error under TreatWarningsAsErrors.
 
 # Naming and layout the code base chose on purpose
-dotnet_diagnostic.CA1707.severity = none   # test names use underscores (Method_State_Result)
+dotnet_diagnostic.CA1707.severity = none   # test names use underscores (Method_State_Result), and so do Win32's HRESULT names (Uia.Contracts)
 dotnet_diagnostic.MA0048.severity = none   # .tpl.cs/.gen.cs partials and small related types share a file
 dotnet_diagnostic.MA0049.severity = none   # a type may share its namespace's last name
 dotnet_diagnostic.CA1716.severity = none   # names such as Shared, Select and Step are the domain's words
@@ -28,10 +28,8 @@ dotnet_diagnostic.CA1852.severity = none   # sealing is a design choice, not a d
 dotnet_diagnostic.CA1805.severity = none   # explicit defaults may document intent
 dotnet_diagnostic.CA1000.severity = none   # static factories on generic controls are the pattern
 dotnet_diagnostic.CA1010.severity = none   # ADO.NET base types are non-generic
-dotnet_diagnostic.CA1051.severity = none   # visible fields in test fixtures
 dotnet_diagnostic.CA1068.severity = none   # moving CancellationToken last breaks the API
 dotnet_diagnostic.CA1816.severity = none   # no finalizers in Bruinet
-dotnet_diagnostic.MA0025.severity = none   # NotImplementedException marks stubs in samples and tests
 
 # Performance hints with no measured cost: Bruinet waits on UI, not on these
 dotnet_diagnostic.CA1826.severity = none

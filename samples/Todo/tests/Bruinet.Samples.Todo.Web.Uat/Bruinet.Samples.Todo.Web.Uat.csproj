@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Samples.Todo.Web.Uat</RootNamespace>
     <Description>The Todo UAT scenarios on the web head: the MAUI suite's scenario files, run through the web page objects.</Description>
   </PropertyGroup>

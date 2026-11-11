@@ -1,0 +1,4 @@
+is_global = true
+
+# These tests exercise the mock server itself with throwaway bodies, not an API's contract (AD-012).
+dotnet_diagnostic.BRUINET001.severity = none

@@ -2,9 +2,6 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
 
-// ListView is obsolete, but apps still show it, and its cells need the same stripping.
-#pragma warning disable CS0618
-
 namespace MauiHeadless.Hosting;
 
 /// <summary>
@@ -21,7 +18,9 @@ namespace MauiHeadless.Hosting;
 public static class HeadlessBehaviors
 {
     /// <summary>The types styled by default: pages, content views and list views.</summary>
+#pragma warning disable CS0618 // ListView is obsolete, but apps still show it, and its cells need the same stripping.
     public static IReadOnlyList<Type> DefaultHosts { get; } = [typeof(Page), typeof(ContentView), typeof(ListView)];
+#pragma warning restore CS0618
 
     /// <summary>Set by the implicit style: strips the element now and again just before it is parented.</summary>
     public static readonly BindableProperty StripProperty = BindableProperty.CreateAttached(
@@ -31,8 +30,10 @@ public static class HeadlessBehaviors
             if (value is not true || bindable is not Element element)
                 return;
 
+#pragma warning disable CS0618 // ListView is obsolete, but apps still show it, and its cells need the same stripping.
             if (element is ListView list)
                 PrepareListView(list);
+#pragma warning restore CS0618
             Strip(element);
             // The style can apply during InitializeComponent, before XAML adds the behaviors.
             element.ParentChanging += (_, _) => Strip(element);
@@ -123,6 +124,7 @@ public static class HeadlessBehaviors
         => behavior.GetType().GetProperty("CommandParameter")?.GetValue(behavior);
 
     #region ListView cells
+#pragma warning disable CS0618 // ListView is obsolete, but apps still show it, and its cells need the same stripping.
 
     private static readonly ConditionalWeakTable<DataTemplate, DataTemplate> Wrapped = new();
     private static readonly ConditionalWeakTable<DataTemplate, object> Wrappers = new();
@@ -182,5 +184,6 @@ public static class HeadlessBehaviors
             => Wrap(inner.SelectTemplate(item, container));
     }
 
+    #pragma warning restore CS0618
     #endregion
 }

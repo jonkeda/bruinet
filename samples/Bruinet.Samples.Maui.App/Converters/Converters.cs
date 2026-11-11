@@ -43,7 +43,7 @@ public class IntToBoolConverter : IValueConverter
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("A one-way converter.");
     }
 }
 
@@ -63,7 +63,7 @@ public class PlayPauseConverter : IValueConverter
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("A one-way converter.");
     }
 }
 
@@ -107,7 +107,7 @@ public class BoolToFolderIconConverter : IValueConverter
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        throw new NotSupportedException("A one-way converter.");
     }
 }
 

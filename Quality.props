@@ -12,8 +12,9 @@
     <NuGetAuditLevel>low</NuGetAuditLevel>
     <!-- BRUINET010: Bruinet.Bdd's engine and runner protocol are public for Bruinet's own packages
          (Uat, the command line, Presenter, Workspace, Narrator) but not promised to consumers
-         (public API review proposals 1 and 12). Bruinet uses them knowingly; a consumer opts in. -->
-    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
+         (public API review proposals 1 and 12). Bruinet's own libraries and tools use them knowingly; a test project
+         or a sample is a consumer and opts in in its own project file (review 12, proposal 4). -->
+    <NoWarn Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src')) or $(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)tools'))">$(NoWarn);BRUINET010</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,7 +39,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.Src.txt" />
   </ItemGroup>
-  <ItemGroup Condition="$(TargetFrameworks.Contains('netstandard')) or $(TargetFrameworks.Contains('net4')) or $(TargetFramework.StartsWith('net4'))">
+  <!-- Only Bruinet.Mocking.Data also targets netstandard2.0 beside .NET: on .NET the rules would ask for helpers its
+       netstandard target lacks. A net48 or netstandard-only project has no such helper, so the rules find nothing there
+       (review 12, proposal 1). -->
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Bruinet.Mocking.Data'">
     <GlobalAnalyzerConfigFiles Include="$(MSBuildThisFileDirectory)Quality.Legacy.globalconfig" />
   </ItemGroup>
 </Project>

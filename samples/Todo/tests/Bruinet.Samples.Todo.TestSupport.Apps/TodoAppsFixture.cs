@@ -83,7 +83,7 @@ public class TodoAppsFixture : IAsyncLifetime
     /// reported: the cause is often on another app's screen than the one whose step failed.
     /// </summary>
     /// <remarks>
-    /// Explicit rather than through <see cref="ScreenshotTestAttribute.SetApps"/>: the fixture is
+    /// Explicit rather than through <c>ScreenshotTestAttribute.SetApps</c> (Bruinet.Maui): the fixture is
     /// set up in another async flow than the test runs in, so an ambient registration made here
     /// would not reach the test.
     /// </remarks>

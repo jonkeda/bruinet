@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Bdd.Tests</RootNamespace>
   </PropertyGroup>
 

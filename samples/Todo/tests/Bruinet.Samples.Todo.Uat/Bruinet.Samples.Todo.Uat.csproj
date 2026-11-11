@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Samples.Todo.Uat</RootNamespace>
     <!-- The UI test project's target: net10.0-windows with FlaUI on Windows, else plain net10.0. -->
     <TargetFramework Condition="'$(BruinetWindowsHead)' == 'true'">net10.0-windows</TargetFramework>

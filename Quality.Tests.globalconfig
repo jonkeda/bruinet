@@ -2,3 +2,5 @@ is_global = true
 
 # Test projects only (IsTestProject), on top of Quality.globalconfig.
 dotnet_diagnostic.CA2201.severity = none   # tests build the platform's exceptions to feed the code under test
+dotnet_diagnostic.CA1051.severity = none   # visible fields in test fixtures
+dotnet_diagnostic.MA0025.severity = none   # NotImplementedException marks a fake's member the test does not reach

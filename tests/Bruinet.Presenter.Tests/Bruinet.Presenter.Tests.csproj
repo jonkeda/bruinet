@@ -3,6 +3,8 @@
   <!-- The Presenter's services, apart from its UAT suite (Bruinet.Presenter.Bdd.Tests), so they run with the unit tests (review 08, finding 9). -->
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Presenter.Tests</RootNamespace>
     <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
     <!--

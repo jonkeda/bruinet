@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
     <RootNamespace>Bruinet.Samples.Todo.TestSupport</RootNamespace>
     <Description>Test sets, the database seeder and the WireMock fake backend shared by the integration and UI tiers.</Description>
     <!-- A library the test projects use, not a test project itself. -->
