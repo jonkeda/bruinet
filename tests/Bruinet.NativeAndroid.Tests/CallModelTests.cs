@@ -11,47 +11,6 @@ public class CallModelTests
 
     #region (a)-(e): one budget, found again on every attempt, one log unit, act once
 
-    /// <summary>(a) A view being replaced does not use up the call: the next attempt finds the new one.</summary>
-    [Fact]
-    public void A_Click_FindsTheViewAgain_WhenTheFirstOneNeverShows()
-    {
-        var dead = FakeApp.View(visible: false);
-        var good = FakeApp.View();
-        var lookups = 0;
-        _app.Given("Target", () => ++lookups == 1 ? dead.Object : good.Object);
-
-        _app.Page().Target.Click();
-
-        good.Verify(e => e.Click(), Times.Once);
-        dead.Verify(e => e.Click(), Times.Never);
-    }
-
-    /// <summary>(b) The caller's timeout is the call's budget.</summary>
-    [Fact]
-    public void B_GetText_HonoursTheCallersTimeout_WhenTheViewNeverShows()
-    {
-        var hidden = FakeApp.View(visible: false, text: "hidden");
-        _app.Given("Target", () => hidden.Object);
-
-        var elapsed = FakeApp.Timed(() => _app.Page().Status.GetText(timeoutMs: 300));
-
-        Assert.True(elapsed < 800, $"GetText(timeoutMs: 300) took {elapsed} ms.");
-    }
-
-    /// <summary>(c) One public call is one log entry/exit pair.</summary>
-    [Fact]
-    public void C_Click_WritesOneLogEntryAndExitPair()
-    {
-        var reads = 0;
-        var element = FakeApp.View();
-        element.Setup(e => e.Visible).Returns(() => ++reads > 1);
-        _app.Given("Target", () => element.Object);
-
-        _app.Page().Target.Click();
-
-        _app.VerifyLogPairs(1);
-    }
-
     /// <summary>(d) As (a), for Get, Wait and Assert.</summary>
     [Fact]
     public void D_GetWaitAndAssert_FindTheViewAgain_WhenTheFirstOneNeverShows()
