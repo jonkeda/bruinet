@@ -186,7 +186,59 @@ public class DevFlowRunnerTests
         Assert.Throws<StaleElementException>(() => label.Text);
     }
 
+    [Fact]
+    public void NestedScrollView_ScrolledToItsEnd_ShowsItsContentAtTheEnd()
+    {
+        // A ScrollView 120 high around 200 of content, inside the page's ScrollView: the agent would
+        // spend an amount on the page's, so the inner one is moved by showing a child.
+        var agent = new FakeAgent(NestedScroller());
+        agent.Properties["Inner.Height"] = "120";
+        agent.Properties["Inner.ContentSize.Height"] = "200";
+        agent.Properties["Inner.ScrollY"] = "0";
+        var inner = Driver(agent).FindElements(Locator.ByAutomationId("Inner")).Single();
+
+        inner.SetVerticalScrollPercent(100);
+
+        Assert.Equal(["scroll InnerContent End"], agent.Calls);
+    }
+
+    [Fact]
+    public void OutermostScrollView_IsScrolledByTheDistance()
+    {
+        var agent = new FakeAgent(NestedScroller());
+        agent.Properties["Outer.Height"] = "500";
+        agent.Properties["Outer.ContentSize.Height"] = "900";
+        agent.Properties["Outer.ScrollY"] = "100";
+        var outer = Driver(agent).FindElements(Locator.ByAutomationId("Outer")).Single();
+
+        outer.SetVerticalScrollPercent(50);
+
+        Assert.Equal(["scroll Outer 100"], agent.Calls);
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
+
+    // The page's ScrollView around an inner one whose content (at window Y 300) holds two labels.
+    private static List<ElementInfo> NestedScroller() =>
+    [
+        Node("w", "Window", visible: false, enabled: false, children:
+        [
+            Node("ScrollPage", "ContentPage", children:
+            [
+                Placed(Node("Outer", "ScrollView", children:
+                [
+                    Placed(Node("Inner", "ScrollView", children:
+                    [
+                        Placed(Node("InnerContent", "VerticalStackLayout", children:
+                        [
+                            Placed(Node("First", "Label", text: "First"), 300, 20),
+                            Placed(Node("Last", "Label", text: "Last"), 480, 20),
+                        ]), 300, 200),
+                    ]), 300, 120),
+                ]), 0, 500),
+            ]),
+        ]),
+    ];
 
     // A page with one CollectionView whose rows (containers c0, c1, ...) each hold a label, at the given window Y.
     private static List<ElementInfo> ListPage(params (string Text, double Y)[] rows) =>
@@ -274,13 +326,16 @@ public class DevFlowRunnerTests
         public bool Gesture(ElementInfo element, string type, string? direction = null, double? distance = null, int? durationMs = null)
             => Record($"{type} {element.Id} {direction} {distance}");
 
-        public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null) => Record($"scroll {element?.Id}");
+        public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null)
+            => Record($"scroll {element?.Id} {position ?? deltaY.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
         public bool Navigate(string route) => Record($"navigate {route}");
 
         public bool Back() => Record("back");
 
-        public string? GetProperty(string elementId, string name) => null;
+        public Dictionary<string, string> Properties { get; } = [];
+
+        public string? GetProperty(string elementId, string name) => Properties.GetValueOrDefault($"{elementId}.{name}");
 
         public bool SetProperty(ElementInfo element, string name, string value) => Record($"set {element.Id}.{name}={value}");
 

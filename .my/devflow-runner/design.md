@@ -6,7 +6,7 @@ not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-expe
 ## Where it stands
 
 On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own) and without the
-Shell app: **325 passed, 29 failed, 31 skipped of 385**. Every failure is in the list below. A folder takes about as
+Shell app: **328 passed, 26 failed, 31 skipped of 385**. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### What it cannot do
@@ -19,7 +19,7 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
 | DrawingView lines (`Pan`) | 2 | A drawn path has no semantic route. |
 | A list item by its index (`ScrollToItem`, `Item(i)` past the realized rows) | 1 | The agent gives no row its index (`PositionInSet`). |
 | Selecting a list row that has no tap of its own | 1 | The agent sets no `SelectedItem` (an object) and has no select action. |
-| Scrolling a ScrollView inside another by an amount | 3 | The agent applies an amount only to a ScrollView with none around it. |
+| Scrolling a ScrollView inside another to an exact position | 0 | The agent spends an amount on the outermost ScrollView; the inner one reaches the top and the end exactly, a position between as near as its children allow. |
 | The contract button's double-click | 1 | Only the app's bridge sink answers it. |
 | Taking the focus away | 1 | `IsFocused` cannot be set. |
 
@@ -43,7 +43,10 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
   index puts the item at the top (`itemIndex`, `Start`) and is reported as a step, not a jump: with no row index the
   collection's next index is the count of rows seen. An element in a row is tied to what its row showed when found; a
   recycled container makes it stale, as a UI Automation row belongs to its item.
-- **Tests:** `DevFlowRunnerTests` (17, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+- **Nested ScrollViews:** a ScrollView with none around it is scrolled by the distance. One inside another is moved
+  by showing a child at the start, centre or end of its nearest ScrollView (the agent's scroll-to-element), the stop
+  nearest the target on the side it lies: exact at the top and the end, near between them.
+- **Tests:** `DevFlowRunnerTests` (19, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 
 ## Outcome

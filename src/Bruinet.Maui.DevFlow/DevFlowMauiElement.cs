@@ -701,15 +701,60 @@ internal sealed class DevFlowMauiElement : IMauiElement
         return new ScrollPercent(vertical, viewSize);
     }
 
-    /// <summary>Scrolls a ScrollView to a vertical position in percent, by the distance from where it is.</summary>
+    /// <summary>
+    /// Scrolls a ScrollView to a vertical position in percent. A ScrollView with none around it is
+    /// scrolled by the distance from where it is. One inside another cannot be: the agent spends an
+    /// amount on the outermost ScrollView. It can show a child at the start, centre or end of its
+    /// nearest ScrollView, so the inner one goes to the nearest of those positions to the target, on
+    /// the side the target lies: the top and the end exactly, a position between them as near as the
+    /// children allow.
+    /// </summary>
     public void SetVerticalScrollPercent(double percent)
     {
         var position = ReadScrollPosition();
-        var target = Math.Clamp(percent, 0, 100) / 100 * Math.Max(0, position.ContentHeight - position.ViewportHeight);
+        var range = Math.Max(0, position.ContentHeight - position.ViewportHeight);
+        var target = Math.Clamp(percent, 0, 100) / 100 * range;
         var delta = target - position.Y;
         if (Math.Abs(delta) < 0.5)
             return;
-        _driver.Act(_driver.Agent.Scroll(Info, 0, delta), $"scroll {Describe()} to {percent:0.#} percent");
+
+        var node = Node;
+        if (!Ancestors(node).Any(ancestor => ancestor.Type == "ScrollView"))
+        {
+            _driver.Act(_driver.Agent.Scroll(Info, 0, delta), $"scroll {Describe()} to {percent:0.#} percent");
+            return;
+        }
+
+        var reachable = ReachableOffsets(node, position.ViewportHeight, range);
+        var onTheWay = reachable.Where(stop => Math.Abs(stop.Offset - position.Y) >= 0.5 && Math.Sign(stop.Offset - position.Y) == Math.Sign(delta)).ToList();
+        if (onTheWay.Count == 0)
+            return;
+
+        var (child, placement, _) = onTheWay.MinBy(stop => Math.Abs(stop.Offset - target));
+        _driver.Act(_driver.Agent.Scroll(child.Info, 0, 0, position: placement), $"scroll {Describe()} to {percent:0.#} percent");
+    }
+
+    // Where the ScrollView can be put by showing one of its children at its start, centre or end:
+    // a child's offset in the content is where it is in the window, less where the content is.
+    private static List<(DevFlowNode Child, string Placement, double Offset)> ReachableOffsets(
+        DevFlowNode scroller, double viewport, double range)
+    {
+        var stops = new List<(DevFlowNode, string, double)>();
+        if (scroller.Children.FirstOrDefault() is not { Info.WindowBounds: { } content })
+            return stops;
+
+        foreach (var child in scroller.DescendantsAndSelf().Skip(1))
+        {
+            if (child.Info.WindowBounds is not { Height: > 0 } bounds || IsScroller(child) && !ReferenceEquals(child.Parent, scroller))
+                continue;
+
+            var top = bounds.Y - content.Y;
+            stops.Add((child, "Start", Math.Clamp(top, 0, range)));
+            stops.Add((child, "Center", Math.Clamp(top + bounds.Height / 2 - viewport / 2, 0, range)));
+            stops.Add((child, "End", Math.Clamp(top + bounds.Height - viewport, 0, range)));
+        }
+
+        return stops;
     }
 
     private void RequireScrollView()
