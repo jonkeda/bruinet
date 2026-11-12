@@ -1635,6 +1635,38 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
             => double.Parse(value, CultureInfo.InvariantCulture);
     }
 
+    /// <inheritdoc />
+    /// <remarks>The element's own UIA Scroll pattern: a WinUI ScrollViewer has one, with no verb declared.</remarks>
+    public ScrollPercent? ReadScrollPercent() => Live<ScrollPercent?>(() =>
+    {
+        if (!_element.Patterns.Scroll.IsSupported)
+            return null;
+
+        var scroll = _element.Patterns.Scroll.Pattern;
+        return scroll.VerticallyScrollable.ValueOrDefault
+            ? new ScrollPercent(scroll.VerticalScrollPercent.ValueOrDefault, scroll.VerticalViewSize.ValueOrDefault)
+            : new ScrollPercent(0, 100);
+    });
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The Scroll pattern's SetScrollPercent, then the percentage left to settle: a WinUI
+    /// ScrollViewer can take a moment to report where it went.
+    /// </remarks>
+    public void SetVerticalScrollPercent(double percent) => Live(() =>
+    {
+        if (!_element.Patterns.Scroll.IsSupported)
+            throw new RouteUnavailableException($"'{AutomationId}' has no UIA Scroll pattern to scroll by percent.");
+
+        var scroll = _element.Patterns.Scroll.Pattern;
+        if (!scroll.VerticallyScrollable.ValueOrDefault)
+            return;
+
+        // -1 is UIA's "no change" for the horizontal axis.
+        scroll.SetScrollPercent(-1, Math.Clamp(percent, 0, 100));
+        Bruinet.Core.Calls.Settle.Still(() => scroll.VerticalScrollPercent.ValueOrDefault, windowMs: 1_000, pollingIntervalMs: 25);
+    });
+
     #endregion
 
     #region Selection

@@ -473,3 +473,57 @@ public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<Co
     [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, RefreshNotOnWindows + " On Android, " + RefreshNotOnAndroid)]
     public override void AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot() => base.AssertRefreshing_PassesWhenItHolds_FailsWhenItDoesNot();
 }
+
+[Collection("Maui")]
+[Trait("Category", "Contract")]
+public sealed class MauiScrollViewContract : ScrollableContract<ScrollView<ContainerTestPage>>
+{
+    private readonly ScrollView<ContainerTestPage> _view;
+
+    public MauiScrollViewContract(MauiFixture fixture)
+    {
+        fixture.Open(SamplePage.Container);
+        _view = new ContainerTestPage(fixture.Context).TestScrollView;
+
+        // The fixture keeps the app between tests: each starts at the top, where a head can scroll.
+        if ((SkipOnFactAttribute.Current & NoRead) == 0)
+        {
+            _view.ScrollToTop();
+        }
+    }
+
+    protected override ScrollView<ContainerTestPage> Scope => _view;
+
+    protected override IScrollableControlObject<ScrollView<ContainerTestPage>> View => _view;
+
+    protected override Locator LastItem => Locator.ByAutomationId("ScrollLastLabel");
+
+    private const ContractHeads NoRead = ContractHeads.Headless | ContractHeads.Mobile;
+
+    private const string NoReadWhy =
+        "MauiHeadless lays nothing out, so a scroller has no position; Android reads no scroll position yet (R2-T116).";
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void GetScrollPosition_ZeroAtTheTop() => base.GetScrollPosition_ZeroAtTheTop();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void CanScroll_DownFromTheTop_NotUp() => base.CanScroll_DownFromTheTop_NotUp();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void ScrollToEnd_GoesToTheEnd_ScrollToTop_Back() => base.ScrollToEnd_GoesToTheEnd_ScrollToTop_Back();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void SetScrollPosition_GoesThere() => base.SetScrollPosition_GoesThere();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void ScrollBy_MovesDown() => base.ScrollBy_MovesDown();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void ScrollTo_MovesToTheItem() => base.ScrollTo_MovesToTheItem();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void WaitScrollPosition_TrueThere_FalseElsewhere() => base.WaitScrollPosition_TrueThere_FalseElsewhere();
+
+    [SkipOnFact(NoRead, NoReadWhy)]
+    public override void AssertScrollPosition_PassesThere_FailsElsewhere() => base.AssertScrollPosition_PassesThere_FailsElsewhere();
+}

@@ -390,6 +390,20 @@ public interface IMauiElement
         => throw new RouteUnavailableException(
             $"{GetType().Name} does not implement ReadScrollPosition.");
 
+    /// <summary>
+    /// The vertical scroll in percent, as the platform's own scroll pattern reports it, with no
+    /// declaration in the app: Windows reads the UIA Scroll pattern.
+    /// </summary>
+    /// <returns>The scroll, or null where this head cannot read it (R2-T115, R2-T116).</returns>
+    ScrollPercent? ReadScrollPercent() => null;
+
+    /// <summary>Scrolls the content to a vertical position in percent, 0 at the top and 100 at the end, and lets it settle.</summary>
+    /// <param name="percent">The position, clamped to 0 to 100.</param>
+    /// <exception cref="NotSupportedException">This head has no route.</exception>
+    void SetVerticalScrollPercent(double percent)
+        => throw new RouteUnavailableException(
+            $"{GetType().Name} does not implement SetVerticalScrollPercent.");
+
     #endregion
 
     #region Selection

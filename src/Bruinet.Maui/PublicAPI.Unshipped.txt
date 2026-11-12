@@ -393,12 +393,24 @@ Bruinet.Maui.Controls.Container.RefreshView<TParent>
 Bruinet.Maui.Controls.Container.RefreshView<TParent>.RefreshView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Container.RefreshView<TParent>.RefreshView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.AssertScrollPosition(double? expected, double tolerance = 1, string? message = null, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.CanScrollDown(int? timeoutMs = null) -> bool?
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.CanScrollUp(int? timeoutMs = null) -> bool?
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.GetScrollPosition(int? timeoutMs = null) -> double?
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.IsEnabled() -> bool
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollBack() -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollBy(int deltaX, int deltaY, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollForward() -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(Bruinet.Core.Locators.Locator! locator, int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollTo(string! automationId, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollToEnd(int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollToTop(int? timeoutMs = null) -> TSelf!
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.SetScrollPosition(double percent, int? timeoutMs = null) -> TSelf!
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.WaitScrollPosition(double? expected, double tolerance = 1, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Container.ScrollView<TParent>
 Bruinet.Maui.Controls.Container.ScrollView<TParent>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Container.ScrollView<TParent>.ScrollView(Bruinet.Maui.Interfaces.IMauiScope<TParent>! parentScope, string! locatorValue) -> void
@@ -521,11 +533,16 @@ Bruinet.Maui.Controls.Display.Label<TScope>.WaitTextEmpty(bool? expected = true,
 Bruinet.Maui.Controls.Display.Label<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.Label<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertProgress(double? expected, double tolerance, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.GetProgress(int? timeoutMs = null) -> double?
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminate() -> bool
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.ProgressBar(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.ProgressBar(Bruinet.Maui.Interfaces.IMauiScope<TScope>! scope, string! locatorValue) -> void
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitProgress(double? expected, double tolerance, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Maui.Controls.Display.TitleBar<TScope>
@@ -831,6 +848,7 @@ Bruinet.Maui.Interfaces.IMauiElement.RangeValue.get -> double?
 Bruinet.Maui.Interfaces.IMauiElement.ReadAlert() -> Bruinet.Maui.Interfaces.AlertContents?
 Bruinet.Maui.Interfaces.IMauiElement.ReadDropdownItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
 Bruinet.Maui.Interfaces.IMauiElement.ReadItemTexts() -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Maui.Interfaces.IMauiElement.ReadScrollPercent() -> Bruinet.Maui.Interfaces.ScrollPercent?
 Bruinet.Maui.Interfaces.IMauiElement.ReadScrollPosition() -> Bruinet.Maui.Interfaces.ScrollPosition
 Bruinet.Maui.Interfaces.IMauiElement.ReadState(string! property) -> string?
 Bruinet.Maui.Interfaces.IMauiElement.Rect.get -> System.Drawing.Rectangle
@@ -851,6 +869,7 @@ Bruinet.Maui.Interfaces.IMauiElement.SetChecked(bool isChecked) -> void
 Bruinet.Maui.Interfaces.IMauiElement.SetDate(System.DateTime date) -> void
 Bruinet.Maui.Interfaces.IMauiElement.SetRangeValue(double value) -> void
 Bruinet.Maui.Interfaces.IMauiElement.SetTime(System.TimeSpan time) -> void
+Bruinet.Maui.Interfaces.IMauiElement.SetVerticalScrollPercent(double percent) -> void
 Bruinet.Maui.Interfaces.IMauiElement.Size.get -> System.Drawing.Size
 Bruinet.Maui.Interfaces.IMauiElement.SizeOfSet.get -> int?
 Bruinet.Maui.Interfaces.IMauiElement.Submit() -> void
@@ -900,6 +919,13 @@ Bruinet.Maui.Interfaces.MauiGesture.SwipeRight = 4 -> Bruinet.Maui.Interfaces.Ma
 Bruinet.Maui.Interfaces.MauiGesture.SwipeUp = 5 -> Bruinet.Maui.Interfaces.MauiGesture
 Bruinet.Maui.Interfaces.MauiGesture.Tap = 0 -> Bruinet.Maui.Interfaces.MauiGesture
 Bruinet.Maui.Interfaces.MauiInteractions
+Bruinet.Maui.Interfaces.ScrollPercent
+Bruinet.Maui.Interfaces.ScrollPercent.ScrollPercent() -> void
+Bruinet.Maui.Interfaces.ScrollPercent.Scrolls.get -> bool
+Bruinet.Maui.Interfaces.ScrollPercent.Vertical.get -> double
+Bruinet.Maui.Interfaces.ScrollPercent.Vertical.init -> void
+Bruinet.Maui.Interfaces.ScrollPercent.VerticalViewSize.get -> double
+Bruinet.Maui.Interfaces.ScrollPercent.VerticalViewSize.init -> void
 Bruinet.Maui.Interfaces.ScrollPosition
 Bruinet.Maui.Interfaces.ScrollPosition.CanScrollVertically.get -> bool
 Bruinet.Maui.Interfaces.ScrollPosition.ContentHeight.get -> double
@@ -979,6 +1005,8 @@ Bruinet.Maui.Testing.NavigationRecovery.RegisterPages(params Bruinet.Maui.Interf
 Bruinet.Maui.Testing.NavigationRecovery.RegisterRootCheck(System.Func<bool>! isRoot) -> void
 Bruinet.Maui.Testing.NavigationRecovery.TryReturnToRoot(int maxAttempts = 5) -> bool
 Bruinet.Maui.Testing.PageNavigation
+Bruinet.Maui.Testing.ScreenshotTestAttribute
+Bruinet.Maui.Testing.ScreenshotTestAttribute.ScreenshotTestAttribute() -> void
 Bruinet.Maui.Testing.UatPlatformsAttribute
 Bruinet.Maui.Testing.UatPlatformsAttribute.Platforms.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Enums.MauiPlatform>!
 Bruinet.Maui.Testing.UatPlatformsAttribute.UatPlatformsAttribute(params Bruinet.Maui.Enums.MauiPlatform[]! platforms) -> void
@@ -1066,6 +1094,8 @@ override Bruinet.Maui.Pages.PageObjectBase<TSelf>.ProbeContentReadiness(Bruinet.
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.RootNotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
 override Bruinet.Maui.Pages.PageObjectBase<TSelf>.SetResult.get -> TSelf!
+override Bruinet.Maui.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
+override Bruinet.Maui.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
 static Bruinet.Maui.Configuration.MauiDriverFactory.Create(Bruinet.Maui.Configuration.MauiDriverOptions! options) -> Bruinet.Maui.Interfaces.IMauiDriver!
 static Bruinet.Maui.Containers.ElementMatch.Matches(Bruinet.Maui.Interfaces.IMauiElement! element, Bruinet.Core.Locators.Locator! locator) -> bool
 static Bruinet.Maui.Containers.ItemStrategy.ByAutomationId(string! automationId) -> Bruinet.Maui.Containers.IItemStrategy!
@@ -1107,6 +1137,11 @@ static Bruinet.Maui.Testing.MauiTestFixtureBase.FindSolutionDirectory() -> strin
 static Bruinet.Maui.Testing.MauiTestFixtureBase.IsSessionLost(System.Exception! error) -> bool
 static Bruinet.Maui.Testing.PageNavigation.ReturnToRoot(Bruinet.Maui.Interfaces.IMauiTestContext! context, Bruinet.Maui.Interfaces.IMauiPage! root, int timeoutMs, System.Action? forget = null, System.Func<bool>? whenBackRefused = null, int maxExtraBacks = 3) -> (bool AtRoot, System.Collections.Generic.IReadOnlyList<string!>! Steps)
 static Bruinet.Maui.Testing.PageNavigation.WaitArrived(Bruinet.Maui.Interfaces.IMauiTestContext! context, string! leaving, int timeoutMs) -> bool
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureIfFailed(System.Exception? exception) -> string!
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureManual(string? description = null) -> string!
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.CurrentService.get -> Bruinet.Core.Interfaces.IScreenshotService?
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetApps(Bruinet.Core.Testing.TestAppSet? apps) -> void
+static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetService(Bruinet.Core.Interfaces.IScreenshotService? service) -> void
 virtual Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>.ActivateItemCore(Bruinet.Maui.Interfaces.IMauiElement! itemRoot) -> bool
 virtual Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>.HasLogicalIndexes.get -> bool
 virtual Bruinet.Maui.Containers.CollectionObjectBase<TParent, TSelf, TItem>.MatchesKey(Bruinet.Maui.Interfaces.IMauiElement! itemRoot, Bruinet.Core.Locators.Locator! key) -> bool
@@ -1187,6 +1222,7 @@ virtual Bruinet.Maui.Controls.Collection.IndicatorView<TScope>.GetPositionCore(B
 virtual Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsEnabledCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.IsRefreshingCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.Controls.Container.RefreshView<TParent, TSelf>.PullToRefreshCore(Bruinet.Maui.Interfaces.IMauiElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.IsEnabledCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollBackCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
 virtual Bruinet.Maui.Controls.Container.ScrollView<TParent, TSelf>.ScrollForwardCore(Bruinet.Maui.Interfaces.IMauiElement! element) -> void
 virtual Bruinet.Maui.Controls.Container.SwipeView<TParent, TSelf>.IsEnabledCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
@@ -1212,6 +1248,7 @@ virtual Bruinet.Maui.Controls.Display.Image<TScope>.GetWidthCore(Bruinet.Maui.In
 virtual Bruinet.Maui.Controls.Display.Image<TScope>.IsLoadedCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.Controls.Display.Label<TScope>.GetTextCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> string?
 virtual Bruinet.Maui.Controls.Display.ProgressBar<TScope>.GetProgressCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> double?
+virtual Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminateCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
 virtual Bruinet.Maui.Controls.Display.TitleBar<TScope>.GetTextCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> string?
 virtual Bruinet.Maui.Controls.Media.WebView<TScope>.GetPageTitleCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> string?
 virtual Bruinet.Maui.Controls.Media.WebView<TScope>.GetUrlCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> string?
@@ -1258,18 +1295,3 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
-Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminate() -> bool
-Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Maui.Controls.Display.ProgressBar<TScope>.WaitComplete(int? timeoutMs = null) -> bool
-Bruinet.Maui.Controls.Display.ProgressBar<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
-virtual Bruinet.Maui.Controls.Display.ProgressBar<TScope>.IsIndeterminateCore(Bruinet.Maui.Interfaces.IMauiElement? element) -> bool?
-Bruinet.Maui.Testing.ScreenshotTestAttribute
-Bruinet.Maui.Testing.ScreenshotTestAttribute.ScreenshotTestAttribute() -> void
-override Bruinet.Maui.Testing.ScreenshotTestAttribute.After(System.Reflection.MethodInfo! methodUnderTest) -> void
-override Bruinet.Maui.Testing.ScreenshotTestAttribute.Before(System.Reflection.MethodInfo! methodUnderTest) -> void
-static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureIfFailed(System.Exception? exception) -> string!
-static Bruinet.Maui.Testing.ScreenshotTestAttribute.CaptureManual(string? description = null) -> string!
-static Bruinet.Maui.Testing.ScreenshotTestAttribute.CurrentService.get -> Bruinet.Core.Interfaces.IScreenshotService?
-static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetApps(Bruinet.Core.Testing.TestAppSet? apps) -> void
-static Bruinet.Maui.Testing.ScreenshotTestAttribute.SetService(Bruinet.Core.Interfaces.IScreenshotService? service) -> void

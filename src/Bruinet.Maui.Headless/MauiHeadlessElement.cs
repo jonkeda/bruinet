@@ -530,6 +530,9 @@ internal sealed class MauiHeadlessElement : IMauiElement
 
     public ScrollPosition ReadScrollPosition() => throw new DeviceOnlyException(nameof(ReadScrollPosition));
 
+    // No layout, so no position: a scroller here has no size to scroll through.
+    public void SetVerticalScrollPercent(double percent) => throw new DeviceOnlyException(nameof(SetVerticalScrollPercent));
+
     #endregion
 
     #region Selection, dropdowns, dates and times

@@ -19,10 +19,36 @@ namespace Bruinet.Maui.Controls.Container;
 /// <typeparam name="TParent">The parent scope type (a page or another container).</typeparam>
 /// <typeparam name="TSelf">The view type itself (self-referencing for fluent returns).</typeparam>
 
-public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, TSelf>
+public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, TSelf>,
+    IScrollableControlObject<TSelf>
     where TParent : IMauiScope<TParent>
     where TSelf : ScrollView<TParent, TSelf>
 {
+    #region Enabled (IsEnabled / WaitEnabled / AssertEnabled)
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool IsEnabled()
+    {
+        return IsEnabledCore(TryFindElement()) == true;
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public bool WaitEnabled(bool? expected = true, int? timeoutMs = null)
+    {
+        return RunWaitWithOptionalElement(expected,
+           element => IsEnabledCore(element) == expected!.Value,
+           timeoutMs);
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public TSelf AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null)
+    {
+        return RunAssertWithOptionalElement(expected,
+           IsEnabledCore, (actual, expected1) => (actual == expected1),
+           message ?? $"Expected Enabled to be '{expected}'. Locator: {Locator}", timeoutMs);
+    }
+
+    #endregion
     #region ScrollForward
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
