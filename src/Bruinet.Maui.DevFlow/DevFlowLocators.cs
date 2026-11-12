@@ -64,11 +64,20 @@ internal static class DevFlowLocators
         }
     }
 
+    /// <summary>A CollectionView, ListView or CarouselView: a list whose rows the agent shows as its children.</summary>
+    public static bool IsItemsView(DevFlowNode node) => IsItemsView(node.Type);
+
+    /// <summary>Whether an element of that type is a list whose rows the agent shows as its children.</summary>
+    public static bool IsItemsView(string type) => type is "CollectionView" or "ListView" or "CarouselView";
+
     /// <summary>What a platform's tree names an element by: its text where it shows one, else its AutomationId.</summary>
     public static string? NameOf(DevFlowNode node) => string.IsNullOrEmpty(node.Text) ? node.AutomationId : node.Text;
 
     private static Func<DevFlowNode, bool> OfControlType(string controlType)
-        => ControlTypes.TryGetValue(controlType, out var types)
+        => string.Equals(controlType, "ListItem", StringComparison.OrdinalIgnoreCase)
+            // A list's realized row is what a platform's tree calls a list item; Shell's flyout items too.
+            ? node => node.Type == "FlyoutItem" || node.Parent is { } parent && IsItemsView(parent) && !node.IsSynthetic
+            : ControlTypes.TryGetValue(controlType, out var types)
             ? node => types.Any(type => IsOfType(node, type))
             : node => IsOfType(node, controlType);
 
@@ -88,7 +97,6 @@ internal static class DevFlowLocators
         ["progressbar"] = ["ProgressBar"],
         ["tabitem"] = ["Tab"],
         ["list"] = ["CollectionView", "ListView", "CarouselView"],
-        ["listitem"] = ["FlyoutItem"],
     };
 
     // The agent gives the element's own type, not its base types: "Button" names Button, and an

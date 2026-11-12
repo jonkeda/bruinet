@@ -27,7 +27,8 @@ internal interface IDevFlowAgent : IDisposable
 
     bool Gesture(ElementInfo element, string type, string? direction = null, double? distance = null, int? durationMs = null);
 
-    bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null);
+    /// <summary>Scrolls by an amount, an element into view, or a list to an item (<paramref name="position"/>: Start, Center, End or MakeVisible).</summary>
+    bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null);
 
     bool Navigate(string route);
 
@@ -111,9 +112,12 @@ internal sealed class DevFlowAgent : IDevFlowAgent
     public bool Gesture(ElementInfo element, string type, string? direction = null, double? distance = null, int? durationMs = null)
         => Run(_client.GestureAsync(type, element.Id, direction, distance, durationMs, null, null));
 
-    public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null)
-        => Run(_client.ScrollAsync(element?.Id, deltaX, deltaY, animated: false, window: null, itemIndex, groupIndex: null,
-            scrollToPosition: null, null, null));
+    public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null)
+    {
+        var done = Run(_client.ScrollAsync(element?.Id, deltaX, deltaY, animated: false, window: null, itemIndex, groupIndex: null,
+            scrollToPosition: position, null, null));
+        return done;
+    }
 
     public bool Navigate(string route) => Run(_client.NavigateAsync(route));
 

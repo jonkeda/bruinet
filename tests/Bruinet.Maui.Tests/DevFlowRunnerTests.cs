@@ -160,7 +160,56 @@ public class DevFlowRunnerTests
         Assert.Throws<RouteUnavailableException>(button.Hover);
     }
 
+    [Fact]
+    public void ListRows_AreInReadingOrder_WithoutAParkedContainer()
+    {
+        // The platform's container order, and a recycled container parked far above the rows.
+        var driver = Driver(new FakeAgent(ListPage(("Parked", -18793), ("Row 3", 535), ("Row 1", 415), ("Row 2", 475))));
+
+        var rows = driver.FindElements(Locator.ByControlType("ListItem"));
+
+        Assert.Equal(["Row 1", "Row 2", "Row 3"], rows.Select(row => row.FindElements(Locator.ByControlType("text")).Single().Text));
+    }
+
+    [Fact]
+    public void ListRowElement_WhenItsContainerShowsAnotherItem_IsStale()
+    {
+        var agent = new FakeAgent(ListPage(("Row 1", 415), ("Row 2", 475)));
+        var driver = Driver(agent);
+        var label = driver.FindElements(Locator.ByText("Row 1")).Single();
+
+        // The same container, recycled for another item as the list scrolled.
+        agent.Windows = ListPage(("Row 9", 415), ("Row 2", 475));
+        driver.Refresh();
+
+        Assert.False(label.Visible);
+        Assert.Throws<StaleElementException>(() => label.Text);
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
+
+    // A page with one CollectionView whose rows (containers c0, c1, ...) each hold a label, at the given window Y.
+    private static List<ElementInfo> ListPage(params (string Text, double Y)[] rows) =>
+    [
+        Node("w", "Window", visible: false, enabled: false, children:
+        [
+            Node("ListPage", "ContentPage", children:
+            [
+                Placed(Node("Products", "CollectionView", children:
+                [
+                    .. rows.Select((row, index) => Placed(
+                        Node($"Row_c{index}", "Grid", children: [Placed(Node($"Label_c{index}", "Label", text: row.Text), row.Y)]),
+                        row.Y)),
+                ]), 415, 320),
+            ]),
+        ]),
+    ];
+
+    private static ElementInfo Placed(ElementInfo node, double y, double height = 60)
+    {
+        node.WindowBounds = new BoundsInfo { X = 20, Y = y, Width = 400, Height = height };
+        return node;
+    }
 
     // A NavigationPage with the hub under the Buttons page, as the sample app's tree is after one push.
     private static List<ElementInfo> Stack() =>
@@ -225,7 +274,7 @@ public class DevFlowRunnerTests
         public bool Gesture(ElementInfo element, string type, string? direction = null, double? distance = null, int? durationMs = null)
             => Record($"{type} {element.Id} {direction} {distance}");
 
-        public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null) => Record($"scroll {element?.Id}");
+        public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null) => Record($"scroll {element?.Id}");
 
         public bool Navigate(string route) => Record($"navigate {route}");
 

@@ -167,10 +167,66 @@ internal sealed class DevFlowTree
     {
         var node = new DevFlowNode(info, parent);
         _byId.TryAdd(info.Id, node);
-        foreach (var child in info.Children ?? [])
+        var children = info.Children ?? [];
+
+        // A list's rows come in the order the platform recycles their containers, not the items'
+        // order; a platform tree reads them in reading order, so they are put in it here: top to
+        // bottom, then left to right, by where they are in the window.
+        IEnumerable<ElementInfo> ordered = DevFlowLocators.IsItemsView(info.Type) ? Rows(info, children) : children;
+        foreach (var child in ordered)
             node.Add(Build(child, node));
         return node;
     }
+
+    /// <summary>
+    /// A list's rows in reading order, without the containers the platform parked: a recycled row's
+    /// container is moved out of the stack of rows (above it, thousands of pixels away) and keeps
+    /// showing the item it showed, so a removed item was still found. The realized rows, on screen and
+    /// cached beyond it, form one unbroken stack; the run that overlaps the list is kept.
+    /// </summary>
+    internal static List<ElementInfo> Rows(ElementInfo list, List<ElementInfo> children)
+    {
+        static double Order(ElementInfo child, bool alongX)
+            => child.WindowBounds is { } b ? (alongX ? b.X : b.Y) : double.MaxValue;
+
+        var placed = children.Where(child => child.WindowBounds is { Width: > 0, Height: > 0 }).ToList();
+        if (placed.Count < 2)
+            return [.. children.OrderBy(child => Order(child, false)).ThenBy(child => Order(child, true))];
+
+        // A list that lays its rows side by side (a carousel, a horizontal list) is read along X.
+        var horizontal = placed.Max(child => child.WindowBounds!.Y) - placed.Min(child => child.WindowBounds!.Y) < 1;
+        double Start(ElementInfo child) => horizontal ? child.WindowBounds!.X : child.WindowBounds!.Y;
+        double Size(ElementInfo child) => horizontal ? child.WindowBounds!.Width : child.WindowBounds!.Height;
+
+        var sorted = placed.OrderBy(Start).ThenBy(child => Order(child, !horizontal)).ToList();
+        var runs = new List<List<ElementInfo>> { new() { sorted[0] } };
+        var reach = Start(sorted[0]) + Size(sorted[0]);
+        foreach (var child in sorted.Skip(1))
+        {
+            // The rows of one line (a grid) share a start; the next line starts where the last one
+            // ended, give or take the item spacing. Anything further is a parked container.
+            if (Start(child) - reach > Math.Max(16, Size(child) / 2))
+            {
+                runs.Add([]);
+                reach = Start(child);
+            }
+
+            runs[^1].Add(child);
+            reach = Math.Max(reach, Start(child) + Size(child));
+        }
+
+        if (runs.Count == 1)
+            return sorted;
+
+        var port = list.WindowBounds;
+        return (port is null ? null : runs.FirstOrDefault(run => run.Any(child => Overlaps(child.WindowBounds!, port, horizontal))))
+               ?? runs.MaxBy(run => run.Count)!;
+    }
+
+    private static bool Overlaps(BoundsInfo row, BoundsInfo port, bool horizontal)
+        => horizontal
+            ? row.X < port.X + port.Width && row.X + row.Width > port.X
+            : row.Y < port.Y + port.Height && row.Y + row.Height > port.Y;
 
     private void MarkShown(DevFlowNode node, bool parentShown)
     {

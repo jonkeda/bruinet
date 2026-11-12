@@ -24,17 +24,46 @@ internal sealed class DevFlowMauiElement : IMauiElement
     private readonly DevFlowMauiDriver _driver;
     private readonly string? _id;
     private readonly StepperPart _part;
+    private readonly string? _rowKey;
 
     internal DevFlowMauiElement(DevFlowMauiDriver driver, string? id)
-        : this(driver, id, StepperPart.None)
+        : this(driver, id, StepperPart.None, RowKeyOf(driver, id))
     {
     }
 
-    private DevFlowMauiElement(DevFlowMauiDriver driver, string? id, StepperPart part)
+    private DevFlowMauiElement(DevFlowMauiDriver driver, string? id, StepperPart part, string? rowKey)
     {
         _driver = driver;
         _id = id;
         _part = part;
+        _rowKey = rowKey;
+    }
+
+    /// <summary>
+    /// What the list row around an element showed when the element was found: its labels' texts.
+    /// The agent's ids belong to the platform's row containers, which a list recycles for other items
+    /// as it scrolls; a UI Automation row belongs to its item. An element whose row now shows other
+    /// texts is stale, as the item's element would be gone, and is found again.
+    /// </summary>
+    private static string? RowKeyOf(DevFlowMauiDriver driver, string? id)
+        => id is null || driver.Snapshot().Find(id) is not { } node ? null : RowKey(node);
+
+    private static string? RowKey(DevFlowNode node)
+    {
+        for (var walker = node; walker is not null; walker = walker.Parent)
+        {
+            if (walker.Parent is { } parent && DevFlowLocators.IsItemsView(parent))
+                return string.Join("\u001f", walker.DescendantsAndSelf().Where(n => n.Type == "Label").Select(n => n.Text ?? string.Empty));
+        }
+
+        return null;
+    }
+
+    // In the tree, and still on the item it was found on.
+    private DevFlowNode? Current()
+    {
+        var node = _driver.Snapshot(IsNative).Find(_id!);
+        return node is not null && (_rowKey is null || RowKey(node) == _rowKey) ? node : null;
     }
 
     /// <summary>
@@ -53,10 +82,10 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     /// <summary>This element in the current tree; stale when it has left it.</summary>
     private DevFlowNode Node
-        => _driver.Snapshot(IsNative).Find(_id ?? throw new RouteUnavailableException("The app element has no state of its own."))
-           ?? throw new StaleElementException(Locator.ById(_id), detail: "The element has left the app's tree.");
+        => (_id is null ? throw new RouteUnavailableException("The app element has no state of its own.") : Current())
+           ?? throw new StaleElementException(Locator.ById(_id), detail: "The element has left the app's tree, or its list row now shows another item.");
 
-    private DevFlowNode? TryNode => _id is null ? null : _driver.Snapshot(IsNative).Find(_id);
+    private DevFlowNode? TryNode => _id is null ? null : Current();
 
     // A native element (a dialog's, on Windows) is only in a tree read with native nodes.
     private bool IsNative => _id?.StartsWith("native:", StringComparison.Ordinal) == true;
@@ -361,7 +390,7 @@ internal sealed class DevFlowMauiElement : IMauiElement
         // A Stepper's buttons are drawn by the platform, not declared in XAML.
         if (TryNode is { Type: "Stepper" } && locator is { Strategy: LocatorStrategy.ClassName, Value: "RepeatButton" }
                 or { Strategy: LocatorStrategy.ControlType, Value: "button" })
-            return [new DevFlowMauiElement(_driver, _id, StepperPart.Minus), new DevFlowMauiElement(_driver, _id, StepperPart.Plus)];
+            return [new DevFlowMauiElement(_driver, _id, StepperPart.Minus, _rowKey), new DevFlowMauiElement(_driver, _id, StepperPart.Plus, _rowKey)];
 
         return TryNode is { } node ? _driver.Find(node, locator) : [];
     }
@@ -398,7 +427,19 @@ internal sealed class DevFlowMauiElement : IMauiElement
         }
 
         using var mark = Report(InteractionKind.Tap);
-        _driver.Act(_driver.Agent.Tap(Ready("invoke")), $"tap {Describe()}");
+        var info = Ready("invoke");
+        if (!_driver.Agent.Tap(info))
+        {
+            _driver.Changed();
+
+            // A list's row without a tap of its own is chosen by the list's selection, which the
+            // agent cannot set: SelectedItem is an object, and it has no select action.
+            if (Node.Parent is { } parent && DevFlowLocators.IsItemsView(parent))
+                throw new RouteUnavailableException($"The DevFlow agent cannot select the row {Describe()}: it sets no list's SelectedItem and has no select action.");
+            throw new BruinetException($"The DevFlow agent could not tap {Describe()}.");
+        }
+
+        _driver.Changed();
     }
 
     // As the platform's button steps it: by Increment, held within the range.
@@ -597,8 +638,44 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public void ScrollToIndex(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
-        _driver.Act(_driver.Agent.Scroll(Info, 0, 0, index), $"scroll {Describe()} to item {index}");
+        var list = ItemsViewNode() ?? throw new RouteUnavailableException($"{Describe()} holds no CollectionView or ListView to scroll to an item.");
+        if (index >= ItemCountOf(list))
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"{Describe()} has {ItemCountOf(list)} items.");
+        _driver.Act(_driver.Agent.Scroll(list.Info, 0, 0, index), $"scroll {Describe()} to item {index}");
     }
+
+    /// <summary>
+    /// On a list (or a wrapper around one), a step that puts the item at the top: the agent scrolls a
+    /// CollectionView or ListView to an index, where an amount would go to a ScrollView around it.
+    /// </summary>
+    /// <remarks>
+    /// Reported as a step, not a jump: the agent gives no row its index (no <c>PositionInSet</c>), so the
+    /// collection's next index is the count of rows it has seen, and the item at the top brings the rows
+    /// after it into view. A step that brings none is the end of the list, where a paging list loads more.
+    /// </remarks>
+    public ScrollStep ScrollTowards(int index)
+    {
+        if (ItemsViewNode() is not { } list)
+            return ScrollContent(1);
+
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
+        var count = ItemCountOf(list);
+        if (index >= count)
+            throw new ArgumentOutOfRangeException(nameof(index), index, $"{Describe()} has {count} items.");
+
+        var rowsBefore = RowIds(list);
+        _driver.Act(_driver.Agent.Scroll(list.Info, 0, 0, index, "Start"), $"scroll {Describe()} to item {index}");
+        return _driver.Snapshot().Find(list.Id) is { } listAfter && !RowIds(listAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
+    }
+
+    // The list this element is, or the first one it holds.
+    private DevFlowNode? ItemsViewNode()
+        => TryNode is { } node
+            ? node.DescendantsAndSelf().FirstOrDefault(n => DevFlowLocators.IsItemsView(n) && n.Shown)
+            : null;
+
+    private int ItemCountOf(DevFlowNode list)
+        => (int)(Number(_driver.Agent.GetProperty(list.Id, "ItemsSource.Count")) ?? int.MaxValue);
 
     /// <summary>A ScrollView's offset, viewport and content, from its own properties.</summary>
     public ScrollPosition ReadScrollPosition()
@@ -643,6 +720,16 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     public ScrollStep ScrollContent(int verticalSteps, int horizontalSteps = 0)
     {
+        // A list goes back to its first item in one jump: an amount on a list inside a ScrollView
+        // goes to the ScrollView. Moved when the realized rows changed.
+        if ((verticalSteps < 0 || horizontalSteps < 0) && ItemsViewNode() is { } list)
+        {
+            var rowsBefore = RowIds(list);
+            _driver.Agent.Scroll(list.Info, 0, 0, 0);
+            _driver.Changed();
+            return _driver.Snapshot().Find(list.Id) is { } listAfter && !RowIds(listAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
+        }
+
         var info = Info;
         var height = info.Bounds?.Height ?? 0;
         var width = info.Bounds?.Width ?? 0;
@@ -742,6 +829,8 @@ internal sealed class DevFlowMauiElement : IMauiElement
             throw new ElementNotReadyException(locator, NotReadyReason.Disabled, $"cannot {action} it");
         return node.Info;
     }
+
+    private static List<string> RowIds(DevFlowNode list) => list.Children.Select(row => row.Id).ToList();
 
     // Left (or up, on a vertical carousel) is the next card.
     private int? CarouselStep(MauiGesture gesture)
