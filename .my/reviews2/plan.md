@@ -179,7 +179,7 @@ The `voice` rename (D3) reaches construction's `module-videos` skill, used in it
 - [ ] R2-T105 tomorrow: submodule to the merged `move`; skills, CLAUDE.md, `Select-Tests.ps1`, `Update-BruinetMcp.ps1` for the renames; studio suite on bUnit (smoke and touched).
 - [ ] R2-T106 kofflard: submodule moved; MAUI suite on headless, then **desk** and **android** smoke.
 - [ ] R2-T107 construction: its `Brinell` submodule (has its own commits on `move`) moved; instructions for the tool renames; headless smoke.
-- [ ] R2-T108 Index `00-index.md` updated: what was done, what is left, what stays unrun (iOS).
+- [x] R2-T108 Index `00-index.md` updated: what was done, what is left, what stays unrun (iOS).
 
 ## Open with the owner
 

@@ -89,3 +89,21 @@ The renames (MCP tools in review 3, command options in review 10) are free only 
 3. **The missing element: null or false.** My proposal: false, as all six stacks answer today, and change the contract; "is it visible" has a plain answer when it is not there.
 4. **Selenium.** No web head uses it. My proposal: take it out of the README and the three docs, and drop `WebDriverManager` if nothing else needs it.
 5. **Commit these documents.** My proposal: yes, on `move`, as `.my` is tracked.
+
+## Where the plan stands (2026-11-12)
+
+Every task of `plan.md` from R2-T00 to R2-T104 is done on the `reviews` branch, except R2-T85, which became R2-T119. Each is a commit with its why, pushed to `origin/reviews`; `move` has not moved since `1ec3e616`, so the branch merges as it is.
+The two broken findings are fixed: the packages restore in a consumer, and a fault no longer reads as "no" on any head.
+The MCP tools and the command line are renamed once, before the first shipped version; the change list holds a row per break for the consumers.
+
+## What is left
+
+- **The consumers, after the merge:** Tomorrow, Kofflard and construction move their submodules and follow the renames (R2-T105 to R2-T107). The change list says what to find and what it becomes.
+- **New work the run found:** MAUI's ScrollView as a scrollable control (R2-T115), the Android head's missing reads (R2-T116), the docs' other samples and a quick start per stack (R2-T118), and a slimmer `bruinet` package (R2-T119).
+- **Failures that were there before:** R2-T109 to R2-T114 and R2-T117, each with when it was seen; none was caused by this branch, checked at an earlier commit where it mattered.
+
+## What stays unrun
+
+- iOS: nothing ran on it, for want of a Mac. The MAUI contracts' mobile skips name Android's reasons, which iOS may not share.
+- The WPF and WinForms UI suites ran only where a task touched them; their contracts run on fakes in the unit tests.
+- The Visual Studio and VS Code extensions' own suites were not run; the VS Code test's change (R2-T65) is unrun.
