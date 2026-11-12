@@ -91,7 +91,7 @@ public sealed class TodoMauiDevice : ITestApp
         var platform = PlatformOf(definition);
         var database = new TempDatabase($"maui-{FolderName(definition.Name)}-{testSet.Name}");
         testSet.SeedDatabaseAsync(database.Path).GetAwaiter().GetResult();
-        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network-state.txt"));
+        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network", "network-state.txt"));
 
         var settings = new LaunchSettings
         {

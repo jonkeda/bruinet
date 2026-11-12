@@ -353,7 +353,7 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
         var database = new TempDatabase("ui-" + testSet.Name);
         testSet.SeedDatabaseAsync(database.Path).GetAwaiter().GetResult();
 
-        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network-state.txt"));
+        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network", "network-state.txt"));
         var reset = new TodoResetFile(Path.Combine(database.Folder, "reset.txt"));
         var apiBaseUrl = StartBackend(testSet, database.Folder);
 

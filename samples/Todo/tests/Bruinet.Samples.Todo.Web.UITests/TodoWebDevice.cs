@@ -96,7 +96,7 @@ public sealed class TodoWebDevice : ITestApp
         HttpMessageHandler? httpHandler = null)
     {
         var database = await SeedAsync(name, testSet);
-        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network-state.txt"));
+        var network = NetworkStateFile.Create(Path.Combine(database.Folder, "network", "network-state.txt"));
 
         var settings = new LaunchSettings
         {

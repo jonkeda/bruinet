@@ -51,6 +51,9 @@ public sealed class NetworkStateFileConnectivity : IConnectivityState, IDisposab
             _watcher.Created += OnFileChanged;
             _watcher.Renamed += OnFileChanged;
             _watcher.Deleted += OnFileChanged;
+
+            // A full buffer drops events, the offline write among them (R2-T109): read the file again.
+            _watcher.Error += (_, _) => Changed?.Invoke(this, EventArgs.Empty);
             _watcher.EnableRaisingEvents = true;
         }
     }
