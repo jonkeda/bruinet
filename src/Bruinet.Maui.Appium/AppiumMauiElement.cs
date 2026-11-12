@@ -892,6 +892,9 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         "ClassName" or "ControlType" => TagName,
         "Enabled" => Enabled.ToString(),
         "Visible" => Visible.ToString(),
+
+        // A spelled name the app publishes as state (a RefreshView's IsRefreshing, R2-T116).
+        _ when char.IsUpper(attributeName, 0) && StateExtra(attributeName) is { } state => state,
         _ => DriverAttribute(attributeName),
     };
 
@@ -1129,6 +1132,91 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
         // What was read before the scroll is wrong after it; the element found is read afresh.
         Bruinet.Core.Calls.AttemptMemo.Forget();
         return _driver.TryFindByScrollingWithin(IsApp ? null : this, locator);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>Android: the <c>ScrollPosition</c> AppSupport publishes on a ScrollView's node (R2-T116).</remarks>
+    /// <exception cref="NotSupportedException">The node publishes none: not Android, or the app has no AppSupport.</exception>
+    public ScrollPosition ReadScrollPosition()
+        => TryReadScrollPosition()
+           ?? throw new RouteUnavailableException(
+               $"'{AutomationId}' publishes no ScrollPosition. The app has to include Bruinet.Maui.AppSupport "
+               + "(AddBruinetAutomationHandlers), which publishes a ScrollView's position on Android.");
+
+    /// <inheritdoc />
+    /// <remarks>Android: from the published <c>ScrollPosition</c>; null where there is none.</remarks>
+    public ScrollPercent? ReadScrollPercent()
+    {
+        if (TryReadScrollPosition() is not { } position)
+        {
+            return null;
+        }
+
+        var range = position.ContentHeight - position.ViewportHeight;
+        return range <= 0
+            ? new ScrollPercent(0, 100)
+            : new ScrollPercent(Math.Clamp(position.Y / range * 100, 0, 100), position.ViewportHeight / position.ContentHeight * 100);
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Android: the percentage as set-progress on the ScrollView's node, which AppSupport takes as a scroll there
+    /// (as a Slider's value is set), then the position left to settle.
+    /// </remarks>
+    public void SetVerticalScrollPercent(double percent) => Marked(InteractionKind.Swipe, () => Live(() =>
+    {
+        if (TryReadScrollPosition() is null)
+        {
+            throw new RouteUnavailableException(
+                $"'{AutomationId}' publishes no ScrollPosition to scroll to a percentage; the app has to include Bruinet.Maui.AppSupport.");
+        }
+
+        _element.SendKeys(Math.Clamp(percent, 0, 100).ToString("R", CultureInfo.InvariantCulture));
+        Bruinet.Core.Calls.Settle.Still(() => TryReadScrollPosition(), windowMs: 1_000, pollingIntervalMs: 50);
+    }));
+
+    private ScrollPosition? TryReadScrollPosition()
+    {
+        if (StateExtra("ScrollPosition") is not { } reported)
+        {
+            return null;
+        }
+
+        var parts = reported.Split(',').Select(ParseRangeNumber).ToList();
+        return parts.Count == 6 && parts.All(part => part is not null)
+            ? new ScrollPosition(parts[0]!.Value, parts[1]!.Value, parts[2]!.Value, parts[3]!.Value, parts[4]!.Value, parts[5]!.Value)
+            : null;
+    }
+
+    #endregion
+
+    #region App state (Android node extras, R2-T116)
+
+    /// <summary>The node-extra prefix AppSupport's StateAccessibility publishes under.</summary>
+    private const string StateExtraPrefix = "Bruinet.State.";
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Android: the value AppSupport published on the node under the state's name (a Picker's items and
+    /// selection, a ProgressBar's progress, an Entry's read-only state, a RefreshView's refreshing state); null
+    /// where it published none, and on iOS.
+    /// </remarks>
+    public string? ReadState(string property) => StateExtra(property);
+
+    /// <inheritdoc />
+    /// <remarks>Android: the <c>IsReadOnly</c> AppSupport publishes on an Entry; null without it.</remarks>
+    public bool? IsReadOnly => bool.TryParse(StateExtra("IsReadOnly"), out var readOnly) ? readOnly : null;
+
+    private string? StateExtra(string name)
+    {
+        if (!_driver.Appium.PublishesAppRange)
+        {
+            return null;
+        }
+
+        return ParseExtras(GetAttribute("extras")).TryGetValue(StateExtraPrefix + name, out var escaped)
+            ? Uri.UnescapeDataString(escaped)
+            : null;
     }
 
     #endregion

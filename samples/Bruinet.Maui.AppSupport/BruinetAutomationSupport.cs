@@ -120,6 +120,10 @@ public static class BruinetAutomationSupport
         // Slider and Stepper publish their range in the app's own units, on the node TalkBack
         // reads. Without it a Stepper publishes no value at all and a Slider only a raw fraction.
         RangeAccessibility.Register();
+
+        // What the node leaves out of a Picker, ProgressBar, Entry, RefreshView and ScrollView, as
+        // extras the Android head's ReadState reads (R2-T116).
+        StateAccessibility.Register();
 #endif
 
         return handlers;
