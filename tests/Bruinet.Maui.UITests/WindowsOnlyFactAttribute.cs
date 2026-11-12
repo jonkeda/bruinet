@@ -24,11 +24,18 @@ public sealed class WindowsOnlyFactAttribute : FactAttribute
     /// <summary>The usual reason: the test is about the Windows bridge.</summary>
     public const string Bridge = "tests the Windows UI Automation bridge, which Android and iOS do not have (AD-008)";
 
+    public const string AccessibilityTree = "asserts what Windows' accessibility tree leaves out";
+
     /// <param name="reason">Why it is Windows only, shown as the skip reason elsewhere.</param>
     public WindowsOnlyFactAttribute(string reason = Bridge)
     {
 #if !WINDOWS
         Skip = $"Windows only: {reason}.";
+#else
+        // The DevFlow runner drives the app through its in-app agent and reads MAUI's own tree, not
+        // the bridge and the accessibility tree these tests are about.
+        if (reason is Bridge or AccessibilityTree && string.Equals(Environment.GetEnvironmentVariable("BRUINET_MAUI_RUNNER")?.Trim(), "devflow", StringComparison.OrdinalIgnoreCase))
+            Skip = $"FlaUI only: {reason}; this run uses the DevFlow runner (BRUINET_MAUI_RUNNER=devflow).";
 #endif
     }
 

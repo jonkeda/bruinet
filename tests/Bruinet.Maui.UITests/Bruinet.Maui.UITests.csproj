@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\src\Bruinet.Maui.Appium\Bruinet.Maui.Appium.csproj" />
     <!-- The MauiHeadless head (BRUINET_HEAD=headless, docs/guides/maui-headless.md): both sample apps' own net10.0 build, rendered headless by the fixtures' CreateHeadlessOptions. -->
     <ProjectReference Include="..\..\src\Bruinet.Maui.Headless\Bruinet.Maui.Headless.csproj" />
+    <!-- The DevFlow runner (BRUINET_MAUI_RUNNER=devflow), loaded by MauiDriverFactory. -->
+    <ProjectReference Include="..\..\src\Bruinet.Maui.DevFlow\Bruinet.Maui.DevFlow.csproj" />
     <ProjectReference Include="..\..\samples\Bruinet.Samples.Maui.App\Bruinet.Samples.Maui.App.csproj" SetTargetFramework="TargetFramework=net10.0" />
     <ProjectReference Include="..\..\samples\Bruinet.Samples.Maui.ShellApp\Bruinet.Samples.Maui.ShellApp.csproj" SetTargetFramework="TargetFramework=net10.0" />
   </ItemGroup>

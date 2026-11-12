@@ -25,6 +25,8 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.62.0" />
     <!-- Appium for MAUI -->
     <PackageVersion Include="Appium.WebDriver" Version="8.3.2" />
+    <!-- MauiDevFlow's client (dotnet/maui-labs), preview: Bruinet.Maui.DevFlow only -->
+    <PackageVersion Include="Microsoft.Maui.DevFlow.Client" Version="0.1.0-preview.14.26555.2" />
     <!-- MAUI app projects -->
     <PackageVersion Include="Microsoft.Maui.Controls" Version="10.0.110" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />

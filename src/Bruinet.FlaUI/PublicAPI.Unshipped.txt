@@ -9,6 +9,7 @@ Bruinet.FlaUI.DesktopApp.Dispose() -> void
 Bruinet.FlaUI.DesktopApp.ForegroundGrabs.get -> int
 Bruinet.FlaUI.DesktopApp.HasExited.get -> bool
 Bruinet.FlaUI.DesktopApp.HasProcess.get -> bool
+Bruinet.FlaUI.DesktopApp.ProcessId.get -> int?
 Bruinet.FlaUI.DesktopApp.RootElement.get -> FlaUI.Core.AutomationElements.AutomationElement!
 Bruinet.FlaUI.DesktopApp.RootReattachments.get -> int
 Bruinet.FlaUI.DesktopApp.Screenshot() -> byte[]!

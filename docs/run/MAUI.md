@@ -45,6 +45,24 @@ which does not exist there.
 `./tools/Scripts/test-maui-headless.ps1` runs all three suites this way, on any of them; CI runs it
 on `windows-latest` after the unit tests and in a job of its own on `macos-latest`.
 
+## DevFlow Runner (experimental)
+
+```powershell
+dotnet build samples\Bruinet.Samples.Maui.App -f net10.0-windows10.0.19041.0 -p:BruinetDevFlow=true -p:OutDir=$PWD\samples\Bruinet.Samples.Maui.App\bin\DevFlow\
+$env:BRUINET_MAUI_RUNNER='devflow'; $env:APPIUM_APP_PATH="$PWD\samples\Bruinet.Samples.Maui.App\bin\DevFlow\Bruinet.Samples.Maui.App.exe"
+dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "FullyQualifiedName!~Tests.Background&FullyQualifiedName!~Tests.Diagnostics&FullyQualifiedName!~Tests.Shell"
+```
+
+The same suite drives the app through the MauiDevFlow agent it carries (`Bruinet.Maui.DevFlow`), over HTTP on
+loopback, instead of UI Automation. The app opts in: `builder.AddMauiDevFlowAgent()` in a debug build, which the
+sample apps compile only with `-p:BruinetDevFlow=true`; they read their agent's port from `BRUINET_DEVFLOW_PORT`,
+which the runner sets for each launch. On Windows the runner launches the app as FlaUI does, behind your window. On
+Android and iOS it attaches: start the app, forward its port (`adb forward tcp:9223 tcp:9223`), set
+`BRUINET_DEVFLOW_PORT`. The input is semantic (a tap invokes, typing sets the text), so the FlaUI and Appium heads stay
+the judge at a gate. `Tests\Background` and `Tests\Diagnostics` test the FlaUI driver itself, and a
+`[WindowsOnlyFact]` about the bridge or the accessibility tree skips on this runner. What it cannot do:
+[.my/devflow-runner/design.md](../../.my/devflow-runner/design.md#what-it-cannot-do).
+
 ## Appium Setup
 
 Appium drives MAUI on Android and iOS only; Windows always uses FlaUI. Use

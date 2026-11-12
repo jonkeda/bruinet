@@ -1,6 +1,45 @@
 # MauiDevFlow: a third MAUI device runner
 
-Status: **design**, 2026-11-12. Checked against the tree on `move` (1ec3e616). No code yet.
+Status: **built for Windows**, 2026-11-12. Android and iOS attach to a running app; their launch, and Mac Catalyst, are
+not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-experimental).
+
+## Where it stands
+
+On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own) and without the
+Shell app: **320 passed, 34 failed, 31 skipped of 385**. Every failure is in the list below. A folder takes about as
+long as on FlaUI (Text 17 s, Contracts 84 s).
+
+### What it cannot do
+
+| Gap | Tests | Why |
+| --- | --- | --- |
+| Menu items by AutomationId | 4 | The agent names menu bar items by title path and shows no context menus. |
+| A picker's item texts, `SelectByText` | 5 | The agent reads properties by reflection without indexers; `Items` reads as a type name. |
+| MediaElement's transport controls | 11 | The platform draws them; they are not in the agent's tree. |
+| DrawingView lines (`Pan`) | 2 | A drawn path has no semantic route. |
+| Rows only reached by scrolling or paging | 5 | The agent scrolls a list by item index but not to an unrealized row's content; not worked out. |
+| Row taps through `AutomationContainer`, the `ListItem` type | 2 | The agent finds no tap handler on a row container. |
+| Scrolling a ScrollView inside another by an amount | 3 | The agent applies an amount only to a ScrollView with none around it. |
+| The contract button's double-click | 1 | Only the app's bridge sink answers it. |
+| Taking the focus away | 1 | `IsFocused` cannot be set. |
+
+## How it was built, against this design
+
+- **Raw tree, matched here:** one tree read per lookup, matched by `DevFlowLocators`, not the agent's own queries: its
+  text match is a substring, and its tree keeps covered pages and scrolled-away elements, which `DevFlowTree` leaves
+  out as the platform trees do. A read is kept 100 ms and dropped at every action.
+- **Native nodes only for dialogs:** on Windows an alert is a native window with WinUI's ids (`PrimaryButton`); a read
+  with native nodes costs four times a plain one (63 ms against 16 ms), so it is made when a dialog is asked for, and
+  while one is open.
+- **No stale-tree guard:** actions go without `captureEpoch`; the agent refused a tap after any change elsewhere.
+- **Launch through `DesktopApp`:** on Windows the project also targets `net10.0-windows` and launches with Bruinet.FlaUI's
+  `DesktopApp`, so the app stays behind the person's window; a free port per launch in `BRUINET_DEVFLOW_PORT`.
+- **Stand-ins as on the headless head:** a Stepper's two buttons, an Expander's tap (`IsExpanded`), a carousel's swipe
+  (`Position`), a pull-to-refresh (`IsRefreshing`), and the state names the bridge answers (`ItemCount`, `Date`, `Time`).
+- **Scroll into view:** every scroller around the element, inside out; the agent's scroll-to-element first, the overlap
+  as an amount where that moves nothing.
+- **Tests:** `DevFlowRunnerTests` (15, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+  skips on this runner.
 
 ## Outcome
 
@@ -72,7 +111,7 @@ AD-026's test: it earns its place, because it is a dependency only DevFlow users
 | `DevFlowMauiElement.cs` | `IMauiElement` over one `ElementInfo` snapshot, refreshed by id. |
 | `DevFlowLease.cs` | Claims the lease, heartbeats it every 3 s on a timer, and releases it on `Quit`. |
 | `DevFlowLocators.cs` | Turns a `Locator` into a query. |
-| `DevFlowLaunch.cs` | Launches through `AppDriverFactory`, or attaches to a running agent by port or through the broker. |
+| `LaunchedApp.cs` | Launches through `DesktopApp` on Windows (a plain process elsewhere), with a free port; the driver attaches to a running agent by port or finds it through the broker. |
 | `DevFlowRefusals.cs` | Lists what the runner cannot do. Each throws an `IEndsCall` exception, as `DeviceOnlyException` does. |
 
 ## Mapping

@@ -36,6 +36,8 @@
     <PackageVersion Include="Microsoft.Playwright" Version="1.62.0" />
     <!-- Appium for MAUI/Mobile -->
     <PackageVersion Include="Appium.WebDriver" Version="8.3.2" />
+    <!-- MauiDevFlow's agent (dotnet/maui-labs), preview: in a sample app built with BruinetDevFlow=true -->
+    <PackageVersion Include="Microsoft.Maui.DevFlow.Agent" Version="0.1.0-preview.14.26555.2" />
 
     <!-- AndroidX and Material for the native Android sample app: the versions MAUI 10 resolves -->
     <PackageVersion Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.1" />

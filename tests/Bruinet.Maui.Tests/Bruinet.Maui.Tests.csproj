@@ -13,6 +13,7 @@
     <ProjectReference Include="..\..\src\Bruinet.Maui\Bruinet.Maui.csproj" />
     <!-- For the Appium locator mapping, the driver's one piece of logic with no device in it. -->
     <ProjectReference Include="..\..\src\Bruinet.Maui.Appium\Bruinet.Maui.Appium.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Maui.DevFlow\Bruinet.Maui.DevFlow.csproj" />
   </ItemGroup>
 
   <ItemGroup>

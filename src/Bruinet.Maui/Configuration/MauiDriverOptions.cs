@@ -15,6 +15,19 @@ public class MauiDriverOptions
     public MauiPlatform Platform { get; set; } = MauiPlatform.Windows;
 
     /// <summary>
+    /// What drives the app: the platform's runner (FlaUI, Appium), or the MauiDevFlow agent the app
+    /// carries. <c>BRUINET_MAUI_RUNNER</c> (<c>devflow</c>, <c>default</c>) overrides it.
+    /// </summary>
+    public MauiRunner Runner { get; set; } = MauiRunner.Default;
+
+    /// <summary>
+    /// The DevFlow agent's port. With no <see cref="AppPath"/> the runner attaches to the app already
+    /// running there; with one it launches the app and waits for its agent on this port, or on the
+    /// port DevFlow's broker gave it. If null, 9223, the agent's default. <c>BRUINET_DEVFLOW_PORT</c> overrides it.
+    /// </summary>
+    public int? DevFlowPort { get; set; }
+
+    /// <summary>
     /// Path to application executable or package.
     /// - Windows: Path to .exe
     /// - Android: Path to .apk
@@ -121,7 +134,8 @@ public class MauiDriverOptions
     public ITestLogger? Logger { get; internal set; }
 
     /// <summary>
-    /// Overrides these options with the <c>APPIUM_*</c> variables that are set, so a CI job or a local
+    /// Overrides these options with the <c>APPIUM_*</c> variables that are set, and <c>BRUINET_MAUI_RUNNER</c>
+    /// and <c>BRUINET_DEVFLOW_PORT</c>, so a CI job or a local
     /// script can choose the platform and device without editing the settings file:
     /// <c>APPIUM_PLATFORM</c>, <c>APPIUM_SERVER_URI</c>, <c>APPIUM_APP_PATH</c>, <c>APPIUM_DEVICE_NAME</c>,
     /// <c>APPIUM_PLATFORM_VERSION</c> and <c>APPIUM_UDID</c>. An unset or blank variable keeps the file's value.
@@ -155,6 +169,24 @@ public class MauiDriverOptions
         DeviceName = Present(read("APPIUM_DEVICE_NAME")) ?? DeviceName;
         PlatformVersion = Present(read("APPIUM_PLATFORM_VERSION")) ?? PlatformVersion;
         Udid = Present(read("APPIUM_UDID")) ?? Udid;
+
+        if (Present(read("BRUINET_MAUI_RUNNER")) is { } runner)
+        {
+            Runner = runner.ToLowerInvariant() switch
+            {
+                "devflow" => MauiRunner.DevFlow,
+                "default" or "flaui" or "appium" => MauiRunner.Default,
+                _ => throw new InvalidOperationException(
+                    $"BRUINET_MAUI_RUNNER has unrecognized value '{runner}'. Expected 'devflow' or 'default'."),
+            };
+        }
+
+        if (Present(read("BRUINET_DEVFLOW_PORT")) is { } port)
+        {
+            DevFlowPort = int.TryParse(port, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var number) && number is > 0 and < 65536
+                ? number
+                : throw new InvalidOperationException($"BRUINET_DEVFLOW_PORT '{port}' is not a port number.");
+        }
     }
 
     private static string? Present(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();

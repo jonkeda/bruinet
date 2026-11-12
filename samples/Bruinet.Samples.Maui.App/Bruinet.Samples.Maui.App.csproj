@@ -59,6 +59,18 @@
     <PackageReference Include="CommunityToolkit.Maui.MediaElement" />
   </ItemGroup>
 
+  <!--
+    The MauiDevFlow agent, for the DevFlow runner (src/Bruinet.Maui.DevFlow): only in a build with
+    -p:BruinetDevFlow=true, so the FlaUI and Appium runs measure the app without it. Not in the
+    net10.0 (MauiHeadless) target, which has no MauiProgram.
+  -->
+  <PropertyGroup Condition="'$(BruinetDevFlow)' == 'true' and '$(TargetFramework)' != 'net10.0'">
+    <DefineConstants>$(DefineConstants);MAUI_DEVFLOW</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(BruinetDevFlow)' == 'true' and '$(TargetFramework)' != 'net10.0'">
+    <PackageReference Include="Microsoft.Maui.DevFlow.Agent" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Samples.Shared\Bruinet.Samples.Shared.csproj" />
     <!--

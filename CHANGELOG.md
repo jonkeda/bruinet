@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Experimental MAUI runner over MauiDevFlow (`Bruinet.Maui.DevFlow`): the same page objects drive the app through the
+  DevFlow agent it carries (`Microsoft.Maui.DevFlow.Agent`, dotnet/maui-labs, preview), chosen with
+  `BRUINET_MAUI_RUNNER=devflow` or `MauiDriverOptions.Runner`. On Windows it launches the app as FlaUI does (behind the
+  person's window, placed by `BRUINET_AUT_PLACE`) with a port of its own (`BRUINET_DEVFLOW_PORT`); elsewhere it attaches
+  to a running app's agent (`BRUINET_DEVFLOW_PORT`). Input is semantic, so it judges no gate. `DesktopApp.ProcessId`.
 - MCP `draft_feature`: a feature file drafted from a C# UI test, each statement as the suite phrase that matches its words or a commented gap, validated as the gate would, with its gaps, its finally-block cleanup and phrases that differ only in a value. MCP `similar_steps`: the phrases that could be one phrase with a placeholder. A suite built against an older Bruinet now reports that as its reason instead of failing every tool.
 - One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
   tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with

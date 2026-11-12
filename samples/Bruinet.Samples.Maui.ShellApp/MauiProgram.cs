@@ -2,6 +2,10 @@ using Microsoft.Extensions.Logging;
 
 using Bruinet.Maui.AppSupport;
 
+#if MAUI_DEVFLOW
+using Microsoft.Maui.DevFlow.Agent;
+#endif
+
 namespace Bruinet.Samples.Maui.ShellApp;
 
 public static class MauiProgram
@@ -25,6 +29,16 @@ public static class MauiProgram
         // and publishes nothing - which is how this app's flyout verbs went silent: the gate was
         // added to the hub app and not here, and nothing noticed until this app was rebuilt.
         builder.UseBruinetGestureBridge();
+
+        // The DevFlow runner's agent, only in a build with -p:BruinetDevFlow=true (Bruinet.Maui.DevFlow).
+#if MAUI_DEVFLOW
+        // The port the DevFlow runner gave this launch, so two apps of one run do not share 9223.
+        builder.AddMauiDevFlowAgent(options =>
+        {
+            if (int.TryParse(Environment.GetEnvironmentVariable("BRUINET_DEVFLOW_PORT"), out var port))
+                options.Port = port;
+        });
+#endif
 
 #if DEBUG
         builder.Logging.AddDebug();

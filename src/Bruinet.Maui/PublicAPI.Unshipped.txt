@@ -1296,3 +1296,10 @@ virtual Bruinet.Maui.Testing.MauiTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.GetScreenshotDirectory() -> string!
 virtual Bruinet.Maui.Testing.MauiTestFixtureBase.OnRestarted() -> void
+Bruinet.Maui.Configuration.MauiDriverOptions.DevFlowPort.get -> int?
+Bruinet.Maui.Configuration.MauiDriverOptions.DevFlowPort.set -> void
+Bruinet.Maui.Configuration.MauiDriverOptions.Runner.get -> Bruinet.Maui.Enums.MauiRunner
+Bruinet.Maui.Configuration.MauiDriverOptions.Runner.set -> void
+Bruinet.Maui.Enums.MauiRunner
+Bruinet.Maui.Enums.MauiRunner.Default = 0 -> Bruinet.Maui.Enums.MauiRunner
+Bruinet.Maui.Enums.MauiRunner.DevFlow = 1 -> Bruinet.Maui.Enums.MauiRunner

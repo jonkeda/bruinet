@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);maui;devflow</PackageTags>
+    <!-- Windows: launched through Bruinet.FlaUI's DesktopApp, so the app stays behind the person's
+         window and is placed as BRUINET_AUT_PLACE asks, as the FlaUI runner launches it. -->
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">net10.0;net10.0-windows</TargetFrameworks>
+    <RootNamespace>Bruinet.Maui.DevFlow</RootNamespace>
+    <Description>Experimental: a MAUI driver for Bruinet.Maui over the MauiDevFlow agent the app carries (dotnet/maui-labs), the same runner on Windows, Android, iOS and Mac Catalyst. Its input is semantic.</Description>
+    <PackageId>Bruinet.Maui.DevFlow</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bruinet.Maui.Tests" />
+    <ProjectReference Include="..\Bruinet.Maui\Bruinet.Maui.csproj" />
+    <ProjectReference Include="..\Bruinet.FlaUI\Bruinet.FlaUI.csproj" Condition="'$(TargetFramework)' == 'net10.0-windows'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Preview (dotnet/maui-labs): bumped with each preview; only this project depends on it. -->
+    <PackageReference Include="Microsoft.Maui.DevFlow.Client" />
+  </ItemGroup>
+
+</Project>

@@ -148,6 +148,9 @@ public sealed class DesktopApp : IDisposable
     /// <summary>Whether the app's process is known (launched, or attached by process).</summary>
     public bool HasProcess => _application != null;
 
+    /// <summary>The app's process id; null when the process is not known.</summary>
+    public int? ProcessId => _application?.ProcessId;
+
     /// <summary>Whether the app's process has exited; false when the process is not known.</summary>
     public bool HasExited
     {

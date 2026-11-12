@@ -58,7 +58,12 @@ public static class MauiProgram
         builder.UseBruinetGestureBridge();
 
 #if MAUI_DEVFLOW
-            builder.AddMauiDevFlowAgent();
+        // The port the DevFlow runner gave this launch, so two apps of one run do not share 9223.
+        builder.AddMauiDevFlowAgent(options =>
+        {
+            if (int.TryParse(Environment.GetEnvironmentVariable("BRUINET_DEVFLOW_PORT"), out var port))
+                options.Port = port;
+        });
 #endif
 
 #if WINDOWS

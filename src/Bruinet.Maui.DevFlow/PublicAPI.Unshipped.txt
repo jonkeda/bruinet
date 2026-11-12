@@ -1,0 +1,31 @@
+#nullable enable
+const Bruinet.Maui.DevFlow.DevFlowMauiDriver.DefaultPort = 9223 -> int
+override Bruinet.Maui.DevFlow.DevFlowMauiDriver.ToString() -> string!
+static Bruinet.Maui.DevFlow.DevFlowMauiDriver.Start(Bruinet.Maui.Configuration.MauiDriverOptions! options) -> Bruinet.Maui.Interfaces.IMauiDriver!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.AppElement.get -> Bruinet.Maui.Interfaces.IMauiElement!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Close() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Context.get -> string!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Context.set -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Contexts.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.CurrentRoute() -> string!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.CurrentWindowHandle.get -> string!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Dispose() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.ExecuteScript(string! script, params object![]! args) -> object?
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Maui.Interfaces.IMauiElement!>!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.GetAutomationTree() -> string!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.GetPageSource() -> string!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.GetScreenshot() -> byte[]!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.InvokeMenuItem(string! automationId) -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.NavigateBack() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.NavigateTo(string! destination) -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.NavigationDepth() -> int
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.PerformGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture, int arg1, int arg2) -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Platform.get -> Bruinet.Maui.Enums.MauiPlatform
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Quit() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.Refresh() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.ResetAppState() -> void
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.ShellChrome.get -> Bruinet.Maui.Interfaces.ShellChromeLocators!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.SupportsGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> bool
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.TakeScreenshot() -> byte[]!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!

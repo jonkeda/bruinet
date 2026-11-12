@@ -9,6 +9,7 @@ namespace Bruinet.Maui.Configuration;
 /// Factory for creating platform-appropriate MAUI drivers.
 /// - Windows: Always uses FlaUI (native UI Automation)
 /// - Android/iOS: Uses Appium
+/// - Any platform with <see cref="MauiRunner.DevFlow"/>: the MauiDevFlow agent in the app (Bruinet.Maui.DevFlow)
 /// 
 /// Driver implementations are loaded dynamically to avoid circular dependencies.
 /// </summary>
@@ -36,6 +37,9 @@ public static class MauiDriverFactory
     {
         ArgumentNullException.ThrowIfNull(options);
 
+        if (options.Runner == MauiRunner.DevFlow && options.Platform != MauiPlatform.Headless)
+            return CreateDevFlowDriver(options);
+
         return options.Platform switch
         {
             MauiPlatform.Windows => CreateFlaUIDriver(options),
@@ -45,6 +49,34 @@ public static class MauiDriverFactory
                 "MauiHeadless has no app to launch: the fixture renders it headless (CreateHeadlessOptions, MauiHeadlessHead.Options)."),
             _ => throw new ArgumentException($"Unsupported platform: {options.Platform}")
         };
+    }
+
+    private static IMauiDriver CreateDevFlowDriver(MauiDriverOptions options)
+    {
+        Assembly assembly;
+        try
+        {
+            assembly = Assembly.Load("Bruinet.Maui.DevFlow");
+        }
+        catch (FileNotFoundException exception)
+        {
+            throw new InvalidOperationException(
+                "Bruinet.Maui.DevFlow assembly not found. " +
+                "Reference the Bruinet.Maui.DevFlow package from the test project to use the DevFlow runner.", exception);
+        }
+
+        var start = assembly.GetType("Bruinet.Maui.DevFlow.DevFlowMauiDriver")
+                        ?.GetMethod("Start", BindingFlags.Public | BindingFlags.Static, [typeof(MauiDriverOptions)])
+                    ?? throw new InvalidOperationException("DevFlowMauiDriver.Start(MauiDriverOptions) not found in Bruinet.Maui.DevFlow.");
+        try
+        {
+            return (IMauiDriver)start.Invoke(null, [options])!;
+        }
+        catch (TargetInvocationException invocation) when (invocation.InnerException is { } inner)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(inner).Throw();
+            throw;
+        }
     }
 
     private static IMauiDriver CreateFlaUIDriver(MauiDriverOptions options)
