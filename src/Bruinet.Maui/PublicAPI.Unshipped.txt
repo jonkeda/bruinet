@@ -921,6 +921,7 @@ Bruinet.Maui.Interfaces.MauiGesture.Tap = 0 -> Bruinet.Maui.Interfaces.MauiGestu
 Bruinet.Maui.Interfaces.MauiInteractions
 Bruinet.Maui.Interfaces.ScrollPercent
 Bruinet.Maui.Interfaces.ScrollPercent.ScrollPercent() -> void
+Bruinet.Maui.Interfaces.ScrollPercent.ScrollPercent(double Vertical, double VerticalViewSize) -> void
 Bruinet.Maui.Interfaces.ScrollPercent.Scrolls.get -> bool
 Bruinet.Maui.Interfaces.ScrollPercent.Vertical.get -> double
 Bruinet.Maui.Interfaces.ScrollPercent.Vertical.init -> void
