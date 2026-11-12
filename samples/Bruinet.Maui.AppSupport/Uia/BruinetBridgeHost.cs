@@ -124,6 +124,19 @@ public static class BruinetBridgeHost
             return;
         }
 
+#if BRUINET_UIA_BRIDGE
+        // Kept apart from UI Automation as well, on every platform, for the DevFlow agent's
+        // bruinet extension (BruinetDevFlowBridge). Never allowed to break the app, as below.
+        try
+        {
+            BruinetVerbRegistry.Register(element, VerbBindings.Resolve(element, verbs, sink));
+        }
+        catch (Exception ex)
+        {
+            BridgeDiagnostics.Report($"could not record '{element.AutomationId}' for the DevFlow bridge: {ex.Message}");
+        }
+#endif
+
         // The platform check the analyzer needs, and the one a reader needs too: everything
         // below this line is UI Automation, which exists only on Windows. Off Windows the
         // declaration is inert and gestures are real touch input.
@@ -207,6 +220,8 @@ public static class BruinetBridgeHost
         {
             return;
         }
+
+        BruinetVerbRegistry.Withdraw(element);
 
         if (!OperatingSystem.IsWindows())
         {

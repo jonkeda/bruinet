@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text.Json;
 using Microsoft.Maui.DevFlow.Driver;
 
 namespace Bruinet.Maui.DevFlow;
@@ -42,6 +44,32 @@ internal interface IDevFlowAgent : IDisposable
 
     /// <summary>Lets go of the mutation lease, so a person's DevFlow session can drive the app.</summary>
     void ReleaseLease();
+
+    /// <summary>
+    /// Sends one of Bruinet's verbs (by its name, as <c>BruinetVerb</c> spells it) through the app's
+    /// bridge extension, to the element with <paramref name="automationId"/> or, without one, to the
+    /// first element that performs it. Not declared when the app carries no bridge.
+    /// </summary>
+    BridgeAnswer BridgeInvoke(string? automationId, string verb, int arg1 = 0, int arg2 = 0);
+
+    /// <summary>As <see cref="BridgeInvoke"/>, for a verb that carries a text and answers one.</summary>
+    BridgeAnswer BridgeExchange(string? automationId, string verb, string argument = "");
+
+    /// <summary>Whether an element with <paramref name="automationId"/> (or any, without one) declares the verb.</summary>
+    bool BridgeDeclares(string? automationId, string verb);
+}
+
+/// <summary>
+/// What the app's bridge answered (<c>Bruinet.Maui.AppSupport</c>'s <c>BruinetDevFlowBridge</c>):
+/// whether any element declared the verb, whether one performed it, its HRESULT and its answer.
+/// </summary>
+internal sealed record BridgeAnswer(bool Declared, bool Delivered, int HResult, string Value, int Declined, string Reason)
+{
+    /// <summary>UI Automation's "not supported", which the bridge answers for a verb nothing declares.</summary>
+    public const int NotSupported = unchecked((int)0x80040204);
+
+    /// <summary>The answer when the app carries no bridge, or it is off.</summary>
+    public static BridgeAnswer None(string reason) => new(false, false, NotSupported, string.Empty, 0, reason);
 }
 
 /// <summary>
@@ -139,6 +167,62 @@ internal sealed class DevFlowAgent : IDevFlowAgent
         catch (Exception exception) when (exception is HttpRequestException or TaskCanceledException or InvalidOperationException)
         {
             // The app has gone: there is no lease left to release.
+        }
+    }
+
+    // The app's bridge extension (BruinetDevFlowBridge); its absence is remembered, so an app
+    // without it costs one request, not one per read.
+    private const string BridgePath = "/api/v1/ext/dev.bruinet.bridge";
+    private bool _noBridge;
+
+    public BridgeAnswer BridgeInvoke(string? automationId, string verb, int arg1 = 0, int arg2 = 0)
+        => Bridge("/invoke", new { automationId, verb, arg1, arg2 });
+
+    public BridgeAnswer BridgeExchange(string? automationId, string verb, string argument = "")
+        => Bridge("/exchange", new { automationId, verb, argument });
+
+    public bool BridgeDeclares(string? automationId, string verb)
+    {
+        if (_noBridge)
+            return false;
+        try
+        {
+            var body = Run(_client.CallExtensionToolAsync("GET", BridgePath + "/declares",
+                JsonSerializer.SerializeToElement(new { automationId = automationId ?? string.Empty, verb })));
+            using var answer = JsonDocument.Parse(body);
+            return answer.RootElement.TryGetProperty("declared", out var declared) && declared.GetBoolean();
+        }
+        catch (HttpRequestException missing) when (missing.StatusCode == HttpStatusCode.NotFound)
+        {
+            _noBridge = true;
+            return false;
+        }
+    }
+
+    private BridgeAnswer Bridge(string route, object request)
+    {
+        if (_noBridge)
+            return BridgeAnswer.None("the app carries no Bruinet bridge (AddBruinetBridge)");
+        try
+        {
+            // A verb changes the app, so it goes under this driver's mutation lease, as the agent's
+            // own actions do.
+            Run(_client.ControlMutationLeaseAsync("claim"));
+            var body = Run(_client.CallExtensionToolAsync("POST", BridgePath + route, JsonSerializer.SerializeToElement(request)));
+            using var answer = JsonDocument.Parse(body);
+            var root = answer.RootElement;
+            return new BridgeAnswer(
+                root.GetProperty("declared").GetBoolean(),
+                root.GetProperty("delivered").GetBoolean(),
+                root.GetProperty("hresult").GetInt32(),
+                root.GetProperty("value").GetString() ?? string.Empty,
+                root.GetProperty("declined").GetInt32(),
+                root.GetProperty("reason").GetString() ?? string.Empty);
+        }
+        catch (HttpRequestException missing) when (missing.StatusCode == HttpStatusCode.NotFound)
+        {
+            _noBridge = true;
+            return BridgeAnswer.None("the app carries no Bruinet bridge (AddBruinetBridge)");
         }
     }
 

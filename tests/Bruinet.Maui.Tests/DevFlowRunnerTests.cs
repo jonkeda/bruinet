@@ -240,6 +240,43 @@ public class DevFlowRunnerTests
         Assert.Equal(["Main"], host.FindElements(driver.ShellChrome.FlyoutItem).Select(item => item.Text));
     }
 
+    [Fact]
+    public void InvokeMenuItem_GoesThroughTheAppsBridge()
+    {
+        var agent = new FakeAgent(Stack());
+        agent.Bridge["- InvokeMenuItem"] = new BridgeAnswer(true, true, 0, string.Empty, 0, string.Empty);
+
+        Driver(agent).InvokeMenuItem("PageMenuFileNew");
+
+        Assert.Contains("bridge - InvokeMenuItem PageMenuFileNew", agent.Calls);
+    }
+
+    [Fact]
+    public void InvokeMenuItem_WithoutABridge_HasNoRoute()
+    {
+        var driver = Driver(new FakeAgent(Stack()));
+
+        Assert.Throws<RouteUnavailableException>(() => driver.InvokeMenuItem("PageMenuFileNew"));
+    }
+
+    [Fact]
+    public void ReadState_TakesTheAppsAnswerFirst()
+    {
+        var agent = new FakeAgent(Stack());
+        agent.Bridge["NameEntry GetState"] = new BridgeAnswer(true, true, 0, "2\nOne\nTwo", 0, string.Empty);
+        var entry = Driver(agent).FindElements(Locator.ByAutomationId("NameEntry")).Single();
+
+        Assert.Equal("2\nOne\nTwo", entry.ReadState("Items"));
+    }
+
+    [Fact]
+    public void ClearFocus_WithoutTheUnfocusVerb_HasNoRoute()
+    {
+        var entry = Driver(new FakeAgent(Stack())).FindElements(Locator.ByAutomationId("NameEntry")).Single();
+
+        Assert.Throws<RouteUnavailableException>(entry.ClearFocus);
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
 
     // A Shell as the agent shows it: its structure reported invisible and disabled, the Home tab's
@@ -403,6 +440,25 @@ public class DevFlowRunnerTests
 
         public void ReleaseLease()
         {
+        }
+
+        /// <summary>What the app's bridge answers, by "automationId verb" ("- verb" anywhere); none declares by default.</summary>
+        public Dictionary<string, BridgeAnswer> Bridge { get; } = [];
+
+        public BridgeAnswer BridgeInvoke(string? automationId, string verb, int arg1 = 0, int arg2 = 0)
+            => Answer(automationId, verb, $"{arg1},{arg2}");
+
+        public BridgeAnswer BridgeExchange(string? automationId, string verb, string argument = "")
+            => Answer(automationId, verb, argument);
+
+        public bool BridgeDeclares(string? automationId, string verb) => Bridge.ContainsKey($"{automationId ?? "-"} {verb}");
+
+        private BridgeAnswer Answer(string? automationId, string verb, string argument)
+        {
+            if (!Bridge.TryGetValue($"{automationId ?? "-"} {verb}", out var answer))
+                return BridgeAnswer.None("no bridge");
+            Calls.Add($"bridge {automationId ?? "-"} {verb} {argument}".TrimEnd());
+            return answer;
         }
 
         public void Dispose()

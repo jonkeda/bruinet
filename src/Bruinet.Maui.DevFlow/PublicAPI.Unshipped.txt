@@ -29,3 +29,4 @@ Bruinet.Maui.DevFlow.DevFlowMauiDriver.ShellChrome.get -> Bruinet.Maui.Interface
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.SupportsGesture(string! automationId, Bruinet.Maui.Interfaces.MauiGesture gesture) -> bool
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.TakeScreenshot() -> byte[]!
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.IsIdle(int timeoutMs = 2000) -> bool

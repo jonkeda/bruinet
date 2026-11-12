@@ -6,22 +6,19 @@ not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-expe
 ## Where it stands
 
 On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own):
-**328 passed, 26 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. Every failure is in the list below. A folder takes about as
+**341 passed, 13 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. One full Collection run also
+failed `ScrollToEnd_LoadsEveryPage`, which passed alone three times out of three: a timing failure, noted. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### What it cannot do
 
 | Gap | Tests | Why |
 | --- | --- | --- |
-| Menu items by AutomationId | 4 | The agent names menu bar items by title path and shows no context menus. |
-| A picker's item texts, `SelectByText` | 5 | The agent reads properties by reflection without indexers; `Items` reads as a type name. |
 | MediaElement's transport controls | 11 | The platform draws them; they are not in the agent's tree. |
-| DrawingView lines (`Pan`) | 2 | A drawn path has no semantic route. |
 | A list item by its index (`ScrollToItem`, `Item(i)` past the realized rows) | 1 | The agent gives no row its index (`PositionInSet`). |
-| Selecting a list row that has no tap of its own | 1 | The agent sets no `SelectedItem` (an object) and has no select action. |
+| Selecting a list row that has no tap of its own | 1 | The agent sets no `SelectedItem` (an object) and has no select action; the bridge's `SelectIndex` serves pickers only. |
 | Scrolling a ScrollView inside another to an exact position | 0 | The agent spends an amount on the outermost ScrollView; the inner one reaches the top and the end exactly, a position between as near as its children allow. |
-| The contract button's double-click | 1 | Only the app's bridge sink answers it. |
-| Taking the focus away | 1 | `IsFocused` cannot be set. |
+
 
 ## How it was built, against this design
 
@@ -50,7 +47,16 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
   under it only the page with bounds is on screen (a tab left keeps its page with no height), and the flyout item's
   template beside it is left out. The agent's own `Tab` and `FlyoutItem` nodes, directly under the Shell, are
   `ShellChrome`'s tabs and flyout items (the host is the Shell itself, XPath `.`).
-- **Tests:** `DevFlowRunnerTests` (21, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+- **Bruinet's bridge over the agent:** what the agent has no route for goes through the verbs the app declares
+  (`uia:GestureAutomation.Verbs`), as on Windows. `Bruinet.Maui.AppSupport` keeps the published elements and their
+  plans in a registry beside UI Automation, and, in a build with `-p:BruinetDevFlow=true`, adds a DevFlow agent
+  extension (`options.AddBruinetBridge()`, namespace `dev.bruinet.bridge`, the reverse-domain form the agent requires)
+  with `invoke`, `exchange` and `declares` routes that run `MauiVerbDispatcher`. Behind the bridge's two gates (Debug,
+  `BRUINET_UIA_BRIDGE=1`, which the runner sets). It carries menu items by AutomationId (context menus too), a picker's
+  items and `SelectByText`, `Unfocus`, the app's gesture sinks (double-tap, pan), `GetState`, and `IsIdle`, which the
+  runner asks after each action as the FlaUI runner settles after a write. Not a separate project as first proposed:
+  a conditional reference in `AppSupport`, as the sample apps carry the agent, keeps it free of the preview package.
+- **Tests:** `DevFlowRunnerTests` (25, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 
 ## Outcome

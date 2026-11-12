@@ -64,7 +64,9 @@ dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "Ful
 The same suite drives the app through the MauiDevFlow agent it carries (`Bruinet.Maui.DevFlow`), over HTTP on
 loopback, instead of UI Automation. The app opts in: `builder.AddMauiDevFlowAgent()` in a debug build, which the
 sample apps compile only with `-p:BruinetDevFlow=true`; they read their agent's port from `BRUINET_DEVFLOW_PORT`,
-which the runner sets for each launch. On Windows the runner launches the app as FlaUI does, behind your window. On
+which the runner sets for each launch, and add Bruinet's bridge to the agent (`options.AddBruinetBridge()` from
+`Bruinet.Maui.AppSupport`), so the verbs the app declares for the Windows bridge (menu items, picker items, focus,
+gesture sinks) work on this runner too. On Windows the runner launches the app as FlaUI does, behind your window. On
 Android and iOS it attaches: start the app, forward its port (`adb forward tcp:9223 tcp:9223`), set
 `BRUINET_DEVFLOW_PORT`. The input is semantic (a tap invokes, typing sets the text), so the FlaUI and Appium heads stay
 the judge at a gate. `Tests\Background` and `Tests\Diagnostics` test the FlaUI driver itself, and a

@@ -180,6 +180,15 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public string? ReadState(string property)
     {
         ArgumentNullException.ThrowIfNull(property);
+
+        // The app's own answer first, where it declares GetState, as the Windows bridge reads it.
+        if (!IsApp && AutomationId is { Length: > 0 } id)
+        {
+            var bridged = _driver.Agent.BridgeExchange(id, "GetState", property);
+            if (bridged.Delivered)
+                return bridged.Value;
+        }
+
         var type = Info.Type;
         switch (property)
         {
@@ -278,6 +287,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
     {
         using var mark = Report(InteractionKind.DoubleTap);
         var info = Ready("double-tap");
+        if (BridgeVerb("DoubleTap", 0, 0))
+            return;
+
         if (_driver.Agent.Gesture(info, "doubletap"))
         {
             _driver.Changed();
@@ -485,8 +497,18 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     public void Focus() => _driver.Act(_driver.Agent.Focus(Ready("focus")), $"focus {Describe()}");
 
+    /// <summary>Takes the focus away through the app's <c>Unfocus</c> verb: the agent cannot set <c>IsFocused</c>.</summary>
     public void ClearFocus()
-        => _driver.Act(_driver.Agent.SetProperty(Info, "IsFocused", "false"), $"take the focus from {Describe()}");
+    {
+        var answer = _driver.Agent.BridgeExchange(AutomationId, "Unfocus");
+        _driver.Changed();
+        if (answer.Delivered)
+            return;
+        throw answer.Declared
+            ? new BruinetException($"{Describe()} could not lose the focus: {answer.Reason}.")
+            : new RouteUnavailableException($"{Describe()} cannot lose the focus on the DevFlow runner: the agent cannot set IsFocused, "
+                                            + "and the app does not declare the Unfocus verb on it (uia:GestureAutomation.Verbs).");
+    }
 
     #endregion
 
@@ -497,6 +519,23 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public void SelectIndex(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
+
+        // Where the app declares SelectIndex it range-checks against its own items, as on Windows.
+        var bridged = _driver.Agent.BridgeInvoke(AutomationId, "SelectIndex", index);
+        _driver.Changed();
+        if (bridged.Delivered)
+            return;
+        if (bridged.Declared)
+        {
+            var reason = bridged.HResult switch
+            {
+                unchecked((int)0x80070057) => "the index is negative",
+                unchecked((int)0x80040201) => "the index is past the end of its items, or its list has not filled yet",
+                BridgeAnswer.NotSupported => "it is not a picker, or an earlier item is equal to this one - MAUI cannot hold that selection",
+                _ => bridged.Reason,
+            };
+            throw new BruinetException($"'{AutomationId}' could not select index {index}: {reason}.");
+        }
 
         // A RatingView's stars: the star at an index is that rating, counted from one.
         if (Info.Type == "RatingView")
@@ -515,6 +554,26 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public void SelectByText(string text)
     {
         ArgumentNullException.ThrowIfNull(text);
+
+        // The app's verb reads the items the agent cannot, as the Windows bridge does.
+        var bridged = _driver.Agent.BridgeExchange(AutomationId, "SelectByText", text);
+        _driver.Changed();
+        if (bridged.Delivered)
+        {
+            if (bridged.Value != text)
+            {
+                throw new BruinetException($"'{AutomationId}' was asked for '{text}' and now shows '{bridged.Value}'. The picker "
+                                           + "declined the value, which a two-way bound SelectedItem can do.");
+            }
+
+            return;
+        }
+
+        if (bridged.Declared)
+        {
+            throw new BruinetException($"'{AutomationId}' could not select '{text}': it is not a picker, or no item shows that text.");
+        }
+
         if (Property("SelectedItem") == text)
             return;
 
@@ -568,7 +627,33 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     #region Gestures
 
-    public void PerformGesture(MauiGesture gesture)
+    public void PerformGesture(MauiGesture gesture) => PerformGesture(gesture, 0, 0);
+
+    /// <summary>
+    /// The gesture through the app's verb where it declares it (with its arguments: a pan's distance),
+    /// as the Windows bridge performs it; otherwise as the agent can, semantically.
+    /// </summary>
+    internal void PerformGesture(MauiGesture gesture, int arg1, int arg2)
+    {
+        // Logged whichever route performs it, as a recording shows the gesture over its control.
+        using var mark = gesture switch
+        {
+            MauiGesture.SwipeLeft => Interactions.ReportSwipe(() => Rect, -1, 0, () => AutomationId),
+            MauiGesture.SwipeRight => Interactions.ReportSwipe(() => Rect, 1, 0, () => AutomationId),
+            MauiGesture.SwipeUp => Interactions.ReportSwipe(() => Rect, 0, -1, () => AutomationId),
+            MauiGesture.SwipeDown => Interactions.ReportSwipe(() => Rect, 0, 1, () => AutomationId),
+            MauiGesture.DoubleTap => Report(InteractionKind.DoubleTap),
+            MauiGesture.LongPress => Report(InteractionKind.LongPress),
+            _ => Report(InteractionKind.Tap),
+        };
+
+        if (gesture != MauiGesture.Pinch && BridgeVerb(gesture.ToString(), arg1, arg2))
+            return;
+
+        PerformSemanticGesture(gesture);
+    }
+
+    private void PerformSemanticGesture(MauiGesture gesture)
     {
         var (type, direction) = gesture switch
         {
@@ -580,16 +665,6 @@ internal sealed class DevFlowMauiElement : IMauiElement
             MauiGesture.SwipeUp => ("swipe", "up"),
             MauiGesture.SwipeDown => ("swipe", "down"),
             _ => throw NoRoute($"{nameof(PerformGesture)}({gesture})"),
-        };
-        using var mark = gesture switch
-        {
-            MauiGesture.SwipeLeft => Interactions.ReportSwipe(() => Rect, -1, 0, () => AutomationId),
-            MauiGesture.SwipeRight => Interactions.ReportSwipe(() => Rect, 1, 0, () => AutomationId),
-            MauiGesture.SwipeUp => Interactions.ReportSwipe(() => Rect, 0, -1, () => AutomationId),
-            MauiGesture.SwipeDown => Interactions.ReportSwipe(() => Rect, 0, 1, () => AutomationId),
-            MauiGesture.DoubleTap => Report(InteractionKind.DoubleTap),
-            MauiGesture.LongPress => Report(InteractionKind.LongPress),
-            _ => Report(InteractionKind.Tap),
         };
         var info = Ready(type);
 
@@ -897,6 +972,22 @@ internal sealed class DevFlowMauiElement : IMauiElement
            ?? Ancestors(node).FirstOrDefault(n => n.Type == "RefreshView");
 
     private Interactions.Scope Report(InteractionKind kind) => Interactions.Report(kind, () => Rect, () => AutomationId);
+
+    // Performs a verb the app declares on this element: true when it did; false when it declares none;
+    // a refusal when it declares the verb and declines.
+    private bool BridgeVerb(string verb, int arg1, int arg2)
+    {
+        if (IsApp || AutomationId is not { Length: > 0 } id)
+            return false;
+
+        var answer = _driver.Agent.BridgeInvoke(id, verb, arg1, arg2);
+        _driver.Changed();
+        if (answer.Delivered)
+            return true;
+        if (!answer.Declared)
+            return false;
+        throw new BruinetException($"{Describe()} declares {verb} and declined it: {answer.Reason}.");
+    }
 
     private string? Property(string name) => IsApp ? null : _driver.Agent.GetProperty(Node.Id, name);
 

@@ -32,6 +32,9 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     public const int DefaultPort = 9223;
 
     private const int BrokerPort = 19223;
+
+    // BruinetBridgeGate.EnableVariable: the bridge's run-time switch in the app.
+    private const string BridgeVariable = "BRUINET_UIA_BRIDGE";
     private static readonly TimeSpan SnapshotAge = TimeSpan.FromMilliseconds(100);
     private static readonly TimeSpan LaunchTimeout = TimeSpan.FromSeconds(90);
 
@@ -112,6 +115,9 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         {
             [LaunchedApp.PortVariable] = asked.ToString(CultureInfo.InvariantCulture),
         };
+
+        // Turns the app's Bruinet bridge on, as the FlaUI runner does; a launch setting may turn it off.
+        environment.TryAdd(BridgeVariable, "1");
         if (!string.IsNullOrWhiteSpace(options.Placement))
             environment["BRUINET_AUT_PLACE"] = options.Placement;
 
@@ -334,27 +340,53 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     }
 
     /// <summary>
-    /// No route: the agent names menu bar items by their title path (<c>File/New</c>), not by
-    /// <c>AutomationId</c>, and shows no context menus, so no item can be raised by its id.
+    /// A menu bar or context menu item by its <c>AutomationId</c>, raised by the app's bridge without
+    /// opening a menu, as the Windows bridge raises it. The agent alone names menu bar items by their
+    /// title path and shows no context menus, so without the bridge there is no route.
     /// </summary>
     public void InvokeMenuItem(string automationId)
     {
         ArgumentException.ThrowIfNullOrEmpty(automationId);
-        throw new RouteUnavailableException(
-            $"The DevFlow runner cannot raise the menu item '{automationId}': the DevFlow agent names menu bar items by their "
-            + "title path, not by AutomationId, and does not show context menus. Run this test on FlaUI.");
+        var answer = _agent.BridgeExchange(null, "InvokeMenuItem", automationId);
+        Changed();
+        if (!answer.Declared)
+        {
+            throw new RouteUnavailableException(
+                $"The DevFlow runner cannot raise the menu item '{automationId}': the app carries no Bruinet bridge "
+                + "(AddBruinetBridge, BRUINET_UIA_BRIDGE=1), and the agent names menu items by title path, not AutomationId.");
+        }
+
+        // As on Windows: the outcome travels in the answer, and "disabled" is a refusal a user would meet too.
+        if (answer.Delivered)
+        {
+            if (answer.Value != "disabled")
+                return;
+            throw new ElementNotReadyException(Locator.ByAutomationId(automationId), NotReadyReason.Disabled,
+                "the menu item is disabled, so a user could not have picked it either");
+        }
+
+        var reason = answer.HResult switch
+        {
+            unchecked((int)0x80070057) => "no AutomationId was given",
+            unchecked((int)0x80040201) => "no menu item on any open page carries that AutomationId. Menu items are matched "
+                                          + "by the id in the app's markup, not by their text",
+            _ => answer.Reason,
+        };
+        throw new BruinetException($"Could not invoke menu item '{automationId}': {reason}.");
     }
 
     #endregion
 
     #region Gestures
 
+    // What the app's bridge declares on the element, else what the agent can do semantically.
     public bool SupportsGesture(string automationId, MauiGesture gesture)
-        => gesture is not MauiGesture.Pinch and not MauiGesture.Pan && Declared(automationId) is not null;
+        => _agent.BridgeDeclares(automationId, gesture.ToString())
+           || gesture is not MauiGesture.Pinch and not MauiGesture.Pan && Declared(automationId) is not null;
 
     public void PerformGesture(string automationId, MauiGesture gesture, int arg1, int arg2)
         => (Declared(automationId) ?? throw new BruinetException($"No element carries the AutomationId '{automationId}'."))
-            .PerformGesture(gesture);
+            .PerformGesture(gesture, arg1, arg2);
 
     private DevFlowMauiElement? Declared(string automationId)
         => Snapshot().Windows.SelectMany(window => Find(window, Locator.ByAutomationId(automationId), includeHidden: true))
@@ -368,7 +400,35 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         Changed();
         if (!done)
             throw new BruinetException($"The DevFlow agent could not {what}.");
+        Settle();
     }
+
+    /// <summary>
+    /// Whether the app has finished its queued work, as its bridge's <c>IsIdle</c> verb says (it waits
+    /// for a post to the UI thread to run). True where the app carries no bridge: there is nothing to ask.
+    /// </summary>
+    public bool IsIdle(int timeoutMs = 2000)
+    {
+        var answer = _agent.BridgeExchange(null, "IsIdle", Math.Max(0, timeoutMs).ToString(CultureInfo.InvariantCulture));
+        return !answer.Declared || answer.Delivered && bool.TryParse(answer.Value, out var idle) && idle;
+    }
+
+    /// <summary>
+    /// Lets the app finish what an action queued before the next read, as the FlaUI runner does after
+    /// a write: a row deleted left its count changed and its container still showing it a moment
+    /// longer. An app that never answers is asked a few times, then not again.
+    /// </summary>
+    internal void Settle()
+    {
+        if (_settleUnanswered >= 3)
+            return;
+
+        var answer = _agent.BridgeExchange(null, "IsIdle", "1000");
+        _settleUnanswered = answer.Delivered ? 0 : _settleUnanswered + 1;
+        Changed();
+    }
+
+    private int _settleUnanswered;
 
     public void Dispose() => Quit();
 

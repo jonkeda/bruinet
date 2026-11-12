@@ -63,6 +63,9 @@ public static class MauiProgram
         {
             if (int.TryParse(Environment.GetEnvironmentVariable("BRUINET_DEVFLOW_PORT"), out var port))
                 options.Port = port;
+
+            // Bruinet's verbs over the agent: what the agent has no route for (Bruinet.Maui.AppSupport).
+            options.AddBruinetBridge();
         });
 #endif
 

@@ -49,6 +49,19 @@
   </ItemGroup>
 
   <!--
+    The bridge over the MauiDevFlow agent (DevFlow\BruinetDevFlowBridge.cs), for the DevFlow runner:
+    only in a build with -p:BruinetDevFlow=true, as the sample apps carry the agent, and only where
+    the agent exists (not the plain net10.0 the MauiHeadless head compiles). Without it this
+    project depends on Microsoft.Maui.Controls alone, as above.
+  -->
+  <PropertyGroup Condition="'$(BruinetDevFlow)' == 'true' and '$(TargetFramework)' != 'net10.0'">
+    <DefineConstants>$(DefineConstants);BRUINET_DEVFLOW</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(BruinetDevFlow)' == 'true' and '$(TargetFramework)' != 'net10.0'">
+    <PackageReference Include="Microsoft.Maui.DevFlow.Agent" />
+  </ItemGroup>
+
+  <!--
     The handlers reference Microsoft.UI.Xaml directly, so they compile only for Windows.
     Excluded by file rather than wrapped in #if WINDOWS: these files are meant to be copied
     into an app under test, and a reader should not have to mentally strip preprocessor
