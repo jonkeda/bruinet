@@ -20,6 +20,8 @@ The short list that must not be broken. Each links the decision that explains it
 - **Gestures go through the bridge, never coordinates.** Declared per element, classified,
   absent from shipping builds. [AD-008](decisions/ad-008-gestures-and-semantic-actions-go-through-ui-automation.md),
   [bridge](contracts/bridge.md)
+- **DevFlow judges no gate.** FlaUI and Appium judge every gate; the DevFlow runner's input is semantic.
+  [AD-037](decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md)
 - **App bugs stay failures.** An action runs once and is confirmed, never repeated;
   defects are reported, not absorbed. [AD-009](decisions/ad-009-app-bugs-stay-failures.md),
   [control-object](contracts/control-object.md)
