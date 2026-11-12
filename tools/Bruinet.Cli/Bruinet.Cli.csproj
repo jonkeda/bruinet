@@ -11,6 +11,18 @@
     <PackageId>Bruinet.Cli</PackageId>
     <!-- Playwright's driver carries .ps1 files of its own; NuGet only warns that it will not run them. -->
     <NoWarn>$(NoWarn);NU5110;NU5111</NoWarn>
+    <!-- One tool package per platform (.NET 10), each with only its own native files: SqlClient's and SQLite's,
+         and Playwright's Node driver, which a build without a RID copies for the building machine only, so a
+         package packed on Windows ran no Scraper on Linux or macOS (R2-T119). No portable `any` package: the SDK
+         hands `any` to the referenced libraries as a platform, which they cannot restore. -->
+    <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
+    <!-- A build for no platform (a local build, the VS Code server's publish) carries every platform's Node driver. -->
+    <PlaywrightPlatform Condition="'$(RuntimeIdentifier)' == ''">all</PlaywrightPlatform>
+    <!-- Playwright ships no Windows Arm64 driver; Windows on Arm runs the x64 one. -->
+    <PlaywrightPlatform Condition="'$(RuntimeIdentifier)' == 'win-arm64'">win</PlaywrightPlatform>
+    <!-- The top-level package only points at the platform packages: no files, so no symbols package (NU5017). -->
+    <IncludeSymbols Condition="'$(RuntimeIdentifier)' == ''">false</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +30,8 @@
     <ProjectReference Include="..\..\src\Bruinet.Scraper\Bruinet.Scraper.csproj" />
     <!-- data: Bruinet.TestData is shared with the loaded assemblies, so their definitions are the tool's ITestDataDefinition. -->
     <ProjectReference Include="..\..\src\Bruinet.TestData\Bruinet.TestData.csproj" />
-    <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
+    <!-- Bruinet.Uat is an Exe, which the SDK would build per platform as the tool is: built once, for none (R2-T119). -->
+    <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" />
     <!-- sql: the SQL log's schema snapshot, Extended Events and report (.my/sql-replay/plan.md, step 1). -->
     <ProjectReference Include="..\..\src\Bruinet.Mocking.Data\Bruinet.Mocking.Data.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
@@ -56,9 +69,14 @@
        the Windows 10 SDK's projections): built here, and copied into recorders\ beside the server,
        which the recording run is pointed at (BRUINET_RECORDERS). -p:BruinetRecorders=false leaves them out, for a
        build that only selects or checks (Tomorrow's tools/Select-Tests.ps1, into its own artifacts folder). -->
-  <ItemGroup Condition="'$(OS)' == 'Windows_NT' And '$(BruinetRecorders)' != 'false'">
-    <ProjectReference Include="..\..\src\Bruinet.Narrator.Windows\Bruinet.Narrator.Windows.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=net10.0-windows10.0.19041.0" Private="false" />
+  <ItemGroup Condition="'$(BruinetCarriesRecorders)' == 'true'">
+    <ProjectReference Include="..\..\src\Bruinet.Narrator.Windows\Bruinet.Narrator.Windows.csproj" ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" SetTargetFramework="TargetFramework=net10.0-windows10.0.19041.0" GlobalPropertiesToRemove="RuntimeIdentifier;SelfContained" Private="false" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Windows only, and not in another platform's tool package (R2-T119). -->
+    <BruinetCarriesRecorders Condition="'$(OS)' == 'Windows_NT' And '$(BruinetRecorders)' != 'false' And ('$(RuntimeIdentifier)' == '' Or $(RuntimeIdentifier.StartsWith('win')))">true</BruinetCarriesRecorders>
+  </PropertyGroup>
 
   <PropertyGroup>
     <RecordersOutput>..\..\src\Bruinet.Narrator.Windows\bin\$(Configuration)\net10.0-windows10.0.19041.0\</RecordersOutput>
@@ -68,11 +86,11 @@
     <RecorderFile Include="$(RecordersOutput)Bruinet.Narrator.Windows.dll;$(RecordersOutput)Microsoft.Windows.SDK.NET.dll;$(RecordersOutput)WinRT.Runtime.dll" />
   </ItemGroup>
 
-  <Target Name="CopyRecorders" AfterTargets="Build" Condition="'$(OS)' == 'Windows_NT' And '$(BruinetRecorders)' != 'false'">
+  <Target Name="CopyRecorders" AfterTargets="Build" Condition="'$(BruinetCarriesRecorders)' == 'true'">
     <Copy SourceFiles="@(RecorderFile)" DestinationFolder="$(OutDir)recorders" SkipUnchangedFiles="true" />
   </Target>
 
-  <Target Name="PublishRecorders" AfterTargets="Publish" Condition="'$(OS)' == 'Windows_NT' And '$(BruinetRecorders)' != 'false'">
+  <Target Name="PublishRecorders" AfterTargets="Publish" Condition="'$(BruinetCarriesRecorders)' == 'true'">
     <Copy SourceFiles="@(RecorderFile)" DestinationFolder="$(PublishDir)recorders" SkipUnchangedFiles="true" />
   </Target>
 

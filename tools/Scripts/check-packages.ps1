@@ -36,7 +36,8 @@ function Read-Package([string] $path) {
 
     [pscustomobject] @{
         Id         = $nuspec.package.metadata.id
-        IsTool     = [bool] $nuspec.SelectSingleNode("//*[local-name()='packageType'][@name='DotnetTool']")
+        # The tool's top-level package (DotnetTool) and its per-platform ones (DotnetToolRidPackage, R2-T119).
+        IsTool     = [bool] $nuspec.SelectSingleNode("//*[local-name()='packageType'][@name='DotnetTool' or @name='DotnetToolRidPackage']")
         Depends    = @($nuspec.SelectNodes("//*[local-name()='dependency']") | ForEach-Object { $_.GetAttribute('id') } | Sort-Object -Unique)
         Frameworks = $frameworks
     }
