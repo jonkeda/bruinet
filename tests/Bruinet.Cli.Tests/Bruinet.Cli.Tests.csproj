@@ -10,6 +10,10 @@
     <ProjectReference Include="..\..\tools\Bruinet.Cli\Bruinet.Cli.csproj" />
     <!-- scrape: the site the commands explore, served by TestSiteServer; its files come along. -->
     <ProjectReference Include="..\Bruinet.Scraper.TestSite\Bruinet.Scraper.TestSite.csproj" />
+    <!-- The language server and MCP tests read the Todo sample's built suite: built first, never referenced, so it
+         is never older than the Core and Bdd these tests run (R2-T114). -->
+    <ProjectReference Include="..\..\samples\Todo\tests\Bruinet.Samples.Todo.Uat\Bruinet.Samples.Todo.Uat.csproj"
+                      ReferenceOutputAssembly="false" SkipGetTargetFrameworkProperties="true" Private="false" />
   </ItemGroup>
 
   <ItemGroup>
