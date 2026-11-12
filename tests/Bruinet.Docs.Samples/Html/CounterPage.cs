@@ -1,4 +1,4 @@
-// docs/getting-started/quick-start-html.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
+// docs/getting-started/quick-start-html.md and quick-start-uat.md quote this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
 #region docs:page
 using Bruinet.Html.Controls.Buttons;
 using Bruinet.Html.Controls.Display;

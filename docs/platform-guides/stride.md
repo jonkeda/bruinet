@@ -27,6 +27,7 @@ the game; the call around a command is what waits.
 
 ## Page objects
 
+<!-- sample: tests/Bruinet.Docs.Samples/Stride/StrideGuide.cs#page -->
 ```csharp
 public sealed class MainPage(IStrideTestContext context) : PageObjectBase<MainPage>(context)
 {

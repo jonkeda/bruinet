@@ -36,6 +36,7 @@ For repo-local tests, prefer project references to `src/*` projects.
 
 Page objects should expose user intent and hide locator plumbing.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/QuickStart.cs#page -->
 ```csharp
 using Bruinet.Maui.Controls.Buttons;
 using Bruinet.Maui.Controls.Text;
@@ -65,10 +66,11 @@ not in test methods.
 
 ## First Test Shape
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/QuickStartTests.cs#test -->
 ```csharp
 using Xunit;
 
-public sealed class LoginTests
+public sealed class LoginTests : IClassFixture<AppFixture>
 {
     private readonly AppFixture _fixture;
 
@@ -101,6 +103,10 @@ Rules:
 
 ## Next Steps
 
+- Start a test project for your stack: [web](quick-start-html.md), [MAUI](quick-start-maui.md),
+  [WPF](quick-start-wpf.md), [WinForms](quick-start-winforms.md),
+  [native Android](quick-start-native-android.md), [Stride](quick-start-stride.md), or
+  [scenarios in Markdown](quick-start-uat.md).
 - Read [Framework Overview](framework-overview.md).
 - Read [Test Writing](../guides/test-writing.md).
 - Use [Build And Test](../run/build-and-test.md) for common commands.

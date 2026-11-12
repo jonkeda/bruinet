@@ -61,7 +61,7 @@ a step definition. In Bruinet the first six are already bound: `I tap {control}`
 `I should be on the {page} page` are page flow, all found from the suite's page objects and controls. Only the last step, which
 looks in the database, is written by hand:
 
-```csharp
+```text
 // Reqnroll
 [Binding]
 public class StoredDataSteps(ITodoArrangement fixture)
@@ -69,7 +69,10 @@ public class StoredDataSteps(ITodoArrangement fixture)
     [Then("the database should have todos")]
     public void DatabaseHas(Table table) => table.CompareToSet(TodoDbReader.Todos(fixture.DatabasePath));
 }
+```
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/ComingFromReqnroll.cs#stored-data -->
+```csharp
 // Bruinet (samples/Todo/tests/Bruinet.Samples.Todo.TestSupport/Uat/StoredDataPhrases.cs)
 [BddStepDefinitions(Namespace = "StoredData")]
 public sealed class StoredDataPhrases(ITodoArrangement fixture) : BddStepDefinitionsBase

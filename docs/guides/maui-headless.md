@@ -82,15 +82,16 @@ plain `net10.0` without FlaUI (`BruinetWindowsHead` in `Directory.Build.props`);
    the Todo app's `TodoAppServices.AddTodoApp`, so the headless app is the device app.
 3. **Override `CreateHeadlessOptions()`** on the suite's `MauiTestFixtureBase`:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Maui/HeadlessGuide.cs#options -->
 ```csharp
 protected override MauiTestContextOptions CreateHeadlessOptions()
 {
     // Debug parses XAML at run time and knows only loaded assemblies: load what the builder would.
     _ = typeof(CommunityToolkit.Maui.Layouts.StateContainer).Assembly;
     return MauiHeadlessHead.Options(
-        services => services.GetRequiredService<AppShell>(),           // the first page
-        options => options.Application = services => new App(...),     // the app's Application
-        context => context.Services.AddMyApp(settings, platform));      // the app's composition
+        services => services.GetRequiredService<AppShell>(),                                            // the first page
+        options => options.Application = services => new App(services.GetRequiredService<AppShell>()),  // the app's Application
+        context => context.Services.AddMyApp(settings, platform));                                      // the app's composition
 }
 ```
 
@@ -200,6 +201,7 @@ Windows, Android 16 (emulator) and MauiHeadless; iOS from how XCUITest reports i
 MauiHeadless (`src/MauiHeadless`) is also a component-testing framework for MAUI without Bruinet, on xUnit,
 NUnit or MSTest:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Maui/MauiHeadlessGuide.cs#standalone -->
 ```csharp
 using var ctx = new MauiTestContext();
 ctx.Services.AddSingleton<ISettingsService, PreferencesSettingsService>();

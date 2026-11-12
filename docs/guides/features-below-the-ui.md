@@ -42,6 +42,7 @@ A service step definition is a step-definition class like any other
 ([UAT Step Definitions And Flows](uat-step-definitions.md#step-definition-classes)), resolved from
 the scenario's scope. Use the words the UI heads use for the same action:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/FeaturesBelowTheUi.cs#steps -->
 ```csharp
 [BddStepDefinitions(Namespace = "Sync")]
 public sealed class SyncSteps(TodoServiceFixture fixture) : BddStepDefinitionsBase

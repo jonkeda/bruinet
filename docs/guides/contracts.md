@@ -10,6 +10,7 @@ backend still matches the request the reference client sends. The decision is
 A `DtoContract` names an endpoint, such as `GET /contact/{id}`, and the response type. Group a module's contracts in
 a class that implements `IContractModule`; `ContractModules.FromAssembly` finds every module in a test assembly.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/Contracts.cs#module -->
 ```csharp
 public sealed class ContactsContracts : IContractModule
 {

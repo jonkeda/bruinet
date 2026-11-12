@@ -26,7 +26,11 @@ Get-ChildItem (Join-Path $root 'docs') -Recurse -Filter *.md | ForEach-Object {
         if ($start -lt 0) { throw "$($m.Groups['file'].Value) has no #region docs:$($m.Groups['name'].Value)" }
         $start = $code.IndexOf("`n", $start) + 1
         $end = $code.IndexOf('#endregion', $start)
-        $region = $code.Substring($start, $end - $start).Trim("`n")
+        # Without the lines' common indentation, as DocsSamplesTests reads it.
+        $lines = $code.Substring($start, $end - $start).TrimEnd(' ').Trim("`n") -split "`n"
+        $indent = ($lines | Where-Object { $_.Trim().Length -gt 0 } | ForEach-Object { $_.Length - $_.TrimStart(' ').Length } | Measure-Object -Minimum).Minimum
+        if ($null -eq $indent) { $indent = 0 }
+        $region = ($lines | ForEach-Object { if ($_.Length -ge $indent) { $_.Substring($indent) } else { $_.TrimStart(' ') } }) -join "`n"
         "<!-- sample: $($m.Groups['file'].Value)#$($m.Groups['name'].Value) -->`n``````csharp`n$region`n``````"
     }, [System.Text.RegularExpressions.RegexOptions]::Singleline)
     if ($new -ne $text) {

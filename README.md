@@ -165,7 +165,11 @@ bruinet --help
 ```
 
 Then read the [Quick Start](docs/getting-started/quick-start.md) for a first page object, and the [Todo sample](samples/Todo/README.md) to
-see one app tested at five tiers.
+see one app tested at five tiers. A first test per stack, compiled with the build:
+[web](docs/getting-started/quick-start-html.md), [MAUI](docs/getting-started/quick-start-maui.md),
+[WPF](docs/getting-started/quick-start-wpf.md), [WinForms](docs/getting-started/quick-start-winforms.md),
+[native Android](docs/getting-started/quick-start-native-android.md), [Stride](docs/getting-started/quick-start-stride.md)
+and [scenarios in Markdown](docs/getting-started/quick-start-uat.md).
 
 ## Samples
 

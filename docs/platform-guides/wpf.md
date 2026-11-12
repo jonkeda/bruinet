@@ -15,6 +15,7 @@ keys. Every action is a UI Automation pattern, so the app does not need the fore
 
 ## A session
 
+<!-- sample: tests/Bruinet.Docs.Samples/Wpf/WpfGuide.cs#session -->
 ```csharp
 var context = new WpfTestContext(new WpfTestContextOptions { ExecutablePath = appPath });
 var shell = new ShellPage(context);
@@ -28,6 +29,7 @@ suite's `GetDefaultAppPath()`.
 
 ## Page objects
 
+<!-- sample: tests/Bruinet.Docs.Samples/Wpf/WpfGuide.cs#page -->
 ```csharp
 public sealed class LoginPage(IWpfTestContext context) : PageObjectBase<LoginPage>(context)
 {

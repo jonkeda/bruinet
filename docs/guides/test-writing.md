@@ -5,6 +5,7 @@ controls.
 
 ## Test Shape
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/TestWriting.cs#shape -->
 ```csharp
 [Fact]
 public void SavingValidForm_ShowsSuccess()
@@ -76,6 +77,7 @@ Avoid:
 
 Use xUnit `Assert`.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/TestWriting.cs#assert -->
 ```csharp
 Assert.True(page.SubmitButton.IsEnabled());
 Assert.Equal("Saved", page.Status.GetText());

@@ -21,15 +21,18 @@ gate, as the real database does for SQL replay. The decision is
 the recording, nothing leaves the process), `Refresh` (record again and list which answers changed). Unset, replay is
 off. Each test has its own recording, `Recordings/http/<test>.json`, beside SQL replay's.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/HttpReplay.cs#session -->
 ```csharp
-// The test's session: one per test, never shared.
-var session = HttpReplaySession.FromEnvironment(recordingsFolder, testName, options);
+// The test's session: one per test, never shared; none while BRUINET_HTTP_REPLAY is unset.
+if (HttpReplaySession.FromEnvironment(recordingsFolder, testName, options) is not { } session)
+{
+    return;
+}
 
 // An app in the test process: every IHttpClientFactory client goes through it...
 services.AddBruinetHttpReplay(session);
-// ...or a client the app makes itself, or an Azure SDK client.
+// ...or a client the app makes itself, or an Azure SDK client (new HttpClientTransport(client)).
 var client = new HttpClient(HttpReplayHandler.Create(session));
-var transport = new HttpClientTransport(new HttpClient(HttpReplayHandler.Create(session)));
 
 // At the test's end: save (record), write the call log, and fail on misses.
 session.Finish();
@@ -78,10 +81,12 @@ by default; `| HttpReplayPace | recorded |` keeps the gaps.
 
 The web head's app, a Windows app or an Android app calls a `MockApiServer`, its base URLs pointed there as for stubs:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/HttpReplay.cs#server -->
 ```csharp
 proxy.Record("https://api.example.com");   // what no stub answers goes on to the real service
 // ... the test runs ...
-proxy.CopyRecordedTo(session); session.Finish();
+proxy.CopyRecordedTo(session);
+session.Finish();
 
 replay.Replay(HttpRecording.Load(path)!);  // answers as recorded, in order
 Assert.Empty(replay.ReplayMisses());       // a miss answers 599 with the miss as its body

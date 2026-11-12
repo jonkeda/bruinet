@@ -16,6 +16,7 @@ foreground, and runs behind a locked screen.
 
 ## A session
 
+<!-- sample: tests/Bruinet.Docs.Samples/WinForms/WinFormsGuide.cs#session -->
 ```csharp
 var context = new WinFormsTestContext(new WinFormsTestContextOptions { ExecutablePath = appPath });
 var login = new LoginPage(context);
@@ -28,6 +29,7 @@ suite's `GetDefaultAppPath()`.
 
 ## Page objects
 
+<!-- sample: tests/Bruinet.Docs.Samples/WinForms/WinFormsGuide.cs#page -->
 ```csharp
 public sealed class LoginPage(IWinFormsTestContext context) : PageObjectBase<LoginPage>(context)
 {

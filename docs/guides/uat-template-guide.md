@@ -46,6 +46,7 @@ the output folder.
 
 Three small pieces. The **fixture** launches the app and exposes the page graph:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TemplateGuide.cs#fixture -->
 ```csharp
 [TestModuleScan(typeof(TodoListPage), NamespacePrefix = "Bruinet.Samples.Todo.UITests.Pages")]
 public sealed class TodoUatFixture : TodoAppFixture
@@ -66,6 +67,7 @@ fixture itself.
 
 A **collection** shares one app across every scenario class:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TemplateGuide.cs#collection -->
 ```csharp
 [CollectionDefinition(CollectionName)]
 public sealed class TodoUatCollection : ICollectionFixture<TodoUatFixture>
@@ -77,6 +79,7 @@ public sealed class TodoUatCollection : ICollectionFixture<TodoUatFixture>
 The **test class** derives from `UatScenarioTestBase<TFixture>` and turns each
 scenario - each outline row too - into a theory case of its own:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TemplateGuide.cs#scenarios -->
 ```csharp
 [Collection(TodoUatCollection.CollectionName)]
 [TestCaseOrderer(BddScenarioOrderer.TypeName, BddScenarioOrderer.AssemblyName)]
@@ -91,7 +94,8 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
     // Load the file's TestData before its first scenario (the fixture may restart the app).
-    protected override void BeforeFile(BddDocument document) => Fixture.UseTestSet(...);
+    protected override void BeforeFile(BddDocument document)
+        => Fixture.UseTestSet(document.Metadata.GetValueOrDefault(BddMetadataFields.TestData, TodoUatFixture.DefaultTestData));
 
     // Reset the app between scenarios so they stay order-independent.
     protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTest();
@@ -388,6 +392,7 @@ with a `"   "` row.
 A custom phrase receives the step's table by taking a `BddTable` parameter, and
 binds it to the app's real types with `BddTableBinding`:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TemplateGuide.cs#table -->
 ```csharp
 [BddThen("the database should have todos")]
 public void DatabaseHas(BddTable table)

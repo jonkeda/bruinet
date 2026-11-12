@@ -66,6 +66,7 @@ and everything else throws.
 
 In the app, with `Bruinet.Maui.AppSupport`:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Maui/MauiGuide.cs#bridge -->
 ```csharp
 builder.UseBruinetGestureBridge();   // in MauiProgram, before the first page loads
 ```
@@ -77,6 +78,7 @@ builder.UseBruinetGestureBridge();   // in MauiProgram, before the first page lo
 
 In a test:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Maui/MauiGuide.cs#gesture -->
 ```csharp
 if (driver.SupportsGesture("TestSwipeView", MauiGesture.SwipeRight))
 {

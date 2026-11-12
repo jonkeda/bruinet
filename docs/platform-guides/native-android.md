@@ -17,6 +17,7 @@ wait for state), scope readiness and collections with item keys.
 
 ## A session
 
+<!-- sample: tests/Bruinet.Docs.Samples/NativeAndroid/NativeAndroidGuide.cs#session -->
 ```csharp
 var context = NativeAndroidTestContext.Create(NativeAndroidTestContextOptions.FromEnvironment());
 context.NavigateTo("myapp://orders");   // a deep link
@@ -43,6 +44,7 @@ shows every window (`enableMultiWindows`), so popups that do not take focus are 
 
 ## Page objects
 
+<!-- sample: tests/Bruinet.Docs.Samples/NativeAndroid/NativeAndroidGuide.cs#page -->
 ```csharp
 [TestPage("Sign In")]
 public sealed class LoginPage(INativeAndroidTestContext context) : PageObjectBase<LoginPage>(context)

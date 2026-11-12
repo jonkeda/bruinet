@@ -5,7 +5,8 @@ namespace Bruinet.Core.Tests;
 /// <summary>
 /// A doc's code sample is the code the build compiles (review 06, proposal 4): a block after a
 /// <c>&lt;!-- sample: &lt;file&gt;#&lt;name&gt; --&gt;</c> marker equals that file's <c>#region docs:&lt;name&gt;</c>, and a quick
-/// start has a marker on every C# block. <c>tools/Scripts/update-doc-samples.ps1</c> rewrites the blocks.
+/// start has a marker on every C# block. A region's common indentation is left out, so a statement inside a method
+/// is quoted as the doc shows it. <c>tools/Scripts/update-doc-samples.ps1</c> rewrites the blocks.
 /// </summary>
 public sealed partial class DocsSamplesTests
 {
@@ -53,7 +54,8 @@ public sealed partial class DocsSamplesTests
         Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
     }
 
-    // The region's lines, without the #region and #endregion lines.
+    // The region's lines, without the #region and #endregion lines and without their common indentation: a region
+    // inside a method or a class reads as the doc shows it.
     private static string? Region(string source, string name)
     {
         var start = source.IndexOf($"#region docs:{name}\n", StringComparison.Ordinal);
@@ -64,7 +66,14 @@ public sealed partial class DocsSamplesTests
 
         start = source.IndexOf('\n', start) + 1;
         var end = source.IndexOf("#endregion", start, StringComparison.Ordinal);
-        return end < 0 ? null : source[start..end].Trim('\n');
+        if (end < 0)
+        {
+            return null;
+        }
+
+        var lines = source[start..end].TrimEnd(' ').Trim('\n').Split('\n');
+        var indent = lines.Where(line => line.Trim().Length > 0).Select(line => line.Length - line.TrimStart(' ').Length).DefaultIfEmpty(0).Min();
+        return string.Join('\n', lines.Select(line => line.Length >= indent ? line[indent..] : line.TrimStart(' ')));
     }
 
     [GeneratedRegex(@"<!-- sample: (?<file>[^#\s]+)#(?<name>[\w-]+) -->\n```csharp\n(?<code>.*?)```", RegexOptions.Singleline)]

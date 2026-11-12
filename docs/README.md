@@ -8,6 +8,11 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 ## Start Here
 
 - [Quick Start](getting-started/quick-start.md)
+- A first test per stack, compiled with the build: [web](getting-started/quick-start-html.md),
+  [MAUI](getting-started/quick-start-maui.md), [WPF](getting-started/quick-start-wpf.md),
+  [WinForms](getting-started/quick-start-winforms.md),
+  [native Android](getting-started/quick-start-native-android.md),
+  [Stride](getting-started/quick-start-stride.md), and [scenarios in Markdown](getting-started/quick-start-uat.md)
 - [Framework Overview](getting-started/framework-overview.md)
 - [Test Writing Guide](guides/test-writing.md)
 - [Troubleshooting](guides/troubleshooting.md)

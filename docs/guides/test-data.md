@@ -37,6 +37,7 @@ One file per test set, in the test-support project's `TestData/` folder. The Tod
 An app describes its test sets once, in its test-support project (shortened from the Todo sample's
 `TodoTestDataDefinition`, which also names the user tables and their rules):
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TestData.cs#definition -->
 ```csharp
 public sealed class TodoTestDataDefinition : TestDataDefinition<TodoTestSetFile>
 {
@@ -62,6 +63,7 @@ public sealed class TodoTestDataDefinition : TestDataDefinition<TodoTestSetFile>
 
 The **gate** is one xUnit test in the integration tier:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TestData.cs#gate -->
 ```csharp
 [Fact]
 public void EveryTestSet_FollowsTheRules()
@@ -136,6 +138,7 @@ A scenario file names its test set; the fixture loads it:
 `DefaultTestData` in `uat.config.md`'s `Runtime` table covers files that name none. The test
 class loads it in `BeforeFile`, before the file's first scenario:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TestData.cs#before-file -->
 ```csharp
 protected override void BeforeFile(BddDocument document)
     => Fixture.UseTestSet(document.Metadata.TryGetValue(BddMetadataFields.TestData, out var name) && name.Length > 0
@@ -171,8 +174,9 @@ only these rows" is safe only when the database is reset per scenario.
 A WireMock response body is the API's DTO, or a recorded sample (`ReturnsSample`) - never an
 anonymous object:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TestData.cs#mock-bodies -->
 ```csharp
-mock.Get(TodoApi.TodosPath).ReturnsJson(new[] { new TodoDto(...) });   // fine
+mock.Get(TodoApi.TodosPath).ReturnsJson(new[] { new TodoDto(1, "Milk") });   // fine
 mock.Get(TodoApi.TodosPath).ReturnsJson(new { titel = "x" });           // BRUINET001
 ```
 

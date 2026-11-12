@@ -27,6 +27,7 @@ Unset, or any value but `bunit`, is the browser. In PowerShell: `$env:BRUINET_HE
 1. Reference `Bruinet.Html.Bunit` and the app's project (its assembly, not only its build).
 2. Make the context where the suite makes its browser context, by `WebHeads.IsBunit`:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Html/BunitGuide.cs#head -->
 ```csharp
 _context = WebHeads.IsBunit
     ? new BunitTestContext(new BunitTestContextOptions

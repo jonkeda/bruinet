@@ -2,16 +2,44 @@
 
   <!-- The docs' code samples, compiled with the build and never run (review 06, proposal 4): a doc's block follows a
        "sample: <file>#<name>" marker comment and must equal that file's #region docs:<name> (DocsSamplesTests);
-       tools/Scripts/update-doc-samples.ps1 rewrites the blocks from the regions. -->
+       tools/Scripts/update-doc-samples.ps1 rewrites the blocks from the regions. A folder per stack or guide. -->
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <!-- Windows: every stack. Elsewhere: all but WPF and WinForms (BruinetWindowsHead, Directory.Build.props). -->
+    <TargetFramework Condition="'$(BruinetWindowsHead)' == 'true'">net10.0-windows</TargetFramework>
     <IsPackable>false</IsPackable>
     <IsTestProject>false</IsTestProject>
+    <!-- The UAT and BDD samples use Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md). -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
+    <!-- The toolkit's analyzer asks every MauiProgram to register it; the quick start's app does not use the toolkit. -->
+    <NoWarn>$(NoWarn);MCT001</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(BruinetWindowsHead)' != 'true'">
+    <Compile Remove="Wpf\**;WinForms\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Html\Bruinet.Html.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Html.Playwright\Bruinet.Html.Playwright.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Html.Bunit\Bruinet.Html.Bunit.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Blazor\Bruinet.Blazor.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Maui\Bruinet.Maui.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Maui.Headless\Bruinet.Maui.Headless.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.NativeAndroid\Bruinet.NativeAndroid.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Stride\Bruinet.Stride.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Stride.Automation\Bruinet.Stride.Automation.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Contracts\Bruinet.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Mocking\Bruinet.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.TestData\Bruinet.TestData.csproj" />
+    <!-- The app side of the MAUI samples (the gesture bridge) and the pages of MauiHeadless's own sample, in their net10.0 builds. -->
+    <ProjectReference Include="..\..\samples\Bruinet.Maui.AppSupport\Bruinet.Maui.AppSupport.csproj" SetTargetFramework="TargetFramework=net10.0" />
+    <ProjectReference Include="..\..\samples\MauiHeadless.Samples.App\MauiHeadless.Samples.App.csproj" />
+    <!-- The MauiHeadless guide loads the toolkit's assembly, as an app's headless fixture does. -->
+    <PackageReference Include="CommunityToolkit.Maui" />
+    <ProjectReference Include="..\..\src\Bruinet.Wpf\Bruinet.Wpf.csproj" Condition="'$(BruinetWindowsHead)' == 'true'" />
+    <ProjectReference Include="..\..\src\Bruinet.WinForms\Bruinet.WinForms.csproj" Condition="'$(BruinetWindowsHead)' == 'true'" />
   </ItemGroup>
 
 </Project>

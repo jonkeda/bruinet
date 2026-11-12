@@ -51,6 +51,7 @@ Rules:
 
 Use `TestSettings` for dynamic access:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/Settings.cs#access -->
 ```csharp
 var settings = context.GetSettings();
 var useLiveApi = settings.GetRequired<bool>("capabilities.liveApi");
@@ -58,6 +59,7 @@ var useLiveApi = settings.GetRequired<bool>("capabilities.liveApi");
 
 Use `[TestSettingsSection]` for typed binding:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Guides/Settings.cs#section -->
 ```csharp
 [TestSettingsSection("capabilities")]
 public sealed class CapabilitySettings

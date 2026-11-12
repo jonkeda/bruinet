@@ -59,6 +59,7 @@ And Terms should be checked
 Every phrase, however it is declared, uses `{parameter}` placeholders and matches
 the same way:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#pattern -->
 ```csharp
 [BddWhen("I enter {value} into {control}")]
 TScope Enter(string? text, int? timeoutMs = null);
@@ -147,18 +148,19 @@ the machine's culture, and checked when the step binds (AD-016):
 `1,5`, `2026-05-12` and `12/05/2026` are refused, with the way to write them. A parameter the
 phrase does not name comes from under the step:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#arguments -->
 ```csharp
 [BddGiven("the server also has todos")]
-public void ServerAlsoHas(IReadOnlyList<ServerTodoRow> todos) { ... }   // a row per todo
+public void ServerAlsoHas(IReadOnlyList<ServerTodoRow> todos);   // a row per todo
 
 [BddWhen("I create the todo")]
-public void Create(TodoRow todo) { ... }                                 // a Field | Value table, or one row, or a JSON doc string
+public void Create(TodoRow todo);                                 // a Field | Value table, or one row, or a JSON doc string
 
 [BddThen("the todos should be open")]
-public void TodosAreOpen(List<string> titles) { ... }                    // a one-column table
+public void TodosAreOpen(List<string> titles);                    // a one-column table
 
 [BddWhen("I write the note")]
-public void Write(string note) { ... }                                   // a """ doc string
+public void Write(string note);                                   // a """ doc string
 ```
 
 ```gherkin
@@ -196,10 +198,11 @@ inferred too; on the fixture only an attribute makes a phrase. A phrase with pun
 (`read-only`) is written in text. A `{user}` form is always written in text, next to the empty
 attribute (AD-015):
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#method-name -->
 ```csharp
 [BddWhen]                                          // I open the todo {title}
 [BddWhen("{user} opens the todo {title}")]
-public void I_open_the_todo_TITLE(string title) { ... }
+public void I_open_the_todo_TITLE(string title);
 ```
 
 ## Broken Phrases
@@ -392,36 +395,37 @@ AD-011 removed.
 
 From the Todo sample's `TodoStatus` component:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#control-verbs -->
 ```csharp
-using Bruinet.Bdd;
-
 [BddWhen("I advance {control} to {value}")]
-public TodoStatus<TScope> AdvanceTo(string? expected, int? timeoutMs = null) { ... }
+public TodoStatus<TScope> AdvanceTo(string? expected, int? timeoutMs = null);
 
 [BddThen("{control} should show status {value}")]
 public TodoStatus<TScope> AssertShowsStatus(
-    string? expected, string? message = null, int? timeoutMs = null) { ... }
+    string? expected, string? message = null, int? timeoutMs = null);
 ```
 
 and from its `TodoList` collection:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#collection-verb -->
 ```csharp
 [BddThen("{control} should have todo {value}")]
-public TodoList AssertRow(string title, bool present = true, int? timeoutMs = null) { ... }
+public TodoList AssertRow(string title, bool present = true, int? timeoutMs = null);
 ```
 
 Its row phrases are item verbs, with no `{control}`:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#item-verbs -->
 ```csharp
 [BddWhen("I open the todo {item}")]
-public TodoDetailPage Open(string title, int? timeoutMs = null) { ... }
+public TodoDetailPage Open(string title, int? timeoutMs = null);
 
 [BddThen("the todo {item} should show status {value}")]
-public TodoList AssertRowStatus(string title, string status) { ... }
+public TodoList AssertRowStatus(string title, string status);
 
 [BddThen("the todo {item} should be waiting to sync", HasLiteral = true, Literal = true)]
 [BddThen("the todo {item} should be synced", HasLiteral = true, Literal = false)]
-public TodoList AssertPending(string title, bool expected = true, int? timeoutMs = null) { ... }
+public TodoList AssertPending(string title, bool expected = true, int? timeoutMs = null);
 ```
 
 which the scenarios then read as:
@@ -481,6 +485,7 @@ and the list page names its state container `List`, so the scenarios read
 A page's own workflow, several controls in one user intent, is a keyword attribute on the
 page-object method that already does it:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TodoStandIns.cs#page-phrase -->
 ```csharp
 [BddWhen("I create a todo {title}")]
 public TodoListPage CreateTodo(string title) => Add().EnterTitle(title).SaveNew();
@@ -527,9 +532,10 @@ And the todo "Oil the hinges" should be synced
 
 A button that always goes to one page says so, and the assert becomes optional:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/TodoStandIns.cs#navigates-to -->
 ```csharp
 [UatNavigatesTo(typeof(TodoEditPage))]
-public ToolbarButton<AppRoot> AddButton => ...;
+public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Add"));
 ```
 
 - A control that is not on the current page, or cannot do the verb, is a bind error (`UATB009`)
@@ -562,6 +568,7 @@ never a sibling's. So two modules can each have "I add a line" without colliding
 | any other step-definition class, the fixture's phrases, built-ins | every scenario |
 | control verbs and page phrases | the steps on their page ([Page Scope](#page-scope)) |
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#namespace -->
 ```csharp
 [BddStepDefinitions(Namespace = "Invoicing")]
 public sealed class InvoicingPhrases(InvoiceApi api) : BddStepDefinitionsBase
@@ -638,10 +645,11 @@ Page and control names come from the runtime model, not from the markdown file.
 
 Names can be explicit:
 
+<!-- sample: tests/Bruinet.Docs.Samples/WinForms/PageNames.cs#names -->
 ```csharp
 [TestPage("Login")]
 [UatName("Login")]
-public sealed class LoginUatPage : PageObjectBase<LoginUatPage>
+public sealed class LoginUatPage(IWinFormsTestContext context) : PageObjectBase<LoginUatPage>(context)
 {
     [UatName("Role")]
     public ComboBox<LoginUatPage> RoleCombo => ComboBox("cmbRole");
@@ -711,6 +719,7 @@ Presenter uses the same bound model, but drives it through
 Fixture methods can register custom phrases with `[BddGiven]`, `[BddWhen]` or
 `[BddThen]`.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#root-phrases -->
 ```csharp
 [BddGiven("I remember {name} as a trained player")]
 public void RememberTrainedPlayer(string name)
@@ -758,6 +767,7 @@ control verb comes from `[BddWhen]` / `[BddThen]` on a control method (see [Cust
 Use step-definition classes for reusable domain-level flows that need DI services or
 per-scenario scoped state.
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#step-definitions -->
 ```csharp
 [BddStepDefinitions]
 public sealed class CompositionPhrases : BddStepDefinitionsBase
@@ -805,6 +815,7 @@ When I sign in with credentials
 
 Manually registered command patterns can require or reject tables:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#register -->
 ```csharp
 catalog.Register(
     BddEffectiveStepKeyword.When,
@@ -830,6 +841,7 @@ binding and execution code does not consume them automatically.
 
 A step-definition class can run code around scenarios, with the scenario's tags as a filter:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#hooks -->
 ```csharp
 [BddStepDefinitions]
 public sealed class BackendHooks(ITodoArrangement fixture) : BddStepDefinitionsBase
@@ -865,6 +877,7 @@ step-by-step session the Presenter drives does not run hooks.
 A **state** is somewhere the app can be put without clicking to it: a test set's data, a todo on the server, a signed-in
 user. Declare it with `[BddState]` on the method that puts it there, through test data or the service head:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#state -->
 ```csharp
 [BddState("the app starts from the {testSet} test set")]
 public void StartFrom(string testSet, BddExecutionContext context)
@@ -885,6 +898,7 @@ When the config has an `Apps` table (see the template guide), a step can name wh
 `When Daan taps Save` runs on Daan's app. It binds to a phrase **declared** with `{user}` first,
 which a method carries as a second keyword attribute beside its `I` form:
 
+<!-- sample: tests/Bruinet.Docs.Samples/Uat/StepDefinitions.cs#user-forms -->
 ```csharp
 [BddWhen("I set {control} to {value}", CommandId = "Control.SetText")]
 [BddWhen("{user} sets {control} to {value}", CommandId = "Control.SetText")]
