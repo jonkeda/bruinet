@@ -38,7 +38,7 @@ public sealed partial class BddLanguageServer
     /// its class, a scenario as the IDEs' Run does (<c>bruinet/runTarget</c>).
     /// </summary>
     [JsonRpcMethod("bruinet/scraper/runTest")]
-    public Task<ScraperResult<IReadOnlyList<TestRunResult>>> ScraperRunTest(ScraperTestParams request)
+    public Task<ScraperResult<IReadOnlyList<TestRunResult>>> ScraperRunTest(ScraperTestParams request, CancellationToken cancellationToken = default)
         => Answer(async () =>
         {
             var test = Scraper.Tests(request.Project).FirstOrDefault(t => t.Session == request.Session)
@@ -50,12 +50,12 @@ public sealed partial class BddLanguageServer
             {
                 if (draft.Target == TestTarget.Xunit)
                 {
-                    results.Add(await TestRunner.RunAsync(Scraper.ProjectFile(request.Project), $"FullyQualifiedName~{draft.Class}").ConfigureAwait(false));
+                    results.Add(await TestRunner.RunAsync(Scraper.ProjectFile(request.Project), $"FullyQualifiedName~{draft.Class}", cancellationToken).ConfigureAwait(false));
                     continue;
                 }
                 var target = RunTarget(new RunTargetParams(new Uri(draft.Path).AbsoluteUri, null, null));
                 results.Add(target is { CanRun: true, Project: { } project, Filter: { } filter }
-                    ? await TestRunner.RunAsync(project, filter).ConfigureAwait(false)
+                    ? await TestRunner.RunAsync(project, filter, cancellationToken).ConfigureAwait(false)
                     : new TestRunResult(target.Project ?? "", target.Filter ?? "", false, 0, 0, 0, $"{Path.GetFileName(draft.Path)} cannot run by address: {target.Reason}", []));
             }
             return (IReadOnlyList<TestRunResult>)results;

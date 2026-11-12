@@ -75,7 +75,7 @@ public sealed class McpRenameTests : IDisposable
     }
 
     [Fact]
-    public void RenameStep_WithoutApply_GivesTheEdits_AndWritesNothing()
+    public void RenameStep_WithoutConfirm_GivesTheEdits_AndWritesNothing()
     {
         var answer = Answer(Call("rename_step", new JsonObject { ["path"] = Steps, ["line"] = 3, ["newPhrase"] = "the counter counts two times" }));
 
@@ -89,7 +89,7 @@ public sealed class McpRenameTests : IDisposable
     [Fact]
     public void RenameStep_Applied_WritesTheHeadingAndEveryCall_AndTheyStillBind()
     {
-        var answer = Answer(Call("rename_step", new JsonObject { ["path"] = Feature, ["line"] = 6, ["newPhrase"] = "the counter counts two times", ["apply"] = true }));
+        var answer = Answer(Call("rename_step", new JsonObject { ["path"] = Feature, ["line"] = 6, ["newPhrase"] = "the counter counts two times", ["confirm"] = true }));
 
         Assert.True((bool)answer["applied"]!, answer.ToJsonString());
         Assert.Contains("## Step: the counter counts two times", File.ReadAllText(Steps));

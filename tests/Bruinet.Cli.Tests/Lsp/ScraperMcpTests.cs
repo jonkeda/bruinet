@@ -47,8 +47,8 @@ public sealed class ScraperMcpTests : IDisposable
     [Fact]
     public void The_projects_and_their_recorded_pages_are_listed()
     {
-        Assert.Contains("\"name\":\"Shop.UITests\"", CallText("list_scraped_projects", []));
-        var pages = CallText("list_recorded_pages", []);
+        Assert.Contains("\"name\":\"Shop.UITests\"", CallText("scrape_list_projects", []));
+        var pages = CallText("scrape_list_pages", []);
 
         Assert.Contains("\"key\":\"/orders\"", pages);
         Assert.Contains("\"key\":\"/archive\"", pages);
@@ -57,12 +57,12 @@ public sealed class ScraperMcpTests : IDisposable
     [Fact]
     public void A_page_comes_as_an_outline_and_a_node_s_kind_is_found_on_every_page()
     {
-        var outline = CallText("get_page_snapshot", new JsonObject { ["page"] = "/orders" });
-        var similar = CallText("find_similar_elements", new JsonObject { ["page"] = "/orders", ["node"] = 2 });
-        var found = CallText("search_recordings", new JsonObject { ["text"] = "grace" });
+        var outline = CallText("scrape_get_page", new JsonObject { ["page"] = "/orders" });
+        var similar = CallText("scrape_find_similar", new JsonObject { ["page"] = "/orders", ["node"] = 2 });
+        var found = CallText("scrape_find_text", new JsonObject { ["query"] = "grace" });
 
         Assert.StartsWith("#1 table [data-testid=orders]\n  #2 tr .order-row\n    #3 td \"Ada\"", outline);
-        Assert.Equal(3, JsonNode.Parse(similar)!.AsArray().Count); // two rows on /orders, one on /archive
+        Assert.Equal(3, JsonNode.Parse(similar)!["nodes"]!.AsArray().Count); // two rows on /orders, one on /archive
         Assert.Contains("\\\"Grace\\\"", found);
     }
 
@@ -131,16 +131,16 @@ public sealed class ScraperMcpTests : IDisposable
     [Fact]
     public void What_cannot_be_done_is_a_tool_error_saying_why()
     {
-        Assert.Contains("No recording is in progress", ErrorText("capture_page", []));
-        Assert.Contains("No recorded page '/nope'", ErrorText("get_page_snapshot", new JsonObject { ["page"] = "/nope" }));
-        Assert.Contains("'session' is required", ErrorText("start_recording", []));
+        Assert.Contains("No recording is in progress", ErrorText("scrape_capture_page", []));
+        Assert.Contains("No recorded page '/nope'", ErrorText("scrape_get_page", new JsonObject { ["page"] = "/nope" }));
+        Assert.Contains("'session' is required", ErrorText("scrape_start", []));
     }
 
     [Fact]
     public void Explore_asks_first_with_the_host_guards_and_budget_and_refuses_a_host_that_is_not_an_explore_host()
     {
-        var asked = JsonNode.Parse(CallText("explore_app", []))!;
-        var refused = JsonNode.Parse(CallText("explore_app", new JsonObject { ["confirm"] = true }))!;
+        var asked = JsonNode.Parse(CallText("scrape_explore", []))!;
+        var refused = JsonNode.Parse(CallText("scrape_explore", new JsonObject { ["confirm"] = true }))!;
 
         Assert.False((bool)asked["started"]!);
         var summary = (string)asked["summary"]!;
@@ -158,15 +158,15 @@ public sealed class ScraperMcpTests : IDisposable
         var before = File.ReadAllText(config);
         var arguments = new JsonObject { ["action"] = "add", ["section"] = "Explore hosts", ["values"] = new JsonArray("shop.example") };
 
-        var said = JsonNode.Parse(CallText("update_scraper_config", (JsonObject)arguments.DeepClone()))!;
+        var said = JsonNode.Parse(CallText("scrape_update_config", (JsonObject)arguments.DeepClone()))!;
         Assert.Equal(before, File.ReadAllText(config));
         arguments["confirm"] = true;
-        var written = JsonNode.Parse(CallText("update_scraper_config", arguments))!;
+        var written = JsonNode.Parse(CallText("scrape_update_config", arguments))!;
 
         Assert.Equal(("Added ## Explore hosts with shop.example.", false), ((string?)said["description"], (bool)said["written"]!));
         Assert.True((bool)written["written"]!);
         Assert.Equal(before.TrimEnd() + "\n\n## Explore hosts\n\n| Host |\n| --- |\n| shop.example |\n", File.ReadAllText(config));
-        Assert.DoesNotContain("REFUSED", (string)JsonNode.Parse(CallText("explore_app", []))!["summary"]!);
+        Assert.DoesNotContain("REFUSED", (string)JsonNode.Parse(CallText("scrape_explore", []))!["summary"]!);
     }
 
     [Fact]
@@ -175,7 +175,7 @@ public sealed class ScraperMcpTests : IDisposable
         var config = Path.Combine(_solution, "Shop.UITests", ScraperConfig.FileName);
         var before = File.ReadAllText(config);
 
-        var error = ErrorText("update_scraper_config", new JsonObject { ["action"] = "set", ["section"] = "Explore", ["values"] = new JsonArray("ClickPolicy", "everything"), ["confirm"] = true });
+        var error = ErrorText("scrape_update_config", new JsonObject { ["action"] = "set", ["section"] = "Explore", ["values"] = new JsonArray("ClickPolicy", "everything"), ["confirm"] = true });
 
         Assert.Contains("ClickPolicy is links, safe, not-unsafe or all, not 'everything'", error);
         Assert.Equal(before, File.ReadAllText(config));
@@ -225,10 +225,10 @@ public sealed class ScraperMcpTests : IDisposable
     {
         var arguments = new JsonObject { ["name"] = "Agent.UITests", ["startUrl"] = "http://localhost:5001/" };
 
-        var asked = JsonNode.Parse(CallText("create_scraped_project", (JsonObject)arguments.DeepClone()))!;
+        var asked = JsonNode.Parse(CallText("scrape_create_project", (JsonObject)arguments.DeepClone()))!;
         Assert.False(Directory.Exists(Path.Combine(_solution, "Agent.UITests")));
         arguments["confirm"] = true;
-        var made = JsonNode.Parse(CallText("create_scraped_project", arguments))!;
+        var made = JsonNode.Parse(CallText("scrape_create_project", arguments))!;
 
         Assert.False((bool)asked["written"]!);
         Assert.True((bool)made["written"]!);

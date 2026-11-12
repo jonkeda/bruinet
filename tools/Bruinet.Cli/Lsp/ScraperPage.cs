@@ -748,7 +748,7 @@ internal static class ScraperPage
             $("sc-node").replaceChildren(el("div", { class: "sc-node" },
               el("div", {}, `${diff.addedCount} added, ${diff.removedCount} removed, ${diff.changedCount} changed`),
               ...list("Added", diff.added), ...list("Removed", diff.removed), ...list("Changed", diff.changed.map(c => `${c.before}\n  → ${c.after}`)),
-              el("div", { class: "sc-actions" }, button("Update page object", () => chat(`The recorded page ${key} of ${state.project} changed since its page object was made: update the page object (diff_page).`)))));
+              el("div", { class: "sc-actions" }, button("Update page object", () => chat(`The recorded page ${key} of ${state.project} changed since its page object was made: update the page object (scrape_diff_page).`)))));
           }
 
           async function nodeMatch(number, section) {
@@ -804,7 +804,7 @@ internal static class ScraperPage
 
           // What goes with every brief.
           const BRIEF_RULES = [
-            "Read only the files under \"Read only\". Do not search the repository: the brief has the facts. Use get_page_snapshot only to look at an occurrence again.",
+            "Read only the files under \"Read only\". Do not search the repository: the brief has the facts. Use scrape_get_page only to look at an occurrence again.",
             "Decide what the control is from the facts. The hints are a reading of them, not an order: where you see it differently (another base, one control for two variants, other members), say why, and do that.",
             "First say in a few lines what the control will offer: its base, its parts, its members. Then write it.",
             "Write the template at \"Write\", in \"Namespace\", with \"First line\" first: constructors, and a protected virtual *Core method for each thing a test reads or does (the generator makes the public members from them); hand-written members only where the html-control skill says so. For a component, a control per part. Not only constructors.",
@@ -945,7 +945,7 @@ internal static class ScraperPage
 
           function improvePicked() {
             const keys = state.pages.filter(p => state.pickedPages.has(p.key));
-            chat(`Improve the drafted page objects of ${state.project} for ${keys.map(p => `${p.key} (${p.pageObject || "not drafted yet"})`).join(", ")}: use the project's controls, give members better names, drop members a test would not use; check_code until it passes.`);
+            chat(`Improve the drafted page objects of ${state.project} for ${keys.map(p => `${p.key} (${p.pageObject || "not drafted yet"})`).join(", ")}: use the project's controls, give members better names, drop members a test would not use; scrape_build until it passes.`);
           }
 
           // ---- 7 Verify ----
@@ -1011,7 +1011,7 @@ internal static class ScraperPage
           async function fixGaps(t, event) {
             const briefs = await answer("testBrief", { project: state.project, session: t.session, event });
             if (!briefs) return;
-            chat(`Close ${event ? `the gap at event ${event}` : "the gaps"} of the recorded test ${t.name} in ${state.project}, one brief each. Change only page objects and controls, never a drafted test, and never invent a scenario phrase: leave a gap that has none marked. Then check_code, resolve_actions, draft_test and run_test for ${t.session}.\n\n${briefs.join("\n\n---\n\n")}`,
+            chat(`Close ${event ? `the gap at event ${event}` : "the gaps"} of the recorded test ${t.name} in ${state.project}, one brief each. Change only page objects and controls, never a drafted test, and never invent a scenario phrase: leave a gap that has none marked. Then scrape_build, scrape_resolve_events, scrape_draft_test and scrape_run_drafts for ${t.session}.\n\n${briefs.join("\n\n---\n\n")}`,
               "When the agent is done, step 8 resolves the test again.");
           }
 

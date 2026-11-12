@@ -38,11 +38,11 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
 - [android-ui-test](.github/skills/android-ui-test/SKILL.md) - write native Android UI tests, UAT
   scenarios and page objects (the gallery app on the emulator).
 - [scrape-pages](.github/skills/scrape-pages/SKILL.md) - make Html or Blazor page objects and
-  controls from an app's pages recorded with the Scraper (MCP `start_recording`,
-  `detect_patterns`, `write_code`, `check_code`).
+  controls from an app's pages recorded with the Scraper (MCP `scrape_start`,
+  `scrape_detect_patterns`, `scrape_write_file`, `scrape_build`).
 - [narrated-review](.github/skills/narrated-review/SKILL.md) - finish a feature with its
   scenarios recorded on video with a voice-over, and a review page (MCP `record_video`,
-  `review_page`).
+  `write_review`).
 - [ai-item](.github/skills/ai-item/SKILL.md) - build one item of the AI improvements plan
   (`.my/aiimprovements/plan.md`) through design, test-first build, checks, an agent check,
   review and close.

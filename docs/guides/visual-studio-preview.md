@@ -257,12 +257,14 @@ come from the last build: build to see new steps.
 The same server is an MCP server for GitHub Copilot's agent mode (Visual Studio 17.14 and later,
 VS Code) and any other MCP client:
 - `list_suites`, `list_steps`, `list_pages` and `list_test_sets` give what a scenario can say;
-- `validate_scenario` checks a draft as the gate does;
+- `check_scenario` checks a draft as the gate does;
 - `run_scenario` runs a scenario, or every scenario of a file, on the suite's runner as the preview's
   Run does, and waits: each scenario's status and, for a failed one, the step (file, line, text) and
   the message; `build: true` builds the suite first, after a change to C#; `replay: "record" | "replay" | "refresh"`
   runs with [HTTP and SQL replay](http-replay.md) in that mode;
-- `last_runs` gives each scenario's newest result, from any run;
+- `list_results` gives each scenario's newest result, from any run (`run_scenario`, the IDE, the gate): of a feature
+  file, a suite or every suite, the failed ones unless `status: all`, each with its heading's line; a suite that cannot
+  load is named under `notLoaded`, and the others still answer;
 - `list_states` gives the states the suite's app can be put in (`[BddState]`, see
   [states](uat-step-definitions.md#states)); `set_state` puts it in one on the suite's runner and leaves it paused there,
   for `step_state` and `step_screenshot`;
@@ -274,29 +276,34 @@ VS Code) and any other MCP client:
   duration and attempts (a long call or many attempts is a wait), what the app said, and the page's controls after the
   failed step; `step` gives one step in full. `run_scenario`'s `trace: all` (`BRUINET_TRACE=all`) reads the page after
   every step, `off` traces nothing;
-- `why` compares a scenario's newest failing run with its last green one, step by step: the first step where they
+- `diff_since_green` compares a scenario's newest failing run with its last green one, step by step: the first step where they
   part (its page, the controls it drove, what the app said, what a page showed, its status), a kind (`page-changed`,
   `data-changed`, `timing-only`, `scenario-changed`), steps that got much slower, and the files changed since the green
-  run's commit that touch that step or an earlier one, with changes of comments only set apart; it builds and runs the
-  scenario first when no failure of it is traced. A failure in `run_scenario` carries the short form, `sinceGreen`. `bruinet scenario why <file>:<line>` prints the same;
+  run's commit that touch that step or an earlier one, with changes of comments only set apart. It runs nothing: with no
+  traced failure or no green run it says so, and `run_scenario` makes one. A failure in `run_scenario` carries the short
+  form, `sinceGreen`. `bruinet scenario why <file>:<line>` prints the same;
 - a failure from `run_scenario` gives, as `appSource`, the app lines (`.razor`, `.cshtml`, XAML, code) that render the
   element its locator names, the suite's own app first;
-- `coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
-  it ran and missed (for the given files, or the working tree's changed ones);
-- `failing` lists every scenario whose newest run failed, in one call, where to start when tests fail;
+- `get_coverage` runs one scenario through the gate with .NET's code coverage and gives, per file, the lines
+  it ran and missed (for the given files, or the working tree's changed ones), with the suite's last build unless
+  `build: true`;
 - `run_scenario` says why each scenario failed: the step, the kind of failure (assertion, locator-not-found,
   timeout, ...), expected and actual, the locator, the binding, and the suite's and the app's frames it came through;
   `get_trace` gives a step of the newest run in full, what the app said included: its log's warnings and errors
   (with `AddBruinetStepLog`, which the MauiHeadless head adds), and the browser's console errors and warnings;
 - the tools that take a scenario's `line` take any line of it: its heading, a tag or a step;
-- `http_calls` gives a scenario's HTTP calls in its newest replayed run: each matched, recorded or missed, the misses
+- `get_http_calls` gives a scenario's HTTP calls in its newest replayed run: each matched, recorded or missed, the misses
   and the recorded calls it no longer makes ([HTTP Replay](http-replay.md));
-- `tests_affected` gives the tests and scenarios of a UI suite a change reaches, with why and one
+- `list_affected_tests` gives the tests and scenarios of a UI suite a change reaches, with why and one
   `--filter`, from the suite's touch map, as [`bruinet tests affected`](test-selection.md) does;
 - `rename_step` renames a callable step and every call of it, as the editor's Rename does: the edits
-  first, then with `apply: true` written and checked, all put back when a file no longer binds;
-- `rename_page_object` renames a scraped page object, after the person agrees;
+  first, then with `confirm: true` written and checked, all put back when a file no longer binds;
+- `scrape_rename_page_object` renames a scraped page object, after the person agrees;
 - `find_step_usages` finds where a C# member is used.
+
+The Scraper's tools start with `scrape_` ([Scraper](scraper.md)). Every list takes `max` (50 when left out) and says
+how many rows it left out as `more`; an answer leaves out empty fields and gives paths relative to the solution, lines
+one-based; a tool that writes for good asks first and acts on `confirm: true`.
 
 It calls no model: it holds the catalog and runs the checks, and Copilot does the writing.
 
@@ -306,7 +313,7 @@ From the Bruinet root, for the Todo sample:
 ```json
 {
   "servers": {
-    "bruinet-bdd": {
+    "bruinet": {
       "type": "stdio",
       "command": "dotnet",
       "args": ["run", "--project", "tools/Bruinet.Cli", "--", "mcp", "--solution", "samples/Todo"]
@@ -317,7 +324,7 @@ From the Bruinet root, for the Todo sample:
 
 Build the suite first; its steps come from its build. Then, in Copilot Chat's agent mode, run the
 prompt `/bruinet-write-scenario` (`.github/prompts/bruinet-write-scenario.prompt.md`). It writes a
-feature file with only the suite's steps, and checks it with `validate_scenario` until the gate
+feature file with only the suite's steps, and checks it with `check_scenario` until the gate
 passes it. A step with no phrase is left as a marked gap, never an invented phrase.
 
 ## Without Visual Studio

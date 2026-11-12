@@ -502,7 +502,7 @@ public sealed class BddRunnerHost
 
         // Once its last step has run, or a step failed (where the gate stops too), the scenario's
         // result is written as the gate writes it, so a run from a host shows in the IDEs' preview,
-        // the BDD Explorer (AD-022) and the MCP server's last_runs.
+        // the BDD Explorer (AD-022) and the MCP server's list_results.
         public void RecordIfFinished()
         {
             if (_recorded)

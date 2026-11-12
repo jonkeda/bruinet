@@ -109,6 +109,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Breaking:** the MCP server's tools are two families with one verb per act (review 03, D2): the Scraper's start with
+  `scrape_` (`scrape_next` says what to do), `failing` and `last_runs` are `list_results`, `why` is `diff_since_green`
+  and runs nothing, `validate_scenario` is `check_scenario`, `review_page` is `write_review`; every rename is a row of
+  the api-upgrade skill's `changes.md`, and an old name answers nothing. The server is `bruinet`. Every list takes `max`
+  and says `more`; answers leave out nulls and give paths relative to the solution; a go-ahead is `confirm: true`; the
+  schema says what is required, the values a parameter takes, and which tools only read. A suite that cannot load is a
+  row of `list_suites` and is named under `list_results`' `notLoaded`, so the other suites still answer.
 - **Breaking:** the object, app-root, row, container and collection bases of Html, WPF, WinForms, Android and Stride derive
   from shared bases in Core (`ObjectBase<TContext>`, `AppRootBase`, `ItemObjectBase`, `ContainerObjectBase`,
   `CollectionObjectBase`), with `IElementScope<TElement>` and `IItemRootSource<TElement>`; each stack keeps its classes'

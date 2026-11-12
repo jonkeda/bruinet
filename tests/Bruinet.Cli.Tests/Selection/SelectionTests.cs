@@ -144,7 +144,7 @@ public sealed class SelectionTests : IDisposable
         Map().Save(At("Shop.UITests/" + TouchMap.FileName));
         using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
 
-        var text = Tool(server, "tests_affected", new System.Text.Json.Nodes.JsonObject
+        var text = Tool(server, "list_affected_tests", new System.Text.Json.Nodes.JsonObject
         {
             ["suite"] = "Shop.UITests",
             ["files"] = new System.Text.Json.Nodes.JsonArray("Shop.App/Components/Pages/Counter.razor"),
@@ -162,7 +162,7 @@ public sealed class SelectionTests : IDisposable
     {
         using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
 
-        Assert.Contains("BRUINET_TIMINGS=1", Tool(server, "tests_affected", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["files"] = new System.Text.Json.Nodes.JsonArray("Lib/Control.cs") }));
+        Assert.Contains("BRUINET_TIMINGS=1", Tool(server, "list_affected_tests", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["files"] = new System.Text.Json.Nodes.JsonArray("Lib/Control.cs") }));
     }
 
     [Fact]
@@ -171,7 +171,7 @@ public sealed class SelectionTests : IDisposable
         Map().Save(At("Shop.UITests/" + TouchMap.FileName));
         using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
 
-        var result = Result(server, "tests_affected", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["base"] = "--output=written.txt" });
+        var result = Result(server, "list_affected_tests", new System.Text.Json.Nodes.JsonObject { ["suite"] = "Shop.UITests", ["base"] = "--output=written.txt" });
 
         Assert.True((bool)result["isError"]!);
         Assert.Contains("not a commit", (string?)result["content"]![0]!["text"], StringComparison.Ordinal);
@@ -186,7 +186,7 @@ public sealed class SelectionTests : IDisposable
         File.WriteAllBytes(video, []);
         using var server = new Bruinet.Bdd.LanguageServer.BddMcpServer(_root);
 
-        var result = Result(server, "review_page", new System.Text.Json.Nodes.JsonObject
+        var result = Result(server, "write_review", new System.Text.Json.Nodes.JsonObject
         {
             ["title"] = "Outside",
             ["videos"] = new System.Text.Json.Nodes.JsonArray(video),

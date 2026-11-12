@@ -468,7 +468,7 @@ writes its step trace, `step-traces/<feature>__<scenario>__trace.json` beside th
 with the commit it ran on: each step's control calls with their duration and attempts, its app events, and the page's
 controls after a failed step (60 at most, 3 seconds of reading). A pass also keeps `__trace.green.json`, which a later
 failure in the same run folder does not overwrite. `BRUINET_TRACE=all` reads the page after every step; `off` traces
-nothing. The MCP server's `get_trace` reads a trace, and its `why` compares a failure with the last green run; a failed
+nothing. The MCP server's `get_trace` reads a trace, and its `diff_since_green` compares a failure with the last green run; a failed
 scenario's line in `summary.md` says where it first parted from that run. If
 `IncludeRuntimeTrace` is true, the report adds each step's binding and call chain, diagnostics,
 discovery data, and command catalog data. A trace writes `***` for the value of a control whose

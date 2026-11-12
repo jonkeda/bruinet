@@ -27,7 +27,7 @@ Explore runs, a strip under the header shows its progress with **Capture**, **Pi
 **Continue** (after a sign-in) and **This page…**. What the workflow remembers that the files do not
 (the last check and verify, accepted controls, skipped controls) is in the project's
 `.scraper-state.json`, which is not committed. An agent sees the same steps with
-`get_scraper_progress`.
+`scrape_next`.
 
 ## Make a project scrapeable
 
@@ -37,7 +37,7 @@ or as packages. It writes the `.csproj`, its `scraper.config.md` and an empty `P
 project to the open solution (in a solution folder, `Scraped` unless you name another). Each problem
 shows under its field before anything is written. **Add a config to an existing project instead**
 writes only the config into a test project you have. An agent does the same with
-`create_scraped_project`.
+`scrape_create_project`.
 
 The picker lists the solution's projects that have a `scraper.config.md`, and those under the
 solution's folder; `TestResults` (the loop's copies) and build output are left out. Two projects of
@@ -111,7 +111,7 @@ controls):
 
 ## Record
 
-Step 3, More, **Record by hand** (or an agent's `start_recording`) opens a Chromium window. Work in it: each page the app moves to is captured once it has
+Step 3, More, **Record by hand** (or an agent's `scrape_start`) opens a Chromium window. Work in it: each page the app moves to is captured once it has
 settled (a hash route and `pushState` count as moves). **Capture** takes the page again (a dialog
 open, a tab chosen); **Pick** lets you click an element to find it in the capture; **Stop** closes
 the window. The window keeps its own login per project, under your local application data.
@@ -146,8 +146,8 @@ no model.
   `explore` shows the guards and asks "Go on?" unless `--yes`; with no one at a terminal it does
   not start without `--yes`. It exits with 0 when it ran within its guards, 1 when a guard stopped
   it (a sign-in, a refused host), 2 for an error.
-- **An agent:** `explore_app` (a dry run unless asked otherwise), `draft_page_objects`,
-  `verify_page_objects` and `update_scraper_config`. Each asks you first.
+- **An agent:** `scrape_explore` (links only and headless unless asked otherwise), `scrape_draft_page_objects`,
+  `scrape_check_page_objects` and `scrape_update_config`. Each asks you first.
 
 **Signing in is yours.** Explore uses the project's browser profile. When it reaches a sign-in page
 (the config's `LoginUrl`, a page with a password field it was sent to, or another host), it stops
@@ -239,7 +239,7 @@ The view's agent buttons (step 5's **Make *n* controls** and **Fix with the agen
 into Copilot Chat, in the agent and with the model chosen in the header (**Agent and model**). The
 **Bruinet scraper** agent (`.github/agents/bruinet-scraper.agent.md`) has the Bruinet tools and the
 rules; **Agent** and **Ask** get them from the `/bruinet-scrape-pages` prompt. A control is made from
-its brief (`control_brief`), at most five per prompt. When the IDE cannot send it, the prompt goes to
+its brief (`scrape_get_control_brief`), at most five per prompt. When the IDE cannot send it, the prompt goes to
 the clipboard and the view says so. When the answer is complete, step 5 or 6 checks again by itself.
 Visual Studio sends it into the open chat session with the chosen model, in the chat window's own
 mode. Review the result in your usual diff.
@@ -260,29 +260,35 @@ Its Scraper tools:
 
 | Tool | Gives or does |
 | --- | --- |
-| `list_scraped_projects` | the projects with a `scraper.config.md` |
-| `get_scraper_progress` | where a project is in the workflow: each step's state and what to do next |
-| `start_recording`, `capture_page`, `stop_recording` | a recording (one at a time per server) |
-| `list_recorded_pages` | pages by key (path and hash route, ids as `{id}`), their captures, the page object made for each and whether the page changed since |
-| `get_page_snapshot` | a capture as an outline with node numbers; a node's subtree for a large page |
-| `find_similar_elements`, `search_recordings` | where a kind of node, or a text, occurs |
-| `detect_patterns` | repeated parts (controls to make) and forms, tables, lists, navigation, dialogs, frames |
-| `control_brief` | everything known about a pattern to make a control from it: where to write it and what to read, its occurrences, an example outline, its parts with how often each is found, and hints (what the elements are, a base, members) |
-| `list_controls`, `match_controls` | the project's page objects and controls, and which occur on a page |
-| `suggest_controls` | per element: a name, the control that fits, and a locator (test id, accessible name or text, stable id, stable class; a position last, marked unstable) |
-| `scraped_header` | the first line of a generated file: what it was made from |
-| `write_code`, `check_code` | write a file into the project (syntax checked first), then build it |
-| `diff_page` | what changed on a page since its page object was made |
-| `explore_app` | Explore, a dry run unless asked; asks first |
-| `draft_page_objects`, `verify_page_objects` | Draft and Verify, for all pages or one |
-| `update_scraper_config` | one row or field of `scraper.config.md` changed; asks first |
-| `create_scraped_project` | a new scraped project (its `.csproj`, config and `Pages/`), not yet in the solution; asks first |
+| `scrape_list_projects` | the projects with a `scraper.config.md` |
+| `scrape_next` | where a project is in the workflow: each step's state and what to do next |
+| `scrape_start`, `scrape_capture_page`, `scrape_stop` | a recording (one at a time per server) |
+| `scrape_list_pages` | pages by key (path and hash route, ids as `{id}`), each page's newest capture and how many it has, the page object made for each and whether the page changed since; `page` gives one page's captures |
+| `scrape_get_page` | a capture as an outline with node numbers; a node's subtree for a large page |
+| `scrape_find_similar`, `scrape_find_text` | where a kind of node, or a text, occurs |
+| `scrape_detect_patterns` | repeated parts (controls to make) and forms, tables, lists, navigation, dialogs, frames |
+| `scrape_get_control_brief` | everything known about a pattern to make a control from it: where to write it and what to read, its occurrences, an example outline, its parts with how often each is found, and hints (what the elements are, a base, members) |
+| `scrape_list_page_objects`, `scrape_match_controls` | the project's page objects and controls, and which occur on a page |
+| `scrape_suggest_controls` | per element: a name, the control that fits, and a locator (test id, accessible name or text, stable id, stable class; a position last, marked unstable) |
+| `scrape_get_header` | the first line of a generated file: what it was made from |
+| `scrape_write_file`, `scrape_build` | write a file into the project (syntax checked first), then build it |
+| `scrape_diff_page` | what changed on a page since its page object was made |
+| `scrape_explore` | Explore, links only unless `linksOnly: false`; asks first |
+| `scrape_draft_page_objects`, `scrape_check_page_objects` | Draft and Verify, for all pages or one |
+| `scrape_update_config` | one row or field of `scraper.config.md` changed; asks first |
+| `scrape_create_project` | a new scraped project (its `.csproj`, config and `Pages/`), not yet in the solution; asks first |
+| `scrape_rename_page_object` | a page object renamed in the files that declare it; asks first |
+| `scrape_list_events`, `scrape_resolve_events`, `scrape_gap_brief` | a recorded test's events, each resolved to a page object's member, and a brief per gap |
+| `scrape_draft_test`, `scrape_run_drafts` | a recorded test drafted as an xUnit test or a scenario, and each draft run once |
+
+Every list takes `max` (50 when left out) and says how many rows it left out as `more`. A tool that asks first acts
+on a second call with `confirm: true`.
 
 ## When the app changes
 
 Steps 3, 6 and 7 get a **!** and the header says what to do: explore or record the page again, then
 update its page object. In step 4 a page whose page object was made from an older capture is marked;
-**Changes** (or `diff_page`) lists what was added, removed and changed since, and **Update page
+**Changes** (or `scrape_diff_page`) lists what was added, removed and changed since, and **Update page
 object** asks the agent to change only that.
 
 ## The loop
@@ -311,7 +317,7 @@ judge.
 | Explore | `scrape explore --headless --yes` with the profile's guards | a guard stopped it unexpectedly, or it found fewer pages than the target has |
 | Guards | reads the test site's counters | `careful`: any counter moved. `test-tenant`: anything but delete and update moved, or those were not reached |
 | Draft | `scrape draft` | a draft does not build |
-| Agent | Copilot CLI or Claude Code with only the Bruinet MCP server's tools, to make controls and better names; Copilot CLI by default; skipped for `-Agent none` | `check_code` fails, or it ran past `-AgentMinutes` |
+| Agent | Copilot CLI or Claude Code with only the Bruinet MCP server's tools, to make controls and better names; Copilot CLI by default; skipped for `-Agent none` | `scrape_build` fails, or it ran past `-AgentMinutes` |
 | Verify | `scrape verify` | a member is not found, or found more than once. A member of the project's own control (`new(this, "Elements")`) is not read: its control makes its locator |
 
 Each run works on a new project under `TestResults/scrape-loop/<date>-<target>/`, never on the

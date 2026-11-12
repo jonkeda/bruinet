@@ -83,12 +83,12 @@ public static partial class ControlBrief
 
         text.Append("### Task\n");
         var file = Path.Combine(project.Folder, project.Config.ControlsFolder, className + (hint.Template ? CodeGate.TemplateExtension : ".cs"));
-        text.Append(CultureInfo.InvariantCulture, $"Write:      {file}   (new file{(hint.Template ? $"; check_code generates {className}.gen.cs from it" : "; a container is written by hand, not generated")})\n");
+        text.Append(CultureInfo.InvariantCulture, $"Write:      {file}   (new file{(hint.Template ? $"; scrape_build generates {className}.gen.cs from it" : "; a container is written by hand, not generated")})\n");
         text.Append(CultureInfo.InvariantCulture, $"Namespace:  {ControlsNamespace(project)}\n");
         text.Append(CultureInfo.InvariantCulture, $"First line: {header(example.Page, example.Inner.Number)}\n");
         text.Append(CultureInfo.InvariantCulture, $"Class:      {hint.Declaration(className)}\n");
         text.Append("Read only:  ").Append(string.Join("\n            ", ReadOnly(hint, bruinetRoot))).Append('\n');
-        text.Append("Check:      check_code (generates the template's members, then builds the project)\n\n");
+        text.Append("Check:      scrape_build (generates the template's members, then builds the project)\n\n");
 
         text.Append("### Facts\n");
         text.Append(CultureInfo.InvariantCulture, $"Signature: {signature}{(lifted ? $"; the control starts higher, at the root that also holds its label ({example.Root.Type}{string.Concat(Classes(example.Root).Take(3).Select(c => "." + c))}), and its parts are relative to that root" : "")}\n");
@@ -129,12 +129,12 @@ public static partial class ControlBrief
         text.Append("Kind: ").Append(hint.Kind).Append(". Base: ").Append(hint.Base).Append('\n');
         text.Append("Members a test needs: ").Append(hint.Members).Append('\n');
         text.Append("These are a reading of the facts, not an order: where you see it differently, say why and do that.\n");
-        text.Append(CultureInfo.InvariantCulture, $"\nMore: control_brief for another pattern; get_page_snapshot(page, node) for any occurrence above.\n");
+        text.Append(CultureInfo.InvariantCulture, $"\nMore: scrape_get_control_brief for another pattern; scrape_get_page(page, node) for any occurrence above.\n");
 
         var brief = text.ToString();
         return brief.Length <= MaxCharacters
             ? new ControlBriefText(className, brief, false)
-            : new ControlBriefText(className, brief[..MaxCharacters] + "\n… cut at the brief's budget: get_page_snapshot for the rest.\n", true);
+            : new ControlBriefText(className, brief[..MaxCharacters] + "\n… cut at the brief's budget: scrape_get_page for the rest.\n", true);
     }
 
     /// <summary>The namespace of the project's controls: its namespace with the pages folder swapped for the controls folder.</summary>
@@ -356,7 +356,7 @@ public static partial class ControlBrief
             depth[node.Number] = level;
             if (lines == maxLines)
             {
-                text.Append("  … more: get_page_snapshot for the rest\n");
+                text.Append("  … more: scrape_get_page for the rest\n");
                 break;
             }
             text.Append(' ', level * 2).Append(Line(node)).Append('\n');
@@ -403,7 +403,7 @@ public static partial class ControlBrief
                 continue;
             if (seen.Count > MaxParts)
             {
-                text.Append("  … more parts: get_page_snapshot for the rest\n");
+                text.Append("  … more parts: scrape_get_page for the rest\n");
                 break;
             }
             var selector = SnapshotSelector.Parse(locator);

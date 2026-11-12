@@ -54,7 +54,7 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet data list` | The test sets and what uses them | |
 | `bruinet data schema [--check]` | Writes (or checks) `testdata.schema.json` | |
 | `bruinet scenario preview <file> [--out page.html]` | A feature file's preview as a page (`--suite`, `--host`) | [Visual Studio Preview](../guides/visual-studio-preview.md) |
-| `bruinet scenario why <file>:<line> [--suite <name>]` | Where a scenario's newest failure first parted from its last green run: the step, the kind of change, and the files changed since that touch it; exit 2 when there is no failure or green run to compare | [Visual Studio Preview](../guides/visual-studio-preview.md) |
+| `bruinet scenario why <file>:<line> [--suite <name>]` | Where a scenario's newest failure first parted from its last green run: the step, the kind of change, and the files changed since that touch it; reads only (the MCP tool `diff_since_green`), and with no failure or no green run to compare it says so and exits 0 | [Visual Studio Preview](../guides/visual-studio-preview.md) |
 | `bruinet scenario results delete [<file>[:<line>] \| --suite <name>]` | Deletes old results of a scenario, a file or a suite from every run; asks first | |
 | `bruinet tests timings <folder> [--top 10]` | From a run's timings (`BRUINET_TIMINGS`), writes `timings.md` beside them: the host's start, time by kind, per test, and the slowest spans | [test selection](../guides/test-selection.md) |
 | `bruinet tests touch-map <timings>… [--project <folder>]` | From a full run's timings, writes the project's `touch-map.json`: which test and scenario used which page objects and controls | [test selection](../guides/test-selection.md) |

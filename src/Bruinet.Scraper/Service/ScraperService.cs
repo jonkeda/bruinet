@@ -543,9 +543,10 @@ public sealed partial class ScraperService : IAsyncDisposable
 
     /// <summary>
     /// What changed on a page between two captures: by default from the capture its page object was
-    /// made from (its header) or else the one before the newest, to the newest.
+    /// made from (its header) or else the one before the newest, to the newest. At most <paramref name="max"/> of each kind
+    /// are listed; the counts are all of them.
     /// </summary>
-    public PageDiff Diff(string? projectName, string page, string? fromSession = null, int? fromNumber = null, string? toSession = null, int? toNumber = null)
+    public PageDiff Diff(string? projectName, string page, string? fromSession = null, int? fromNumber = null, string? toSession = null, int? toNumber = null, int max = 100)
     {
         var project = Project(projectName);
         var index = project.Index();
@@ -568,7 +569,7 @@ public sealed partial class ScraperService : IAsyncDisposable
         {
             from = recorded.Captures.Count > 1 ? recorded.Captures[1] : throw new ScraperProblem($"Page '{page}' has one capture: record it again to compare.");
         }
-        return SnapshotDiff.Compare(index.Read(from), index.Read(to));
+        return SnapshotDiff.Compare(index.Read(from), index.Read(to), max);
     }
 
     /// <summary>For each recorded page: the page object made for it, and whether the page changed since (null: no page object, or no hash).</summary>

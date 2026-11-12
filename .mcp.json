@@ -1,6 +1,6 @@
 {
   "servers": {
-    "bruinet-bdd": {
+    "bruinet": {
       "type": "stdio",
       "command": "dotnet",
       "args": ["run", "--project", "tools/Bruinet.Cli", "--", "mcp", "--solution", "."]

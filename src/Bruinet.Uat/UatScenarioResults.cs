@@ -160,7 +160,7 @@ public static class UatScenarioResults
     }
 
     /// <summary>
-    /// Writes the result of a scenario that did not bind, so the tools that read a run's results (failing, last_runs,
+    /// Writes the result of a scenario that did not bind, so the tools that read a run's results (list_results,
     /// get_trace) show it as failed with kind <c>bind</c>, not as never run (review 01, finding 4). One failed step at
     /// the first error's line, its message the diagnostics; the disk refusing it changes nothing, as for a run.
     /// </summary>

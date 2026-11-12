@@ -82,7 +82,7 @@ public static class TestBrief
                 md.Append("No control verb does this. Say it in your part of the test, or leave it marked; it is not a page object's member.\n");
                 break;
             case GapKind.NoPageObject:
-                md.Append("Draft the page object for `").Append(e.Page).Append("` (draft_page_objects with that page), then resolve again.\n");
+                md.Append("Draft the page object for `").Append(e.Page).Append("` (scrape_draft_page_objects with that page), then resolve again.\n");
                 break;
             case GapKind.NoNode:
                 md.Append("The element was not captured. Record the test again (the element is captured when acted on), or add the member by hand from its path.\n");
@@ -94,8 +94,8 @@ public static class TestBrief
                 md.Append("Resolve it by hand: the facts above are all that is known.\n");
                 break;
         }
-        md.Append("\n## Then\n\n1. `check_code`: the project builds.\n2. `resolve_actions` for ").Append(test.Session)
-            .Append(": the gap is gone.\n3. `draft_test` for it, then `run_test` once. Change only the page objects and controls; a drafted test is drafted again over itself.\n");
+        md.Append("\n## Then\n\n1. `scrape_build`: the project builds.\n2. `scrape_resolve_events` for ").Append(test.Session)
+            .Append(": the gap is gone.\n3. `scrape_draft_test` for it, then `scrape_run_drafts` once. Change only the page objects and controls; a drafted test is drafted again over itself.\n");
         return md.ToString();
     }
 

@@ -86,7 +86,7 @@ public sealed class McpStepTests : IDisposable
         var shot = Answer(Call("step_screenshot", new JsonObject()));
         var stopped = Answer(Call("step_move", new JsonObject { ["move"] = "stop" }));
 
-        Assert.True(File.Exists((string?)shot["screenshot"]));
+        Assert.True(File.Exists(Path.Combine(_solution, (string)shot["screenshot"]!)));
         Assert.Equal((true, "stopped"), ((bool)stopped["ended"]!, (string?)stopped["status"]));
         Assert.Contains("No Step-through run is going", Text(Call("step_move", new JsonObject { ["move"] = "over" })));
     }

@@ -1,11 +1,11 @@
 ---
 mode: agent
 description: Write or extend a Bruinet BDD feature file from a user story, using only steps the suite has.
-tools: ['bruinet-bdd']
+tools: ['bruinet']
 ---
 
 Write the scenario the user describes as a Bruinet feature file (`*.feature.md`), in agent mode
-with the `bruinet-bdd` MCP server.
+with the `bruinet` MCP server.
 
 1. Call `list_suites`, and pick the suite whose project should hold the file. Its `Features` folder
    is where the file goes.
@@ -16,7 +16,7 @@ with the `bruinet-bdd` MCP server.
    `TestData` metadata.
 4. Write the file in the format of the files next to it: `# Feature:`, the Metadata table, then
    `## Scenario:` sections with a `gherkin` fence each.
-5. Call `validate_scenario` with the file's path and your text. Fix every error it reports, in
+5. Call `check_scenario` with the file's path and your text. Fix every error it reports, in
    its own words, and call it again until it reports none.
 6. When a step the story needs has no phrase, do not invent one. Leave the step in, mark it in a
    comment line in the fence (`# no step yet: ...`), and tell the user which step definition is

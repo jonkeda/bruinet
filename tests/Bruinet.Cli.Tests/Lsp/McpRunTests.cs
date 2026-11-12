@@ -4,7 +4,7 @@ using Xunit;
 namespace Bruinet.Bdd.LanguageServer.Tests;
 
 /// <summary>
-/// The MCP server's run_scenario and last_runs (AI1): an agent runs a scenario on the suite's runner
+/// The MCP server's run_scenario and list_results (AI1): an agent runs a scenario on the suite's runner
 /// and reads how it went, as the preview's Run does. The counter suite of <see cref="StepTests"/>.
 /// </summary>
 public sealed class McpRunTests : IDisposable
@@ -134,7 +134,7 @@ public sealed class McpRunTests : IDisposable
 
         Assert.True((bool)result["isError"]!);
         Assert.Contains("'timeoutMinutes' must be a whole number from 1 to 120", Text(result));
-        Assert.False((bool)Call("last_runs", new JsonObject { ["path"] = Feature })["isError"]!);
+        Assert.False((bool)Call("list_results", new JsonObject { ["path"] = Feature })["isError"]!);
     }
 
     [Fact]
@@ -151,14 +151,15 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void LastRuns_AfterARun_GiveEachScenariosNewestResult()
+    public void ListResults_OfAFile_AfterARun_GiveEachScenariosNewestResult_WithItsHeadingsLine()
     {
         Call("run_scenario", new JsonObject { ["path"] = Feature });
 
-        var runs = Answer(Call("last_runs", new JsonObject { ["path"] = Feature })).AsArray();
+        var runs = Answer(Call("list_results", new JsonObject { ["path"] = Feature, ["status"] = "all" }))["results"]!.AsArray();
 
-        Assert.Equal(["Complains", "Counts", "Fails", "Parts", "Starts", "Traces"], runs.Select(run => (string?)run!["scenario"]));
-        Assert.Equal("Failed", (string?)runs[2]!["status"], ignoreCase: true);
+        Assert.Equal(["Complains", "Counts", "Fails", "Parts", "Starts", "Traces"], runs.Select(run => (string?)run!["scenario"]).Order(StringComparer.Ordinal));
+        var fails = runs.Single(run => (string?)run!["scenario"] == "Fails")!;
+        Assert.Equal(("failed", 11, 15), ((string?)fails["status"], (int?)fails["line"], (int?)fails["stepLine"]));
     }
 
     [Fact]
@@ -172,15 +173,15 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void Failing_AfterARun_NamesOnlyTheFailedScenarios_InOneCall()
+    public void ListResults_AfterARun_NamesOnlyTheFailedScenarios_InOneCall()
     {
         Call("run_scenario", new JsonObject { ["path"] = Feature });
 
-        var answer = Answer(Call("failing", new JsonObject()));
+        var answer = Answer(Call("list_results", new JsonObject()));
 
         Assert.Equal(2, (int?)answer["count"]);
-        var failed = answer["failing"]!.AsArray().Single(item => (string?)item!["scenario"] == "Fails")!;
-        Assert.Equal(("Fails", "Features/counter.feature.md#Fails", "assertion"), ((string?)failed["scenario"], (string?)failed["address"], (string?)failed["kind"]));
+        var failed = answer["results"]!.AsArray().Single(item => (string?)item!["scenario"] == "Fails")!;
+        Assert.Equal(("Fails", 11, "assertion"), ((string?)failed["scenario"], (int?)failed["line"], (string?)failed["kind"]));
     }
 
     [Fact]
@@ -276,7 +277,7 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void HttpCalls_GivesTheScenariosCallsInItsNewestRun_WithTheMisses()
+    public void GetHttpCalls_GivesTheScenariosCallsInItsNewestRun_WithTheMisses()
     {
         var log = Bruinet.Mocking.Http.HttpCallLog.PathFor(Bruinet.Mocking.Http.HttpReplaySession.PathFor(Path.Combine(Suite, "Recordings"), "Counts"));
         Directory.CreateDirectory(Path.GetDirectoryName(log)!);
@@ -292,19 +293,20 @@ public sealed class McpRunTests : IDisposable
             }
             """);
 
-        var calls = Answer(Call("http_calls", new JsonObject { ["path"] = Feature, ["line"] = 3 }));
+        var calls = Answer(Call("get_http_calls", new JsonObject { ["path"] = Feature, ["line"] = 3 }));
 
         Assert.Equal("Counts", (string)calls["scenario"]!);
         Assert.Equal(["matched", "missed"], calls["calls"]!.AsArray().Select(call => (string)call!["outcome"]!));
         Assert.Contains("Bread", (string)calls["misses"]![0]!, StringComparison.Ordinal);
         Assert.Equal(1, (int)calls["unusedExchanges"]![0]!);
-        Assert.Contains("run it with run_scenario", Text(Call("http_calls", new JsonObject { ["path"] = Feature, ["line"] = 11 })), StringComparison.Ordinal);
+        Assert.Null(calls["more"]);
+        Assert.Contains("run it with run_scenario", Text(Call("get_http_calls", new JsonObject { ["path"] = Feature, ["line"] = 11 })), StringComparison.Ordinal);
     }
 
     [Fact]
     public void ListStates_GivesTheDeclaredStates_AndOnlyThem()
     {
-        var states = Answer(Call("list_states", new JsonObject())).AsArray();
+        var states = Answer(Call("list_states", new JsonObject()))["states"]!.AsArray();
 
         Assert.Equal(["the counter has already counted {times} times"], states.Select(state => (string)state!["phrase"]!));
         Assert.Contains("HasAlreadyCounted", (string)states[0]!["from"]!, StringComparison.Ordinal);
@@ -319,7 +321,7 @@ public sealed class McpRunTests : IDisposable
         Assert.True((bool)paused["paused"]!);
         Assert.Equal("the run pauses here", (string)paused["text"]!);
         Assert.Null(paused["lastStepFailed"]);
-        Assert.Contains("give 'page'", (string)paused["next"]!, StringComparison.Ordinal);
+        Assert.Contains("give 'pageObject'", (string)paused["next"]!, StringComparison.Ordinal);
         Assert.True((bool)ended["ended"]!);
     }
 
@@ -342,7 +344,7 @@ public sealed class McpRunTests : IDisposable
             return Text(result);
         }
 
-        Assert.Contains("must be one line", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["page"] = "Home\nWhen the counter counts" }), StringComparison.Ordinal);
+        Assert.Contains("must be one line", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["pageObject"] = "Home\nWhen the counter counts" }), StringComparison.Ordinal);
         Assert.Contains("is not a test set", Refused(new JsonObject { ["state"] = "the counter has already counted 3 times", ["testData"] = "nothing-like-it" }), StringComparison.Ordinal);
         Assert.Contains("HasAlreadyCountedNine", Refused(new JsonObject { ["state"] = "the counter has already counted 9 times" }), StringComparison.Ordinal);
         // The state as list_states writes it, its placeholder not filled in (the benchmark's T4 runs passed it so).
@@ -440,7 +442,7 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public async Task Why_AfterAPassThenAFailure_NamesTheFirstStepWhereTheyPart_AndItsKind()
+    public async Task DiffSinceGreen_AfterAPassThenAFailure_NamesTheFirstStepWhereTheyPart_AndItsKind()
     {
         File.Delete(StepCounterFixture.WhyFlag);
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 41 });
@@ -452,7 +454,7 @@ public sealed class McpRunTests : IDisposable
 
             // The failure carries its short why already: no call more.
             Assert.Equal("page-changed", (string)run["scenarios"]![0]!["sinceGreen"]!["kind"]!);
-            var why = Answer(Call("why", new JsonObject { ["path"] = Feature, ["line"] = 41 }));
+            var why = Answer(Call("diff_since_green", new JsonObject { ["path"] = Feature, ["line"] = 41 }));
 
             Assert.Equal(("page-changed", 45), ((string)why["kind"]!, (int)why["step"]!["line"]!));
             Assert.Contains("drove: Minus.Tap, which the green run did not", why["differences"]!.AsArray().Select(item => (string)item!));
@@ -470,12 +472,21 @@ public sealed class McpRunTests : IDisposable
     }
 
     [Fact]
-    public void Why_WithNoFailureYet_RunsItFirst_AndWithNoGreenRunBefore_SaysSo()
+    public async Task DiffSinceGreen_RunsNothing_AndWithNoFailureOrNoGreenRun_SaysSo_AsAnAnswer()
     {
-        var result = Call("why", new JsonObject { ["path"] = Feature, ["line"] = 11 });
+        var before = Call("diff_since_green", new JsonObject { ["path"] = Feature, ["line"] = 11 });
+        Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 11 });
+        var after = Answer(Call("diff_since_green", new JsonObject { ["path"] = Feature, ["line"] = 11 }));
+        var output = new StringWriter();
+        var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:11", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
 
-        Assert.True((bool)result["isError"]!);
-        Assert.Contains("no green run", Text(result), StringComparison.Ordinal);
+        Assert.False((bool)before["isError"]!);
+        Assert.Contains("run it with run_scenario", Text(before), StringComparison.Ordinal);
+        Assert.False((bool)Answer(before)["compared"]!);
+        Assert.False((bool)after["compared"]!);
+        Assert.Contains("no green run", (string)after["note"]!, StringComparison.Ordinal);
+        Assert.Equal(0, exit);
+        Assert.StartsWith("Fails: No run of it passed", output.ToString(), StringComparison.Ordinal);
     }
 
     private static string Text(JsonObject result) => (string)result["content"]![0]!["text"]!;

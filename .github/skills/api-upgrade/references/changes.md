@@ -9,6 +9,49 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| R2-T96 | The MCP server is `bruinet` (`serverInfo.name`), was `bruinet-bdd`; rename the key in `.mcp.json` and an agent's `tools:` list to match | `bruinet-bdd` | `bruinet` |
+| R2-T96 | The MCP tools `failing` and `last_runs` are one, `list_results`: `path` for a file (what `last_runs` gave), `suite`, or every suite; `status: all` adds the passed; rows are `results` with the heading's `line`, and a suite that cannot load is under `notLoaded` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `\b(failing\|last_runs)\b` where it names the tool | `list_results` |
+| R2-T96 | The MCP tool `why` is `diff_since_green` and runs nothing: with no traced failure or no green run it answers `compared: false` and a `note`, not an error; run the scenario with `run_scenario` first (in skills, agents, prompts, `*.md`, `.mcp.json`) | `\bwhy\b` where it names the tool | `diff_since_green` |
+| R2-T96 | The MCP tool `list_scraped_projects` is `scrape_list_projects` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])list_scraped_projects\b` | `scrape_list_projects` |
+| R2-T96 | The MCP tool `get_scraper_progress` is `scrape_next` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])get_scraper_progress\b` | `scrape_next` |
+| R2-T96 | The MCP tool `start_recording` is `scrape_start` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])start_recording\b` | `scrape_start` |
+| R2-T96 | The MCP tool `capture_page` is `scrape_capture_page` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])capture_page\b` | `scrape_capture_page` |
+| R2-T96 | The MCP tool `stop_recording` is `scrape_stop` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])stop_recording\b` | `scrape_stop` |
+| R2-T96 | The MCP tool `list_recorded_pages` is `scrape_list_pages` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])list_recorded_pages\b` | `scrape_list_pages` |
+| R2-T96 | The MCP tool `get_page_snapshot` is `scrape_get_page` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])get_page_snapshot\b` | `scrape_get_page` |
+| R2-T96 | The MCP tool `find_similar_elements` is `scrape_find_similar` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])find_similar_elements\b` | `scrape_find_similar` |
+| R2-T96 | The MCP tool `search_recordings` is `scrape_find_text` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])search_recordings\b` | `scrape_find_text` |
+| R2-T96 | The MCP tool `list_controls` is `scrape_list_page_objects` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])list_controls\b` | `scrape_list_page_objects` |
+| R2-T96 | The MCP tool `detect_patterns` is `scrape_detect_patterns` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])detect_patterns\b` | `scrape_detect_patterns` |
+| R2-T96 | The MCP tool `control_brief` is `scrape_get_control_brief` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])control_brief\b` | `scrape_get_control_brief` |
+| R2-T96 | The MCP tool `match_controls` is `scrape_match_controls` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])match_controls\b` | `scrape_match_controls` |
+| R2-T96 | The MCP tool `diff_page` is `scrape_diff_page` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])diff_page\b` | `scrape_diff_page` |
+| R2-T96 | The MCP tool `suggest_controls` is `scrape_suggest_controls` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])suggest_controls\b` | `scrape_suggest_controls` |
+| R2-T96 | The MCP tool `scraped_header` is `scrape_get_header` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])scraped_header\b` | `scrape_get_header` |
+| R2-T96 | The MCP tool `write_code` is `scrape_write_file` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])write_code\b` | `scrape_write_file` |
+| R2-T96 | The MCP tool `list_recorded_actions` is `scrape_list_events` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])list_recorded_actions\b` | `scrape_list_events` |
+| R2-T96 | The MCP tool `resolve_actions` is `scrape_resolve_events` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])resolve_actions\b` | `scrape_resolve_events` |
+| R2-T96 | The MCP tool `test_brief` is `scrape_gap_brief` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])test_brief\b` | `scrape_gap_brief` |
+| R2-T96 | The MCP tool `draft_test` is `scrape_draft_test` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])draft_test\b` | `scrape_draft_test` |
+| R2-T96 | The MCP tool `run_test` is `scrape_run_drafts` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])run_test\b` | `scrape_run_drafts` |
+| R2-T96 | The MCP tool `check_code` is `scrape_build` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])check_code\b` | `scrape_build` |
+| R2-T96 | The MCP tool `explore_app` is `scrape_explore` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])explore_app\b` | `scrape_explore` |
+| R2-T96 | The MCP tool `draft_page_objects` is `scrape_draft_page_objects` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])draft_page_objects\b` | `scrape_draft_page_objects` |
+| R2-T96 | The MCP tool `verify_page_objects` is `scrape_check_page_objects` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])verify_page_objects\b` | `scrape_check_page_objects` |
+| R2-T96 | The MCP tool `update_scraper_config` is `scrape_update_config` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])update_scraper_config\b` | `scrape_update_config` |
+| R2-T96 | The MCP tool `create_scraped_project` is `scrape_create_project` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])create_scraped_project\b` | `scrape_create_project` |
+| R2-T96 | The MCP tool `rename_page_object` is `scrape_rename_page_object` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])rename_page_object\b` | `scrape_rename_page_object` |
+| R2-T96 | The MCP tool `validate_scenario` is `check_scenario` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])validate_scenario\b` | `check_scenario` |
+| R2-T96 | The MCP tool `similar_steps` is `find_similar_steps` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])similar_steps\b` | `find_similar_steps` |
+| R2-T96 | The MCP tool `review_page` is `write_review` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])review_page\b` | `write_review` |
+| R2-T96 | The MCP tool `http_calls` is `get_http_calls` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])http_calls\b` | `get_http_calls` |
+| R2-T96 | The MCP tool `tests_affected` is `list_affected_tests` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])tests_affected\b` | `list_affected_tests` |
+| R2-T96 | The MCP tool `coverage` is `get_coverage` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `(?<![\w.])coverage\b` | `get_coverage` |
+| R2-T96 | MCP go-aheads are `confirm: true`: `rename_step`'s `apply` and `delete_results`' `dryRun: false` are gone | `apply:\s*true`, `dryRun:\s*false` | `confirm: true` |
+| R2-T96 | MCP parameters renamed: `scrape_explore`'s `dryRun` is `linksOnly` and `headless` is true when left out; `scrape_get_page`'s `number` is `event` and `maxLines` is `max`; `scrape_diff_page`'s `fromNumber`, `toNumber` are `fromEvent`, `toEvent`; `scrape_find_text`'s `text` is `query`; `set_state`'s `page` is `pageObject` | `\b(dryRun\|maxLines\|fromNumber\|toNumber)\b` | the new names |
+| R2-T96 | MCP lists take `max` (50 when left out) and say `more` (the rows left out); an answer that was a bare array is an object with the rows under a name (`suites`, `states`, `testSets`, `pages`, `nodes`, `classes`, `patterns`, `members`, `events`, `projects`, `results`); `list_pages` without `page` gives each page's control count; `scrape_list_pages` gives each page's newest capture and a count, `page` its captures | a reader of the tool's JSON | read the rows by name, and `more` |
+| R2-T96 | MCP answers leave out null fields and give paths relative to the solution; `find_step_usages` gives `file` and a one-based `line`; `run_scenario`'s `sinceGreen.codeChangedMore` and `get_coverage`'s `moreFiles` are `more` | a reader of the tool's JSON | a missing field is null; join a path with the solution |
+| R2-T96 | MCP tools that take a suite and are given none answer with the only suite, and with several ask for one; `get_coverage` no longer builds unless `build: true` (it says when the build is older than the sources); `record_video` and `scrape_run_drafts` end after `timeoutMinutes` (10) | a call without `suite` in a solution of several | give `suite`; `build: true` |
 | R2-T92 | `tools/Scripts/timings.ps1` is gone: the report is a command (in scripts, `*.ps1`, `*.md`) | `timings\.ps1` | `bruinet tests timings <folder>` (`--top`, `--out`); it writes the same `timings.md` beside the timings |
 | R2-T90 | `bruinet voice` is a group of verbs: `--fill`, `--ask`, `--prune` and `--index` are gone, and `buy` and `prune` ask first (in scripts, `*.ps1`, `*.md`) | `bruinet\s+voice\b(?!\s+(list\|fill\|buy\|prune\|index)\b)` | `voice list`; `voice fill`; `voice buy --yes` for `--ask`; `voice prune --yes`; `voice index`; with no one at a terminal `buy` and `prune` need `--yes` |
 | R2-T89 | A test project's folder is `--project` in `tests` and `voice`; `--suite` is only a suite's name (in scripts, `*.ps1`, `*.md`) | `bruinet\s+(tests\s+(touch-map\|affected)\|voice)\b.*--suite\b` | `--project <folder>` |

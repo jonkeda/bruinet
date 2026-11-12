@@ -36,7 +36,7 @@ public sealed class TestBriefTests : IDisposable
         Assert.Contains("Node 12 of", brief);
         Assert.Contains("public LabelControl<UserFormPage>", brief);
         Assert.Contains("assert its text (ITextControlObject)", brief);
-        Assert.Contains("`run_test` once", brief);
+        Assert.Contains("`scrape_run_drafts` once", brief);
     }
 
     [Fact]

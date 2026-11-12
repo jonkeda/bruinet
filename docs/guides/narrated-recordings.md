@@ -149,7 +149,7 @@ Example: [samples/Todo/.../VideoScripts/how-todo-works.video.md](../../samples/T
 | Visual Studio, VS Code | **Record** on a video script's title in the Scenario Preview, or beside **Run** on a scenario heading. It builds, runs, and offers **Watch** when the video is made. The preview lists a file's recordings to watch |
 | Presenter, a whole script | **Narrator mode** (the video camera): open the script, **Record** the checked scenes, **Stitch**. Scene by scene: a scene recorded again replaces that scene only ([Presenter](../platform-guides/presenter.md#narrator-mode)) |
 | Presenter, one run | **Record** (the dot) in Present mode's run toolbar: each run is recorded while it is on, narrated by the scene a video script has for the scenario. **Watch** opens the last one |
-| An agent | MCP `record_video` (a script or a scenario), then `review_page`; the `narrated-review` skill |
+| An agent | MCP `record_video` (a script or a scenario), then `write_review`; the `narrated-review` skill |
 | `dotnet test` | the variables below, with a filter on the scenes' addresses |
 
 ```powershell

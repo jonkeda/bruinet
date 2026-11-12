@@ -7,7 +7,8 @@ namespace Bruinet.Cli.Scenario;
 
 /// <summary>
 /// <c>bruinet scenario why &lt;file&gt;:&lt;line&gt;</c> (AI9): where a scenario's newest failing run first parted from its last green
-/// run, and the files changed since that touch the step; the MCP server's <c>why</c> as text.
+/// run, and the files changed since that touch the step; the MCP server's <c>diff_since_green</c> as text. Nothing to compare
+/// (no failure, or no green run before it) is an answer, exit 0 (D3).
 /// </summary>
 internal static class WhyCommand
 {
@@ -37,7 +38,7 @@ internal static class WhyCommand
                 ["jsonrpc"] = "2.0",
                 ["id"] = 1,
                 ["method"] = "tools/call",
-                ["params"] = new JsonObject { ["name"] = "why", ["arguments"] = arguments },
+                ["params"] = new JsonObject { ["name"] = "diff_since_green", ["arguments"] = arguments },
             }.ToJsonString())!["result"]!;
             var answer = (string)result["content"]![0]!["text"]!;
             if ((bool?)result["isError"] == true)
@@ -55,6 +56,11 @@ internal static class WhyCommand
     // The answer as a reader takes it in: the step and kind first, then what differed, then the files.
     private static string Text(JsonNode why)
     {
+        if ((bool?)why["compared"] == false)
+        {
+            return $"{(string?)why["scenario"]}: {(string?)why["note"]}";
+        }
+
         var lines = new List<string>
         {
             $"{(string?)why["scenario"]}: {(string?)why["kind"]}" + (why["step"] is { } step ? $" at line {(int?)step["line"]}, {(string?)step["text"]}" : string.Empty),

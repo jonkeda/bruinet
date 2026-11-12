@@ -14,12 +14,16 @@ namespace Bruinet.Bdd.LanguageServer;
 /// with the gate's own words, so an agent writes steps that exist rather than inventing them. It
 /// holds data and checks; it calls no model. MCP over stdio: one JSON-RPC message per line.
 /// </summary>
-public sealed class BddMcpServer : IDisposable
+public sealed partial class BddMcpServer : IDisposable
 {
     private const string ProtocolVersion = "2025-06-18";
 
-    // Readable text for an agent: quotes and non-ASCII kept as they are, not \u escapes.
-    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web) { Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    // Readable text for an agent: quotes and non-ASCII kept as they are, not \u escapes; a null field left out (M4).
+    private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
+    {
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+    };
 
     private readonly BddLanguageServer _server = new();
 
@@ -35,66 +39,6 @@ public sealed class BddMcpServer : IDisposable
         _solutionDir = Path.GetFullPath(solutionDir);
         _server.Initialize(new InitializeParams(null, null, new InitializationOptions(_solutionDir)));
     }
-
-    /// <summary>The tools, as <c>tools/list</c> gives them.</summary>
-    public static IReadOnlyList<(string Name, string Description, JsonObject Schema)> Tools { get; } =
-    [
-        ("list_suites", "The UAT and BDD suites of the solution: name, head, config, and whether it is built.", Schema()),
-        ("list_steps", "The steps a suite's scenarios can use: keyword, phrase with {placeholders} and their types, and where it comes from (class, page, namespace, callable step). Use only these phrases in a scenario. 'query' keeps the steps holding every word of it.", Schema(("suite", "string", "A suite name; the first suite when left out."), ("query", "string", "Words the phrase must hold."))),
-        ("list_pages", "A UI suite's pages and their controls: the names {page} and {control} take.", Schema(("suite", "string", "A suite name; the first suite when left out."))),
-        ("list_test_sets", "A suite's test sets: the values of a feature file's TestData metadata.", Schema(("suite", "string", "A suite name; the first suite when left out."))),
-        ("validate_scenario", "Checks a feature or step file as the xUnit gate would, with its words: every step must bind. Give 'path' (where the file is, or will be, in a suite's Features folder) and 'text' for a draft; without 'text' the file on disk is checked.", Schema(("path", "string", "The file's path; required."), ("text", "string", "The draft's text; the file on disk when left out."))),
-        ("draft_feature", "Drafts a feature file from a C# UI test, to start converting it: each statement becomes the suite phrase whose words match it best, or a commented gap when none does, so the draft binds as it is. Gives the draft, where it would go, validate_scenario's answer, the gaps (the steps the suite lacks, each with its statement) and the phrases that differ only in a value. Writes nothing.", Schema(("path", "string", "The C# test file; required."), ("method", "string", "The test method; the file's first test when left out."), ("feature", "string", "Where the feature file would go; the module's Features folder when left out."))),
-        ("similar_steps", "The phrases of a suite that differ only in one value (a name or a number), each group with the phrase with a {value} placeholder that could stand for them all.", Schema(("suite", "string", "A suite name; the first suite when left out."), ("query", "string", "Words a phrase of the group must hold."))),
-        ("find_step_usages", "The steps across every suite that use a C# member: a step definition, a page phrase or a page object's control, as Namespace.Type.Member.", Schema(("symbol", "string", "Namespace.Type.Member; required."))),
-        ("record_video", "Records a video script (*.video.md), or the scenario at 'line' of a feature file, on video with its voice-over: builds the suite, runs the scenes with BRUINET_RECORD, and gives the video, its captions (.srt) and its timeline. Needs ffmpeg; says how to get it when it is missing. Takes minutes: one scene is one scenario run.", Schema(("path", "string", "The video script or the feature file; required."), ("line", "integer", "The scenario heading's line, for a feature file."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("recordingsFolder", "string", "Where the video goes; the suite's TestResults/recordings when left out."), ("voice", "string", "The voice, when the script names none."))),
-        ("review_page", "Writes the review page an agent hands over when a feature is done: what it did, what changed, and each recorded video with captions, chapters and every step's result. Give the videos record_video made. Returns the page's path, to open in a browser.", Schema(("title", "string", "What the work was; required."), ("summary", "string", "A paragraph or two on what was done."), ("changes", "array", "What changed, a line each; code spans in backticks are kept."), ("videos", "array", "The videos (.mp4) record_video made; required."), ("path", "string", "Where the page goes; beside the first video when left out."))),
-        ("list_scraped_projects", "The UI test projects the Scraper records into (those with a scraper.config.md): name, folder, platform, start URL, recording sessions.", Schema()),
-        ("get_scraper_progress", "Where a scraped project is in the workflow (1 Project, 2 Connect, 3 Collect pages, 4 Review, 5 Controls, 6 Page objects, 7 Verify, 8 Tests): each step's state (Done, Next, Todo, Attention) and summary, and the next thing to do, as the Scraper view shows it.", Schema(("project", "string", "The project; the only one when left out."))),
-        ("start_recording", "Opens the recording browser (a Chromium window the user works in) on a scraped project's start URL, and starts a recording session in the project's Recordings folder. Each page the app moves to is captured once it settles. One recording at a time.", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "What the session is about, e.g. 'invoices'; required."), ("url", "string", "Where to start; the config's StartUrl when left out."), ("autoCapture", "boolean", "Capture each page the app moves to; true when left out."), ("actions", "boolean", "A test recording: what the user does is recorded too, and the browser has Assert and Stop; false when left out."))),
-        ("capture_page", "Captures the page the recording browser shows now. Without a name, a page that did not change since its last capture is not captured again.", Schema(("name", "string", "What to call the page, e.g. 'Invoice edit'."))),
-        ("stop_recording", "Closes the recording browser. The session stays in the project.", Schema()),
-        ("list_recorded_pages", "A scraped project's recorded pages, by page key (the path and hash route with ids as {id}): name, location and every capture (session, number, when, node count), newest first.", Schema(("project", "string", "The project; the only one when left out."))),
-        ("get_page_snapshot", "A captured page as an outline: one line per node that matters, '#<node> <type> \"text\" name=... role=... #id .class [data-*]', indented by depth; wrappers with nothing of their own are left out. The newest capture unless 'session' is given. Give 'node' for one node's subtree when the page is large.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("session", "string", "A session id, for an older capture."), ("number", "integer", "The capture's number in that session."), ("node", "integer", "A node's number: only its subtree."), ("maxLines", "integer", "At most this many lines; 400 when left out."))),
-        ("find_similar_elements", "The nodes, on every recorded page's newest capture, of the same kind as a node: the same type, role, class names (generated ones left out) and child types. A pattern on many pages is a control to make.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("node", "integer", "The node's number on the page's newest capture; required."))),
-        ("search_recordings", "The nodes, on every recorded page's newest capture, whose text, accessible name or an attribute value holds the text (ignoring case).", Schema(("project", "string", "The project; the only one when left out."), ("text", "string", "What to look for; required."))),
-        ("list_controls", "The page objects and controls a scraped project has (and the scraped projects it references): name, kind, base, file, the header saying what it was made from, and each control property with its locator. Reuse these before making new ones.", Schema(("project", "string", "The project; the only one when left out."))),
-        ("detect_patterns", "What the recorded pages are built from, found without a model: parts that repeat across pages or within one (controls to make), and forms, tables, lists, navigation and dialogs (structure a page object names). Each with its kind, on how many pages, how often, examples (page, node) and the control that already stands for it.", Schema(("project", "string", "The project; the only one when left out."), ("max", "integer", "At most this many; 30 when left out."))),
-        ("control_brief", "Everything known about a pattern, to make a control from it: where to write the file and what to read (nothing else), where it occurs, an example outline with its parent, its parts with relative locators and in how many occurrences each is found, and hints (what the elements are, a base, members). Decide from the facts; the hints help.", Schema(("project", "string", "The project; the only one when left out."), ("signature", "string", "The pattern's signature, from detect_patterns; required."), ("variant", "string", "The pattern's variant, from detect_patterns, when it has several."), ("lifted", "boolean", "The pattern's lifted, from detect_patterns."), ("name", "string", "The control's name; the pattern's own when left out."))),
-        ("match_controls", "Which of the project's controls occur on a page (by the signature in their header), the page object made for the page, and whether the page changed since it was made.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."))),
-        ("diff_page", "What changed on a recorded page between two captures: nodes added, removed and changed, as outline lines. By default from the capture its page object was made from (else the one before the newest) to the newest: what to change in the page object after the app changed.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("fromSession", "string", "The older capture's session."), ("fromNumber", "integer", "Its number in that session."), ("toSession", "string", "The newer capture's session; the newest when left out."), ("toNumber", "integer", "Its number in that session."))),
-        ("suggest_controls", "For a recorded page (or one node's subtree of it): the members a page object would have, each with a name, the Bruinet control that fits (the Bruinet.Blazor one in a Blazor project), its namespace, and the locator in the preference order (test id, accessible name or text, stable id, stable class, position last) with whether it is stable and why. Names are unique on the page; a node in a frame gives the frame member (scope) to declare it on. A starting point: rename and drop as the page needs.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("node", "integer", "Only this node's subtree."))),
-        ("scraped_header", "The first line a generated file must have, saying what it was made from: for a page object give the page, for a control also the node it was made from. Put it above the usings.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("node", "integer", "For a control: the node on the page's newest capture."))),
-        ("write_code", "Writes a C# file (a page object or control) into the scraped project, at a path relative to it, when its syntax is valid; otherwise gives the syntax errors and writes nothing. Show the user the code first.", Schema(("project", "string", "The project; the only one when left out."), ("path", "string", "The file, relative to the project, e.g. Pages/InvoicePage.cs; required."), ("code", "string", "The whole file; required."))),
-        ("list_recorded_actions", "A recording session's events in order: its page captures and, in a test recording, the user's actions (click, input, select, check, key, navigate, dialog, assert) with the node each acted on.", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "The session id; required."))),
-        ("resolve_actions", "A test recording's actions resolved, from files only: each to the page object of its page, the member whose locator finds its node, the control's verb and the catalog phrase; and the gaps, each with why (NoPageObject, NoNode, NoMember, NoVerb, NoPhrase).", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "The session id; required."))),
-        ("test_brief", "A gap of a test recording as a brief: what the user did, the element in its capture, what the gap needs (a member, with the one the rules would write; a verb; a page object), the one file to change, and how to check. Fill the gap in the page objects or controls, never in the drafted test; never invent a phrase.", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "The session id; required."), ("event", "integer", "The gap's event number; the first five gaps when left out."))),
-        ("draft_test", "Drafts a test recording by rules: an xUnit test calling page objects (Tests/Recorded, with the person's part beside it) and/or a .feature.md scenario of catalog phrases (Features/Recorded), with the gaps marked. Drafted again over its earlier draft, never over a person's file.", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "The session id; required."), ("target", "string", "xunit, scenario or both; the config's ## Tests Target when left out."), ("name", "string", "The test's name; the session's when left out."))),
-        ("run_test", "Runs each draft of a test recording once, built first: an xUnit draft by its class, a scenario by its address. Gives each run's counts and, when it did not pass, why and the end of the output. Takes a minute or more.", Schema(("project", "string", "The project; the only one when left out."), ("session", "string", "The session id; required."))),
-        ("check_code", "Builds the scraped project with its analyzers and gives the errors and warnings. Generated code is done only when this passes: fix what it reports and call it again.", Schema(("project", "string", "The project; the only one when left out."))),
-        ("explore_app", "Explores a scraped project's app by itself: visits its pages and the states safe clicks show, and captures each into a new recording session, within the project's Explore guards (which clicks, which requests, which hosts) and budget. Asks first: without 'confirm' it only gives the summary of host, guards and budget; show it to the person and call again with confirm: true once they agree. A dry run (the default) follows links only and lists what it would click. Gives why it stopped, the counts and the report (explore.md).", Schema(("project", "string", "The project; the only one when left out."), ("url", "string", "Where to start; the config's StartUrl when left out."), ("dryRun", "boolean", "Links only, nothing clicked; true when left out."), ("maxPages", "integer", "Overrides MaxPages."), ("maxDepth", "integer", "Overrides MaxDepth."), ("maxMinutes", "integer", "Overrides MaxMinutes."), ("headless", "boolean", "No browser window; false when left out. A sign-in page stops the run either way."), ("confirm", "boolean", "The person agreed to the summary; false when left out."))),
-        ("draft_page_objects", "Drafts a page object for each recorded page (or one), from the suggestions and no model: <Name>.scraped.cs, a partial class a person adds to in <Name>.cs, which a draft never touches. Builds the project; a draft it does not build with is put back, with its errors. Gives each page's outcome, the members a new draft removed, and the repeated patterns to make controls of (with /bruinet-scrape-pages). A page with a page object made by hand is left alone.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "A page key; every recorded page when left out."))),
-        ("verify_page_objects", "Opens each recorded page in the running app (a browser of its own, under the Explore guards) and looks up every member of the project's page objects as Bruinet would: found once, found several times, or not found. Stop a recording first.", Schema(("project", "string", "The project; the only one when left out."), ("headless", "boolean", "No browser window; true when left out."))),
-        ("update_scraper_config", "Makes one change to a scraped project's scraper.config.md, keeping the rest of the file: 'set' a field (values: field, value; in 'Danger words': category, true or false), 'add' a row (values: its cells: Explore hosts [Host], Never click and Always click [Match: 'text: ...' or 'selector: ...'], Never visit [Url], Allow requests [Method, Url], Aliases [Url]) or 'remove' one (values: its first cell). Asks first: without 'confirm' it says what it would write; call again with confirm: true once the person agrees.", Schema(("project", "string", "The project; the only one when left out."), ("action", "string", "set, add or remove; required."), ("section", "string", "The section without ##, e.g. Explore, Never click; required."), ("values", "array", "The values, as strings; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
-        ("create_scraped_project", "Makes a scraped UI test project in the solution's folder: its .csproj (referencing Bruinet.Html, and Bruinet.Blazor for blazor), its scraper.config.md and an empty Pages folder. It is not added to the solution. Asks first: without 'confirm' it gives what it would write, or what is wrong by field; call again with confirm: true once the person agrees.", Schema(("name", "string", "The project's name; required."), ("folder", "string", "Its folder, relative to the solution's; proposed when left out."), ("platform", "string", "html or blazor; html when left out."), ("startUrl", "string", "Where recording and Explore start; required."), ("testIds", "array", "The attributes that are test ids, preferred first."), ("references", "string", "projects or packages; proposed when left out."), ("confirm", "boolean", "The person agreed; false when left out."))),
-        ("list_states", "The states the suite's app can be put in, declared with [BddState] in its test project: each state's phrase, its parameters and the method that sets it (through test data or the service head). A Given may name one; set_state puts the app in one.", Schema(("suite", "string", "The suite; its only one when left out."))),
-        ("set_state", "Puts the suite's app in a declared state (list_states) on the suite's runner, against its own host and database, and leaves it paused there as a Step-through: the answer is where it paused; step_state and step_screenshot read the app, step_move 'stop' ends it. Only a declared state runs. Use it to look at a screen without clicking to it, or to try a page object call from a known start.", Schema(("state", "string", "The state as a Given says it, its parameters filled in, e.g. 'signed in as Alice'; required."), ("suite", "string", "The suite; its only one when left out."), ("testData", "string", "The test set to start from; the suite's DefaultTestData when left out."), ("page", "string", "The page the app is on in that state (list_pages): checked, and the page step_state then reads; none when left out."), ("timeoutMinutes", "integer", "How long to wait for the state, 1 to 10; 2 when left out."))),
-        ("run_scenario", "Runs the scenario at 'line' of a feature file (an outline's every row), or every scenario of the file, on the suite's runner, and waits for the end: each scenario's status and, for one that failed, the step (file, line, text) and the message. Runs the feature file as it is on disk, with the suite's last build: give build: true after changing C# (page objects, steps, the app). Results are kept as the gate keeps them (last_runs).", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; every scenario of the file when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite's project first; false when left out."), ("timeoutMinutes", "integer", "Cancel the run after this long; 10 when left out."), ("replay", "string", "record, replay or refresh: the run's HTTP and SQL replay mode (BRUINET_HTTP_REPLAY, BRUINET_SQL_REPLAY), for a suite that replays its dependencies; the suite's own when left out."), ("trace", "string", "all: read the page after every step for the trace, not only after a failed one (get_trace); off: no trace; each scenario is traced when left out."))),
-        ("last_runs", "The newest result of each scenario of a feature file, from any run (run_scenario, the IDE, the xUnit gate): status, duration and, for one that failed, the message and the step's line.", Schema(("path", "string", "The feature file; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("step_start", "Opens the scenario at 'line' on the suite's runner, paused before its first step, and gives where it is: file, line, step text, page, the step's arguments. Then step_move goes on one step (or into a call, out of one, to the end, or stops), each answering where it paused next, whether the step just run failed and why, or how the run ended. One Step-through at a time; no run_scenario meanwhile.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("step_move", "Moves the paused Step-through: 'over' runs the next step (a call as one), 'into' goes into a call, 'out' to the end of the call, 'continue' to the end (or a breakpoint in the IDE's breakpoints file), 'stop' ends it. Answers where it paused next, or how it ended. A step still running after the wait answers Waiting: then 'wait' waits again (and gives a pause that came meanwhile), or 'stop'. The server answers nothing else while it waits.", Schema(("move", "string", "over, into, out, continue, wait or stop; required."), ("timeoutMinutes", "integer", "How long to wait for the pause, 1 to 10; 2 when left out."))),
-        ("step_state", "The paused Step-through's current page: each control of its page object, its kind, whether it is shown, and what it shows (a toggle's state, a range's value, a selector's choice, or text); with no page current, the page that says it is loaded. Read without a screenshot; where to look when a step is about to fail.", Schema()),
-        ("step_screenshot", "A screenshot of the app while the Step-through is paused: the file's path in the solution's TestResults/step-screenshots, to look at; a head without pixels gives the screen's element tree or markup, inline as tree.", Schema()),
-        ("coverage", "Which lines of the app and the suite one scenario runs: it runs the scenario at 'line' through the xUnit gate (dotnet test, by its address) with .NET's code coverage, and gives, per file, the lines hit and missed as ranges. For the given files, or the files changed in the working tree when left out. Proves a new scenario reaches the code it is about, or shows lines a passing one never ran (lines, not branches). Slower than run_scenario: a build and a process per call.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("files", "array", "Source files to report, relative to the solution; the working tree's changed files when left out."), ("suite", "string", "The suite a linked file runs in; its own when left out."), ("build", "boolean", "Build the suite first; true when left out."), ("head", "string", "BRUINET_HEAD for the run (headless, bunit, web, ...); the server's own when left out."), ("timeoutMinutes", "integer", "End the run after this long; 10 when left out."))),
-        ("why", "Why a scenario that passed before fails now: its newest failing run against its newest earlier passing run, step by step. The first step where they part (page, controls driven, what the app said, what the page showed, status), a kind (page-changed, data-changed, timing-only, scenario-changed), steps that got much slower, and the files changed since the passing run's commit that touch that step or an earlier one. SQL is not compared (the trace has none); page values only when both runs read pages (trace: all). Builds and runs the scenario first when no failure of it is traced yet. Where to start before reading code.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("get_trace", "What a scenario's newest traced run did, step by step: each step's page, control calls (a slow call or many attempts is a wait), app events, and the page's controls after the failed step. Without step: one row per step and the failed step in full; with step (a step's line): that step in full. Every run that passed or failed is traced; the page after every step only with run_scenario's trace: all.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("step", "integer", "A step's line: that step in full."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("http_calls", "The HTTP calls a scenario made in its newest run that recorded or replayed them (AI11): method, URL, status and whether the recording answered it (recorded, matched, missed), the misses, and the recorded calls it no longer makes. Shows why a replayed scenario failed on its backend.", Schema(("path", "string", "The feature file; required."), ("line", "integer", "A line of the scenario: its heading, a tag or a step; required."), ("suite", "string", "The suite a linked file runs in; its own when left out."))),
-        ("failing", "Every scenario whose newest run failed, in one suite or all of them: file, scenario, address, when, the kind of failure and the start of its message. Where to start when tests fail; get_trace gives one in full.", Schema(("suite", "string", "A suite's name; every suite when left out."))),
-        ("tests_affected", "The tests and scenarios of a UI suite that a change reaches, each with why, and one dotnet test --filter that runs them; or that the whole suite must run, and why. From the suite's touch map (touch-map.json, written by 'bruinet tests touch-map' after a full run). The change is git's since 'base' with the working tree, or the given files.", Schema(("suite", "string", "A suite's name, or a test project's folder relative to the solution; required."), ("base", "string", "Changed since this commit; HEAD (the working tree's changes) when left out."), ("files", "array", "These changed files instead of git's, relative to the solution."), ("always", "array", "Filter terms run whatever changed, e.g. Gate=Smoke."))),
-        ("rename_step", "Renames a callable step (a '## Step:' heading in a steps file) and every call of it across the suites, each call keeping its values. Give the heading's or a call's line. Without apply: true it only gives the edits (file, line, before, after); with it, it writes them, then checks every changed file as validate_scenario does and puts all back when one fails.", Schema(("path", "string", "The steps file or a feature file with a call; required."), ("line", "integer", "The heading's or the call's line; required."), ("newPhrase", "string", "The new phrase, with the same {placeholders}; required."), ("apply", "boolean", "Write the edits; false when left out."))),
-        ("rename_page_object", "Renames a scraped project's page object for a recorded page: its class, its draft and the person's part, in the files that declare it. Files that only use it are listed, not changed: fix them, then check_code. Asks first: without 'confirm' it only says what it would do.", Schema(("project", "string", "The project; the only one when left out."), ("page", "string", "The page key; required."), ("newName", "string", "The new class name; required."), ("confirm", "boolean", "The person agreed; false when left out."))),
-        ("delete_results", "Deletes old scenario results from every run, for good: of a scenario (the heading at 'line' of 'path'), a feature file ('path') or a suite ('suite'). Only scenario reports and their screenshots; a run left empty goes. Counts only (dryRun) unless 'dryRun' is false.", Schema(("scope", "string", "scenario, file or suite; required."), ("path", "string", "The feature file, for a scenario or a file."), ("line", "integer", "The scenario heading's line, for a scenario."), ("suite", "string", "The suite, for a suite (or the one a linked file is picked in)."), ("dryRun", "boolean", "Only count; true when left out."))),
-    ];
 
     /// <summary>Serves until the input ends.</summary>
     public async Task RunAsync(TextReader input, TextWriter output, CancellationToken cancellationToken = default)
@@ -142,19 +86,11 @@ public sealed class BddMcpServer : IDisposable
                 {
                     ["protocolVersion"] = ProtocolVersion,
                     ["capabilities"] = new JsonObject { ["tools"] = new JsonObject() },
-                    ["serverInfo"] = new JsonObject { ["name"] = "bruinet-bdd", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
-                    ["instructions"] = "Bruinet BDD: use list_steps before writing a scenario step, and validate_scenario before proposing a feature file. When tests fail, failing names them in one call. To check a scenario works, run it with run_scenario (build: true after changing C#): a failed one comes with its failure (kind, expected and actual, locator, binding, the code frames to look in) and, for a scenario that passed before, sinceGreen: where it parted from that run and the code changed since; last_runs gives the newest results; get_trace gives what a failed run did step by step (each step's page, control calls and waits, app events, the page after the failure); for a scenario that passed before and fails now, why runs it (when needed) and gives where it first parted from the last green run and the code changed since; to look at a failure as it happens, step through it with step_start and step_move; to look at a screen without clicking to it, set_state puts the app in a declared state (list_states). Never invent a phrase: leave a step that has none as a marked gap. To turn a C# UI test into a feature file: draft_feature, and similar_steps for phrases that differ only in a value. When a feature is done: record its scenarios (record_video) and hand over a review_page. Page objects from recorded pages: list_recorded_pages, get_page_snapshot and find_similar_elements. A recorded test: resolve_actions, test_brief per gap (fill it in page objects, never in the draft), draft_test, run_test; the user browses in the recording browser, never sign in for them.",
+                    ["serverInfo"] = new JsonObject { ["name"] = "bruinet", ["version"] = typeof(BddMcpServer).Assembly.GetName().Version?.ToString() ?? "0" },
+                    ["instructions"] = Instructions,
                 },
                 "ping" => new JsonObject(),
-                "tools/list" => new JsonObject
-                {
-                    ["tools"] = new JsonArray([.. Tools.Select(tool => (JsonNode)new JsonObject
-                    {
-                        ["name"] = tool.Name,
-                        ["description"] = tool.Description,
-                        ["inputSchema"] = tool.Schema.DeepClone(),
-                    })]),
-                },
+                "tools/list" => new JsonObject { ["tools"] = new JsonArray([.. Tools.Select(tool => (JsonNode)Listed(tool))]) },
                 "tools/call" => Call((string?)request["params"]?["name"] ?? string.Empty, request["params"]?["arguments"] as JsonObject ?? []),
                 _ => throw new McpException(-32601, $"No method '{method}'."),
             };
@@ -176,77 +112,153 @@ public sealed class BddMcpServer : IDisposable
         {
             object answer = name switch
             {
-                "list_suites" => ListSuites(),
-                "list_steps" => ListSteps(Suite(arguments), (string?)arguments["query"]),
-                "list_states" => ListStates(Suite(arguments)),
+                "list_suites" => ListSuites(arguments),
+                "list_steps" => ListSteps(Suite(arguments), arguments),
+                "list_states" => ListStates(Suite(arguments), arguments),
                 "set_state" => SetState(arguments),
-                "list_pages" => ListPages(Suite(arguments)),
-                "list_test_sets" => TestSets(Suite(arguments)),
-                "validate_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
+                "list_pages" => ListPages(Suite(arguments), arguments),
+                "list_test_sets" => Capped("testSets", TestSets(Suite(arguments)), arguments),
+                "check_scenario" => Validate(Required(arguments, "path"), (string?)arguments["text"]),
                 "draft_feature" => DraftFeature(Required(arguments, "path"), (string?)arguments["method"], (string?)arguments["feature"]),
-                "similar_steps" => SimilarSteps(Suite(arguments), (string?)arguments["query"]),
-                "find_step_usages" => _server.Usages(new UsagesParams(Required(arguments, "symbol"))),
+                "find_similar_steps" => SimilarSteps(Suite(arguments), arguments),
+                "find_step_usages" => Usages(arguments),
                 "run_scenario" => RunScenario(arguments),
-                "coverage" => Coverage(arguments),
+                "get_coverage" => Coverage(arguments),
                 "step_start" => StepStart(arguments),
                 "step_move" => StepMove(arguments),
-                "step_state" => _server.StepReadPageAsync().GetAwaiter().GetResult() is var read && read.State is { } state
-                    ? new { state.Page, state.Reason, Controls = state.Controls.Take(60).Select(control => new { control.Name, control.Kind, control.Shown, control.Value, control.Unreadable }), More = state.Controls.Count > 60 ? state.Controls.Count - 60 : (int?)null }
-                    : throw new ToolProblem($"No page state: {read.Reason}"),
+                "step_state" => StepState(arguments),
                 "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? Screenshot(taken) : throw new ToolProblem($"No screenshot: {shot.Reason}"),
-                "last_runs" => LastRuns(arguments),
+                "list_results" => ListResults(arguments),
                 "get_trace" => GetTrace(arguments),
-                "why" => Why(arguments),
-                "http_calls" => HttpCalls(arguments),
-                "failing" => Failing(arguments),
-                "tests_affected" => TestsAffected(arguments),
+                "diff_since_green" => DiffSinceGreen(arguments),
+                "get_http_calls" => HttpCalls(arguments),
+                "list_affected_tests" => TestsAffected(arguments),
                 "rename_step" => RenameStep(arguments),
-                "rename_page_object" => Scraper(() => RenamePageObject(arguments)),
                 "delete_results" => DeleteResults(arguments),
                 "record_video" => RecordVideo(arguments),
-                "review_page" => ReviewPage(arguments),
-                "list_scraped_projects" => Scraper(() => _server.ScraperProjects()),
-                "get_scraper_progress" => Scraper(() => _server.Scraper.Progress((string?)arguments["project"])),
-                "start_recording" => Scraper(() => _server.Scraper.StartRecordingAsync((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["url"], (bool?)arguments["autoCapture"] ?? true, actions: (bool?)arguments["actions"] ?? false).GetAwaiter().GetResult()),
-                "list_recorded_actions" => Scraper(() => _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session"))),
-                "resolve_actions" => Scraper(() => _server.Scraper.ResolveActions((string?)arguments["project"], Required(arguments, "session"))),
-                "test_brief" => Scraper(() => string.Join("\n\n---\n\n", _server.Scraper.TestBriefs((string?)arguments["project"], Required(arguments, "session"), (int?)arguments["event"]))),
-                "draft_test" => Scraper(() => _server.ScraperDraftTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["target"], (string?)arguments["name"])) switch { { Problem: { } problem } => throw new ScraperProblem(problem), var drafted => drafted.Value! }),
-                "run_test" => Scraper(() => _server.ScraperRunTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), null, null)).GetAwaiter().GetResult() switch { { Problem: { } problem } => throw new ScraperProblem(problem), var runs => runs.Value! }),
-                "capture_page" => Scraper(() => (object?)_server.Scraper.CapturePageAsync((string?)arguments["name"]).GetAwaiter().GetResult() ?? new { Captured = false, Reason = "The page did not change since its last capture; give a name to capture it anyway." }),
-                "stop_recording" => Scraper(() => (object?)_server.Scraper.StopRecordingAsync().GetAwaiter().GetResult() ?? new { Stopped = false, Reason = "No recording was in progress." }),
-                "list_recorded_pages" => Scraper(() => _server.ScraperPages(new ScraperProjectParams((string?)arguments["project"])) switch { { Problem: { } problem } => throw new ScraperProblem(problem), var pages => pages.Value! }),
-                "get_page_snapshot" => Scraper(() => SnapshotOutline.Render(_server.Scraper.Snapshot((string?)arguments["project"], Required(arguments, "page"), (string?)arguments["session"], (int?)arguments["number"]).Snapshot, (int?)arguments["node"] ?? 0, (int?)arguments["maxLines"] ?? 400)),
-                "find_similar_elements" => Scraper(() => _server.Scraper.Similar((string?)arguments["project"], Required(arguments, "page"), (int?)arguments["node"] ?? throw new ToolProblem("'node' is required."))),
-                "list_controls" => Scraper(() => _server.Scraper.Controls((string?)arguments["project"])),
-                "detect_patterns" => Scraper(() => _server.Scraper.Patterns((string?)arguments["project"], (int?)arguments["max"] ?? 30)),
-                "control_brief" => Scraper(() => _server.Scraper.ControlBrief((string?)arguments["project"], Required(arguments, "signature"), (string?)arguments["name"], (string?)arguments["variant"], (bool?)arguments["lifted"] ?? false).Text),
-                "match_controls" => Scraper(() => _server.Scraper.Match((string?)arguments["project"], Required(arguments, "page"))),
-                "diff_page" => Scraper(() => _server.Scraper.Diff((string?)arguments["project"], Required(arguments, "page"), (string?)arguments["fromSession"], (int?)arguments["fromNumber"], (string?)arguments["toSession"], (int?)arguments["toNumber"])),
-                "suggest_controls" => Scraper(() => _server.Scraper.Suggest((string?)arguments["project"], Required(arguments, "page"), (int?)arguments["node"])),
-                "scraped_header" => Scraper(() => _server.Scraper.Header((string?)arguments["project"], Required(arguments, "page"), (int?)arguments["node"])),
-                "write_code" => Scraper(() => WriteCode(arguments)),
-                "check_code" => Scraper(() => _server.Scraper.CheckCodeAsync((string?)arguments["project"]).GetAwaiter().GetResult()),
-                "explore_app" => Scraper(() => ExploreApp(arguments)),
-                "update_scraper_config" => Scraper(() => UpdateConfig(arguments)),
-                "create_scraped_project" => Scraper(() => CreateProject(arguments)),
-                "draft_page_objects" => Scraper(() => _server.Scraper.DraftAsync((string?)arguments["project"], (string?)arguments["page"]).GetAwaiter().GetResult()),
-                "verify_page_objects" => Scraper(() => _server.Scraper.VerifyAsync((string?)arguments["project"], visible: !((bool?)arguments["headless"] ?? true)).GetAwaiter().GetResult()),
-                "search_recordings" => Scraper(() => _server.Scraper.Search((string?)arguments["project"], Required(arguments, "text"))),
+                "write_review" => WriteReview(arguments),
+                "scrape_rename_page_object" => Scraper(() => RenamePageObject(arguments)),
+                "scrape_list_projects" => Scraper(() => Capped("projects", _server.ScraperProjects(), arguments)),
+                "scrape_next" => Scraper(() => _server.Scraper.Progress((string?)arguments["project"])),
+                "scrape_start" => Scraper(() => _server.Scraper.StartRecordingAsync((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["url"], (bool?)arguments["autoCapture"] ?? true, actions: (bool?)arguments["actions"] ?? false).GetAwaiter().GetResult()),
+                "scrape_list_events" => Scraper(() => Capped("events", _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session")), arguments)),
+                "scrape_resolve_events" => Scraper(() => ResolveEvents(arguments)),
+                "scrape_gap_brief" => Scraper(() => string.Join("\n\n---\n\n", _server.Scraper.TestBriefs((string?)arguments["project"], Required(arguments, "session"), Whole(arguments, "event", 1, int.MaxValue)))),
+                "scrape_draft_test" => Scraper(() => _server.ScraperDraftTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["target"], (string?)arguments["name"])) switch { { Problem: { } problem } => throw new ScraperProblem(problem), var drafted => drafted.Value! }),
+                "scrape_run_drafts" => Scraper(() => RunDrafts(arguments)),
+                "scrape_capture_page" => Scraper(() => (object?)_server.Scraper.CapturePageAsync((string?)arguments["name"]).GetAwaiter().GetResult() ?? new { Captured = false, Reason = "The page did not change since its last capture; give a name to capture it anyway." }),
+                "scrape_stop" => Scraper(() => (object?)_server.Scraper.StopRecordingAsync().GetAwaiter().GetResult() ?? new { Stopped = false, Reason = "No recording was in progress." }),
+                "scrape_list_pages" => Scraper(() => RecordedPages(arguments)),
+                "scrape_get_page" => Scraper(() => SnapshotOutline.Render(_server.Scraper.Snapshot((string?)arguments["project"], Required(arguments, "page"), (string?)arguments["session"], Whole(arguments, "event", 1, int.MaxValue)).Snapshot, Whole(arguments, "node", 0, int.MaxValue) ?? 0, MaxOf(arguments, 400))),
+                "scrape_find_similar" => Scraper(() => Capped("nodes", _server.Scraper.Similar((string?)arguments["project"], Required(arguments, "page"), Whole(arguments, "node", 1, int.MaxValue) ?? throw new ToolProblem("'node' is required.")), arguments)),
+                "scrape_list_page_objects" => Scraper(() => Capped("classes", _server.Scraper.Controls((string?)arguments["project"]), arguments)),
+                "scrape_detect_patterns" => Scraper(() => Capped("patterns", _server.Scraper.Patterns((string?)arguments["project"], int.MaxValue), arguments)),
+                "scrape_get_control_brief" => Scraper(() => _server.Scraper.ControlBrief((string?)arguments["project"], Required(arguments, "signature"), (string?)arguments["name"], (string?)arguments["variant"], (bool?)arguments["lifted"] ?? false).Text),
+                "scrape_match_controls" => Scraper(() => MatchControls(arguments)),
+                "scrape_diff_page" => Scraper(() => DiffPage(arguments)),
+                "scrape_suggest_controls" => Scraper(() => Capped("members", _server.Scraper.Suggest((string?)arguments["project"], Required(arguments, "page"), Whole(arguments, "node", 1, int.MaxValue)), arguments)),
+                "scrape_get_header" => Scraper(() => _server.Scraper.Header((string?)arguments["project"], Required(arguments, "page"), Whole(arguments, "node", 1, int.MaxValue))),
+                "scrape_write_file" => Scraper(() => WriteCode(arguments)),
+                "scrape_build" => Scraper(() => _server.Scraper.CheckCodeAsync((string?)arguments["project"]).GetAwaiter().GetResult()),
+                "scrape_explore" => Scraper(() => ExploreApp(arguments)),
+                "scrape_update_config" => Scraper(() => UpdateConfig(arguments)),
+                "scrape_create_project" => Scraper(() => CreateProject(arguments)),
+                "scrape_draft_page_objects" => Scraper(() => _server.Scraper.DraftAsync((string?)arguments["project"], (string?)arguments["page"]).GetAwaiter().GetResult()),
+                "scrape_check_page_objects" => Scraper(() => _server.Scraper.VerifyAsync((string?)arguments["project"], visible: !((bool?)arguments["headless"] ?? true)).GetAwaiter().GetResult()),
+                "scrape_find_text" => Scraper(() => Capped("nodes", _server.Scraper.Search((string?)arguments["project"], Required(arguments, "query"), int.MaxValue), arguments)),
                 _ => throw new McpException(-32602, $"No tool '{name}'. The tools are {string.Join(", ", Tools.Select(tool => tool.Name))}."),
             };
-            // Text (an outline) as it is; anything else as JSON.
-            return Text(answer as string ?? JsonSerializer.Serialize(answer, Json), error: false);
+
+            // Text (an outline) as it is; anything else as JSON, without its nulls and with the solution's paths relative.
+            return Text(answer as string ?? Answer(answer), error: false);
         }
         catch (ToolProblem problem)
         {
             return Text(problem.Message, error: true);
+        }
+        catch (Exception exception) when (NotLoaded(exception))
+        {
+            // A suite built against another Bruinet (review 03, finding 12): the suite's fault, said so, not the server's.
+            return Text($"{name}: a suite's build does not fit this Bruinet ({exception.GetType().Name}: {exception.Message}). Build it again (run_scenario with build: true); list_suites says which.", error: true);
         }
         catch (Exception exception) when (exception is not (OutOfMemoryException or McpException))
         {
             // Never the server's end: an argument of the wrong kind, or a fault, is the tool's answer.
             return Text($"{name} failed: {exception.GetType().Name}: {exception.Message}", error: true);
         }
+    }
+
+    // An exception a suite's assemblies throw when they were built against another Bruinet.
+    private static bool NotLoaded(Exception exception)
+        => exception is TypeLoadException or System.Reflection.ReflectionTypeLoadException or MissingMemberException or FileLoadException or BadImageFormatException;
+
+    // An answer as JSON: no null fields (M4), and every path in the solution relative to it (M5).
+    private string Answer(object answer)
+        => JsonSerializer.SerializeToNode(answer, Json) is { } node ? Tidy(node).ToJsonString(Json) : "null";
+
+    private JsonNode Tidy(JsonNode node)
+    {
+        switch (node)
+        {
+            case JsonObject members:
+                foreach (var (key, value) in members.ToList())
+                {
+                    if (value is null)
+                    {
+                        members.Remove(key);
+                    }
+                    else if (Tidy(value) is var tidied && !ReferenceEquals(tidied, value))
+                    {
+                        members[key] = tidied;
+                    }
+                }
+
+                return members;
+            case JsonArray items:
+                for (var index = 0; index < items.Count; index++)
+                {
+                    if (items[index] is { } item && Tidy(item) is var tidied && !ReferenceEquals(tidied, item))
+                    {
+                        items[index] = tidied;
+                    }
+                }
+
+                return items;
+            case JsonValue value when value.GetValueKind() == JsonValueKind.String && Relative(value.GetValue<string>()) is { } relative:
+                return JsonValue.Create(relative);
+            default:
+                return node;
+        }
+    }
+
+    // A whole value that is a path in the solution, relative to it; null for anything else (a message, a URL, a path elsewhere).
+    private string? Relative(string text)
+    {
+        if (text.Length < 3 || text.Contains('\n', StringComparison.Ordinal) || !Path.IsPathFullyQualified(text))
+        {
+            return null;
+        }
+
+        var root = _solutionDir.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        return text.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? Path.GetRelativePath(_solutionDir, text) : null;
+    }
+
+    // The 'max' argument: at most this many rows, 50 when left out (M3).
+    private static int MaxOf(JsonObject arguments, int otherwise = 50) => Whole(arguments, "max", 1, int.MaxValue) ?? otherwise;
+
+    // A list cut at 'max': the rows shown, and how many were left out (null when none).
+    private static (List<T> Shown, int? More) Cut<T>(IEnumerable<T> rows, JsonObject arguments, int otherwise = 50)
+    {
+        var all = rows.ToList();
+        var max = MaxOf(arguments, otherwise);
+        return (all.Take(max).ToList(), all.Count > max ? all.Count - max : null);
+    }
+
+    // A list as an answer: the rows under their name, and 'more' when some were left out.
+    private static JsonObject Capped<T>(string name, IEnumerable<T> rows, JsonObject arguments)
+    {
+        var (shown, more) = Cut(rows, arguments);
+        return new JsonObject { [name] = JsonSerializer.SerializeToNode(shown, Json), ["more"] = more };
     }
 
     // The Scraper says why it cannot answer as a problem; the agent reads it as the tool's result.
@@ -262,17 +274,17 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // Asks first: the summary until the person agreed, then the run.
+    // Asks first: the summary until the person agreed, then the run. Links only and headless unless asked otherwise.
     private object ExploreApp(JsonObject arguments)
     {
         var options = new Bruinet.Scraper.Explore.ExploreOptions
         {
-            DryRun = (bool?)arguments["dryRun"] ?? true,
+            DryRun = (bool?)arguments["linksOnly"] ?? true,
             Url = (string?)arguments["url"],
             MaxPages = (int?)arguments["maxPages"],
             MaxDepth = (int?)arguments["maxDepth"],
             MaxMinutes = (int?)arguments["maxMinutes"],
-            Visible = !((bool?)arguments["headless"] ?? false),
+            Visible = !((bool?)arguments["headless"] ?? true),
             StopAtSignIn = true,
         };
         var project = (string?)arguments["project"];
@@ -434,21 +446,22 @@ public sealed class BddMcpServer : IDisposable
             .FirstOrDefault()
             ?? throw new ToolProblem($"No HTTP calls of '{name}' yet: run it with run_scenario and replay set, in a suite whose host gives the app an HttpReplaySession.");
         var log = Bruinet.Mocking.Http.HttpCallLog.Load(path)!;
+        var calls = Cut(log.Calls, arguments);
         return new
         {
             Scenario = name,
             Log = Path.GetRelativePath(_solutionDir, path),
             log.Mode,
-            Calls = log.Calls.Take(50).Select(call => new { call.Method, Url = Cap(call.Url, 200), call.Status, call.Outcome }),
-            More = Math.Max(0, log.Calls.Count - 50),
+            Calls = calls.Shown.Select(call => new { call.Method, Url = Cap(call.Url, 200), call.Status, call.Outcome }),
+            More = calls.More,
             Misses = log.Misses.Take(5).Select(miss => Cap(miss, 500)),
             UnusedExchanges = log.Unused.Take(20),
         };
     }
 
     // The suite's declared states: [BddState] phrases, each a Given. None is an empty list.
-    private static object ListStates(BddSuite suite)
-        => Catalogs(suite).Default.Patterns
+    private static object ListStates(BddSuite suite, JsonObject arguments)
+        => Capped("states", Catalogs(suite).Default.Patterns
             .Where(pattern => pattern.IsState)
             .Select(pattern => new
             {
@@ -456,8 +469,7 @@ public sealed class BddMcpServer : IDisposable
                 Parameters = pattern.Parameters.Select(parameter => parameter.ToString()).ToList(),
                 From = pattern.CommandId,
             })
-            .OrderBy(state => state.Phrase, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .OrderBy(state => state.Phrase, StringComparer.OrdinalIgnoreCase), arguments);
 
     // A declared state, set by a Step-through of a scenario of its own: the state's Given (and the page check), then a step
     // that does nothing, where it stays paused. Only a declared state runs: the text binds to its state, in the catalog the
@@ -471,7 +483,7 @@ public sealed class BddMcpServer : IDisposable
             state = state["Given ".Length..].Trim();
         }
 
-        var page = (string?)arguments["page"] is { Length: > 0 } named ? OneLine(named, "page") : null;
+        var page = (string?)arguments["pageObject"] is { Length: > 0 } named ? OneLine(named, "pageObject") : null;
         var testData = (string?)arguments["testData"] is { Length: > 0 } set ? OneLine(set, "testData") : null;
         if (testData is not null && !TestSets(suite).Contains(testData, StringComparer.Ordinal))
         {
@@ -547,7 +559,7 @@ public sealed class BddMcpServer : IDisposable
             // The agent check's first try: paused with no page, step_state had nothing to read.
             if (paused is JsonObject { } noPage && noPage["paused"] is not null && noPage["page"] is null)
             {
-                noPage["next"] = "No step made a page current: step_state reads the page that says it is loaded; give 'page' (list_pages names them) to be sure.";
+                noPage["next"] = "No step made a page current: step_state reads the page that says it is loaded; give 'pageObject' (list_pages names them) to be sure.";
             }
 
             return paused;
@@ -651,7 +663,7 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // Only what is there: an agent reads every field.
+    // Where a Step-through paused or how it ended; its null fields go, as every answer's do.
     private JsonObject Describe(object stepEvent)
     {
         JsonObject answer = stepEvent switch
@@ -673,18 +685,12 @@ public sealed class BddMcpServer : IDisposable
             var other => new() { ["event"] = other.GetType().Name },
         };
 
-        foreach (var empty in answer.Where(pair => pair.Value is null).Select(pair => pair.Key).ToList())
-        {
-            answer.Remove(empty);
-        }
-
         return answer;
     }
 
     // One scenario through the gate with .NET's code coverage (Microsoft.NET.Test.Sdk brings it): the lines it ran.
     private object Coverage(JsonObject arguments)
     {
-        const int FilesShown = 20;
         var uri = FileUri(Required(arguments, "path"));
         var line = ScenarioLine(arguments, uri) ?? throw new ToolProblem("'line' is required.");
         var timeout = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10);
@@ -711,7 +717,8 @@ public sealed class BddMcpServer : IDisposable
         var filter = string.Join('|', names.Select(name => $"{BddScenarioAddress.Trait}={BddScenarioAddress.Of(relative, name)}"));
         var results = Path.Combine(Path.GetTempPath(), "Bruinet", "coverage", Guid.NewGuid().ToString("N"));
         List<string> test = ["test", project, "--filter", filter, "--collect", "Code Coverage;Format=cobertura", "--results-directory", results, "--logger", "console;verbosity=normal"];
-        var built = (bool?)arguments["build"] != false;
+        var built = (bool?)arguments["build"] == true;
+        var stale = built ? null : OlderThanSources(suite);
         if (!built)
         {
             test.Add("--no-build");
@@ -748,22 +755,49 @@ public sealed class BddMcpServer : IDisposable
             }
 
             var lines = CoverageReport.Read(report);
+            var shown = Cut(wanted, arguments);
             return new
             {
                 Scenarios = names,
                 Passed = run.Code == 0,
-                Files = wanted.Take(FilesShown).Select(source => lines.TryGetValue(source, out var hits)
+                Files = shown.Shown.Select(source => lines.TryGetValue(source, out var hits)
                     ? new { File = Path.GetRelativePath(_solutionDir, source), Hit = Cap(CoverageReport.Ranges(hits.Where(pair => pair.Value).Select(pair => pair.Key)), 300), Missed = Cap(CoverageReport.Ranges(hits.Where(pair => !pair.Value).Select(pair => pair.Key)), 300), Note = (string?)null }
                     : new { File = Path.GetRelativePath(_solutionDir, source), Hit = (string?)null, Missed = (string?)null, Note = (string?)"not in the report: no line of it ran, or the collector left its assembly out" })
                     .ToList(),
-                MoreFiles = wanted.Count > FilesShown ? wanted.Count - FilesShown : (int?)null,
+                More = shown.More,
                 Output = run.Code == 0 ? null : Cap(run.Tail, 2000, fromEnd: true),
+                Note = stale,
             };
         }
         finally
         {
             TryDelete(results);
         }
+    }
+
+    // A note when the suite's build is older than a source file of its project: the run then used the old code.
+    private static string? OlderThanSources(BddSuite suite)
+    {
+        if (suite.ProjectFile is not { } projectFile)
+        {
+            return null;
+        }
+
+        static bool Built(string path) => path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
+            || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase);
+        var assembly = Path.GetFileNameWithoutExtension(projectFile) + ".dll";
+        var output = Directory.Exists(Path.Combine(suite.ProjectDirectory, "bin"))
+            ? Directory.EnumerateFiles(Path.Combine(suite.ProjectDirectory, "bin"), assembly, SearchOption.AllDirectories).Select(File.GetLastWriteTimeUtc).DefaultIfEmpty().Max()
+            : default;
+        if (output == default)
+        {
+            return $"{suite.Name} is not built: give build: true.";
+        }
+
+        var newer = Directory.EnumerateFiles(suite.ProjectDirectory, "*.*", SearchOption.AllDirectories)
+            .Where(path => !Built(path) && Path.GetExtension(path) is ".cs" or ".razor" or ".xaml" or ".csproj")
+            .FirstOrDefault(path => File.GetLastWriteTimeUtc(path) > output);
+        return newer is null ? null : $"The build is older than {Path.GetFileName(newer)}: give build: true to cover the code as it is now.";
     }
 
     // The given files, or the working tree's changed code files that still exist.
@@ -800,37 +834,90 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // Each suite's feature files, and of each the scenarios whose newest run failed: the newest first.
-    private object Failing(JsonObject arguments)
+    // The newest result of each scenario (M2): of a feature file, a suite or every suite; failed ones unless status is all.
+    // A suite that cannot load (not built, or built against another Bruinet) is named under notLoaded, and its results,
+    // which are files, are still read (M11): one stale build hides no other suite's failures.
+    private object ListResults(JsonObject arguments)
     {
-        const int Shown = 50;
-        var suites = (string?)arguments["suite"] is not null
-            ? [Suite(arguments)]
-            : _server.Explorer(new ExplorerParams(null, null)).Suites.Select(SuiteNamed).ToList();
-        var failed = suites
-            .SelectMany(suite => suite.FeatureFiles.Concat(suite.LinkedFiles)
+        var all = ((string?)arguments["status"])?.Trim().ToLowerInvariant() switch
+        {
+            null or "" or "failed" => false,
+            "all" => true,
+            var other => throw new ToolProblem($"status '{other}': failed or all."),
+        };
+        List<BddSuite> suites;
+        List<(BddSuite Suite, string Path)> files;
+        if ((string?)arguments["path"] is { Length: > 0 } given)
+        {
+            var path = new Uri(FileUri(given)).LocalPath;
+            var suite = _server.Context(path, (string?)arguments["suite"]).Suite ?? throw new ToolProblem("No suite holds or links this feature file.");
+            (suites, files) = ([suite], [(suite, path)]);
+        }
+        else
+        {
+            suites = (string?)arguments["suite"] is not null
+                ? [Suite(arguments)]
+                : _server.Explorer(new ExplorerParams(null, null)).Suites.Select(SuiteNamed).ToList();
+            files = [.. suites.SelectMany(suite => suite.FeatureFiles.Concat(suite.LinkedFiles)
                 .Where(path => path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
                 .Select(Path.GetFullPath)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .SelectMany(path => _server.NewestRuns(new Uri(path).AbsoluteUri, suite.Name).Values
-                    .Where(run => run.Status == "failed")
-                    .Select(run => (Suite: suite, Path: path, Run: run))))
-            .OrderByDescending(item => item.Run.At)
-            .ToList();
+                .Select(path => (suite, path)))];
+        }
+
+        var notLoaded = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var suite in suites)
+        {
+            try
+            {
+                if (suite.TryGetCatalogs(out var reason) is null)
+                {
+                    notLoaded[suite.Name] = reason ?? "It cannot load.";
+                }
+            }
+            catch (Exception exception) when (NotLoaded(exception))
+            {
+                notLoaded[suite.Name] = $"{exception.GetType().Name}: {exception.Message} Build it again.";
+            }
+        }
+
+        var rows = new List<(BddSuite Suite, string Path, int? Line, Bruinet.Bdd.Preview.BddScenarioRun Run)>();
+        foreach (var (suite, path) in files)
+        {
+            try
+            {
+                var headings = File.Exists(path)
+                    ? BddMarkdownParser.Parse(File.ReadAllText(path), path).Document?.Scenarios.ToLookup(scenario => scenario.Name, scenario => scenario.Source.LineNumber)
+                    : null;
+                rows.AddRange(_server.NewestRuns(new Uri(path).AbsoluteUri, suite.Name).Values
+                    .Where(run => all || run.Status == "failed")
+                    .Select(run => (suite, path, headings?[run.Scenario].Cast<int?>().FirstOrDefault(), run)));
+            }
+            catch (Exception exception) when (NotLoaded(exception) || exception is BddWorkspaceException)
+            {
+                notLoaded[suite.Name] = $"{exception.GetType().Name}: {exception.Message} Build it again.";
+            }
+        }
+
+        var (shown, more) = Cut(rows.OrderByDescending(row => row.Run.At), arguments);
         return new
         {
-            Count = failed.Count,
-            Failing = failed.Take(Shown).Select(item => new
+            Count = rows.Count,
+            Results = shown.Select(row => new
             {
-                item.Suite.Name,
-                File = Path.GetRelativePath(_solutionDir, item.Path),
-                item.Run.Scenario,
-                Address = BddScenarioAddress.Of(item.Suite.RelativeToConfig(item.Path), item.Run.Scenario),
-                At = item.Run.At.ToString("u", CultureInfo.InvariantCulture),
-                Kind = (string?)Failure(item.Run)?["kind"],
-                Message = Cap(item.Run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Message, 300),
+                Suite = row.Suite.Name,
+                File = Path.GetRelativePath(_solutionDir, row.Path),
+                row.Line,
+                row.Run.Scenario,
+                row.Run.Status,
+                At = row.Run.At.ToString("u", CultureInfo.InvariantCulture),
+                row.Run.DurationMs,
+                Kind = (string?)Failure(row.Run)?["kind"],
+                StepLine = row.Run.Steps.FirstOrDefault(step => step.Status == "Failed")?.WrittenLine,
+                Message = Cap(row.Run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Message, 300),
             }),
-            More = failed.Count > Shown ? failed.Count - Shown : (int?)null,
+            More = more,
+            NotLoaded = notLoaded.Count == 0 ? null : notLoaded.Select(pair => new { Suite = pair.Key, Reason = pair.Value }),
         };
     }
 
@@ -846,18 +933,20 @@ public sealed class BddMcpServer : IDisposable
                 return null;
             }
 
+            const int Shown = 5;
             var difference = Bruinet.Uat.UatTraceDiff.Compare(now, then);
             var at = Math.Max(difference.Index, 0);
             var files = ChangedFiles(suiteFolder, (string?)then["commit"], (string?)now["commit"],
                 [.. StepNames(now, at, at).Concat(StepNames(then, at, at))], [.. StepNames(now, 0, at - 1)]);
+            var changed = files.Touching.Concat(files.Earlier).Concat(files.Other).ToList();
             return new
             {
                 difference.Kind,
                 difference.Line,
                 First = difference.Differences.FirstOrDefault(),
-                CodeChanged = files.Touching.Concat(files.Earlier).Concat(files.Other).Take(5),
-                CodeChangedMore = files.Touching.Count + files.Earlier.Count + files.Other.Count > 5 ? files.Touching.Count + files.Earlier.Count + files.Other.Count - 5 : (int?)null,
-                Note = files.Note ?? "why gives it in full.",
+                CodeChanged = changed.Take(Shown),
+                More = changed.Count > Shown ? changed.Count - Shown : (int?)null,
+                Note = files.Note ?? "diff_since_green gives it in full.",
             };
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidOperationException)
@@ -866,55 +955,43 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    // Since last green (AI9): the newest failing run's trace against the newest earlier passing one's, and the files
-    // changed since that run's commit that touch the step where they part.
-    private object Why(JsonObject arguments)
+    // Since last green (AI9), from what is kept: the newest traced failure against the newest earlier passing run, and the
+    // files changed since that run's commit that touch the step where they part. It runs nothing (M2): with no failure or
+    // no green run to compare, it says so as its answer, and run_scenario makes one.
+    private object DiffSinceGreen(JsonObject arguments)
     {
         var uri = FileUri(Required(arguments, "path"));
         var suite = (string?)arguments["suite"];
-        var names = _server.ScenarioNames(uri, ScenarioLine(arguments, uri) ?? throw new ToolProblem("line is required: a line of the scenario."));
+        var names = _server.ScenarioNames(uri, ScenarioLine(arguments, uri) ?? throw new ToolProblem("'line' is required: a line of the scenario."));
         if (names.Count == 0)
         {
             throw new ToolProblem("There is no scenario heading at that line.");
         }
 
         static bool Traced(Bruinet.Bdd.Preview.BddScenarioRun run) => run.TracePath is { } path && File.Exists(path);
-        (string Name, Bruinet.Bdd.Preview.BddScenarioRun? Run) NewestFailure()
-        {
-            var failed = _server.NewestRuns(uri, suite, run => run.Status == "failed" && Traced(run));
-            return names.Select(name => (name, Run: failed.GetValueOrDefault(name))).Where(found => found.Run is not null).OrderByDescending(found => found.Run!.At).FirstOrDefault();
-        }
-
-        // No failure traced yet: it is built and run first, as run_scenario with build: true runs it (the app may have changed
-        // since its last build), so one call answers.
-        var ran = false;
-        var (name, failing) = NewestFailure();
+        var failed = _server.NewestRuns(uri, suite, run => run.Status == "failed" && Traced(run));
+        var (name, failing) = names.Select(name => (name, Run: failed.GetValueOrDefault(name))).Where(found => found.Run is not null).OrderByDescending(found => found.Run!.At).FirstOrDefault();
         if (failing is null)
         {
-            var run = new JsonObject
+            return new
             {
-                ["path"] = (string?)arguments["path"],
-                ["line"] = (int?)arguments["line"],
-                ["build"] = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ProjectFile is not null,
+                Scenario = names[0],
+                Compared = false,
+                Note = "No failure of it is traced, so there is nothing to compare: run it with run_scenario (build: true after changing C#); a failure comes with its sinceGreen.",
             };
-            if (suite is not null)
-            {
-                run["suite"] = suite;
-            }
-
-            RunScenario(run);
-            (name, failing) = NewestFailure();
-            ran = true;
-        }
-
-        if (failing is null)
-        {
-            throw new ToolProblem("It passed when built and run now, or its run kept no trace (trace: off): there is no failure to explain.");
         }
 
         var newest = _server.NewestRuns(uri, suite).GetValueOrDefault(name);
-        var green = Bruinet.Uat.UatTraceDiff.LastGreen(failing.TracePath!)
-            ?? throw new ToolProblem($"No run of it passed before the failure of {failing.At:u}: there is no green run to compare with. get_trace gives what the failing run did.");
+        if (Bruinet.Uat.UatTraceDiff.LastGreen(failing.TracePath!) is not { } green)
+        {
+            return new
+            {
+                Scenario = name,
+                Compared = false,
+                Note = $"No run of it passed before the failure of {failing.At.ToString("u", CultureInfo.InvariantCulture)}: there is no green run to compare with. get_trace gives what the failing run did.",
+            };
+        }
+
         var (now, then) = (Bruinet.Uat.UatTraceDiff.Read(failing.TracePath!), Bruinet.Uat.UatTraceDiff.Read(green));
         if (now is null || then is null)
         {
@@ -923,9 +1000,8 @@ public sealed class BddMcpServer : IDisposable
 
         var difference = Bruinet.Uat.UatTraceDiff.Compare(now, then);
         var at = Math.Max(difference.Index, 0);
-        var suiteFolder = _server.Context(new Uri(uri).LocalPath, suite).Suite?.ConfigPath is { } config ? Path.GetDirectoryName(config)! : _solutionDir;
         var files = ChangedFiles(
-            suiteFolder,
+            SuiteFolder(uri, suite),
             (string?)then["commit"],
             (string?)now["commit"],
             StepNames(now, at, at).Concat(StepNames(then, at, at)).ToList(),
@@ -933,6 +1009,7 @@ public sealed class BddMcpServer : IDisposable
         return new
         {
             Scenario = name,
+            Compared = true,
             Failing = new { At = failing.At.ToString("u", CultureInfo.InvariantCulture), Commit = Short((string?)now["commit"]) },
             Green = new { At = File.GetLastWriteTimeUtc(green).ToString("u", CultureInfo.InvariantCulture), Commit = Short((string?)then["commit"]) },
             difference.Kind,
@@ -942,7 +1019,6 @@ public sealed class BddMcpServer : IDisposable
             Files = files.Answer,
             Note = string.Join(" ", new[]
             {
-                ran ? "It was built and run first: no failure of it was traced yet." : null,
                 newest is { Status: "passed" } && newest.At > failing.At ? $"Its newest run passed ({newest.At:u}): this is an older failure." : null,
                 difference.Kind == Bruinet.Uat.UatTraceDiff.None ? "The failing run's steps match the green one's: get_trace gives the failure." : null,
                 Bruinet.Uat.UatTraceDiff.ReadPages(then) ? null : "Page values were not compared: the green run did not read pages (run_scenario's trace: all).",
@@ -1054,8 +1130,31 @@ public sealed class BddMcpServer : IDisposable
             Status = (string?)trace["status"],
             At = newest.At.ToString("u", CultureInfo.InvariantCulture),
             Steps = steps.Select(TraceRow),
-            Failed = steps.FirstOrDefault(step => (string?)step["status"] == "Failed")?.DeepClone(),
+            Failed = steps.FirstOrDefault(step => (string?)step["status"] == "Failed") is { } failed ? Shortened(failed) : null,
         };
+    }
+
+    // A failed step without 'step' (M3): its 10 slowest calls, in the order made, and the controls shown after it; what
+    // was left out is counted, and get_trace with step gives it in full.
+    private static JsonObject Shortened(JsonObject step)
+    {
+        const int Calls = 10;
+        var copy = (JsonObject)step.DeepClone();
+        if (copy["calls"] is JsonArray calls && calls.Count > Calls)
+        {
+            var slowest = calls.OfType<JsonObject>().OrderByDescending(call => (int?)call["ms"] ?? 0).Take(Calls).ToHashSet();
+            copy["calls"] = new JsonArray([.. calls.OfType<JsonObject>().Where(slowest.Contains).Select(call => call.DeepClone())]);
+            copy["callsLeftOut"] = ((int?)step["callsLeftOut"] ?? 0) + calls.Count - Calls;
+        }
+
+        if (copy["pageAfter"]?["controls"] is JsonArray controls && controls.OfType<JsonObject>().Any(control => (bool?)control["shown"] != true))
+        {
+            var shown = controls.OfType<JsonObject>().Where(control => (bool?)control["shown"] == true).Select(control => control.DeepClone()).ToList();
+            copy["pageAfter"]!["controlsNotShown"] = controls.Count - shown.Count;
+            copy["pageAfter"]!["controls"] = new JsonArray([.. shown]);
+        }
+
+        return copy;
     }
 
     private (JsonObject Trace, List<JsonObject> Steps) ReadTrace(string path)
@@ -1146,11 +1245,6 @@ public sealed class BddMcpServer : IDisposable
     private static JsonNode? Failure(Bruinet.Bdd.Preview.BddScenarioRun run)
         => run.Steps.FirstOrDefault(step => step.Status == "Failed")?.Failure is { } json ? JsonNode.Parse(json) : null;
 
-    private object LastRuns(JsonObject arguments)
-        => _server.LastRuns(new PreviewParams(FileUri(Required(arguments, "path")), (string?)arguments["suite"]))
-            .Select(run => run with { Message = Cap(run.Message, 2000) })
-            .ToList();
-
     // A whole-number argument in its range, or a tool error saying what it must be; null when left out.
     private static int? Whole(JsonObject arguments, string name, int least, int most)
     {
@@ -1191,14 +1285,14 @@ public sealed class BddMcpServer : IDisposable
 
         var always = (arguments["always"] as JsonArray)?.Select(node => (string?)node).OfType<string>().ToList();
         var affected = Bruinet.Cli.Selection.Affected.Of(folder, null, changed, Bruinet.Cli.Selection.TouchMap.Load(map), always);
-        const int Shown = 50;
+        var picked = Cut(affected.Picked, arguments);
         return new
         {
             Changed = changed.Count,
             affected.Whole,
             affected.Filter,
-            Picked = affected.Picked.Take(Shown).Select(test => new { test.Name, test.Why }),
-            More = affected.Picked.Count > Shown ? affected.Picked.Count - Shown : (int?)null,
+            Picked = picked.Shown.Select(test => new { test.Name, test.Why }),
+            More = picked.More,
             affected.Notes,
             Next = affected.Whole is not null ? "Run the suite whole." : affected.Filter is null ? "Nothing to run." : "Run them with dotnet test <suite project> --filter \"<filter>\", or a scenario with run_scenario.",
         };
@@ -1245,9 +1339,9 @@ public sealed class BddMcpServer : IDisposable
         }).ToList();
 
         var shown = files.Select(file => new { File = Path.GetRelativePath(_solutionDir, file.Path), file.Edits }).ToList();
-        if ((bool?)arguments["apply"] != true)
+        if ((bool?)arguments["confirm"] != true)
         {
-            return new { Applied = false, Files = shown, Next = "Call again with apply: true to write these edits." };
+            return new { Applied = false, Files = shown, Next = "Call again with confirm: true to write these edits." };
         }
 
         foreach (var file in files)
@@ -1284,7 +1378,7 @@ public sealed class BddMcpServer : IDisposable
         }
 
         var result = _server.Scraper.RenamePageObject(project, page, name);
-        return new { Renamed = true, result.From, result.To, result.Files, result.UsedElsewhere, Next = result.UsedElsewhere.Count > 0 ? "Change the files that use it, then check_code." : "check_code." };
+        return new { Renamed = true, result.From, result.To, result.Files, result.UsedElsewhere, Next = result.UsedElsewhere.Count > 0 ? "Change the files that use it, then scrape_build." : "scrape_build." };
     }
 
     private string FileUri(string path) => new Uri(Path.GetFullPath(path, _solutionDir)).AbsoluteUri;
@@ -1294,16 +1388,16 @@ public sealed class BddMcpServer : IDisposable
             : fromEnd ? $"({text.Length - length} characters before) …{text[^length..]}"
             : $"{text[..length]}… ({text.Length - length} more characters)";
 
-    // An agent is not asked first, so it only counts unless it says dryRun: false.
+    // Asks first: it only counts unless the call says confirm: true. A scenario is any line of it, as for the other tools.
     private DeleteResultsResult DeleteResults(JsonObject arguments)
     {
-        var path = (string?)arguments["path"];
+        var uri = (string?)arguments["path"] is { Length: > 0 } path ? FileUri(path) : null;
         var result = _server.DeleteResults(new DeleteResultsParams(
             Required(arguments, "scope"),
-            path is null ? null : new Uri(Path.GetFullPath(path, _solutionDir)).AbsoluteUri,
-            (int?)arguments["line"],
+            uri,
+            uri is null ? Whole(arguments, "line", 1, int.MaxValue) : ScenarioLine(arguments, uri),
             (string?)arguments["suite"],
-            (bool?)arguments["dryRun"] ?? true));
+            (bool?)arguments["confirm"] != true));
         return result.Done ? result : throw new ToolProblem(result.Reason ?? "Nothing to delete.");
     }
 
@@ -1313,20 +1407,28 @@ public sealed class BddMcpServer : IDisposable
         var path = Path.GetFullPath(Required(arguments, "path"), _solutionDir);
         var recordingsFolder = (string?)arguments["recordingsFolder"] is { Length: > 0 } folder ? InSolution(folder, "recordingsFolder") : null;
         var suite = (string?)arguments["suite"];
-        var target = _server.RecordTarget(new RecordTargetParams(new Uri(path).AbsoluteUri, (int?)arguments["line"], suite, recordingsFolder, (string?)arguments["voice"], null));
+        var uri = new Uri(path).AbsoluteUri;
+        var line = path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase) ? ScenarioLine(arguments, uri) : Whole(arguments, "line", 1, int.MaxValue);
+        var timeout = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10);
+        var target = _server.RecordTarget(new RecordTargetParams(uri, line, suite, recordingsFolder, (string?)arguments["voice"], null));
         if (!target.CanRecord || target.Project is not { } project || target.Filter is not { } filter)
         {
             throw new ToolProblem($"This cannot be recorded: {target.Reason}");
         }
 
-        var build = Run("dotnet", ["build", project, "-v:minimal", "-nologo"], new Dictionary<string, string>());
+        var build = Run("dotnet", ["build", project, "-v:minimal", "-nologo"], new Dictionary<string, string>(), timeout);
         if (build.Code != 0)
         {
             throw new ToolProblem($"The build failed, so nothing was recorded:{Environment.NewLine}{build.Tail}");
         }
 
-        var test = Run("dotnet", ["test", project, "--no-build", "--filter", filter, "--logger", "console;verbosity=normal"], target.Environment);
-        var videos = _server.Recordings(new RecordingsParams(new Uri(path).AbsoluteUri, suite, recordingsFolder));
+        var test = Run("dotnet", ["test", project, "--no-build", "--filter", filter, "--logger", "console;verbosity=normal"], target.Environment, timeout);
+        if (test.TimedOut)
+        {
+            throw new ToolProblem($"The recording took longer than {timeout.TotalMinutes} minutes and was ended:{Environment.NewLine}{Cap(test.Tail, 2000, fromEnd: true)}");
+        }
+
+        var videos = _server.Recordings(new RecordingsParams(uri, suite, recordingsFolder));
         var video = target.Video is { } expected ? videos.FirstOrDefault(candidate => candidate.Name == expected) : videos.FirstOrDefault();
         if (video is null)
         {
@@ -1345,9 +1447,10 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    private object ReviewPage(JsonObject arguments)
+    // The hand-over page; its videos and path relative to the solution, as every tool's paths are (M5).
+    private object WriteReview(JsonObject arguments)
     {
-        var videos = (arguments["videos"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(Path.GetFullPath).ToList() ?? [];
+        var videos = (arguments["videos"] as JsonArray)?.Select(node => (string?)node).OfType<string>().Select(video => Path.GetFullPath(video, _solutionDir)).ToList() ?? [];
         if (videos.Count == 0)
         {
             throw new ToolProblem("'videos' is required: the videos record_video made.");
@@ -1438,21 +1541,29 @@ public sealed class BddMcpServer : IDisposable
         }
     }
 
-    private object ListSuites()
-        => _server.Explorer(new ExplorerParams(null, null)).Suites
-            .Select(name => SuiteNamed(name))
-            .Select(suite => new
+    // Every suite, each a row even when it cannot load (M11): its reason says why, and the other suites still answer.
+    private object ListSuites(JsonObject arguments)
+        => Capped("suites", _server.Explorer(new ExplorerParams(null, null)).Suites.Select(name =>
+        {
+            try
             {
-                suite.Name,
-                Head = TryHead(suite),
-                Config = suite.ConfigPath,
-                Built = suite.TryGetCatalogs(out var reason) is not null,
-                Reason = reason,
-            })
-            .ToList();
+                var suite = SuiteNamed(name);
+                var built = suite.TryGetCatalogs(out var reason) is not null;
+                return new { Name = suite.Name, Head = TryHead(suite), Config = (string?)suite.ConfigPath, Built = built, Reason = reason };
+            }
+            catch (Exception exception) when (NotLoaded(exception) || exception is BddWorkspaceException)
+            {
+                return new { Name = name, Head = (string?)null, Config = (string?)null, Built = false, Reason = (string?)$"It cannot load ({exception.GetType().Name}: {exception.Message}): build it again." };
+            }
+        }), arguments);
 
-    private static object ListSteps(BddSuite suite, string? query)
+    // A suite's phrases: those holding the query's words, or one page's; a large suite asked with neither gives its pages
+    // and their counts instead, so one call never sends thousands of phrases (M3).
+    private static object ListSteps(BddSuite suite, JsonObject arguments)
     {
+        const int Large = 200;
+        var query = (string?)arguments["query"];
+        var page = (string?)arguments["page"];
         var catalogs = Catalogs(suite);
         var words = (query ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var steps = catalogs.Default.Patterns
@@ -1463,9 +1574,10 @@ public sealed class BddMcpServer : IDisposable
                 pattern.Phrase,
                 Parameters = pattern.Parameters.Select(parameter => parameter.ToString()).ToList(),
                 From = pattern.ControlVerb is not null ? "control verb, on the current page"
-                    : pattern.Page is { } page ? $"page {page}"
+                    : pattern.Page is { } on ? $"page {on}"
                     : pattern.Namespace.Length > 0 ? $"namespace {pattern.Namespace} (the file must use it)"
                     : pattern.CommandId,
+                pattern.Page,
             })
             .Concat(suite.StepFiles.SelectMany(path => BddScenarioFiles.ParsePhraseFile(path).Document?.Callables ?? []).Select(callable => new
             {
@@ -1473,24 +1585,133 @@ public sealed class BddMcpServer : IDisposable
                 callable.Phrase,
                 Parameters = callable.Declared.Select(parameter => $"{{{parameter.Name}: {parameter.TypeName}}}").ToList(),
                 From = $"{callable} in {Path.GetFileName(callable.Source.FilePath)} (a feature file under that folder sees it)",
+                Page = (string?)null,
             }))
             .Where(step => words.All(word => step.Phrase.Contains(word, StringComparison.OrdinalIgnoreCase)))
+            .Where(step => page is null || string.Equals(step.Page, page, StringComparison.OrdinalIgnoreCase))
             .OrderBy(step => step.Keyword)
             .ThenBy(step => step.Phrase, StringComparer.OrdinalIgnoreCase)
             .ToList();
-        return new { Suite = suite.Name, Count = steps.Count, Steps = steps };
+        if (query is null && page is null && steps.Count > Large)
+        {
+            return new
+            {
+                Suite = suite.Name,
+                Count = steps.Count,
+                Pages = steps.GroupBy(step => step.Page ?? "(no page)").OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase).Select(group => new { Page = group.Key, Phrases = group.Count() }),
+                Next = $"Over {Large} phrases: ask again with 'query' (words of the phrase) or 'page' (one page's).",
+            };
+        }
+
+        var (shown, more) = Cut(steps.Select(step => new { step.Keyword, step.Phrase, step.Parameters, step.From }), arguments);
+        return new { Suite = suite.Name, Count = steps.Count, Steps = shown, More = more };
     }
 
-    private static object ListPages(BddSuite suite)
-        => UatPageSet.Of(Catalogs(suite).Default).Values
-            .OrderBy(page => page.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(page => new
+    // Without 'page' each page's name and control count; with it, that page's controls (M3).
+    private static object ListPages(BddSuite suite, JsonObject arguments)
+    {
+        var pages = UatPageSet.Of(Catalogs(suite).Default).Values.OrderBy(page => page.Key, StringComparer.OrdinalIgnoreCase).ToList();
+        if ((string?)arguments["page"] is not { Length: > 0 } named)
+        {
+            return Capped("pages", pages.Select(page => new { Page = page.Key, Class = page.PageType.FullName, Controls = page.Controls.Count }), arguments);
+        }
+
+        var one = pages.FirstOrDefault(page => string.Equals(page.Key, named, StringComparison.OrdinalIgnoreCase))
+            ?? throw new ToolProblem($"No page '{named}' in {suite.Name}. The pages are {string.Join(", ", pages.Select(page => page.Key))}.");
+        var (shown, more) = Cut(one.Controls.Select(control => new { control.Name, Type = control.ControlType.Name, control.NavigatesTo }), arguments);
+        return new { Page = one.Key, Class = one.PageType.FullName, Controls = shown, More = more };
+    }
+
+    // find_step_usages: each step's file relative to the solution and its line one-based, as every tool gives them (M5).
+    private object Usages(JsonObject arguments)
+    {
+        var usages = _server.Usages(new UsagesParams(Required(arguments, "symbol")));
+        var (shown, more) = Cut(usages.Usages.Select(usage => new { File = Path.GetRelativePath(_solutionDir, new Uri(usage.Uri).LocalPath), Line = usage.Line + 1, usage.Text, usage.Scenario }), arguments);
+        return new { usages.Steps, usages.Scenarios, Usages = shown, More = more };
+    }
+
+    // The paused page's controls, at most 'max' of them.
+    private object StepState(JsonObject arguments)
+    {
+        var read = _server.StepReadPageAsync().GetAwaiter().GetResult();
+        if (read.State is not { } state)
+        {
+            throw new ToolProblem($"No page state: {read.Reason}");
+        }
+
+        var (shown, more) = Cut(state.Controls.Select(control => new { control.Name, control.Kind, control.Shown, control.Value, control.Unreadable }), arguments);
+        return new { state.Page, state.Reason, Controls = shown, More = more };
+    }
+
+    // A test recording's steps resolved, at most 'max' of them; the gaps are every unresolved one.
+    private object ResolveEvents(JsonObject arguments)
+    {
+        var test = _server.Scraper.ResolveActions((string?)arguments["project"], Required(arguments, "session"));
+        var (shown, more) = Cut(test.Steps, arguments);
+        return new { test.Session, test.Name, test.StartPage, test.StartPageObject, Steps = shown, More = more, test.Gaps };
+    }
+
+    // Each draft run once, ended after timeoutMinutes.
+    private object RunDrafts(JsonObject arguments)
+    {
+        var minutes = Whole(arguments, "timeoutMinutes", 1, 120) ?? 10;
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(minutes));
+        try
+        {
+            return _server.ScraperRunTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), null, null), timeout.Token).GetAwaiter().GetResult() switch
             {
-                Page = page.Key,
-                Class = page.PageType.FullName,
-                Controls = page.Controls.Select(control => new { control.Name, Type = control.ControlType.Name, control.NavigatesTo }).ToList(),
-            })
-            .ToList();
+                { Problem: { } problem } => throw new ScraperProblem(problem),
+                var runs => runs.Value!,
+            };
+        }
+        catch (OperationCanceledException) when (timeout.IsCancellationRequested)
+        {
+            throw new ToolProblem($"The drafts ran longer than {minutes} minutes and were ended: give timeoutMinutes for longer.");
+        }
+    }
+
+    // A project's recorded pages: each with its newest capture and how many it has; with 'page', that page's captures (M3).
+    private object RecordedPages(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var made = _server.Scraper.PageObjects(project);
+        var pages = _server.Scraper.Pages(project);
+        static object Capture(Bruinet.Scraper.Projects.PageCapture capture) => new { capture.Session, Event = capture.Event.Number, capture.Event.At, capture.Event.Nodes };
+        if ((string?)arguments["page"] is { Length: > 0 } key)
+        {
+            var page = pages.FirstOrDefault(candidate => candidate.Key == key)
+                ?? throw new ToolProblem($"No recorded page '{key}'. The pages are {string.Join(", ", pages.Select(candidate => candidate.Key))}.");
+            var (shown, more) = Cut(page.Captures.Select(Capture), arguments);
+            return new { page.Key, Captures = shown, More = more };
+        }
+
+        return Capped("pages", pages.Select(page => new
+        {
+            page.Key,
+            Name = page.Latest.Event.DisplayName,
+            page.Latest.Event.Location,
+            made.GetValueOrDefault(page.Key).PageObject,
+            ChangedSinceGenerated = made.GetValueOrDefault(page.Key).Changed,
+            Newest = Capture(page.Latest),
+            Captures = page.Captures.Count,
+        }), arguments);
+    }
+
+    private object MatchControls(JsonObject arguments)
+    {
+        var matches = _server.Scraper.Match((string?)arguments["project"], Required(arguments, "page"));
+        var (shown, more) = Cut(matches.Matches, arguments);
+        return new { matches.Page, matches.PageObject, matches.ChangedSinceGenerated, Matches = shown, More = more };
+    }
+
+    // A page's changes, at most 'max' of each kind; 'more' counts every one left out (M3).
+    private object DiffPage(JsonObject arguments)
+    {
+        var max = MaxOf(arguments);
+        var diff = _server.Scraper.Diff((string?)arguments["project"], Required(arguments, "page"), (string?)arguments["fromSession"], Whole(arguments, "fromEvent", 1, int.MaxValue), (string?)arguments["toSession"], Whole(arguments, "toEvent", 1, int.MaxValue), max);
+        var more = diff.AddedCount + diff.RemovedCount + diff.ChangedCount - diff.Added.Count - diff.Removed.Count - diff.Changed.Count;
+        return new { diff.AddedCount, diff.RemovedCount, diff.ChangedCount, diff.Added, diff.Removed, diff.Changed, More = more > 0 ? more : (int?)null };
+    }
 
     private object DraftFeature(string path, string? method, string? feature)
     {
@@ -1536,13 +1757,14 @@ public sealed class BddMcpServer : IDisposable
         };
     }
 
-    private static object SimilarSteps(BddSuite suite, string? query)
+    private static object SimilarSteps(BddSuite suite, JsonObject arguments)
     {
-        var words = (query ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var words = ((string?)arguments["query"] ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
         var similar = CSharpTestDraft.Similar(DraftPhrases(suite))
             .Where(group => group.Phrases.Any(phrase => words.All(word => phrase.Contains(word, StringComparison.OrdinalIgnoreCase))))
             .ToList();
-        return new { Suite = suite.Name, Count = similar.Count, Groups = similar };
+        var (shown, more) = Cut(similar, arguments);
+        return new { Suite = suite.Name, Count = similar.Count, Groups = shown, More = more };
     }
 
     // The suite's own phrases: step definitions, not page or control grammar or callable steps.
@@ -1589,6 +1811,12 @@ public sealed class BddMcpServer : IDisposable
             throw new ToolProblem($"No suite under {_solutionDir}: no project has a uat.config.md or bdd.config.md.");
         }
 
+        // Left out, the only suite; of several, the agent names one rather than get the first by chance (M7).
+        if (name is null && names.Count > 1)
+        {
+            throw new ToolProblem($"Give 'suite': the solution has {names.Count}, {string.Join(", ", names)}.");
+        }
+
         var found = name is null ? names[0] : names.FirstOrDefault(candidate => string.Equals(candidate, name, StringComparison.OrdinalIgnoreCase));
         return found is null
             ? throw new ToolProblem($"No suite '{name}'. The suites are {string.Join(", ", names)}.")
@@ -1629,19 +1857,12 @@ public sealed class BddMcpServer : IDisposable
     private static JsonObject Error(JsonNode? id, int code, string message)
         => new() { ["jsonrpc"] = "2.0", ["id"] = id, ["error"] = new JsonObject { ["code"] = code, ["message"] = message } };
 
-    private static JsonObject Schema(params (string Name, string Type, string Description)[] properties)
-        => new()
-        {
-            ["type"] = "object",
-            ["properties"] = new JsonObject([.. properties.Select(property => new KeyValuePair<string, JsonNode?>(property.Name, new JsonObject { ["type"] = property.Type, ["description"] = property.Description }))]),
-        };
-
     private sealed class McpException(int code, string message) : Exception(message)
     {
         public int Code { get; } = code;
     }
 
-    // validate_scenario's answer: whether the file binds, and each problem by line.
+    // check_scenario's answer: whether the file binds, and each problem by line.
     private sealed record Validation(string File, string? Suite, bool Bound, string? Reason, bool Valid, IReadOnlyList<ValidationProblem> Problems);
 
     private sealed record ValidationProblem(int Line, string Severity, string? Code, string Message);

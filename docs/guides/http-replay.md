@@ -152,7 +152,7 @@ bruinet http check --recordings <suite>/Recordings/http      # the gate: exit 1 
 ```
 
 For agents, the MCP server's `run_scenario {replay: "record" | "replay" | "refresh"}` runs with the mode set, and
-`http_calls` gives a scenario's calls in its newest replayed run: each matched, recorded or missed, the misses, and the
+`get_http_calls` gives a scenario's calls in its newest replayed run: each matched, recorded or missed, the misses, and the
 recorded calls it no longer makes.
 
 ## What Replay Can't Do

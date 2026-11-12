@@ -28,11 +28,10 @@ public sealed class McpServerTests : IDisposable
 
         var lines = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(line => JsonNode.Parse(line)!).ToList();
         Assert.Equal(2, lines.Count);
-        Assert.Equal("bruinet-bdd", (string?)lines[0]["result"]!["serverInfo"]!["name"]);
+        Assert.Equal("bruinet", (string?)lines[0]["result"]!["serverInfo"]!["name"]);
         Assert.NotNull(lines[0]["result"]!["capabilities"]!["tools"]);
-        Assert.Equal(
-            ["list_suites", "list_steps", "list_pages", "list_test_sets", "validate_scenario", "draft_feature", "similar_steps", "find_step_usages", "record_video", "review_page", "list_scraped_projects", "get_scraper_progress", "start_recording", "capture_page", "stop_recording", "list_recorded_pages", "get_page_snapshot", "find_similar_elements", "search_recordings", "list_controls", "detect_patterns", "control_brief", "match_controls", "diff_page", "suggest_controls", "scraped_header", "write_code", "list_recorded_actions", "resolve_actions", "test_brief", "draft_test", "run_test", "check_code", "explore_app", "draft_page_objects", "verify_page_objects", "update_scraper_config", "create_scraped_project", "list_states", "set_state", "run_scenario", "last_runs", "step_start", "step_move", "step_state", "step_screenshot", "coverage", "why", "get_trace", "http_calls", "failing", "tests_affected", "rename_step", "rename_page_object", "delete_results"],
-            lines[1]["result"]!["tools"]!.AsArray().Select(tool => (string?)tool!["name"]));
+        Assert.Contains("Scraper (page objects and tests from recordings), from scrape_list_projects:", (string?)lines[0]["result"]!["instructions"]);
+        Assert.Equal(["list_suites", "scrape_list_projects"], lines[1]["result"]!["tools"]!.AsArray().Select(tool => (string?)tool!["name"]).Where(name => name is "list_suites" or "scrape_list_projects"));
     }
 
     [Fact]
@@ -45,20 +44,22 @@ public sealed class McpServerTests : IDisposable
     }
 
     [Fact]
-    public void ListPages_GivesThePagesAndTheirControls()
+    public void ListPages_GivesThePages_AndOnePagesControls()
     {
-        var text = CallText("list_pages", new JsonObject { ["suite"] = "Bruinet.Samples.Todo.Uat" });
+        var pages = CallText("list_pages", new JsonObject { ["suite"] = "Bruinet.Samples.Todo.Uat" });
+        var controls = CallText("list_pages", new JsonObject { ["suite"] = "Bruinet.Samples.Todo.Uat", ["page"] = "Todo List" });
 
-        Assert.Contains("\"page\":\"Todo List\"", text);
-        Assert.Contains("\"name\":\"Sync\"", text);
+        Assert.Contains("\"page\":\"Todo List\"", pages);
+        Assert.DoesNotContain("\"name\":\"Sync\"", pages);
+        Assert.Contains("\"name\":\"Sync\"", controls);
     }
 
     [Fact]
-    public void ValidateScenario_ChecksADraft_WithTheGatesWords()
+    public void CheckScenario_ChecksADraft_WithTheGatesWords()
     {
         var path = Path.Combine(TodoPaths.Project, "Features", "TOD.99-draft.feature.md");
 
-        var text = CallText("validate_scenario", new JsonObject
+        var text = CallText("check_scenario", new JsonObject
         {
             ["path"] = path,
             ["text"] = "# Feature: TOD.99 Draft\n\n## Scenario: TOD.99.1 A draft\n\n```gherkin\nGiven I am on the Todo List page\nWhen I polish the list\n```\n",
@@ -88,7 +89,7 @@ public sealed class McpServerTests : IDisposable
     }
 
     [Fact]
-    public void ReviewPage_ShowsEachVideo_WithCaptionsChaptersAndStepResults()
+    public void WriteReview_ShowsEachVideo_WithCaptionsChaptersAndStepResults()
     {
         var folder = Directory.CreateTempSubdirectory("bruinet-review-").FullName;
         try
@@ -106,7 +107,7 @@ public sealed class McpServerTests : IDisposable
                     [], []),
             ]).Save(Path.ChangeExtension(video, ".timeline.json"));
 
-            var text = CallText("review_page", new JsonObject
+            var text = CallText("write_review", new JsonObject
             {
                 ["title"] = "TOD.12 Archive a todo",
                 ["summary"] = "Added Archive to the detail page.",
@@ -129,6 +130,24 @@ public sealed class McpServerTests : IDisposable
         {
             Directory.Delete(folder, recursive: true);
         }
+    }
+
+    [Fact]
+    public void NoSuiteGiven_OfSeveral_IsAToolError_NamingThem()
+    {
+        var result = Call("list_steps", new JsonObject());
+
+        Assert.True((bool)result["isError"]!);
+        Assert.Contains("Give 'suite'", (string?)result["content"]![0]!["text"]);
+        Assert.Contains("Bruinet.Samples.Todo.Uat", (string?)result["content"]![0]!["text"]);
+    }
+
+    [Fact]
+    public void AnOldToolName_AnswersNothing()
+    {
+        var response = _server.Handle("""{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"failing","arguments":{}}}""")!;
+
+        Assert.Equal(-32602, (int?)response["error"]!["code"]);
     }
 
     [Fact]

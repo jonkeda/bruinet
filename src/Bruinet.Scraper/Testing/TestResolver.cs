@@ -17,7 +17,7 @@ namespace Bruinet.Scraper.Testing;
 /// </summary>
 public static class TestResolver
 {
-    /// <summary>The page phrase a navigation becomes (R5), registered by Bruinet.Uat; checked by <c>validate_scenario</c>.</summary>
+    /// <summary>The page phrase a navigation becomes (R5), registered by Bruinet.Uat; checked by <c>check_scenario</c>.</summary>
     public const string OnPagePhrase = "I should be on the {page} page";
 
     /// <summary>Resolves a session against the project's page objects as they are now.</summary>
