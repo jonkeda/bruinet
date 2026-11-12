@@ -55,6 +55,26 @@ internal static class NativeMethods
     [DllImport("user32.dll")]
     internal static extern int GetSystemMetrics(int nIndex);
 
+    internal const uint WmKeyDown = 0x0100;
+    internal const uint WmKeyUp = 0x0101;
+    internal const uint WmChar = 0x0102;
+
+    /// <summary>SMTO_ABORTIFHUNG: a hung window fails the send instead of blocking it.</summary>
+    internal const uint SmtoAbortIfHung = 0x0002;
+
+    /// <summary>MAPVK_VK_TO_VSC.</summary>
+    internal const uint MapVkToScanCode = 0;
+
+    [DllImport("user32.dll", EntryPoint = "SendMessageTimeoutW", SetLastError = true)]
+    internal static extern nint SendMessageTimeout(
+        IntPtr hwnd, uint message, nint wParam, nint lParam, uint flags, uint timeoutMs, out nint result);
+
+    [DllImport("user32.dll", EntryPoint = "MapVirtualKeyW")]
+    internal static extern uint MapVirtualKey(uint code, uint mapType);
+
+    [DllImport("user32.dll", EntryPoint = "VkKeyScanW")]
+    internal static extern short VkKeyScan(char character);
+
     internal delegate bool MonitorEnumProc(nint monitor, nint deviceContext, ref NativeRect clip, nint data);
 
     [DllImport("user32.dll")]

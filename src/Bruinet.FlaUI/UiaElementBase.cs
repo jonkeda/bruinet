@@ -231,31 +231,55 @@ public abstract class UiaElementBase
 
         PhysicalInput.Used($"{GetType().Name}.SendKeys({method})", "a Value pattern on the element");
         Element.Focus();
+        EnsureKeysReachTheApp($"type '{text}'");
         Keyboard.Type(text);
     });
 
     /// <summary>
-    /// Gives the element the focus and presses one key (<c>Home</c>, <c>Right</c>, <c>Tab</c>, a
-    /// digit), through <see cref="PhysicalInput"/>: for a control whose value has no pattern to
-    /// write it (a WinForms date picker).
+    /// Presses one key (<c>Home</c>, <c>Right</c>, <c>Tab</c>, a digit) on the element: for a control whose value
+    /// has no pattern to write it (a WinForms date picker).
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// An element with a window of its own (every WinForms control) gets the key as messages sent to that window
+    /// (key down, the character, key up), which the control handles as typing: no focus, no app in front, no
+    /// <see cref="PhysicalInput"/>. The keyboard used before went to whatever window Windows had in front, which it
+    /// does not hand to the app while someone works in another one: the digits landed in the owner's editor and
+    /// the picker kept today's date (R2-T117).
+    /// </para>
+    /// <para>
+    /// An element with no window of its own (WPF's) is typed with the keyboard, through <see cref="PhysicalInput"/>,
+    /// and only when the app's window is in front; otherwise the call is refused rather than typing elsewhere.
+    /// </para>
+    /// </remarks>
     /// <param name="key">A <c>VirtualKeyShort</c> name (<c>HOME</c>, <c>RIGHT</c>) or a single character to type.</param>
     /// <exception cref="ArgumentException"><paramref name="key"/> names no key.</exception>
+    /// <exception cref="ActionRefusedException">The key had to be typed and the app is not in front, or the window refused it.</exception>
     public void PressKey(string key) => Live(() =>
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
+        var virtualKey = global::FlaUI.Core.WindowsAPI.VirtualKeyShort.NONAME;
+        if (key.Length > 1 && !Enum.TryParse(key, ignoreCase: true, out virtualKey))
+            throw new ArgumentException($"'{key}' names no key.", nameof(key));
+
+        var window = Element.Properties.NativeWindowHandle.ValueOrDefault;
+        if (window != IntPtr.Zero)
+        {
+            KeyMessages.Send(window, key, virtualKey, this);
+            return;
+        }
+
         PhysicalInput.Used($"{GetType().Name}.PressKey", "a pattern that writes the control's value");
         if (!Element.Properties.HasKeyboardFocus.ValueOrDefault)
             Element.Focus();
+        EnsureKeysReachTheApp($"press '{key}'");
 
         try
         {
             if (key.Length == 1)
                 Keyboard.Type(key[0]);
-            else if (Enum.TryParse<global::FlaUI.Core.WindowsAPI.VirtualKeyShort>(key, ignoreCase: true, out var virtualKey))
-                Keyboard.Type(virtualKey);
             else
-                throw new ArgumentException($"'{key}' names no key.", nameof(key));
+                Keyboard.Type(virtualKey);
         }
         catch (System.ComponentModel.Win32Exception refused)
         {
@@ -264,6 +288,25 @@ public abstract class UiaElementBase
                 + "desktop is locked, or when the app runs elevated and the test does not.", refused);
         }
     });
+
+    /// <summary>
+    /// Refuses keyboard input when the app's window is not in front: the keys would go to the window that is, which
+    /// is someone else's.
+    /// </summary>
+    /// <param name="what">What the call meant to do, for the message.</param>
+    private void EnsureKeysReachTheApp(string what)
+    {
+        // A thread id of 0 is a window that is gone or none in front: not the app's either way.
+        var inFront = Windowing.NativeMethods.GetWindowThreadProcessId(Windowing.NativeMethods.GetForegroundWindow(), out var front) != 0;
+        var known = Windowing.NativeMethods.GetWindowThreadProcessId(App.WindowHandle, out var app) != 0;
+        if (!inFront || !known || front != app)
+        {
+            throw new ActionRefusedException(
+                $"Did not {what} for {this}: the keys would go to the window in front, which is another app's, and "
+                + "Windows does not bring the app forward while another window is in use. Leave the desktop to the "
+                + "test, or write the value through a pattern.");
+        }
+    }
 
     /// <summary>Empties the element through the Value pattern, or else selects all and deletes with the keyboard.</summary>
     public void Clear() => Live(() =>
@@ -276,6 +319,7 @@ public abstract class UiaElementBase
 
         PhysicalInput.Used($"{GetType().Name}.Clear(keys)", "a Value pattern on the element");
         Element.Focus();
+        EnsureKeysReachTheApp("select all and delete");
         Keyboard.TypeSimultaneously(global::FlaUI.Core.WindowsAPI.VirtualKeyShort.CONTROL, global::FlaUI.Core.WindowsAPI.VirtualKeyShort.KEY_A);
         Keyboard.Type(global::FlaUI.Core.WindowsAPI.VirtualKeyShort.DELETE);
     });
