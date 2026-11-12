@@ -6,15 +6,14 @@ not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-expe
 ## Where it stands
 
 On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own):
-**341 passed, 13 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. One full Collection run also
-failed `ScrollToEnd_LoadsEveryPage`, which passed alone three times out of three: a timing failure, noted. Every failure is in the list below. A folder takes about as
+**352 passed, 2 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. `ScrollToEnd_LoadsEveryPage`
+fails now and then in a full Collection run (one in four after the last fix) and passes alone: noted, not chased. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### What it cannot do
 
 | Gap | Tests | Why |
 | --- | --- | --- |
-| MediaElement's transport controls | 11 | The platform draws them; they are not in the agent's tree. |
 | A list item by its index (`ScrollToItem`, `Item(i)` past the realized rows) | 1 | The agent gives no row its index (`PositionInSet`). |
 | Selecting a list row that has no tap of its own | 1 | The agent sets no `SelectedItem` (an object) and has no select action; the bridge's `SelectIndex` serves pickers only. |
 | Scrolling a ScrollView inside another to an exact position | 0 | The agent spends an amount on the outermost ScrollView; the inner one reaches the top and the end exactly, a position between as near as its children allow. |
@@ -56,7 +55,14 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
   items and `SelectByText`, `Unfocus`, the app's gesture sinks (double-tap, pan), `GetState`, and `IsIdle`, which the
   runner asks after each action as the FlaUI runner settles after a write. Not a separate project as first proposed:
   a conditional reference in `AppSupport`, as the sample apps carry the agent, keeps it free of the preview package.
-- **Tests:** `DevFlowRunnerTests` (25, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+- **MediaElement:** its transport controls, which the platform draws outside the agent's tree, stand in under WinUI's
+  ids (`DevFlowMediaPart`, found when a lookup by one of those ids finds nothing): play/pause named "Pause" while
+  playing, the time readouts as `h:mm:ss`, the progress slider in seconds, all read from the element's `CurrentState`,
+  `Position` and `Duration`. Play, pause and seek go through the bridge extension's `media` route, which calls the
+  element's methods by name (the agent calls none, and `AppSupport` takes no reference to the toolkit).
+- **Rows, again:** an element found inside a row inherits the row's item key, so a label read after its container was
+  recycled is stale too, not the next item's text.
+- **Tests:** `DevFlowRunnerTests` (27, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 
 ## Outcome

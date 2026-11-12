@@ -1,5 +1,6 @@
 #if BRUINET_DEVFLOW && BRUINET_UIA_BRIDGE
 using System.Globalization;
+using System.Reflection;
 using Bruinet.Maui.AppSupport.Uia;
 using Bruinet.Uia;
 using Microsoft.Maui.DevFlow.Agent.Core;
@@ -23,7 +24,7 @@ public static class BruinetDevFlowBridge
     /// <summary>The extension's namespace, in the reverse-domain form the agent requires: its routes are under <c>/api/v1/ext/dev.bruinet.bridge/</c>.</summary>
     public const string Namespace = "dev.bruinet.bridge";
 
-    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c> and <c>declares</c>.</summary>
+    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c> and <c>media</c>.</summary>
     /// <param name="options">The agent's options, in <c>AddMauiDevFlowAgent(options => ...)</c>.</param>
     /// <returns>The same options.</returns>
     public static AgentOptions AddBruinetBridge(this AgentOptions options)
@@ -34,7 +35,68 @@ public static class BruinetDevFlowBridge
         extension.MapPost("/exchange", request => Task.FromResult(Exchange(request.BodyAs<VerbRequest>())));
         extension.MapGet("/declares", request => Task.FromResult(Declares(
             request.QueryParams.GetValueOrDefault("automationId"), request.QueryParams.GetValueOrDefault("verb"))));
+        extension.MapPost("/media", request => Media(request.BodyAs<MediaRequest>()));
         return options;
+    }
+
+    /// <summary>
+    /// Plays, pauses, stops or seeks a media element by its AutomationId: what its transport controls
+    /// do, which the platform draws outside any tree the agent reads. Its state, position and duration
+    /// the agent reads itself. Called by name (<c>Play</c>, <c>Pause</c>, <c>Stop</c>, <c>SeekTo</c>), so
+    /// this library needs no reference to the toolkit that has the element.
+    /// </summary>
+    private static async Task<HttpResponse> Media(MediaRequest? request)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+        if (request is not { AutomationId: { Length: > 0 } automationId, Action: { Length: > 0 } action })
+            return HttpResponse.Error("automationId and action are required.");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            var element = FindElement(automationId);
+            if (element is null)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"no element '{automationId}' is on screen");
+
+            var type = element.GetType();
+            MethodInfo? method;
+            object?[] arguments;
+            if (string.Equals(action, "SeekTo", StringComparison.Ordinal))
+            {
+                method = type.GetMethod("SeekTo", [typeof(TimeSpan), typeof(CancellationToken)]);
+                arguments = [TimeSpan.FromSeconds(Math.Max(0, request.Seconds)), CancellationToken.None];
+            }
+            else
+            {
+                method = action is "Play" or "Pause" or "Stop" ? type.GetMethod(action, Type.EmptyTypes) : null;
+                arguments = [];
+            }
+
+            if (method is null)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, $"'{automationId}' ({type.Name}) has no {action}");
+
+            if (method.Invoke(element, arguments) is Task running)
+                await running.WaitAsync(TimeSpan.FromSeconds(5));
+            return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+        });
+    }
+
+    // The first element with the AutomationId in the app's windows, by their visual trees.
+    private static Microsoft.Maui.Controls.VisualElement? FindElement(string automationId)
+    {
+        var pending = new Stack<Microsoft.Maui.IVisualTreeElement>();
+        foreach (var window in Microsoft.Maui.Controls.Application.Current?.Windows ?? [])
+            pending.Push(window);
+        while (pending.Count > 0)
+        {
+            var next = pending.Pop();
+            if (next is Microsoft.Maui.Controls.VisualElement { AutomationId: var id } found && id == automationId)
+                return found;
+            foreach (var child in next.GetVisualChildren())
+                pending.Push(child);
+        }
+
+        return null;
     }
 
     // Both routes carry a verb by the transport the verb itself names (BruinetVerbs.TransportFor), as
@@ -86,6 +148,15 @@ public static class BruinetDevFlowBridge
 
     private static HttpResponse Answer(bool declared, bool delivered, int hresult, string value, int declined, string reason)
         => HttpResponse.Json(new { declared, delivered, hresult, value, declined, reason });
+
+    private sealed class MediaRequest
+    {
+        public string? AutomationId { get; set; }
+
+        public string? Action { get; set; }
+
+        public double Seconds { get; set; }
+    }
 
     private sealed class VerbRequest
     {

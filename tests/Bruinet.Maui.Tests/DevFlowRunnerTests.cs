@@ -277,7 +277,43 @@ public class DevFlowRunnerTests
         Assert.Throws<RouteUnavailableException>(entry.ClearFocus);
     }
 
+    [Fact]
+    public void MediaTransport_StandsInUnderWinUIsIds_ReadingTheElementsState()
+    {
+        var agent = new FakeAgent(MediaPage());
+        agent.Properties["Clip.CurrentState"] = "Paused";
+        agent.Properties["Clip.Position"] = "00:00:03";
+        agent.Properties["Clip.Duration"] = "00:00:30";
+        var driver = Driver(agent);
+
+        Assert.Equal("Play", driver.FindElements(Locator.ByAutomationId("PlayPauseButton")).Single().Name);
+        Assert.Equal("0:00:03", driver.FindElements(Locator.ByAutomationId("TimeElapsedElement")).Single().Name);
+        Assert.Equal("0:00:27", driver.FindElements(Locator.ByAutomationId("TimeRemainingElement")).Single().Name);
+        Assert.Equal(3, driver.FindElements(Locator.ByAutomationId("ProgressSlider")).Single().RangeValue);
+    }
+
+    [Fact]
+    public void MediaPlayPause_PlaysThroughTheAppsBridge()
+    {
+        var agent = new FakeAgent(MediaPage());
+        agent.Properties["Clip.CurrentState"] = "Paused";
+        agent.Bridge["Clip Media"] = new BridgeAnswer(true, true, 0, string.Empty, 0, string.Empty);
+
+        Driver(agent).FindElements(Locator.ByAutomationId("PlayPauseButton")).Single().Click();
+
+        Assert.Contains("bridge Clip Media Play 0", agent.Calls);
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
+
+    // A page with one MediaElement, whose transport controls the agent's tree does not show.
+    private static List<ElementInfo> MediaPage() =>
+    [
+        Node("w", "Window", visible: false, enabled: false, children:
+        [
+            Node("MediaPage", "ContentPage", children: [Placed(Node("Clip", "MediaElement"), 140, 120)]),
+        ]),
+    ];
 
     // A Shell as the agent shows it: its structure reported invisible and disabled, the Home tab's
     // page on screen, the Controls tab's page left (no height), and the agent's own chrome nodes.
@@ -452,6 +488,9 @@ public class DevFlowRunnerTests
             => Answer(automationId, verb, argument);
 
         public bool BridgeDeclares(string? automationId, string verb) => Bridge.ContainsKey($"{automationId ?? "-"} {verb}");
+
+        public BridgeAnswer Media(string automationId, string action, double seconds = 0)
+            => Answer(automationId, "Media", $"{action} {seconds.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
         private BridgeAnswer Answer(string? automationId, string verb, string argument)
         {

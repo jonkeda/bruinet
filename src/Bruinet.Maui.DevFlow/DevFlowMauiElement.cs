@@ -31,6 +31,12 @@ internal sealed class DevFlowMauiElement : IMauiElement
     {
     }
 
+    /// <summary>An element found inside a list row, tied to the item the row showed when the row was found.</summary>
+    internal DevFlowMauiElement(DevFlowMauiDriver driver, string id, string? rowKey)
+        : this(driver, id, StepperPart.None, rowKey ?? RowKeyOf(driver, id))
+    {
+    }
+
     private DevFlowMauiElement(DevFlowMauiDriver driver, string? id, StepperPart part, string? rowKey)
     {
         _driver = driver;
@@ -406,7 +412,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
                 or { Strategy: LocatorStrategy.ControlType, Value: "button" })
             return [new DevFlowMauiElement(_driver, _id, StepperPart.Minus, _rowKey), new DevFlowMauiElement(_driver, _id, StepperPart.Plus, _rowKey)];
 
-        return TryNode is { } node ? _driver.Find(node, locator) : [];
+        // Inside a row, what is found belongs to the item this row was found on: a container recycled
+        // since shows another item, and its parts are not this item's.
+        return TryNode is { } node ? _driver.Find(node, locator, rowKey: _rowKey) : [];
     }
 
     #endregion

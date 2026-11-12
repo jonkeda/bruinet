@@ -57,6 +57,9 @@ internal interface IDevFlowAgent : IDisposable
 
     /// <summary>Whether an element with <paramref name="automationId"/> (or any, without one) declares the verb.</summary>
     bool BridgeDeclares(string? automationId, string verb);
+
+    /// <summary>Plays, pauses, stops or seeks (<c>SeekTo</c>, in seconds) a media element, through the app's bridge.</summary>
+    BridgeAnswer Media(string automationId, string action, double seconds = 0);
 }
 
 /// <summary>
@@ -180,6 +183,9 @@ internal sealed class DevFlowAgent : IDevFlowAgent
 
     public BridgeAnswer BridgeExchange(string? automationId, string verb, string argument = "")
         => Bridge("/exchange", new { automationId, verb, argument });
+
+    public BridgeAnswer Media(string automationId, string action, double seconds = 0)
+        => Bridge("/media", new { automationId, action, seconds });
 
     public bool BridgeDeclares(string? automationId, string verb)
     {

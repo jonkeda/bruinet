@@ -219,11 +219,26 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         return tree.Windows.SelectMany(window => Find(window, locator)).ToList();
     }
 
-    internal IReadOnlyList<IMauiElement> Find(DevFlowNode root, Locator locator, bool includeHidden = false)
-        => DevFlowLocators.Match(root, locator, _agent.QueryCss)
+    internal IReadOnlyList<IMauiElement> Find(DevFlowNode root, Locator locator, bool includeHidden = false, string? rowKey = null)
+    {
+        var found = DevFlowLocators.Match(root, locator, _agent.QueryCss)
             .Where(node => includeHidden || node.Shown)
-            .Select(node => (IMauiElement)new DevFlowMauiElement(this, node.Id))
+            .Select(node => (IMauiElement)new DevFlowMauiElement(this, node.Id, rowKey))
             .ToList();
+
+        // A media element's transport controls, which the platform draws outside the agent's tree,
+        // stand in under WinUI's ids for the media elements on screen (DevFlowMediaPart).
+        if (found.Count == 0 && locator is { Strategy: LocatorStrategy.AutomationId, Parent: null }
+            && DevFlowMediaPart.Parts.Contains(locator.Value))
+        {
+            return root.DescendantsAndSelf()
+                .Where(node => node.Type == "MediaElement" && (includeHidden || node.Shown))
+                .Select(node => (IMauiElement)new DevFlowMediaPart(this, node.Id, locator.Value))
+                .ToList();
+        }
+
+        return found;
+    }
 
     #endregion
 
