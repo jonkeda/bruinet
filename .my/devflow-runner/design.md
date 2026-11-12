@@ -13,15 +13,17 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### Android
 
-On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **317 passed of 385**. The runner installs the
+On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **327 passed of 385**. The runner installs the
 APK, starts its launcher activity with the launch settings as string extras, sets `debug.bruinet.bridge` for the
 bridge, and forwards a free port here to the agent's 9223 on the device (`AndroidLaunch`). The bridge's run-time ask is
 that system property on Android (an app is given no environment variables): `AppSupport` reads it with `getprop` into
-`BRUINET_UIA_BRIDGE` before the gate is read, decided by the owner on 2026-11-12. What still fails, by cause:
+`BRUINET_UIA_BRIDGE` before the gate is read, decided by the owner on 2026-11-12. An Android alert, which the agent's tree does not show, is read from a
+`uiautomator dump` into the Windows dialog shape and tapped or typed into over adb (`AndroidDialogs`), touch input as
+the Appium runner's is, also the owner's call that day; the dump is taken only when the app's `CurrentAlert` says an
+alert is open. What still fails, by cause:
 
 | Cause | Tests | What it needs |
 | --- | --- | --- |
-| Dialogs | 9 | The agent shows no Android dialog; DevFlow's own driver reads them with `uiautomator dump` and taps by coordinates over adb, touch input like Appium's. The owner's call. |
 | MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
 | Rows and the carousel | 10 | Fewer rows realized on a phone screen, and the carousel shows one card: not yet worked out. |
 | Date pickers | 6 | The date is read in a format Android does not show, and its focus is not reported. |

@@ -275,6 +275,13 @@ internal sealed class DevFlowMauiElement : IMauiElement
     {
         ArgumentNullException.ThrowIfNull(text);
         var info = Ready("type into");
+        if (AndroidDialogs.IsDialogNode(_id))
+        {
+            using var typed = Report(InteractionKind.Type);
+            _driver.TypeIntoAndroidDialog(info, text, replace: method == TextInputMethod.SetValue);
+            return;
+        }
+
         var current = method == TextInputMethod.SetValue ? string.Empty : info.Text ?? string.Empty;
         using var mark = Report(InteractionKind.Type);
         _driver.Act(_driver.Agent.Fill(info, current + text), $"type into {Describe()}");
@@ -285,6 +292,12 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public void Clear()
     {
         using var mark = Report(InteractionKind.Clear);
+        if (AndroidDialogs.IsDialogNode(_id))
+        {
+            _driver.TypeIntoAndroidDialog(Ready("clear"), string.Empty, replace: true);
+            return;
+        }
+
         _driver.Act(_driver.Agent.Clear(Ready("clear")), $"clear {Describe()}");
     }
 
@@ -450,6 +463,12 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
         using var mark = Report(InteractionKind.Tap);
         var info = Ready("invoke");
+        if (AndroidDialogs.IsDialogNode(_id))
+        {
+            _driver.TapAndroidDialog(info);
+            return;
+        }
+
         if (!_driver.Agent.Tap(info))
         {
             _driver.Changed();

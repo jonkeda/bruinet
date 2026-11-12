@@ -235,7 +235,10 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         var native = dialogs || _dialogOpen;
         if (_snapshot is null || (native && !_snapshotNative) || Stopwatch.GetElapsedTime(_snapshotAt) > SnapshotAge)
         {
-            _snapshot = new DevFlowTree(_agent.Tree(native), modalsCover: Platform != MauiPlatform.Windows);
+            var windows = _agent.Tree(native);
+            if (native && AndroidAlert() is { } alert)
+                windows = [.. windows, alert];
+            _snapshot = new DevFlowTree(windows, modalsCover: Platform != MauiPlatform.Windows);
             _snapshotNative = native;
             _snapshotAt = Stopwatch.GetTimestamp();
             if (native)
@@ -243,6 +246,44 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         }
 
         return _snapshot;
+    }
+
+    /// <summary>
+    /// The alert on an Android screen, which the agent's tree does not show, read from a UiAutomator
+    /// dump (<see cref="AndroidDialogs"/>). A dump takes a second or two, so it is taken only when the
+    /// app's bridge says an alert is open, or when the app cannot say.
+    /// </summary>
+    private Microsoft.Maui.DevFlow.Driver.ElementInfo? AndroidAlert()
+    {
+        if (_app is not AndroidLaunch android)
+            return null;
+
+        var asked = _agent.BridgeExchange(null, "CurrentAlert");
+        if (asked.Declared && asked.Delivered && asked.Value.Length == 0)
+            return null;
+
+        return AndroidDialogs.Read(android.DumpScreen());
+    }
+
+    /// <summary>A tap on a node of an Android alert, over adb.</summary>
+    internal void TapAndroidDialog(Microsoft.Maui.DevFlow.Driver.ElementInfo node)
+    {
+        var (x, y) = AndroidDialogs.Centre(node);
+        ((AndroidLaunch)_app!).Tap(x, y);
+        Changed();
+        Settle();
+    }
+
+    /// <summary>Types into an Android alert's field over adb: tapped first, its text replaced or appended to.</summary>
+    internal void TypeIntoAndroidDialog(Microsoft.Maui.DevFlow.Driver.ElementInfo field, string text, bool replace)
+    {
+        var android = (AndroidLaunch)_app!;
+        var (x, y) = AndroidDialogs.Centre(field);
+        android.Tap(x, y);
+        if (replace)
+            android.Delete(field.Text?.Length ?? 0);
+        android.Type(text);
+        Changed();
     }
 
     /// <summary>Drops the kept tree: the app changes after an action.</summary>
@@ -348,7 +389,10 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         if (Snapshot(dialogs: true).ActiveDialog() is { } dialog
             && dialog.DescendantsAndSelf().LastOrDefault(node => node.Type == "Button") is { } dismiss)
         {
-            Act(_agent.Tap(dismiss.Info), "close the dialog");
+            if (AndroidDialogs.IsDialogNode(dismiss.Id))
+                TapAndroidDialog(dismiss.Info);
+            else
+                Act(_agent.Tap(dismiss.Info), "close the dialog");
             return;
         }
 

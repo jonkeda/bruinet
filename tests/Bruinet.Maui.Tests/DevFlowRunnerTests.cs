@@ -304,6 +304,29 @@ public class DevFlowRunnerTests
         Assert.Contains("bridge Clip Media Play 0", agent.Calls);
     }
 
+    [Fact]
+    public void AndroidAlert_ReadFromAScreenDump_HasTheWindowsDialogShape()
+    {
+        var screen = System.Xml.Linq.XDocument.Parse("""
+            <hierarchy>
+              <node class="android.widget.LinearLayout" resource-id="com.app:id/parentPanel" bounds="[60,800][1020,1400]">
+                <node class="android.widget.TextView" resource-id="com.app:id/alertTitle" text="Confirm" bounds="[100,840][980,900]" />
+                <node class="android.widget.TextView" resource-id="android:id/message" text="Proceed?" bounds="[100,920][980,980]" />
+                <node class="android.widget.Button" resource-id="android:id/button2" text="No" bounds="[600,1300][780,1380]" />
+                <node class="android.widget.Button" resource-id="android:id/button1" text="Yes" bounds="[800,1300][980,1380]" />
+              </node>
+            </hierarchy>
+            """);
+
+        var dialog = AndroidDialogs.Read(screen)!;
+
+        Assert.Equal("Confirm", dialog.Text);
+        Assert.Equal(["Text Confirm", "Text Proceed?", "Button Yes", "Button No"], dialog.Children!.Select(n => $"{n.Type} {n.Text}"));
+        Assert.True(AndroidDialogs.IsDialogNode(dialog.Id));
+        Assert.Equal((890, 1340), AndroidDialogs.Centre(dialog.Children![2]));
+        Assert.Null(AndroidDialogs.Read(System.Xml.Linq.XDocument.Parse("<hierarchy><node class=\"x\" /></hierarchy>")));
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
 
     // A page with one MediaElement, whose transport controls the agent's tree does not show.

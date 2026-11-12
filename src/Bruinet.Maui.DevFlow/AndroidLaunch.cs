@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Xml.Linq;
 using Bruinet.Core.Exceptions;
 
 namespace Bruinet.Maui.DevFlow;
@@ -90,6 +91,34 @@ internal sealed class AndroidLaunch : ILaunchedApp
     public bool HasExited => ProcessId == 0;
 
     public string ExitDescription => $"'{_package}' stopped on the device";
+
+    /// <summary>The screen as UiAutomator sees it: what the agent's tree leaves out, an alert among it.</summary>
+    public XDocument DumpScreen()
+    {
+        const string file = "/data/local/tmp/bruinet-screen.xml";
+        Run(_adb, [.. _device, "shell", "uiautomator", "dump", file], TimeSpan.FromSeconds(20));
+        return XDocument.Parse(Run(_adb, [.. _device, "exec-out", "cat", file]));
+    }
+
+    /// <summary>A tap at a point of the screen, in its pixels: touch input, as the Appium runner's.</summary>
+    public void Tap(int x, int y)
+        => Run(_adb, [.. _device, "shell", "input", "tap", x.ToString(CultureInfo.InvariantCulture), y.ToString(CultureInfo.InvariantCulture)]);
+
+    /// <summary>Types into the focused field, as keys; adb's input takes a space as <c>%s</c>.</summary>
+    public void Type(string text)
+    {
+        if (text.Length > 0)
+            Run(_adb, [.. _device, "shell", "input", "text", text.Replace("%", "\\%", StringComparison.Ordinal).Replace(" ", "%s", StringComparison.Ordinal)]);
+    }
+
+    /// <summary>Deletes <paramref name="count"/> characters before the cursor, as the Delete key does.</summary>
+    public void Delete(int count)
+    {
+        if (count <= 0)
+            return;
+        Run(_adb, [.. _device, "shell", "input", "keyevent", "--longpress", "KEYCODE_MOVE_END"]);
+        Run(_adb, [.. _device, "shell", "input", "keyevent", .. Enumerable.Repeat("KEYCODE_DEL", count)]);
+    }
 
     public void Dispose()
     {

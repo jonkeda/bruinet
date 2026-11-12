@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   On the DevFlow runner a MediaElement's transport controls stand in under WinUI's ids, played, paused and seeked
   through the bridge's `media` route. On Android the DevFlow runner installs and starts the APK over adb and forwards
   the agent's port (`APPIUM_PLATFORM=android`, `APPIUM_UDID`), with no Appium server.
+  The bridge switches on in an Android Debug build with the system property `debug.bruinet.bridge=1`, which the runner
+  sets; an Android alert is read from a `uiautomator dump` and answered with taps over adb.
 - MCP `draft_feature`: a feature file drafted from a C# UI test, each statement as the suite phrase that matches its words or a commented gap, validated as the gate would, with its gaps, its finally-block cleanup and phrases that differ only in a value. MCP `similar_steps`: the phrases that could be one phrase with a placeholder. A suite built against an older Bruinet now reports that as its reason instead of failing every tool.
 - One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
   tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with
