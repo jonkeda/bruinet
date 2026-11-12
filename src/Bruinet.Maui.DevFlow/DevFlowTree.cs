@@ -228,10 +228,29 @@ internal sealed class DevFlowTree
             ? row.X < port.X + port.Width && row.X + row.Width > port.X
             : row.Y < port.Y + port.Height && row.Y + row.Height > port.Y;
 
+    /// <summary>
+    /// Shell's own structure (its flyout items, tabs, sections and contents), which the agent reports
+    /// as invisible: what shows under it is the current page, the one with bounds.
+    /// </summary>
+    internal static bool IsShellStructure(DevFlowNode node)
+        => !node.IsSynthetic
+           && node.Info.FullType is "Microsoft.Maui.Controls.FlyoutItem" or "Microsoft.Maui.Controls.Tab"
+               or "Microsoft.Maui.Controls.ShellSection" or "Microsoft.Maui.Controls.ShellContent"
+               or "Microsoft.Maui.Controls.ShellItem" or "Microsoft.Maui.Controls.TabBar";
+
     private void MarkShown(DevFlowNode node, bool parentShown)
     {
-        // A window reports itself invisible; its page says what shows.
-        node.Shown = parentShown && (node.Info.IsVisible || node.Type == "Window");
+        // A window reports itself invisible; its page says what shows. So does Shell's structure.
+        var own = node.Info.IsVisible || node.Type == "Window" || IsShellStructure(node);
+
+        // Under Shell's structure only its pages show, and only the one on screen: a tab left keeps
+        // its page with no height, one never opened has no bounds. The flyout item's template beside
+        // them (which repeats the flyout item's id) is drawn in the flyout, where the agent's own
+        // FlyoutItem node stands for it.
+        if (node.Parent is { } parent && IsShellStructure(parent) && !IsShellStructure(node))
+            own &= IsPage(node) && node.Info.WindowBounds is { Height: > 0 };
+
+        node.Shown = parentShown && own;
         DevFlowNode? onTop = null;
         if (HoldsPages(node) && (node.Type != "Window" || _modalsCover))
             onTop = node.Children.LastOrDefault(child => !child.IsSynthetic && IsPage(child));

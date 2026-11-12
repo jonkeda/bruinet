@@ -5,8 +5,8 @@ not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-expe
 
 ## Where it stands
 
-On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own) and without the
-Shell app: **328 passed, 26 failed, 31 skipped of 385**. Every failure is in the list below. A folder takes about as
+On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own):
+**328 passed, 26 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### What it cannot do
@@ -46,7 +46,11 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
 - **Nested ScrollViews:** a ScrollView with none around it is scrolled by the distance. One inside another is moved
   by showing a child at the start, centre or end of its nearest ScrollView (the agent's scroll-to-element), the stop
   nearest the target on the side it lies: exact at the top and the end, near between them.
-- **Tests:** `DevFlowRunnerTests` (19, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+- **Shell:** the agent reports Shell's structure (flyout items, tabs, sections, contents) as invisible and disabled;
+  under it only the page with bounds is on screen (a tab left keeps its page with no height), and the flyout item's
+  template beside it is left out. The agent's own `Tab` and `FlyoutItem` nodes, directly under the Shell, are
+  `ShellChrome`'s tabs and flyout items (the host is the Shell itself, XPath `.`).
+- **Tests:** `DevFlowRunnerTests` (21, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 
 ## Outcome

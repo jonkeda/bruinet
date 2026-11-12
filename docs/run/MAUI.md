@@ -53,6 +53,14 @@ $env:BRUINET_MAUI_RUNNER='devflow'; $env:APPIUM_APP_PATH="$PWD\samples\Bruinet.S
 dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "FullyQualifiedName!~Tests.Background&FullyQualifiedName!~Tests.Diagnostics&FullyQualifiedName!~Tests.Shell"
 ```
 
+The Shell app's tests the same way, with its own build:
+
+```powershell
+dotnet build samples\Bruinet.Samples.Maui.ShellApp -f net10.0-windows10.0.19041.0 -p:BruinetDevFlow=true -p:OutDir=$PWD\samples\Bruinet.Samples.Maui.ShellApp\bin\DevFlow\
+$env:BRUINET_MAUI_RUNNER='devflow'; $env:APPIUM_APP_PATH="$PWD\samples\Bruinet.Samples.Maui.ShellApp\bin\DevFlow\Bruinet.Samples.Maui.ShellApp.exe"
+dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "FullyQualifiedName~Tests.Shell."
+```
+
 The same suite drives the app through the MauiDevFlow agent it carries (`Bruinet.Maui.DevFlow`), over HTTP on
 loopback, instead of UI Automation. The app opts in: `builder.AddMauiDevFlowAgent()` in a debug build, which the
 sample apps compile only with `-p:BruinetDevFlow=true`; they read their agent's port from `BRUINET_DEVFLOW_PORT`,

@@ -117,7 +117,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     public bool Enabled => SelfEnabled(Node) && PartEnabled();
 
-    private static bool SelfEnabled(DevFlowNode node) => node.Info.IsEnabled && Ancestors(node).All(n => n.Info.IsEnabled || n.Type == "Window");
+    // A window and Shell's structure report themselves disabled; their pages say.
+    private static bool SelfEnabled(DevFlowNode node)
+        => node.Info.IsEnabled && Ancestors(node).All(n => n.Info.IsEnabled || n.Type == "Window" || DevFlowTree.IsShellStructure(n));
 
     private bool PartEnabled() => _part switch
     {

@@ -216,7 +216,67 @@ public class DevFlowRunnerTests
         Assert.Equal(["scroll Outer 100"], agent.Calls);
     }
 
+    [Fact]
+    public void ShellPage_UnderShellsInvisibleStructure_IsFoundAndEnabled_ALeftTabsPageIsNot()
+    {
+        var driver = Driver(new FakeAgent(ShellApp()));
+
+        var button = Assert.Single(driver.FindElements(Locator.ByAutomationId("HomeButton")));
+        Assert.True(button.Enabled);
+        Assert.Empty(driver.FindElements(Locator.ByAutomationId("ControlsButton")));
+
+        // The flyout item's template repeats its id; the agent's own FlyoutItem node stands for it.
+        Assert.Equal(["FlyoutItem"], driver.FindElements(Locator.ByAutomationId("ShellMainItem")).Select(e => e.TagName));
+    }
+
+    [Fact]
+    public void ShellChrome_FindsTheAgentsTabsAndFlyoutItems_UnderTheShell()
+    {
+        var driver = Driver(new FakeAgent(ShellApp()));
+        var shell = driver.FindElements(Locator.ByAutomationId("AppShell")).Single();
+
+        var host = Assert.Single(shell.FindElements(driver.ShellChrome.TabHost));
+        Assert.Equal(["Home", "Controls"], host.FindElements(driver.ShellChrome.Tab).Select(tab => tab.Text));
+        Assert.Equal(["Main"], host.FindElements(driver.ShellChrome.FlyoutItem).Select(item => item.Text));
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
+
+    // A Shell as the agent shows it: its structure reported invisible and disabled, the Home tab's
+    // page on screen, the Controls tab's page left (no height), and the agent's own chrome nodes.
+    private static List<ElementInfo> ShellApp() =>
+    [
+        Node("w", "Window", visible: false, enabled: false, children:
+        [
+            Placed(Node("AppShell", "AppShell", children:
+            [
+                Shell("Main", "FlyoutItem", children:
+                [
+                    Shell("Home", "Tab", children:
+                    [
+                        Shell("", "ShellContent", children:
+                        [
+                            Placed(Node("HomePage", "HomePage", children: [Placed(Node("HomeButton", "Button", text: "Go"), 100)]), 80, 520),
+                        ]),
+                    ]),
+                    Shell("Controls", "Tab", children:
+                    [
+                        Shell("", "ShellContent", children:
+                        [
+                            Placed(Node("ControlsPage", "ControlsPage", children: [Node("ControlsButton", "Button", text: "Go")]), 80, 0),
+                        ]),
+                    ]),
+                    Node("ShellMainItem", "Grid", children: [Node("MainLabel", "Label", text: "Main")]),
+                ]),
+                Node("Tab_home", "Tab", text: "Home", automationId: "ShellHomeTab", synthetic: true),
+                Node("Tab_controls", "Tab", text: "Controls", automationId: "ShellControlsTab", synthetic: true),
+                Node("FlyoutItem_main", "FlyoutItem", text: "Main", automationId: "ShellMainItem", synthetic: true),
+            ]), 0, 650),
+        ]),
+    ];
+
+    private static ElementInfo Shell(string title, string type, List<ElementInfo> children)
+        => Node($"{type}_{title}_s", type, text: title, visible: false, enabled: false, children: children);
 
     // The page's ScrollView around an inner one whose content (at window Y 300) holds two labels.
     private static List<ElementInfo> NestedScroller() =>

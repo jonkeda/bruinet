@@ -243,12 +243,16 @@ public sealed class DevFlowMauiDriver : IMauiDriver
 
     public MauiPlatform Platform { get; }
 
-    /// <summary>Shell's tabs and flyout items, as the agent's tree shows them: <c>Tab</c> and <c>FlyoutItem</c> nodes.</summary>
+    /// <summary>
+    /// Shell's tabs and flyout items, as the agent draws them: its own <c>Tab</c> and <c>FlyoutItem</c>
+    /// nodes, directly under the Shell (the scope itself), named by the agent's type so Shell's own
+    /// FlyoutItem and Tab elements, which describe the structure, are not taken for them.
+    /// </summary>
     public ShellChromeLocators ShellChrome { get; } = new(
-        TabHost: Locator.ByClassName("Window"),
-        Tab: Locator.ByClassName("Tab"),
-        FlyoutHost: Locator.ByClassName("Window"),
-        FlyoutItem: Locator.ByClassName("FlyoutItem"));
+        TabHost: Locator.ByXPath("."),
+        Tab: Locator.ByClassName("Microsoft.Maui.DevFlow.Agent.Core.Tab"),
+        FlyoutHost: Locator.ByXPath("."),
+        FlyoutItem: Locator.ByClassName("Microsoft.Maui.DevFlow.Agent.Core.FlyoutItem"));
 
     public IMauiElement AppElement => new DevFlowMauiElement(this, id: null);
 

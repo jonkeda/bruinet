@@ -27,6 +27,10 @@ internal static class DevFlowLocators
         if (locator is { Strategy: LocatorStrategy.XPath, Value: "./*" or "*" })
             return scopes.SelectMany(scope => scope.Children);
 
+        // The scope itself: Shell's tabs and flyout items sit directly under the Shell.
+        if (locator is { Strategy: LocatorStrategy.XPath, Value: "." })
+            return scopes;
+
         var predicate = Predicate(locator, css);
         return scopes.SelectMany(scope => scope.DescendantsAndSelf().Skip(1)).Where(predicate).Distinct();
     }
