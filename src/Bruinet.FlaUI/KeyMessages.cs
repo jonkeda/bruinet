@@ -34,9 +34,23 @@ internal static class KeyMessages
             return;
         }
 
-        Post(window, NativeMethods.WmKeyDown, (uint)virtualKey, Down((uint)virtualKey), key, element);
-        Post(window, NativeMethods.WmKeyUp, (uint)virtualKey, Up((uint)virtualKey), key, element);
+        var extended = IsExtended(virtualKey) ? 1L << 24 : 0;
+        Post(window, NativeMethods.WmKeyDown, (uint)virtualKey, (nint)(Down((uint)virtualKey) | extended), key, element);
+        Post(window, NativeMethods.WmKeyUp, (uint)virtualKey, (nint)(Up((uint)virtualKey) | extended), key, element);
     }
+
+    /// <summary>A left click at a client point of <paramref name="window"/>: button down, then up.</summary>
+    public static void Click(IntPtr window, int x, int y, object element)
+    {
+        var point = (nint)((y & 0xFFFF) << 16 | (x & 0xFFFF));
+        Post(window, NativeMethods.WmLButtonDown, NativeMethods.MkLButton, point, "left click", element);
+        Post(window, NativeMethods.WmLButtonUp, 0, point, "left click", element);
+    }
+
+    // The navigation keys a keyboard marks extended (bit 24): a control reads Home without it as the keypad's 7.
+    private static bool IsExtended(VirtualKeyShort key) => key is VirtualKeyShort.HOME or VirtualKeyShort.END
+        or VirtualKeyShort.LEFT or VirtualKeyShort.RIGHT or VirtualKeyShort.UP or VirtualKeyShort.DOWN
+        or VirtualKeyShort.PRIOR or VirtualKeyShort.NEXT or VirtualKeyShort.INSERT or VirtualKeyShort.DELETE;
 
     // lParam: repeat count 1, the scan code in bits 16-23; a key up also sets the previous-state and transition bits.
     private static nint Down(uint code) => 1 | ((nint)NativeMethods.MapVirtualKey(code, NativeMethods.MapVkToScanCode) << 16);

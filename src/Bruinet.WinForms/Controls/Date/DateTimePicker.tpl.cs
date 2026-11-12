@@ -60,7 +60,10 @@ public partial class DateTimePicker<TScope> : ClickableControlBase<TScope>, IDat
 
     private static void TypeFields(IWinFormsElement element, IReadOnlyList<Field> fields, Func<Field, string> text)
     {
-        element.PressKey("HOME");
+        // The first field is the leftmost: a click there selects it. The picker takes no Home, its arrows wrap
+        // around, and it keeps whichever field was last selected (R2-T117).
+        element.ClickWithin(4, element.Rect.Height / 2);
+
         for (var i = 0; i < fields.Count; i++)
         {
             foreach (var character in text(fields[i]))

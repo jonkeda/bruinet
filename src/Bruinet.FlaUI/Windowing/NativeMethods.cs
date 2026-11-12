@@ -58,6 +58,11 @@ internal static class NativeMethods
     internal const uint WmKeyDown = 0x0100;
     internal const uint WmKeyUp = 0x0101;
     internal const uint WmChar = 0x0102;
+    internal const uint WmLButtonDown = 0x0201;
+    internal const uint WmLButtonUp = 0x0202;
+
+    /// <summary>MK_LBUTTON: the left button is down.</summary>
+    internal const uint MkLButton = 0x0001;
 
     /// <summary>SMTO_ABORTIFHUNG: a hung window fails the send instead of blocking it.</summary>
     internal const uint SmtoAbortIfHung = 0x0002;

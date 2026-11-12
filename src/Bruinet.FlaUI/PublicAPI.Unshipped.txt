@@ -24,6 +24,7 @@ Bruinet.FlaUI.UiaElementBase.Checked.get -> bool?
 Bruinet.FlaUI.UiaElementBase.ClassName.get -> string?
 Bruinet.FlaUI.UiaElementBase.Clear() -> void
 Bruinet.FlaUI.UiaElementBase.Click() -> void
+Bruinet.FlaUI.UiaElementBase.ClickWithin(int x, int y) -> void
 Bruinet.FlaUI.UiaElementBase.Collapse() -> void
 Bruinet.FlaUI.UiaElementBase.DoubleClick() -> void
 Bruinet.FlaUI.UiaElementBase.Element.get -> FlaUI.Core.AutomationElements.AutomationElement!
@@ -71,11 +72,13 @@ Bruinet.FlaUI.UiaElementBase.Visible.get -> bool
 Bruinet.FlaUI.UiaElements
 Bruinet.FlaUI.Windowing.PhysicalPixels
 const Bruinet.FlaUI.FlaUIErrors.ElementNotAvailable = -2147220991 -> int
+const Bruinet.FlaUI.FlaUIErrors.NotSupported = -2147220988 -> int
 override Bruinet.FlaUI.UiaElementBase.ToString() -> string!
 static Bruinet.FlaUI.DesktopApp.Attach(System.Diagnostics.Process! process) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.DesktopApp.Attach(nint windowHandle) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.DesktopApp.Launch(string! executablePath, string? arguments = null, System.Collections.Generic.IReadOnlyDictionary<string!, string!>? environment = null, System.TimeSpan? startTimeout = null) -> Bruinet.FlaUI.DesktopApp!
 static Bruinet.FlaUI.FlaUIErrors.IsElementGone(System.Exception! error) -> bool
+static Bruinet.FlaUI.FlaUIErrors.IsNotSupported(System.Exception! error) -> bool
 static Bruinet.FlaUI.LocatorExtensions.ToCondition(this Bruinet.Core.Locators.Locator! locator, FlaUI.Core.Conditions.ConditionFactory! conditionFactory) -> FlaUI.Core.Conditions.ConditionBase!
 static Bruinet.FlaUI.UiaElements.FindAll(Bruinet.FlaUI.DesktopApp! app, FlaUI.Core.AutomationElements.AutomationElement! within, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<FlaUI.Core.AutomationElements.AutomationElement!>!
 static Bruinet.FlaUI.UiaElements.FindFirst(Bruinet.FlaUI.DesktopApp! app, FlaUI.Core.AutomationElements.AutomationElement! within, Bruinet.Core.Locators.Locator! locator) -> FlaUI.Core.AutomationElements.AutomationElement?
@@ -84,6 +87,4 @@ static Bruinet.FlaUI.UiaElements.IsAttached(Bruinet.FlaUI.DesktopApp! app, FlaUI
 static Bruinet.FlaUI.UiaElements.Live(Bruinet.FlaUI.DesktopApp! app, System.Action! touch) -> void
 static Bruinet.FlaUI.UiaElements.Live<T>(Bruinet.FlaUI.DesktopApp! app, System.Func<T>! touch) -> T
 static Bruinet.FlaUI.Windowing.PhysicalPixels.Read<T>(System.Func<T>! read) -> T
-const Bruinet.FlaUI.FlaUIErrors.NotSupported = -2147220988 -> int
-static Bruinet.FlaUI.FlaUIErrors.IsNotSupported(System.Exception! error) -> bool
 static readonly Bruinet.FlaUI.DesktopApp.DefaultStartTimeout -> System.TimeSpan

@@ -81,6 +81,8 @@ public sealed class StatefulElement(string automationId, ContractApp app) : IWin
 
     public void PressKey(string key) => app.LastAction = "key " + key;
 
+    public void ClickWithin(int x, int y) => app.LastAction = $"click {x},{y}";
+
     public void DoubleClick() => app.LastAction = "double-click";
 
     public void RightClick() => app.LastAction = "right-click";

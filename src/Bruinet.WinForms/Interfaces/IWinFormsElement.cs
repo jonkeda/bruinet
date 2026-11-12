@@ -90,8 +90,19 @@ public interface IWinFormsElement
     /// <summary>Gives the element the keyboard focus.</summary>
     void Focus();
 
-    /// <summary>Focuses the element and presses one key (a key name such as <c>HOME</c>, or one character), with the keyboard (physical input).</summary>
+    /// <summary>
+    /// Presses one key (a key name such as <c>HOME</c>, or one character): sent to the control's own window, so it
+    /// needs neither focus nor the app in front.
+    /// </summary>
     void PressKey(string key);
+
+    /// <summary>
+    /// Clicks a point of the control, given from its top-left corner, as a message to its own window: no pointer
+    /// moves and the app need not be in front. For a part of a control no pattern reaches (a date picker's field).
+    /// </summary>
+    /// <param name="x">Pixels from the control's left edge.</param>
+    /// <param name="y">Pixels from the control's top edge.</param>
+    void ClickWithin(int x, int y);
 
     /// <summary>Double-clicks with the pointer (physical input).</summary>
     void DoubleClick();

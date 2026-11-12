@@ -50,6 +50,8 @@ Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.get -> int?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessId.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessName.get -> string?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.ProcessName.set -> void
+Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.get -> System.TimeSpan
+Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.set -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WinFormsTestContextOptions() -> void
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.get -> nint?
 Bruinet.WinForms.Context.WinFormsTestContextOptions.WindowHandle.set -> void
@@ -291,6 +293,7 @@ Bruinet.WinForms.Interfaces.IWinFormsElement.Checked.get -> bool?
 Bruinet.WinForms.Interfaces.IWinFormsElement.ClassName.get -> string?
 Bruinet.WinForms.Interfaces.IWinFormsElement.Clear() -> void
 Bruinet.WinForms.Interfaces.IWinFormsElement.Click() -> void
+Bruinet.WinForms.Interfaces.IWinFormsElement.ClickWithin(int x, int y) -> void
 Bruinet.WinForms.Interfaces.IWinFormsElement.Collapse() -> void
 Bruinet.WinForms.Interfaces.IWinFormsElement.DoubleClick() -> void
 Bruinet.WinForms.Interfaces.IWinFormsElement.Enabled.get -> bool
@@ -513,5 +516,3 @@ virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.CreateTestContextOption
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.Dispose(bool disposing) -> void
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.WinForms.Testing.WinFormsTestFixtureBase.GetScreenshotDirectory() -> string!
-Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.get -> System.TimeSpan
-Bruinet.WinForms.Context.WinFormsTestContextOptions.StartTimeout.set -> void

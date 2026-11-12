@@ -137,21 +137,24 @@ public class WinFormsControlTests
     {
         var target = new DateTime(2025, 6, 15);
         var shown = new DateTime(2026, 11, 10).ToString("d", CultureInfo.CurrentCulture);
-        var keys = new List<string>();
+        var firstFieldClicks = 0;
         var picker = FakeApp.Element();
         picker.Setup(e => e.Value).Returns(() => shown);
-        picker.Setup(e => e.PressKey(It.IsAny<string>())).Callback<string>(key =>
+        picker.Setup(e => e.Rect).Returns(new System.Drawing.Rectangle(0, 0, 120, 20));
+
+        // Each pass starts by clicking the leftmost field, since the picker takes no Home (R2-T117).
+        picker.Setup(e => e.ClickWithin(It.IsAny<int>(), It.IsAny<int>())).Callback(() => firstFieldClicks++);
+        picker.Setup(e => e.PressKey(It.IsAny<string>())).Callback<string>(_ =>
         {
-            keys.Add(key);
             // The app's answer: once the second pass types, the picker shows the date.
-            if (keys.Count(k => k == "HOME") == 2 && key != "HOME")
+            if (firstFieldClicks == 2)
                 shown = target.ToString("d", CultureInfo.CurrentCulture);
         });
         _app.Given("Target", () => picker.Object);
 
         _app.Page().Start.SetDate(target);
 
-        Assert.Equal(2, keys.Count(k => k == "HOME"));
+        Assert.Equal(2, firstFieldClicks);
         Assert.Equal(target, _app.Page().Start.GetDate());
         picker.Verify(e => e.SetValue(It.IsAny<string>()), Times.Never);
     }

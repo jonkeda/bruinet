@@ -290,6 +290,23 @@ public abstract class UiaElementBase
     });
 
     /// <summary>
+    /// Clicks a point of the element, from its top-left corner, as button messages to the element's own window: no
+    /// pointer moves and the app need not be in front (R2-T117).
+    /// </summary>
+    /// <param name="x">Pixels from the element's left edge.</param>
+    /// <param name="y">Pixels from the element's top edge.</param>
+    /// <exception cref="NotSupportedException">The element has no window of its own (a WPF element).</exception>
+    /// <exception cref="ActionRefusedException">The window did not take the click.</exception>
+    public void ClickWithin(int x, int y) => Live(() =>
+    {
+        var window = Element.Properties.NativeWindowHandle.ValueOrDefault;
+        if (window == IntPtr.Zero)
+            throw new NotSupportedException($"{this} has no window of its own to send a click to.");
+
+        KeyMessages.Click(window, x, y, this);
+    });
+
+    /// <summary>
     /// Refuses keyboard input when the app's window is not in front: the keys would go to the window that is, which
     /// is someone else's.
     /// </summary>
