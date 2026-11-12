@@ -85,11 +85,43 @@ public static class BruinetBridgeHost
     /// <returns>Whether the bridge is on, so the caller can say so.</returns>
     internal static bool Enable()
     {
+#if ANDROID && BRUINET_UIA_BRIDGE
+        // An Android app is given no environment variables, so on Android the run-time ask is the
+        // system property debug.bruinet.bridge (adb shell setprop debug.bruinet.bridge 1), copied
+        // into the variable the gate reads, here, before it is read. Same two gates: compiled into a
+        // Debug build only, and asked for at run time by whoever has adb on the device.
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(BruinetBridgeGate.EnableVariable))
+            && AndroidSystemProperty("debug.bruinet.bridge") == "1")
+        {
+            Environment.SetEnvironmentVariable(BruinetBridgeGate.EnableVariable, "1");
+        }
+#endif
+
         _enabled = BruinetBridgeGate.IsOpen;
         BridgeDiagnostics.Report(BruinetBridgeGate.Explain());
 
         return _enabled;
     }
+
+#if ANDROID && BRUINET_UIA_BRIDGE
+    // getprop, the public way to read a system property: android.os.SystemProperties is hidden API.
+    private static string? AndroidSystemProperty(string name)
+    {
+        try
+        {
+            var process = Java.Lang.Runtime.GetRuntime()!.Exec(["getprop", name])!;
+            using var reader = new StreamReader(process.InputStream!);
+            var value = reader.ReadToEnd().Trim();
+            process.WaitFor();
+            return value;
+        }
+        catch (Exception ex)
+        {
+            BridgeDiagnostics.Report($"could not read {name}: {ex.Message}");
+            return null;
+        }
+    }
+#endif
 
     /// <summary>
     /// Publishes an element to its window's bridge, creating the bridge if it is the first.

@@ -11,24 +11,21 @@ On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnos
 fails now and then in a full Collection run (one in four after the last fix) and passes alone: noted, not chased. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
-### Android, first pass
+### Android
 
-On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **304 passed of 385**. The runner installs the
-APK, starts its launcher activity with the launch settings as string extras, and forwards a free port here to the
-agent's 9223 on the device (`AndroidLaunch`). What fails, by cause:
+On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **317 passed of 385**. The runner installs the
+APK, starts its launcher activity with the launch settings as string extras, sets `debug.bruinet.bridge` for the
+bridge, and forwards a free port here to the agent's 9223 on the device (`AndroidLaunch`). The bridge's run-time ask is
+that system property on Android (an app is given no environment variables): `AppSupport` reads it with `getprop` into
+`BRUINET_UIA_BRIDGE` before the gate is read, decided by the owner on 2026-11-12. What still fails, by cause:
 
 | Cause | Tests | What it needs |
 | --- | --- | --- |
-| The bridge is off on Android | about 24 | Its switch is an environment variable, which an Android app cannot be given: the owner's call (below). Menus, picker texts, double-click, blur, DrawingView and MediaElement wait on it; MediaElement on Android also asks for Media3's ids. |
-| Dialogs | 9 | The dialog is read from a Windows-only native window; Android's has to be found in its own shape. |
-| Rows and the carousel | 10 | Not yet looked at on Android. |
-| Date pickers | 6 | The date is read in a format Android does not show. |
-| A modal over a page | 1 | Not yet looked at. |
-
-**Open question for the owner:** how the bridge may be switched on in an Android Debug build. Proposal: the sample's
-`MainApplication` reads a `debug.bruinet.bridge` system property (`adb shell setprop`) into `BRUINET_UIA_BRIDGE`
-before the app is built, so the gate stays the same two gates (Debug build, asked for at run time) and nothing is
-reachable without adb. Its alternative, a launch extra, arrives after the app is built and would need the gate read later.
+| Dialogs | 9 | The agent shows no Android dialog; DevFlow's own driver reads them with `uiautomator dump` and taps by coordinates over adb, touch input like Appium's. The owner's call. |
+| MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
+| Rows and the carousel | 10 | Fewer rows realized on a phone screen, and the carousel shows one card: not yet worked out. |
+| Date pickers | 6 | The date is read in a format Android does not show, and its focus is not reported. |
+| A modal over a page | 1 | Android leaves the covered page out; not yet looked at. |
 
 ### What it cannot do
 

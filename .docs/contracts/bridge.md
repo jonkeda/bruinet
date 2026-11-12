@@ -12,7 +12,9 @@ test publishes a **gesture bridge**. This is the contract an app author must imp
 - Per element, in markup, the verbs it answers: `GestureAutomation.Verbs="..."`.
 - The provider is compiled in only under `BRUINET_UIA_BRIDGE` (Debug) and active only
   when the launcher sets `BRUINET_UIA_BRIDGE=1`. It is **absent from shipping builds** -
-  UI Automation has no per-caller authentication.
+  UI Automation has no per-caller authentication. On Android, which gives an app no
+  environment variables, the launcher asks with the system property `debug.bruinet.bridge=1`
+  (`adb shell setprop`), read into that variable at start: the same two gates.
 
 ## How a verb behaves
 

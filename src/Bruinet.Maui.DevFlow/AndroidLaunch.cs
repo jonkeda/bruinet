@@ -42,6 +42,11 @@ internal sealed class AndroidLaunch : ILaunchedApp
         Run(adb, [.. device, "install", "-r", apk], TimeSpan.FromMinutes(3));
         Run(adb, [.. device, "shell", "am", "force-stop", package]);
 
+        // Bruinet's bridge, asked for as Android allows (an app is given no environment variables):
+        // the app's Debug build reads this property at start; a launch setting of 0 leaves it off.
+        var bridge = settings.TryGetValue("BRUINET_UIA_BRIDGE", out var asked) ? asked : "1";
+        Run(adb, [.. device, "shell", "setprop", "debug.bruinet.bridge", bridge == "1" ? "1" : "0"]);
+
         // MAUI hashes the activity's name, so it is asked for rather than written down.
         var activity = Run(adb, [.. device, "shell", "cmd", "package", "resolve-activity", "--brief",
                 "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER", package])
