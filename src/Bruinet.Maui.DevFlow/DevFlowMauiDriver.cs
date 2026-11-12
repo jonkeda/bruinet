@@ -76,14 +76,48 @@ public sealed class DevFlowMauiDriver : IMauiDriver
             return Attach(options.DevFlowPort ?? DefaultPort, options);
 
         throw new PlatformNotSupportedException(
-            $"The DevFlow runner launches only a Windows app so far. For {options.Platform}, start the app built "
-            + "with its DevFlow agent, forward its port (adb forward tcp:9223 tcp:9223 on Android), and set "
-            + "BRUINET_DEVFLOW_PORT, so the runner attaches to it.");
+            $"The DevFlow runner launches a Windows app and an Android APK so far. For {options.Platform}, start the app "
+            + "built with its DevFlow agent and set BRUINET_DEVFLOW_PORT, so the runner attaches to it.");
     }
 
     private static bool CanLaunch(MauiDriverOptions options)
-        => OperatingSystem.IsWindows() && options.Platform == MauiPlatform.Windows
-           && options.AppPath?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true;
+        => options.Platform switch
+        {
+            MauiPlatform.Windows => OperatingSystem.IsWindows() && options.AppPath?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true,
+            MauiPlatform.Android => options.AppPath?.EndsWith(".apk", StringComparison.OrdinalIgnoreCase) == true,
+            _ => false,
+        };
+
+    /// <summary>
+    /// Installs and starts the APK on the device or emulator the options name (as for Appium: <c>udid</c>),
+    /// forwards the agent's port, and waits for the agent of that process. The package is the one the
+    /// Appium options wait for (<c>appPackage</c>, <c>appWaitPackage</c>).
+    /// </summary>
+    private static (IDevFlowAgent Agent, ILaunchedApp App) LaunchOnAndroid(MauiDriverOptions options)
+    {
+        var package = (options.AdditionalCapabilities.GetValueOrDefault("appPackage")
+                       ?? options.AdditionalCapabilities.GetValueOrDefault("appWaitPackage")) as string
+                      ?? throw new ArgumentException(
+                          "The DevFlow runner needs the app's package to start it on Android: set appPackage or appWaitPackage in the options.");
+        var serial = options.Udid ?? options.AdditionalCapabilities.GetValueOrDefault("udid") as string;
+
+        var app = AndroidLaunch.Start(options.AppPath!, package, serial, options.DevFlowPort ?? DefaultPort, options.LaunchSettings);
+        var deadline = Stopwatch.StartNew();
+        while (deadline.Elapsed < LaunchTimeout)
+        {
+            var agent = new DevFlowAgent(app.AgentPort);
+            var status = agent.Status();
+            if (status is { Running: true } && (status.App?.PackageId == package || status.App?.ProcessId == app.ProcessId))
+                return (agent, app);
+            agent.Dispose();
+            Thread.Sleep(500);
+        }
+
+        app.Dispose();
+        throw new BruinetException(
+            $"'{package}' started, and its DevFlow agent did not answer within {LaunchTimeout.TotalSeconds:0} s on the forwarded port. "
+            + "Was the APK built with -p:BruinetDevFlow=true (builder.AddMauiDevFlowAgent())?");
+    }
 
     private static DevFlowMauiDriver Attach(int port, MauiDriverOptions options)
     {
@@ -109,6 +143,8 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         var appPath = options.AppPath!;
         if (!File.Exists(appPath))
             throw new FileNotFoundException($"The app to launch is not there. Build it with -p:BruinetDevFlow=true: {appPath}", appPath);
+        if (options.Platform == MauiPlatform.Android)
+            return LaunchOnAndroid(options);
 
         var asked = options.DevFlowPort ?? LaunchedApp.FreePort();
         var environment = new Dictionary<string, string>(options.LaunchSettings, StringComparer.Ordinal)

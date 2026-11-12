@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `-p:BruinetDevFlow=true`) serves the verbs an app declares (`uia:GestureAutomation.Verbs`) through the agent, so menu
   items by AutomationId, picker items, `Unfocus`, gesture sinks and `IsIdle` work on the DevFlow runner as on Windows.
   On the DevFlow runner a MediaElement's transport controls stand in under WinUI's ids, played, paused and seeked
-  through the bridge's `media` route.
+  through the bridge's `media` route. On Android the DevFlow runner installs and starts the APK over adb and forwards
+  the agent's port (`APPIUM_PLATFORM=android`, `APPIUM_UDID`), with no Appium server.
 - MCP `draft_feature`: a feature file drafted from a C# UI test, each statement as the suite phrase that matches its words or a commented gap, validated as the gate would, with its gaps, its finally-block cleanup and phrases that differ only in a value. MCP `similar_steps`: the phrases that could be one phrase with a placeholder. A suite built against an older Bruinet now reports that as its reason instead of failing every tool.
 - One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
   tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with

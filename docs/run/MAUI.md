@@ -53,6 +53,18 @@ $env:BRUINET_MAUI_RUNNER='devflow'; $env:APPIUM_APP_PATH="$PWD\samples\Bruinet.S
 dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "FullyQualifiedName!~Tests.Background&FullyQualifiedName!~Tests.Diagnostics&FullyQualifiedName!~Tests.Shell"
 ```
 
+On Android the runner installs and starts the APK itself and forwards the agent's port, on the device the Appium
+settings name (`APPIUM_UDID`):
+
+```powershell
+dotnet build samples\Bruinet.Samples.Maui.App -f net10.0-android -p:BruinetDevFlow=true -p:OutDir=$PWD\samples\Bruinet.Samples.Maui.App\bin\DevFlowAndroid\
+$env:BRUINET_MAUI_RUNNER='devflow'; $env:APPIUM_PLATFORM='android'; $env:APPIUM_UDID='emulator-5554'
+$env:APPIUM_APP_PATH="$PWD\samples\Bruinet.Samples.Maui.App\bin\DevFlowAndroid\com.bruinet.samples.maui-Signed.apk"
+dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "FullyQualifiedName!~Tests.Background&FullyQualifiedName!~Tests.Diagnostics&FullyQualifiedName!~Tests.Shell"
+```
+
+No Appium server is needed. The bridge is off on Android for now, so the tests that need it fail there.
+
 The Shell app's tests the same way, with its own build:
 
 ```powershell

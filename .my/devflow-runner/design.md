@@ -1,7 +1,8 @@
 # MauiDevFlow: a third MAUI device runner
 
-Status: **built for Windows**, 2026-11-12. Android and iOS attach to a running app; their launch, and Mac Catalyst, are
-not built. Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-experimental).
+Status: **built for Windows; Android launches and runs**, 2026-11-12. iOS attaches to a running app; its launch, and
+Mac Catalyst, are not built. Decision: [AD-037](../../.docs/decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md).
+Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-experimental).
 
 ## Where it stands
 
@@ -9,6 +10,25 @@ On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnos
 **352 passed, 2 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. `ScrollToEnd_LoadsEveryPage`
 fails now and then in a full Collection run (one in four after the last fix) and passes alone: noted, not chased. Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
+
+### Android, first pass
+
+On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **304 passed of 385**. The runner installs the
+APK, starts its launcher activity with the launch settings as string extras, and forwards a free port here to the
+agent's 9223 on the device (`AndroidLaunch`). What fails, by cause:
+
+| Cause | Tests | What it needs |
+| --- | --- | --- |
+| The bridge is off on Android | about 24 | Its switch is an environment variable, which an Android app cannot be given: the owner's call (below). Menus, picker texts, double-click, blur, DrawingView and MediaElement wait on it; MediaElement on Android also asks for Media3's ids. |
+| Dialogs | 9 | The dialog is read from a Windows-only native window; Android's has to be found in its own shape. |
+| Rows and the carousel | 10 | Not yet looked at on Android. |
+| Date pickers | 6 | The date is read in a format Android does not show. |
+| A modal over a page | 1 | Not yet looked at. |
+
+**Open question for the owner:** how the bridge may be switched on in an Android Debug build. Proposal: the sample's
+`MainApplication` reads a `debug.bruinet.bridge` system property (`adb shell setprop`) into `BRUINET_UIA_BRIDGE`
+before the app is built, so the gate stays the same two gates (Debug build, asked for at run time) and nothing is
+reachable without adb. Its alternative, a launch extra, arrives after the app is built and would need the gate read later.
 
 ### What it cannot do
 
