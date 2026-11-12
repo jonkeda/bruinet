@@ -37,7 +37,15 @@ public static class MauiProgram
                 //
                 // Referenced here as a project; copying AppSupport's sources into the
                 // app is the equally supported alternative.
-                handlers.AddBruinetAutomationHandlers();
+                //
+                // A container with a one-tap recognizer is a button to UI Automation: Invoke runs its command,
+                // as a tap would (the Shortcut rows, R2-T111).
+                handlers.AddBruinetAutomationHandlers(options => options.InvokeCommand = view =>
+                    view is View tappable
+                    && tappable.GestureRecognizers.OfType<TapGestureRecognizer>()
+                        .FirstOrDefault(tap => tap.NumberOfTapsRequired == 1 && tap.Command is not null) is { } tap
+                        ? new AutomationCommand(tap.Command!, tap.CommandParameter)
+                        : null);
             });
 
         // The gesture bridge, off unless this build was compiled with BRUINET_UIA_BRIDGE and

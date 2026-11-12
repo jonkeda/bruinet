@@ -26,8 +26,11 @@
         <viewModels:GridCollectionDemoViewModel />
     </ContentView.BindingContext>
 
-    <!-- Auto row: the form. Star row: the collection, which scrolls itself. -->
-    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="20" RowSpacing="15">
+    <!-- Auto rows in a page scroller: the collection asks for its own height and scrolls itself. A star row gave
+         it what the shortcut list below left, which on a short window was nothing: no row realized on Windows
+         (R2-T111). -->
+    <ScrollView AutomationId="GridCollectionRootScroll">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="20" RowSpacing="15">
 
         <Label Grid.Row="0"
                AutomationId="PageTitle"
@@ -103,7 +106,7 @@
                        TextColor="Gray"
                        IsVisible="{Binding IsProductListEmpty}" />
 
-                <!-- Bounded by the star row: the CollectionView scrolls, the page does not.
+                <!-- Bounded by its own height: the CollectionView scrolls, the page does not.
                      MinimumHeightRequest keeps the seed rows materialized regardless of
                      window size; without it the third seed row can fall outside the
                      realized range on a short window. -->
@@ -195,4 +198,5 @@
         </VerticalStackLayout>
 
     </Grid>
+    </ScrollView>
 </ContentView>

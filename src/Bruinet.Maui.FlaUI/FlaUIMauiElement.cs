@@ -398,9 +398,33 @@ internal sealed class FlaUIMauiElement : IMauiElement, IDetachable
     /// The Invoke pattern, and nothing else. Where a control genuinely cannot be invoked - a
     /// MAUI <c>ToolbarItem</c> is the known case - the control names its own operation,
     /// <see cref="InvokeToolbarItem"/>; it is not this method's job to guess a substitute.
+    /// The one exception is not a guess: a list's own item wrapper (WinUI's <c>ListViewItem</c>, a
+    /// <c>ListItem</c> with no Invoke) whose single child is invokable is that child, the row the app
+    /// drew, so the child is invoked, as a tap on the row would reach it (R2-T111; MauiHeadless taps
+    /// such a row rather than selecting it).
     /// </remarks>
-    public void Invoke() => Marked(InteractionKind.Tap, () => Perform(
-        nameof(Invoke), HasInvokePattern, RunInvokePattern, "InvokePattern"));
+    public void Invoke() => Marked(InteractionKind.Tap, () =>
+    {
+        if (!HasInvokePattern && InvokableRowContent() is { } row)
+        {
+            row.Invoke();
+            return;
+        }
+
+        Perform(nameof(Invoke), HasInvokePattern, RunInvokePattern, "InvokePattern");
+    });
+
+    /// <summary>The single invokable child of a list item wrapper, or null.</summary>
+    private FlaUIMauiElement? InvokableRowContent() => Live<FlaUIMauiElement?>(() =>
+    {
+        if (_element.ControlType != global::FlaUI.Core.Definitions.ControlType.ListItem)
+            return null;
+
+        var children = _element.FindAllChildren();
+        return children.Length == 1 && children[0].Patterns.Invoke.IsSupported
+            ? new FlaUIMauiElement(children[0], _driver)
+            : null;
+    });
 
     /// <inheritdoc />
     public void Toggle() => Marked(InteractionKind.Tap, () => Perform(
