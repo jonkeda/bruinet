@@ -390,6 +390,10 @@ internal sealed class AndroidPlatform : AppiumPlatform
 
     public override string DoubleTapScript => "mobile: doubleClickGesture";
 
+    /// <summary>The Tab key as a key event (KEYCODE_TAB): sent as text, UiAutomator2 typed it into the field and the focus stayed (R2-T120).</summary>
+    public override void FocusNext(AppiumMauiElement element)
+        => element.Driver.Driver.ExecuteScript("mobile: pressKey", new Dictionary<string, object> { { "keycode", 61 } });
+
     public override void Drag(AppiumMauiElement element, int fromX, int fromY, int toX, int toY)
         => Script(element, "mobile: dragGesture", new Dictionary<string, object>
         {

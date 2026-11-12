@@ -169,6 +169,9 @@ internal abstract class AppiumPlatform
     /// <summary>Closes the soft keyboard, which the caller has seen is up.</summary>
     public abstract void HideKeyboard(AppiumDriver driver);
 
+    /// <summary>Moves the keyboard focus on from <paramref name="element"/> to the next field, as the Tab key does.</summary>
+    public virtual void FocusNext(AppiumMauiElement element) => element.Native.SendKeys(OpenQA.Selenium.Keys.Tab);
+
     /// <summary>Whether the soft keyboard is up.</summary>
     public static bool IsKeyboardShown(AppiumDriver driver)
         => driver.ExecuteScript("mobile: isKeyboardShown", new Dictionary<string, object>()) is true;

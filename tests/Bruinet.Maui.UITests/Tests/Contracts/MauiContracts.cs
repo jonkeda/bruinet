@@ -120,9 +120,6 @@ public sealed class MauiEntryFocusContract : FocusableContract<TextTestPage>
 
     protected override IFocusableControlObject<TextTestPage> Field => _page.TestEntry;
 
-    private const string NotOnAndroid = "Appium cannot drop focus on Android; ClearFocus moves it on with Tab (R2-T120).";
-    [SkipOnFact(ContractHeads.Mobile, NotOnAndroid)]
-    public override void Blur_TakesTheFocusAway() => base.Blur_TakesTheFocusAway();
 }
 
 [Collection("Maui")]
@@ -388,7 +385,7 @@ public sealed class MauiSwipeViewContract : SwipeableContract<SwipeView<Containe
     [SkipOnFact(ContractHeads.Windows | ContractHeads.Mobile, SwipeNotOnWindows + " On Android, " + NotOnAndroid)]
     public override void SwipeDown_SwipesDown() => base.SwipeDown_SwipesDown();
 
-    private const string NotOnAndroid = "a vertical swipe on Android does not open a SwipeView's top or bottom items (R2-T120).";
+    private const string NotOnAndroid = "a vertical swipe on the card is taken one run and not the next on Android, measured with the card in view (R2-T120).";
 }
 
 [Collection("Maui")]
@@ -415,7 +412,7 @@ public sealed class MauiRefreshViewContract : RefreshableContract<RefreshView<Co
             ? int.Parse(text["refreshed ".Length..], System.Globalization.CultureInfo.InvariantCulture)
             : 0;
 
-    private const string RefreshNotOnAndroid = "a pull does not reach the RefreshView's command (R2-T120).";
+    private const string RefreshNotOnAndroid = "the page's own ScrollView takes the pull: measured, the page scrolled and the command did not run, as a finger's pull would on a RefreshView nested in a vertical scroller (R2-T120).";
 
     private const string RefreshNotOnWindows =
         "a RefreshView is not addressable on Windows (its WinUI peer cannot be overridden), so its state cannot be read; pull it by id through IMauiDriver.PerformGesture.";

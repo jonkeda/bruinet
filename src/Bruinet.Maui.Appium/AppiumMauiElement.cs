@@ -373,7 +373,7 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     /// Tab, which moves focus on to the next control rather than removing it. This platform has
     /// no way to simply drop focus.
     /// </remarks>
-    public void ClearFocus() => Marked(InteractionKind.Key, "Tab", () => SendKeys(Keys.Tab));
+    public void ClearFocus() => Marked(InteractionKind.Key, "Tab", () => Live(() => _driver.Appium.FocusNext(this)));
 
     /// <inheritdoc />
     /// <remarks>
