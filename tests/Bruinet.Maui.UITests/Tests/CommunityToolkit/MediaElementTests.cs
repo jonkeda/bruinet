@@ -4,7 +4,7 @@ using Bruinet.Maui.UITests.Pages;
 namespace Bruinet.Maui.UITests.Tests.CommunityToolkit;
 
 /// <summary>
-/// UI tests for the CommunityToolkit MediaElement, playing a six-second local tone.
+/// UI tests for the CommunityToolkit MediaElement, playing a thirty-second local tone.
 /// </summary>
 [Collection("Maui")]
 [Trait("Category", "UITest")]
@@ -37,10 +37,15 @@ public class MediaElementTests
         var media = GetPage().TestMediaElement;
 
         media.PlayPauseButton.AssertExists()
-            .VolumeMuteButton.AssertExists()
-            .RepeatButton.AssertExists()
             .RewindButton.AssertExists()
             .FastForwardButton.AssertExists();
+
+        // Android's Media3 controls have no mute button, and show repeat only when the app sets repeat modes (R2-T121).
+        if (Contracts.SkipOnFactAttribute.Current != Contracts.ContractHeads.Mobile)
+        {
+            media.VolumeMuteButton.AssertExists()
+                .RepeatButton.AssertExists();
+        }
         return Task.CompletedTask;
     }
 
@@ -132,7 +137,7 @@ public class MediaElementTests
 
         var duration = page.TestMediaElement.GetDuration();
         Assert.NotNull(duration);
-        Assert.InRange(duration.Value, 5, 7);
+        Assert.InRange(duration.Value, 29, 31);
         return Task.CompletedTask;
     }
 
@@ -141,8 +146,8 @@ public class MediaElementTests
     public Task MediaElement_BeforePlay_AllOfTheClipRemains()
     {
         GetPage().TestMediaElement.AssertElapsed(0)
-            .AssertRemainingAtLeast(5)
-            .AssertRemainingAtMost(7);
+            .AssertRemainingAtLeast(29)
+            .AssertRemainingAtMost(31);
         return Task.CompletedTask;
     }
 

@@ -64,6 +64,55 @@ internal static class StateAccessibility
         Map(CollectionViewHandler.Mapper, [nameof(ItemsView.ItemsSource), semantics]);
         Map(CarouselViewHandler.Mapper, [nameof(ItemsView.ItemsSource), nameof(CarouselView.Position), semantics]);
         Map(IndicatorViewHandler.Mapper, [nameof(IIndicatorView.Count), nameof(IIndicatorView.Position), semantics]);
+
+        // An item template's root (a layout, content view or border in a CollectionView or CarouselView) publishes
+        // its place in the list, as Windows' PositionInSet does: Android shows no row number (R2-T122).
+        MapItemRoots(LayoutHandler.Mapper, semantics);
+        MapItemRoots(ContentViewHandler.Mapper, semantics);
+        MapItemRoots(BorderHandler.Mapper, semantics);
+    }
+
+    private static void MapItemRoots<TVirtual, THandler>(IPropertyMapper<TVirtual, THandler> mapper, string key)
+        where TVirtual : IElement
+        where THandler : IElementHandler
+        => mapper.AppendToMapping(key, (handler, view) =>
+        {
+            if (view is not VisualElement element)
+            {
+                return;
+            }
+
+            if (element.Parent is ItemsView)
+            {
+                Attach(handler.PlatformView as AView, element);
+                return;
+            }
+
+            // A templated item can be connected before the list adopts it: attach once it does.
+            void Adopted(object? sender, EventArgs e)
+            {
+                if (element.Parent is ItemsView)
+                {
+                    element.ParentChanged -= Adopted;
+                    Attach(element.Handler?.PlatformView as AView, element);
+                }
+            }
+
+            element.ParentChanged -= Adopted;
+            element.ParentChanged += Adopted;
+        });
+
+    /// <summary>An item root's index in its list's items, or null when it is not one.</summary>
+    private static (int Index, int Count)? ItemPlace(VisualElement element)
+    {
+        if (element.Parent is not ItemsView { ItemsSource: { } source } || element.BindingContext is not { } item)
+        {
+            return null;
+        }
+
+        var items = source.Cast<object>().ToList();
+        var index = items.IndexOf(item);
+        return index < 0 ? null : (index, items.Count);
     }
 
     private static readonly ConditionalWeakTable<VisualElement, IBruinetGestureSink> Sinks = new();
@@ -116,6 +165,12 @@ internal static class StateAccessibility
     /// <summary>The states to publish for an element, read now.</summary>
     private static IEnumerable<(string Name, string Value)> States(IElement element)
     {
+        if (element is VisualElement { Parent: ItemsView } row && ItemPlace(row) is { } place)
+        {
+            yield return ("PositionInSet", Number(place.Index + 1));
+            yield return ("SizeOfSet", Number(place.Count));
+        }
+
         if (element is VisualElement visual && Sinks.TryGetValue(visual, out var sink))
         {
             foreach (var name in sink.StateNames)

@@ -23,8 +23,13 @@ public class CarouselViewTests
     [Trait("Method", "Item")]
     public Task CarouselView_Items_AreTheSeededCardsInOrder()
     {
-        var carousel = GetPage().TestCarouselView
-            .AssertItemCount(CollectionModuleTestPage.SeedCount);
+        var carousel = GetPage().TestCarouselView;
+
+        // The count is of the cards in the tree: Windows keeps all five there, Android only the one on screen (R2-T122).
+        if (Contracts.SkipOnFactAttribute.Current != Contracts.ContractHeads.Mobile)
+        {
+            carousel.AssertItemCount(CollectionModuleTestPage.SeedCount);
+        }
 
         carousel.Item(0).Name.AssertText("Alpha");
         carousel.SwipeNext().SwipeNext().SwipeNext().SwipeNext().AssertPosition(4);

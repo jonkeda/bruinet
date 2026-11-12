@@ -24,6 +24,32 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     private const string TimeRemainingId = "TimeRemainingElement";
     private const string ProgressSliderId = "ProgressSlider";
 
+    // Android's Media3 PlayerView draws its own controls, found by resource id (R2-T121). It has no remaining-time
+    // readout, no mute button, and a time bar with no value to read: remaining time and progress are worked out from
+    // the elapsed and duration labels, which its full controls show (a player too small for them shows a minimal set).
+    private const string AndroidDurationId = "exo_duration";
+
+    private static readonly Dictionary<string, string> AndroidIds = new(StringComparer.Ordinal)
+    {
+        [PlayPauseButtonId] = "exo_play_pause",
+        [RepeatButtonId] = "exo_repeat_toggle",
+        [RewindButtonId] = "exo_rew",
+        [FastForwardButtonId] = "exo_ffwd",
+        [TimeElapsedId] = "exo_position",
+        [ProgressSliderId] = "exo_progress",
+    };
+
+    private bool OnAndroid => Context.Driver?.Platform == MauiPlatform.Android;
+
+    /// <summary>A transport part's locator: its WinUI automation id, or on Android the Media3 view's resource id.</summary>
+    private Locator Part(string id)
+        => OnAndroid
+            ? Locator.ByXPath($"//*[contains(@resource-id, ':id/{(AndroidIds.TryGetValue(id, out var android) ? android : id)}')]")
+            : Locator.ByAutomationId(id);
+
+    /// <summary>Android: the clip's length, from the full controls' duration label; null before it shows one.</summary>
+    private MediaTimeLabel<MediaElement<TScope>> AndroidDurationLabel => new(this, Part(AndroidDurationId));
+
     /// <summary>
     /// Creates a media element control within the specified scope.
     /// </summary>
@@ -47,28 +73,30 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     #region Transport Controls
 
     /// <summary>The transport button that toggles playback.</summary>
-    public MediaPlayPauseButton<MediaElement<TScope>> PlayPauseButton => new(this, PlayPauseButtonId);
+    public MediaPlayPauseButton<MediaElement<TScope>> PlayPauseButton => new(this, Part(PlayPauseButtonId));
 
     /// <summary>The transport button that toggles muted audio.</summary>
-    public Button<MediaElement<TScope>> VolumeMuteButton => new(this, VolumeMuteButtonId);
+    public Button<MediaElement<TScope>> VolumeMuteButton => new(this, Part(VolumeMuteButtonId));
 
     /// <summary>The transport button that changes repeat mode.</summary>
-    public Button<MediaElement<TScope>> RepeatButton => new(this, RepeatButtonId);
+    public Button<MediaElement<TScope>> RepeatButton => new(this, Part(RepeatButtonId));
 
     /// <summary>The transport button that rewinds playback.</summary>
-    public Button<MediaElement<TScope>> RewindButton => new(this, RewindButtonId);
+    public Button<MediaElement<TScope>> RewindButton => new(this, Part(RewindButtonId));
 
     /// <summary>The transport button that advances playback.</summary>
-    public Button<MediaElement<TScope>> FastForwardButton => new(this, FastForwardButtonId);
+    public Button<MediaElement<TScope>> FastForwardButton => new(this, Part(FastForwardButtonId));
 
     /// <summary>The transport slider that reports and changes playback progress, 0 to 100.</summary>
-    public Slider<MediaElement<TScope>> ProgressSlider => new(this, ProgressSliderId);
+    public Slider<MediaElement<TScope>> ProgressSlider
+        => OnAndroid ? new AndroidMediaProgress<MediaElement<TScope>>(this, Part("exo_controller")) : new Slider<MediaElement<TScope>>(this, Part(ProgressSliderId));
 
     /// <summary>The transport readout of elapsed playback time.</summary>
-    public MediaTimeLabel<MediaElement<TScope>> TimeElapsedLabel => new(this, TimeElapsedId);
+    public MediaTimeLabel<MediaElement<TScope>> TimeElapsedLabel => new(this, Part(TimeElapsedId));
 
     /// <summary>The transport readout of remaining playback time.</summary>
-    public MediaTimeLabel<MediaElement<TScope>> TimeRemainingLabel => new(this, TimeRemainingId);
+    public MediaTimeLabel<MediaElement<TScope>> TimeRemainingLabel
+        => OnAndroid ? new AndroidRemainingTime<MediaElement<TScope>>(this, Part("exo_controller")) : new MediaTimeLabel<MediaElement<TScope>>(this, Part(TimeRemainingId));
 
     #endregion
 
@@ -138,7 +166,9 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
     /// <returns>True when the media opened within the timeout.</returns>
     public bool WaitOpened(int? timeoutMs = null)
-        => TimeRemainingLabel.WaitSecondsAtLeast(0, timeoutMs);
+        => OnAndroid
+            ? AndroidDurationLabel.WaitSecondsGreaterThan(0, timeoutMs)
+            : TimeRemainingLabel.WaitSecondsAtLeast(0, timeoutMs);
 
     /// <summary>
     /// Starts playback, first waiting for the media to open. No-op when already playing.
@@ -194,7 +224,18 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     public MediaElement<TScope> Stop(int? timeoutMs = null)
     {
         Pause(timeoutMs);
-        return ProgressSlider.SetValue(0, timeoutMs);
+        if (!OnAndroid)
+        {
+            return ProgressSlider.SetValue(0, timeoutMs);
+        }
+
+        // Media3's time bar takes no value: its rewind button steps back until the clip is at its start.
+        for (var press = 0; press < 20 && TimeElapsedLabel.GetSeconds() is not 0; press++)
+        {
+            RewindButton.Click(timeoutMs);
+        }
+
+        return this;
     }
 
     /// <summary>
@@ -206,7 +247,9 @@ public partial class MediaElement<TScope> : ComponentObjectBase<TScope, MediaEle
     /// </remarks>
     /// <returns>The duration, or null while either readout shows no clock.</returns>
     public double? GetDuration()
-        => TimeElapsedLabel.GetSeconds() + TimeRemainingLabel.GetSeconds();
+        => OnAndroid
+            ? AndroidDurationLabel.GetSeconds()
+            : TimeElapsedLabel.GetSeconds() + TimeRemainingLabel.GetSeconds();
 
     #endregion
 }

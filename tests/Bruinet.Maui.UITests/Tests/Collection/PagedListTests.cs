@@ -18,8 +18,9 @@ public class PagedListTests
         _page = fixture.NavigateToPagedList();
     }
 
-    // Three pages fetched and added on the app's UI thread, between a device's reads of each row.
-    private const int PagingMs = 10000;
+    // Three pages fetched and added on the app's UI thread, between a device's reads of each row. Android swipes a
+    // screenful at a time, about two seconds each: row 45 took past 10 s there (R2-T123).
+    private const int PagingMs = 30000;
 
     [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
     public Task FirstPage_ArrivesAfterThePageAppears()
@@ -29,7 +30,7 @@ public class PagedListTests
         return Task.CompletedTask;
     }
 
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Fact(Timeout = TestConstants.LongTestTimeoutMs)]
     public Task RowOnPageThree_IsFoundByLoadingThePagesBeforeIt()
     {
         _page.Rows.Row("Item 45", PagingMs).Text.AssertText("Item 45");
@@ -37,7 +38,7 @@ public class PagedListTests
         return Task.CompletedTask;
     }
 
-    [Fact(Timeout = TestConstants.DefaultTestTimeoutMs)]
+    [Fact(Timeout = TestConstants.LongTestTimeoutMs)]
     public Task ScrollToEnd_LoadsEveryPage()
     {
         _page.Rows.Row("Item 1");

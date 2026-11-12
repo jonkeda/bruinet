@@ -1204,6 +1204,14 @@ internal sealed partial class AppiumMauiElement : IMauiElement, IShownWhenFound
     public string? ReadState(string property) => StateExtra(property);
 
     /// <inheritdoc />
+    /// <remarks>Android: the place AppSupport publishes on an item template's root in a list (R2-T122); null without it.</remarks>
+    public int? PositionInSet => int.TryParse(StateExtra("PositionInSet"), out var position) ? position : null;
+
+    /// <inheritdoc />
+    /// <remarks>Android: the list's item count, published beside <see cref="PositionInSet"/>; null without it.</remarks>
+    public int? SizeOfSet => int.TryParse(StateExtra("SizeOfSet"), out var size) ? size : null;
+
+    /// <inheritdoc />
     /// <remarks>Android: the <c>IsReadOnly</c> AppSupport publishes on an Entry; null without it.</remarks>
     public bool? IsReadOnly => bool.TryParse(StateExtra("IsReadOnly"), out var readOnly) ? readOnly : null;
 

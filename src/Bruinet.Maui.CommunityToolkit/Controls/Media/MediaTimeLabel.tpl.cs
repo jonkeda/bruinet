@@ -23,7 +23,8 @@ namespace Bruinet.Maui.CommunityToolkit.Controls.Media;
 public partial class MediaTimeLabel<TScope> : Label<TScope>
     where TScope : IMauiScope<TScope>
 {
-    private static readonly Regex Clock = new(@"(\d+):(\d{2}):(\d{2})\s*$", RegexOptions.CultureInvariant);
+    // h:mm:ss (WinUI), or mm:ss (Android's Media3 player, exo_position and exo_duration, R2-T121).
+    private static readonly Regex Clock = new(@"(?:(\d+):)?(\d{1,2}):(\d{2})\s*$", RegexOptions.CultureInvariant);
 
     /// <summary>
     /// Creates a time readout within the specified scope.
@@ -48,7 +49,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
     #region Core Methods (Element-Aware, No Logging)
 
     /// <summary>
-    /// Reads the time shown, in whole seconds, from the trailing h:mm:ss of the name.
+    /// Reads the time shown, in whole seconds, from the trailing h:mm:ss (or mm:ss) of the name.
     /// </summary>
     /// <param name="element">The pre-found element.</param>
     /// <returns>The seconds, or null while the readout shows no clock.</returns>
@@ -61,7 +62,7 @@ public partial class MediaTimeLabel<TScope> : Label<TScope>
             return null;
         }
 
-        return int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) * 3600
+        return (match.Groups[1].Success ? int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture) : 0) * 3600
                + int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture) * 60
                + int.Parse(match.Groups[3].Value, CultureInfo.InvariantCulture);
     }

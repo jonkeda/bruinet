@@ -3,7 +3,8 @@
     CommunityToolkit.Maui MediaElement, on a page of its own so opening the other toolkit pages
     never pays for loading media.
 
-    The clip is a six-second tone embedded as a raw asset, so playback needs no network.
+    The clip is a thirty-second tone embedded as a raw asset, so playback needs no network. Thirty, not six: a
+    device's reads take a second or more each, and a six-second clip had ended before a pause press landed (R2-T121).
 
     No verbs: on Windows the transport controls are in the tree and answer Invoke, and their
     elapsed and remaining times are text. There is deliberately no label echoing CurrentState -
@@ -22,11 +23,14 @@
                FontSize="24"
                FontAttributes="Bold" />
 
-        <toolkit:MediaElement AutomationId="TestMediaElement"
+        <!-- Taller on Android: Media3 shows its full controls, with the elapsed and duration labels, only when the
+             player has room; at 120 it showed a minimal set (R2-T121). The code-behind keeps them shown there. -->
+        <toolkit:MediaElement x:Name="TestMedia"
+                              AutomationId="TestMediaElement"
                               Source="embed://tone.wav"
                               ShouldAutoPlay="False"
                               ShouldShowPlaybackControls="True"
-                              HeightRequest="120" />
+                              HeightRequest="{OnPlatform Default=120, Android=320}" />
 
     </VerticalStackLayout>
 </ContentView>
