@@ -104,6 +104,13 @@ internal sealed class AndroidLaunch : ILaunchedApp
     public void Tap(int x, int y)
         => Run(_adb, [.. _device, "shell", "input", "tap", x.ToString(CultureInfo.InvariantCulture), y.ToString(CultureInfo.InvariantCulture)]);
 
+    /// <summary>A swipe from one point of the screen to another, in its pixels: touch input, as the Appium runner's.</summary>
+    public void Swipe(int fromX, int fromY, int toX, int toY, int durationMs = 300)
+        => Run(_adb, [.. _device, "shell", "input", "swipe",
+            fromX.ToString(CultureInfo.InvariantCulture), fromY.ToString(CultureInfo.InvariantCulture),
+            toX.ToString(CultureInfo.InvariantCulture), toY.ToString(CultureInfo.InvariantCulture),
+            durationMs.ToString(CultureInfo.InvariantCulture)]);
+
     /// <summary>Types into the focused field, as keys; adb's input takes a space as <c>%s</c>.</summary>
     public void Type(string text)
     {

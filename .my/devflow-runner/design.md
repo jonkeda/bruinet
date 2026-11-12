@@ -13,9 +13,8 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### Android
 
-On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **about 330 of 385**; the Android runs belong in `tests/Bruinet.Maui.UITests.Mobile` (the mobile head's
-build of the same tests; the Windows build counts as the Windows head whatever it drives), and so far only Collection
-has been run from it. The runner installs the
+On an Android 16 emulator (`Brinell_Android`, headless), the same suite from `tests/Bruinet.Maui.UITests.Mobile` (the mobile head's build of the same tests; the Windows build
+counts as the Windows head whatever it drives): **333 passed, 18 failed, 34 skipped of 385**. The runner installs the
 APK, starts its launcher activity with the launch settings as string extras, sets `debug.bruinet.bridge` for the
 bridge, and forwards a free port here to the agent's 9223 on the device (`AndroidLaunch`). The bridge's run-time ask is
 that system property on Android (an app is given no environment variables): `AppSupport` reads it with `getprop` into
@@ -27,9 +26,8 @@ alert is open. What still fails, by cause:
 | Cause | Tests | What it needs |
 | --- | --- | --- |
 | MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
-| Rows and the carousel | 6 | A paging list loads its next page only on a real scroll: the agent's jump to an index and its scroll by an amount do not scroll an Android list (the amount does nothing at all). Needs a touch swipe over adb. The carousel's second swipe in a row does not move it (its own animation). Row selection and a deleted row, as on Windows or under the paging gap. |
-| Date pickers | 6 | The date is read in a format Android does not show, and its focus is not reported. |
-| A modal over a page | 1 | Android leaves the covered page out; not yet looked at. |
+| Rows and the carousel | 2 | Row selection, as on Windows; and one of the paging test or the carousel's swipe back fails in a full run, by turns (timing). |
+| Date pickers | 5 | The date is read in a format Android does not show. |
 
 ### What it cannot do
 
@@ -86,6 +84,12 @@ alert is open. What still fails, by cause:
   each realized row's `Element.Id`; the runner matches them to the agent's ids, made from the same `Element.Id`
   (the AutomationId with its first 8 hex digits where it repeats, the bare AutomationId for the first). With real item
   keys the collection finds a row by its number and judges a scroll's progress by items, not by row positions.
+- **Android lists:** the agent's scroll by an amount moves no Android list, and its jump to an index is not the
+  user's scroll, so a paging list's `RemainingItemsThreshold` never fired. Near a list's end, and for a scroll by an
+  amount, the runner swipes over the list with `adb shell input swipe` (touch, the owner's call); it still jumps while
+  far from the end. A carousel steps by setting its `Position`, which a bridge swipe straight after another missed.
+  A row the app no longer lists for its list (a removed item animating out, or a container still showing it) is left
+  out of lookups.
 - **Tests:** `DevFlowRunnerTests` (29, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 

@@ -265,6 +265,32 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         return AndroidDialogs.Read(android.DumpScreen());
     }
 
+    /// <summary>Whether lists here scroll by touch: on Android, where the agent's scroll moves no list.</summary>
+    internal bool SwipesLists => _app is AndroidLaunch;
+
+    /// <summary>
+    /// A swipe over a list on Android, over adb: forward moves the content on (the finger goes up). The
+    /// agent's jump to an index does not count as the user's scroll, so a paging list's
+    /// RemainingItemsThreshold fires only on this, and its scroll by an amount moves no Android list.
+    /// </summary>
+    internal void SwipeList(Microsoft.Maui.DevFlow.Driver.ElementInfo list, bool forward)
+    {
+        if (_app is not AndroidLaunch android || list.WindowBounds is not { Width: > 0, Height: > 0 } bounds)
+            return;
+
+        // The agent's bounds are in device-independent units; adb's input is in pixels.
+        _density ??= _agent.Status()?.Device?.DisplayDensity is > 0 and var density ? density : 1;
+        var scale = _density.Value;
+        var x = (int)((bounds.X + bounds.Width / 2) * scale);
+        var low = (int)((bounds.Y + bounds.Height * 0.8) * scale);
+        var high = (int)((bounds.Y + bounds.Height * 0.2) * scale);
+        android.Swipe(x, forward ? low : high, x, forward ? high : low);
+        Changed();
+        Settle();
+    }
+
+    private double? _density;
+
     /// <summary>A tap on a node of an Android alert, over adb.</summary>
     internal void TapAndroidDialog(Microsoft.Maui.DevFlow.Driver.ElementInfo node)
     {
@@ -310,6 +336,25 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         return indexes.TryGetValue(row.Id, out var index) && index >= 0 ? index : null;
     }
 
+    /// <summary>
+    /// Whether a list row is a container still showing an item the list no longer has, as the app's
+    /// bridge says: left out of lookups, as a platform tree drops the removed item's row.
+    /// </summary>
+    internal bool IsRemovedRow(DevFlowNode row)
+    {
+        if (row.Parent is not { AutomationId: { Length: > 0 } } list || !DevFlowLocators.IsItemsView(list))
+            return false;
+        _ = RowIndex(row);
+        // Also a row the app no longer lists, though it answered for the list: on Android a removed
+        // item's row stays in the tree while it animates out, after the count has changed.
+        return _rowIndexes.TryGetValue(Snapshot(), out var byList) && byList.TryGetValue(list.Id, out var indexes)
+               && indexes.ContainsKey(Answered)
+               && (!indexes.TryGetValue(row.Id, out var index) || index == -2);
+    }
+
+    // In a list's matched rows: the app's bridge answered for that list.
+    private const string Answered = "\u0000answered";
+
     private readonly Dictionary<DevFlowTree, Dictionary<string, Dictionary<string, int>>> _rowIndexes = [];
 
     private static Dictionary<string, int> MatchRows(DevFlowNode list, IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? rows)
@@ -317,6 +362,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         var matched = new Dictionary<string, int>(StringComparer.Ordinal);
         if (rows is null)
             return matched;
+        matched[Answered] = 0;
 
         var left = rows.ToList();
         var plain = new List<DevFlowNode>();
@@ -368,7 +414,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     internal IReadOnlyList<IMauiElement> Find(DevFlowNode root, Locator locator, bool includeHidden = false, string? rowKey = null)
     {
         var found = DevFlowLocators.Match(root, locator, _agent.QueryCss)
-            .Where(node => includeHidden || node.Shown)
+            .Where(node => includeHidden || node.Shown && !IsRemovedRow(node))
             .Select(node => (IMauiElement)new DevFlowMauiElement(this, node.Id, rowKey))
             .ToList();
 

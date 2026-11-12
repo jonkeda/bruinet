@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the agent's port (`APPIUM_PLATFORM=android`, `APPIUM_UDID`), with no Appium server.
   The bridge switches on in an Android Debug build with the system property `debug.bruinet.bridge=1`, which the runner
   sets; an Android alert is read from a `uiautomator dump` and answered with taps over adb. A list row answers
-  `PositionInSet` from its item index (the bridge's `rows` route), so a collection reaches a row by its number.
+  `PositionInSet` from its item index (the bridge's `rows` route), so a collection reaches a row by its number. On
+  Android a list near its end is scrolled with an adb swipe, so a paging list loads its next page.
 - MCP `draft_feature`: a feature file drafted from a C# UI test, each statement as the suite phrase that matches its words or a commented gap, validated as the gate would, with its gaps, its finally-block cleanup and phrases that differ only in a value. MCP `similar_steps`: the phrases that could be one phrase with a placeholder. A suite built against an older Bruinet now reports that as its reason instead of failing every tool.
 - One runner per folder: a `[UatScenarioTheory]` case takes `Module` (from `Area`), `Journey` (the scenario's journey
   tags, else the file's `Journey`) and `Pyramid` (when `Priority` names a tier) from its own feature file, with

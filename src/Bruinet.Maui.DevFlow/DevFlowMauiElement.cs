@@ -677,6 +677,14 @@ internal sealed class DevFlowMauiElement : IMauiElement
             _ => Report(InteractionKind.Tap),
         };
 
+        // A carousel steps by its Position, which the agent sets: a bridge swipe straight after another
+        // was lost in the first one's animation on Android.
+        if (TryNode is { Type: "CarouselView" } && CarouselStep(gesture) is not null)
+        {
+            PerformSemanticGesture(gesture);
+            return;
+        }
+
         if (gesture != MauiGesture.Pinch && BridgeVerb(gesture.ToString(), arg1, arg2))
             return;
 
@@ -767,10 +775,21 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         var count = ItemCountOf(list);
-        if (index >= count)
+        if (index >= count && !_driver.SwipesLists)
             throw new ArgumentOutOfRangeException(nameof(index), index, $"{Describe()} has {count} items.");
 
         var rowsBefore = RowIds(list);
+
+        // On Android near the end a swipe, not a jump: a paging list loads its next page only when the
+        // user's scroll reaches its threshold, and a jump to the end leaves nothing left to scroll.
+        if (_driver.SwipesLists && index >= count - 4)
+        {
+            _driver.SwipeList(list.Info, forward: true);
+            return _driver.Snapshot().Find(list.Id) is { } swiped && (!RowIds(swiped).SequenceEqual(rowsBefore) || ItemCountOf(swiped) > count)
+                ? ScrollStep.Moved
+                : ScrollStep.NotMoved;
+        }
+
         _driver.Act(_driver.Agent.Scroll(list.Info, 0, 0, index, "Start"), $"scroll {Describe()} to item {index}");
         return _driver.Snapshot().Find(list.Id) is { } listAfter && !RowIds(listAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
     }
@@ -880,6 +899,14 @@ internal sealed class DevFlowMauiElement : IMauiElement
             _driver.Agent.Scroll(list.Info, 0, 0, 0);
             _driver.Changed();
             return _driver.Snapshot().Find(list.Id) is { } listAfter && !RowIds(listAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
+        }
+
+        // An Android list moves on by touch: the agent's scroll by an amount moves none.
+        if (_driver.SwipesLists && verticalSteps > 0 && ItemsViewNode() is { } swipedList)
+        {
+            var rowsBefore = RowIds(swipedList);
+            _driver.SwipeList(swipedList.Info, forward: true);
+            return _driver.Snapshot().Find(swipedList.Id) is { } swipedAfter && !RowIds(swipedAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
         }
 
         var info = Info;

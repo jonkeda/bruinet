@@ -85,7 +85,8 @@ public static class BruinetDevFlowBridge
     /// <summary>
     /// The item index of each row a list (CollectionView, ListView, CarouselView) has realized, by the
     /// row's <c>Element.Id</c>: what UI Automation's <c>PositionInSet</c> gives on Windows and the agent
-    /// gives nowhere. The runner matches the ids to the agent's, which are made from them.
+    /// gives nowhere. The runner matches the ids to the agent's, which are made from them. A header
+    /// answers -1, and a container still showing an item that was removed -2.
     /// </summary>
     private static async Task<HttpResponse> Rows(string? automationId)
     {
@@ -106,7 +107,10 @@ public static class BruinetDevFlowBridge
                 {
                     id = row.Id.ToString("N"),
                     automationId = (row as Microsoft.Maui.Controls.VisualElement)?.AutomationId,
-                    index = row.BindingContext is { } item && items is not null ? items.IndexOf(item) : -1,
+                    // -1: not an item (a header or footer, which carries the list's own context);
+                    // -2: an item no longer in the source, which a recycled container still shows.
+                    index = row.BindingContext is not { } item || ReferenceEquals(item, list.BindingContext) || items is null ? -1
+                        : items.IndexOf(item) is var at and >= 0 ? at : -2,
                 })
                 .ToList();
             return HttpResponse.Json(new { declared = true, delivered = true, rows });
