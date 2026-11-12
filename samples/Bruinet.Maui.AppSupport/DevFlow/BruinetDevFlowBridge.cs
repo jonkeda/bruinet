@@ -24,7 +24,7 @@ public static class BruinetDevFlowBridge
     /// <summary>The extension's namespace, in the reverse-domain form the agent requires: its routes are under <c>/api/v1/ext/dev.bruinet.bridge/</c>.</summary>
     public const string Namespace = "dev.bruinet.bridge";
 
-    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c> and <c>media</c>.</summary>
+    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c>, <c>media</c> and <c>rows</c>.</summary>
     /// <param name="options">The agent's options, in <c>AddMauiDevFlowAgent(options => ...)</c>.</param>
     /// <returns>The same options.</returns>
     public static AgentOptions AddBruinetBridge(this AgentOptions options)
@@ -36,6 +36,7 @@ public static class BruinetDevFlowBridge
         extension.MapGet("/declares", request => Task.FromResult(Declares(
             request.QueryParams.GetValueOrDefault("automationId"), request.QueryParams.GetValueOrDefault("verb"))));
         extension.MapPost("/media", request => Media(request.BodyAs<MediaRequest>()));
+        extension.MapGet("/rows", request => Rows(request.QueryParams.GetValueOrDefault("automationId")));
         return options;
     }
 
@@ -78,6 +79,37 @@ public static class BruinetDevFlowBridge
             if (method.Invoke(element, arguments) is Task running)
                 await running.WaitAsync(TimeSpan.FromSeconds(5));
             return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+        });
+    }
+
+    /// <summary>
+    /// The item index of each row a list (CollectionView, ListView, CarouselView) has realized, by the
+    /// row's <c>Element.Id</c>: what UI Automation's <c>PositionInSet</c> gives on Windows and the agent
+    /// gives nowhere. The runner matches the ids to the agent's, which are made from them.
+    /// </summary>
+    private static async Task<HttpResponse> Rows(string? automationId)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+        if (string.IsNullOrEmpty(automationId))
+            return HttpResponse.Error("automationId is required.");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            if (FindElement(automationId) is not Microsoft.Maui.Controls.ItemsView list)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"no list '{automationId}' is on screen");
+
+            var items = list.ItemsSource as System.Collections.IList ?? list.ItemsSource?.Cast<object>().ToList();
+            var rows = ((Microsoft.Maui.IVisualTreeElement)list).GetVisualChildren()
+                .OfType<Microsoft.Maui.Controls.Element>()
+                .Select(row => new
+                {
+                    id = row.Id.ToString("N"),
+                    automationId = (row as Microsoft.Maui.Controls.VisualElement)?.AutomationId,
+                    index = row.BindingContext is { } item && items is not null ? items.IndexOf(item) : -1,
+                })
+                .ToList();
+            return HttpResponse.Json(new { declared = true, delivered = true, rows });
         });
     }
 

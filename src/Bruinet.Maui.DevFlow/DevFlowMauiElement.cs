@@ -231,6 +231,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     public bool Focused => !IsApp && Info.IsFocused;
 
+    /// <summary>A list row's place among the list's items, counted from one, as UI Automation gives it; null elsewhere.</summary>
+    public int? PositionInSet => _part == StepperPart.None && TryNode is { } node && _driver.RowIndex(node) is { } index ? index + 1 : null;
+
     public string? Hint => Info.Type switch
     {
         "Entry" or "Editor" or "SearchBar" => Property("Placeholder"),
@@ -1010,7 +1013,12 @@ internal sealed class DevFlowMauiElement : IMauiElement
         var answer = _driver.Agent.BridgeInvoke(id, verb, arg1, arg2);
         _driver.Changed();
         if (answer.Delivered)
+        {
+            // As after the agent's own actions: what the verb queued (a carousel's move) finishes first.
+            _driver.Settle();
             return true;
+        }
+
         if (!answer.Declared)
             return false;
         throw new BruinetException($"{Describe()} declares {verb} and declined it: {answer.Reason}.");

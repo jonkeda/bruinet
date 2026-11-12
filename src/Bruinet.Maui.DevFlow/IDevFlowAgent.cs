@@ -60,6 +60,12 @@ internal interface IDevFlowAgent : IDisposable
 
     /// <summary>Plays, pauses, stops or seeks (<c>SeekTo</c>, in seconds) a media element, through the app's bridge.</summary>
     BridgeAnswer Media(string automationId, string action, double seconds = 0);
+
+    /// <summary>
+    /// The item index of each row the list has realized, by the row's <c>Element.Id</c> (32 hex digits),
+    /// through the app's bridge; null when the app carries none.
+    /// </summary>
+    IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? Rows(string listAutomationId);
 }
 
 /// <summary>
@@ -186,6 +192,30 @@ internal sealed class DevFlowAgent : IDevFlowAgent
 
     public BridgeAnswer Media(string automationId, string action, double seconds = 0)
         => Bridge("/media", new { automationId, action, seconds });
+
+    public IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? Rows(string listAutomationId)
+    {
+        if (_noBridge)
+            return null;
+        try
+        {
+            var body = Run(_client.CallExtensionToolAsync("GET", BridgePath + "/rows", JsonSerializer.SerializeToElement(new { automationId = listAutomationId })));
+            using var answer = JsonDocument.Parse(body);
+            if (!answer.RootElement.TryGetProperty("rows", out var rows))
+                return null;
+            return rows.EnumerateArray()
+                .Select(row => (
+                    row.GetProperty("id").GetString() ?? string.Empty,
+                    row.TryGetProperty("automationId", out var automationId) ? automationId.GetString() : null,
+                    row.GetProperty("index").GetInt32()))
+                .ToList();
+        }
+        catch (HttpRequestException missing) when (missing.StatusCode == HttpStatusCode.NotFound)
+        {
+            _noBridge = true;
+            return null;
+        }
+    }
 
     public bool BridgeDeclares(string? automationId, string verb)
     {

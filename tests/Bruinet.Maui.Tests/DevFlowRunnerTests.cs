@@ -327,6 +327,24 @@ public class DevFlowRunnerTests
         Assert.Null(AndroidDialogs.Read(System.Xml.Linq.XDocument.Parse("<hierarchy><node class=\"x\" /></hierarchy>")));
     }
 
+    [Fact]
+    public void ListRow_PositionInSet_IsItsItemIndex_MatchedByElementId()
+    {
+        // The agent names the first row by its bare AutomationId and the others with their
+        // Element.Id's first 8 hex digits; the app gives each Element.Id its item index.
+        var agent = new FakeAgent(ListPage(("Item 8", 415), ("Item 9", 475)));
+        agent.Windows[0].Children![0].Children![0].Children![0].Id = "Row";
+        agent.Windows[0].Children![0].Children![0].Children![0].AutomationId = "Row";
+        agent.Windows[0].Children![0].Children![0].Children![1].Id = "Row_abcdef12";
+        agent.Windows[0].Children![0].Children![0].Children![1].AutomationId = "Row";
+        agent.ListRows = [("abcdef12000000000000000000000000", "Row", 8), ("0123456789abcdef0123456789abcdef", "Row", 7)];
+        var driver = Driver(agent);
+
+        var rows = driver.FindElements(Locator.ByAutomationId("Row"));
+
+        Assert.Equal([8, 9], rows.Select(row => row.PositionInSet));
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
 
     // A page with one MediaElement, whose transport controls the agent's tree does not show.
@@ -511,6 +529,10 @@ public class DevFlowRunnerTests
             => Answer(automationId, verb, argument);
 
         public bool BridgeDeclares(string? automationId, string verb) => Bridge.ContainsKey($"{automationId ?? "-"} {verb}");
+
+        public List<(string ElementId, string? AutomationId, int Index)>? ListRows { get; set; }
+
+        public IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? Rows(string listAutomationId) => ListRows;
 
         public BridgeAnswer Media(string automationId, string action, double seconds = 0)
             => Answer(automationId, "Media", $"{action} {seconds.ToString(System.Globalization.CultureInfo.InvariantCulture)}");

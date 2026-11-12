@@ -286,6 +286,75 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         Changed();
     }
 
+    /// <summary>
+    /// A list row's item index, as UI Automation's <c>PositionInSet</c> gives it on Windows: asked of the
+    /// app's bridge once per tree read and list, and matched to the agent's ids, which are made from
+    /// each element's <c>Element.Id</c> (its AutomationId, with the id's first 8 hex digits where the
+    /// AutomationId repeats; the first 12 without one). Null without a bridge, or for a row it cannot place.
+    /// </summary>
+    internal int? RowIndex(DevFlowNode row)
+    {
+        if (row.Parent is not { AutomationId: { Length: > 0 } listId } list || !DevFlowLocators.IsItemsView(list))
+            return null;
+
+        var tree = Snapshot();
+        if (!_rowIndexes.TryGetValue(tree, out var byList))
+        {
+            byList = [];
+            _rowIndexes.Clear();
+            _rowIndexes[tree] = byList;
+        }
+
+        if (!byList.TryGetValue(list.Id, out var indexes))
+            byList[list.Id] = indexes = MatchRows(list, _agent.Rows(listId));
+        return indexes.TryGetValue(row.Id, out var index) && index >= 0 ? index : null;
+    }
+
+    private readonly Dictionary<DevFlowTree, Dictionary<string, Dictionary<string, int>>> _rowIndexes = [];
+
+    private static Dictionary<string, int> MatchRows(DevFlowNode list, IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? rows)
+    {
+        var matched = new Dictionary<string, int>(StringComparer.Ordinal);
+        if (rows is null)
+            return matched;
+
+        var left = rows.ToList();
+        var plain = new List<DevFlowNode>();
+        foreach (var row in list.Children)
+        {
+            var tail = row.Id[(row.Id.LastIndexOf('_') + 1)..];
+            var prefix = row.Id.Length == 12 && row.AutomationId is null ? row.Id
+                : tail.Length == 8 && tail.All(char.IsAsciiHexDigitLower) && row.Id.Contains('_', StringComparison.Ordinal) ? tail
+                : null;
+            if (prefix is null)
+            {
+                plain.Add(row);
+                continue;
+            }
+
+            var found = left.FindIndex(candidate => candidate.ElementId.StartsWith(prefix, StringComparison.Ordinal));
+            if (found >= 0)
+            {
+                matched[row.Id] = left[found].Index;
+                left.RemoveAt(found);
+            }
+        }
+
+        // A row whose id is its bare AutomationId (the first the agent met with it) takes the one row
+        // left with that AutomationId.
+        foreach (var row in plain)
+        {
+            var same = left.Where(candidate => candidate.AutomationId == row.AutomationId).ToList();
+            if (same.Count == 1)
+            {
+                matched[row.Id] = same[0].Index;
+                left.Remove(same[0]);
+            }
+        }
+
+        return matched;
+    }
+
     /// <summary>Drops the kept tree: the app changes after an action.</summary>
     internal void Changed() => _snapshot = null;
 

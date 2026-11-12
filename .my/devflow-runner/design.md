@@ -7,13 +7,15 @@ Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-experimental).
 ## Where it stands
 
 On Windows, the sample app's suite without `Tests\Background` and `Tests\Diagnostics` (FlaUI's own):
-**352 passed, 2 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. `ScrollToEnd_LoadsEveryPage`
-fails now and then in a full Collection run (one in four after the last fix) and passes alone: noted, not chased. Every failure is in the list below. A folder takes about as
+**353 passed, 1 failed, 31 skipped of 385**; the Shell app's `Tests\Shell`: **15 of 15**. The intermittent paging
+failure went with the row indexes (Collection 29 of 30, twice). Every failure is in the list below. A folder takes about as
 long as on FlaUI (Text 17 s, Contracts 84 s).
 
 ### Android
 
-On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **327 passed of 385**. The runner installs the
+On an Android 16 emulator (`Brinell_Android`, headless), the same suite: **about 330 of 385**; the Android runs belong in `tests/Bruinet.Maui.UITests.Mobile` (the mobile head's
+build of the same tests; the Windows build counts as the Windows head whatever it drives), and so far only Collection
+has been run from it. The runner installs the
 APK, starts its launcher activity with the launch settings as string extras, sets `debug.bruinet.bridge` for the
 bridge, and forwards a free port here to the agent's 9223 on the device (`AndroidLaunch`). The bridge's run-time ask is
 that system property on Android (an app is given no environment variables): `AppSupport` reads it with `getprop` into
@@ -25,7 +27,7 @@ alert is open. What still fails, by cause:
 | Cause | Tests | What it needs |
 | --- | --- | --- |
 | MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
-| Rows and the carousel | 10 | Fewer rows realized on a phone screen, and the carousel shows one card: not yet worked out. |
+| Rows and the carousel | 6 | A paging list loads its next page only on a real scroll: the agent's jump to an index and its scroll by an amount do not scroll an Android list (the amount does nothing at all). Needs a touch swipe over adb. The carousel's second swipe in a row does not move it (its own animation). Row selection and a deleted row, as on Windows or under the paging gap. |
 | Date pickers | 6 | The date is read in a format Android does not show, and its focus is not reported. |
 | A modal over a page | 1 | Android leaves the covered page out; not yet looked at. |
 
@@ -33,7 +35,6 @@ alert is open. What still fails, by cause:
 
 | Gap | Tests | Why |
 | --- | --- | --- |
-| A list item by its index (`ScrollToItem`, `Item(i)` past the realized rows) | 1 | The agent gives no row its index (`PositionInSet`). |
 | Selecting a list row that has no tap of its own | 1 | The agent sets no `SelectedItem` (an object) and has no select action; the bridge's `SelectIndex` serves pickers only. |
 | Scrolling a ScrollView inside another to an exact position | 0 | The agent spends an amount on the outermost ScrollView; the inner one reaches the top and the end exactly, a position between as near as its children allow. |
 
@@ -81,7 +82,11 @@ alert is open. What still fails, by cause:
   element's methods by name (the agent calls none, and `AppSupport` takes no reference to the toolkit).
 - **Rows, again:** an element found inside a row inherits the row's item key, so a label read after its container was
   recycled is stale too, not the next item's text.
-- **Tests:** `DevFlowRunnerTests` (27, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
+- **Row indexes:** a list row answers `PositionInSet` from its item index, which the bridge's `rows` route gives by
+  each realized row's `Element.Id`; the runner matches them to the agent's ids, made from the same `Element.Id`
+  (the AutomationId with its first 8 hex digits where it repeats, the bare AutomationId for the first). With real item
+  keys the collection finds a row by its number and judges a scroll's progress by items, not by row positions.
+- **Tests:** `DevFlowRunnerTests` (29, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 
 ## Outcome
