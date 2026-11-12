@@ -58,10 +58,15 @@ public class CoveredPageTests
         _page.OpenModalButton.Click();
         var modal = new CoveringTestPage(_fixture.Context, "CoveredModalPage");
         modal.Title.AssertText("Modal");
-        // A modal covers the page without taking it away: it is still found, and ready.
-        var covered = new CoveredTestPage(_fixture.Context);
-        Assert.True(covered.IsLoaded());
-        covered.Status.AssertText("loaded");
+        // On Windows and MauiHeadless a modal covers the page without taking it away: it is still found, and ready.
+        // Android leaves the covered page out of the accessibility tree while the modal is up, as a user cannot
+        // reach it either (R2-T112).
+        if (Contracts.SkipOnFactAttribute.Current != Contracts.ContractHeads.Mobile)
+        {
+            var covered = new CoveredTestPage(_fixture.Context);
+            Assert.True(covered.IsLoaded());
+            covered.Status.AssertText("loaded");
+        }
 
         modal.CloseButton.Click();
 

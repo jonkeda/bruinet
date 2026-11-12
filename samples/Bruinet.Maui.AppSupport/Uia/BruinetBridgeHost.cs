@@ -102,6 +102,11 @@ public static class BruinetBridgeHost
         IReadOnlyCollection<BruinetVerb> verbs,
         IBruinetGestureSink? sink)
     {
+#if ANDROID
+        // No bridge on Android: what the sink can say is published on the element's node instead (R2-T112).
+        Bruinet.Maui.AppSupport.Accessibility.StateAccessibility.PublishSink(element, sink);
+#endif
+
         if (!_enabled)
         {
             // Once, not once per element. A page declaring a dozen verbs would otherwise bury

@@ -3,6 +3,10 @@ using Android.OS;
 using Android.Views.Accessibility;
 using AndroidX.Core.View;
 using AndroidX.Core.View.Accessibility;
+using System.Runtime.CompilerServices;
+using Bruinet.Maui.AppSupport.Uia;
+using Bruinet.Uia;
+using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Handlers;
 using AView = Android.Views.View;
 
@@ -42,7 +46,7 @@ internal static class StateAccessibility
 
     private static bool _registered;
 
-    /// <summary>Adds the mappings to the five handlers. Idempotent.</summary>
+    /// <summary>Adds the mappings to the handlers. Idempotent.</summary>
     public static void Register()
     {
         if (_registered)
@@ -57,6 +61,27 @@ internal static class StateAccessibility
         Map(EntryHandler.Mapper, [nameof(IEntry.IsReadOnly), semantics]);
         Map(RefreshViewHandler.Mapper, [nameof(IRefreshView.IsRefreshing), semantics]);
         Map(ScrollViewHandler.Mapper, [nameof(IScrollView.Content), semantics]);
+        Map(CollectionViewHandler.Mapper, [nameof(ItemsView.ItemsSource), semantics]);
+        Map(CarouselViewHandler.Mapper, [nameof(ItemsView.ItemsSource), nameof(CarouselView.Position), semantics]);
+        Map(IndicatorViewHandler.Mapper, [nameof(IIndicatorView.Count), nameof(IIndicatorView.Position), semantics]);
+    }
+
+    private static readonly ConditionalWeakTable<VisualElement, IBruinetGestureSink> Sinks = new();
+
+    /// <summary>
+    /// Publishes the states <paramref name="sink"/> names (<see cref="IBruinetGestureSink.StateNames"/>) on the
+    /// element's node, now and whenever its handler changes. Nothing when the sink names none.
+    /// </summary>
+    internal static void PublishSink(VisualElement element, IBruinetGestureSink? sink)
+    {
+        if (sink is null || sink.StateNames.Count == 0 || Sinks.TryGetValue(element, out _))
+        {
+            return;
+        }
+
+        Sinks.Add(element, sink);
+        Attach(element.Handler?.PlatformView as AView, element);
+        element.HandlerChanged += (_, _) => Attach(element.Handler?.PlatformView as AView, element);
     }
 
     private static void Map<TVirtual, THandler>(IPropertyMapper<TVirtual, THandler> mapper, string[] keys)
@@ -91,6 +116,28 @@ internal static class StateAccessibility
     /// <summary>The states to publish for an element, read now.</summary>
     private static IEnumerable<(string Name, string Value)> States(IElement element)
     {
+        if (element is VisualElement visual && Sinks.TryGetValue(visual, out var sink))
+        {
+            foreach (var name in sink.StateNames)
+            {
+                string? value;
+                try
+                {
+                    value = sink.Exchange(visual, BruinetVerb.GetState, name);
+                }
+                catch (NotSupportedException)
+                {
+                    // Not one of this element's states.
+                    value = null;
+                }
+
+                if (value is not null)
+                {
+                    yield return (name, value);
+                }
+            }
+        }
+
         switch (element)
         {
             case Picker picker:
@@ -109,6 +156,17 @@ internal static class StateAccessibility
             case RefreshView refresh:
                 yield return ("IsRefreshing", refresh.IsRefreshing.ToString());
                 break;
+            case CarouselView carousel:
+                yield return ("ItemCount", Number(Count(carousel.ItemsSource)));
+                yield return ("Position", Number(carousel.Position));
+                break;
+            case ItemsView items:
+                yield return ("ItemCount", Number(Count(items.ItemsSource)));
+                break;
+            case IndicatorView indicator:
+                yield return ("Position", Number(indicator.Position));
+                yield return ("Count", Number(indicator.Count));
+                break;
             case ScrollView scroll:
                 yield return ("ScrollPosition", string.Join(",",
                     Number(scroll.ScrollX), Number(scroll.ScrollY), Number(scroll.Width), Number(scroll.Height),
@@ -120,6 +178,14 @@ internal static class StateAccessibility
     private static string Number(double value) => value.ToString("R", CultureInfo.InvariantCulture);
 
     private static string Number(int value) => value.ToString(CultureInfo.InvariantCulture);
+
+    private static int Count(System.Collections.IEnumerable? items)
+        => items switch
+        {
+            null => 0,
+            System.Collections.ICollection collection => collection.Count,
+            _ => items.Cast<object>().Count(),
+        };
 
     /// <summary>How far down a scroll view is, 0 to 100; 0 when it cannot scroll.</summary>
     private static double Percent(ScrollView scroll)

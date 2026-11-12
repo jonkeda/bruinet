@@ -58,6 +58,8 @@ $SampleAppDir = Join-Path $ScriptDir "samples\Bruinet.Samples.Maui.App"
 # the same test sources and references Appium instead.
 $TestProjectDir = Join-Path $ScriptDir "tests\Bruinet.Maui.UITests.Mobile"
 $ApkPath = Join-Path $SampleAppDir "bin\Debug\net10.0-android\com.bruinet.samples.maui-Signed.apk"
+$ShellAppDir = Join-Path $ScriptDir "samples\Bruinet.Samples.Maui.ShellApp"
+$ShellApkPath = Join-Path $ShellAppDir "bin\Debug\net10.0-android\com.bruinet.samples.shell-Signed.apk"
 
 # Check prerequisites
 Write-Host "[1/6] Checking prerequisites..." -ForegroundColor Yellow
@@ -110,6 +112,15 @@ if ($Build) {
     
     if ($LASTEXITCODE -ne 0) {
         Write-Error "Build failed with exit code $LASTEXITCODE"
+        exit 1
+    }
+
+    # The Shell suite's own app.
+    $buildArgs[1] = $ShellAppDir
+    & dotnet @buildArgs
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Shell app build failed with exit code $LASTEXITCODE"
         exit 1
     }
     Write-Host "  Build succeeded!" -ForegroundColor Green
@@ -169,11 +180,13 @@ try {
 Write-Host "`n[6/6] Running tests..." -ForegroundColor Yellow
 $env:APPIUM_PLATFORM = "android"
 $env:APPIUM_DEVICE_NAME = $DeviceName
-$env:APPIUM_APP_PATH = $ApkPath
+# No APPIUM_APP_PATH: each fixture installs its own app (the sample's, the Shell sample's). A path set here sent
+# the Shell suite's session to the main sample, which has no Shell activity (R2-T112).
+Remove-Item Env:APPIUM_APP_PATH -ErrorAction SilentlyContinue
 
 Write-Host "  Platform: $($env:APPIUM_PLATFORM)" -ForegroundColor Cyan
 Write-Host "  Device: $($env:APPIUM_DEVICE_NAME)" -ForegroundColor Cyan
-Write-Host "  APK: $($env:APPIUM_APP_PATH)" -ForegroundColor Cyan
+Write-Host "  APKs: $ApkPath, $ShellApkPath" -ForegroundColor Cyan
 Write-Host ""
 
 # Build test arguments

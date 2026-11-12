@@ -63,4 +63,14 @@ public interface IBruinetGestureSink
         => throw new NotSupportedException(
             $"{GetType().Name} named {verb} but does not implement Exchange. A verb that carries "
             + "a string needs it; one that does not is answered by Invoke.");
+
+    /// <summary>
+    /// The <see cref="BruinetVerb.GetState"/> names this sink answers through <see cref="Exchange"/>.
+    /// </summary>
+    /// <remarks>
+    /// Android has no bridge to ask a name: there each name listed here that the sink answers for the element is
+    /// published on its accessibility node, which the Android head reads (R2-T112). Windows asks by name and does
+    /// not need the list. A name the sink refuses for an element (<see cref="NotSupportedException"/>) is left out.
+    /// </remarks>
+    IReadOnlyCollection<string> StateNames => [];
 }

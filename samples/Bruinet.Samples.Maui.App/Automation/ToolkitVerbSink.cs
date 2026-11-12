@@ -43,6 +43,10 @@ public sealed class ToolkitVerbSink : IBruinetGestureSink
         [BruinetVerb.Tap, BruinetVerb.SelectIndex, BruinetVerb.Pan, BruinetVerb.GetState];
 
     /// <inheritdoc />
+    public IReadOnlyCollection<string> StateNames { get; } =
+        ["IsExpanded", "Rating", "MaximumRating", "IsReadOnly", "LineCount"];
+
+    /// <inheritdoc />
     public int Invoke(VisualElement element, BruinetVerb verb, int arg1, int arg2)
         => (verb, element) switch
         {
