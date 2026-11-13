@@ -1,2 +1,0 @@
-# Patches are applied as they are: no line-ending change on checkout.
-*.patch -text
