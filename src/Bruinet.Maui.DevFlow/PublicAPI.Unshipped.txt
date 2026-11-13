@@ -30,3 +30,4 @@ Bruinet.Maui.DevFlow.DevFlowMauiDriver.SupportsGesture(string! automationId, Bru
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.TakeScreenshot() -> byte[]!
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.WindowHandles.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
 Bruinet.Maui.DevFlow.DevFlowMauiDriver.IsIdle(int timeoutMs = 2000) -> bool
+Bruinet.Maui.DevFlow.DevFlowMauiDriver.DeviceCulture.get -> System.Globalization.CultureInfo?

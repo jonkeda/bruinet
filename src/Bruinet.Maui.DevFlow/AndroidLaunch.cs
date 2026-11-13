@@ -104,6 +104,19 @@ internal sealed class AndroidLaunch : ILaunchedApp
     public void Tap(int x, int y)
         => Run(_adb, [.. _device, "shell", "input", "tap", x.ToString(CultureInfo.InvariantCulture), y.ToString(CultureInfo.InvariantCulture)]);
 
+    /// <summary>The device's locale (<c>en-US</c>): the one set for it, else the one it was built with; null when neither says.</summary>
+    public string? Locale()
+    {
+        foreach (var property in new[] { "persist.sys.locale", "ro.product.locale" })
+        {
+            var value = Run(_adb, [.. _device, "shell", "getprop", property]).Trim();
+            if (value.Length > 0)
+                return value;
+        }
+
+        return null;
+    }
+
     /// <summary>A swipe from one point of the screen to another, in its pixels: touch input, as the Appium runner's.</summary>
     public void Swipe(int fromX, int fromY, int toX, int toY, int durationMs = 300)
         => Run(_adb, [.. _device, "shell", "input", "swipe",

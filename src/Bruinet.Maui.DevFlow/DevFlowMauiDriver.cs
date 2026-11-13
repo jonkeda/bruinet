@@ -457,6 +457,28 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     public MauiPlatform Platform { get; }
 
     /// <summary>
+    /// The device's culture on Android, from its locale: the app formats dates and times with it, and
+    /// the fixture reads them with it (as for Appium). Null on Windows, where the app runs on this
+    /// machine with its culture, and where the device does not say.
+    /// </summary>
+    public CultureInfo? DeviceCulture
+    {
+        get
+        {
+            if (_app is not AndroidLaunch android || android.Locale() is not { } locale)
+                return null;
+            try
+            {
+                return CultureInfo.GetCultureInfo(locale.Replace('_', '-'));
+            }
+            catch (CultureNotFoundException)
+            {
+                return null;
+            }
+        }
+    }
+
+    /// <summary>
     /// Shell's tabs and flyout items, as the agent draws them: its own <c>Tab</c> and <c>FlyoutItem</c>
     /// nodes, directly under the Shell (the scope itself), named by the agent's type so Shell's own
     /// FlyoutItem and Tab elements, which describe the structure, are not taken for them.

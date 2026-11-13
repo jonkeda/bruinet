@@ -14,7 +14,7 @@ long as on FlaUI (Text 17 s, Contracts 84 s).
 ### Android
 
 On an Android 16 emulator (`Brinell_Android`, headless), the same suite from `tests/Bruinet.Maui.UITests.Mobile` (the mobile head's build of the same tests; the Windows build
-counts as the Windows head whatever it drives): **333 passed, 18 failed, 34 skipped of 385**. The runner installs the
+counts as the Windows head whatever it drives): **338 passed, 13 failed, 34 skipped of 385**. The runner installs the
 APK, starts its launcher activity with the launch settings as string extras, sets `debug.bruinet.bridge` for the
 bridge, and forwards a free port here to the agent's 9223 on the device (`AndroidLaunch`). The bridge's run-time ask is
 that system property on Android (an app is given no environment variables): `AppSupport` reads it with `getprop` into
@@ -27,7 +27,6 @@ alert is open. What still fails, by cause:
 | --- | --- | --- |
 | MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
 | Rows and the carousel | 2 | Row selection, as on Windows; and one of the paging test or the carousel's swipe back fails in a full run, by turns (timing). |
-| Date pickers | 5 | The date is read in a format Android does not show. |
 
 ### What it cannot do
 
@@ -90,6 +89,10 @@ alert is open. What still fails, by cause:
   far from the end. A carousel steps by setting its `Position`, which a bridge swipe straight after another missed.
   A row the app no longer lists for its list (a removed item animating out, or a container still showing it) is left
   out of lookups.
+- **Dates on Android:** the app formats a date in the device's culture (en-US on the emulator), and a test reads it in
+  this machine's. The driver answers `DeviceCulture` from the device's locale (`getprop`), as the Appium driver does,
+  and the fixture reads dates with it. Android's culture data puts a narrow no-break space before AM and PM, which no
+  parse here reads: a date or time picker's value has a plain space, as Windows writes it.
 - **Tests:** `DevFlowRunnerTests` (29, fake agent); a `[WindowsOnlyFact]` about the bridge or the accessibility tree
   skips on this runner.
 

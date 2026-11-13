@@ -248,7 +248,11 @@ internal sealed class DevFlowMauiElement : IMauiElement
         _ => null,
     };
 
-    public string? Value => Info.Value;
+    // A date or time as the agent formats it on the device: Android's culture data puts a narrow
+    // no-break space before AM and PM, which no .NET parse on this side reads, so it is a space here, as Windows writes it.
+    public string? Value => Info.Type is "DatePicker" or "TimePicker"
+        ? Info.Value?.Replace(' ', ' ').Replace(' ', ' ')
+        : Info.Value;
 
     public bool? IsReadOnly => Info.Type is "Entry" or "Editor" or "SearchBar" ? Bool(Property("IsReadOnly")) : null;
 
