@@ -1,7 +1,6 @@
 # MauiDevFlow: a third MAUI device runner
 
-Status: **built for Windows; Android launches and runs**, 2026-11-12. iOS attaches to a running app; its launch, and
-Mac Catalyst, are not built. Decision: [AD-037](../../.docs/decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md).
+Status: **built for Windows; Android and the iOS simulator launch and run**, 2026-11-13. Mac Catalyst is not built. Decision: [AD-037](../../.docs/decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md).
 Run it: [docs/run/MAUI.md](../../docs/run/MAUI.md#devflow-runner-experimental).
 
 ## Where it stands
@@ -27,6 +26,27 @@ alert is open. What still fails, by cause:
 | --- | --- | --- |
 | MediaElement | 11 | On Android the control asks for Media3's ids (`exo_*`), which have no stand-ins yet. |
 | Rows and the carousel | 2 | Row selection, as on Windows; and one of the paging test or the carousel's swipe back fails in a full run, by turns (timing). |
+
+### iOS
+
+On the iOS 26.0 simulator (iPhone 17 Pro), the same suite from `tests/Bruinet.Maui.UITests.Mobile`, run one folder at
+a time ([ios-plan.md](ios-plan.md#test-groups)): **351 passed, 0 failed, 34 skipped of 385**; the Shell app's
+`Tests\Shell`: **15 of 15**. Every skip is a test that says why: Windows only, a probe, or MAUI has no such event. The
+runner boots the simulator, reinstalls the `.app` when its build changed, and launches it with `simctl launch`, the
+launch settings and `BRUINET_UIA_BRIDGE` passed as `SIMCTL_CHILD_` variables (`IosLaunch`). There is no port to
+forward: the simulator shares the Mac's loopback. The bridge carries what the agent cannot do on iOS:
+
+| Gap on iOS | Route | How |
+| --- | --- | --- |
+| The agent's tree shows no `UIAlertController`. | The bridge's `alert` route (iOS only). | It reads the presented alert into the Windows dialog shape; a press waits out the presentation, dismisses the alert, then runs the action's handler, which it reads through the private `handler` key. `AccessibilityActivate` returns true and does nothing on iOS 26. |
+| The agent's tap reaches no list row's selection. | The bridge's `selectrow` route. | It sets the list's `SelectedItem`, or toggles the item in `SelectedItems`, as the collection view's delegate would. |
+| Push, pop and alert animations do not hold the dispatcher. | `IsIdle`, and a settle after each tap. | On iOS `IsIdle` also waits until no view controller is in transition. |
+| The agent's tap on a flyout item leaves the flyout open. | The runner. | It sets the Shell's `FlyoutIsPresented` to false, as the native row selection does. |
+| The agent's swipe between points reaches no SwipeView. | The app's declared swipe verb. | As `PerformGesture` uses it. |
+
+A row whose agent id is its bare AutomationId now takes its index from its neighbours when the app lists several such
+rows. iOS keeps realized cells off screen, and the paging test missed its row without this. Building for the simulator
+with Xcode 27.2 needs `-p:ValidateXcodeVersion=false`.
 
 ### What it cannot do
 

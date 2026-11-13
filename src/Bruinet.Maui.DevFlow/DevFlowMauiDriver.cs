@@ -76,7 +76,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
             return Attach(options.DevFlowPort ?? DefaultPort, options);
 
         throw new PlatformNotSupportedException(
-            $"The DevFlow runner launches a Windows app and an Android APK so far. For {options.Platform}, start the app "
+            $"The DevFlow runner launches a Windows app, an Android APK and an iOS simulator .app so far. For {options.Platform}, start the app "
             + "built with its DevFlow agent and set BRUINET_DEVFLOW_PORT, so the runner attaches to it.");
     }
 
@@ -85,6 +85,8 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         {
             MauiPlatform.Windows => OperatingSystem.IsWindows() && options.AppPath?.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) == true,
             MauiPlatform.Android => options.AppPath?.EndsWith(".apk", StringComparison.OrdinalIgnoreCase) == true,
+            MauiPlatform.iOS => OperatingSystem.IsMacOS()
+                                && options.AppPath?.TrimEnd('/').EndsWith(".app", StringComparison.OrdinalIgnoreCase) == true,
             _ => false,
         };
 
@@ -141,7 +143,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     private static (IDevFlowAgent Agent, ILaunchedApp App) Launch(MauiDriverOptions options)
     {
         var appPath = options.AppPath!;
-        if (!File.Exists(appPath))
+        if (!File.Exists(appPath) && !(options.Platform == MauiPlatform.iOS && Directory.Exists(appPath)))
             throw new FileNotFoundException($"The app to launch is not there. Build it with -p:BruinetDevFlow=true: {appPath}", appPath);
         if (options.Platform == MauiPlatform.Android)
             return LaunchOnAndroid(options);
@@ -157,7 +159,9 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         if (!string.IsNullOrWhiteSpace(options.Placement))
             environment["BRUINET_AUT_PLACE"] = options.Placement;
 
-        var app = LaunchedApp.Start(appPath, environment, LaunchTimeout);
+        ILaunchedApp app = options.Platform == MauiPlatform.iOS
+            ? IosLaunch.Start(appPath, options.Udid ?? options.AdditionalCapabilities.GetValueOrDefault("udid") as string, environment)
+            : LaunchedApp.Start(appPath, environment, LaunchTimeout);
         var deadline = Stopwatch.StartNew();
         string? lastWrongApp = null;
         while (deadline.Elapsed < LaunchTimeout)
@@ -236,7 +240,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         if (_snapshot is null || (native && !_snapshotNative) || Stopwatch.GetElapsedTime(_snapshotAt) > SnapshotAge)
         {
             var windows = _agent.Tree(native);
-            if (native && AndroidAlert() is { } alert)
+            if (native && (AndroidAlert() ?? IosAlert()) is { } alert)
                 windows = [.. windows, alert];
             _snapshot = new DevFlowTree(windows, modalsCover: Platform != MauiPlatform.Windows);
             _snapshotNative = native;
@@ -263,6 +267,56 @@ public sealed class DevFlowMauiDriver : IMauiDriver
             return null;
 
         return AndroidDialogs.Read(android.DumpScreen());
+    }
+
+    /// <summary>
+    /// The alert on an iOS screen, which the agent's tree does not show either, as the app's bridge
+    /// describes it (<see cref="IosDialogs"/>). On iOS only: the route answers there alone.
+    /// </summary>
+    private Microsoft.Maui.DevFlow.Driver.ElementInfo? IosAlert()
+        => Platform == MauiPlatform.iOS ? IosDialogs.Read(_agent.Alert()) : null;
+
+    /// <summary>Whether <paramref name="id"/> is a node of an alert read outside the agent's tree (Android or iOS).</summary>
+    internal static bool IsNativeDialogNode(string? id) => AndroidDialogs.IsDialogNode(id) || IosDialogs.IsDialogNode(id);
+
+    /// <summary>A press of an alert's button: a tap over adb on Android, through the app's bridge on iOS.</summary>
+    internal void TapNativeDialog(Microsoft.Maui.DevFlow.Driver.ElementInfo node)
+    {
+        if (IosDialogs.IsDialogNode(node.Id))
+        {
+            IosDialogAct(new { action = "press", button = node.Text }, $"press '{node.Text}' on the alert");
+            return;
+        }
+
+        TapAndroidDialog(node);
+    }
+
+    /// <summary>Types into an alert's field: over adb on Android, through the app's bridge on iOS.</summary>
+    internal void TypeIntoNativeDialog(Microsoft.Maui.DevFlow.Driver.ElementInfo field, string text, bool replace)
+    {
+        if (IosDialogs.IsDialogNode(field.Id))
+        {
+            IosDialogAct(new { action = "fill", text, replace }, "type into the alert");
+            return;
+        }
+
+        TypeIntoAndroidDialog(field, text, replace);
+    }
+
+    private void IosDialogAct(object request, string what)
+    {
+        var answer = _agent.Alert(request);
+        using (var json = answer is null ? null : JsonDocument.Parse(answer))
+        {
+            if (json is null || !json.RootElement.TryGetProperty("delivered", out var delivered) || !delivered.GetBoolean())
+            {
+                var reason = json?.RootElement.TryGetProperty("reason", out var why) == true ? why.GetString() : "the app has no alert route";
+                throw new BruinetException($"Could not {what}: {reason}.");
+            }
+        }
+
+        Changed();
+        Settle();
     }
 
     /// <summary>Whether lists here scroll by touch: on Android, where the agent's scroll moves no list.</summary>
@@ -387,10 +441,20 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         }
 
         // A row whose id is its bare AutomationId (the first the agent met with it) takes the one row
-        // left with that AutomationId.
+        // left with that AutomationId; where several are left (iOS keeps realized cells off screen), the
+        // one whose index follows the row before it or precedes the row after it.
+        var children = list.Children.ToList();
         foreach (var row in plain)
         {
             var same = left.Where(candidate => candidate.AutomationId == row.AutomationId).ToList();
+            if (same.Count > 1)
+            {
+                var at = children.IndexOf(row);
+                int? before = at > 0 && matched.TryGetValue(children[at - 1].Id, out var b) && b >= 0 ? b + 1 : null;
+                int? after = at + 1 < children.Count && matched.TryGetValue(children[at + 1].Id, out var a) && a >= 0 ? a - 1 : null;
+                same = same.Where(candidate => candidate.Index == before || candidate.Index == after).ToList();
+            }
+
             if (same.Count == 1)
             {
                 matched[row.Id] = same[0].Index;
@@ -457,15 +521,21 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     public MauiPlatform Platform { get; }
 
     /// <summary>
-    /// The device's culture on Android, from its locale: the app formats dates and times with it, and
-    /// the fixture reads them with it (as for Appium). Null on Windows, where the app runs on this
-    /// machine with its culture, and where the device does not say.
+    /// The device's culture on Android and the iOS simulator, from its locale: the app formats dates and
+    /// times with it, and the fixture reads them with it (as for Appium). Null on Windows, where the app
+    /// runs on this machine with its culture, and where the device does not say.
     /// </summary>
     public CultureInfo? DeviceCulture
     {
         get
         {
-            if (_app is not AndroidLaunch android || android.Locale() is not { } locale)
+            var locale = _app switch
+            {
+                AndroidLaunch android => android.Locale(),
+                IosLaunch ios => ios.Locale(),
+                _ => null,
+            };
+            if (locale is null)
                 return null;
             try
             {
@@ -526,8 +596,8 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         if (Snapshot(dialogs: true).ActiveDialog() is { } dialog
             && dialog.DescendantsAndSelf().LastOrDefault(node => node.Type == "Button") is { } dismiss)
         {
-            if (AndroidDialogs.IsDialogNode(dismiss.Id))
-                TapAndroidDialog(dismiss.Info);
+            if (IsNativeDialogNode(dismiss.Id))
+                TapNativeDialog(dismiss.Info);
             else
                 Act(_agent.Tap(dismiss.Info), "close the dialog");
             return;
@@ -661,6 +731,19 @@ public sealed class DevFlowMauiDriver : IMauiDriver
     }
 
     private int _settleUnanswered;
+
+    /// <summary>
+    /// Shuts the flyout of the Shell holding a tapped flyout item where it is still presented: what the
+    /// platform's selection of the item does. The Shell is the item's topmost ancestor below the window.
+    /// </summary>
+    internal void CloseFlyout(DevFlowNode item)
+    {
+        var shell = item;
+        while (shell.Parent is { } parent && parent.Type != "Window")
+            shell = parent;
+        if (string.Equals(_agent.GetProperty(shell.Id, "FlyoutIsPresented"), "true", StringComparison.OrdinalIgnoreCase))
+            Act(_agent.SetProperty(shell.Info, "FlyoutIsPresented", "false"), "close the Shell's flyout");
+    }
 
     public void Dispose() => Quit();
 

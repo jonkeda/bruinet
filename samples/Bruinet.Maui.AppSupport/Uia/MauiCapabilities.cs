@@ -434,8 +434,42 @@ internal static class MauiCapabilities
             return false;
         }
 
+#if IOS
+        // An iOS push or pop animates without holding the dispatcher, and MAUI keeps the popped page
+        // in its stack until the animation ends: idle also means no view controller is in transition.
+        var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
+        if (!drained.Wait(timeoutMs))
+            return false;
+        while (Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(InTransition).GetAwaiter().GetResult())
+        {
+            if (DateTime.UtcNow >= deadline)
+                return false;
+            Thread.Sleep(50);
+        }
+
+        return true;
+#else
         return drained.Wait(timeoutMs);
+#endif
     }
+
+#if IOS
+    private static readonly ObjCRuntime.Selector TransitionCoordinator = new("transitionCoordinator");
+
+    private static bool InTransition()
+    {
+        static bool Moving(UIKit.UIViewController? controller)
+            => controller is not null
+               && (controller.IsBeingPresented || controller.IsBeingDismissed
+                   || controller.PerformSelector(TransitionCoordinator) is not null
+                   || controller.ChildViewControllers.Any(Moving)
+                   || Moving(controller.PresentedViewController));
+
+        return UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIWindowScene>()
+            .SelectMany(scene => scene.Windows)
+            .Any(window => Moving(window.RootViewController));
+    }
+#endif
 
     // ---- Selection ------------------------------------------------------------------
     //

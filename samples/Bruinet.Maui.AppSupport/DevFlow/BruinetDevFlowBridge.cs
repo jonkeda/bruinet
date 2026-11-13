@@ -24,7 +24,7 @@ public static class BruinetDevFlowBridge
     /// <summary>The extension's namespace, in the reverse-domain form the agent requires: its routes are under <c>/api/v1/ext/dev.bruinet.bridge/</c>.</summary>
     public const string Namespace = "dev.bruinet.bridge";
 
-    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c>, <c>media</c> and <c>rows</c>.</summary>
+    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c>, <c>media</c>, <c>rows</c>, <c>selectrow</c>, and on iOS <c>alert</c>.</summary>
     /// <param name="options">The agent's options, in <c>AddMauiDevFlowAgent(options => ...)</c>.</param>
     /// <returns>The same options.</returns>
     public static AgentOptions AddBruinetBridge(this AgentOptions options)
@@ -37,8 +37,140 @@ public static class BruinetDevFlowBridge
             request.QueryParams.GetValueOrDefault("automationId"), request.QueryParams.GetValueOrDefault("verb"))));
         extension.MapPost("/media", request => Media(request.BodyAs<MediaRequest>()));
         extension.MapGet("/rows", request => Rows(request.QueryParams.GetValueOrDefault("automationId")));
+        extension.MapPost("/selectrow", request => SelectRow(request.BodyAs<RowRequest>()));
+#if IOS
+        extension.MapGet("/alert", _ => Alert(null));
+        extension.MapPost("/alert", request => Alert(request.BodyAs<AlertRequest>() ?? new AlertRequest()));
+#endif
         return options;
     }
+
+#if IOS
+    /// <summary>
+    /// The alert on an iOS screen, which the agent's tree does not show: without a request what it
+    /// says (title, message, a prompt's field, the buttons accepting first and dismissing last), with
+    /// one a button pressed or the field filled. A button is pressed as UIKit handles a tap: the alert
+    /// closes, then the action's handler runs (VoiceOver's <c>accessibilityActivate</c> does neither on iOS 26).
+    /// </summary>
+    private static async Task<HttpResponse> Alert(AlertRequest? request)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(async () =>
+        {
+            var alert = TopAlert();
+            if (request is null)
+            {
+                if (alert?.View is not { } view)
+                    return HttpResponse.Json(new { open = false });
+                var frame = view.ConvertRectToView(view.Bounds, null);
+                var buttons = alert.Actions.Where(action => action.Style != UIKit.UIAlertActionStyle.Cancel)
+                    .Concat(alert.Actions.Where(action => action.Style == UIKit.UIAlertActionStyle.Cancel))
+                    .Select(action => action.Title ?? string.Empty)
+                    .ToList();
+                return HttpResponse.Json(new
+                {
+                    open = true,
+                    title = alert.Title,
+                    message = alert.Message,
+                    hasField = alert.TextFields is { Length: > 0 },
+                    field = alert.TextFields is { Length: > 0 } fields ? fields[0].Text : null,
+                    buttons,
+                    x = (double)frame.X,
+                    y = (double)frame.Y,
+                    width = (double)frame.Width,
+                    height = (double)frame.Height,
+                });
+            }
+
+            if (alert?.View is null)
+                return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, "no alert is open");
+
+            switch (request.Action)
+            {
+                case "press":
+                    if (alert.Actions.FirstOrDefault(action => action.Title == request.Button) is not { } pressed)
+                        return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"the alert has no button '{request.Button}'");
+                    return await Press(alert, pressed) is { } failure
+                        ? Answer(declared: true, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, failure)
+                        : Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+                case "fill":
+                    if (alert.TextFields is not { Length: > 0 } inputs)
+                        return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, "the alert has no field");
+                    inputs[0].Text = (request.Replace ? string.Empty : inputs[0].Text ?? string.Empty) + (request.Text ?? string.Empty);
+                    inputs[0].SendActionForControlEvents(UIKit.UIControlEvent.EditingChanged);
+                    return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+                default:
+                    return HttpResponse.Error($"Unknown alert action '{request.Action}'.");
+            }
+        });
+    }
+
+    // The alert presented last, over every window of the app.
+    private static UIKit.UIAlertController? TopAlert()
+    {
+        UIKit.UIAlertController? found = null;
+        foreach (var scene in UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIWindowScene>())
+        {
+            foreach (var window in scene.Windows)
+            {
+                for (var controller = window.RootViewController; controller is not null; controller = controller.PresentedViewController)
+                {
+                    if (controller is UIKit.UIAlertController alert)
+                        found = alert;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    // A tapped alert button: UIKit closes the alert, then runs the action's handler. The handler is
+    // private (the "handler" key), so this is for test-only debug builds; a block's invoke pointer
+    // sits after its isa and flags.
+    [System.Runtime.InteropServices.UnmanagedFunctionPointer(System.Runtime.InteropServices.CallingConvention.Cdecl)]
+    private delegate void BlockInvoke(IntPtr block, IntPtr action);
+
+    private static async Task<string?> Press(UIKit.UIAlertController alert, UIKit.UIAlertAction action)
+    {
+        Foundation.NSObject? handler;
+        try
+        {
+            handler = action.ValueForKey(new Foundation.NSString("handler"));
+        }
+        catch (Exception e)
+        {
+            return $"the alert's button has no handler to run ({e.Message})";
+        }
+
+        // UIKit ignores a dismissal while the alert is still being shown.
+        for (var wait = 0; wait < 40 && alert.IsBeingPresented; wait++)
+            await Task.Delay(50);
+        await alert.DismissViewControllerAsync(false);
+        if (alert.PresentingViewController is not null)
+            return "the alert did not close";
+
+        if (handler is { Handle: var block } && block != IntPtr.Zero)
+        {
+            var invoke = System.Runtime.InteropServices.Marshal.ReadIntPtr(block, 2 * IntPtr.Size);
+            System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<BlockInvoke>(invoke)(block, action.Handle);
+        }
+
+        return null;
+    }
+
+    private sealed class AlertRequest
+    {
+        public string? Action { get; set; }
+
+        public string? Button { get; set; }
+
+        public string? Text { get; set; }
+
+        public bool Replace { get; set; }
+    }
+#endif
 
     /// <summary>
     /// Plays, pauses, stops or seeks a media element by its AutomationId: what its transport controls
@@ -117,6 +249,45 @@ public static class BruinetDevFlowBridge
         });
     }
 
+    /// <summary>
+    /// Selects a list's item as a tap on its row does: in a single selection it becomes the
+    /// <c>SelectedItem</c>, in a multiple one it is added or taken out. For iOS, where the agent's tap
+    /// reaches no row's selection (the collection view's delegate selects, not the cell).
+    /// </summary>
+    private static async Task<HttpResponse> SelectRow(RowRequest? request)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+        if (string.IsNullOrEmpty(request?.AutomationId))
+            return HttpResponse.Error("automationId is required.");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            if (FindElement(request.AutomationId) is not Microsoft.Maui.Controls.SelectableItemsView list)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"no selectable list '{request.AutomationId}' is on screen");
+
+            var items = list.ItemsSource as System.Collections.IList ?? list.ItemsSource?.Cast<object>().ToList();
+            if (items is null || request.Index < 0 || request.Index >= items.Count)
+                return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"the list has no item {request.Index}");
+
+            var item = items[request.Index]!;
+            switch (list.SelectionMode)
+            {
+                case Microsoft.Maui.Controls.SelectionMode.Single:
+                    list.SelectedItem = item;
+                    break;
+                case Microsoft.Maui.Controls.SelectionMode.Multiple:
+                    if (!list.SelectedItems.Remove(item))
+                        list.SelectedItems.Add(item);
+                    break;
+                default:
+                    return Answer(declared: true, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the list selects nothing");
+            }
+
+            return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+        });
+    }
+
     // The first element with the AutomationId in the app's windows, by their visual trees.
     private static Microsoft.Maui.Controls.VisualElement? FindElement(string automationId)
     {
@@ -192,6 +363,13 @@ public static class BruinetDevFlowBridge
         public string? Action { get; set; }
 
         public double Seconds { get; set; }
+    }
+
+    private sealed class RowRequest
+    {
+        public string? AutomationId { get; set; }
+
+        public int Index { get; set; }
     }
 
     private sealed class VerbRequest

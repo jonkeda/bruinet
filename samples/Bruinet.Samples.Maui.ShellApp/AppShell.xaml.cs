@@ -19,12 +19,13 @@ public partial class AppShell : Shell
         // The flyout is one property on this object and a chrome button nothing can find: MAUI
         // gives the hamburger no AutomationId, so every route to it from outside was a guess -
         // by name, by control type, or by clicking where it usually is. Declared on the Shell
-        // rather than on a page because the flyout belongs to the Shell.
+        // rather than on a page because the flyout belongs to the Shell. IsIdle is here as on the
+        // main sample's hub: it asks about the app, so the one element always present answers it.
         AutomationId = "AppShell";
         GestureAutomation.SetVerbs(
             this,
             $"{nameof(BruinetVerb.OpenFlyout)},{nameof(BruinetVerb.CloseFlyout)},"
-            + $"{nameof(BruinetVerb.GetState)}");
+            + $"{nameof(BruinetVerb.GetState)},{nameof(BruinetVerb.IsIdle)}");
 
         HandlerChanged += (_, _) => PublishAutomationIdToThePlatformView();
     }

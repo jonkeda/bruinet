@@ -65,6 +65,19 @@ dotnet test tests\Bruinet.Maui.UITests\Bruinet.Maui.UITests.csproj --filter "Ful
 
 No Appium server is needed. The bridge is off on Android for now, so the tests that need it fail there.
 
+On the iOS simulator (macOS) the runner boots the simulator `APPIUM_UDID` names, installs the `.app` when its build
+changed, and launches it itself; no port is forwarded. Run one test folder at a time:
+
+```bash
+dotnet build samples/Bruinet.Samples.Maui.App -f net10.0-ios -c Debug -p:RuntimeIdentifier=iossimulator-arm64 \
+  -p:BruinetDevFlow=true -p:ValidateXcodeVersion=false
+export BRUINET_MAUI_RUNNER=devflow APPIUM_PLATFORM=ios APPIUM_UDID=<simulator udid>
+export APPIUM_APP_PATH=$PWD/samples/Bruinet.Samples.Maui.App/bin/Debug/net10.0-ios/iossimulator-arm64/Bruinet.Samples.Maui.App.app
+dotnet test tests/Bruinet.Maui.UITests.Mobile --filter "FullyQualifiedName~Tests.Text."
+```
+
+`-p:ValidateXcodeVersion=false` is needed while the installed Xcode is newer than the iOS workload expects.
+
 The Shell app's tests the same way, with its own build:
 
 ```powershell
@@ -78,9 +91,9 @@ loopback, instead of UI Automation. The app opts in: `builder.AddMauiDevFlowAgen
 sample apps compile only with `-p:BruinetDevFlow=true`; they read their agent's port from `BRUINET_DEVFLOW_PORT`,
 which the runner sets for each launch, and add Bruinet's bridge to the agent (`options.AddBruinetBridge()` from
 `Bruinet.Maui.AppSupport`), so the verbs the app declares for the Windows bridge (menu items, picker items, focus,
-gesture sinks) work on this runner too. On Windows the runner launches the app as FlaUI does, behind your window. On
-Android and iOS it attaches: start the app, forward its port (`adb forward tcp:9223 tcp:9223`), set
-`BRUINET_DEVFLOW_PORT`. The input is semantic (a tap invokes, typing sets the text), so the FlaUI and Appium heads stay
+gesture sinks) work on this runner too. On Windows the runner launches the app as FlaUI does, behind your window; on
+Android and the iOS simulator it installs and launches it. To attach to an app you started yourself, set
+`BRUINET_DEVFLOW_PORT` to its agent's port (on Android, forward it first: `adb forward tcp:9223 tcp:9223`). The input is semantic (a tap invokes, typing sets the text), so the FlaUI and Appium heads stay
 the judge at a gate. `Tests\Background` and `Tests\Diagnostics` test the FlaUI driver itself, and a
 `[WindowsOnlyFact]` about the bridge or the accessibility tree skips on this runner. What it cannot do:
 [.my/devflow-runner/design.md](../../.my/devflow-runner/design.md#what-it-cannot-do).

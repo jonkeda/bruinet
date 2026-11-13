@@ -345,6 +345,42 @@ public class DevFlowRunnerTests
         Assert.Equal([8, 9], rows.Select(row => row.PositionInSet));
     }
 
+    [Fact]
+    public void ListRow_WithItsBareAutomationId_AmongOffScreenCells_TakesTheIndexBetweenItsNeighbours()
+    {
+        // iOS keeps realized cells off screen, so the app lists more rows named "Row" than the tree shows.
+        var agent = new FakeAgent(ListPage(("Item 5", 415), ("Item 6", 475), ("Item 7", 535)));
+        var rows = agent.Windows[0].Children![0].Children![0].Children!;
+        (rows[0].Id, rows[1].Id, rows[2].Id) = ("Row_aaaaaaaa", "Row", "Row_bbbbbbbb");
+        foreach (var row in rows)
+            row.AutomationId = "Row";
+        agent.ListRows =
+        [
+            ("aaaaaaaa000000000000000000000000", "Row", 4),
+            ("bbbbbbbb000000000000000000000000", "Row", 6),
+            ("cccccccc000000000000000000000000", "Row", 20),
+            ("dddddddd000000000000000000000000", "Row", 5),
+        ];
+
+        var found = Driver(agent).FindElements(Locator.ByAutomationId("Row"));
+
+        Assert.Equal([5, 6, 7], found.Select(row => row.PositionInSet));
+    }
+
+    [Fact]
+    public void IosAlert_ReadFromTheBridge_HasTheWindowsDialogShape()
+    {
+        var dialog = IosDialogs.Read("""
+            {"open":true,"title":"Name","message":"Who?","hasField":true,"field":"Ann","buttons":["OK","Cancel"],
+             "x":20,"y":300,"width":270,"height":180}
+            """)!;
+
+        Assert.Equal("Name", dialog.Text);
+        Assert.Equal(["Text Name", "Text Who?", "Edit Ann", "Button OK", "Button Cancel"], dialog.Children!.Select(n => $"{n.Type} {n.Text}"));
+        Assert.True(IosDialogs.IsDialogNode(dialog.Children![3].Id));
+        Assert.Null(IosDialogs.Read("""{"open":false}"""));
+    }
+
     private static DevFlowMauiDriver Driver(FakeAgent agent) => new(agent, MauiPlatform.Windows);
 
     // A page with one MediaElement, whose transport controls the agent's tree does not show.

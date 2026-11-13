@@ -3,6 +3,7 @@ using Bruinet.Core;
 using Bruinet.Core.Exceptions;
 using Bruinet.Core.Locators;
 using Bruinet.Core.Recording;
+using Bruinet.Maui.Enums;
 using Bruinet.Maui.Interfaces;
 using Microsoft.Maui.DevFlow.Driver;
 using Point = System.Drawing.Point;
@@ -282,10 +283,10 @@ internal sealed class DevFlowMauiElement : IMauiElement
     {
         ArgumentNullException.ThrowIfNull(text);
         var info = Ready("type into");
-        if (AndroidDialogs.IsDialogNode(_id))
+        if (DevFlowMauiDriver.IsNativeDialogNode(_id))
         {
             using var typed = Report(InteractionKind.Type);
-            _driver.TypeIntoAndroidDialog(info, text, replace: method == TextInputMethod.SetValue);
+            _driver.TypeIntoNativeDialog(info, text, replace: method == TextInputMethod.SetValue);
             return;
         }
 
@@ -299,9 +300,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
     public void Clear()
     {
         using var mark = Report(InteractionKind.Clear);
-        if (AndroidDialogs.IsDialogNode(_id))
+        if (DevFlowMauiDriver.IsNativeDialogNode(_id))
         {
-            _driver.TypeIntoAndroidDialog(Ready("clear"), string.Empty, replace: true);
+            _driver.TypeIntoNativeDialog(Ready("clear"), string.Empty, replace: true);
             return;
         }
 
@@ -406,6 +407,13 @@ internal sealed class DevFlowMauiElement : IMauiElement
         var (dx, dy) = (endX - startX, endY - startY);
         var direction = Math.Abs(dx) >= Math.Abs(dy) ? (dx < 0 ? "left" : "right") : (dy < 0 ? "up" : "down");
         using var mark = Interactions.ReportSwipe(() => Rect, dx, dy, () => AutomationId);
+
+        // On iOS the agent's swipe reports success and reaches no SwipeView: the app's declared verb
+        // for that direction does, as PerformGesture uses it.
+        if (_driver.Platform == MauiPlatform.iOS
+            && BridgeVerb("Swipe" + char.ToUpperInvariant(direction[0]) + direction[1..], 0, 0))
+            return;
+
         _driver.Act(
             _driver.Agent.Gesture(Ready("swipe"), "swipe", direction, Math.Max(Math.Abs(dx), Math.Abs(dy)), durationMs),
             $"swipe {direction} on {Describe()}");
@@ -470,9 +478,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
         using var mark = Report(InteractionKind.Tap);
         var info = Ready("invoke");
-        if (AndroidDialogs.IsDialogNode(_id))
+        if (DevFlowMauiDriver.IsNativeDialogNode(_id))
         {
-            _driver.TapAndroidDialog(info);
+            _driver.TapNativeDialog(info);
             return;
         }
 
@@ -480,14 +488,36 @@ internal sealed class DevFlowMauiElement : IMauiElement
         {
             _driver.Changed();
 
-            // A list's row without a tap of its own is chosen by the list's selection, which the
-            // agent cannot set: SelectedItem is an object, and it has no select action.
+            // A list's row without a tap of its own is chosen by the list's selection. The agent cannot
+            // set it (SelectedItem is an object, and it has no select action), so the app's bridge
+            // selects the row's item where it can: on iOS the agent's tap never reaches a row.
             if (Node.Parent is { } parent && DevFlowLocators.IsItemsView(parent))
+            {
+                if (parent.AutomationId is { Length: > 0 } listId && _driver.RowIndex(Node) is >= 0 and var index
+                    && _driver.Agent.SelectRow(listId, index) is { Delivered: true })
+                {
+                    _driver.Changed();
+                    return;
+                }
+
                 throw new RouteUnavailableException($"The DevFlow agent cannot select the row {Describe()}: it sets no list's SelectedItem and has no select action.");
+            }
+
             throw new BruinetException($"The DevFlow agent could not tap {Describe()}.");
         }
 
         _driver.Changed();
+
+        // On iOS a tap's push, pop or alert animates past the tap's answer, and the page it leaves
+        // stays in the tree until it ends.
+        if (_driver.Platform == MauiPlatform.iOS)
+        {
+            // The agent's tap on a flyout item navigates without the native row selection that
+            // closes the flyout behind a user's tap; closed here as that selection does.
+            if (info.Type is "FlyoutItem" or "MenuShellItem" && TryNode is { } item)
+                _driver.CloseFlyout(item);
+            _driver.Settle();
+        }
     }
 
     // As the platform's button steps it: by Increment, held within the range.

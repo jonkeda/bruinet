@@ -66,6 +66,19 @@ internal interface IDevFlowAgent : IDisposable
     /// through the app's bridge; null when the app carries none.
     /// </summary>
     IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? Rows(string listAutomationId);
+
+    /// <summary>
+    /// The iOS alert on screen as the app's bridge describes it (JSON, <c>open</c> false when none is),
+    /// or with <paramref name="request"/> a button pressed or its field filled; null when the app has no such route.
+    /// </summary>
+    string? Alert(object? request = null) => null;
+
+    /// <summary>
+    /// Selects the list's item at <paramref name="index"/> as a tap on its row does (the item becomes
+    /// the selection, or in a multiple selection is turned over), through the app's bridge: on iOS the
+    /// agent's tap reaches no row's selection.
+    /// </summary>
+    BridgeAnswer SelectRow(string listAutomationId, int index) => BridgeAnswer.None("the app has no row selection route");
 }
 
 /// <summary>
@@ -214,6 +227,39 @@ internal sealed class DevFlowAgent : IDevFlowAgent
         {
             _noBridge = true;
             return null;
+        }
+    }
+
+    public string? Alert(object? request = null)
+    {
+        if (_noBridge)
+            return null;
+        try
+        {
+            if (request is not null)
+                Run(_client.ControlMutationLeaseAsync("claim"));
+            return Run(_client.CallExtensionToolAsync(request is null ? "GET" : "POST", BridgePath + "/alert",
+                JsonSerializer.SerializeToElement(request ?? new { })));
+        }
+        catch (HttpRequestException missing) when (missing.StatusCode == HttpStatusCode.NotFound)
+        {
+            // An app without the route (not iOS, or an older bridge): no alert can be read.
+            return null;
+        }
+    }
+
+    public BridgeAnswer SelectRow(string listAutomationId, int index)
+    {
+        if (_noBridge)
+            return BridgeAnswer.None("the app carries no Bruinet bridge (AddBruinetBridge)");
+        try
+        {
+            return Bridge("/selectrow", new { automationId = listAutomationId, index });
+        }
+        finally
+        {
+            // An older bridge without the route answers 404: that is no route, not no bridge.
+            _noBridge = false;
         }
     }
 
