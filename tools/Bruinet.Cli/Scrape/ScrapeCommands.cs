@@ -157,9 +157,10 @@ internal static class ScrapeCommands
         var maxDepth = Positive("--max-depth", "At most this many clicks from the start.");
         var maxMinutes = Positive("--max-minutes", "Stop after this many minutes.");
         var delayMs = Positive("--delay-ms", "Wait this long between clicks.");
+        var within = new Option<string?>("--within") { Description = "Keep to links under this path or route (/contact, /#/orders) for this run. Default: the config's Within." };
         var command = new Command("explore", "Explore the app by itself, under the project's guards, capturing each page.")
         {
-            project, solution, url, dryRun, maxPages, maxDepth, maxMinutes, delayMs, headless, yes, json,
+            project, solution, url, within, dryRun, maxPages, maxDepth, maxMinutes, delayMs, headless, yes, json,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -173,6 +174,7 @@ internal static class ScrapeCommands
                 MaxDepth = parsed.GetValue(maxDepth),
                 MaxMinutes = parsed.GetValue(maxMinutes),
                 DelayMs = parsed.GetValue(delayMs),
+                Within = parsed.GetValue(within),
                 Visible = !noWindow,
                 // Unattended, or with no window to sign in in, a sign-in page ends the run.
                 StopAtSignIn = unattended || noWindow,

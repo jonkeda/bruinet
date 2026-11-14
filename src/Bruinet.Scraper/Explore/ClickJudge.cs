@@ -19,7 +19,8 @@ public static class ClickJudge
     /// <param name="snapshot">The capture.</param>
     /// <param name="context">The settings, the app's hosts, and the elements the settings' selectors matched.</param>
     public static IReadOnlyList<Judgement> Judge(ScrapeSnapshot snapshot, JudgeContext context) =>
-        snapshot.Nodes.Where(n => IsCandidate(snapshot, n)).Select(n => Judge(snapshot, n, context)).ToArray();
+        // An element the config always clicks is judged even when nothing in it says it can be clicked (a web component).
+        snapshot.Nodes.Where(n => IsCandidate(snapshot, n) || context.AlwaysNodes.Contains(n.Number)).Select(n => Judge(snapshot, n, context)).ToArray();
 
     /// <summary>One element's judgement.</summary>
     public static Judgement Judge(ScrapeSnapshot snapshot, ScrapeNode node, JudgeContext context)

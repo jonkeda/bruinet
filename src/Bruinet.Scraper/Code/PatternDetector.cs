@@ -14,6 +14,10 @@ namespace Bruinet.Scraper.Code;
 /// </summary>
 public static class PatternDetector
 {
+    // A shadow tree's top elements are its host's children (as in Playwright's CSS).
+    private static int ElementParent(ScrapeSnapshot snapshot, ScrapeNode node)
+        => node.Parent != 0 && snapshot[node.Parent].Kind == ScrapeNodeKind.ShadowRoot ? snapshot[node.Parent].Parent : node.Parent;
+
     private static readonly HashSet<string> Skipped = new(StringComparer.Ordinal) { "html", "body", "head", "main" };
 
     // Where a control's root stops: the page's structure, a row of a list or table, a dialog.
@@ -152,8 +156,9 @@ public static class PatternDetector
         {
             if (rowPattern.Kind != PatternKind.Repeated)
                 continue;
-            var parents = at.Select(a => (Page: a.Item1, Parent: snapshots[a.Item1][a.Item2].Parent))
-                .Where(p => p.Parent > 0 && !Skipped.Contains(snapshots[p.Page][p.Parent].Type))
+            // A row in a web component hangs from its shadow root: its collection is the host element.
+            var parents = at.Select(a => (Page: a.Item1, Parent: ElementParent(snapshots[a.Item1], snapshots[a.Item1][a.Item2])))
+                .Where(p => p.Parent > 0 && signatures[p.Page][p.Parent] is not null && !Skipped.Contains(snapshots[p.Page][p.Parent].Type))
                 .GroupBy(p => p)
                 .Where(g => g.Count() >= 2)
                 .Select(g => g.Key)

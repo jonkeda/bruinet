@@ -89,7 +89,7 @@ public sealed record ExploreSettings
                     "AgentMinutes" => settings with { AgentMinutes = Count(value, line) },
                     "LoginUrl" => settings with { LoginUrl = value },
                     "SignInState" => settings with { SignInState = value },
-                    "Within" => settings with { Within = value },
+                    "Within" => settings with { Within = WithinValue(value, $"Line {line}") },
                     "ClickPolicy" => settings with { ClickPolicy = Policy(value, line) },
                     "BlockMethods" => settings with { BlockMethods = Methods(value, line) },
                     "WebsocketApps" => settings with { WebsocketApps = Websockets(value, line) },
@@ -125,6 +125,20 @@ public sealed record ExploreSettings
 
     private static string[] Column(MarkdownTable table, string column) =>
         table.Rows.Select(r => r.Cells.GetValueOrDefault(column, "")).Where(v => v.Length > 0).ToArray();
+
+    /// <summary>
+    /// A <c>Within</c> as Explore can use it: a path or route (<c>/contact</c>, <c>/#/orders</c>) or a full address, else
+    /// an error: a value such as <c>C:/Program Files/Git/contact</c> (a shell's path conversion) matches no link.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="where">Where it was given, for the message.</param>
+    public static string WithinValue(string value, string where)
+    {
+        var trimmed = value.Trim();
+        return trimmed.Length == 0 || trimmed.StartsWith('/') || trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+            ? trimmed
+            : throw new FormatException($"{where}: Within is a path such as /contact, a route such as /#/orders, or a full address, not '{trimmed}' (a shell may have turned /contact into a folder: set MSYS_NO_PATHCONV=1).");
+    }
 
     private static int Count(string value, int line) =>
         int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var n) && n > 0 ? n : throw new FormatException($"Line {line}: '{value}' is not a whole number above 0.");

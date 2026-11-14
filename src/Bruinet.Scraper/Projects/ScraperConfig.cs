@@ -35,6 +35,12 @@ public sealed record ScraperConfig
     /// </summary>
     public IReadOnlyList<ScrapeModule> Modules { get; init; } = [];
 
+    /// <summary>
+    /// Control libraries outside the project that a pattern belongs in by its classes (<c>## Control libraries</c>,
+    /// columns <c>Class prefix</c> and <c>Library</c>): a control brief names the library; the code is still written in the project.
+    /// </summary>
+    public IReadOnlyList<ControlLibrary> ControlLibraries { get; init; } = [];
+
     /// <summary>The folder, in the project, generated controls go to.</summary>
     public string ControlsFolder { get; init; } = "Controls";
 
@@ -88,6 +94,8 @@ public sealed record ScraperConfig
                 };
             }
         }
+        if (sections.TryGetValue("Control libraries", out var libraries))
+            config = config with { ControlLibraries = libraries.Rows.Select(r => new ControlLibrary(r.Cells.GetValueOrDefault("Class prefix", "").Trim(), r.Cells.GetValueOrDefault("Library", "").Trim())).Where(l => l.ClassPrefix.Length > 0 && l.Library.Length > 0).ToArray() };
         if (sections.TryGetValue("Modules", out var modules))
             config = config with { Modules = modules.Rows.Select(Module).ToArray() };
         if (sections.TryGetValue("Aliases", out var aliases))

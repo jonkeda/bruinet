@@ -50,6 +50,20 @@ public sealed class BddSuiteTests : IDisposable
     }
 
     [Fact]
+    public void FeatureFiles_AreReadFromTheFolderTheConfigNames()
+    {
+        var config = Path.Combine(_folder, "bdd.config.md");
+        File.WriteAllText(config, File.ReadAllText(config).Replace("| Head | service |", "| Head | service |" + Environment.NewLine + "| Features | Modules |", StringComparison.Ordinal));
+        var module = Directory.CreateDirectory(Path.Combine(_folder, "Modules", "Contacts", "Features"));
+        File.WriteAllText(Path.Combine(module.FullName, "B7.CON.01.feature.md"), "# Feature: Contacts" + Environment.NewLine);
+
+        using var suite = BddSuite.Open(config);
+
+        Assert.Equal(Path.Combine(_folder, "Modules"), suite.FeatureFolder);
+        Assert.Equal(["B7.CON.01.feature.md"], suite.FeatureFiles.Select(file => Path.GetFileName(file)!));
+    }
+
+    [Fact]
     public void Catalogs_ComeFromTheFixture_InTheBuildOutput()
     {
         using var suite = BddSuite.Open(Path.Combine(_folder, "bdd.config.md"));

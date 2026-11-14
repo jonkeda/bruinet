@@ -19,6 +19,8 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
     private readonly List<SkippedElement> _skipped = [];
     private readonly HashSet<(string, string, string)> _skippedOnce = [];
     private readonly List<WouldClick> _wouldClick = [];
+    // The tables sorted once on a page: another column's sort shows the same table in another order.
+    private readonly HashSet<string> _sortedTables = new(StringComparer.Ordinal);
     private readonly List<string> _notes = [];
     private readonly List<string> _downloads = [];
     private readonly List<string> _dialogs = [];
@@ -157,6 +159,8 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
                 Skip(key, judgement.Verdict == Verdict.Unsafe ? judgement : judgement with { Reason = $"{judgement.Reason}; ClickPolicy {Policy(settings.ClickPolicy)} does not click it" });
                 continue;
             }
+            if (judgement.Reason == "sorts a table" && !_sortedTables.Add(key + "|" + TableOf(snapshot, refs, judgement.Node)))
+            { Skip(key, judgement with { Reason = "sorts a table already sorted once on this page: one sort shows its sort state" }); continue; }
             if (options.DryRun)
             { _wouldClick.Add(new WouldClick(key, judgement.Label, judgement.Reason)); continue; }
             if (_policy == ClickPolicy.Links)
@@ -165,6 +169,15 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             { _deeper++; continue; }
             queue.Enqueue(new Item(snapshot.Location, [.. item.Clicks, target with { Label = judgement.Label }], item.Depth + 1, $"click '{judgement.Label}' on {key}", known));
         }
+    }
+
+    // The table a sort header is in: its nearest table or grid, by the key that finds it again; the page when none.
+    private static string TableOf(ScrapeSnapshot snapshot, IReadOnlyDictionary<int, NodeRef> refs, int node)
+    {
+        for (var n = snapshot[node].Parent; n != 0; n = snapshot[n].Parent)
+            if (snapshot[n].Type == "table" || snapshot[n].Role is "grid" or "table")
+                return refs.TryGetValue(n, out var table) ? table.Key : n.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return "page";
     }
 
     // Opens the item's page and replays its clicks; the snapshot of where that led, or why to stop.
@@ -349,6 +362,9 @@ public sealed record ExploreOptions
     /// <summary>Overrides <see cref="ExploreSettings.MaxPages"/>.</summary>
     public int? MaxPages { get; init; }
 
+    /// <summary>Overrides <see cref="ExploreSettings.Within"/>: the path, route or address links stay under for this run.</summary>
+    public string? Within { get; init; }
+
     /// <summary>Overrides <see cref="ExploreSettings.MaxDepth"/>.</summary>
     public int? MaxDepth { get; init; }
 
@@ -377,6 +393,7 @@ public sealed record ExploreOptions
         MaxDepth = MaxDepth ?? settings.MaxDepth,
         MaxMinutes = MaxMinutes ?? settings.MaxMinutes,
         DelayMs = DelayMs ?? settings.DelayMs,
+        Within = Within is { } within ? ExploreSettings.WithinValue(within, "--within") : settings.Within,
     };
 }
 

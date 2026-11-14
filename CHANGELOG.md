@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scraper: `scrape explore --within` keeps one run to a path or route; a `Within` that is not a path is refused, and the
+  summary says when the start page is outside it. A control brief writes into the category folder of the control's
+  kind (`Controls/Selection`, …) and names a library from `## Control libraries` the control belongs in.
 - Scraper: `SignInState` under `## Explore` starts the browser from a UI suite's saved sign-in (its cookies and
   storage), so Explore, Verify and the check need no person to sign in and still type nothing.
 
@@ -132,6 +135,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cache holds, `--ask` buys the rest, `--prune` deletes what no script says.
 - `bruinet voice --index` writes `speech-clips.md` beside a suite's video scripts: each line, where it is said and its
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
+
+### Fixed
+- Scraper: pattern detection no longer fails on rows inside a web component's shadow root; their host is the collection.
+- Scraper: `Never click` and `Always click` selectors reach into shadow roots (they matched nothing there, so a guard on a web
+  component's element guarded nothing); an `Always click` element is clicked even when nothing in it says it can be.
+- Scraper: Explore sorts a table once per page instead of once per column.
+- Workspace: the editors, MCP and the Presenter read the scenarios from `uat.config.md`'s `Features` folder.
 
 ### Security
 - Scraper: reports and the console no longer show a websocket's path or a blocked request's query values (now `*`);

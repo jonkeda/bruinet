@@ -103,7 +103,20 @@ public sealed class BddSuite : IDisposable
     }
 
     /// <summary>The folder of feature and step files beside the config.</summary>
-    public string FeatureFolder => Path.Combine(ProjectDirectory, BddFileFormat.FeatureFolder);
+    public string FeatureFolder => Path.Combine(ProjectDirectory, ConfiguredFeatures() ?? BddFileFormat.FeatureFolder);
+
+    // The config's Features folder (BddConfigFields.Features, such as Modules), when it names one and can be read.
+    private string? ConfiguredFeatures()
+    {
+        try
+        {
+            return File.Exists(ConfigPath) ? BddConfigParser.Parse(File.ReadAllText(ConfigPath)).FeaturesFolder : null;
+        }
+        catch (Exception error) when (error is IOException or FormatException or InvalidOperationException)
+        {
+            return null; // a config being edited: the default folder until it reads again
+        }
+    }
 
     /// <summary>The feature files in the project's own <c>Features</c> folder and its subfolders.</summary>
     public IReadOnlyList<string> FeatureFiles => FilesIn(FeatureFolder, BddFileFormat.FeatureFilePattern);

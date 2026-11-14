@@ -236,4 +236,26 @@ public sealed class ExploreTests : IAsyncLifetime
     {
         public void Report(ExploreProgress value) => report(value);
     }
+
+    [Fact]
+    public async Task A_table_is_sorted_once_not_once_per_column()
+    {
+        MakeProject("pages/sortable.html", "| MaxDepth | 1 |\n");
+
+        var result = await ExploreAsync(new ExploreOptions { DryRun = true });
+
+        Assert.Single(result.WouldClick, w => w.Reason == "sorts a table");
+        Assert.Equal(2, result.Skipped.Count(s => s.Reason.StartsWith("sorts a table already sorted once", StringComparison.Ordinal)));
+    }
+
+    [Fact]
+    public async Task Always_and_never_click_reach_into_a_web_component()
+    {
+        MakeProject("pages/component.html", "| MaxDepth | 1 |\n", "## Always click\n\n| Match |\n| --- |\n| selector: my-menu .item |\n\n## Never click\n\n| Match |\n| --- |\n| selector: my-menu .danger |\n");
+
+        var result = await ExploreAsync(new ExploreOptions { DryRun = true });
+
+        Assert.Contains(result.WouldClick, w => w.Label == "Contacts");
+        Assert.Contains(result.Skipped, s => s.Label == "Archive" && s.Reason.Contains("never click", StringComparison.Ordinal));
+    }
 }

@@ -82,9 +82,11 @@ public static partial class ControlBrief
         text.Append(CultureInfo.InvariantCulture, $"## {className} ({occurrences.Length}× on {Plural(pages, "page")})\n\n");
 
         text.Append("### Task\n");
-        var file = Path.Combine(project.Folder, project.Config.ControlsFolder, className + (hint.Template ? CodeGate.TemplateExtension : ".cs"));
-        text.Append(CultureInfo.InvariantCulture, $"Write:      {file}   (new file{(hint.Template ? $"; scrape_build generates {className}.gen.cs from it" : "; a container is written by hand, not generated")})\n");
-        text.Append(CultureInfo.InvariantCulture, $"Namespace:  {ControlsNamespace(project)}\n");
+        var file = Path.Combine(project.Folder, project.Config.ControlsFolder, hint.Category, className + (hint.Template ? CodeGate.TemplateExtension : ".cs"));
+        text.Append(CultureInfo.InvariantCulture, $"Write:      {file}   (new file, in its category's folder{(hint.Template ? $"; scrape_build generates {className}.gen.cs from it" : "; a container is written by hand, not generated")})\n");
+        text.Append(CultureInfo.InvariantCulture, $"Namespace:  {ControlsNamespace(project)}.{hint.Category}\n");
+        if (LibraryFor(project, example) is { } library)
+            text.Append(CultureInfo.InvariantCulture, $"Library:    {library.Library}: its classes start with '{library.ClassPrefix}' (## Control libraries). When the control holds nothing of this app, it belongs there, in {hint.Category}/; write and build it here first, then move it and its namespace\n");
         text.Append(CultureInfo.InvariantCulture, $"First line: {header(example.Page, example.Inner.Number)}\n");
         text.Append(CultureInfo.InvariantCulture, $"Class:      {hint.Declaration(className)}\n");
         text.Append("Read only:  ").Append(string.Join("\n            ", ReadOnly(hint, bruinetRoot))).Append('\n');
@@ -137,6 +139,11 @@ public static partial class ControlBrief
             : new ControlBriefText(className, brief[..MaxCharacters] + "\n… cut at the brief's budget: scrape_get_page for the rest.\n", true);
     }
 
+    // The config's control library whose class prefix the example's root, or a node in it, carries.
+    private static ControlLibrary? LibraryFor(ScrapeProject project, Occurrence example)
+        => project.Config.ControlLibraries.FirstOrDefault(library => ControlKind.Subtree(example.Snapshot, example.Root)
+            .Any(node => Classes(node).Any(c => c.StartsWith(library.ClassPrefix, StringComparison.Ordinal))));
+
     /// <summary>The namespace of the project's controls: its namespace with the pages folder swapped for the controls folder.</summary>
     public static string ControlsNamespace(ScrapeProject project)
     {
@@ -151,26 +158,28 @@ public static partial class ControlBrief
 
     private static string[] Classes(ScrapeNode node) => (node.Attribute("class") ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-    private sealed record Hint(string Kind, string Base, string BaseFile, string Example, string Members, Func<string, string> Declaration, bool Template = true);
+    private sealed record Hint(string Kind, string Base, string BaseFile, string Example, string Members, Func<string, string> Declaration, bool Template = true, string Category = "Container");
 
     private sealed record RowFacts(string Signature, Occurrence Example, IReadOnlyList<Occurrence> All, IReadOnlyList<string> PerOccurrence);
 
     // A row and the collection it is in, so a key need only be unique within its own collection.
     private static int Host(Occurrence row) => row.Root.Parent;
 
-    private static Hint Simple(string kind, string @base, string example, string members) =>
+    // The category is the folder Bruinet.Html keeps a control of that kind in (Controls/Text, Controls/Selection, …).
+    private static Hint Simple(string kind, string @base, string example, string members, string category) =>
         new(kind, $"{@base}<TScope>", $"src/Bruinet.Html/Controls/{@base}.tpl.cs", example, members,
-            name => $"public partial class {name}<TScope> : {@base}<TScope> where TScope : IHtmlScope<TScope>   (usings: Bruinet.Core.Locators, Bruinet.Html.Controls, Bruinet.Html.Interfaces; constructors (scope, Locator) and (scope, string selectorOrId) as in the example)");
+            name => $"public partial class {name}<TScope> : {@base}<TScope> where TScope : IHtmlScope<TScope>   (usings: Bruinet.Core.Locators, Bruinet.Html.Controls, Bruinet.Html.Interfaces; constructors (scope, Locator) and (scope, string selectorOrId) as in the example)",
+            Category: category);
 
     private static readonly IReadOnlyDictionary<PartCore, Hint> Hints = new Dictionary<PartCore, Hint>
     {
-        [PartCore.Text] = Simple("a simple control: text", "FocusableControlBase", "src/Bruinet.Html/Controls/Text/TextInputControl.tpl.cs", "SetText(text) and Clear() on the input; GetText()"),
-        [PartCore.Selector] = Simple("a simple control: selector", "SelectorControlBase", "src/Bruinet.Html/Controls/Selection/SelectControl.tpl.cs", "SelectItem(text): open it, then the option with that text in the list it owns (see \"Lists it owns\"; a list drawn elsewhere is found from the page, by the id aria-owns names); GetSelectedText(); Open()"),
-        [PartCore.Toggle] = Simple("a simple control: toggle", "ToggleControlBase", "src/Bruinet.Html/Controls/Toggle/CheckBoxControl.cs", "Check(), Uncheck(), IsChecked()"),
-        [PartCore.Range] = Simple("a simple control: range", "RangeControlBase", "src/Bruinet.Html/Controls/Range/RangeInputControl.cs", "SetValue(value), GetValue()"),
-        [PartCore.Date] = Simple("a simple control: date", "FocusableControlBase", "src/Bruinet.Html/Controls/DateTime/DateInputControl.tpl.cs", "SetDate(date), GetDate()"),
-        [PartCore.Clickable] = Simple("a simple control: clickable", "ClickableControlBase", "src/Bruinet.Html/Controls/Buttons/ButtonControl.tpl.cs", "Click(); GetText()"),
-        [PartCore.Readable] = Simple("a simple control: text to read", "ViewBase", "src/Bruinet.Html/Controls/Display/LabelControl.cs", "GetText(); a Get*Core per thing it shows"),
+        [PartCore.Text] = Simple("a simple control: text", "FocusableControlBase", "src/Bruinet.Html/Controls/Text/TextInputControl.tpl.cs", "SetText(text) and Clear() on the input; GetText()", "Text"),
+        [PartCore.Selector] = Simple("a simple control: selector", "SelectorControlBase", "src/Bruinet.Html/Controls/Selection/SelectControl.tpl.cs", "SelectItem(text): open it, then the option with that text in the list it owns (see \"Lists it owns\"; a list drawn elsewhere is found from the page, by the id aria-owns names); GetSelectedText(); Open()", "Selection"),
+        [PartCore.Toggle] = Simple("a simple control: toggle", "ToggleControlBase", "src/Bruinet.Html/Controls/Toggle/CheckBoxControl.cs", "Check(), Uncheck(), IsChecked()", "Toggle"),
+        [PartCore.Range] = Simple("a simple control: range", "RangeControlBase", "src/Bruinet.Html/Controls/Range/RangeInputControl.cs", "SetValue(value), GetValue()", "Range"),
+        [PartCore.Date] = Simple("a simple control: date", "FocusableControlBase", "src/Bruinet.Html/Controls/DateTime/DateInputControl.tpl.cs", "SetDate(date), GetDate()", "DateTime"),
+        [PartCore.Clickable] = Simple("a simple control: clickable", "ClickableControlBase", "src/Bruinet.Html/Controls/Buttons/ButtonControl.tpl.cs", "Click(); GetText()", "Buttons"),
+        [PartCore.Readable] = Simple("a simple control: text to read", "ViewBase", "src/Bruinet.Html/Controls/Display/LabelControl.cs", "GetText(); a Get*Core per thing it shows", "Display"),
     };
 
     private static readonly Hint Component = new(
@@ -178,14 +187,16 @@ public static partial class ControlBrief
         "samples/Todo/tests/Bruinet.Samples.Todo.Web.UITests/Pages/Parts.cs",
         "a control per part (each with its own core, from the parts above), and members for what a test does with the whole",
         name => $"public sealed class {name}<TParent> : ContainerBase<TParent, {name}<TParent>> where TParent : IHtmlScope<TParent>   (as TodoStatus in the example: Self, a constructor taking the parent and a locator, a property per part)",
-        Template: false);
+        Template: false,
+        Category: "Container");
 
     private static readonly Hint Collection = new(
         "a collection with rows", "CollectionObjectBase<TParent, TSelf, TItem> and ItemObjectBase<TItem>", "src/Bruinet.Html/Collections/CollectionObjectBase.cs",
         "samples/Todo/tests/Bruinet.Samples.Todo.Web.UITests/Pages/TodoListPage.cs",
         "a row class with a property per row part; on the collection, CreateItem and the ways a test finds a row (by a key or a part's text); the rows' locator",
         name => $"public sealed class {name}<TParent> : CollectionObjectBase<TParent, {name}<TParent>, {name}Row> where TParent : IHtmlScope<TParent>, and public sealed class {name}Row(IHtmlCollection rows, ItemKey key, int position) : ItemObjectBase<{name}Row>(rows, key, position)   (as TodoRows and TodoRow in the example)",
-        Template: false);
+        Template: false,
+        Category: "Collection");
 
     private const int MaxOptions = 10;
     private const int MaxClicks = 5;

@@ -474,9 +474,17 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         var matched = new HashSet<int>();
         foreach (var frame in _numbers.Select(n => n.Frame).Distinct())
         {
-            var locals = await TryEvaluateAsync<int[]>(frame,
-                "s => { try { return [...document.querySelectorAll(s)].map(e => (window.__bruinetScrapeNodes || []).indexOf(e) + 1).filter(n => n > 0); } catch { return []; } }",
-                selector).ConfigureAwait(false) ?? [];
+            // Playwright's CSS, as a page object's locator: it reaches into open shadow roots, where querySelectorAll does not.
+            int[] locals;
+            try
+            {
+                locals = await frame.Locator(selector).EvaluateAllAsync<int[]>(
+                    "els => els.map(e => (window.__bruinetScrapeNodes || []).indexOf(e) + 1).filter(n => n > 0)").ConfigureAwait(false);
+            }
+            catch (PlaywrightException)
+            {
+                locals = []; // not a selector Playwright reads, or the frame went meanwhile
+            }
             foreach (var local in locals)
             {
                 var index = _numbers.FindIndex(n => n.Frame == frame && n.Local == local);

@@ -194,6 +194,34 @@ public sealed class CodeTests : IDisposable
         }
     }
 
+    // Cards inside a web component: they hang from its shadow root, as Bouw7's menu buttons do.
+    private static ScrapeSnapshot ShadowCards(string location, int count)
+    {
+        var nodes = new List<ScrapeNode> { N(1, 0, "body"), N(2, 1, "my-cards"), new() { Number = 3, Parent = 2, Kind = ScrapeNodeKind.ShadowRoot } };
+        for (var i = 0; i < count; i++)
+        {
+            var card = nodes.Count + 1;
+            nodes.Add(N(card, 3, "div", cls: "card"));
+            nodes.Add(N(card + 1, card, "h3", $"Card {i}"));
+            nodes.Add(N(card + 2, card, "div", cls: "card-body"));
+            nodes.Add(N(card + 3, card + 2, "p", "Text"));
+            nodes.Add(N(card + 4, card + 2, "button", "Open"));
+        }
+        return Page(location, [.. nodes]);
+    }
+
+    [Fact]
+    public void Rows_in_a_shadow_root_make_their_host_the_collection()
+    {
+        var pages = new[] { ("/a", ShadowCards("https://shop.example/a", 3)), ("/b", ShadowCards("https://shop.example/b", 2)) };
+
+        var patterns = PatternDetector.Detect(pages, []);
+
+        Assert.Contains(patterns, p => p.Kind == PatternKind.Repeated && p.Signature == "div||card|h3,div");
+        var collection = Assert.Single(patterns, p => p.Kind == PatternKind.Collection);
+        Assert.StartsWith("my-cards", collection.Signature, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void A_part_that_repeats_across_pages_is_a_pattern_and_its_inner_parts_are_not_repeated_as_patterns()
     {

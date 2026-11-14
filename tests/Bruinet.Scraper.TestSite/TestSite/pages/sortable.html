@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Sortable</title></head>
+<body>
+  <!-- A table whose every column sorts: Explore sorts it once (one state), not once per column. -->
+  <table data-testid="orders">
+    <thead>
+      <tr>
+        <th aria-sort="none"><button onclick="document.body.dataset.sorted = 'number'">Number</button></th>
+        <th aria-sort="none"><button onclick="document.body.dataset.sorted = 'customer'">Customer</button></th>
+        <th aria-sort="none"><button onclick="document.body.dataset.sorted = 'date'">Date</button></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Ann</td><td>2026-01-01</td></tr>
+      <tr><td>2</td><td>Bob</td><td>2026-01-02</td></tr>
+    </tbody>
+  </table>
+</body>
+</html>

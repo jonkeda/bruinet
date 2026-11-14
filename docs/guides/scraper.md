@@ -99,6 +99,10 @@ controls):
   into that module's folder and namespace; the first row that matches wins, and a page no row claims goes to
   `Pages` in `Namespace`.
 - `Aliases`: other hosts of the same app; a page elsewhere (a sign-in provider) is not recorded.
+- `Control libraries` (optional, columns `Class prefix`, `Library`): a pattern whose classes start with the prefix
+  (`v-` for Vuetify) belongs in that library; its control brief says so. The brief still writes into the project, in
+  the category folder of the control's kind (`Controls/Text`, `Controls/Selection`, `Controls/Buttons`, …, as
+  `Bruinet.Html` keeps them), and the control moves to the library once it builds.
 - `Test ids`: the attributes that are test ids, preferred first. The default list is `data-testid`,
   `data-test`, `data-test-id`, `data-qa` and `data-cy`.
 - Web components: a capture keeps open shadow roots, and a suggested locator crosses them as Playwright's CSS
@@ -228,10 +232,11 @@ you know is harmless for your app and tenant:
 | Setting | What it decides |
 | --- | --- |
 | `ClickPolicy` | `links`; `safe` (the default: links, tabs, menus, expanders, sorting, paging, dialogs); `not-unsafe` (also buttons it cannot place); `all` (submits too: a throwaway environment only, asked twice, and only on a host named in `Explore hosts`) |
+| `Never click`, `Always click` | elements by `text:` or `selector:`; a selector is Playwright's CSS, so it reaches into a web component's open shadow root. An element in `Always click` is clicked even when nothing in it says it can be (a custom element with a click handler); `Never click` wins over it. A table is sorted once per page, not once per column |
 | `Danger words` | categories of words that make an element unsafe, all on by default, in English, Dutch, German and French: `sign-out`, `delete`, `update`, `send`, `pay`, `approve`, `bulk`. Turn one off by name |
 | `BlockMethods` | request methods aborted while exploring; `GET`, `HEAD` and `OPTIONS` always go through. `Allow requests` lets single endpoints through |
 | `WebsocketApps` | a page that opens a websocket (Blazor Server, SignalR) clicks without a request the guard can see: `links` (the default) explores its links only, `warn` explores it anyway, `ignore` does not say so. A report shows a websocket's scheme and host only, and a blocked request's query with its values masked, since apps put sign-in tokens there |
-| `Within` | a path, or `/#/route`, the links Explore visits stay under: `/components/tabs` keeps it on that page and its states. Empty: the whole app |
+| `Within` | a path, or `/#/route`, the links Explore visits stay under: `/components/tabs` keeps it on that page and its states. Empty: the whole app. A value that is not a path, a route or an address is refused (Git Bash turns `/contact` into `C:/Program Files/Git/contact`: set `MSYS_NO_PATHCONV=1`). `scrape explore --within /contact` sets it for one run; the summary says when the start page is outside it |
 | `Explore hosts` | where Explore may run: `localhost` and `127.0.0.1`, and every other host by name |
 
 After every click it checks it is still on the app's host, still signed in, with no dialog it did

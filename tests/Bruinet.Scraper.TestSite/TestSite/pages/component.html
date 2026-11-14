@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Component</title></head>
+<body>
+  <!-- A web component, as Bouw7's menu: its parts are in an open shadow root, and its menu item is a plain div. -->
+  <my-menu></my-menu>
+  <script>
+    customElements.define('my-menu', class extends HTMLElement {
+      constructor() {
+        super();
+        const root = this.attachShadow({ mode: 'open' });
+        root.innerHTML = '<div class="item">Contacts</div><button class="danger">Archive</button>';
+        root.querySelector('.item').addEventListener('click', () => document.body.dataset.opened = 'yes');
+      }
+    });
+  </script>
+</body>
+</html>

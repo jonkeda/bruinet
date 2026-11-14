@@ -49,6 +49,20 @@ public sealed class ControlBriefTests : IDisposable
         new() { Platform = "html", Location = location, Nodes = [N(1, 0, "body"), .. nodes], CapturedAt = DateTimeOffset.UnixEpoch };
 
     [Fact]
+    public async Task A_pattern_with_a_library_s_class_prefix_names_the_library()
+    {
+        var project = MakeProject("Shop.UITests", "\n## Control libraries\n\n| Class prefix | Library |\n| --- | --- |\n| field__ | Shop.Web.Fields |\n");
+        var session = project.StartSession("One", DateTimeOffset.UnixEpoch);
+        session.AddPage(Page("https://shop.example/orders", [.. Select(2, 1, "Status"), .. Select(7, 1, "Type")]));
+        await using var service = new ScraperService(_root);
+
+        var text = service.ControlBrief(null, "div||field__control|div", "StatusSelect").Text;
+
+        Assert.Contains("Library:    Shop.Web.Fields: its classes start with 'field__'", text);
+        Assert.Contains("in Selection/", text);
+    }
+
+    [Fact]
     public async Task A_brief_says_where_to_write_and_what_to_read_and_gives_the_facts_and_hints()
     {
         var project = MakeProject("Shop.UITests");
@@ -63,8 +77,9 @@ public sealed class ControlBriefTests : IDisposable
         Assert.False(brief.Cut);
         var text = brief.Text;
         Assert.Contains("## StatusSelect (3× on 2 pages)", text);
-        Assert.Contains($"Write:      {Path.Combine(project.Folder, "Controls", "StatusSelect.tpl.cs")}", text);
-        Assert.Contains("Namespace:  Shop.UITests.Controls", text);
+        Assert.Contains($"Write:      {Path.Combine(project.Folder, "Controls", "Selection", "StatusSelect.tpl.cs")}", text);
+        Assert.Contains("Namespace:  Shop.UITests.Controls.Selection", text);
+        Assert.DoesNotContain("Library:", text);
         Assert.Contains("First line: // <scraped control=\"div||field__control|div\"", text);
         Assert.Contains("public partial class StatusSelect<TScope> : SelectorControlBase<TScope>", text);
         Assert.Contains("html-control", text);
@@ -145,7 +160,7 @@ public sealed class ControlBriefTests : IDisposable
         Assert.Contains("Rows: li||order|span,button", brief);
         Assert.Matches(@"button\s+5 of 5\s+clickable", brief);
         Assert.Contains("data-id (unique on every row, e.g. o-0)", brief);
-        Assert.Contains(".cs   (new file; a container is written by hand", brief);
+        Assert.Contains(".cs   (new file, in its category's folder; a container is written by hand", brief);
     }
 
     [Fact]

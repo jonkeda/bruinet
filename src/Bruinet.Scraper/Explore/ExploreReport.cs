@@ -58,9 +58,14 @@ public static class ExploreReport
             $"  clicks      ClickPolicy {Explorer.Policy(s.ClickPolicy)}; danger words off: {(off.Length == 0 ? "none" : string.Join(", ", off))}",
             $"  requests    blocked: {(s.BlockMethods.Count == 0 ? "none" : string.Join(", ", s.BlockMethods))}{(s.AllowRequests.Count > 0 ? $"; allowed anyway: {string.Join(", ", s.AllowRequests.Select(a => $"{a.Method} {a.Url}".Trim()))}" : "")}",
             $"  websockets  {s.WebsocketApps.ToString().ToLowerInvariant()}",
-            $"  links       {(s.Within.Length == 0 ? "the whole app" : $"within {s.Within}")}",
+            $"  links       {(s.Within.Length == 0 ? "the whole app" : $"within {s.Within}")}{(uri is not null && s.Within.Length > 0 && !InWithin(s.Within, uri) ? ": the start is OUTSIDE it, so no link from it is followed" : "")}",
             $"  budget      {s.MaxPages} captures, {s.MaxDepth} steps deep, {s.MaxMinutes} min, {s.DelayMs} ms between steps");
     }
+
+    private static bool InWithin(string within, Uri start) =>
+        within.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? start.AbsoluteUri.StartsWith(within, StringComparison.OrdinalIgnoreCase)
+            : (start.AbsolutePath + start.Fragment).StartsWith(within, StringComparison.OrdinalIgnoreCase);
 
     private static string[] ExploreSettingsCategoriesOff(Projects.ExploreSettings s) =>
         Projects.ExploreSettings.Categories.Where(c => !s.IsOn(c)).ToArray();
