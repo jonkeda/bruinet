@@ -102,13 +102,15 @@ controls):
 - `Control libraries` (optional, columns `Class prefix`, `Library`): a pattern whose classes start with the prefix
   (`v-` for Vuetify) belongs in that library; its control brief says so. The brief still writes into the project, in
   the category folder of the control's kind (`Controls/Text`, `Controls/Selection`, `Controls/Buttons`, …, as
-  `Bruinet.Html` keeps them), and the control moves to the library once it builds.
+  `Bruinet.Html` keeps them), and the control moves to the library once it builds. A draft leaves out what a
+  library's classes cover, as it does what the project's own parts cover.
 - `Test ids`: the attributes that are test ids, preferred first. The default list is `data-testid`,
   `data-test`, `data-test-id`, `data-qa` and `data-cy`.
 - Web components: a capture keeps open shadow roots, and a suggested locator crosses them as Playwright's CSS
   does (a shadow tree's top elements are its host's children), so a control inside a web component is found.
 - `Masks`: text replaced before anything is written. A page capture never records what a user typed;
-  only a test recording's actions keep typed values, masked.
+  only a test recording's actions keep typed values, masked. An e-mail address is always masked (`{e-mail}`),
+  on top of the masks listed, and an element whose text is personal data is not drafted.
 - `Secrets` (optional, columns `Field`, `Placeholder`): fields whose value a test recording never
   keeps, matched by test id, `name`, `id` or label text. The value stays in the browser; the action
   records `Placeholder` (default: the field in camel case, `apiKey`) for you to map to a setting or test
@@ -245,8 +247,12 @@ not open and no download; otherwise it stops and says after which click. The rep
 and why, and each request blocked.
 
 **A draft** is `Pages/<Name>.scraped.cs`, a `partial` class made from the page as it opens: a member
-per element with a stable locator, named from its test id or text. What has no stable locator, and
-what only a click shows, is listed in a comment at the end. Put your own members in the other part,
+per element with a stable locator, named from its test id or text. The class is named from the path and
+the hash route (`/contact#/create` is `ContactCreatePage`), and passes them as its URL, so the page opens
+itself and is loaded only on that route. An id of a word and a counter (`input-47`) is generated, not
+stable. What a part of the project already is (a class with a `Header.Control` signature that matches),
+what a control library's classes cover, and a table's headers are left out and named in a comment, as
+is what has no stable locator and what only a click shows. Put your own members in the other part,
 `Pages/<Name>.cs`. Drafting again replaces only the `.scraped.cs`. A page with a page object you
 made by hand is not drafted. A draft that does not build is put back and reported, and so is one
 that drops a member your part uses. Controls are not drafted: Draft lists the parts that repeat,

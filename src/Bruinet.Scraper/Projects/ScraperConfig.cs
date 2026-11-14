@@ -50,8 +50,17 @@ public sealed record ScraperConfig
     /// <summary>The attributes that are test ids, in the order a locator prefers them.</summary>
     public IReadOnlyList<string> TestIds { get; init; } = HtmlAttributes.TestIds;
 
-    /// <summary>Text masked before anything is written.</summary>
+    /// <summary>Text masked before anything is written: the config's <c>## Masks</c>.</summary>
     public IReadOnlyList<TextMask> Masks { get; init; } = [];
+
+    /// <summary>The masks always applied, whatever the config says: e-mail addresses (an app's user menu shows the signed-in person's).</summary>
+    public static readonly IReadOnlyList<TextMask> BuiltInMasks =
+    [
+        new(new System.Text.RegularExpressions.Regex(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}", System.Text.RegularExpressions.RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1)), "{e-mail}"),
+    ];
+
+    /// <summary>The config's masks and the built-in ones, in that order.</summary>
+    public IReadOnlyList<TextMask> AllMasks => [.. Masks, .. BuiltInMasks];
 
     /// <summary>Fields whose value a test recording never keeps (<c>## Secrets</c>); a password field is always one.</summary>
     public IReadOnlyList<ScrapeSecret> Secrets { get; init; } = [];

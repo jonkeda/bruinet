@@ -24,6 +24,10 @@ public sealed class PageDrafterTests : IDisposable
     [InlineData("#/orders/{id}/lines", "OrderLinesPage")]
     [InlineData("/2024/report", "Page2024ReportPage")]
     [InlineData("/checkout-page", "CheckoutPage")]
+    [InlineData("/contact#/", "ContactPage")]
+    [InlineData("/contact#/create", "ContactCreatePage")]
+    [InlineData("/hour-log#/", "HourLogPage")]
+    [InlineData("/hour-log#/contact", "HourLogContactPage")]
     public void A_class_is_named_from_the_page_key(string key, string name)
     {
         Assert.Equal(name, PageDrafter.ClassName(key));
@@ -85,6 +89,70 @@ public sealed class PageDrafterTests : IDisposable
         Assert.Contains("namespace Shop.UITests.Modules.Orders.Pages;", order.Code);
         Assert.Equal(Path.Combine("Pages", "HelpPage.scraped.cs"), help.Path);
         Assert.Contains("namespace Shop.UITests.Pages;", help.Code);
+    }
+
+    [Fact]
+    public void What_a_part_a_library_or_a_table_header_covers_is_left_out_and_named()
+    {
+        var folder = Path.Combine(_solution, "Shop.UITests");
+        Directory.CreateDirectory(Path.Combine(folder, "Components"));
+        File.WriteAllText(Path.Combine(folder, "Shop.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
+        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), "## App\n\n| Field | Value |\n| --- | --- |\n| StartUrl | https://shop.example/ |\n\n## Control libraries\n\n| Class prefix | Library |\n| --- | --- |\n| v- | Shop.Vuetify |\n");
+        File.WriteAllText(Path.Combine(folder, "Components", "OrderCard.cs"), "// <scraped control=\"div||card|h3,div\" from=\"s/f#2\" />\nnamespace Shop.UITests.Components;\n\npublic sealed class OrderCard<TParent> : ContainerBase<TParent, OrderCard<TParent>>\n{\n}\n");
+        var project = ScrapeProject.Open(folder);
+        var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
+        session.AddPage(new ScrapeSnapshot
+        {
+            Platform = "html",
+            Location = "https://shop.example/orders",
+            Title = "Orders",
+            CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(1),
+            Nodes =
+            [
+                N(1, 0, "body"),
+                N(2, 1, "div", null, ("class", "card")), N(3, 2, "h3", "Order"), N(4, 2, "div", null, ("class", "card-body")), N(5, 4, "button", "Open", ("data-testid", "open"), ("type", "button")),
+                N(6, 1, "div", null, ("class", "v-input v-text-field")), N(7, 6, "input", null, ("data-testid", "name"), ("type", "text")),
+                N(8, 1, "table"), N(9, 8, "thead"), N(10, 9, "tr"), N(11, 10, "th"), N(12, 11, "a", "Date", ("data-testid", "sort-date"), ("href", "#")),
+                N(13, 1, "button", "Save", ("data-testid", "save"), ("type", "button")),
+            ],
+        });
+        var index = project.Index();
+
+        var draft = PageDrafter.Draft(project, index, index.Page("/orders")!, "OrderPage");
+
+        Assert.Contains("Save", draft.Members.Select(m => m.Name));
+        Assert.DoesNotContain(draft.Members, m => m.Name is "Open" or "Name" or "SortDate");
+        Assert.Contains("// OrderCard (a part of this project): Order (LabelControl), Open (ButtonControl)", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("// Shop.Vuetify (classes v-): Name (", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("// its table's header (part of the table): SortDate (", draft.Code, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void An_e_mail_address_is_masked_in_the_capture_and_kept_out_of_the_draft()
+    {
+        var folder = Path.Combine(_solution, "Shop.UITests");
+        Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "Shop.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
+        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), "## App\n\n| Field | Value |\n| --- | --- |\n| StartUrl | https://shop.example/ |\n");
+        var project = ScrapeProject.Open(folder);
+        var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
+        session.AddPage(new ScrapeSnapshot
+        {
+            Platform = "html",
+            Location = "https://shop.example/orders",
+            Title = "Orders",
+            CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(1),
+            Nodes = [N(1, 0, "body"), N(2, 1, "a", "Log out (ann.smith@example.com)", ("href", "/logout")), N(3, 1, "button", "Save", ("data-testid", "save"), ("type", "button"))],
+        });
+        var index = project.Index();
+
+        var draft = PageDrafter.Draft(project, index, index.Page("/orders")!, "OrderPage");
+
+        Assert.DoesNotContain("ann.smith", draft.Code, StringComparison.Ordinal);
+        Assert.DoesNotContain("e-mail}", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("1 element(s) whose text is personal data", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("Save", draft.Code, StringComparison.Ordinal);
+        Assert.DoesNotContain("ann.smith", string.Concat(Directory.EnumerateFiles(project.RecordingsFolder, "*", SearchOption.AllDirectories).Select(File.ReadAllText)), StringComparison.Ordinal);
     }
 
     [Fact]

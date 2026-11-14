@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scraper drafts: a page object is named from its path and hash route (`ContactCreatePage`) and passes them as its
+  URL. What the project's parts (by header signature), a control library (by class prefix) or a table's header cover
+  is left out of the draft and named in a comment. An e-mail address is always masked, and an element whose text is
+  personal data is not drafted; an id of a word and a counter (`input-47`) is not taken as stable.
+- A page object whose URL has a hash route (`/contact#/create`) compares the path and the route to tell it is loaded.
 - Scraper: `scrape explore --within` keeps one run to a path or route; a `Within` that is not a path is refused, and the
   summary says when the start page is outside it. A control brief writes into the category folder of the control's
   kind (`Controls/Selection`, …) and names a library from `## Control libraries` the control belongs in.

@@ -246,7 +246,8 @@ public static partial class ControlAdvisor
     private static string Quote(string value) => "\"" + value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal) + "\"";
 
     // Ids made per render: long numbers, GUIDs, and the prefixes UI libraries number their ids with.
-    [GeneratedRegex(@"\d{3,}|[0-9a-f]{8}-[0-9a-f]{4}|^(react|ng|ember|mui|radix|mat-input|el-id)-|^v-\d|^:r|^(mudinput|popovercontent)")]
+    // A word and a counter (Vuetify's input-47, list-item-109, menu-12) is generated: it changes with what the page drew before.
+    [GeneratedRegex(@"\d{3,}|[0-9a-f]{8}-[0-9a-f]{4}|^(react|ng|ember|mui|radix|mat-input|el-id)-|^v-\d|^:r|^(mudinput|popovercontent)|^[a-z]+(?:-[a-z]+)*-\d+$")]
     private static partial Regex UnstableId();
 
     [GeneratedRegex(@"^(css|jss|sc|emotion)-|^_|\d{3,}|^(ng|is|has)-|active|selected|open|hover|focus|disabled")]

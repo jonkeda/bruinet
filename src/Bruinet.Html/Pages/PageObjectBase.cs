@@ -92,7 +92,10 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Brui
 
         var uri = new Uri(_context.CurrentUrl);
 
-        return uri.LocalPath == Url;
+        // A page of a hash route (/contact#/create) is that route: its path and fragment both.
+        return Url.Contains('#', StringComparison.Ordinal)
+            ? string.Equals(uri.LocalPath + uri.Fragment, Url, StringComparison.Ordinal)
+            : uri.LocalPath == Url;
     }
 
     /// <summary>The probe of the attempt <see cref="ProbeReadiness"/> is making, which <see cref="IsLoaded"/> reads.</summary>

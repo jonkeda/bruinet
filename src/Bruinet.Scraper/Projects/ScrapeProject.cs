@@ -149,7 +149,7 @@ public sealed partial class ScrapeProject
             ? Directory.EnumerateDirectories(RecordingsFolder)
                 .Where(d => File.Exists(Path.Combine(d, RecordingSession.FileName)))
                 .OrderBy(d => d, StringComparer.Ordinal)
-                .Select(d => RecordingSession.Open(d, Config.Masks))
+                .Select(d => RecordingSession.Open(d, Config.AllMasks))
                 .ToArray()
             : [];
 
@@ -158,7 +158,7 @@ public sealed partial class ScrapeProject
     {
         var folder = Path.Combine(RecordingsFolder, id);
         return id.Length > 0 && Path.GetFileName(id) == id && File.Exists(Path.Combine(folder, RecordingSession.FileName))
-            ? RecordingSession.Open(folder, Config.Masks)
+            ? RecordingSession.Open(folder, Config.AllMasks)
             : null;
     }
 
@@ -169,7 +169,7 @@ public sealed partial class ScrapeProject
         var folder = Path.Combine(RecordingsFolder, baseName);
         for (var i = 2; Directory.Exists(folder); i++)
             folder = Path.Combine(RecordingsFolder, $"{baseName}-{i}");
-        return RecordingSession.Create(folder, name, Config.Masks);
+        return RecordingSession.Create(folder, name, Config.AllMasks);
     }
 
     /// <summary>What is recorded, by page, across all sessions.</summary>

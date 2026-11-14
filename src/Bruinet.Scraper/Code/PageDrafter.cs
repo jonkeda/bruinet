@@ -4,6 +4,7 @@ using Bruinet.Scraper.Snapshots;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Recordings;
+using Bruinet.Scraper.Service;
 
 namespace Bruinet.Scraper.Code;
 
@@ -29,8 +30,8 @@ public static class PageDrafter
     public static string ClassName(string key, string? title = null)
     {
         var titleWords = string.IsNullOrEmpty(title) ? [] : DangerWordsSplit(title).ToArray();
-        var path = key.Split('#')[^1];
-        var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        // The path and the hash route both: /hour-log#/contact is the hour log's contact view, not a contact page.
+        var segments = key.Split('#').SelectMany(part => part.Split('/', StringSplitOptions.RemoveEmptyEntries)).ToArray();
         var words = new List<string>();
         for (var i = 0; i < segments.Length; i++)
         {
@@ -77,16 +78,59 @@ public static class PageDrafter
             .Select(x => new ShownAfter(x.Suggestion, x.Capture.Event.DisplayName))
             .ToArray();
 
+        // A member whose name or locator holds masked data (an e-mail address in a user menu) is personal, and a
+        // locator by masked text finds nothing: it is left out, and its value is not written anywhere.
+        var masks = project.Config.AllMasks;
+        bool Personal(ControlSuggestion s) => Redactor.Mask(s.Locator, masks) != s.Locator || Redactor.Mask(s.Name, masks) != s.Name
+            || s.Locator.Contains('{') && masks.Any(m => s.Locator.Contains(m.Replacement, StringComparison.Ordinal));
+        var personal = opened.Count(Personal);
+        opened = opened.Where(s => !Personal(s)).ToList();
+
+        // What a part already covers is left out and named, so the page uses the part: the project's own controls and
+        // components (by their header's signature), a control library's elements (## Control libraries), a table's header.
+        var snapshot = index.Read(basis);
+        var parts = ProjectCode.Read(project)
+            .Where(c => c.Kind != CodeKind.Page && c.Header?.Control is { Length: > 0 })
+            .GroupBy(c => c.Header!.Control!, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => g.First().Name.Split('<')[0], StringComparer.Ordinal);
+        var covered = opened.Select(s => (Suggestion: s, By: CoveredBy(snapshot, snapshot[s.Node], parts, project.Config.ControlLibraries)))
+            .Where(x => x.By is not null)
+            .ToArray();
+        opened = opened.Where(s => covered.All(c => c.Suggestion != s)).ToList();
         var members = Unique(opened.Where(m => m.Stable && !Containers.Contains(m.Control)).ToList(), className);
         var unstable = opened.Where(m => !m.Stable).ToArray();
         var containers = opened.Where(m => m.Stable && Containers.Contains(m.Control)).ToArray();
         var header = new ScrapedHeader { Page = page.Key, From = $"{basis.Session}/{basis.Event.Snapshot}", Hash = SnapshotFile.ContentHash(index.Read(basis)) };
         var (folder, ns) = project.PagesFor(page.Key);
         var path = Path.Combine(folder, className + Extension);
-        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor), members, unstable) { AfterClick = afterClick };
+        var coveredLines = covered.GroupBy(c => c.By!, StringComparer.Ordinal)
+            .Select(g => $"{g.Key}: {string.Join(", ", g.Select(c => $"{c.Suggestion.Name} ({c.Suggestion.Control})").Distinct(StringComparer.Ordinal))}")
+            .ToArray();
+        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines), members, unstable) { AfterClick = afterClick };
     }
 
-    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor)
+    // What covers a node, if anything: a table's header, a part of the project (by signature, the node or an ancestor,
+    // across shadow roots), or a control library whose class prefix the node or an ancestor carries.
+    private static string? CoveredBy(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyDictionary<string, string> parts, IReadOnlyList<ControlLibrary> libraries)
+    {
+        for (var n = node; ; n = snapshot[n.Parent])
+        {
+            if (n.Kind == ScrapeNodeKind.Element)
+            {
+                if (n.Type is "thead" or "th" || n.Role is "columnheader")
+                    return "its table's header (part of the table)";
+                if (parts.TryGetValue(NodeSignature.Of(snapshot, n), out var part))
+                    return $"{part} (a part of this project)";
+                var classes = (n.Attribute("class") ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (libraries.FirstOrDefault(l => classes.Any(c => c.StartsWith(l.ClassPrefix, StringComparison.Ordinal))) is { } library)
+                    return $"{library.Library} (classes {library.ClassPrefix})";
+            }
+            if (n.Parent == 0)
+                return null;
+        }
+    }
+
+    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor, int personal = 0, IReadOnlyList<string>? covered = null)
     {
         var baseClass = blazor ? "BlazorPageObjectBase" : "PageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
@@ -106,7 +150,10 @@ public static class PageDrafter
         code.AppendLine(CultureInfo.InvariantCulture, $"namespace {pageNamespace};");
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update; add to the other part, {className}.cs.</summary>");
-        code.AppendLine(CultureInfo.InvariantCulture, $"public sealed partial class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context)");
+        // The page's path and hash route, so it can open itself and know it is open; none for a path with an id.
+        var pagePath = header.Page!;
+        var urlArgument = pagePath.Length > 0 && !pagePath.Contains('{', StringComparison.Ordinal) ? $", \"{pagePath}\"" : string.Empty;
+        code.AppendLine(CultureInfo.InvariantCulture, $"public sealed partial class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context{urlArgument})");
         code.AppendLine("{");
         for (var i = 0; i < members.Count; i++)
         {
@@ -115,6 +162,18 @@ public static class PageDrafter
             if (i > 0)
                 code.AppendLine();
             code.AppendLine(CultureInfo.InvariantCulture, $"    public {m.Control}<{ParentType(m)}> {m.Name} => new({parent}, {m.Locator});");
+        }
+        if (covered is { Count: > 0 })
+        {
+            code.AppendLine();
+            code.AppendLine("    // Not drafted: covered by a part that already exists. Use the part (a member of its type) instead:");
+            foreach (var line in covered)
+                code.AppendLine(CultureInfo.InvariantCulture, $"    // {line}");
+        }
+        if (personal > 0)
+        {
+            code.AppendLine();
+            code.AppendLine(CultureInfo.InvariantCulture, $"    // Not drafted: {personal} element(s) whose text is personal data (a mask matched it, such as an e-mail address).");
         }
         if (unstable.Count > 0)
         {

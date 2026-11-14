@@ -38,7 +38,8 @@ public static class Redactor
         return action with
         {
             Location = location,
-            Page = location.Length > 0 ? PageKey.Of(location) : action.Page,
+            // The page key follows the location only when masking changed it; otherwise the action's own page stands.
+            Page = location.Length > 0 && location != action.Location ? PageKey.Of(location) : action.Page,
             Value = Mask(action.Value, masks),
             Path = action.Path?.Select(s => s with { TestId = Mask(s.TestId, masks), Name = Mask(s.Name, masks), Classes = Mask(s.Classes, masks) }).ToArray(),
         };

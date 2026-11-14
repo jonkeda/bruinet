@@ -46,6 +46,17 @@ public sealed class ControlAdvisorTests
         Assert.Equal("Locator.ByCss(\"[data-test='username']\")", suggestion.Locator);
     }
 
+    [Theory]
+    [InlineData("input-47")]
+    [InlineData("list-item-109")]
+    [InlineData("menu-12")]
+    public void A_word_and_a_counter_is_a_generated_id(string id)
+    {
+        var page = Page(N(1, 0, "body"), N(2, 1, "input", null, "Name", ("id", id), ("type", "text")));
+
+        Assert.DoesNotContain(id, Of(page, 2).Locator, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void A_generated_id_is_passed_over_for_the_accessible_name()
     {
