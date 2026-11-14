@@ -54,7 +54,7 @@ public sealed class SnapshotSelector
         if (index == 0)
             return true;
         var combinator = complex[index].Combinator;
-        for (var parent = node.Parent; parent != 0 && parent != root; parent = snapshot[parent].Parent)
+        for (var parent = ElementParent(snapshot, node); parent != 0 && parent != root; parent = ElementParent(snapshot, snapshot[parent]))
         {
             if (Matches(snapshot, snapshot[parent], complex, index - 1, root))
                 return true;
@@ -63,6 +63,10 @@ public sealed class SnapshotSelector
         }
         return false;
     }
+
+    // A shadow tree's top elements are its host's children, as in Playwright's CSS.
+    private static int ElementParent(ScrapeSnapshot snapshot, ScrapeNode node)
+        => node.Parent != 0 && snapshot[node.Parent].Kind == ScrapeNodeKind.ShadowRoot ? snapshot[node.Parent].Parent : node.Parent;
 
     private static Compound[]? ParseComplex(string text)
     {

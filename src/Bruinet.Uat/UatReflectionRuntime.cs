@@ -467,6 +467,12 @@ public sealed class UatReflectionRuntime
                 $"UAT page '{page.Name}' requires an active DI scope."));
         }
 
+        // No fixture method: a page that knows where it is opens itself, unless it is open already.
+        if (page.Navigate is null && instance is Bruinet.Core.Scopes.IOpenablePage { CanOpen: true } openable && !openable.IsLoaded())
+        {
+            openable.Open();
+        }
+
         if (!WaitPageReady(instance))
         {
             return Task.FromResult(BddStepResult.Failed(

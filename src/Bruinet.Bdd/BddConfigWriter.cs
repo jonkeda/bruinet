@@ -145,6 +145,12 @@ public static class BddConfigFields
     /// </summary>
     public const string AppsFile = "AppsFile";
 
+    /// <summary>
+    /// The folder the suite's scenario files are in, relative to the config, read with its subfolders:
+    /// <c>Features</c> when not set; <c>Modules</c> for a suite that keeps them in each module's folder.
+    /// </summary>
+    public const string Features = "Features";
+
     /// <summary>The <c>Assemblies</c> kind of the assembly holding the test-data definitions.</summary>
     public const string TestDataAssemblyKind = "TestData";
 }

@@ -29,6 +29,12 @@ public sealed record ScraperConfig
     /// <summary>The folder, in the project, generated page objects go to.</summary>
     public string PagesFolder { get; init; } = "Pages";
 
+    /// <summary>
+    /// Where a page is drafted by its address (<c>## Modules</c>): the first module whose path its page key
+    /// starts with; a page no module claims goes to <see cref="PagesFolder"/> in <see cref="Namespace"/>.
+    /// </summary>
+    public IReadOnlyList<ScrapeModule> Modules { get; init; } = [];
+
     /// <summary>The folder, in the project, generated controls go to.</summary>
     public string ControlsFolder { get; init; } = "Controls";
 
@@ -82,6 +88,8 @@ public sealed record ScraperConfig
                 };
             }
         }
+        if (sections.TryGetValue("Modules", out var modules))
+            config = config with { Modules = modules.Rows.Select(Module).ToArray() };
         if (sections.TryGetValue("Aliases", out var aliases))
             config = config with { Aliases = aliases.Rows.Select(r => r.Cells.GetValueOrDefault("Url", "")).Where(u => u.Length > 0).ToArray() };
         if (sections.TryGetValue("Test ids", out var testIds))
@@ -129,6 +137,16 @@ public sealed record ScraperConfig
         "html" or "blazor" => value.ToLowerInvariant(),
         _ => throw new FormatException($"Line {line}: Platform is html or blazor, not '{value}'."),
     };
+
+    private static ScrapeModule Module(MarkdownTableRow row)
+    {
+        var path = row.Cells.GetValueOrDefault("Path", "").Trim();
+        var pages = row.Cells.GetValueOrDefault("Pages", "").Trim();
+        var ns = row.Cells.GetValueOrDefault("Namespace", "").Trim();
+        if (!path.StartsWith('/') || pages.Length == 0 || ns.Length == 0)
+            throw new FormatException($"Line {row.LineNumber}: a row of ## Modules has a Path that starts with '/', a Pages folder and a Namespace.");
+        return new ScrapeModule(path, pages, ns);
+    }
 
     private static bool Bool(string value, int line) =>
         bool.TryParse(value, out var b) ? b : throw new FormatException($"Line {line}: '{value}' is not true or false.");

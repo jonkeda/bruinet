@@ -28,6 +28,27 @@ public sealed class BddScenarioSourceTests
     }
 
     [Fact]
+    public void EnumerateScenarioFiles_ReadsTheFolderTheConfigNames()
+    {
+        var directory = CreateTempDirectory();
+        try
+        {
+            File.WriteAllText(Path.Combine(directory, "uat.config.md"), "# UAT Config\n\n## Runtime\n\n| Field | Value |\n| --- | --- |\n| Features | Modules |\n");
+            WriteScenario(directory, "Modules", Path.Combine("Contacts", "Features"), "B7.CON.01.feature.md");
+            WriteScenario(directory, "Modules", Path.Combine("Invoices", "Features"), "B7.INV.01.feature.md");
+            WriteScenario(directory, "Features", "Old", "not-read.feature.md");
+
+            var files = BddScenarioSource.EnumerateScenarioFiles(baseDirectory: directory).Select(path => Path.GetFileName(path)!).ToArray();
+
+            Assert.Equal(["B7.CON.01.feature.md", "B7.INV.01.feature.md"], files);
+        }
+        finally
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+    }
+
+    [Fact]
     public void ApplyFilter_MatchesModuleFolder()
     {
         var directory = CreateTempDirectory();

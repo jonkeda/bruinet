@@ -38,7 +38,13 @@ public static class BddScenarioSource
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(folderName);
 
-        var scenarioDirectory = Path.Combine(baseDirectory ?? AppContext.BaseDirectory, folderName);
+        var directory = baseDirectory ?? AppContext.BaseDirectory;
+        if (folderName == BddFileFormat.FeatureFolder && ConfiguredFeatures(directory) is { } configured)
+        {
+            folderName = configured;
+        }
+
+        var scenarioDirectory = Path.Combine(directory, folderName);
         IEnumerable<string> files = Directory.Exists(scenarioDirectory)
             ? Directory
                 .EnumerateFiles(scenarioDirectory, BddFileFormat.FeatureFilePattern, SearchOption.AllDirectories)
@@ -46,6 +52,13 @@ public static class BddScenarioSource
             : Array.Empty<string>();
 
         return ApplyFilter(files, configurationFilter);
+    }
+
+    // The config's Features folder (BddConfigFields.Features), when the folder's config names one.
+    private static string? ConfiguredFeatures(string directory)
+    {
+        var configPath = BddFileFormat.FindConfig(directory);
+        return File.Exists(configPath) ? BddConfigParser.ParseFile(configPath).FeaturesFolder : null;
     }
 
     /// <summary>

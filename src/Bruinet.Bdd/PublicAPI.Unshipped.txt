@@ -189,6 +189,7 @@ Bruinet.Bdd.BddConfig.Dependencies.init -> void
 Bruinet.Bdd.BddConfig.Discovery.get -> Bruinet.Bdd.BddDiscoverySettings!
 Bruinet.Bdd.BddConfig.Discovery.init -> void
 Bruinet.Bdd.BddConfig.EvaluateSkip(System.Collections.Generic.IEnumerable<string!>! tags, System.Func<string!, string?>? getEnvironmentVariable = null) -> Bruinet.Bdd.BddSkipDecision!
+Bruinet.Bdd.BddConfig.FeaturesFolder.get -> string?
 Bruinet.Bdd.BddConfig.Reporting.get -> Bruinet.Bdd.BddReportingSettings!
 Bruinet.Bdd.BddConfig.Reporting.init -> void
 Bruinet.Bdd.BddConfig.RunsOnHead(System.Collections.Generic.IEnumerable<string!>! tags) -> bool
@@ -316,6 +317,9 @@ Bruinet.Bdd.BddExecutionContext.Pacer.get -> Bruinet.Bdd.IBddStepPacer?
 Bruinet.Bdd.BddExecutionContext.Pacer.set -> void
 Bruinet.Bdd.BddExecutionContext.PageReader.get -> System.Func<Bruinet.Bdd.BddExecutionContext!, Bruinet.Bdd.Runner.BddRunnerPageState!>?
 Bruinet.Bdd.BddExecutionContext.PageReader.set -> void
+Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.Action! undo, string! name) -> void
+Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.IDisposable! undo, string? name = null) -> void
+Bruinet.Bdd.BddExecutionContext.ScenarioStartedUtc.get -> System.DateTime?
 Bruinet.Bdd.BddExecutionContext.SessionHost.get -> Bruinet.Bdd.IBddSessionHost?
 Bruinet.Bdd.BddExecutionContext.SessionHost.set -> void
 Bruinet.Bdd.BddExecutionContext.SwitchApp(string! app) -> void
@@ -472,6 +476,8 @@ Bruinet.Bdd.BddReportingSettings.OutputDirectory.get -> string!
 Bruinet.Bdd.BddReportingSettings.OutputDirectory.init -> void
 Bruinet.Bdd.BddReportingSettings.ScreenshotOnFailure.get -> bool
 Bruinet.Bdd.BddReportingSettings.ScreenshotOnFailure.init -> void
+Bruinet.Bdd.BddReportingSettings.TraceMask.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Bdd.BddReportingSettings.TraceMask.init -> void
 Bruinet.Bdd.BddScenario
 Bruinet.Bdd.BddScenario.BddScenario(string! Name, System.Collections.Generic.IReadOnlyList<string!>! Tags, System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddStep!>! Steps, Bruinet.Bdd.BddSourceLocation! Source, string? OutlineName = null, int? ExampleIndex = null, string? ExamplesName = null) -> void
 Bruinet.Bdd.BddScenario.ExampleIndex.get -> int?
@@ -1036,6 +1042,7 @@ Bruinet.Bdd.Runner.BddWarmRunners.WarmAsync(Bruinet.Bdd.Runner.BddRunnerStart! s
 const Bruinet.Bdd.BddConfigFields.AppPath = "AppPath" -> string!
 const Bruinet.Bdd.BddConfigFields.AppsFile = "AppsFile" -> string!
 const Bruinet.Bdd.BddConfigFields.DefaultTestData = "DefaultTestData" -> string!
+const Bruinet.Bdd.BddConfigFields.Features = "Features" -> string!
 const Bruinet.Bdd.BddConfigFields.Fixture = "Fixture" -> string!
 const Bruinet.Bdd.BddConfigFields.Head = "Head" -> string!
 const Bruinet.Bdd.BddConfigFields.Project = "Project" -> string!
@@ -1106,6 +1113,8 @@ static Bruinet.Bdd.BddBreakpoints.DefaultPath.get -> string!
 static Bruinet.Bdd.BddBreakpoints.Describe(Bruinet.Bdd.BddStepInvocation! invocation, Bruinet.Bdd.BddExecutionContext! context, Bruinet.Bdd.BddStepResult? result = null) -> Bruinet.Bdd.BddStepBreak!
 static Bruinet.Bdd.BddBreakpoints.ForDebugger(System.Func<bool>? attached = null, string? path = null) -> Bruinet.Bdd.IBddBreakHook?
 static Bruinet.Bdd.BddBreakpoints.Lists(string? file, int line, string? path = null) -> bool
+static Bruinet.Bdd.BddBreakpoints.ReadShared(string! file) -> string?
+static Bruinet.Bdd.BddBreakpoints.WriteShared(string! file, string? content) -> void
 static Bruinet.Bdd.BddCallableSet.Empty.get -> Bruinet.Bdd.BddCallableSet!
 static Bruinet.Bdd.BddCommandCatalog.Select(System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>! matches) -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddCommandMatch!>!
 static Bruinet.Bdd.BddCommandPattern.LeadingWords(string! text) -> (string? One, string? Two)
@@ -1215,10 +1224,3 @@ static Bruinet.Bdd.Runner.BddShadowCopy.ProcessOwner.get -> string!
 static readonly Bruinet.Bdd.BddDependency.ModesByKind -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<string!>!>!
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.CancelGrace -> System.TimeSpan
 static readonly Bruinet.Bdd.Runner.BddRunnerClient.ConnectTimeout -> System.TimeSpan
-Bruinet.Bdd.BddExecutionContext.ScenarioStartedUtc.get -> System.DateTime?
-Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.IDisposable! undo, string? name = null) -> void
-Bruinet.Bdd.BddExecutionContext.RegisterUndo(System.Action! undo, string! name) -> void
-Bruinet.Bdd.BddReportingSettings.TraceMask.get -> System.Collections.Generic.IReadOnlyList<string!>?
-Bruinet.Bdd.BddReportingSettings.TraceMask.init -> void
-static Bruinet.Bdd.BddBreakpoints.ReadShared(string! file) -> string?
-static Bruinet.Bdd.BddBreakpoints.WriteShared(string! file, string? content) -> void

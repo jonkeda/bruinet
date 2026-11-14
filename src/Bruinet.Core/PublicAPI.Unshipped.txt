@@ -854,6 +854,9 @@ Bruinet.Core.Scopes.IElementScope<TElement>
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElement(Bruinet.Core.Locators.Locator! locator) -> TElement!
 Bruinet.Core.Scopes.IElementScope<TElement>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<TElement!>!
 Bruinet.Core.Scopes.IElementScope<TElement>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> TElement?
+Bruinet.Core.Scopes.IOpenablePage
+Bruinet.Core.Scopes.IOpenablePage.CanOpen.get -> bool
+Bruinet.Core.Scopes.IOpenablePage.Open() -> void
 Bruinet.Core.Scopes.IScope
 Bruinet.Core.Scopes.IScope.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Core.Scopes.IScope.IsReady() -> bool

@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scraper: a `## Modules` table in `scraper.config.md` drafts a page into its module's folder and namespace by
+  its path. A suggested locator for an element in a web component crosses its shadow roots, as Playwright's CSS does.
+- UAT: `Features` in `uat.config.md`'s Runtime names the folder the scenarios are read from (`Modules` for a suite
+  grouped by module). `Given I am on the X page` opens a page with a path (`IOpenablePage`, a web page's `Url`) when the
+  fixture has no `NavigateTo` method for it and the page is not open yet.
 - Test accounts (AD-038): `TestAccounts` (`Bruinet.Core.Testing`) reads `TestAccounts.md` and the git-ignored
   `TestAccounts.local.md` by name; a missing account fails the test, naming what is missing. `TextInputControl.SetSecret`
   types a password that the call log shows as `***` and no failure message holds. Markdown table cells may hold `\|`.

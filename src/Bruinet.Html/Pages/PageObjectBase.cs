@@ -11,7 +11,7 @@ using Bruinet.Html.Scopes;
 namespace Bruinet.Html.Pages;
 
 // Test composition and UAT find Html pages by Core's ITestPage, which IHtmlPage derives from.
-public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
+public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Bruinet.Core.Scopes.IOpenablePage
     where TSelf : PageObjectBase<TSelf>
 {
     /// <summary>The attribute on <c>&lt;body&gt;</c> that carries the busy signal (design 7.2).</summary>
@@ -37,6 +37,34 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>
     public TSelf Self => (TSelf)this;
 
     public string? Url { get; }
+
+    /// <summary>Whether the page has a path, and so can open itself.</summary>
+    public bool CanOpen => Url is not null;
+
+    /// <summary>
+    /// Opens the page at its <see cref="Url"/>; a path is taken on the site the browser is on now.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The page has no path, or a path and the browser is on no site yet.</exception>
+    public void Open()
+    {
+        if (Url is not { } url)
+        {
+            throw new InvalidOperationException($"{Name} has no path to open; give it one, or a fixture method NavigateTo{GetType().Name.Replace("Page", string.Empty, StringComparison.Ordinal)}.");
+        }
+
+        if (Uri.TryCreate(url, UriKind.Absolute, out var absolute) && absolute.Scheme is "http" or "https")
+        {
+            _context.NavigateTo(absolute.ToString());
+            return;
+        }
+
+        if (!Uri.TryCreate(_context.CurrentUrl, UriKind.Absolute, out var current) || current.Scheme is not ("http" or "https"))
+        {
+            throw new InvalidOperationException($"{Name} is at the path '{url}', and the browser is on no site yet ({_context.CurrentUrl}): open the site first.");
+        }
+
+        _context.NavigateTo(new Uri(current, url).ToString());
+    }
 
     public virtual string Name => GetType().Name;
 

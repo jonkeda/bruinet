@@ -204,11 +204,11 @@ public static partial class ControlAdvisor
     private static string Path(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<string> testIds, int[] documents)
     {
         var parts = new List<string>();
-        for (var n = node; n.Parent != 0 && snapshot[n.Parent].Frame is null && n.Type is not "body"; n = snapshot[n.Parent])
+        for (var n = node; ElementParent(snapshot, n) is > 0 and var up && snapshot[up].Frame is null && n.Type is not "body"; n = snapshot[ElementParent(snapshot, n)])
         {
             var siblings = snapshot.ChildrenOf(n.Parent).Where(s => s.Type == n.Type).ToList();
             parts.Add(siblings.Count > 1 ? $"{n.Type}:nth-of-type({siblings.IndexOf(n) + 1})" : n.Type);
-            var parent = snapshot[n.Parent];
+            var parent = snapshot[ElementParent(snapshot, n)];
             if (Anchor(snapshot, parent, testIds, documents) is { } anchor)
             {
                 parts.Add(anchor);
@@ -218,6 +218,11 @@ public static partial class ControlAdvisor
         parts.Reverse();
         return string.Join(" > ", parts);
     }
+
+    // The element a node hangs from, stepping over a shadow root to its host, as Playwright's CSS does: a
+    // shadow tree's top elements are the host's children to `>`, so a path crosses into a web component.
+    private static int ElementParent(ScrapeSnapshot snapshot, ScrapeNode node)
+        => node.Parent != 0 && snapshot[node.Parent].Kind == ScrapeNodeKind.ShadowRoot ? snapshot[node.Parent].Parent : node.Parent;
 
     private static string? Anchor(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<string> testIds, int[] documents)
     {

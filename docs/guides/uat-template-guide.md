@@ -200,6 +200,7 @@ What each section carries:
 | Runtime | `Fixture` | The fixture type, or for MAUI the driver: `FlaUI` for the Windows head, `Appium` for Android. |
 | Runtime | `Head` | Optional: the head this suite drives (`maui`, `web`). A scenario tagged `@maui` or `@web` runs only on its head. See [Heads](#heads-one-scenario-file-several-apps). |
 | Runtime | `DefaultTestData` | The test set for a scenario file whose metadata names none. |
+| Runtime | `Features` | Optional: the folder the scenario files are in, read with its subfolders, relative to the config; `Features` when not set. `Modules` reads `Modules/<Module>/Features/*.feature.md` in place, for a suite grouped by module. The files still go to the output: `<None Include="Modules\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />`. |
 | Runtime | `AppPath` | The app to launch, relative to `WorkingDirectory`. |
 | Runtime | `WorkingDirectory` | The base the relative paths resolve against. |
 | Assemblies | `Pages` | The assembly holding the page objects - the source of control names. |

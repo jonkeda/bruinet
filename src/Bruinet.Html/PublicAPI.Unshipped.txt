@@ -443,12 +443,14 @@ Bruinet.Html.Pages.PageObjectBase<TSelf>
 Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
 Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
 Bruinet.Html.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.Html.Pages.PageObjectBase<TSelf>.CanOpen.get -> bool
 Bruinet.Html.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
 Bruinet.Html.Pages.PageObjectBase<TSelf>.DefaultOptions() -> Bruinet.Html.Context.HtmlTestContextOptions!
 Bruinet.Html.Pages.PageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 Bruinet.Html.Pages.PageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
 Bruinet.Html.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
 Bruinet.Html.Pages.PageObjectBase<TSelf>.IsReady() -> bool
+Bruinet.Html.Pages.PageObjectBase<TSelf>.Open() -> void
 Bruinet.Html.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context) -> void
 Bruinet.Html.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.Html.Interfaces.IHtmlTestContext! context, string! url) -> void

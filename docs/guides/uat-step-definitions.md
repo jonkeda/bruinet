@@ -343,7 +343,7 @@ registered directly in the runtime and spec catalogs:
 
 | Keyword | Phrase | What it does |
 | --- | --- | --- |
-| `Given` | `I am on the {page} page` | Opens or asserts the page and sets the current page. |
+| `Given` | `I am on the {page} page` | Opens or asserts the page and sets the current page: the fixture's `NavigateTo<Page>()` when it has one; else a page with a path (a web page's `Url`) that is not open yet opens itself on the current site. |
 | `Then` | `I should be on the {page} page` | Asserts the page and sets the current page. |
 | `Then` | `I should see {text}` | Searches controls on the current page with `GetText()`. |
 | `Then` | `the run pauses here` | Nothing: a Step-through stays paused before it after the steps above (what `set_state` ends with). |

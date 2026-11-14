@@ -44,6 +44,58 @@ public sealed class PageDrafterTests : IDisposable
         new() { Number = n, Parent = p, Type = type, Text = text, Bounds = new(0, 0, 10, 10), Attributes = attributes.ToDictionary(a => a.Key, a => a.Value) };
 
     [Fact]
+    public void A_page_a_module_claims_is_drafted_into_the_module_s_folder_and_namespace()
+    {
+        var folder = Path.Combine(_solution, "Shop.UITests");
+        Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "Shop.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
+        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), """
+            ## App
+
+            | Field | Value |
+            | --- | --- |
+            | StartUrl | https://shop.example/ |
+            | Namespace | Shop.UITests.Pages |
+
+            ## Modules
+
+            | Path | Pages | Namespace |
+            | --- | --- | --- |
+            | /orders | Modules/Orders/Pages | Shop.UITests.Modules.Orders.Pages |
+            """);
+        var project = ScrapeProject.Open(folder);
+        var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
+        foreach (var (location, minute) in new[] { ("https://shop.example/orders/12", 1), ("https://shop.example/help", 2) })
+        {
+            session.AddPage(new ScrapeSnapshot
+            {
+                Platform = "html",
+                Location = location,
+                Title = "Shop",
+                CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(minute),
+                Nodes = [N(1, 0, "body"), N(2, 1, "button", "Go", ("data-testid", "go"), ("type", "button"))],
+            });
+        }
+        var index = project.Index();
+
+        var order = PageDrafter.Draft(project, index, index.Page("/orders/{id}")!, "OrderPage");
+        var help = PageDrafter.Draft(project, index, index.Page("/help")!, "HelpPage");
+
+        Assert.Equal(Path.Combine("Modules/Orders/Pages", "OrderPage.scraped.cs"), order.Path);
+        Assert.Contains("namespace Shop.UITests.Modules.Orders.Pages;", order.Code);
+        Assert.Equal(Path.Combine("Pages", "HelpPage.scraped.cs"), help.Path);
+        Assert.Contains("namespace Shop.UITests.Pages;", help.Code);
+    }
+
+    [Fact]
+    public void A_module_row_without_a_namespace_is_refused_naming_its_line()
+    {
+        var error = Assert.Throws<FormatException>(() => ScraperConfig.Parse("## Modules\n\n| Path | Pages | Namespace |\n| --- | --- | --- |\n| /orders | Modules/Orders/Pages | |\n"));
+
+        Assert.StartsWith("Line 5:", error.Message);
+    }
+
+    [Fact]
     public void A_draft_is_the_page_as_it_opens_and_lists_the_unstable_members_and_what_only_a_click_shows()
     {
         var folder = Path.Combine(_solution, "Shop.UITests");

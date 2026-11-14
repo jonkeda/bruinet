@@ -194,4 +194,43 @@ public sealed class ControlAdvisorTests
 
         Assert.Equal([3, 5, 6, 7], suggestions.Select(s => s.Node));
     }
+
+    // Bouw7's top navigation: a module button three shadow roots deep, with no id or test id of its own.
+    private static ScrapeSnapshot ShadowMenu() => Page(
+        N(1, 0, "html"),
+        N(2, 1, "body"),
+        N(3, 2, "b7-navbar"),
+        new ScrapeNode { Number = 4, Parent = 3, Kind = ScrapeNodeKind.ShadowRoot },
+        N(5, 4, "section", null, null, ("class", "left-section")),
+        N(6, 5, "b7-navbar-custom-items"),
+        new ScrapeNode { Number = 7, Parent = 6, Kind = ScrapeNodeKind.ShadowRoot },
+        N(8, 7, "b7-navbar-button"),
+        new ScrapeNode { Number = 9, Parent = 8, Kind = ScrapeNodeKind.ShadowRoot },
+        N(10, 9, "div", "Contacts"),
+        N(11, 7, "b7-navbar-button"),
+        new ScrapeNode { Number = 12, Parent = 11, Kind = ScrapeNodeKind.ShadowRoot },
+        N(13, 12, "div", "Projects"));
+
+    [Fact]
+    public void A_node_in_a_shadow_tree_gets_a_path_through_its_hosts_that_finds_it()
+    {
+        var page = ShadowMenu();
+
+        var locator = Of(page, 10).Locator;
+
+        Assert.StartsWith("Locator.ByCss(\"", locator);
+        var css = locator["Locator.ByCss(\"".Length..^"\")".Length];
+        Assert.DoesNotContain("> >", css);
+        Assert.DoesNotContain(">  ", css);
+        Assert.Equal([10], SnapshotSelector.Parse(css)!.Under(page, page[1]).Select(n => n.Number));
+    }
+
+    [Fact]
+    public void A_child_combinator_steps_over_a_shadow_root_to_its_host()
+    {
+        var page = ShadowMenu();
+
+        Assert.Equal([5], SnapshotSelector.Parse("b7-navbar > section")!.Under(page, page[1]).Select(n => n.Number));
+        Assert.Equal([8, 11], SnapshotSelector.Parse("b7-navbar-custom-items > b7-navbar-button")!.Under(page, page[1]).Select(n => n.Number));
+    }
 }

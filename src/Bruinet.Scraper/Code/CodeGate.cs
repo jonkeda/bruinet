@@ -108,7 +108,7 @@ public static partial class CodeGate
         if (templates is null)
             return [];
         var problems = new List<CodeProblem>();
-        foreach (var folder in new[] { project.Config.ControlsFolder, project.Config.PagesFolder }.Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var folder in new[] { project.Config.ControlsFolder, project.Config.PagesFolder }.Concat(project.Config.Modules.Select(m => m.Pages)).Distinct(StringComparer.OrdinalIgnoreCase))
         {
             var full = Path.Combine(project.Folder, folder);
             if (Directory.Exists(full) && Directory.EnumerateFiles(full, "*" + TemplateExtension, SearchOption.AllDirectories).Any())

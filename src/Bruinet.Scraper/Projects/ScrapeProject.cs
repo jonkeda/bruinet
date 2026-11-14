@@ -42,6 +42,13 @@ public sealed partial class ScrapeProject
     /// <summary>The namespace generated code goes in.</summary>
     public string Namespace => Config.Namespace.Length > 0 ? Config.Namespace : Name;
 
+    /// <summary>The folder and namespace a page's object is drafted into: its module's (<c>## Modules</c>), else the project's.</summary>
+    /// <param name="pageKey">The page's key, such as <c>/invoice#/</c>.</param>
+    public (string Folder, string Namespace) PagesFor(string pageKey)
+        => Config.Modules.FirstOrDefault(m => pageKey.StartsWith(m.Path, StringComparison.OrdinalIgnoreCase)) is { } module
+            ? (module.Pages, module.Namespace)
+            : (Config.PagesFolder, Namespace);
+
     /// <summary>Where its recordings are.</summary>
     public string RecordingsFolder => Path.Combine(Folder, RecordingsFolderName);
 

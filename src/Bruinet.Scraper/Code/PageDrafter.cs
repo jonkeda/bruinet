@@ -81,11 +81,12 @@ public static class PageDrafter
         var unstable = opened.Where(m => !m.Stable).ToArray();
         var containers = opened.Where(m => m.Stable && Containers.Contains(m.Control)).ToArray();
         var header = new ScrapedHeader { Page = page.Key, From = $"{basis.Session}/{basis.Event.Snapshot}", Hash = SnapshotFile.ContentHash(index.Read(basis)) };
-        var path = Path.Combine(project.Config.PagesFolder, className + Extension);
-        return new PageDraft(page.Key, className, path, Code(project, className, header, members, unstable, containers, afterClick, blazor), members, unstable) { AfterClick = afterClick };
+        var (folder, ns) = project.PagesFor(page.Key);
+        var path = Path.Combine(folder, className + Extension);
+        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor), members, unstable) { AfterClick = afterClick };
     }
 
-    private static string Code(ScrapeProject project, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor)
+    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor)
     {
         var baseClass = blazor ? "BlazorPageObjectBase" : "PageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
@@ -102,7 +103,7 @@ public static class PageDrafter
         foreach (var ns in namespaces)
             code.AppendLine(CultureInfo.InvariantCulture, $"using {ns};");
         code.AppendLine();
-        code.AppendLine(CultureInfo.InvariantCulture, $"namespace {project.Namespace};");
+        code.AppendLine(CultureInfo.InvariantCulture, $"namespace {pageNamespace};");
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update; add to the other part, {className}.cs.</summary>");
         code.AppendLine(CultureInfo.InvariantCulture, $"public sealed partial class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context)");

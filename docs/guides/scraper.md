@@ -61,6 +61,12 @@ controls):
 | Controls | PageObjects/Controls |
 | Screenshots | false |
 
+## Modules
+
+| Path | Pages | Namespace |
+| --- | --- | --- |
+| /invoice | Modules/Invoices/Pages | MyApp.UITests.Modules.Invoices.Pages |
+
 ## Aliases
 
 | Url |
@@ -89,8 +95,14 @@ controls):
 ```
 
 - `Platform`: `html` or `blazor` (a Blazor project gets the `Bruinet.Blazor` controls suggested).
+- `Modules` (optional, columns `Path`, `Pages`, `Namespace`): a page whose key starts with `Path` is drafted
+  into that module's folder and namespace; the first row that matches wins, and a page no row claims goes to
+  `Pages` in `Namespace`.
 - `Aliases`: other hosts of the same app; a page elsewhere (a sign-in provider) is not recorded.
-- `Test ids`: the attributes that are test ids, preferred first.
+- `Test ids`: the attributes that are test ids, preferred first. The default list is `data-testid`,
+  `data-test`, `data-test-id`, `data-qa` and `data-cy`.
+- Web components: a capture keeps open shadow roots, and a suggested locator crosses them as Playwright's CSS
+  does (a shadow tree's top elements are its host's children), so a control inside a web component is found.
 - `Masks`: text replaced before anything is written. A page capture never records what a user typed;
   only a test recording's actions keep typed values, masked.
 - `Secrets` (optional, columns `Field`, `Placeholder`): fields whose value a test recording never
