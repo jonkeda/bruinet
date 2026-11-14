@@ -431,7 +431,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
         writer.IncreaseSpace(1);
         writer.WriteLine($"element => {coreMethod.MethodName}(element{lambdaArgs}), (actual, expected1) => ({predicate}),");
-        writer.WriteLine($"{BuildAssertMessage(memberName)}, timeoutMs);");
+        writer.WriteLine($"{BuildAssertMessage(memberName, isCollection: ElementTypeOf(nullableReturnType) != nullableReturnType)}, timeoutMs);");
         writer.DecreaseSpace(1);
         writer.Close();
     }
@@ -511,7 +511,7 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.WriteLine($"return {AssertHelper(coreMethod)}(expected,");
         writer.IncreaseSpace(1);
         writer.WriteLine($"element => {assertActual}, (actual, expected1) => ({assertPredicate}),");
-        writer.WriteLine($"{BuildAssertMessage(memberName)}, timeoutMs);");
+        writer.WriteLine($"{BuildAssertMessage(memberName, isCollection: ElementTypeOf(expectedType) != expectedType)}, timeoutMs);");
         writer.DecreaseSpace(1);
         writer.Close();
     }
@@ -537,9 +537,11 @@ public class IsWaitAssertGenerator : IMemberGenerator
     /// <c>message</c> wins; otherwise a diagnostic naming the property, the expected
     /// value, and the locator is synthesized so failures stay readable.
     /// </summary>
-    private static string BuildAssertMessage(string propertyName)
+    private static string BuildAssertMessage(string propertyName, bool isCollection = false)
     {
-        return $"message ?? $\"Expected {propertyName} to be '{{expected}}'. Locator: {{Locator}}\"";
+        // A collection names its items: "[Client, Supplier]", not "System.Collections.Generic.List`1[System.String]".
+        var expected = isCollection ? "[{(expected is null ? \"null\" : string.Join(\", \", expected))}]" : "'{expected}'";
+        return $"message ?? $\"Expected {propertyName} to be {expected}. Locator: {{Locator}}\"";
     }
 
     private static string BuildParameterListPrefix(MethodInfo coreMethod)

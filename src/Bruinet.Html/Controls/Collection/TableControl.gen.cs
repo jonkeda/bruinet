@@ -138,7 +138,7 @@ public partial class TableControl<TScope> : ViewBase<TScope>
     {
         return RunAssertWithElement(expected,
            element => GetRowTextsCore(element, row), (actual, expected1) => (actual?.SequenceEqual(expected1!) == true),
-           message ?? $"Expected RowTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
+           message ?? $"Expected RowTexts to be [{(expected is null ? "null" : string.Join(", ", expected))}]. Locator: {Locator}", timeoutMs);
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]

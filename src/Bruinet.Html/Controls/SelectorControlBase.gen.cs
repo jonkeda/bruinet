@@ -143,7 +143,7 @@ public abstract partial class SelectorControlBase<TScope> : FocusableControlBase
     {
         return RunAssertWithElement(expected,
            element => GetItemTextsCore(element), (actual, expected1) => (actual?.SequenceEqual(expected1!) == true),
-           message ?? $"Expected ItemTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
+           message ?? $"Expected ItemTexts to be [{(expected is null ? "null" : string.Join(", ", expected))}]. Locator: {Locator}", timeoutMs);
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]

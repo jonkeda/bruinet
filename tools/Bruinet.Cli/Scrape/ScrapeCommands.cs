@@ -17,7 +17,7 @@ internal static class ScrapeCommands
 {
     public static Command Build(CliIo io) => new("scrape", "The Scraper: record or explore an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
-        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Resolve(io), DraftTest(io), Config(io), InstallBrowser(io),
+        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Resolve(io), DraftTest(io), Config(io), InstallBrowser(io),
     };
 
     private static Command New(CliIo io)
@@ -280,6 +280,38 @@ internal static class ScrapeCommands
             }
 
             return result.Pages.Any(p => p.Outcome == DraftOutcome.Reverted) ? 1 : 0;
+        });
+        return command;
+    }
+
+    // 0 when found, 1 when nothing holds the text.
+    private static Command Find(CliIo io)
+    {
+        var (solution, project, json) = (Solution(), Project(), Json());
+        var text = new Argument<string>("text") { Description = "What to look for, in any case: a text, a placeholder, an attribute's value." };
+        var run = new Option<string?>("--run") { Description = "Only this run's folder under Recordings. Default: every run." };
+        var command = new Command("find", "Find a text in the recorded pages, shadow roots included, with the path to each node.") { text, project, solution, run, json };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var scrapeProject = service.Project(ProjectName(service, parsed.GetValue(project), io));
+            var hits = Bruinet.Scraper.Recordings.RecordingSearch.Find(scrapeProject.RecordingsFolder, parsed.GetValue(text)!, parsed.GetValue(run));
+            if (parsed.GetValue(json))
+            {
+                await io.Out.WriteLineAsync(ToJson(hits)).ConfigureAwait(false);
+            }
+            else
+            {
+                foreach (var hit in hits)
+                {
+                    await io.Out.WriteLineAsync($"{hit.File}#{hit.Node} {hit.Field}=\"{hit.Value}\"").ConfigureAwait(false);
+                    await io.Out.WriteLineAsync($"    {hit.Path}").ConfigureAwait(false);
+                }
+
+                await io.Out.WriteLineAsync($"{hits.Count} found").ConfigureAwait(false);
+            }
+
+            return hits.Count > 0 ? 0 : 1;
         });
         return command;
     }

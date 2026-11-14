@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `bruinet scrape find <text>`: a text, a placeholder or an attribute's value in the recorded pages, shadow roots
+  included, with the path to each node (`RecordingSearch`).
 - Frainet F1: `frainet trace … --results <trx>` gives each rule a state (not reached, not run, failing, passing) and
   fails unless every rule passes.
 - `tools/Scripts/site-loop.ps1`: the site loop's orchestrator. Per module of a suite's `.testing/100-Loops.md` it runs
@@ -157,6 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- A generated assertion on a collection names its items in its message (`[Client, Supplier]`), not the list's type.
 - "accepted … and did not take it" names a list's items, not `System.String[]`.
 - Frainet: a full stop after a number ("00. Intern") is not a sentence break.
 - A locator with a parent, looked for from the page, applied its parents twice (a table inside the table), so a

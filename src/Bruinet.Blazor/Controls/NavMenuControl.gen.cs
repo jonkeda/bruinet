@@ -64,7 +64,7 @@ public partial class NavMenuControl<TScope> : ViewBase<TScope>
     {
         return RunAssertWithElement(expected,
            element => GetItemsCore(element), (actual, expected1) => (actual?.SequenceEqual(expected1!) == true),
-           message ?? $"Expected Items to be '{expected}'. Locator: {Locator}", timeoutMs);
+           message ?? $"Expected Items to be [{(expected is null ? "null" : string.Join(", ", expected))}]. Locator: {Locator}", timeoutMs);
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]

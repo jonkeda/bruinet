@@ -42,6 +42,7 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet scrape record` | Records by hand in a browser window; `c` and Enter captures, Enter stops (`--by-hand`, `--session`, `--url`) | |
 | `bruinet scrape draft [--page <key>]…` | Drafts page objects from the recorded pages | |
 | `bruinet scrape verify` | Looks the page objects' members up in the running app | |
+| `bruinet scrape find <text>` | Finds a text, a placeholder or an attribute's value in the recorded pages, shadow roots included, with the path to each node; `--run` for one run. Exit 1 when nothing holds it | |
 | `bruinet scrape resolve <session>` | Resolves a test recording's actions to members, verbs and catalog phrases, and lists its gaps; exit 1 with gaps | |
 | `bruinet scrape draft-test <session>` | Drafts a test recording as an xUnit test, a scenario or both (`--target`, `--name`); exit 1 when gaps are marked | |
 | `bruinet scrape config get\|set\|add\|remove` | Reads or changes `scraper.config.md`: `set Explore MaxPages 20`, `add "Explore hosts" shop.example` | |

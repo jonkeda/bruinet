@@ -164,6 +164,7 @@ no model.
   bruinet scrape explore --project MyApp.UITests [--dry-run] [--max-pages N] [--max-depth N] [--max-minutes N] [--headless] [--yes] [--json]
   bruinet scrape draft --project MyApp.UITests [--page /orders/{id}]
   bruinet scrape verify --project MyApp.UITests [--headless]
+  bruinet scrape find "First select a project" --project MyApp.UITests [--run 2026-11-14-explore]
   ```
 
   `explore` shows the guards and asks "Go on?" unless `--yes`; with no one at a terminal it does

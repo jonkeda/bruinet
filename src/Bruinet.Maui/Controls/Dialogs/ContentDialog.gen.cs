@@ -67,7 +67,7 @@ public partial class ContentDialog<TParent> : ContainerObjectBase<TParent, Conte
     {
         return RunAssertWithElement(expected,
            element => GetButtonTextsCore(element), (actual, expected1) => (actual?.SequenceEqual(expected1!) == true),
-           message ?? $"Expected ButtonTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
+           message ?? $"Expected ButtonTexts to be [{(expected is null ? "null" : string.Join(", ", expected))}]. Locator: {Locator}", timeoutMs);
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
