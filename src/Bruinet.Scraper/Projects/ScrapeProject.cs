@@ -49,6 +49,9 @@ public sealed partial class ScrapeProject
             ? (module.Pages, module.Namespace)
             : (Config.PagesFolder, Namespace);
 
+    /// <summary>The saved sign-in the browser starts from (<c>SignInState</c> under <c>## Explore</c>), as a full path; null for none.</summary>
+    public string? SignInStatePath => Config.Explore.SignInState is { Length: > 0 } state ? Path.GetFullPath(Path.Combine(Folder, state)) : null;
+
     /// <summary>Where its recordings are.</summary>
     public string RecordingsFolder => Path.Combine(Folder, RecordingsFolderName);
 

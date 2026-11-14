@@ -107,7 +107,7 @@ public sealed class DangerousPageTests : IAsyncLifetime
         await _source.Page.ClickAsync("[data-testid=live-details]");
 
         await WaitAsync(() => _site.SocketMessages == 1, "the websocket message");
-        Assert.Equal([_site.Url("ws").Replace("http", "ws", StringComparison.Ordinal)], guard.WebSockets);
+        Assert.Equal([new Uri(_site.Url("ws").Replace("http", "ws", StringComparison.Ordinal)).GetLeftPart(UriPartial.Authority)], guard.WebSockets);
         Assert.Empty(guard.Blocked);
     }
 }

@@ -93,7 +93,7 @@ public sealed partial class ScraperService : IAsyncDisposable
             var source = _sourceFor(project.Config.Platform);
             try
             {
-                await source.StartAsync(new ScrapeStart(start, project.ProfileFolder, visible), cancellationToken).ConfigureAwait(false);
+                await source.StartAsync(new ScrapeStart(start, project.ProfileFolder, visible) { SignInState = project.SignInStatePath }, cancellationToken).ConfigureAwait(false);
             }
             catch
             {
@@ -619,7 +619,7 @@ public sealed partial class ScraperService : IAsyncDisposable
             throw new ScraperProblem($"{project.Config.Platform} page objects cannot be verified yet: html and blazor can.");
         await using (source.ConfigureAwait(false))
         {
-            await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, visible), cancellationToken).ConfigureAwait(false);
+            await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, visible) { SignInState = project.SignInStatePath }, cancellationToken).ConfigureAwait(false);
             await source.GuardAsync(new RequestGuard(project.Config.Explore)).ConfigureAwait(false);
             var result = await PageVerifier.RunAsync(project, source.Page!, () => source.CaptureAsync(cancellationToken)).ConfigureAwait(false);
             Remember(project, result);

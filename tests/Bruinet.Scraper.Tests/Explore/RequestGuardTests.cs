@@ -91,7 +91,19 @@ public sealed class RequestGuardTests
 
         guard.WebSocketOpened("ws://localhost:5000/_blazor");
 
-        Assert.Equal(["ws://localhost:5000/_blazor"], guard.WebSockets);
+        Assert.Equal(["ws://localhost:5000"], guard.WebSockets);
+    }
+
+    [Fact]
+    public void A_websocket_s_path_and_a_blocked_request_s_query_are_kept_out_of_the_report()
+    {
+        var guard = new RequestGuard(new ExploreSettings());
+
+        guard.WebSocketOpened("wss://notify.example/eyJhbGciOiJSUzI1NiJ9.secret.signature");
+        guard.Check("POST", "http://localhost:5000/api/orders?token=abc123", navigatesPage: false);
+
+        Assert.Equal(["wss://notify.example"], guard.WebSockets);
+        Assert.Equal("http://localhost:5000/api/orders?token=*", Assert.Single(guard.Blocked).Url);
     }
 
     [Theory]

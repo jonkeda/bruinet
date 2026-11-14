@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Scraper: `SignInState` under `## Explore` starts the browser from a UI suite's saved sign-in (its cookies and
+  storage), so Explore, Verify and the check need no person to sign in and still type nothing.
+
 - Scraper: a `## Modules` table in `scraper.config.md` drafts a page into its module's folder and namespace by
   its path. A suggested locator for an element in a web component crosses its shadow roots, as Playwright's CSS does.
 - UAT: `Features` in `uat.config.md`'s Runtime names the folder the scenarios are read from (`Modules` for a suite
@@ -129,6 +132,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   cache holds, `--ask` buys the rest, `--prune` deletes what no script says.
 - `bruinet voice --index` writes `speech-clips.md` beside a suite's video scripts: each line, where it is said and its
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
+
+### Security
+- Scraper: reports and the console no longer show a websocket's path or a blocked request's query values (now `*`);
+  Bouw7's notification socket carried a signed sign-in token in its path.
 
 ### Removed
 - **Breaking:** `WaitTextEquals` on every stack: `ITextControlObject<TScope>` declares `WaitText`, which did the same.

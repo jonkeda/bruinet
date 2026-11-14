@@ -39,6 +39,40 @@ public sealed class PlaywrightScrapeSourceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_saved_sign_in_s_cookies_and_storage_are_there_on_the_first_page()
+    {
+        var url = new Uri(_site.Url("index.html"));
+        var state = Path.Combine(_profile + "-state", "state.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(state)!);
+        File.WriteAllText(state, $$"""
+            {
+              "cookies": [ { "name": "session", "value": "s1", "domain": "{{url.Host}}", "path": "/", "expires": -1, "httpOnly": false, "secure": false, "sameSite": "Lax" } ],
+              "origins": [ { "origin": "{{url.GetLeftPart(UriPartial.Authority)}}", "localStorage": [ { "name": "token", "value": "t1" } ] } ]
+            }
+            """);
+        try
+        {
+            await _source.StartAsync(new ScrapeStart(url.ToString(), _profile, Visible: false) { SignInState = state });
+
+            Assert.Contains("session=s1", await _source.Page!.EvaluateAsync<string>("() => document.cookie"));
+            Assert.Equal("t1", await _source.Page!.EvaluateAsync<string>("() => localStorage.getItem('token')"));
+        }
+        finally
+        {
+            Directory.Delete(Path.GetDirectoryName(state)!, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task A_saved_sign_in_that_is_not_there_fails_saying_where_it_comes_from()
+    {
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            _source.StartAsync(new ScrapeStart(_site.Url("index.html"), _profile, Visible: false) { SignInState = Path.Combine(_profile, "missing.json") }));
+
+        Assert.Contains("sign in once in the UI suite", error.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task Nodes_are_numbered_in_document_order_and_a_parent_comes_before_its_children()
     {
         await StartAsync("index.html");

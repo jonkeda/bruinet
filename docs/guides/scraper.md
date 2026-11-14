@@ -163,7 +163,10 @@ no model.
 
 **Signing in is yours.** Explore uses the project's browser profile. When it reaches a sign-in page
 (the config's `LoginUrl`, a page with a password field it was sent to, or another host), it stops
-and asks you to sign in in the window. It never types.
+and asks you to sign in in the window. It never types. A project whose UI suite already signs in can
+start from that sign-in instead: `SignInState` under `## Explore` names the file the suite saves
+(`SaveStorageState`, such as `../.auth/Reader.json`, git-ignored), and its cookies and storage are loaded
+into the profile before the first page. Still nothing is typed.
 
 **The guards** are settings in `scraper.config.md`. The defaults are the careful ones; loosen what
 you know is harmless for your app and tenant:
@@ -227,7 +230,7 @@ you know is harmless for your app and tenant:
 | `ClickPolicy` | `links`; `safe` (the default: links, tabs, menus, expanders, sorting, paging, dialogs); `not-unsafe` (also buttons it cannot place); `all` (submits too: a throwaway environment only, asked twice, and only on a host named in `Explore hosts`) |
 | `Danger words` | categories of words that make an element unsafe, all on by default, in English, Dutch, German and French: `sign-out`, `delete`, `update`, `send`, `pay`, `approve`, `bulk`. Turn one off by name |
 | `BlockMethods` | request methods aborted while exploring; `GET`, `HEAD` and `OPTIONS` always go through. `Allow requests` lets single endpoints through |
-| `WebsocketApps` | a page that opens a websocket (Blazor Server, SignalR) clicks without a request the guard can see: `links` (the default) explores its links only, `warn` explores it anyway, `ignore` does not say so |
+| `WebsocketApps` | a page that opens a websocket (Blazor Server, SignalR) clicks without a request the guard can see: `links` (the default) explores its links only, `warn` explores it anyway, `ignore` does not say so. A report shows a websocket's scheme and host only, and a blocked request's query with its values masked, since apps put sign-in tokens there |
 | `Within` | a path, or `/#/route`, the links Explore visits stay under: `/components/tabs` keeps it on that page and its states. Empty: the whole app |
 | `Explore hosts` | where Explore may run: `localhost` and `127.0.0.1`, and every other host by name |
 

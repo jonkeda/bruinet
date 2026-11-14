@@ -30,12 +30,30 @@ public sealed class RequestGuard(ExploreSettings settings)
     {
         var reason = Why(method, url, navigatesPage);
         if (reason is not null)
-            _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), url, reason));
+            _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), WithoutSecrets(url), reason));
         return reason;
     }
 
-    /// <summary>Notes a websocket the page opened.</summary>
-    public void WebSocketOpened(string url) => _webSockets.Enqueue(url);
+    /// <summary>Notes a websocket the page opened: its scheme and host only.</summary>
+    public void WebSocketOpened(string url)
+        => _webSockets.Enqueue(Uri.TryCreate(url, UriKind.Absolute, out var uri) ? $"{uri.Scheme}://{uri.Authority}" : "a websocket");
+
+    /// <summary>
+    /// An address as a report may show it: the query's names with their values masked (<c>?token=*</c>), no fragment,
+    /// and a websocket with no path, because apps put sign-in tokens there (Bouw7's notification socket has one in its path).
+    /// </summary>
+    public static string WithoutSecrets(string url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            return url;
+        if (uri.Scheme is "ws" or "wss")
+            return $"{uri.Scheme}://{uri.Authority}";
+        var query = uri.Query.TrimStart('?');
+        var masked = query.Length == 0
+            ? ""
+            : "?" + string.Join('&', query.Split('&').Select(pair => pair.Split('=', 2)[0] + (pair.Contains('=', StringComparison.Ordinal) ? "=*" : "")));
+        return $"{uri.Scheme}://{uri.Authority}{uri.AbsolutePath}{masked}";
+    }
 
     /// <summary>Why Explore may not run against <paramref name="location"/>, or null when its host is in <see cref="ExploreSettings.Hosts"/>.</summary>
     public static string? RefuseHost(Uri location, ExploreSettings settings) =>

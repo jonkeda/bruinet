@@ -94,7 +94,7 @@ public sealed class ExploreTests : IAsyncLifetime
         Assert.True(_site.Counter("delete") > 0);
         AssertNoHarm(except: "delete");
         // "Tidy up" is clicked (unknown) and its POST is stopped by the request guard; "Rename"'s PUT too.
-        Assert.Contains(result.Blocked, b => b.Method == "POST" && b.Url.EndsWith("/api/counter/delete?via=tidy", StringComparison.Ordinal));
+        Assert.Contains(result.Blocked, b => b.Method == "POST" && b.Url.EndsWith("/api/counter/delete?via=*", StringComparison.Ordinal));
         Assert.Contains(result.Blocked, b => b.Method == "PUT" && b.Url.EndsWith("/api/counter/update", StringComparison.Ordinal));
         Assert.Contains("| Blocked requests |", Report(result).Replace("## Blocked requests", "| Blocked requests |", StringComparison.Ordinal));
     }

@@ -81,7 +81,7 @@ public sealed partial class ScraperService
             var refused = RequestGuard.RefuseHost(start, project.Config.Explore);
             await using (source.ConfigureAwait(false))
             {
-                await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, visible), cancellationToken).ConfigureAwait(false);
+                await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, visible) { SignInState = project.SignInStatePath }, cancellationToken).ConfigureAwait(false);
                 await source.GuardAsync(new RequestGuard(project.Config.Explore with { Hosts = [.. project.Config.Explore.Hosts, start.Host] })).ConfigureAwait(false);
                 int? status = null;
                 string? detail = null;

@@ -108,6 +108,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             throw new InvalidOperationException(
                 "Playwright's Chromium is not installed. Install it once with: pwsh <any Bruinet Html test output>\\playwright.ps1 install chromium", e);
         }
+        if (start.SignInState is { } state)
+            await ImportSignInAsync(_context, state).ConfigureAwait(false);
         _page = _context.Pages.Count > 0 ? _context.Pages[0] : await _context.NewPageAsync().ConfigureAwait(false);
         // A link that opens a new tab is followed in the recorded page: one page is recorded at a time.
         _context.Page += (_, page) => _ = FollowInRecordedPageAsync(page);
@@ -121,6 +123,40 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             _ = dialog.DismissAsync();
         };
         await _page.GotoAsync(start.Location, Opening).ConfigureAwait(false);
+    }
+
+    // A saved sign-in into the persistent profile, which takes no storage state of its own: the cookies, and each
+    // origin's localStorage set by a script before the origin's first page runs. Nobody types a credential.
+    private static async Task ImportSignInAsync(IBrowserContext context, string path)
+    {
+        if (!File.Exists(path))
+            throw new InvalidOperationException($"The saved sign-in '{path}' (SignInState) does not exist: sign in once in the UI suite, which saves it.");
+        using var state = JsonDocument.Parse(await File.ReadAllTextAsync(path).ConfigureAwait(false));
+        if (state.RootElement.TryGetProperty("cookies", out var cookies))
+        {
+            var list = cookies.EnumerateArray().Select(c => new Cookie
+            {
+                Name = c.GetProperty("name").GetString()!,
+                Value = c.GetProperty("value").GetString()!,
+                Domain = c.GetProperty("domain").GetString(),
+                Path = c.GetProperty("path").GetString(),
+                Expires = c.TryGetProperty("expires", out var expires) ? (float)expires.GetDouble() : null,
+                HttpOnly = c.TryGetProperty("httpOnly", out var httpOnly) && httpOnly.GetBoolean(),
+                Secure = c.TryGetProperty("secure", out var secure) && secure.GetBoolean(),
+                SameSite = c.TryGetProperty("sameSite", out var sameSite) ? sameSite.GetString() switch { "Strict" => SameSiteAttribute.Strict, "None" => SameSiteAttribute.None, _ => SameSiteAttribute.Lax } : null,
+            }).ToList();
+            if (list.Count > 0)
+                await context.AddCookiesAsync(list).ConfigureAwait(false);
+        }
+        if (state.RootElement.TryGetProperty("origins", out var origins))
+        {
+            foreach (var origin in origins.EnumerateArray())
+            {
+                var items = origin.TryGetProperty("localStorage", out var storage) ? storage.GetRawText() : "[]";
+                var name = JsonSerializer.Serialize(origin.GetProperty("origin").GetString());
+                await context.AddInitScriptAsync($"if (location.origin === {name} && !sessionStorage.getItem('__bruinetSignIn')) {{ for (const i of {items}) localStorage.setItem(i.name, i.value); sessionStorage.setItem('__bruinetSignIn', '1'); }}").ConfigureAwait(false);
+            }
+        }
     }
 
     /// <inheritdoc/>

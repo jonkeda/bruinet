@@ -32,6 +32,12 @@ public sealed record ExploreSettings
     /// <summary>The app's sign-in page (a path or URL), where Explore stops for the person; empty: found by its password field.</summary>
     public string LoginUrl { get; init; } = "";
 
+    /// <summary>
+    /// A saved sign-in (Playwright's storage state, such as a UI suite's <c>.auth/Reader.json</c>) the browser starts
+    /// from, relative to the project; empty: the profile's own sign-in, made by the person.
+    /// </summary>
+    public string SignInState { get; init; } = "";
+
     /// <summary>A path (or <c>/#/route</c>) the links Explore visits stay under; empty: the whole app.</summary>
     public string Within { get; init; } = "";
 
@@ -82,11 +88,12 @@ public sealed record ExploreSettings
                     "DelayMs" => settings with { DelayMs = Count(value, line) },
                     "AgentMinutes" => settings with { AgentMinutes = Count(value, line) },
                     "LoginUrl" => settings with { LoginUrl = value },
+                    "SignInState" => settings with { SignInState = value },
                     "Within" => settings with { Within = value },
                     "ClickPolicy" => settings with { ClickPolicy = Policy(value, line) },
                     "BlockMethods" => settings with { BlockMethods = Methods(value, line) },
                     "WebsocketApps" => settings with { WebsocketApps = Websockets(value, line) },
-                    var other => throw new FormatException($"Line {line}: '{other}' is not a field of ## Explore (MaxPages, MaxDepth, MaxMinutes, DelayMs, AgentMinutes, LoginUrl, Within, ClickPolicy, BlockMethods, WebsocketApps)."),
+                    var other => throw new FormatException($"Line {line}: '{other}' is not a field of ## Explore (MaxPages, MaxDepth, MaxMinutes, DelayMs, AgentMinutes, LoginUrl, SignInState, Within, ClickPolicy, BlockMethods, WebsocketApps)."),
                 };
             }
         }
