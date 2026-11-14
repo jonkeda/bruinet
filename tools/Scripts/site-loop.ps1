@@ -70,7 +70,8 @@ $TestProject = Get-ChildItem $Suite -Directory -Filter '*.UITests' | Select-Obje
 # Frainet is built once and run from its output, not through dotnet run per call.
 $FrainetProject = Join-Path $Bruinet 'Frainet/src/Frainet.Cli/Frainet.Cli.csproj'
 dotnet build $FrainetProject -c Release -v:q -nologo | Out-Null
-$Frainet = Get-ChildItem (Join-Path $Bruinet 'Frainet/src/Frainet.Cli/bin/Release') -Recurse -Filter 'Frainet.Cli.dll' | Select-Object -First 1
+if ($LASTEXITCODE -ne 0) { throw "Frainet did not build: $FrainetProject" }
+$Frainet = Get-Item (dotnet msbuild $FrainetProject -getProperty:TargetPath -p:Configuration=Release).Trim()
 
 function Invoke-Gate([string]$Name, [scriptblock]$Command) {
     $started = Get-Date
