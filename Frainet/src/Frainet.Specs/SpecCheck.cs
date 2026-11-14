@@ -419,7 +419,8 @@ public static partial class SpecCheck
         }
     }
 
-    [GeneratedRegex(@"^# Spec: ([A-Z]+\.\d+) \S")]
+    // A journey id may carry a product before it (B7.HRS.01): upper-case parts, then the journey's number.
+    [GeneratedRegex(@"^# Spec: ((?:[A-Z][A-Z0-9]*\.)+\d+) \S")]
     private static partial Regex TitleLine();
 
     [GeneratedRegex(@"^R(\d+) \S")]

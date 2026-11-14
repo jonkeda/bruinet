@@ -48,6 +48,6 @@ public sealed class LoginFlowTests : BlazorSampleTestBase
         var error = Record.Exception(() => page.LoginButton.Click());
 
         Assert.NotNull(error);
-        Assert.Contains("enabled", error.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("disabled", error.Message, StringComparison.OrdinalIgnoreCase);
     }
 }

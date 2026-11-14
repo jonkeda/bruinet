@@ -7,7 +7,8 @@ from an app that runs. The example is [TOD.02 Create a todo](../specs/todo/TOD.0
 ## The file
 
 One journey per file: `specs/<product>/<journey id>.spec.md`, such as `specs/todo/TOD.02.spec.md`.
-It starts with `# Spec: <journey id> <journey name>` and a table:
+A journey id is a module's letters and a number (`TOD.02`); a site with several products may put the
+product's letters in front (`B7.HRS.01`). It starts with `# Spec: <journey id> <journey name>` and a table:
 
 | Field | Holds |
 | --- | --- |

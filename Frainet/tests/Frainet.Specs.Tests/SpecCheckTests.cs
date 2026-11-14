@@ -76,6 +76,14 @@ public sealed class SpecCheckTests
     }
 
     [Fact]
+    public void AJourneyId_MayCarryAProduct()
+    {
+        var withProduct = Tod02.Replace("TOD.02", "B7.TOD.02");
+
+        Assert.Empty(SpecCheck.Check(withProduct));
+    }
+
+    [Fact]
     public void AnOpenQuestionWithAProposal_InADraft_IsFine()
     {
         var draft = Tod02.Replace("| Status | accepted 2026-10-26 |", "| Status | draft |")

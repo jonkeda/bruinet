@@ -20,11 +20,8 @@ internal static class LocatorExtensions
         // a page of a few thousand elements, past a read's cap on a slow machine.
         var root = Scope(page, frame, ":root");
 
-        if (locator.Parent != null)
-        {
-            root = ToPlaywrightLocator(root, locator.Parent);
-        }
-
+        // The locator's parents are applied by the overload below, once: applying them here too looked for the parent
+        // inside itself (a table inside the table), and a child of a control was never found.
         return ToPlaywrightLocator(root, locator);
     }
 

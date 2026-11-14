@@ -150,6 +150,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- A locator with a parent, looked for from the page, applied its parents twice (a table inside the table), so a
+  control's child was never found.
+- `LoginFlow_WhenLoginNeverReenables_…` looked for "enabled" where the message says the button "is disabled".
+- Frainet: a journey id may carry a product (`B7.HRS.01`).
 - Scraper: pattern detection no longer fails on rows inside a web component's shadow root; their host is the collection.
 - Scraper: `Never click` and `Always click` selectors reach into shadow roots (they matched nothing there, so a guard on a web
   component's element guarded nothing); an `Always click` element is clicked even when nothing in it says it can be.
