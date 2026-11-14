@@ -7,7 +7,8 @@ namespace Frainet.Specs;
 /// <param name="Name">The test method's or the scenario's name.</param>
 /// <param name="File">The file it is in.</param>
 /// <param name="Line">The 1-based line of the trait or tag.</param>
-public sealed record RuleReach(string Rule, string Name, string File, int Line);
+/// <param name="Container">A C# test's class; null for a scenario.</param>
+public sealed record RuleReach(string Rule, string Name, string File, int Line, string? Container = null);
 
 /// <summary>A spec's rules and the tests that reach them.</summary>
 /// <param name="Rules">Every rule of the spec, with the tests that name it; none for an untested rule.</param>
@@ -83,7 +84,7 @@ public static partial class RuleTrace
 
             foreach (var rule in rules.ToList())
             {
-                yield return new(rule, NameAfter(lines, i, isCode), file, i + 1);
+                yield return new(rule, NameAfter(lines, i, isCode), file, i + 1, isCode ? ClassBefore(lines, i) : null);
             }
         }
     }
@@ -101,6 +102,23 @@ public static partial class RuleTrace
 
         return "(no name)";
     }
+
+    private static string? ClassBefore(string[] lines, int from)
+    {
+        for (var i = from; i >= 0; i--)
+        {
+            var match = ClassName().Match(lines[i]);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+        }
+
+        return null;
+    }
+
+    [GeneratedRegex(@"\bclass\s+(\w+)")]
+    private static partial Regex ClassName();
 
     [GeneratedRegex(@"Trait\(\s*""Rule""\s*,\s*""([^""]+)""\s*\)")]
     private static partial Regex RuleTrait();

@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Frainet F1: `frainet trace … --results <trx>` gives each rule a state (not reached, not run, failing, passing) and
+  fails unless every rule passes.
+- `tools/Scripts/site-loop.ps1`: the site loop's orchestrator. Per module of a suite's `.testing/100-Loops.md` it runs
+  the gates (spec checked and accepted, build, trace, green runs with every rule passing), with `-Agent claude` an
+  agent on a failed gate, and writes the state back and a morning report.
+- Skills `spec-from-app`, `scenario-from-spec`, `run-triage`, `friction-log` and `site-setup`.
+- An element marked `aria-busy="true"` is not acted on until it is done, in every Html control.
 - `TableControl.WaitHasRows` / `AssertHasRows`: a table whose rows load after it.
 - A control's string locator of an element name and a class (`h1.page-header-title`, `button.v-btn`) is CSS, not an
   automation id.
@@ -150,6 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- "accepted … and did not take it" names a list's items, not `System.String[]`.
+- Frainet: a full stop after a number ("00. Intern") is not a sentence break.
 - A locator with a parent, looked for from the page, applied its parents twice (a table inside the table), so a
   control's child was never found.
 - `LoginFlow_WhenLoginNeverReenables_…` looked for "enabled" where the message says the button "is disabled".

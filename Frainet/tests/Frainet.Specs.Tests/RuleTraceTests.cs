@@ -98,4 +98,55 @@ public sealed class RuleTraceTests
 
         Assert.Equal(("ABC.01.feature.md", 3), (reach.File, reach.Line));
     }
+
+    private const string Trx = """
+        <?xml version="1.0" encoding="utf-8"?>
+        <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+          <Results>
+            <UnitTestResult testName="Ns.ThingTests.One_Holds" outcome="Passed" />
+            <UnitTestResult testName="Ns.ThingTests.OneAndTwo_Hold(value: 1)" outcome="Failed" />
+            <UnitTestResult testName="Ns.OtherTests.One_Holds" outcome="Failed" />
+          </Results>
+        </TestRun>
+        """;
+
+    [Fact]
+    public void Results_GiveEachRuleAState()
+    {
+        var trace = RuleTrace.Trace(Spec, [("ThingTests.cs", Code), ("ABC.01.feature.md", Scenario)]);
+
+        var states = RuleResults.States(trace, RuleResults.ParseTrx(Trx).ToList());
+
+        Assert.Equal(RuleState.Failing, states["ABC.01.R1"]);
+        Assert.Equal(RuleState.Failing, states["ABC.01.R2"]);
+        Assert.Equal(RuleState.NotRun, states["ABC.01.R3"]);
+    }
+
+    [Fact]
+    public void A_test_is_matched_by_its_class_not_only_its_method()
+    {
+        var trace = RuleTrace.Trace(Spec, [("ThingTests.cs", Code)]);
+        var outcomes = new[]
+        {
+            new TestOutcome("Ns.ThingTests.One_Holds", "Passed"),
+            new TestOutcome("Ns.ThingTests.OneAndTwo_Hold(value: 1)", "Passed"),
+            new TestOutcome("Ns.OtherTests.One_Holds", "Failed"),
+        };
+
+        var reach = Assert.Single(trace.Rules["ABC.01.R1"], r => r.Name == "One_Holds");
+        Assert.Equal("ThingTests", reach.Container);
+        Assert.Equal(RuleState.Passing, RuleResults.States(trace, outcomes)["ABC.01.R1"]);
+        Assert.Equal(RuleState.Passing, RuleResults.States(trace, outcomes)["ABC.01.R2"]);
+        Assert.Equal(RuleState.NotRun, RuleResults.States(trace, outcomes.Take(1).ToList())["ABC.01.R1"]);
+    }
+
+    [Fact]
+    public void A_scenario_is_matched_by_its_name_in_the_tests_arguments()
+    {
+        var trace = RuleTrace.Trace(Spec, [("ABC.01.feature.md", Scenario)]);
+        var outcomes = new[] { new TestOutcome("Ns.UatTests.Scenario_Passes(filePath: \"ABC.01.feature.md\", scenarioName: \"ABC.01.1 Three holds on the screen\")", "Passed") };
+
+        Assert.Equal(RuleState.Passing, RuleResults.States(trace, outcomes)["ABC.01.R3"]);
+        Assert.Equal(RuleState.NotReached, RuleResults.States(trace, outcomes)["ABC.01.R1"]);
+    }
 }

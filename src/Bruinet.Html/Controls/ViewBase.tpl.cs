@@ -100,7 +100,13 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     bool IControlHost<IHtmlElement>.ChecksVisibilityBeforeAction(IHtmlElement element) => !element.WaitsForActionability;
 
-    void IControlHost<IHtmlElement>.EnsureReadyForAction(IHtmlElement element) => EnsureReadyForActionCore(element);
+    void IControlHost<IHtmlElement>.EnsureReadyForAction(IHtmlElement element)
+    {
+        // An element that says it is still loading (aria-busy) is not acted on yet: its children may refuse the action.
+        if (string.Equals(element.GetAttribute("aria-busy"), "true", StringComparison.OrdinalIgnoreCase))
+            throw new ElementNotReadyException(Locator, NotReadyReason.Other, "it is busy (aria-busy)");
+        EnsureReadyForActionCore(element);
+    }
 
     ElementNotFoundException IControlHost<IHtmlElement>.NotFound() => NotFound();
 
@@ -195,10 +201,16 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
         {
             throw confirmation.Failure(Locator, action, lastError => new InvalidOperationException(
                 $"The element '{Locator}' accepted {action} and did not take it: expected {expected}, "
-                + $"it reads '{confirmation.LastValue}'. The action ran once and is not repeated.",
+                + $"it reads '{Readable(confirmation.LastValue)}'. The action ran once and is not repeated.",
                 lastError));
         }
     }
+
+    // A list read (a select's selections) names its items, not its type.
+    private static string? Readable(object? value)
+        => value is System.Collections.IEnumerable items and not string
+            ? "[" + string.Join(", ", items.Cast<object?>()) + "]"
+            : value?.ToString();
 
     /// <summary>
     /// Checks any readiness this control needs before it is acted on. Throw

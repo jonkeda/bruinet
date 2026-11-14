@@ -206,10 +206,17 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
         {
             throw confirmation.Failure(Locator, action, lastError => new InvalidOperationException(
                 $"The view '{Locator}' accepted {action} and did not take it: expected {expected}, "
-                + $"it reads '{confirmation.LastValue}'. The action ran once and is not repeated.",
+                + $"it reads '{Readable(confirmation.LastValue)}'. The action ran once and is not repeated.",
                 lastError));
         }
     }
+
+
+    // A list read (a select's selections) names its items, not its type.
+    private static string? Readable(object? value)
+        => value is System.Collections.IEnumerable items and not string
+            ? "[" + string.Join(", ", items.Cast<object?>()) + "]"
+            : value?.ToString();
 
     /// <summary>
     /// Checks any readiness this control needs before it is acted on. Throw

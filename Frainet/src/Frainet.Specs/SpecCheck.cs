@@ -426,7 +426,8 @@ public static partial class SpecCheck
     [GeneratedRegex(@"^R(\d+) \S")]
     private static partial Regex ExampleHeading();
 
-    [GeneratedRegex(@"[.!?] +[A-Z]")]
+    // A full stop after a number is a numbering ("00. Intern", a status), not a sentence's end.
+    [GeneratedRegex(@"(?<![0-9])[.!?] +[A-Z]")]
     private static partial Regex SentenceBreak();
 
     [GeneratedRegex(@"`[^`]+`")]

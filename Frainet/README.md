@@ -31,12 +31,20 @@ dotnet run --project src/Frainet.Cli -- trace specs/todo/TOD.02.spec.md ../sampl
 ```
 
 ```bash
+dotnet test ../samples/Todo/tests --logger trx --results-directory TestResults/todo
+dotnet run --project src/Frainet.Cli -- trace specs/todo/TOD.02.spec.md ../samples/Todo/tests --results TestResults/todo
+```
+
+```bash
 dotnet test Frainet.slnx
 ```
 
 The first checks every spec against the [format](docs/spec-format.md) and says what breaks it,
 line by line. The second lists each rule of a spec with the tests that reach it, and fails on a
-rule no test reaches. The third runs both checks on the specs and on broken copies.
+rule no test reaches. With `--results` (the `.trx` files of a run, or their folder) it gives each
+rule a state, as F1 asks: not reached, not run, failing, or passing, and fails unless every rule
+passes; a C# test is matched by its class and method, a scenario by its name. The last runs the
+checks on the specs and on broken copies.
 
 ## How it grows
 

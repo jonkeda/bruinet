@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Bruinet.Core.Calls;
 using Bruinet.Core.Exceptions;
+using Bruinet.Html.Controls;
 using Bruinet.Html.Controls.Text;
 
 namespace Bruinet.Html.Tests;
@@ -28,6 +29,15 @@ public class ConfirmTests
     private sealed class Page(IHtmlTestContext context) : PageObjectBase<Page>(context)
     {
         public TextInputControl<Page> Title => new(this, Locator.ByAutomationId("Title"));
+
+        public Picker Pick => new(this);
+    }
+
+    /// <summary>A control whose effect reads as a list, as a select's selections do.</summary>
+    private sealed class Picker(IHtmlScope<Page> page) : ViewBase<Page>(page, Locator.ByAutomationId("Title"))
+    {
+        public Page Choose(string wanted) => RunDoWithElement(element => ActAndConfirm<IReadOnlyList<string>>(
+            "Choose", element.Click, () => ["Project 001", "Other"], selected => selected!.Contains(wanted), $"'{wanted}' selected", 200));
     }
 
     [Fact]
@@ -54,6 +64,29 @@ public class ConfirmTests
         _input.Setup(e => e.InputValue).Returns(() => CallBudget.RemainingOr(0) > 150 ? filled : string.Empty);
 
         new Page(_context.Object).Title.SetText("abc", timeoutMs: 300);
+
+        _input.Verify(e => e.Fill("abc"), Times.Once);
+    }
+
+    [Fact]
+    public void AnEffectReadAsAList_IsNamedByItsItems()
+    {
+        var error = Record.Exception(() => new Page(_context.Object).Pick.Choose("00002 - Project 001"));
+
+        Assert.Contains("it reads '[Project 001, Other]'", Assert.IsType<InvalidOperationException>(error).Message);
+    }
+
+    [Fact]
+    public void ABusyElement_IsNotActedOn_UntilItIsDone()
+    {
+        var busy = true;
+        var clock = Stopwatch.StartNew();
+        _input.Setup(e => e.GetAttribute("aria-busy")).Returns(() => (busy = clock.ElapsedMilliseconds < 150) ? "true" : "false");
+        var filled = string.Empty;
+        _input.Setup(e => e.Fill(It.IsAny<string>())).Callback<string>(value => { Assert.False(busy); filled = value; });
+        _input.Setup(e => e.InputValue).Returns(() => filled);
+
+        new Page(_context.Object).Title.SetText("abc", timeoutMs: 1000);
 
         _input.Verify(e => e.Fill("abc"), Times.Once);
     }

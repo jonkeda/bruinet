@@ -84,6 +84,14 @@ public sealed class SpecCheckTests
     }
 
     [Fact]
+    public void ANumberedValue_InARule_IsNotASentenceBreak()
+    {
+        var numbered = Tod02.Replace("shows no error. |", "shows no error, as \"00. Intern\" does. |");
+
+        Assert.Empty(SpecCheck.Check(numbered));
+    }
+
+    [Fact]
     public void AnOpenQuestionWithAProposal_InADraft_IsFine()
     {
         var draft = Tod02.Replace("| Status | accepted 2026-10-26 |", "| Status | draft |")
