@@ -89,7 +89,8 @@ public static class PageDrafter
         // What a part already covers is left out and named, so the page uses the part: the project's own controls and
         // components (by their header's signature), a control library's elements (## Control libraries), a table's header.
         var snapshot = index.Read(basis);
-        var parts = ProjectCode.Read(project)
+        var code = ProjectCode.Read(project);
+        var parts = code
             .Where(c => c.Kind != CodeKind.Page && c.Header?.Control is { Length: > 0 })
             .GroupBy(c => c.Header!.Control!, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.First().Name.Split('<')[0], StringComparer.Ordinal);
@@ -98,6 +99,10 @@ public static class PageDrafter
             .ToArray();
         opened = opened.Where(s => covered.All(c => c.Suggestion != s)).ToList();
         var members = Unique(opened.Where(m => m.Stable && !Containers.Contains(m.Control)).ToList(), className);
+        // A name the person's part already has is theirs: the draft leaves it out rather than not build.
+        var own = PersonsMembers(code, className);
+        var taken = members.Where(m => own.Contains(m.Name)).ToArray();
+        members = members.Except(taken).ToList();
         var unstable = opened.Where(m => !m.Stable).ToArray();
         var containers = opened.Where(m => m.Stable && Containers.Contains(m.Control)).ToArray();
         var header = new ScrapedHeader { Page = page.Key, From = $"{basis.Session}/{basis.Event.Snapshot}", Hash = SnapshotFile.ContentHash(index.Read(basis)) };
@@ -106,15 +111,36 @@ public static class PageDrafter
         var coveredLines = covered.GroupBy(c => c.By!, StringComparer.Ordinal)
             .Select(g => $"{g.Key}: {string.Join(", ", g.Select(c => $"{c.Suggestion.Name} ({c.Suggestion.Control})").Distinct(StringComparer.Ordinal))}")
             .ToArray();
+        if (taken.Length > 0)
+            coveredLines = [.. coveredLines, $"{className}.cs (your part, by name): {string.Join(", ", taken.Select(m => $"{m.Name} ({m.Control})"))}"];
         return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines), members, unstable) { AfterClick = afterClick };
     }
 
     // What covers a node, if anything: a table's header, a part of the project (by signature, the node or an ancestor,
     // across shadow roots), or a control library whose class prefix the node or an ancestor carries.
+    // The members of a page's other parts: the page class's members (its parts merged) less its draft's own.
+    private static HashSet<string> PersonsMembers(IReadOnlyList<CodeClass> code, string className)
+    {
+        var page = code.FirstOrDefault(c => c.Kind == CodeKind.Page && c.Name.Split('<')[0] == className);
+        if (page is null)
+            return [];
+        var drafted = page.File.EndsWith(Extension, StringComparison.OrdinalIgnoreCase) && File.Exists(page.File)
+            ? ProjectCode.ReadText(File.ReadAllText(page.File), page.File, page.Project).FirstOrDefault()?.Members.Select(m => m.Name) ?? []
+            : [];
+        return page.Members.Select(m => m.Name).Except(drafted, StringComparer.Ordinal).ToHashSet(StringComparer.Ordinal);
+    }
+
     private static string? CoveredBy(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyDictionary<string, string> parts, IReadOnlyList<ControlLibrary> libraries)
     {
-        for (var n = node; ; n = snapshot[n.Parent])
+        // A library's classes cover an element near them, not a whole page: an app's root (`v-application`) holds
+        // everything, and a web component's shadow root is its own, not the library's.
+        const int LibraryReach = 3;
+        var level = 0;
+        var inLibraryReach = true;
+        for (var n = node; ; n = snapshot[n.Parent], level++)
         {
+            if (n.Kind == ScrapeNodeKind.ShadowRoot)
+                inLibraryReach = false;
             if (n.Kind == ScrapeNodeKind.Element)
             {
                 if (n.Type is "thead" or "th" || n.Role is "columnheader")
@@ -122,7 +148,8 @@ public static class PageDrafter
                 if (parts.TryGetValue(NodeSignature.Of(snapshot, n), out var part))
                     return $"{part} (a part of this project)";
                 var classes = (n.Attribute("class") ?? string.Empty).Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (libraries.FirstOrDefault(l => classes.Any(c => c.StartsWith(l.ClassPrefix, StringComparison.Ordinal))) is { } library)
+                if (inLibraryReach && level <= LibraryReach
+                    && libraries.FirstOrDefault(l => classes.Any(c => c.StartsWith(l.ClassPrefix, StringComparison.Ordinal))) is { } library)
                     return $"{library.Library} (classes {library.ClassPrefix})";
             }
             if (n.Parent == 0)

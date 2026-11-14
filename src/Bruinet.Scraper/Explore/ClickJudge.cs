@@ -26,7 +26,7 @@ public static class ClickJudge
     public static Judgement Judge(ScrapeSnapshot snapshot, ScrapeNode node, JudgeContext context)
     {
         var settings = context.Settings;
-        var text = TextOf(snapshot, node);
+        var text = snapshot.TextWithin(node);
         var label = node.Name ?? text ?? node.Attribute("title") ?? node.Attribute("data-testid") ?? node.Type;
 
         Judgement Of(Verdict verdict, JudgedAction action, string reason, string? url = null) => new(node.Number, verdict, action, reason, label, url);
@@ -92,7 +92,7 @@ public static class ClickJudge
         if (settings.NeverVisit.FirstOrDefault(v => Covers(v, target)) is { } never)
             return Of(Verdict.Unsafe, $"never visit {never} (the config)", target.AbsoluteUri);
         var path = Uri.UnescapeDataString(target.PathAndQuery + target.Fragment);
-        if (DangerWords.Find([path, TextOf(snapshot, node), node.Name, node.Attribute("title")], settings.IsOn) is { } danger)
+        if (DangerWords.Find([path, snapshot.TextWithin(node), node.Name, node.Attribute("title")], settings.IsOn) is { } danger)
             return Of(Verdict.Unsafe, $"danger word '{danger.Word}' ({danger.Category})", target.AbsoluteUri);
         return Of(Verdict.Safe, "a link to a page of the app", target.AbsoluteUri);
     }
@@ -176,7 +176,7 @@ public static class ClickJudge
     private static bool IsPager(ScrapeSnapshot snapshot, ScrapeNode node)
     {
         string[] pagers = ["pager", "pagination", "paginator", "next", "previous", "prev", "volgende", "vorige", "weiter", "zuruck", "suivant", "precedent"];
-        if (pagers.Any(p => DangerWords.Contains(string.Join(' ', node.Name, TextOf(snapshot, node), node.Attribute("title"), node.Attribute("data-testid"), node.Attribute("class")), p)))
+        if (pagers.Any(p => DangerWords.Contains(string.Join(' ', node.Name, snapshot.TextWithin(node), node.Attribute("title"), node.Attribute("data-testid"), node.Attribute("class")), p)))
             return true;
         var parent = node.Parent;
         for (var depth = 0; depth < 3 && parent != 0; depth++, parent = snapshot[parent].Parent)
@@ -205,22 +205,6 @@ public static class ClickJudge
         url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
             ? target.AbsoluteUri.StartsWith(url, StringComparison.OrdinalIgnoreCase)
             : (target.AbsolutePath + target.Fragment).StartsWith(url, StringComparison.OrdinalIgnoreCase);
-
-    // An element's text, or a child's (a button whose label is in a span).
-    private static string? TextOf(ScrapeSnapshot snapshot, ScrapeNode node)
-    {
-        if (node.Text is { Length: > 0 })
-            return node.Text;
-        foreach (var child in snapshot.ChildrenOf(node.Number))
-        {
-            if (child.Text is { Length: > 0 } text)
-                return text;
-            foreach (var grandchild in snapshot.ChildrenOf(child.Number))
-                if (grandchild.Text is { Length: > 0 } deeper)
-                    return deeper;
-        }
-        return null;
-    }
 }
 
 /// <summary>What a judgement is about: the settings, the app's hosts, and which elements the settings' selectors matched in the page.</summary>

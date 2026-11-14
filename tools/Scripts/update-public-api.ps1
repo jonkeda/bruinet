@@ -30,7 +30,7 @@ $added = [System.Collections.Generic.HashSet[string]]::new()
 $removed = [System.Collections.Generic.HashSet[string]]::new()
 foreach ($framework in $frameworks -split ';' | Where-Object { $_ }) {
     $log = Join-Path ([System.IO.Path]::GetTempPath()) "public-api-$framework.sarif"
-    dotnet build $Project -f $framework -v:q /nr:false -p:TreatWarningsAsErrors=false "-p:ErrorLog=$log%2Cversion=2.1" | Out-Null
+    dotnet build $Project -f $framework --no-incremental -v:q /nr:false -p:TreatWarningsAsErrors=false "-p:ErrorLog=$log%2Cversion=2.1" | Out-Null
     $results = (Get-Content $log -Raw | ConvertFrom-Json).runs.results
     foreach ($result in $results | Where-Object ruleId -eq 'RS0016') {
         [void] $added.Add($result.properties.customProperties.APIName)

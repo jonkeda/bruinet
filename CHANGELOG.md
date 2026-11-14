@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `TableControl.WaitHasRows` / `AssertHasRows`: a table whose rows load after it.
+- A control's string locator of an element name and a class (`h1.page-header-title`, `button.v-btn`) is CSS, not an
+  automation id.
+- Scraper drafts: a library covers only elements near its classes and not inside a web component; a control on a
+  concrete control (`TableControl`, `VDataTable`) counts as a project part; a name the person's part already has is
+  left out instead of breaking the build. Explore names an element by the text in its shadow root
+  (`b7-navbar-button` is "Contacts"). `update-public-api.ps1` rebuilds fully, so an up-to-date build still logs.
 - Scraper drafts: a page object is named from its path and hash route (`ContactCreatePage`) and passes them as its
   URL. What the project's parts (by header signature), a control library (by class prefix) or a table's header cover
   is left out of the draft and named in a comment. An id of a word and a counter (`input-47`) is not taken as stable.

@@ -24,6 +24,26 @@ public sealed record ScrapeSnapshot
     /// <summary>A node's children, in document order; 0 gives the roots.</summary>
     public IEnumerable<ScrapeNode> ChildrenOf(int number) => Children()[number];
 
+    /// <summary>
+    /// A node's text, or else the first text below it, nearest first: a button's label in a span, or in a web
+    /// component's shadow root (Bouw7's <c>b7-navbar-button</c>: its shadow root, then a <c>div</c>).
+    /// </summary>
+    /// <param name="node">The node.</param>
+    /// <param name="depth">How many levels below it to look.</param>
+    public string? TextWithin(ScrapeNode node, int depth = 3)
+    {
+        if (node.Text is { Length: > 0 })
+            return node.Text;
+        var level = new List<ScrapeNode> { node };
+        for (var i = 0; i < depth && level.Count > 0; i++)
+        {
+            level = level.SelectMany(n => ChildrenOf(n.Number)).ToList();
+            if (level.FirstOrDefault(n => n.Text is { Length: > 0 }) is { } found)
+                return found.Text;
+        }
+        return null;
+    }
+
     // Built once per node list: a page of 18,000 nodes asks for every node's children.
     private (IReadOnlyList<ScrapeNode> Nodes, ILookup<int, ScrapeNode> Lookup)? _children;
 

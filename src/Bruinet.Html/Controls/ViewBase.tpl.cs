@@ -280,8 +280,24 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
                value.Contains('[') ||
                value.Contains(':') ||
                value.Contains('>') ||
-               value.Contains(' ');
+               value.Contains(' ') ||
+               IsTagWithClass(value);
     }
+
+    // `h1.page-header-title` and `button.v-btn` are CSS, not ids: a known element name, then a class.
+    private static bool IsTagWithClass(string value)
+    {
+        var dot = value.IndexOf('.', StringComparison.Ordinal);
+        return dot > 0 && dot < value.Length - 1 && HtmlTags.Contains(value[..dot]);
+    }
+
+    private static readonly HashSet<string> HtmlTags = new(StringComparer.Ordinal)
+    {
+        "a", "article", "aside", "button", "dd", "details", "dialog", "div", "dl", "dt", "fieldset", "footer", "form",
+        "h1", "h2", "h3", "h4", "h5", "h6", "header", "i", "img", "input", "label", "legend", "li", "main", "nav", "ol",
+        "option", "p", "section", "select", "span", "strong", "summary", "table", "tbody", "td", "textarea", "th",
+        "thead", "tr", "ul",
+    };
 
     #region Keys
 

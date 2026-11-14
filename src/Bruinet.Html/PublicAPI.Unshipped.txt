@@ -75,6 +75,7 @@ Bruinet.Html.Controls.Collection.ListControl<TScope>.WaitItemTextsHasItem(string
 Bruinet.Html.Controls.Collection.TableControl<TScope>
 Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertCellText(int row, int column, string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertColumnCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertHasRows(string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertHeaderText(int column, string? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertRowCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Collection.TableControl<TScope>.AssertRowTexts(int row, System.Collections.Generic.IReadOnlyList<string!>? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -88,6 +89,7 @@ Bruinet.Html.Controls.Collection.TableControl<TScope>.TableControl(Bruinet.Html.
 Bruinet.Html.Controls.Collection.TableControl<TScope>.TableControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitCellText(int row, int column, string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitColumnCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitHasRows(int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitHeaderText(int column, string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitRowCount(int? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitRowTexts(int row, System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool

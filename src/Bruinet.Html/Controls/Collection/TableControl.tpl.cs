@@ -27,6 +27,18 @@ public partial class TableControl<TScope> : ViewBase<TScope>
         return element.FindElements(Locator.ByCss("tbody tr")).Count;
     }
 
+    /// <summary>Waits until the table has at least one body row: rows often load after the table.</summary>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    public bool WaitHasRows(int? timeoutMs = null)
+        => RunWaitWithElement(true, element => GetRowCountCore(element) > 0, timeoutMs);
+
+    /// <summary>Asserts the table has at least one body row, waiting for its rows to load.</summary>
+    /// <param name="message">Optional failure message.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    public TScope AssertHasRows(string? message = null, int? timeoutMs = null)
+        => RunAssertWithElement(true, element => GetRowCountCore(element) > 0, (actual, expected) => actual == expected,
+            message ?? $"Expected the table {Locator} to have rows.", timeoutMs);
+
     /// <summary>How many columns the table has: its header cells, or else its first row's cells.</summary>
     /// <param name="element">The pre-found element.</param>
     protected virtual int? GetColumnCountCore(IHtmlElement element)

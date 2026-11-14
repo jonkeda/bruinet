@@ -337,7 +337,7 @@ internal sealed record NodeRef(string Key, int Number, string Label)
         {
             var signature = string.Join('|', node.Type, node.Role, node.Name, node.Text, node.Attribute("data-testid"), node.Attribute("id"), node.Attribute("href"));
             var ordinal = counts[signature] = counts.GetValueOrDefault(signature) + 1;
-            refs[node.Number] = new NodeRef($"{signature}#{ordinal}", node.Number, node.Name ?? node.Text ?? node.Type);
+            refs[node.Number] = new NodeRef($"{signature}#{ordinal}", node.Number, node.Name ?? snapshot.TextWithin(node) ?? node.Attribute("title") ?? node.Type);
         }
         return refs;
     }

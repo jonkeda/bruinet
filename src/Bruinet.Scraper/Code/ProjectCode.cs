@@ -45,7 +45,8 @@ public static class ProjectCode
         foreach (var type in root.DescendantNodes().OfType<ClassDeclarationSyntax>())
         {
             var baseName = type.BaseList?.Types.Select(t => BaseName(t.Type)).FirstOrDefault(n => n is not null);
-            if (Kind(baseName) is not { } kind)
+            // A class on a concrete control (TableControl, VDataTable) is a control too, when its base says so or its header does.
+            if ((Kind(baseName) ?? (baseName?.EndsWith("Control", StringComparison.Ordinal) == true || header?.Control is { Length: > 0 } ? CodeKind.Control : null)) is not { } kind)
                 continue;
             var members = Members(type);
             yield return new CodeClass(

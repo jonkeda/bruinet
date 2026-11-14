@@ -127,6 +127,47 @@ public sealed class PageDrafterTests : IDisposable
         Assert.Contains("// its table's header (part of the table): SortDate (", draft.Code, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void A_library_covers_only_what_is_near_its_classes_a_control_on_a_concrete_base_is_a_part_and_your_part_s_names_are_yours()
+    {
+        var folder = Path.Combine(_solution, "Shop.UITests");
+        Directory.CreateDirectory(Path.Combine(folder, "Components"));
+        Directory.CreateDirectory(Path.Combine(folder, "Pages"));
+        File.WriteAllText(Path.Combine(folder, "Shop.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
+        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), "## App\n\n| Field | Value |\n| --- | --- |\n| StartUrl | https://shop.example/ |\n\n## Control libraries\n\n| Class prefix | Library |\n| --- | --- |\n| v- | Shop.Vuetify |\n");
+        File.WriteAllText(Path.Combine(folder, "Components", "B7Table.tpl.cs"), "// <scraped control=\"b7-table||hydrated|#shadow\" from=\"s/f#7\" />\nnamespace Shop.UITests.Components;\n\npublic partial class B7Table<TScope> : TableControl<TScope>\n{\n}\n");
+        File.WriteAllText(Path.Combine(folder, "Pages", "OrderPage.scraped.cs"), "// <scraped page=\"/orders\" from=\"s/f\" />\nnamespace Shop.UITests.Pages;\n\npublic sealed partial class OrderPage(IHtmlTestContext context) : PageObjectBase<OrderPage>(context)\n{\n}\n");
+        File.WriteAllText(Path.Combine(folder, "Pages", "OrderPage.cs"), "namespace Shop.UITests.Pages;\n\npublic sealed partial class OrderPage\n{\n    public LabelControl<OrderPage> Title => new(this, \"h1\");\n}\n");
+        var project = ScrapeProject.Open(folder);
+        var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
+        session.AddPage(new ScrapeSnapshot
+        {
+            Platform = "html",
+            Location = "https://shop.example/orders",
+            Title = "Orders",
+            CapturedAt = DateTimeOffset.UnixEpoch.AddMinutes(1),
+            Nodes =
+            [
+                N(1, 0, "body"),
+                N(2, 1, "div", null, ("class", "v-application")), N(3, 2, "main"), N(4, 3, "section"), N(5, 4, "div"),
+                N(6, 5, "button", "Save", ("data-testid", "save"), ("type", "button")),
+                N(7, 2, "b7-table", null, ("class", "hydrated")),
+                new() { Number = 8, Parent = 7, Kind = ScrapeNodeKind.ShadowRoot, Bounds = new(0, 0, 10, 10) },
+                N(9, 8, "button", "Sort", ("data-testid", "sort"), ("type", "button")),
+                N(10, 3, "div", null, ("class", "v-input")), N(11, 10, "input", null, ("data-testid", "name"), ("type", "text")),
+                N(12, 5, "h1", "Orders", ("data-testid", "title")),
+            ],
+        });
+        var index = project.Index();
+
+        var draft = PageDrafter.Draft(project, index, index.Page("/orders")!, "OrderPage");
+
+        Assert.Equal(["Save"], draft.Members.Select(m => m.Name));
+        Assert.Contains("// B7Table (a part of this project): Sort (", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("// Shop.Vuetify (classes v-): Name (", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("// OrderPage.cs (your part, by name): Title (", draft.Code, StringComparison.Ordinal);
+    }
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
