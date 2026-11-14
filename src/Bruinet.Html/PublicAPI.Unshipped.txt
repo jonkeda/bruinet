@@ -9,6 +9,8 @@ Bruinet.Html.Collections.ItemObjectBase<TSelf>
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.Html.Collections.IHtmlCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
 Bruinet.Html.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.Html.Interfaces.IHtmlPage?
 Bruinet.Html.Context.HtmlTestContextOptions
+Bruinet.Html.Context.HtmlTestContextOptions.AllowedHosts.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.Html.Context.HtmlTestContextOptions.AllowedHosts.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.BaseUrl.get -> string?
 Bruinet.Html.Context.HtmlTestContextOptions.BaseUrl.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.BrowserType.get -> string!
@@ -20,8 +22,16 @@ Bruinet.Html.Context.HtmlTestContextOptions.EnableTracing.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.Headless.get -> bool
 Bruinet.Html.Context.HtmlTestContextOptions.Headless.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.HtmlTestContextOptions() -> void
+Bruinet.Html.Context.HtmlTestContextOptions.Locale.get -> string?
+Bruinet.Html.Context.HtmlTestContextOptions.Locale.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.get -> bool
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.set -> void
+Bruinet.Html.Context.HtmlTestContextOptions.StorageStatePath.get -> string?
+Bruinet.Html.Context.HtmlTestContextOptions.StorageStatePath.set -> void
+Bruinet.Html.Context.HtmlTestContextOptions.ViewportHeight.get -> int?
+Bruinet.Html.Context.HtmlTestContextOptions.ViewportHeight.set -> void
+Bruinet.Html.Context.HtmlTestContextOptions.ViewportWidth.get -> int?
+Bruinet.Html.Context.HtmlTestContextOptions.ViewportWidth.set -> void
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.Buttons.ButtonControl<TScope>.ButtonControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
@@ -93,6 +103,11 @@ Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.SelectTab(i
 Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.SelectTab(string! text) -> TScope
 Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.TabContainerControl(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator, string! tabSelector = "[role='tab']") -> void
 Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.TabCount.get -> int
+Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>
+Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.IsSelected(int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.Open(int? timeoutMs = null) -> TSelf!
+Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.Tab.get -> Bruinet.Html.Controls.Buttons.ButtonControl<TParent>!
+Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.TabPageBase(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! tab, Bruinet.Core.Locators.Locator! panel) -> void
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContainerBase(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.ContainerBase<TParent, TScope>.ContainerRoot.get -> Bruinet.Html.Interfaces.IHtmlElement!
@@ -128,12 +143,15 @@ Bruinet.Html.Controls.Display.LabelControl<TScope>
 Bruinet.Html.Controls.Display.LabelControl<TScope>.LabelControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.Display.LabelControl<TScope>.LabelControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
 Bruinet.Html.Controls.Display.ProgressControl<TScope>
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertMax(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertPercentage(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertPercentageAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertPercentageAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertPercentageGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertPercentageLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertValue(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
@@ -141,15 +159,20 @@ Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertValueGreaterThan(dou
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetMax(int? timeoutMs = null) -> double?
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetPercentage(int? timeoutMs = null) -> double?
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgress(int? timeoutMs = null) -> double?
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetValue(int? timeoutMs = null) -> double?
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminate() -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.ProgressControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.ProgressControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitComplete(int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitMax(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitPercentage(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitPercentageAtLeast(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitPercentageAtMost(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitPercentageGreaterThan(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitPercentageLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitValue(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitValueAtLeast(double? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitValueAtMost(double? expected, int? timeoutMs = null) -> bool
@@ -246,6 +269,7 @@ Bruinet.Html.Controls.Text.TextInputControl<TScope>.Enter(string? text, int? tim
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetValue(int? timeoutMs = null) -> string?
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.IsReadOnly() -> bool
+Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetSecret(string! secret, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.Submit(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
@@ -483,6 +507,7 @@ override Bruinet.Html.Controls.Container.FrameScope<TParent>.Self.get -> Bruinet
 override Bruinet.Html.Controls.Container.FrameScope<TParent>.TryFindRootElement() -> Bruinet.Html.Interfaces.IHtmlElement?
 override Bruinet.Html.Controls.Container.ScrollContainerControl<TParent, TScope>.Self.get -> TScope
 override Bruinet.Html.Controls.Container.TabContainerControl<TParent, TScope>.Self.get -> TScope
+override Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.Self.get -> TSelf!
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.FindAllIn(Bruinet.Html.Interfaces.IHtmlElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.Html.Interfaces.IHtmlElement!>!
 override Bruinet.Html.Controls.ContainerBase<TParent, TScope>.IsShown(Bruinet.Html.Interfaces.IHtmlElement! root) -> bool
@@ -519,6 +544,8 @@ virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetColumnCountCore
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetHeaderTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, int column) -> string?
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetRowCountCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> int?
 virtual Bruinet.Html.Controls.Collection.TableControl<TScope>.GetRowTextsCore(Bruinet.Html.Interfaces.IHtmlElement! element, int row) -> System.Collections.Generic.IReadOnlyList<string!>?
+virtual Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.SelectedAttribute.get -> string!
+virtual Bruinet.Html.Controls.Container.TabPageBase<TParent, TSelf>.SelectedValue.get -> string!
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetDateCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMaximumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
 virtual Bruinet.Html.Controls.DateTime.DateInputControl<TScope>.GetMinimumCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> System.DateOnly?
@@ -529,7 +556,9 @@ virtual Bruinet.Html.Controls.DateTime.TimeInputControl<TScope>.GetTimeCore(Brui
 virtual Bruinet.Html.Controls.DateTime.TimeInputControl<TScope>.SetTimeCore(Bruinet.Html.Interfaces.IHtmlElement! element, System.TimeOnly? time, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetMaxCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
 virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetPercentageCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgressCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
 virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetValueCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
+virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminateCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
 virtual Bruinet.Html.Controls.FocusableControlBase<TScope>.BlurCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.FocusableControlBase<TScope>.FocusCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.FocusableControlBase<TScope>.IsFocusedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
@@ -557,6 +586,7 @@ virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.EnterCore(Bruinet.Ht
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetPlaceholderCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetValueCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> string?
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.IsReadOnlyCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
+virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetSecretCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! secret, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? text, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SubmitCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.TypeTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? text, int? timeoutMs = null) -> void
@@ -585,13 +615,3 @@ virtual Bruinet.Html.Testing.HtmlTestFixtureBase.CreateOptions(Bruinet.Html.Cont
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.GetArtifactPathProvider() -> Bruinet.Core.Artifacts.ITestArtifactPathProvider!
 virtual Bruinet.Html.Testing.HtmlTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgress(int? timeoutMs = null) -> double?
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitProgress(double? expected, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertProgress(double? expected, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminate() -> bool
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitIndeterminate(bool? expected = true, int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertIndeterminate(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.WaitComplete(int? timeoutMs = null) -> bool
-Bruinet.Html.Controls.Display.ProgressControl<TScope>.AssertComplete(string? message = null, int? timeoutMs = null) -> TScope
-virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.GetProgressCore(Bruinet.Html.Interfaces.IHtmlElement! element) -> double?
-virtual Bruinet.Html.Controls.Display.ProgressControl<TScope>.IsIndeterminateCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?

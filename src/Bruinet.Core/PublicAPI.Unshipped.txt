@@ -956,6 +956,26 @@ Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Device = 0 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Headless = 1 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHeads
+Bruinet.Core.Testing.TestAccount
+Bruinet.Core.Testing.TestAccount.Name.get -> string!
+Bruinet.Core.Testing.TestAccount.Name.init -> void
+Bruinet.Core.Testing.TestAccount.Organization.get -> string?
+Bruinet.Core.Testing.TestAccount.Organization.init -> void
+Bruinet.Core.Testing.TestAccount.Password.get -> string!
+Bruinet.Core.Testing.TestAccount.Password.init -> void
+Bruinet.Core.Testing.TestAccount.TestAccount(string! Name, string! Username, string! Password, string? Organization, bool Writes, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! Values) -> void
+Bruinet.Core.Testing.TestAccount.Username.get -> string!
+Bruinet.Core.Testing.TestAccount.Username.init -> void
+Bruinet.Core.Testing.TestAccount.Values.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Core.Testing.TestAccount.Values.init -> void
+Bruinet.Core.Testing.TestAccount.Writes.get -> bool
+Bruinet.Core.Testing.TestAccount.Writes.init -> void
+Bruinet.Core.Testing.TestAccount.this[string! column].get -> string?
+Bruinet.Core.Testing.TestAccountException
+Bruinet.Core.Testing.TestAccountException.TestAccountException(string! message) -> void
+Bruinet.Core.Testing.TestAccounts
+Bruinet.Core.Testing.TestAccounts.Get(string! name) -> Bruinet.Core.Testing.TestAccount!
+Bruinet.Core.Testing.TestAccounts.Names.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Core.Testing.TestAppCapture
 Bruinet.Core.Testing.TestAppCapture.App.get -> string!
 Bruinet.Core.Testing.TestAppCapture.App.init -> void
@@ -1043,6 +1063,8 @@ const Bruinet.Core.Logging.StepLog.Variable = "BRUINET_STEP_LOG" -> string!
 const Bruinet.Core.Logging.StepTrace.Variable = "BRUINET_TRACE" -> string!
 const Bruinet.Core.Logging.Timing.Variable = "BRUINET_TIMINGS" -> string!
 const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
+const Bruinet.Core.Testing.TestAccounts.FileName = "TestAccounts.md" -> string!
+const Bruinet.Core.Testing.TestAccounts.SecretsFileName = "TestAccounts.local.md" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
 override Bruinet.Core.Calls.Observation.ToString() -> string!
 override Bruinet.Core.Collections.ItemKey.ToString() -> string!
@@ -1056,6 +1078,7 @@ override Bruinet.Core.Locators.Locator.GetHashCode() -> int
 override Bruinet.Core.Locators.Locator.ToString() -> string!
 override Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ScopeName.get -> string!
 override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
+override Bruinet.Core.Testing.TestAccount.ToString() -> string!
 override sealed Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.Context.get -> TContext
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(Bruinet.Core.Configuration.ArtifactsOptions! artifacts, string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
@@ -1071,6 +1094,7 @@ static Bruinet.Core.Calls.AttemptMemo.Forget() -> void
 static Bruinet.Core.Calls.AttemptMemo.Knows(object! subject, string! question) -> bool
 static Bruinet.Core.Calls.AttemptMemo.Remember<T>(object! subject, string! question, System.Func<T>! read) -> T
 static Bruinet.Core.Calls.CallBudget.RemainingOr(int outsideACallMs) -> int
+static Bruinet.Core.Calls.CallBudget.Scaled(int windowMs) -> int
 static Bruinet.Core.Calls.CallBudget.Within(int windowMs) -> int
 static Bruinet.Core.Calls.Confirmer.Run<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int budgetMs, int pollingIntervalMs) -> Bruinet.Core.Calls.Confirmation<T>
 static Bruinet.Core.Calls.ControlMembers.NameOf(object? page, Bruinet.Core.Locators.Locator! locator) -> string?
@@ -1097,6 +1121,8 @@ static Bruinet.Core.Calls.ReadsInPlace.Begin() -> System.IDisposable!
 static Bruinet.Core.Calls.ScopeGate.Check(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Calls.Observation?
 static Bruinet.Core.Calls.ScopeGate.Misconfigured(Bruinet.Core.Scopes.ScopeReadiness readiness) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
 static Bruinet.Core.Calls.ScopeGate.NotReady(Bruinet.Core.Scopes.ScopeReadiness readiness, string! caller, string! subject, int budgetMs, Bruinet.Core.Locators.Locator? locator = null) -> Bruinet.Core.Exceptions.ScopeNotReadyException!
+static Bruinet.Core.Calls.Settle.Read<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int windowMs, int pollingIntervalMs = 50) -> T?
+static Bruinet.Core.Calls.Settle.Still<T>(System.Func<T>! read, int windowMs, int pollingIntervalMs = 50, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> bool
 static Bruinet.Core.Calls.Settle.Until(System.Func<bool>! condition, int windowMs, int pollingIntervalMs = 50) -> bool
 static Bruinet.Core.Collections.ItemKey.AutomationId(string! automationId) -> Bruinet.Core.Collections.ItemKey
 static Bruinet.Core.Collections.ItemKey.Logical(int index) -> Bruinet.Core.Collections.ItemKey
@@ -1178,6 +1204,10 @@ static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.Tes
 static Bruinet.Core.Testing.MauiHeads.Current.get -> Bruinet.Core.Testing.MauiHead
 static Bruinet.Core.Testing.MauiHeads.IsHeadless.get -> bool
 static Bruinet.Core.Testing.MauiHeads.Parse(string? value) -> Bruinet.Core.Testing.MauiHead
+static Bruinet.Core.Testing.TestAccounts.Default.get -> Bruinet.Core.Testing.TestAccounts!
+static Bruinet.Core.Testing.TestAccounts.FindFrom(string! folder) -> Bruinet.Core.Testing.TestAccounts!
+static Bruinet.Core.Testing.TestAccounts.Read(string! accountsMarkdown, string? secretsMarkdown) -> Bruinet.Core.Testing.TestAccounts!
+static Bruinet.Core.Testing.TestAccounts.ReadFile(string! path) -> Bruinet.Core.Testing.TestAccounts!
 static Bruinet.Core.Testing.TestAppDefinition.FromCells(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! cells) -> Bruinet.Core.Testing.TestAppDefinition!
 static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdown(string! markdown) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
 static Bruinet.Core.Testing.TestAppDefinition.ReadMarkdownFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Testing.TestAppDefinition!>!
@@ -1203,6 +1233,3 @@ virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
-static Bruinet.Core.Calls.Settle.Read<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int windowMs, int pollingIntervalMs = 50) -> T?
-static Bruinet.Core.Calls.Settle.Still<T>(System.Func<T>! read, int windowMs, int pollingIntervalMs = 50, System.Collections.Generic.IEqualityComparer<T>? comparer = null) -> bool
-static Bruinet.Core.Calls.CallBudget.Scaled(int windowMs) -> int

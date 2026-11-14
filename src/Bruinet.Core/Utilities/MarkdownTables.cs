@@ -90,7 +90,36 @@ public static class MarkdownTables
             return trimmed.Length >= 3 && trimmed.All(x => x is '-' or ':');
         });
 
-    /// <summary>The trimmed cells of a table row.</summary>
+    /// <summary>The trimmed cells of a table row. <c>\|</c> is a pipe inside a cell, as in GitHub's tables.</summary>
     public static IReadOnlyList<string> SplitRow(string line)
-        => line.Trim()[1..^1].Split('|').Select(x => x.Trim()).ToArray();
+    {
+        var inner = line.Trim()[1..^1];
+        if (!inner.Contains(@"\|", StringComparison.Ordinal))
+        {
+            return inner.Split('|').Select(x => x.Trim()).ToArray();
+        }
+
+        List<string> cells = [];
+        System.Text.StringBuilder cell = new();
+        for (var i = 0; i < inner.Length; i++)
+        {
+            if (inner[i] == '\\' && i + 1 < inner.Length && inner[i + 1] == '|')
+            {
+                cell.Append('|');
+                i++;
+            }
+            else if (inner[i] == '|')
+            {
+                cells.Add(cell.ToString().Trim());
+                cell.Clear();
+            }
+            else
+            {
+                cell.Append(inner[i]);
+            }
+        }
+
+        cells.Add(cell.ToString().Trim());
+        return cells;
+    }
 }

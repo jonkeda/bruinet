@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Test accounts (AD-038): `TestAccounts` (`Bruinet.Core.Testing`) reads `TestAccounts.md` and the git-ignored
+  `TestAccounts.local.md` by name; a missing account fails the test, naming what is missing. `TextInputControl.SetSecret`
+  types a password that the call log shows as `***` and no failure message holds. Markdown table cells may hold `\|`.
+- `HtmlTestContextOptions`: `StorageStatePath`, `Locale`, `ViewportWidth`, `ViewportHeight` and `AllowedHosts` (navigations
+  to other hosts refused, listed in `PlaywrightTestContext.RefusedNavigations`); `PlaywrightTestContext.SaveStorageState`.
+- `TabPageBase<TParent, TSelf>` (AD-039): a tab's content as a page object of its own; `Open()` returns once the tab is
+  selected and its panel shown.
 - Experimental MAUI runner over MauiDevFlow (`Bruinet.Maui.DevFlow`): the same page objects drive the app through the
   DevFlow agent it carries (`Microsoft.Maui.DevFlow.Agent`, dotnet/maui-labs, preview), chosen with
   `BRUINET_MAUI_RUNNER=devflow` or `MauiDriverOptions.Runner`. On Windows it launches the app as FlaUI does (behind the

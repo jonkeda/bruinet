@@ -139,6 +139,22 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
         return element.GetAttribute("placeholder");
     }
 
+    /// <summary>Replaces the value with a secret, and confirms it took without reading the secret back into a message.</summary>
+    /// <param name="element">The pre-found element.</param>
+    /// <param name="secret">The secret, such as a password.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    [SkipGeneration("SetSecret is hand-written below so the secret never reaches the call log or a message.")]
+    protected virtual void SetSecretCore(IHtmlElement element, string secret, int? timeoutMs = null)
+    {
+        if (element.GetAttribute("readonly") is not null)
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"'{Locator}' is read-only: it takes no text.");
+
+        ActAndConfirm(
+            "Fill", () => element.Fill(secret),
+            () => element.InputValue == secret, took => took,
+            "the secret", timeoutMs);
+    }
+
     /// <summary>Whether the input is read-only.</summary>
     /// <param name="element">The pre-found element.</param>
     protected virtual bool? IsReadOnlyCore(IHtmlElement? element)
@@ -157,6 +173,19 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     public TScope Enter(string? text, int? timeoutMs = null)
     {
         return RunSetWithElement(text, element => EnterCore(element, text, timeoutMs), timeoutMs);
+    }
+
+    /// <summary>
+    /// Types a secret, such as a password. The call log, step log and failure messages show
+    /// <c>***</c>, never the value.
+    /// </summary>
+    /// <param name="secret">The secret.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    /// <returns>The containing scope, for chaining.</returns>
+    public TScope SetSecret(string secret, int? timeoutMs = null)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(secret);
+        return RunSetWithElement("***", element => SetSecretCore(element, secret, timeoutMs), timeoutMs);
     }
 
     #endregion

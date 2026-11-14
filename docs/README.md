@@ -73,6 +73,8 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   command line or MCP, and unattended with the loop
 - [Adding Controls For A New Control Library](../.guides/control-library.md) - the
   `control-source-builder` agent, step by step: survey, groundwork, probe, build, closeout
+- [Test Accounts](guides/test-accounts.md) - the accounts a test signs in as, by name, and secrets that
+  never reach a log
 - [Test Data](guides/test-data.md) - test sets, `bruinet data`, `TestData` in UAT
   files, typed mock bodies (`BRUINET001`)
 - [Test Settings](guides/settings.md)

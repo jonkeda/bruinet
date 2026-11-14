@@ -28,6 +28,7 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
     private IPlaywright? _playwright;
     private IBrowser? _browser;
     private IBrowserContext? _browserContext;
+    private List<string> _refused = [];
     private bool _disposed;
 
     private PlaywrightTestContext(
@@ -88,16 +89,64 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             ? await SharedBrowsers.GetAsync(options.BrowserType, options.Headless).ConfigureAwait(false)
             : await LaunchAsync(options.BrowserType, options.Headless && !shown, shown).ConfigureAwait(false);
 
-        var browserContext = await browser.NewContextAsync(shown ? new BrowserNewContextOptions { ViewportSize = ViewportSize.NoViewport } : null).ConfigureAwait(false);
+        var browserContext = await browser.NewContextAsync(ContextOptions(options, shown)).ConfigureAwait(false);
         var page = await browserContext.NewPageAsync().ConfigureAwait(false);
+        var refused = new List<string>();
+        if (options.AllowedHosts is { } allowed)
+        {
+            await GuardHostsAsync(browserContext, page, allowed, refused).ConfigureAwait(false);
+        }
 
         if (!string.IsNullOrWhiteSpace(options.BaseUrl))
         {
             await page.GotoAsync(options.BaseUrl).ConfigureAwait(false);
         }
 
-        return new PlaywrightTestContext(playwright, browser, browserContext, page, options) { _sharedBrowser = shared };
+        return new PlaywrightTestContext(playwright, browser, browserContext, page, options) { _sharedBrowser = shared, _refused = refused };
     }
+
+    // The options' sign-in, language and size for a new browser context; a watched window keeps its own size.
+    private static BrowserNewContextOptions ContextOptions(HtmlTestContextOptions options, bool shown)
+    {
+        var context = new BrowserNewContextOptions
+        {
+            Locale = options.Locale,
+            StorageStatePath = options.StorageStatePath is { } path && File.Exists(path) ? path : null,
+        };
+        if (shown)
+        {
+            context.ViewportSize = ViewportSize.NoViewport;
+        }
+        else if (options.ViewportWidth is { } width && options.ViewportHeight is { } height)
+        {
+            context.ViewportSize = new ViewportSize { Width = width, Height = height };
+        }
+
+        return context;
+    }
+
+    // Refuses the page's navigations to other hosts; requests for other hosts' assets go through.
+    private static Task GuardHostsAsync(IBrowserContext browserContext, IPage page, IReadOnlyList<string> allowed, List<string> refused)
+        => browserContext.RouteAsync(url => !IsAllowed(url, allowed), async route =>
+        {
+            if (route.Request.IsNavigationRequest && route.Request.Frame == page.MainFrame)
+            {
+                lock (refused)
+                {
+                    refused.Add(route.Request.Url);
+                }
+
+                await route.AbortAsync("blockedbyclient").ConfigureAwait(false);
+                return;
+            }
+
+            await route.ContinueAsync().ConfigureAwait(false);
+        });
+
+    private static bool IsAllowed(string url, IReadOnlyList<string> allowed)
+        => !Uri.TryCreate(url, UriKind.Absolute, out var uri)
+            || uri.Scheme is not ("http" or "https")
+            || allowed.Contains(uri.Host, StringComparer.OrdinalIgnoreCase);
 
     // A browser of its own: Playwright, the type, the launch.
     private static async Task<(IPlaywright Playwright, IBrowser Browser)> LaunchAsync(string type, bool headless, bool shown)
@@ -311,6 +360,30 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             IncludeTimestamp = true,
             Format = ScreenshotFormat.Png,
         });
+
+    /// <summary>The page's navigations refused because their host is not in the options' <c>AllowedHosts</c>.</summary>
+    public IReadOnlyList<string> RefusedNavigations
+    {
+        get
+        {
+            lock (_refused)
+            {
+                return [.. _refused];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Saves the browser context's sign-in (cookies and storage) to <paramref name="path"/>, for a
+    /// later context to start from with <c>StorageStatePath</c>.
+    /// </summary>
+    /// <param name="path">The file to write; its folder is made when missing.</param>
+    public void SaveStorageState(string path)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
+        Live(() => (_browserContext ?? _page.Context).StorageStateAsync(new() { Path = path }).GetAwaiter().GetResult());
+    }
 
     /// <summary>
     /// The app as a new visitor sees it: the browser context's cookies, and the current origin's

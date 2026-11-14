@@ -56,6 +56,8 @@ How this differs from the other trees:
 - [AD-035: An API contract is the DTO the app reads, and the real service judges it](decisions/ad-035-an-api-contract-is-the-dto-the-app-reads.md)
 - [AD-036: An outline has named Examples sections, and a row keeps its number](decisions/ad-036-an-outline-has-named-examples-sections.md)
 - [AD-037: A MAUI runner is chosen apart from the platform, and DevFlow judges no gate](decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md)
+- [AD-038: A test names its account and never holds a secret](decisions/ad-038-a-test-names-its-account-and-never-holds-a-secret.md)
+- [AD-039: A tab's content is a page object of its own](decisions/ad-039-a-tabs-content-is-a-page-object-of-its-own.md)
 
 ## Contracts
 
