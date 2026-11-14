@@ -53,14 +53,20 @@ public sealed record ScraperConfig
     /// <summary>Text masked before anything is written: the config's <c>## Masks</c>.</summary>
     public IReadOnlyList<TextMask> Masks { get; init; } = [];
 
-    /// <summary>The masks always applied, whatever the config says: e-mail addresses (an app's user menu shows the signed-in person's).</summary>
+    /// <summary>
+    /// Whether personal data is kept out of what is written: <c>Privacy</c> in <c>## App</c>, off by default, since the
+    /// Scraper runs on dev, test and acceptance environments. On, the <see cref="BuiltInMasks"/> apply too.
+    /// </summary>
+    public bool Privacy { get; init; }
+
+    /// <summary>The masks applied when <see cref="Privacy"/> is on: e-mail addresses (an app's user menu shows the signed-in person's).</summary>
     public static readonly IReadOnlyList<TextMask> BuiltInMasks =
     [
         new(new System.Text.RegularExpressions.Regex(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}", System.Text.RegularExpressions.RegexOptions.CultureInvariant, TimeSpan.FromSeconds(1)), "{e-mail}"),
     ];
 
-    /// <summary>The config's masks and the built-in ones, in that order.</summary>
-    public IReadOnlyList<TextMask> AllMasks => [.. Masks, .. BuiltInMasks];
+    /// <summary>The config's masks, and the built-in ones when <see cref="Privacy"/> is on.</summary>
+    public IReadOnlyList<TextMask> AllMasks => Privacy ? [.. Masks, .. BuiltInMasks] : Masks;
 
     /// <summary>Fields whose value a test recording never keeps (<c>## Secrets</c>); a password field is always one.</summary>
     public IReadOnlyList<ScrapeSecret> Secrets { get; init; } = [];
@@ -99,7 +105,8 @@ public sealed record ScraperConfig
                     "Pages" => config with { PagesFolder = value },
                     "Controls" => config with { ControlsFolder = value },
                     "Screenshots" => config with { Screenshots = Bool(value, row.LineNumber) },
-                    var other => throw new FormatException($"Line {row.LineNumber}: '{other}' is not a field of ## App (Platform, StartUrl, Namespace, Pages, Controls, Screenshots)."),
+                    "Privacy" => config with { Privacy = Bool(value, row.LineNumber) },
+                    var other => throw new FormatException($"Line {row.LineNumber}: '{other}' is not a field of ## App (Platform, StartUrl, Namespace, Pages, Controls, Screenshots, Privacy)."),
                 };
             }
         }

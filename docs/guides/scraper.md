@@ -60,6 +60,7 @@ controls):
 | Pages | PageObjects |
 | Controls | PageObjects/Controls |
 | Screenshots | false |
+| Privacy | false |
 
 ## Modules
 
@@ -109,8 +110,11 @@ controls):
 - Web components: a capture keeps open shadow roots, and a suggested locator crosses them as Playwright's CSS
   does (a shadow tree's top elements are its host's children), so a control inside a web component is found.
 - `Masks`: text replaced before anything is written. A page capture never records what a user typed;
-  only a test recording's actions keep typed values, masked. An e-mail address is always masked (`{e-mail}`),
-  on top of the masks listed, and an element whose text is personal data is not drafted.
+  only a test recording's actions keep typed values, masked.
+- `Privacy` in `## App` (default `false`): the Scraper runs on dev, test and acceptance environments, whose data is
+  test data, so by default only the masks listed apply. With `true`, an e-mail address is masked too (`{e-mail}`),
+  and an element whose text is masked is not drafted. Secrets (below) and sign-in tokens in reports are kept out
+  either way.
 - `Secrets` (optional, columns `Field`, `Placeholder`): fields whose value a test recording never
   keeps, matched by test id, `name`, `id` or label text. The value stays in the browser; the action
   records `Placeholder` (default: the field in camel case, `apiKey`) for you to map to a setting or test

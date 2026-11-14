@@ -127,13 +127,16 @@ public sealed class PageDrafterTests : IDisposable
         Assert.Contains("// its table's header (part of the table): SortDate (", draft.Code, StringComparison.Ordinal);
     }
 
-    [Fact]
-    public void An_e_mail_address_is_masked_in_the_capture_and_kept_out_of_the_draft()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void With_privacy_on_an_e_mail_address_is_masked_in_the_capture_and_kept_out_of_the_draft(bool privacy)
     {
         var folder = Path.Combine(_solution, "Shop.UITests");
         Directory.CreateDirectory(folder);
         File.WriteAllText(Path.Combine(folder, "Shop.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
-        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), "## App\n\n| Field | Value |\n| --- | --- |\n| StartUrl | https://shop.example/ |\n");
+        var privacyRow = privacy ? "| Privacy | true |\n" : string.Empty;
+        File.WriteAllText(Path.Combine(folder, ScraperConfig.FileName), "## App\n\n| Field | Value |\n| --- | --- |\n| StartUrl | https://shop.example/ |\n" + privacyRow);
         var project = ScrapeProject.Open(folder);
         var session = project.StartSession("explore", new DateTimeOffset(2026, 9, 30, 9, 0, 0, TimeSpan.Zero));
         session.AddPage(new ScrapeSnapshot
@@ -147,12 +150,23 @@ public sealed class PageDrafterTests : IDisposable
         var index = project.Index();
 
         var draft = PageDrafter.Draft(project, index, index.Page("/orders")!, "OrderPage");
+        var recorded = string.Concat(Directory.EnumerateFiles(project.RecordingsFolder, "*", SearchOption.AllDirectories).Select(File.ReadAllText));
 
-        Assert.DoesNotContain("ann.smith", draft.Code, StringComparison.Ordinal);
-        Assert.DoesNotContain("e-mail}", draft.Code, StringComparison.Ordinal);
-        Assert.Contains("1 element(s) whose text is personal data", draft.Code, StringComparison.Ordinal);
         Assert.Contains("Save", draft.Code, StringComparison.Ordinal);
-        Assert.DoesNotContain("ann.smith", string.Concat(Directory.EnumerateFiles(project.RecordingsFolder, "*", SearchOption.AllDirectories).Select(File.ReadAllText)), StringComparison.Ordinal);
+        Assert.DoesNotContain("e-mail}", draft.Code, StringComparison.Ordinal);
+        if (privacy)
+        {
+            Assert.DoesNotContain("ann.smith", draft.Code, StringComparison.Ordinal);
+            Assert.Contains("1 element(s) whose text is personal data", draft.Code, StringComparison.Ordinal);
+            Assert.DoesNotContain("ann.smith", recorded, StringComparison.Ordinal);
+        }
+        else
+        {
+            // Off by default: a dev, test or acceptance environment's data is kept as it is.
+            Assert.Contains("ann.smith@example.com", draft.Code, StringComparison.Ordinal);
+            Assert.DoesNotContain("personal data", draft.Code, StringComparison.Ordinal);
+            Assert.Contains("ann.smith", recorded, StringComparison.Ordinal);
+        }
     }
 
     [Fact]
