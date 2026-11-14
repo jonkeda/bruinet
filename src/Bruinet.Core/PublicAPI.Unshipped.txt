@@ -951,6 +951,11 @@ Bruinet.Core.Settings.TestSettingsRootAttribute.TestSettingsRootAttribute() -> v
 Bruinet.Core.Settings.TestSettingsSectionAttribute
 Bruinet.Core.Settings.TestSettingsSectionAttribute.Path.get -> string!
 Bruinet.Core.Settings.TestSettingsSectionAttribute.TestSettingsSectionAttribute(string! path) -> void
+Bruinet.Core.Testing.CleanUpRegistry
+Bruinet.Core.Testing.CleanUpRegistry.Add(string! what, System.Action! undo) -> void
+Bruinet.Core.Testing.CleanUpRegistry.CleanUpRegistry() -> void
+Bruinet.Core.Testing.CleanUpRegistry.Dispose() -> void
+Bruinet.Core.Testing.CleanUpRegistry.Failures.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Core.Testing.ITestApp
 Bruinet.Core.Testing.ITestApp.Definition.get -> Bruinet.Core.Testing.TestAppDefinition!
 Bruinet.Core.Testing.ITestApp.ResetAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
@@ -959,6 +964,7 @@ Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Device = 0 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHead.Headless = 1 -> Bruinet.Core.Testing.MauiHead
 Bruinet.Core.Testing.MauiHeads
+Bruinet.Core.Testing.RunMarker
 Bruinet.Core.Testing.TestAccount
 Bruinet.Core.Testing.TestAccount.Name.get -> string!
 Bruinet.Core.Testing.TestAccount.Name.init -> void
@@ -1066,6 +1072,8 @@ const Bruinet.Core.Logging.StepLog.Variable = "BRUINET_STEP_LOG" -> string!
 const Bruinet.Core.Logging.StepTrace.Variable = "BRUINET_TRACE" -> string!
 const Bruinet.Core.Logging.Timing.Variable = "BRUINET_TIMINGS" -> string!
 const Bruinet.Core.Testing.MauiHeads.Variable = "BRUINET_HEAD" -> string!
+const Bruinet.Core.Testing.RunMarker.Prefix = "BRN-" -> string!
+const Bruinet.Core.Testing.RunMarker.Variable = "BRUINET_RUN_MARKER" -> string!
 const Bruinet.Core.Testing.TestAccounts.FileName = "TestAccounts.md" -> string!
 const Bruinet.Core.Testing.TestAccounts.SecretsFileName = "TestAccounts.local.md" -> string!
 const Bruinet.Core.Testing.WebHeads.Variable = "BRUINET_HEAD" -> string!
@@ -1207,6 +1215,9 @@ static Bruinet.Core.Settings.TestSettings.Empty.get -> Bruinet.Core.Settings.Tes
 static Bruinet.Core.Testing.MauiHeads.Current.get -> Bruinet.Core.Testing.MauiHead
 static Bruinet.Core.Testing.MauiHeads.IsHeadless.get -> bool
 static Bruinet.Core.Testing.MauiHeads.Parse(string? value) -> Bruinet.Core.Testing.MauiHead
+static Bruinet.Core.Testing.RunMarker.Current.get -> string!
+static Bruinet.Core.Testing.RunMarker.For(System.DateTime started) -> string!
+static Bruinet.Core.Testing.RunMarker.IsMarked(string? text) -> bool
 static Bruinet.Core.Testing.TestAccounts.Default.get -> Bruinet.Core.Testing.TestAccounts!
 static Bruinet.Core.Testing.TestAccounts.FindFrom(string! folder) -> Bruinet.Core.Testing.TestAccounts!
 static Bruinet.Core.Testing.TestAccounts.Read(string! accountsMarkdown, string? secretsMarkdown) -> Bruinet.Core.Testing.TestAccounts!

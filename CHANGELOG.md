@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- `RunMarker` (`BRN-MMdd-HHmm`, one per run, `BRUINET_RUN_MARKER` to share it) and `CleanUpRegistry` (undos in
+  reverse, a failing one collected) in `Bruinet.Core.Testing`: the first step of the service clients' design (B18).
 - `bruinet scrape find <text>`: a text, a placeholder or an attribute's value in the recorded pages, shadow roots
   included, with the path to each node (`RecordingSearch`).
 - Frainet F1: `frainet trace … --results <trx>` gives each rule a state (not reached, not run, failing, passing) and
