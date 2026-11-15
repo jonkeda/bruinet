@@ -15,6 +15,9 @@ public static partial class BddSpecReader
     /// <summary>The tag every scenario read from a spec carries, besides its rule's id.</summary>
     public const string SpecTag = "spec";
 
+    // An example at the Examples' own level (### R5 …): it ends the chapter before it.
+    private const string OutsideChapterTag = "outside-chapter";
+
     /// <summary>The tag of a scenario that only checks (Then steps), after its chapter's steps: it may share its chapter's run.</summary>
     public const string ThenOnlyTag = "chapter-then";
 
@@ -107,7 +110,7 @@ public static partial class BddSpecReader
             {
                 var ruleId = $"{id}.R{rule.Groups["number"].Value}";
                 lines[i] = $"## Scenario: {ruleId} {rule.Groups["name"].Value.Trim()}".TrimEnd();
-                Tag(lines, i, $"@{ruleId} @{SpecTag}");
+                Tag(lines, i, level == 3 ? $"@{ruleId} @{SpecTag} @{OutsideChapterTag}" : $"@{ruleId} @{SpecTag}");
             }
         }
 
@@ -135,6 +138,11 @@ public static partial class BddSpecReader
             {
                 chapter = scenario;
                 continue;
+            }
+
+            if (scenario.Tags.Contains(OutsideChapterTag, StringComparer.Ordinal))
+            {
+                chapter = null;
             }
 
             if (chapter is null)

@@ -98,6 +98,14 @@ public sealed class BddSpecReaderTests
         When I type "arend" in the filter above Name
         Then the list shows only "Arend de Krom"
         ```
+
+        ### R5 Outside a chapter
+
+        ```gherkin
+        Given Reader is signed in
+        When I open the Contacts page
+        Then the list has rows
+        ```
         """;
 
     [Fact]
@@ -127,7 +135,8 @@ public sealed class BddSpecReaderTests
     {
         var document = Read(Chapters);
 
-        Assert.Equal(["B7.CON.01.R1 The page at a glance", "B7.CON.01.R3 How many contacts", "B7.CON.01.R4 Part of a name is enough"], document.Scenarios.Select(s => s.Name));
+        Assert.Equal(["B7.CON.01.R1 The page at a glance", "B7.CON.01.R3 How many contacts", "B7.CON.01.R4 Part of a name is enough", "B7.CON.01.R5 Outside a chapter"], document.Scenarios.Select(s => s.Name));
+        Assert.Equal(["Reader is signed in", "I open the Contacts page", "the list has rows"], document.Scenarios[3].Steps.Select(s => s.Text));
         Assert.Equal(["Creator is signed in", "I open the Contacts page", "I see the title \"Contacts\""], document.Scenarios[0].Steps.Select(s => s.Text));
         Assert.Equal(["Creator is signed in", "I am on the Contacts page", "I type \"arend\" in the filter above Name", "the list shows only \"Arend de Krom\""], document.Scenarios[2].Steps.Select(s => s.Text));
     }
