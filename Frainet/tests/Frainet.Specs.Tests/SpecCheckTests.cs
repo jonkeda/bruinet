@@ -92,6 +92,14 @@ public sealed class SpecCheckTests
     }
 
     [Fact]
+    public void AnAbbreviation_InBracketsOrQuotes_IsNotASentenceBreak()
+    {
+        var abbreviated = Tod02.Replace("shows no error. |", "shows no error in Amount (excl. VAT) or \"Note. Here\". |");
+
+        Assert.Empty(SpecCheck.Check(abbreviated));
+    }
+
+    [Fact]
     public void AnOpenQuestionWithAProposal_InADraft_IsFine()
     {
         var draft = Tod02.Replace("| Status | accepted 2026-10-26 |", "| Status | draft |")

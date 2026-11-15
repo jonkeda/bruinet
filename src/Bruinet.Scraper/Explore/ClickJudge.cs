@@ -154,7 +154,9 @@ public static class ClickJudge
             return popup == "dialog" ? "opens a dialog" : "opens a menu";
         if (node.Attributes.ContainsKey("aria-expanded"))
             return "shows or hides a part";
-        if (node.Type == "th" || node.Attributes.ContainsKey("aria-sort"))
+        // A header's sort link (Vuetify's Heimdall table: th > a) sorts as its header does.
+        if (node.Type == "th" || node.Attributes.ContainsKey("aria-sort")
+            || (node.Parent > 0 && snapshot[node.Parent].Type == "th" && node.Type is "a" or "button" or "span"))
             return "sorts a table";
         if (node.Attribute("aria-controls") is not null && node.Role is "button" or "tab")
             return "shows a part";

@@ -223,6 +223,14 @@ public sealed class ClickJudgeTests
         Assert.Equal((Verdict.Safe, JudgedAction.Click, reason), (judgement.Verdict, judgement.Action, judgement.Reason));
     }
 
+    [Fact]
+    public void A_sort_link_in_a_table_header_sorts_the_table()
+    {
+        var page = Page(N(2, 1, "table"), N(3, 2, "thead"), N(4, 3, "tr"), N(5, 4, "th"), N(6, 5, "a", "Date"));
+
+        Assert.Equal((Verdict.Safe, "sorts a table"), (Judge(page, 6).Verdict, Judge(page, 6).Reason));
+    }
+
     [Theory]
     [InlineData("Close")]
     [InlineData("Sluiten")]

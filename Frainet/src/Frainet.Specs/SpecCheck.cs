@@ -166,7 +166,7 @@ public static partial class SpecCheck
             {
                 findings.Add(new(row.Line, "rule-empty", $"{id} says nothing."));
             }
-            else if (!rule.EndsWith('.') || SentenceBreak().IsMatch(rule))
+            else if (!rule.EndsWith('.') || SentenceBreak().IsMatch(Quoted().Replace(rule, "x")))
             {
                 findings.Add(new(row.Line, "rule-sentence", $"{id} is one sentence, ending in a full stop."));
             }
@@ -425,6 +425,10 @@ public static partial class SpecCheck
 
     [GeneratedRegex(@"^R(\d+) \S")]
     private static partial Regex ExampleHeading();
+
+    // What the screen says ("Amount (excl. VAT)", "Save and create another. Now") is not the rule's own sentence.
+    [GeneratedRegex(@"\([^()]*\)|""[^""]*""")]
+    private static partial Regex Quoted();
 
     // A full stop after a number is a numbering ("00. Intern", a status), not a sentence's end.
     [GeneratedRegex(@"(?<![0-9])[.!?] +[A-Z]")]

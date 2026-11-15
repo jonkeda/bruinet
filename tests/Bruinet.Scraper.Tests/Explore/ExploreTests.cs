@@ -245,7 +245,9 @@ public sealed class ExploreTests : IAsyncLifetime
         var result = await ExploreAsync(new ExploreOptions { DryRun = true });
 
         Assert.Single(result.WouldClick, w => w.Reason == "sorts a table");
-        Assert.Equal(2, result.Skipped.Count(s => s.Reason.StartsWith("sorts a table already sorted once", StringComparison.Ordinal)));
+        // The other two columns' sorts are skipped (a header and its sort button both count as the column's sort).
+        Assert.True(result.Skipped.Count(s => s.Reason.StartsWith("sorts a table already sorted once", StringComparison.Ordinal)) >= 2);
+        Assert.DoesNotContain(result.WouldClick, w => w.Label is "Customer" or "Date");
     }
 
     [Fact]
