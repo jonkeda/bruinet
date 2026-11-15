@@ -13,7 +13,7 @@ return args switch
 static int Usage()
 {
     Console.Error.WriteLine("Usage: frainet check <spec.md or folder>...");
-    Console.Error.WriteLine("       frainet trace <spec.md> <tests folder>... [--results <file.trx or folder>...]");
+    Console.Error.WriteLine("       frainet trace <spec.md> <tests folder>... [--runnable] [--results <file.trx or folder>...]");
     return 2;
 }
 
@@ -56,6 +56,8 @@ static int Check(string[] paths)
 
 static int Trace(string spec, string[] rest)
 {
+    var runnable = rest.Contains("--runnable");
+    rest = [.. rest.Where(arg => arg != "--runnable")];
     var at = Array.IndexOf(rest, "--results");
     var folders = at < 0 ? rest : rest[..at];
     var resultPaths = at < 0 ? [] : rest[(at + 1)..];
@@ -65,7 +67,7 @@ static int Trace(string spec, string[] rest)
         return 2;
     }
 
-    var result = RuleTrace.TraceFile(spec, folders);
+    var result = RuleTrace.TraceFile(spec, folders, runnable);
     IReadOnlyDictionary<string, RuleState>? states = at < 0 ? null : RuleResults.States(result, RuleResults.ReadTrx(resultPaths));
     foreach (var (rule, reaches) in result.Rules)
     {

@@ -15,7 +15,7 @@
       1 Spec          specs/<Spec>.spec.md exists, passes frainet check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
       5 Scenarios     frainet trace reaches every rule of the spec from Modules/<Module>
-      6 Run           dotnet test --filter Module=<Module>, -Runs times, every rule Passing (frainet trace --results)
+      6 Run           dotnet test --filter Module=<Module> (and Spec=<spec> for runnable specs), -Runs times, every rule Passing (frainet trace --results)
 
     Explore (2) and Controls (3) have no gate of their own here: their work shows in 4 to 6.
     A module whose gates all pass is done. A 👤 gate marks the module waiting and the loop goes on to the next one.
@@ -66,6 +66,11 @@ $RunDir = Join-Path $Suite ".testing/runs/$Stamp"
 New-Item -ItemType Directory -Force $RunDir | Out-Null
 $Solution = Get-ChildItem $Suite -Filter *.slnx | Select-Object -First 1
 $TestProject = Get-ChildItem $Suite -Directory -Filter '*.UITests' | Select-Object -First 1
+
+# A suite whose config names Specs runs them (runnable specs): a spec's examples are its tests, run by the Spec trait.
+$SuiteConfig = @('bdd.config.md', 'uat.config.md') | ForEach-Object { Join-Path $TestProject.FullName $_ } | Where-Object { Test-Path $_ } | Select-Object -First 1
+$RunsSpecs = $SuiteConfig -and (Select-String -Path $SuiteConfig -Pattern '^\|\s*Specs\s*\|' -Quiet)
+$Runnable = if ($RunsSpecs) { '--runnable' } else { $null }  # a $null argument is left out
 
 # Frainet is built once and run from its output, not through dotnet run per call.
 $FrainetProject = Join-Path $Bruinet 'Frainet/src/Frainet.Cli/Frainet.Cli.csproj'
@@ -149,10 +154,10 @@ foreach ($row in $rows) {
         if (-not $build.Passed) { $row.Stage = '4 Page objects'; $row.State = 'stuck'; $row.Waiting = 'build'; $stuck++ }
         else {
             # 5 Scenarios
-            $gate = Invoke-Gate '5 Scenarios: frainet trace' { if (Test-Path $modulePath) { dotnet $Frainet.FullName trace $specPath $modulePath } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
+            $gate = Invoke-Gate '5 Scenarios: frainet trace' { if (Test-Path $modulePath) { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
             for ($try = 0; -not $gate.Passed -and $try -lt $Attempts -and (Invoke-Agent 'scenario-from-spec' $row.Module $row.Spec $gate); $try++) {
                 $build = Invoke-Gate '4 Page objects: build' { dotnet build $Solution.FullName -v:q -nologo }
-                $gate = Invoke-Gate '5 Scenarios: frainet trace' { dotnet $Frainet.FullName trace $specPath $modulePath }
+                $gate = Invoke-Gate '5 Scenarios: frainet trace' { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable }
             }
             $gates += $gate
             if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'frainet trace'; $stuck++ }
@@ -161,8 +166,8 @@ foreach ($row in $rows) {
                 $green = 0
                 for ($run = 1; $run -le $Runs; $run++) {
                     $results = Join-Path $RunDir "$($row.Module)-$run"
-                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)" --logger trx --results-directory $results }
-                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Frainet.FullName trace $specPath $modulePath --results $results }
+                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)$(if ($RunsSpecs) { "|Spec=$($row.Spec)" })" --logger trx --results-directory $results }
+                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
                     $gates += $gate

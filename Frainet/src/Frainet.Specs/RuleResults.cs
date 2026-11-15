@@ -81,6 +81,12 @@ public static class RuleResults
     private static bool Matches(RuleReach reach, TestOutcome outcome)
     {
         var name = outcome.Name;
+        if (reach.File.EndsWith(".spec.md", StringComparison.OrdinalIgnoreCase))
+        {
+            // A runnable spec's example: its case is named after its rule, "B7.INV.01.R1 The page at a glance", so R1 is not R10.
+            return name.Contains($"\"{reach.Rule} ", StringComparison.Ordinal);
+        }
+
         var call = name.IndexOf('(', StringComparison.Ordinal);
         var head = call < 0 ? name : name[..call];
         if (reach.Container is { } container)

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Frainet: `frainet trace … --runnable` counts a runnable spec's examples as the tests of their rules, and with
+  `--results` matches each by the case named after its rule (`"B7.INV.01.R1 …`). `site-loop.ps1` passes it, and runs
+  `Spec=<spec>` too, for a suite whose config names `Specs`.
 - Spec phrases without "should" (Frainet's vague word): `{control} includes {value}` (contains) and
   `Then the {page} page is open`. A page's `Self` is not read for control names.
 - **Control names (RS4).** `[BddControl("the filter above {column}")]` on a page's or a component's method names a

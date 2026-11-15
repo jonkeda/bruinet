@@ -149,4 +149,28 @@ public sealed class RuleTraceTests
         Assert.Equal(RuleState.Passing, RuleResults.States(trace, outcomes)["ABC.01.R3"]);
         Assert.Equal(RuleState.NotReached, RuleResults.States(trace, outcomes)["ABC.01.R1"]);
     }
+
+    [Fact]
+    public void A_runnable_specs_examples_are_its_tests_and_match_their_cases_by_rule_id()
+    {
+        const string runnable = Spec + """
+
+            ## Examples
+
+            ### Chapter: At a glance
+
+            #### R1 One
+
+            #### R10 Ten
+            """;
+        var trace = RuleTrace.Trace(runnable, [("ABC.01.spec.md", RuleTrace.SpecAsSource(runnable))]);
+        var outcomes = new[]
+        {
+            new TestOutcome("Ns.UatTests.Scenario_Passes(filePath: \"Specs/ABC.01.spec.md\", scenarioName: \"ABC.01.R1 One\")", "Passed"),
+        };
+
+        Assert.Single(trace.Rules["ABC.01.R1"]);
+        Assert.Equal(RuleState.Passing, RuleResults.States(trace, outcomes)["ABC.01.R1"]);
+        Assert.Equal(RuleState.NotReached, RuleResults.States(trace, outcomes)["ABC.01.R2"]);
+    }
 }

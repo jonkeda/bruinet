@@ -28,6 +28,42 @@ public static partial class RuleTrace
     public static RuleTraceResult TraceFile(string specPath, IEnumerable<string> testFolders) =>
         Trace(File.ReadAllText(specPath), testFolders.SelectMany(Sources));
 
+    /// <summary>
+    /// As <see cref="TraceFile(string, IEnumerable{string})"/>, and when <paramref name="runnable"/> the spec's own examples
+    /// count as tests of their rules: a suite that runs its specs (a Bruinet suite with a <c>Specs</c> row) names each
+    /// example's test case after its rule (<c>B7.INV.01.R1 The page at a glance</c>).
+    /// </summary>
+    public static RuleTraceResult TraceFile(string specPath, IEnumerable<string> testFolders, bool runnable)
+    {
+        var sources = testFolders.SelectMany(Sources);
+        return Trace(
+            File.ReadAllText(specPath),
+            runnable ? sources.Prepend((Path.GetFileName(specPath), SpecAsSource(File.ReadAllText(specPath)))) : sources);
+    }
+
+    /// <summary>
+    /// A runnable spec as a test source: each example's heading (<c>### R1 …</c>, or <c>#### R1 …</c> in a chapter) is a
+    /// test of its rule, tagged as a feature file's scenario is.
+    /// </summary>
+    public static string SpecAsSource(string spec)
+    {
+        var journey = SpecCheck.JourneyId(spec);
+        var lines = spec.ReplaceLineEndings("\n").Split('\n');
+        for (var i = 0; i < lines.Length; i++)
+        {
+            if (ExampleHeading().Match(lines[i]) is { Success: true } heading)
+            {
+                // The tag, then the name the test case starts with: the rule's id and a space, so R1 is not R10.
+                lines[i] = $"@{journey}.R{heading.Groups[1].Value}\n## Scenario: {journey}.R{heading.Groups[1].Value} ";
+            }
+        }
+
+        return string.Join('\n', lines);
+    }
+
+    [GeneratedRegex(@"^#{3,4}\s+R(\d+)\b")]
+    private static partial Regex ExampleHeading();
+
     /// <summary>Traces a spec's rules through test sources given as (file, text).</summary>
     public static RuleTraceResult Trace(string spec, IEnumerable<(string File, string Text)> sources)
     {
