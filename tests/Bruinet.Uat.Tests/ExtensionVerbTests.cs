@@ -37,6 +37,21 @@ public sealed class ExtensionVerbTests
     }
 
     [Fact]
+    public async Task An_extension_verb_takes_each_of_its_values_by_its_parameters_name_and_type()
+    {
+        var fixture = new ShelfFixture();
+        var catalog = UatReflectionRuntime.FromRoot(fixture).CreateCommandCatalog();
+
+        var result = await RunAsync(catalog, """
+            Given I am on the Shelf page
+            Then the books holds 3 on the shelf "Novels"
+            """);
+
+        Assert.True(result.Passed, Format(result));
+        Assert.Equal(["holds 3 on Novels"], fixture.ShelfPage.Books.Calls);
+    }
+
+    [Fact]
     public void An_extension_verb_on_a_control_it_does_not_take_is_a_bind_error()
     {
         var catalog = UatReflectionRuntime.FromRoot(new ShelfFixture()).CreateCommandCatalog();
@@ -106,6 +121,10 @@ public static class ShelfVerbs
     /// <summary>The shelf holds these.</summary>
     [BddThen("{control} holds only {values}")]
     public static void HoldsOnly<T>(this ShelfBase<T> shelf, string[] values) => shelf.Calls.Add($"holds {string.Join('|', values)}");
+
+    /// <summary>One of the shelves holds this many: two values, the count read as a number.</summary>
+    [BddThen("{control} holds {count} on the shelf {shelf}")]
+    public static void HoldsOn<T>(this ShelfBase<T> books, int count, string shelf) => books.Calls.Add($"holds {count} on {shelf}");
 
     /// <summary>The page's one shelf is dusted.</summary>
     [BddWhen("I dust the shelf")]

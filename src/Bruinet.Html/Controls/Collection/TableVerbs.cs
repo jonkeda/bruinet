@@ -76,8 +76,10 @@ public static class TableVerbs
     {
         ArgumentNullException.ThrowIfNull(table);
         table.AssertHasRows();
-        var rows = table.GetRowCount() ?? 0;
-        for (var row = 0; row < rows; row++)
+
+        // Counted again at each row: a list that is still narrowing (a filter just typed) has fewer rows once its first
+        // row has the value, and a count taken before would ask for rows that are gone.
+        for (var row = 0; row < (table.GetRowCount() ?? 0); row++)
         {
             table.AssertRowTextsHasItem(row, value);
         }

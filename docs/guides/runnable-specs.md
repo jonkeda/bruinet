@@ -49,7 +49,7 @@ Make it bind, in this order:
 
 1. **Say it the way the vocabulary does** (`bruinet data phrases`), the rule's meaning unchanged. Built-in phrases a
    spec reads well with: `When I open the {page} page`, `Then the {page} page is open`, `{control} says {value}`,
-   `{control} includes {value}`, `{control} is shown`, `When I type {value} in {control}`, `Given I typed …`,
+   `{control} includes {value}`, `{control} is shown`, `{control} is not shown`, `When I type {value} in {control}`, `Given I typed …`,
    `When I empty {control}`, `When I tap {control}`. A spec never says "should" (Frainet's vague word).
 2. **Name the control** where it has no fixed name: `[BddControl]` on the page's or a component's method; its
    placeholders are the method's parameters. Every verb of the returned control's type then works on it.
@@ -76,8 +76,12 @@ Make it bind, in this order:
 
    Bruinet.Html's `TableVerbs` gives every table `{control} has the columns {columns}`, `{control} shows only
    {values}`, `{control} is empty`, `{control} has rows` and `every row of {control} has {value}`. A suite writes its
-   own for its components (Bouw7's `the page offers {actions}`). The methods are ordinary C# extension methods too.
-4. **A page phrase** for a page's own workflow, several controls in one intent (`I log {hours} hours on {project}`).
+   own for its components (Bouw7's `the page offers {actions}`). A verb may take several values, each parameter
+   by its placeholder's name, read as its type (`{control} counts {count} in the card {card}`, `int count`). The
+   methods are ordinary C# extension methods too.
+4. **A page phrase** for a page's own workflow, several controls in one intent (`I log {hours} hours on {project}`),
+   or a fixture's phrase where the step makes data on a shared environment: the fixture marks it and removes it after
+   the scenario (Bouw7's `I save the booking`).
 
 ## One check per rule
 

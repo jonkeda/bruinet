@@ -61,6 +61,7 @@ public interface IElementObject<TScope>
     [BddThen("{control} should be visible", HasLiteral = true, Literal = true, CommandId = "Control.AssertVisible")]
     [BddThen("{control} is shown", HasLiteral = true, Literal = true, CommandId = "Control.AssertVisible")]
     [BddThen("{control} should not be visible", HasLiteral = true, Literal = false, CommandId = "Control.AssertVisible.False")]
+    [BddThen("{control} is not shown", HasLiteral = true, Literal = false, CommandId = "Control.AssertVisible.False")]
     TScope AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null);
 
     /// <summary>

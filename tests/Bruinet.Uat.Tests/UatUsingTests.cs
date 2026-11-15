@@ -141,6 +141,14 @@ public sealed class UatUsingTests : IDisposable
         Assert.Equal(["Accounts", "Invoicing"], catalog.Pages.Where(page => page.Name == "Ledger").Select(page => page.Namespace).Order());
     }
 
+    [Fact]
+    public void AScannedPage_IsNamedAsItsBddPageSays()
+    {
+        var catalog = TestCompositionCatalog.Discover(TestCompositionDiscoveryOptions.FromFixture(typeof(PageScanFixture)));
+
+        Assert.Contains(catalog.Pages, page => page.Name == "Contacts" && page.PageType == typeof(PageNamespaceCases.ContactPage));
+    }
+
     private BddBindResult Bind(string path, string steps, string? usings = null)
     {
         var file = BddScenarioFiles.Load(Write(path, Scenario(steps, usings)));

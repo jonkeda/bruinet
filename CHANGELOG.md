@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frainet: `frainet trace … --runnable` counts a runnable spec's examples as the tests of their rules, and with
   `--results` matches each by the case named after its rule (`"B7.INV.01.R1 …`). `site-loop.ps1` passes it, and runs
   `Spec=<spec>` too, for a suite whose config names `Specs`.
-- Spec phrases without "should" (Frainet's vague word): `{control} includes {value}` (contains) and
-  `Then the {page} page is open`. A page's `Self` is not read for control names.
+- Spec phrases without "should" (Frainet's vague word): `{control} includes {value}` (contains),
+  `{control} is not shown` and `Then the {page} page is open`. A page's `Self` is not read for control names.
 - **Control names (RS4).** `[BddControl("the filter above {column}")]` on a page's or a component's method names a
   control that has no fixed name; its placeholders are the method's parameters. A step's `{control}` is first a control
   the page exposes by name, then one of these, so every verb of the returned control's type works on it
@@ -184,6 +184,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- A page found by a module scan (`[TestModuleScan]`) took its name from its type and left out its `[BddPage]`: a
+  `ContactPage` marked `[BddPage("Contacts")]` was still "the Contact page". The scan reads `[BddPage]` now.
+- An extension verb with two values or more (`{control} counts {count} in the card {card}`) got only one of them: each
+  of its parameters now takes the placeholder of its name, read as its type.
+- `every row of {control} has {value}` counted the rows before a list that was still narrowing (a filter just typed)
+  had narrowed, and asked for rows that were gone: it counts them again at each row.
 - `Given I am on the … page` opened a page with a URL again when the app was at its address but the page was still
   loading (a tab's content after the step that chose it), throwing that away: it now opens the page only when the app
   is elsewhere (`IOpenablePage.IsAtItsAddress`). Found by tomorrow's Studio scenarios on the bUnit head.

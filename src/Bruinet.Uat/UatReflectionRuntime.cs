@@ -596,7 +596,7 @@ public sealed class UatReflectionRuntime
             {
                 var method = BddExtensionVerbs.For(extension, controlResult.Control!.GetType())
                     ?? throw new MissingMethodException($"{extension.DeclaringType?.Name}.{extension.Name} does not take a {controlResult.Control!.GetType().Name}.");
-                BddInvoker.InvokeDefinition(controlResult.Control!, method, [controlResult.Control, .. arguments]);
+                BddInvoker.InvokeDefinition(controlResult.Control!, method, [controlResult.Control, .. ExtensionArguments(method, invocation, context, arguments)]);
                 context.Diagnostics.Add($"{methodName}:{controlResult.ControlName}");
                 return Task.FromResult(FollowPage(context, invocation));
             }
@@ -615,6 +615,23 @@ public sealed class UatReflectionRuntime
                 $"Failed to run '{methodName}' on control '{controlResult.ControlName}': {ex.Message}.{methodDetail}",
                 ex));
         }
+    }
+
+    // An extension verb takes each of its placeholders by its parameter's name ("{count} in the card {card}"); one that
+    // names none of them takes the step's one value, as a control's own verb does.
+    private object?[] ExtensionArguments(MethodInfo method, BddStepInvocation invocation, BddExecutionContext context, object?[] arguments)
+    {
+        var parameters = method.GetParameters().Skip(1).ToArray();
+        if (parameters.Length == 0 || !parameters.All(parameter => invocation.RawArguments.ContainsKey(parameter.Name!)))
+        {
+            return arguments;
+        }
+
+        return parameters
+            .Select(parameter => parameter.ParameterType == typeof(string)
+                ? invocation.Arguments[parameter.Name!]
+                : BddValues.Read(invocation.RawArguments[parameter.Name!], parameter.ParameterType, _steps.ValueContext(context)))
+            .ToArray();
     }
 
     private Task<BddStepResult> AssertAnyControlTextContainsAsync(

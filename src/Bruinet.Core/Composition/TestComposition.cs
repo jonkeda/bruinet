@@ -196,6 +196,12 @@ public sealed class TestCompositionCatalog
             return attribute.Name;
         }
 
+        // The name a step uses, when the page declares one: a scanned page reads as it does without a scan.
+        if (pageType.GetCustomAttribute<Bruinet.Bdd.BddPageAttribute>()?.Name is { } declared)
+        {
+            return declared;
+        }
+
         var name = pageType.Name.EndsWith("Page", StringComparison.Ordinal)
             ? pageType.Name[..^"Page".Length]
             : pageType.Name;

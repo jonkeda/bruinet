@@ -7,7 +7,7 @@ Built: RS1 (reader, `Specs` row, `Rule`/`Spec` traits, Background), RS2's format
 (extension verbs, `TableVerbs` on Bruinet.Html's `TableControl` instead of a new Core `ITableControlObject`), RS4
 (control names), RS5 for B7.INV.01 (its C# tests deleted, site loop green), RS6's tools (`IsScenarioFile`: editors,
 CLI, workspace), RS7 (skills, docs, AD). Not built: a chapter's Then-only examples sharing one run (each runs the
-chapter's steps again; they carry the `chapter-then` tag for it), and moving CON, PRJ and HRS to runnable specs.
+chapter's steps again; they carry the `chapter-then` tag for it), Bouw7's CON, PRJ and HRS specs moved 2026-11-15, their C# rule tests deleted.
 
 A Frainet spec's examples run as tests, on the same engine as the `.feature.md` scenarios. The spec stops being a
 document that a C# test copies by hand: the example *is* the test. Features stay; they are for longer journeys told

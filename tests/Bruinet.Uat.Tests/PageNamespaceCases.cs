@@ -18,3 +18,11 @@ public sealed class InvoicingLedgerPage
 public sealed class AccountsLedgerPage
 {
 }
+
+// A scanned page that declares its step name: the steps say "the Contacts page", not "the Contact page".
+[TestPage]
+[BddPage("Contacts")]
+[BddIgnore]
+public sealed class ContactPage
+{
+}
