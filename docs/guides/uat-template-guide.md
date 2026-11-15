@@ -384,7 +384,7 @@ tags join the outline's for that section's rows, so a head tag picks rows for a 
 
 Rows are numbered across the sections, `Login result is shown [1]`, `[2]` and on, so splitting a
 section, or moving a row between sections in order, keeps every row's name, filter and recorded
-timings. Two sections of one outline with the same name are `UAT032`.
+timings. Two sections of one outline with the same name are `BDD032`.
 
 Table cells are trimmed. To pass a value whose spaces matter, quote it in the
 cell and leave the placeholder unquoted in the step: `When I set Title to <title>`

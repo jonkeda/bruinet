@@ -77,7 +77,7 @@ separator-row    = "|" , ( "---" , { "-" | ":" } , "|" )+ ;
 Rules the EBNF does not show:
 
 - **Keywords.** `And` and `But` take the effective keyword of the step before them, so a step
-  binds as `Given`, `When` or `Then` only. An `And` with nothing before it is `UAT016`.
+  binds as `Given`, `When` or `Then` only. An `And` with nothing before it is `BDD016`.
 - **Tags** must be on the line directly above a `## Scenario:` or `## Scenario Outline:` heading,
   or an outline's `### Examples` heading.
 - **Outlines.** Each `<column>` in an outline step is replaced from one `### Examples` row, and
@@ -96,14 +96,14 @@ Rules the EBNF does not show:
   at the top level of the document; a block in a list or a quote is prose, and so is a block of
   another language. A section may have several blocks, read in order as one list, so `And`
   continues across them. In a block, a `#` line is a comment and every other line must be a step,
-  its table or its doc string (`UAT011`). Line numbers are the file's.
+  its table or its doc string (`BDD011`). Line numbers are the file's.
 - **Prose** is everything else, in any Markdown form, before, between and after the parts
   above. A level-2 heading the engine does not know opens a prose section, up to the next
   level-2 heading. Text that reads like a step outside a block is prose; when its section then
   has no steps, the "no steps" error says to put them in a gherkin block, and
   `bruinet data validate --fix` does.
 - **Headings** that look like a section but are not one (`## scenario:`, `### Scenario:`,
-  `## Scenario x`, an underlined heading) are a warning, `UAT031`, and read as prose.
+  `## Scenario x`, an underlined heading) are a warning, `BDD031`, and read as prose.
 
 ## 2. Phrase files (`*.steps.md`)
 
@@ -142,7 +142,7 @@ placeholder = "{" , letter , { letter | digit | "_" | "-" } , "}" ;
   in first place name the step's subject (AD-015). Every other placeholder is an argument.
 - Binding keeps the phrases with the step's effective keyword that match, prefers phrases with
   no placeholder, then the phrase with the most literal characters. Two left is ambiguous
-  (`UATB002`); none is unknown (`UATB001`). Callable and C# phrases compete under the same rule.
+  (`BDDB002`); none is unknown (`BDDB001`). Callable and C# phrases compete under the same rule.
 
 No optional words, alternatives, regexes or types in phrase text (AD-016).
 
@@ -157,28 +157,28 @@ type suffix removed (`Page`, `Button`, `Entry`, ...) and split into words: `Todo
 
 | Code | Meaning |
 | --- | --- |
-| `UAT000`, `UAT001` | no `# Feature:` heading, or more than one |
-| `UAT002`, `UAT003` | the heading has no title, or is not first |
-| `UAT004` | `## Background` has no steps; when it holds step-like prose, the message says to put it in a gherkin block |
-| `UAT005` | `## Data:` has no name |
-| `UAT006`, `UAT007` | a scenario has no name, or no steps (with the same hint as `UAT004`) |
-| `UAT008` | the file has no scenario |
-| `UAT009`, `UAT010` | the Metadata table's columns are not `Field`/`Value`, or a field is empty |
-| `UAT011` | a line in a gherkin block is not a step, a comment, a table or a doc string |
-| `UAT012` - `UAT015` | an outline has no `### Examples`, no name, no steps (with the hint), or a placeholder with no column (naming the Examples section when it has a name) |
-| `UAT016` | `And`/`But` without a step before it |
-| `UAT017` - `UAT019` | a section's table is missing, a row has the wrong width, or a table has no data rows |
-| `UAT020` | a tag line is not directly above a scenario |
-| `UAT021` | a gherkin block outside a Background, Scenario or Step section |
-| `UAT022` | a second level-1 heading |
-| `UAT023` | a doc string is not closed |
-| `UAT024` | `<table>`/`<doc string>` outside a phrase section, or not under a step |
-| `UAT025`, `UAT026` | a phrase heading has no phrase, or the phrase has no steps (with the hint) |
-| `UAT027` | a malformed `Parameters` table |
-| `UAT028` | a steps file with content other than one `# Steps:` heading and step sections |
-| `UAT029` | a heading or file name in the form before feature files (`# UAT:`, `## Phrase:`, `*.uat.md`, `*.phrases.md`); `bruinet data validate --fix` rewrites it |
-| `UAT031` | warning: a heading that looks like a section but is not one, read as prose |
-| `UAT032` | two Examples sections of one outline have the same name |
+| `BDD000`, `BDD001` | no `# Feature:` heading, or more than one |
+| `BDD002`, `BDD003` | the heading has no title, or is not first |
+| `BDD004` | `## Background` has no steps; when it holds step-like prose, the message says to put it in a gherkin block |
+| `BDD005` | `## Data:` has no name |
+| `BDD006`, `BDD007` | a scenario has no name, or no steps (with the same hint as `BDD004`) |
+| `BDD008` | the file has no scenario |
+| `BDD009`, `BDD010` | the Metadata table's columns are not `Field`/`Value`, or a field is empty |
+| `BDD011` | a line in a gherkin block is not a step, a comment, a table or a doc string |
+| `BDD012` - `BDD015` | an outline has no `### Examples`, no name, no steps (with the hint), or a placeholder with no column (naming the Examples section when it has a name) |
+| `BDD016` | `And`/`But` without a step before it |
+| `BDD017` - `BDD019` | a section's table is missing, a row has the wrong width, or a table has no data rows |
+| `BDD020` | a tag line is not directly above a scenario |
+| `BDD021` | a gherkin block outside a Background, Scenario or Step section |
+| `BDD022` | a second level-1 heading |
+| `BDD023` | a doc string is not closed |
+| `BDD024` | `<table>`/`<doc string>` outside a phrase section, or not under a step |
+| `BDD025`, `BDD026` | a phrase heading has no phrase, or the phrase has no steps (with the hint) |
+| `BDD027` | a malformed `Parameters` table |
+| `BDD028` | a steps file with content other than one `# Steps:` heading and step sections |
+| `BDD029` | a heading or file name in the form before feature files (`# UAT:`, `## Phrase:`, `*.uat.md`, `*.phrases.md`); `bruinet data validate --fix` rewrites it |
+| `BDD031` | warning: a heading that looks like a section but is not one, read as prose |
+| `BDD032` | two Examples sections of one outline have the same name |
 
 Binder (`UATB0xx`) and argument (`UATA0xx`) diagnostics are raised in the binder and the value
 reader (`BddBinder`, `BddValues`, `BddPhraseDeclarations`).

@@ -141,7 +141,7 @@ public sealed record Location(string Uri, Range Range);
 /// <summary>LSP diagnostic.</summary>
 /// <param name="Range">Where: the line's text.</param>
 /// <param name="Severity">1 error, 2 warning, 3 information.</param>
-/// <param name="Code">The gate's code (<c>UATB010</c>), or <c>UATRUN</c> for a step that failed in the last run.</param>
+/// <param name="Code">The gate's code (<c>BDDB010</c>), or <c>BDDRUN</c> for a step that failed in the last run.</param>
 /// <param name="Source">Always <c>Bruinet BDD</c>.</param>
 /// <param name="Message">The gate's text, word for word.</param>
 public sealed record Diagnostic(Range Range, int Severity, string Code, string Source, string Message);

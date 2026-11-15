@@ -99,7 +99,7 @@ public static partial class BddTableBinding
         {
             if (table.Columns.Count != 1)
             {
-                problems.Add((new BddValueProblem("UATA006", $"a list of {BddValues.Describe(element)} takes a table with one column, not {table.Columns.Count}."), table.Source));
+                problems.Add((new BddValueProblem("BDDA006", $"a list of {BddValues.Describe(element)} takes a table with one column, not {table.Columns.Count}."), table.Source));
                 return problems;
             }
 
@@ -118,14 +118,14 @@ public static partial class BddTableBinding
         var source = element is null && IsVertical(table) ? Vertical(table) : table;
         if (element is null && source.Rows.Count != 1)
         {
-            problems.Add((new BddValueProblem("UATA006", $"one {recordType.Name} takes a 'Field | Value' table or a table with one row; this one has {table.Rows.Count} rows."), table.Source));
+            problems.Add((new BddValueProblem("BDDA006", $"one {recordType.Name} takes a 'Field | Value' table or a table with one row; this one has {table.Rows.Count} rows."), table.Source));
             return problems;
         }
 
         var constructor = WidestConstructor(recordType);
         if (constructor is null)
         {
-            problems.Add((new BddValueProblem("UATA006", $"{recordType.Name} has no public constructor to bind a table to."), table.Source));
+            problems.Add((new BddValueProblem("BDDA006", $"{recordType.Name} has no public constructor to bind a table to."), table.Source));
             return problems;
         }
 
@@ -137,14 +137,14 @@ public static partial class BddTableBinding
         }
         catch (InvalidOperationException exception)
         {
-            problems.Add((new BddValueProblem("UATA006", StripSource(source, exception.Message)), source.Source));
+            problems.Add((new BddValueProblem("BDDA006", StripSource(source, exception.Message)), source.Source));
             return problems;
         }
 
         var missing = parameters.Where(p => !p.HasDefaultValue && !byColumn.Values.Contains(p.Name!)).Select(p => Title(p.Name!)).ToList();
         if (missing.Count > 0)
         {
-            problems.Add((new BddValueProblem("UATA006", $"the table needs column(s) {string.Join(", ", missing)} for {recordType.Name}."), source.Source));
+            problems.Add((new BddValueProblem("BDDA006", $"the table needs column(s) {string.Join(", ", missing)} for {recordType.Name}."), source.Source));
             return problems;
         }
 

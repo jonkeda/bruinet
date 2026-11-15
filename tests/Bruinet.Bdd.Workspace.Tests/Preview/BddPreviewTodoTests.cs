@@ -39,12 +39,12 @@ public sealed class BddPreviewTodoTests : IClassFixture<BddPreviewTodoTests.Todo
     public void TheWithoutUsingFile_ShowsUatb010_WordForWordAsTheGateReportsIt()
     {
         var path = Path.Combine(TodoSuite.Project, "ExpectedFailures", "TOD.11-without-using.feature.md");
-        var gate = UatScenarioCheck.CheckFile(path, _todo.Catalogs).Where(d => d.Code == "UATB010").ToList();
+        var gate = UatScenarioCheck.CheckFile(path, _todo.Catalogs).Where(d => d.Code == "BDDB010").ToList();
 
         var html = WebUtility.HtmlDecode(BddPreview.Render(File.ReadAllText(path), path, new BddPreviewOptions { Catalogs = _todo.Catalogs }).Html);
 
         Assert.NotEmpty(gate);
-        Assert.All(gate, diagnostic => Assert.Contains($"data-line=\"{diagnostic.Location.LineNumber}\"><span class=\"uat-diag-code\">UATB010</span> {diagnostic.Message}", html));
+        Assert.All(gate, diagnostic => Assert.Contains($"data-line=\"{diagnostic.Location.LineNumber}\"><span class=\"uat-diag-code\">BDDB010</span> {diagnostic.Message}", html));
     }
 
     [Fact]

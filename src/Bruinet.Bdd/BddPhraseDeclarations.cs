@@ -32,7 +32,7 @@ public sealed record BddPhraseParameter(string Name, Type Type, BddParameterSour
 }
 
 /// <summary>Why a declared phrase cannot run. It is reported when a step binds to it (AD-016).</summary>
-/// <param name="Code">The diagnostic code, <c>UATA010</c>-<c>UATA013</c>.</param>
+/// <param name="Code">The diagnostic code, <c>BDDA010</c>-<c>BDDA013</c>.</param>
 /// <param name="Message">What is wrong with the declaration.</param>
 /// <param name="Declaration">The method that declares it: <c>Type.Method</c>.</param>
 [System.Diagnostics.CodeAnalysis.Experimental("BRUINET010", UrlFormat = "https://github.com/jonkeda/bruinet/blob/main/docs/experimental.md#{0}")]
@@ -91,7 +91,7 @@ internal static partial class BddPhraseDeclarations
             if (attribute.IsInferred && !inferred.Add(attribute.Keyword))
             {
                 var first = phrases.FindIndex(p => p.Keyword == attribute.Keyword);
-                var duplicate = new BddPhraseProblem("UATA013", $"has two empty [Bdd{attribute.Keyword}] attributes; one says the method name is the phrase.", declaration);
+                var duplicate = new BddPhraseProblem("BDDA013", $"has two empty [Bdd{attribute.Keyword}] attributes; one says the method name is the phrase.", declaration);
                 if (first >= 0)
                 {
                     phrases[first] = phrases[first] with { Problem = phrases[first].Problem ?? duplicate };
@@ -113,12 +113,12 @@ internal static partial class BddPhraseDeclarations
                 : Infer(method, fromAttribute is null ? null : keyword, out problem);
             var (parameters, parameterProblem) = Parameters(method, phrase, types);
 
-            problem ??= controlVerbOnly is null ? null : new BddPhraseProblem("UATA013", controlVerbOnly, declaration);
+            problem ??= controlVerbOnly is null ? null : new BddPhraseProblem("BDDA013", controlVerbOnly, declaration);
             problem ??= parameterProblem is null ? null : parameterProblem with { Declaration = declaration };
 
             if (phrase is null)
             {
-                unmatchable.Add(new BddUnmatchableDeclaration(keyword, problem ?? new BddPhraseProblem("UATA011", "has a name that says nothing.", declaration)));
+                unmatchable.Add(new BddUnmatchableDeclaration(keyword, problem ?? new BddPhraseProblem("BDDA011", "has a name that says nothing.", declaration)));
                 return;
             }
 
@@ -141,19 +141,19 @@ internal static partial class BddPhraseDeclarations
             words = words.Skip(1).ToList();
             if (attributeKeyword is { } keyword && keyword != prefix)
             {
-                problem = new BddPhraseProblem("UATA013", $"is named {prefix}_..., but its attribute is [Bdd{keyword}].", declaration);
+                problem = new BddPhraseProblem("BDDA013", $"is named {prefix}_..., but its attribute is [Bdd{keyword}].", declaration);
             }
         }
 
         if (words.Count == 0)
         {
-            problem = new BddPhraseProblem("UATA011", "has a name with no words after its keyword.", declaration);
+            problem = new BddPhraseProblem("BDDA011", "has a name with no words after its keyword.", declaration);
             return null;
         }
 
         if (method.GetParameters().Any(p => p.Name == "i"))
         {
-            problem ??= new BddPhraseProblem("UATA011", "has a parameter named 'i', which a name cannot tell from the word I. Rename it.", declaration);
+            problem ??= new BddPhraseProblem("BDDA011", "has a parameter named 'i', which a name cannot tell from the word I. Rename it.", declaration);
         }
 
         List<string> tokens = [];
@@ -176,7 +176,7 @@ internal static partial class BddPhraseDeclarations
 
                 if (TouchingParameters(word, method) is { } touching)
                 {
-                    problem ??= new BddPhraseProblem("UATA011", $"has {word}, which runs {touching} together. Separate them with _.", declaration);
+                    problem ??= new BddPhraseProblem("BDDA011", $"has {word}, which runs {touching} together. Separate them with _.", declaration);
                 }
 
                 tokens.Add(word);
@@ -227,14 +227,14 @@ internal static partial class BddPhraseDeclarations
 
             if (!parameter.IsOptional && phrase is not null)
             {
-                problem ??= new BddPhraseProblem("UATA010", $"does not name parameter '{name}' in its phrase '{phrase}'.", string.Empty);
+                problem ??= new BddPhraseProblem("BDDA010", $"does not name parameter '{name}' in its phrase '{phrase}'.", string.Empty);
             }
         }
 
         var blocks = parameters.Where(p => p.Source != BddParameterSource.Phrase).Select(p => p.Name).ToList();
         if (blocks.Count > 1)
         {
-            problem ??= new BddPhraseProblem("UATA012", $"takes {string.Join(" and ", blocks.Select(b => $"'{b}'"))} from under the step, but a step has one table or doc string.", string.Empty);
+            problem ??= new BddPhraseProblem("BDDA012", $"takes {string.Join(" and ", blocks.Select(b => $"'{b}'"))} from under the step, but a step has one table or doc string.", string.Empty);
         }
 
         return (parameters, problem);

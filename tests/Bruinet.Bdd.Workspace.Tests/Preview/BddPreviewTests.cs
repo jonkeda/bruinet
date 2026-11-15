@@ -44,10 +44,10 @@ public sealed class BddPreviewTests
             """, "broken.feature.md");
 
         Assert.Contains("<li class=\"uat-step uat-not-a-step\" data-line=\"7\">", result.Html);
-        Assert.Contains("data-code=\"UAT011\" data-line=\"7\"", result.Html);
+        Assert.Contains("data-code=\"BDD011\" data-line=\"7\"", result.Html);
         Assert.Contains("<li class=\"uat-step\" data-line=\"8\"><span class=\"uat-kw\">Then</span>", result.Html);
         Assert.True(
-            result.Html.IndexOf("data-code=\"UAT011\"", StringComparison.Ordinal) < result.Html.IndexOf("data-line=\"8\"", StringComparison.Ordinal),
+            result.Html.IndexOf("data-code=\"BDD011\"", StringComparison.Ordinal) < result.Html.IndexOf("data-line=\"8\"", StringComparison.Ordinal),
             "The diagnostic shows under its own step, before the next one.");
     }
 

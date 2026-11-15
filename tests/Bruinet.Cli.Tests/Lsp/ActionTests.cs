@@ -64,7 +64,7 @@ public sealed class ActionTests : IAsyncLifetime
         Assert.Contains("[BddWhen(\"I dust the shelf {text} {number} times\")]", edit.NewText);
         Assert.Contains("public void IDustTheShelfTimes(string text, int number)", edit.NewText);
         Assert.Equal("}", File.ReadAllLines(new Uri(file).LocalPath)[edit.Range.Start.Line].Trim());
-        Assert.Equal("UATB001", Assert.Single(create.Diagnostics!).Code);
+        Assert.Equal("BDDB001", Assert.Single(create.Diagnostics!).Code);
     }
 
     [Fact]

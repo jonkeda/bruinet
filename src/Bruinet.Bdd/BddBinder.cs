@@ -149,7 +149,7 @@ public static class BddBinder
             if (!provided.Any(owner => BddNamespaces.IsVisible(owner, name)))
             {
                 yield return Error(
-                    "UATB011",
+                    "BDDB011",
                     $"Using '{name}' names no namespace. The namespaces are {(provided.Count == 0 ? "(none)" : string.Join(", ", provided.Order(StringComparer.OrdinalIgnoreCase)))}.",
                     document.Source);
             }
@@ -157,7 +157,7 @@ public static class BddBinder
             {
                 yield return new BddDiagnostic(
                     BddDiagnosticSeverity.Warning,
-                    "UATB012",
+                    "BDDB012",
                     $"Using '{name}' is not needed: no step binds to a phrase or page it adds. Remove it.",
                     document.Source);
             }
@@ -302,7 +302,7 @@ public static class BddBinder
             {
                 if (!_apps.TryResolve(subject, out var subjectApp, out var error))
                 {
-                    diagnostics.Add(Error("UATB006", error, step.Source));
+                    diagnostics.Add(Error("BDDB006", error, step.Source));
                     return;
                 }
 
@@ -315,7 +315,7 @@ public static class BddBinder
                 if (declared.Length > 1)
                 {
                     diagnostics.Add(Error(
-                        "UATB002",
+                        "BDDB002",
                         $"Step '{step.Text}' is ambiguous: as {subject}, it matches {string.Join(", ", declared.Select(candidate => $"'{candidate.Pattern.Phrase}'"))}.",
                         step.Source));
                     return;
@@ -350,7 +350,7 @@ public static class BddBinder
                 if (matches.Count == 0)
                 {
                     diagnostics.Add(Error(
-                        "UATB001",
+                        "BDDB001",
                         subject.Length == 0
                             ? $"No command binding matches step '{step.Text}'." + Nearest(catalogs.CatalogFor(app), step)
                             : $"No command binding matches step '{step.Text}'. A step that names {subject} binds only to a phrase declared with {{{UserParameter}}} first; "
@@ -364,7 +364,7 @@ public static class BddBinder
                 if (matches.Count > 1)
                 {
                     diagnostics.Add(Error(
-                        "UATB002",
+                        "BDDB002",
                         $"Step '{step.Text}' is ambiguous and matches {matches.Count} command bindings: {string.Join(", ", matches.Select(Describe))}.",
                         step.Source));
                     return;
@@ -377,7 +377,7 @@ public static class BddBinder
             if (BddTagConventions.IsService(app?.Head ?? catalogs.SuiteHead) && IsScreenStep(match.Pattern))
             {
                 diagnostics.Add(Error(
-                    "UATB013",
+                    "BDDB013",
                     $"'{step.Text}' is a UI step ('{match.Pattern.Phrase}'); the service head has no screen. Use a step the service head declares, or tag the scenario for a UI head.",
                     step.Source));
                 return;
@@ -390,13 +390,13 @@ public static class BddBinder
             {
                 if (match.Pattern.RequiresTable && step.Table is null)
                 {
-                    diagnostics.Add(Error("UATB003", $"Step '{step.Text}' requires a table.", step.Source));
+                    diagnostics.Add(Error("BDDB003", $"Step '{step.Text}' requires a table.", step.Source));
                     return;
                 }
 
                 if (!match.Pattern.AllowsTable && step.Table is not null)
                 {
-                    diagnostics.Add(Error("UATB004", $"Step '{step.Text}' does not accept a table.", step.Table.Source));
+                    diagnostics.Add(Error("BDDB004", $"Step '{step.Text}' does not accept a table.", step.Table.Source));
                     return;
                 }
             }
@@ -410,7 +410,7 @@ public static class BddBinder
             else if (catalogs.Apps.Count == 0 && user is not null && user != "I")
             {
                 diagnostics.Add(Error(
-                    "UATB007",
+                    "BDDB007",
                     $"Step '{step.Text}' names the user '{user}', but the config has no Apps table to say whose app that is.",
                     step.Source));
                 return;
@@ -419,7 +419,7 @@ public static class BddBinder
             {
                 if (!TryBindUser(catalogs, _apps, match, user, ref app, out var boundUser, out var error))
                 {
-                    diagnostics.Add(Error("UATB007", $"Step '{step.Text}': {error}", step.Source));
+                    diagnostics.Add(Error("BDDB007", $"Step '{step.Text}': {error}", step.Source));
                     return;
                 }
 
@@ -453,10 +453,10 @@ public static class BddBinder
             if (inference is not null)
             {
                 // What the body writes itself cannot be fixed by a call: the callable is broken.
-                var avoidable = step.Passes == BddPassedBlock.None ? [] : new[] { "UATA007" };
+                var avoidable = step.Passes == BddPassedBlock.None ? [] : new[] { "BDDA007" };
                 if (argumentProblems.FirstOrDefault(problem => !avoidable.Contains(problem.Code)) is { } problem)
                 {
-                    inference.Fail("UATC008", $"has a step that cannot run: {problem.Code} {problem.Message}");
+                    inference.Fail("BDDC008", $"has a step that cannot run: {problem.Code} {problem.Message}");
                 }
 
                 if (step.Passes == BddPassedBlock.Table)
@@ -504,7 +504,7 @@ public static class BddBinder
             var candidates = all.Where(candidate => where.Sees(candidate.Pattern)).ToList();
             if (candidates.Count == 0 && all.Count > 0)
             {
-                problems.Add(Error("UATB010", NotSeen(step, all, where), step.Source));
+                problems.Add(Error("BDDB010", NotSeen(step, all, where), step.Source));
                 return [];
             }
 
@@ -532,7 +532,7 @@ public static class BddBinder
             var called = callables.Get(callable);
             if (called.Problem is { } problem)
             {
-                inference!.Fail(problem.Code == "UATC004" ? "UATC004" : "UATC008", $"calls '{callable.Phrase}' ({callable.Source}), which {problem.Message.TrimEnd('.')}.");
+                inference!.Fail(problem.Code == "BDDC004" ? "BDDC004" : "BDDC008", $"calls '{callable.Phrase}' ({callable.Source}), which {problem.Message.TrimEnd('.')}.");
                 return;
             }
 
@@ -584,13 +584,13 @@ public static class BddBinder
             if (frame?.Chain.FirstOrDefault(outer => outer.Callable == callable) is not null)
             {
                 var chain = frame.Chain.Select(outer => $"'{outer.Callable.Phrase}'").Append($"'{callable.Phrase}'");
-                diagnostics.Add(Error("UATC004", $"Step '{step.Text}' calls a phrase that is already running: {string.Join(" -> ", chain)}.", step.Source));
+                diagnostics.Add(Error("BDDC004", $"Step '{step.Text}' calls a phrase that is already running: {string.Join(" -> ", chain)}.", step.Source));
                 return;
             }
 
             if ((frame?.Depth ?? 0) >= MaxCallDepth)
             {
-                diagnostics.Add(Error("UATC005", $"Step '{step.Text}' calls '{callable.Phrase}' at depth {frame!.Depth + 1}; callable phrases nest at most {MaxCallDepth} deep. Call it from the scenario, or make one of them a C# phrase.", step.Source));
+                diagnostics.Add(Error("BDDC005", $"Step '{step.Text}' calls '{callable.Phrase}' at depth {frame!.Depth + 1}; callable phrases nest at most {MaxCallDepth} deep. Call it from the scenario, or make one of them a C# phrase.", step.Source));
                 return;
             }
 
@@ -626,7 +626,7 @@ public static class BddBinder
                 diagnostics.AddRange(inner.Select(diagnostic => Relocate(diagnostic, step, callFrame)));
                 if (inner.Count == 0 && PageProblem(callable, invocations.Skip(first).ToList()) is { } pageProblem)
                 {
-                    diagnostics.Add(Error("UATC006", $"Step '{step.Text}': the phrase '{callable.Phrase}' from {callable.Source} {pageProblem}", callFrame.Location));
+                    diagnostics.Add(Error("BDDC006", $"Step '{step.Text}': the phrase '{callable.Phrase}' from {callable.Source} {pageProblem}", callFrame.Location));
                 }
             }
         }
@@ -635,13 +635,13 @@ public static class BddBinder
         {
             var phrase = prepared.Callable.Phrase;
             string? problem = prepared.Callable.Kind == BddCallableKind.EachRow
-                ? step.Table is null || step.Table.Rows.Count == 0 ? "UATA007" : step.DocString is not null ? "UATB004" : null
+                ? step.Table is null || step.Table.Rows.Count == 0 ? "BDDA007" : step.DocString is not null ? "BDDB004" : null
                 : prepared.Passes switch
                 {
-                    BddPassedBlock.Table when step.Table is null => "UATA007",
-                    BddPassedBlock.DocString when step.DocString is null => "UATA007",
-                    not BddPassedBlock.Table when step.Table is not null => "UATB004",
-                    not BddPassedBlock.DocString when step.DocString is not null => "UATB004",
+                    BddPassedBlock.Table when step.Table is null => "BDDA007",
+                    BddPassedBlock.DocString when step.DocString is null => "BDDA007",
+                    not BddPassedBlock.Table when step.Table is not null => "BDDB004",
+                    not BddPassedBlock.DocString when step.DocString is not null => "BDDB004",
                     _ => null,
                 };
 
@@ -652,12 +652,12 @@ public static class BddBinder
 
             var message = (problem, prepared.Callable.Kind, prepared.Passes) switch
             {
-                ("UATA007", BddCallableKind.EachRow, _) => $"Step '{step.Text}' needs a table under it: '{phrase}' runs once per row, with the columns {string.Join(", ", prepared.Columns)}.",
-                ("UATA007", _, BddPassedBlock.Table) => $"Step '{step.Text}' needs a table under it, which '{phrase}' passes on.",
-                ("UATA007", _, _) => $"Step '{step.Text}' needs a doc string (\"\"\") under it, which '{phrase}' passes on.",
+                ("BDDA007", BddCallableKind.EachRow, _) => $"Step '{step.Text}' needs a table under it: '{phrase}' runs once per row, with the columns {string.Join(", ", prepared.Columns)}.",
+                ("BDDA007", _, BddPassedBlock.Table) => $"Step '{step.Text}' needs a table under it, which '{phrase}' passes on.",
+                ("BDDA007", _, _) => $"Step '{step.Text}' needs a doc string (\"\"\") under it, which '{phrase}' passes on.",
                 _ => $"Step '{step.Text}' does not accept a {(step.Table is not null ? "table" : "doc string")}: '{phrase}' does not pass one on.",
             };
-            diagnostics.Add(Error(problem, message, problem == "UATB004" && step.Table is not null ? step.Table.Source : step.Source));
+            diagnostics.Add(Error(problem, message, problem == "BDDB004" && step.Table is not null ? step.Table.Source : step.Source));
             return false;
         }
 
@@ -706,13 +706,13 @@ public static class BddBinder
                     }
                     else
                     {
-                        diagnostics.Add(Error("UATA006", $"Step '{step.Text}': '{column}' is not a column of '{callable.Phrase}'. Its columns are {string.Join(", ", prepared.Columns)}.", table.Source));
+                        diagnostics.Add(Error("BDDA006", $"Step '{step.Text}': '{column}' is not a column of '{callable.Phrase}'. Its columns are {string.Join(", ", prepared.Columns)}.", table.Source));
                     }
                 }
 
                 foreach (var name in prepared.Columns.Where(name => !byColumn.ContainsValue(name)))
                 {
-                    diagnostics.Add(Error("UATA006", $"Step '{step.Text}': the table needs a column '{name}' for '{callable.Phrase}'.", table.Source));
+                    diagnostics.Add(Error("BDDA006", $"Step '{step.Text}': the table needs a column '{name}' for '{callable.Phrase}'.", table.Source));
                 }
 
                 if (diagnostics.Count > count)

@@ -47,13 +47,13 @@ public sealed class UatArgumentTests
             diagnostics,
             first =>
             {
-                Assert.Equal("UATA002", first.Code);
+                Assert.Equal("BDDA002", first.Code);
                 Assert.Contains("'due' is a date; '2026-05-12' is not written as dd-MMM-yyyy. Write 12-May-2026.", first.Message, StringComparison.Ordinal);
                 Assert.Equal(5, first.Location.LineNumber);
             },
             second =>
             {
-                Assert.Equal("UATA005", second.Code);
+                Assert.Equal("BDDA005", second.Code);
                 Assert.Contains("'Carol' is not a user in the Apps table", second.Message, StringComparison.Ordinal);
                 Assert.Equal(6, second.Location.LineNumber);
             });
@@ -66,7 +66,7 @@ public sealed class UatArgumentTests
             When I assign "Buy milk" to Eva due 12-May-2026 for 1,5 hours as Dnoe
             """);
 
-        Assert.Equal(["UATA003", "UATA004"], diagnostics.Select(d => d.Code));
+        Assert.Equal(["BDDA003", "BDDA004"], diagnostics.Select(d => d.Code));
     }
 
     [Fact]
@@ -152,7 +152,7 @@ public sealed class UatArgumentTests
               | x     |
             """);
 
-        Assert.Equal(["UATA004", "UATA002", "UATA007", "UATA006"], diagnostics.Select(d => d.Code));
+        Assert.Equal(["BDDA004", "BDDA002", "BDDA007", "BDDA006"], diagnostics.Select(d => d.Code));
         Assert.Equal(8, diagnostics[0].Location.LineNumber);
         Assert.Contains("column 'Due Date'", diagnostics[1].Message, StringComparison.Ordinal);
         Assert.Contains("needs a table under it for 'todos' (a row per TodoRow)", diagnostics[2].Message, StringComparison.Ordinal);
@@ -205,18 +205,18 @@ public sealed class UatArgumentTests
         var catalog = Runtime(new ArgumentFixture()).CreateCommandCatalog();
         var broken = catalog.Patterns.Where(p => p.Problem is not null).ToDictionary(p => $"{p.Keyword} {p.Phrase}", p => p.Problem!.Code);
 
-        Assert.Equal("UATA010", broken["When I forget the due"]);
-        Assert.Equal("UATA011", broken["When I number I"]);
-        Assert.Equal("UATA011", broken["When I use TITLESTATUS"]);
-        Assert.Equal("UATA012", broken["Given two tables"]);
-        Assert.Equal("UATA013", broken["Then I restart the app"]);
-        Assert.Equal("UATA013", broken["When I twice"]);
+        Assert.Equal("BDDA010", broken["When I forget the due"]);
+        Assert.Equal("BDDA011", broken["When I number I"]);
+        Assert.Equal("BDDA011", broken["When I use TITLESTATUS"]);
+        Assert.Equal("BDDA012", broken["Given two tables"]);
+        Assert.Equal("BDDA013", broken["Then I restart the app"]);
+        Assert.Equal("BDDA013", broken["When I twice"]);
 
         var diagnostics = Bind("""
             When I forget the due
             """);
         var error = Assert.Single(diagnostics);
-        Assert.Equal("UATA010", error.Code);
+        Assert.Equal("BDDA010", error.Code);
         Assert.Contains("BrokenPhrases.When_I_forget_the_due does not name parameter 'due'", error.Message, StringComparison.Ordinal);
     }
 
@@ -226,7 +226,7 @@ public sealed class UatArgumentTests
         var catalog = UatReflectionRuntime.FromRoot(new FrobFixture()).CreateCommandCatalog();
 
         var declaration = Assert.Single(catalog.Unmatchable);
-        Assert.Equal("UATA013", declaration.Problem.Code);
+        Assert.Equal("BDDA013", declaration.Problem.Code);
         Assert.EndsWith("FrobControl.Frob", declaration.Problem.Declaration, StringComparison.Ordinal);
     }
 

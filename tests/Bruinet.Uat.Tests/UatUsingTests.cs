@@ -34,7 +34,7 @@ public sealed class UatUsingTests : IDisposable
     {
         var error = Assert.Single(Bind("Accounts/account.feature.md", "When I add a line \"Rent\"").Diagnostics);
 
-        Assert.Equal("UATB010", error.Code);
+        Assert.Equal("BDDB010", error.Code);
         Assert.Contains("add a 'Using' row for it", error.Message, StringComparison.Ordinal);
     }
 
@@ -43,7 +43,7 @@ public sealed class UatUsingTests : IDisposable
     {
         var error = Assert.Single(Bind("Accounts/account.feature.md", "When I add a line \"Rent\"", usings: "Invoicing, Purchasing").Diagnostics, d => d.Severity == BddDiagnosticSeverity.Error);
 
-        Assert.Equal("UATB002", error.Code);
+        Assert.Equal("BDDB002", error.Code);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public sealed class UatUsingTests : IDisposable
     {
         var error = Assert.Single(Bind("account.feature.md", "When I note \"paid\"", usings: "Invoicng").Diagnostics);
 
-        Assert.Equal("UATB011", error.Code);
+        Assert.Equal("BDDB011", error.Code);
         Assert.Contains("Using 'Invoicng' names no namespace. The namespaces are Invoicing, Purchasing.", error.Message, StringComparison.Ordinal);
     }
 
@@ -62,7 +62,7 @@ public sealed class UatUsingTests : IDisposable
 
         Assert.True(bound.Success);
         var warning = Assert.Single(bound.Diagnostics);
-        Assert.Equal(("UATB012", BddDiagnosticSeverity.Warning), (warning.Code, warning.Severity));
+        Assert.Equal(("BDDB012", BddDiagnosticSeverity.Warning), (warning.Code, warning.Severity));
     }
 
     [Fact]
@@ -86,7 +86,7 @@ public sealed class UatUsingTests : IDisposable
         var sharedBound = Bind("Accounts/shared.feature.md", "Given a shared line", usings: "Invoicing");
 
         Assert.True(ownBound.Success, BddDiagnosticsFormatter.FormatDiagnostics(ownBound.Diagnostics));
-        Assert.Contains(sharedBound.Diagnostics, d => d.Code == "UATB010");
+        Assert.Contains(sharedBound.Diagnostics, d => d.Code == "BDDB010");
     }
 
     [Fact]
@@ -124,9 +124,9 @@ public sealed class UatUsingTests : IDisposable
         var both = BddScenarioFiles.Load(Write("Invoicing/both.feature.md", Scenario("Given I am on the Detail page", usings: "Accounts"))).Bind(catalogs);
         var named = BddScenarioFiles.Load(Write("Invoicing/named.feature.md", Scenario("Given I am on the Accounts/Detail page", usings: "Accounts"))).Bind(catalogs);
 
-        Assert.Equal("UATB010", Assert.Single(unseen.Diagnostics).Code);
+        Assert.Equal("BDDB010", Assert.Single(unseen.Diagnostics).Code);
         var ambiguous = Assert.Single(both.Diagnostics, d => d.Severity == BddDiagnosticSeverity.Error);
-        Assert.Equal("UATB002", ambiguous.Code);
+        Assert.Equal("BDDB002", ambiguous.Code);
         Assert.Contains("Name it with its namespace", ambiguous.Message, StringComparison.Ordinal);
         Assert.True(named.Success, BddDiagnosticsFormatter.FormatDiagnostics(named.Diagnostics));
         Assert.Empty(named.Diagnostics);

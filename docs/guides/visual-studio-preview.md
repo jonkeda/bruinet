@@ -172,7 +172,7 @@ Markdown editor with a language server of their own, the same `bruinet lsp`:
 - **Diagnostics.** The gate's problems show as squiggles and in the Error List, word for word as
   the xUnit gate and `bruinet data validate` report them: the open file as you type, the whole suite
   on save and after a build. A problem inside a callable shows at the call, with the steps it went
-  through. A step that failed in the last run is an error at its line (`UATRUN`), with the failure's
+  through. A step that failed in the last run is an error at its line (`BDDRUN`), with the failure's
   message.
 - **Outline, folding and colours.** The headings show as a tree in the Document Outline and the
   navigation bar: Feature, Scenario, Background, Examples, `## Step:` and the other sections. The
@@ -201,7 +201,7 @@ Markdown editor with a language server of their own, the same `bruinet lsp`:
 - **Quick fixes (Ctrl+.).**
   - A value with one right answer (`2026-05-12` for a date) is rewritten, as
     `bruinet data validate --fix` does.
-  - Old headings are rewritten, and an old file name (UAT029) is renamed.
+  - Old headings are rewritten, and an old file name (BDD029) is renamed.
   - On a step that binds to nothing, **Create step definition** adds a stub to the suite's
     `[BddStepDefinitions]` class: its phrase has a placeholder for each quoted value and number.
   - Select steps and **Extract** them to a `## Step:` of the file; the call takes their place, named

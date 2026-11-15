@@ -12,7 +12,7 @@ namespace Bruinet.Bdd.LanguageServer;
 // callable step, and Rename a callable step with every call of it.
 public sealed partial class BddLanguageServer
 {
-    private const string NotBound = "UATB001";
+    private const string NotBound = "BDDB001";
     private const string ExtractedPhrase = "the extracted steps";
 
     private bool _renamesFiles;
@@ -161,7 +161,7 @@ public sealed partial class BddLanguageServer
         }
     }
 
-    // The old file name (UAT029) and the old headings: rename the file and rewrite its headings.
+    // The old file name (BDD029) and the old headings: rename the file and rewrite its headings.
     private void OldForms(BddServerFile file, string uri, List<CodeAction> actions)
     {
         var (rewritten, count) = BddFileFormat.RewriteHeadings(file.Text);

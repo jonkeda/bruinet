@@ -77,12 +77,12 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("Features/library.feature.md:5: UATA002", output);
+        Assert.Contains("Features/library.feature.md:5: BDDA002", output);
         Assert.Contains("Write 12-May-2026.", output);
-        Assert.Contains("Features/library.feature.md:6: UATA005", output);
-        Assert.Contains("Features/library.feature.md:10: UATA003", output);
-        Assert.Contains("Features/library.feature.md:11: UATA007", output);
-        Assert.Contains("Features/library.feature.md:12: UATA010", output);
+        Assert.Contains("Features/library.feature.md:6: BDDA005", output);
+        Assert.Contains("Features/library.feature.md:10: BDDA003", output);
+        Assert.Contains("Features/library.feature.md:11: BDDA007", output);
+        Assert.Contains("Features/library.feature.md:12: BDDA010", output);
         Assert.Contains("5 error(s).", output);
     }
 
@@ -97,7 +97,7 @@ public sealed class ScenarioValidationTests : IDisposable
 
         Assert.Equal(1, exit);
         var problem = Assert.Single(JsonDocument.Parse(output).RootElement.EnumerateArray());
-        Assert.Equal("UATA005", problem.GetProperty("code").GetString());
+        Assert.Equal("BDDA005", problem.GetProperty("code").GetString());
     }
 
     [Fact]
@@ -142,14 +142,14 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("UAT029 'library.uat.md' is the old name of 'library.feature.md'", output);
-        Assert.Contains("UAT029 'Library.phrases.md' is the old name of 'Library.steps.md'", output);
+        Assert.Contains("BDD029 'library.uat.md' is the old name of 'library.feature.md'", output);
+        Assert.Contains("BDD029 'Library.phrases.md' is the old name of 'Library.steps.md'", output);
 
         Directory.Move(Path.Combine(_folder, "Features"), Path.Combine(_folder, "Scenarios"));
         (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("UAT029 The folder 'Scenarios' is the old name of 'Features'", output);
+        Assert.Contains("BDD029 The folder 'Scenarios' is the old name of 'Features'", output);
 
         (exit, output, var fixes) = Run("validate", "--fix");
 
@@ -175,7 +175,7 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("UAT007 Scenario section must contain at least one step. " + BddFileFormat.FenceHint, output);
+        Assert.Contains("BDD007 Scenario section must contain at least one step. " + BddFileFormat.FenceHint, output);
 
         (exit, output, var fixes) = Run("validate", "--fix");
 
@@ -193,7 +193,7 @@ public sealed class ScenarioValidationTests : IDisposable
         Assert.Contains("When I lend {title: text} to {reader: user} until {due: date}", output);
         Assert.Contains("When I shelve the books  + table 'books': list of ShelvedBook", output);
         Assert.Contains("When I forget the day", output);
-        Assert.Contains("warning UATA010", output);
+        Assert.Contains("warning BDDA010", output);
         Assert.DoesNotContain("Then ", output);
     }
 
@@ -208,8 +208,8 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, errors) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("Features/library.feature.md:5: UATA002", output);
-        Assert.Contains("Features/Library.steps.md:9: UATC001", errors);
+        Assert.Contains("Features/library.feature.md:5: BDDA002", output);
+        Assert.Contains("Features/Library.steps.md:9: BDDC001", errors);
         Assert.Contains("does not copy to its output", errors);
 
         (exit, _, var fixes) = Run("validate", "--fix");
@@ -229,7 +229,7 @@ public sealed class ScenarioValidationTests : IDisposable
         Assert.Equal(0, exit);
         Assert.Contains("Callable a loan of {title: text} to {reader: user} on {due: date}  <- ", output);
         Assert.Contains("Library.steps.md:3", output);
-        Assert.Contains("warning UATC001", output);
+        Assert.Contains("warning BDDC001", output);
     }
 
     [Fact]
@@ -264,8 +264,8 @@ public sealed class ScenarioValidationTests : IDisposable
         var (_, phrases, _) = Run("phrases");
 
         Assert.Equal(1, exit);
-        Assert.Contains("Features/Lending/Lending.steps.md:9: UATC001", errors);
-        Assert.Contains("Features/Shelving/shelving.feature.md:6: UATB010", output);
+        Assert.Contains("Features/Lending/Lending.steps.md:9: BDDC001", errors);
+        Assert.Contains("Features/Shelving/shelving.feature.md:6: BDDB010", output);
         Assert.Contains("of the folder 'Lending'", output);
         Assert.Contains("Callable a loan of {title: text} to {reader: user} on {due: date}  <- ", phrases);
         Assert.Contains("  in Lending", phrases);
@@ -322,7 +322,7 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("uat.config.md:1: UATB011", output);
+        Assert.Contains("uat.config.md:1: BDDB011", output);
         Assert.Contains("1 error(s).", output);
     }
 

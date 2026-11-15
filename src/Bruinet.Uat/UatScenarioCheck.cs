@@ -79,7 +79,7 @@ public static partial class UatScenarioCheck
     }
 
     /// <summary>
-    /// The config's <c>## Using</c> names that nothing provides (<c>UATB011</c>): checked once per
+    /// The config's <c>## Using</c> names that nothing provides (<c>BDDB011</c>): checked once per
     /// suite, as the binder checks a file's <c>Using</c> row.
     /// </summary>
     /// <param name="catalogs">The suite's catalogs, with <see cref="BddCatalogSet.Usings"/>.</param>
@@ -95,7 +95,7 @@ public static partial class UatScenarioCheck
             .Where(name => !provided.Any(owner => BddNamespaces.IsVisible(owner, name)))
             .Select(name => new BddDiagnostic(
                 BddDiagnosticSeverity.Error,
-                "UATB011",
+                "BDDB011",
                 $"## Using names '{name}', which no phrase class, page or phrase folder provides. The namespaces are {(provided.Count == 0 ? "(none)" : string.Join(", ", provided.Order(StringComparer.OrdinalIgnoreCase)))}.",
                 new BddSourceLocation(configPath, 1)))
             .ToList();

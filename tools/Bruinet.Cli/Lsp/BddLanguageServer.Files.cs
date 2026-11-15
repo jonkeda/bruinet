@@ -220,7 +220,7 @@ public sealed partial class BddLanguageServer
                 diagnostics.Add(new Diagnostic(
                     LineRange(file, step.WrittenLine),
                     1,
-                    "UATRUN",
+                    "BDDRUN",
                     DiagnosticSource,
                     $"Failed in the last run of '{run.Scenario}'{(step.Message is { Length: > 0 } why ? $": {why}" : ".")}"));
             }

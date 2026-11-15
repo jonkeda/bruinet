@@ -96,7 +96,7 @@ public static partial class BddMarkdownParser
                 {
                     if (line.Detached)
                     {
-                        AddError("UAT020", "Tag lines must be immediately followed by a scenario heading.", line);
+                        AddError("BDD020", "Tag lines must be immediately followed by a scenario heading.", line);
                     }
                     else if (TryParseTags(trimmed, out var tags))
                     {
@@ -109,7 +109,7 @@ public static partial class BddMarkdownParser
 
                 if (pendingTags.Count > 0 && !(line.Kind == LineKind.Heading && IsScenarioHeading(trimmed)))
                 {
-                    AddError("UAT020", "Tag lines must be immediately followed by a scenario heading.", line);
+                    AddError("BDD020", "Tag lines must be immediately followed by a scenario heading.", line);
                     pendingTags.Clear();
                 }
 
@@ -128,14 +128,14 @@ public static partial class BddMarkdownParser
                 {
                     if (title is not null)
                     {
-                        AddError("UAT001", "Document must contain exactly one '# Feature:' heading.", line);
+                        AddError("BDD001", "Document must contain exactly one '# Feature:' heading.", line);
                     }
 
                     title = headingText["Feature:".Length..].Trim();
                     titleSource = Location(line);
                     if (title.Length == 0)
                     {
-                        AddError("UAT002", "The '# Feature:' heading must include a title.", line);
+                        AddError("BDD002", "The '# Feature:' heading must include a title.", line);
                     }
 
                     _index++;
@@ -144,7 +144,7 @@ public static partial class BddMarkdownParser
 
                 if (level == 1)
                 {
-                    AddError("UAT022", $"A feature file has one level-1 heading, '# Feature:'; found '{trimmed}'.", line);
+                    AddError("BDD022", $"A feature file has one level-1 heading, '# Feature:'; found '{trimmed}'.", line);
                     _index++;
                     continue;
                 }
@@ -157,7 +157,7 @@ public static partial class BddMarkdownParser
 
                 if (title is null)
                 {
-                    AddError("UAT003", "Document must start with a '# Feature:' heading before other sections.", line);
+                    AddError("BDD003", "Document must start with a '# Feature:' heading before other sections.", line);
                 }
 
                 if (level == 2 && headingText.Equals("Metadata", StringComparison.Ordinal))
@@ -173,7 +173,7 @@ public static partial class BddMarkdownParser
                     background = ParseStepBlock(stopAtExamples: false);
                     if (background.Count == 0)
                     {
-                        AddError("UAT004", NoSteps("Background section must contain at least one step.", line), line);
+                        AddError("BDD004", NoSteps("Background section must contain at least one step.", line), line);
                     }
 
                     continue;
@@ -184,7 +184,7 @@ public static partial class BddMarkdownParser
                     var dataName = headingText["Data:".Length..].Trim();
                     if (dataName.Length == 0)
                     {
-                        AddError("UAT005", "Data section must include a name.", line);
+                        AddError("BDD005", "Data section must include a name.", line);
                     }
 
                     _index++;
@@ -224,14 +224,14 @@ public static partial class BddMarkdownParser
                     var scenarioName = headingText["Scenario:".Length..].Trim();
                     if (scenarioName.Length == 0)
                     {
-                        AddError("UAT006", "Scenario heading must include a name.", line);
+                        AddError("BDD006", "Scenario heading must include a name.", line);
                     }
 
                     _index++;
                     var steps = ParseStepBlock(stopAtExamples: false);
                     if (steps.Count == 0)
                     {
-                        AddError("UAT007", NoSteps("Scenario section must contain at least one step.", line), line);
+                        AddError("BDD007", NoSteps("Scenario section must contain at least one step.", line), line);
                     }
 
                     scenarios.Add(new BddScenario(scenarioName, [.. pendingTags], steps, Location(line)));
@@ -245,7 +245,7 @@ public static partial class BddMarkdownParser
                 var location = _lines.Length == 0 ? new BddSourceLocation(_filePath, 1) : Location(_lines[^1]);
                 _diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Error,
-                    "UAT020",
+                    "BDD020",
                     "Tag lines must be immediately followed by a scenario heading.",
                     location));
             }
@@ -254,7 +254,7 @@ public static partial class BddMarkdownParser
             {
                 _diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Error,
-                    "UAT000",
+                    "BDD000",
                     "Document must contain exactly one '# Feature:' heading.",
                     new BddSourceLocation(_filePath, 1)));
             }
@@ -263,7 +263,7 @@ public static partial class BddMarkdownParser
             {
                 _diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Error,
-                    "UAT008",
+                    "BDD008",
                     "Document must contain at least one scenario.",
                     titleSource ?? new BddSourceLocation(_filePath, 1)));
             }
@@ -302,7 +302,7 @@ public static partial class BddMarkdownParser
                 var trimmed = line.Text.Trim();
                 if (line.Kind is LineKind.Tags or LineKind.Fence)
                 {
-                    AddError("UAT028", $"A steps file holds only '## Step:' sections; found '{trimmed}'.", line);
+                    AddError("BDD028", $"A steps file holds only '## Step:' sections; found '{trimmed}'.", line);
                     _index++;
                     SkipBlockLines();
                     continue;
@@ -318,7 +318,7 @@ public static partial class BddMarkdownParser
                 {
                     if (title is not null)
                     {
-                        AddError("UAT028", "A steps file has exactly one '# Steps:' heading.", line);
+                        AddError("BDD028", "A steps file has exactly one '# Steps:' heading.", line);
                     }
 
                     title = headingText["Steps:".Length..].Trim();
@@ -329,7 +329,7 @@ public static partial class BddMarkdownParser
 
                 if (level == 1)
                 {
-                    AddError("UAT028", $"A steps file has one level-1 heading, '# Steps:'; found '{trimmed}'.", line);
+                    AddError("BDD028", $"A steps file has one level-1 heading, '# Steps:'; found '{trimmed}'.", line);
                     _index++;
                     continue;
                 }
@@ -342,7 +342,7 @@ public static partial class BddMarkdownParser
 
                 if (title is null)
                 {
-                    AddError("UAT028", "A steps file starts with a '# Steps:' heading.", line);
+                    AddError("BDD028", "A steps file starts with a '# Steps:' heading.", line);
                     title = string.Empty;
                 }
 
@@ -357,14 +357,14 @@ public static partial class BddMarkdownParser
                     continue;
                 }
 
-                AddError("UAT028", $"A steps file holds only step sections; '{trimmed}' belongs in a .feature.md file.", line);
+                AddError("BDD028", $"A steps file holds only step sections; '{trimmed}' belongs in a .feature.md file.", line);
                 _index++;
                 SkipToNextSection();
             }
 
             if (title is null)
             {
-                AddError("UAT028", "A steps file starts with a '# Steps:' heading.", new BddSourceLocation(_filePath, 1));
+                AddError("BDD028", "A steps file starts with a '# Steps:' heading.", new BddSourceLocation(_filePath, 1));
             }
 
             var document = new BddPhrasesDocument(title ?? string.Empty, callables, titleSource ?? new BddSourceLocation(_filePath, 1));
@@ -408,7 +408,7 @@ public static partial class BddMarkdownParser
                     _index++;
                     return true;
                 case LineKind.Fence:
-                    AddError("UAT021", "A ```gherkin block belongs in a Background, Scenario or Step section.", line);
+                    AddError("BDD021", "A ```gherkin block belongs in a Background, Scenario or Step section.", line);
                     _index++;
                     SkipBlockLines();
                     return true;
@@ -443,7 +443,7 @@ public static partial class BddMarkdownParser
             {
                 _diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Warning,
-                    "UAT031",
+                    "BDD031",
                     $"'{line.Text.Trim()}' looks like a section heading but is not one, so it is read as prose. Check its level, spelling and colon.",
                     Location(line)));
             }
@@ -489,7 +489,7 @@ public static partial class BddMarkdownParser
         {
             if (phrase.Length == 0)
             {
-                AddError("UAT025", "A '## Step:' heading names the step: '## Step: a project {name}'.", heading);
+                AddError("BDD025", "A '## Step:' heading names the step: '## Step: a project {name}'.", heading);
             }
 
             SkipBlankLines();
@@ -500,7 +500,7 @@ public static partial class BddMarkdownParser
                 var table = TryParseCurrentTable(LineKind.Table);
                 if (table is null)
                 {
-                    AddError("UAT027", "A Parameters table needs a separator row under its header.", Current);
+                    AddError("BDD027", "A Parameters table needs a separator row under its header.", Current);
                     _index++;
                 }
                 else
@@ -512,7 +512,7 @@ public static partial class BddMarkdownParser
             var steps = ParseStepBlock(stopAtExamples: false, inPhrase: true);
             if (steps.Count == 0)
             {
-                AddError("UAT026", NoSteps($"The phrase '{phrase}' has no steps.", heading), heading);
+                AddError("BDD026", NoSteps($"The phrase '{phrase}' has no steps.", heading), heading);
             }
 
             return phrase.Length == 0 ? null : new BddCallable(kind, phrase, declared, steps, Location(heading));
@@ -525,7 +525,7 @@ public static partial class BddMarkdownParser
             List<BddCallableParameterDeclaration> declared = [];
             if (Column("Parameter") is not { } parameter || Column("Type") is not { } type)
             {
-                AddError("UAT027", "A Parameters table has the columns 'Parameter' and 'Type', and optionally 'Example'.", table.Source);
+                AddError("BDD027", "A Parameters table has the columns 'Parameter' and 'Type', and optionally 'Example'.", table.Source);
                 return declared;
             }
 
@@ -535,13 +535,13 @@ public static partial class BddMarkdownParser
                 var name = row.Cells[parameter];
                 if (name.Length == 0 || row.Cells[type].Length == 0)
                 {
-                    AddError("UAT027", "A Parameters row names a parameter and its type.", row.Source);
+                    AddError("BDD027", "A Parameters row names a parameter and its type.", row.Source);
                     continue;
                 }
 
                 if (declared.Any(existing => existing.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 {
-                    AddError("UAT027", $"The Parameters table lists '{name}' twice.", row.Source);
+                    AddError("BDD027", $"The Parameters table lists '{name}' twice.", row.Source);
                     continue;
                 }
 
@@ -564,7 +564,7 @@ public static partial class BddMarkdownParser
                 !table.Columns[0].Equals("Field", StringComparison.OrdinalIgnoreCase) ||
                 !table.Columns[1].Equals("Value", StringComparison.OrdinalIgnoreCase))
             {
-                AddError("UAT009", "Metadata table must have columns 'Field' and 'Value'.", table.Source);
+                AddError("BDD009", "Metadata table must have columns 'Field' and 'Value'.", table.Source);
                 return metadata;
             }
 
@@ -573,7 +573,7 @@ public static partial class BddMarkdownParser
                 var field = row.Cells["Field"];
                 if (field.Length == 0)
                 {
-                    AddError("UAT010", "Metadata field name cannot be empty.", row.Source);
+                    AddError("BDD010", "Metadata field name cannot be empty.", row.Source);
                     continue;
                 }
 
@@ -625,14 +625,14 @@ public static partial class BddMarkdownParser
 
                 if (trimmed is TableMarker or DocStringMarker)
                 {
-                    AddError("UAT024", $"'{trimmed}' goes directly under a step in a '## Step:' section.", line);
+                    AddError("BDD024", $"'{trimmed}' goes directly under a step in a '## Step:' section.", line);
                     _index++;
                     continue;
                 }
 
                 if (!TryParseStep(trimmed, out var keyword, out var text))
                 {
-                    AddError("UAT011", $"Expected a step but found '{trimmed}'.", line);
+                    AddError("BDD011", $"Expected a step but found '{trimmed}'.", line);
                     _index++;
                     continue;
                 }
@@ -652,7 +652,7 @@ public static partial class BddMarkdownParser
                     }
                     else
                     {
-                        AddError("UAT024", $"'{Current.Text.Trim()}' passes a call's block, so it is only allowed in a '## Step:' section.", Current);
+                        AddError("BDD024", $"'{Current.Text.Trim()}' passes a call's block, so it is only allowed in a '## Step:' section.", Current);
                     }
 
                     _index++;
@@ -679,7 +679,7 @@ public static partial class BddMarkdownParser
                 var location = End ? new BddSourceLocation(_filePath, _lines.Length + 1) : Location(Current);
                 _diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Error,
-                    "UAT012",
+                    "BDD012",
                     "Scenario Outline must contain a '### Examples' section.",
                     location));
             }
@@ -744,12 +744,12 @@ public static partial class BddMarkdownParser
         {
             if (scenarioName.Length == 0)
             {
-                AddError("UAT013", "Scenario Outline heading must include a name.", headingLine);
+                AddError("BDD013", "Scenario Outline heading must include a name.", headingLine);
             }
 
             if (outlineSteps.Count == 0)
             {
-                AddError("UAT014", NoSteps("Scenario Outline section must contain at least one step.", headingLine), headingLine);
+                AddError("BDD014", NoSteps("Scenario Outline section must contain at least one step.", headingLine), headingLine);
             }
 
             HashSet<string> names = new(StringComparer.Ordinal);
@@ -757,7 +757,7 @@ public static partial class BddMarkdownParser
             {
                 if (!names.Add(block.Name!))
                 {
-                    AddError("UAT032", $"Two Examples sections of this outline are named '{block.Name}'; give each its own name.", block.Heading);
+                    AddError("BDD032", $"Two Examples sections of this outline are named '{block.Name}'; give each its own name.", block.Heading);
                 }
             }
 
@@ -779,7 +779,7 @@ public static partial class BddMarkdownParser
                         {
                             _diagnostics.Add(new BddDiagnostic(
                                 BddDiagnosticSeverity.Error,
-                                "UAT015",
+                                "BDD015",
                                 block.Name is null
                                     ? $"Scenario Outline parameter '<{parameter}>' has no matching Examples column."
                                     : $"Scenario Outline parameter '<{parameter}>' has no matching column in Examples '{block.Name}'.",
@@ -823,7 +823,7 @@ public static partial class BddMarkdownParser
 
         private BddEffectiveStepKeyword AddAndReturnStepKeywordError(Line line)
         {
-            AddError("UAT016", "'And' and 'But' steps must follow Given, When, or Then.", line);
+            AddError("BDD016", "'And' and 'But' steps must follow Given, When, or Then.", line);
             return BddEffectiveStepKeyword.Given;
         }
 
@@ -842,7 +842,7 @@ public static partial class BddMarkdownParser
             if (table is null)
             {
                 var location = End ? new BddSourceLocation(_filePath, _lines.Length + 1) : Location(Current);
-                _diagnostics.Add(new BddDiagnostic(BddDiagnosticSeverity.Error, "UAT017", message, location));
+                _diagnostics.Add(new BddDiagnostic(BddDiagnosticSeverity.Error, "BDD017", message, location));
             }
 
             return table;
@@ -869,7 +869,7 @@ public static partial class BddMarkdownParser
                 var cells = SplitTableRow(rowLine.Text);
                 if (cells.Count != columns.Count)
                 {
-                    AddError("UAT018", "Markdown table row must have the same number of cells as the header.", rowLine);
+                    AddError("BDD018", "Markdown table row must have the same number of cells as the header.", rowLine);
                     _index++;
                     continue;
                 }
@@ -886,7 +886,7 @@ public static partial class BddMarkdownParser
 
             if (rows.Count == 0)
             {
-                AddError("UAT019", "Markdown table must contain at least one data row.", source);
+                AddError("BDD019", "Markdown table must contain at least one data row.", source);
             }
 
             return new BddTable(columns, rows, source);
@@ -913,7 +913,7 @@ public static partial class BddMarkdownParser
 
             if (End || Current.Kind != LineKind.Gherkin)
             {
-                AddError("UAT023", "A doc string (\"\"\") is not closed.", opening);
+                AddError("BDD023", "A doc string (\"\"\") is not closed.", opening);
             }
             else
             {
@@ -1066,7 +1066,7 @@ public static partial class BddMarkdownParser
                         {
                             _diagnostics.Add(new BddDiagnostic(
                                 BddDiagnosticSeverity.Warning,
-                                "UAT031",
+                                "BDD031",
                                 $"'{raw[setext.Line].Trim()}' is underlined, so it is read as prose; a section heading starts with '##'.",
                                 new BddSourceLocation(_filePath, setext.Line + 1)));
                         }

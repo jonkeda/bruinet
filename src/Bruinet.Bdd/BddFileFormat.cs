@@ -53,7 +53,7 @@ public static class BddFileFormat
         fileName.Equals(ServiceConfigFileName, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The diagnostic code for a heading or file name in the old form.</summary>
-    public const string OldFormCode = "UAT029";
+    public const string OldFormCode = "BDD029";
 
     private static readonly (string Old, string New)[] Extensions =
     [

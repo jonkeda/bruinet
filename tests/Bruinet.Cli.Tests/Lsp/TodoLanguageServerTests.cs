@@ -47,13 +47,13 @@ public sealed class TodoLanguageServerTests : IAsyncLifetime
     {
         var path = Path.Combine(Project, "ExpectedFailures", "TOD.11-without-using.feature.md");
         var uri = new Uri(path).AbsoluteUri;
-        var gate = GateDiagnostics(path).Where(d => d.Code == "UATB010").ToList();
+        var gate = GateDiagnostics(path).Where(d => d.Code == "BDDB010").ToList();
 
         await _client.NotifyWithParameterObjectAsync("textDocument/didOpen", new { textDocument = new { uri, version = 1, text = File.ReadAllText(path) } });
-        var published = await _published.WaitAsync(uri, diagnostics => diagnostics.Any(d => d.Code == "UATB010"));
+        var published = await _published.WaitAsync(uri, diagnostics => diagnostics.Any(d => d.Code == "BDDB010"));
 
         Assert.NotEmpty(gate);
-        Assert.All(gate, expected => Assert.Contains(published.Diagnostics, d => d.Code == "UATB010" && d.Message == expected.Message && d.Range.Start.Line == expected.Location.LineNumber - 1));
+        Assert.All(gate, expected => Assert.Contains(published.Diagnostics, d => d.Code == "BDDB010" && d.Message == expected.Message && d.Range.Start.Line == expected.Location.LineNumber - 1));
     }
 
     private static IReadOnlyList<BddDiagnostic> GateDiagnostics(string path)

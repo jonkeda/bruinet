@@ -138,7 +138,7 @@ public sealed class BddCatalogSet
         {
             yield return new BddDiagnostic(
                 BddDiagnosticSeverity.Error,
-                "UATB005",
+                "BDDB005",
                 $"'{name}' is an app or user in the Apps table and also a page or control name, so a step that starts with it is ambiguous. Rename one of them.",
                 location);
         }

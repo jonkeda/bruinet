@@ -47,7 +47,7 @@ public sealed class UatSubjectTests
         // "I tap {control}" has a named form "{user} taps {control}"; "tap" after a name is not it.
         var diagnostic = Assert.Single(Bind("When Eva tap OK").Diagnostics);
 
-        Assert.Equal("UATB001", diagnostic.Code);
+        Assert.Equal("BDDB001", diagnostic.Code);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public sealed class UatSubjectTests
         // "I advance the clock" is declared, but not "{user} advances the clock".
         var diagnostic = Assert.Single(Bind("When Eva advances the clock").Diagnostics);
 
-        Assert.Equal("UATB001", diagnostic.Code);
+        Assert.Equal("BDDB001", diagnostic.Code);
         Assert.Contains("binds only to a phrase declared with {user} first", diagnostic.Message);
         Assert.Contains("'{user} presses {key}'", diagnostic.Message);
         Assert.Contains("'{user} taps {control}'", diagnostic.Message);
@@ -105,7 +105,7 @@ public sealed class UatSubjectTests
         var result = Bind("When Daan taps OK");
 
         var diagnostic = Assert.Single(result.Diagnostics);
-        Assert.Equal("UATB006", diagnostic.Code);
+        Assert.Equal("BDDB006", diagnostic.Code);
         Assert.Contains("Daan's PC, Daan's phone", diagnostic.Message);
     }
 
@@ -123,7 +123,7 @@ public sealed class UatSubjectTests
     {
         var diagnostic = Assert.Single(Bind("When Dan taps OK").Diagnostics);
 
-        Assert.Equal("UATB007", diagnostic.Code);
+        Assert.Equal("BDDB007", diagnostic.Code);
         Assert.Contains("no app or user 'Dan'", diagnostic.Message);
     }
 
@@ -135,7 +135,7 @@ public sealed class UatSubjectTests
 
         var diagnostic = Assert.Single(Bind("When Eva taps OK", catalog).Diagnostics);
 
-        Assert.Equal("UATB002", diagnostic.Code);
+        Assert.Equal("BDDB002", diagnostic.Code);
     }
 
     [Fact]
@@ -194,7 +194,7 @@ public sealed class UatSubjectTests
     {
         var diagnostic = Assert.Single(Bind("Then I should have 3 todos on the server").Diagnostics);
 
-        Assert.Equal("UATB007", diagnostic.Code);
+        Assert.Equal("BDDB007", diagnostic.Code);
         Assert.Contains("no app is current", diagnostic.Message);
     }
 
@@ -212,7 +212,7 @@ public sealed class UatSubjectTests
     {
         var diagnostic = Assert.Single(Bind("""Then the server should have received "Milk" from Zed""").Diagnostics);
 
-        Assert.Equal("UATB007", diagnostic.Code);
+        Assert.Equal("BDDB007", diagnostic.Code);
         Assert.Contains("no app or user 'Zed'", diagnostic.Message);
     }
 
@@ -224,7 +224,7 @@ public sealed class UatSubjectTests
         var result = BddBinder.Bind(Parse("When I tap OK"), catalogs);
 
         var diagnostic = Assert.Single(result.Diagnostics);
-        Assert.Equal("UATB005", diagnostic.Code);
+        Assert.Equal("BDDB005", diagnostic.Code);
         Assert.Contains("'Eva'", diagnostic.Message);
     }
 
@@ -234,7 +234,7 @@ public sealed class UatSubjectTests
         var result = BddBinder.Bind(Parse("When Eva taps OK"), CreateCatalog());
 
         var diagnostic = Assert.Single(result.Diagnostics);
-        Assert.Equal("UATB007", diagnostic.Code);
+        Assert.Equal("BDDB007", diagnostic.Code);
         Assert.Contains("no Apps table", diagnostic.Message);
     }
 

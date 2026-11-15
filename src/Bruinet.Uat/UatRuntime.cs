@@ -175,7 +175,7 @@ public sealed class UatRuntime
                 throw new InvalidOperationException(
                     derived is not null
                         ? $"{root.GetType().Name} is a {derived} fixture, but {options.Target} was expected."
-                        : $"UAT config '{configFilePath}' must set Runtime Target to {options.Target}.");
+                        : $"The config '{configFilePath}' must set Runtime Target to {options.Target}.");
             }
 
             if (derived is not null &&
@@ -183,7 +183,7 @@ public sealed class UatRuntime
                 !declared.Equals(derived, StringComparison.OrdinalIgnoreCase))
             {
                 throw new InvalidOperationException(
-                    $"UAT config '{configFilePath}' sets Runtime Target to {declared}, " +
+                    $"The config '{configFilePath}' sets Runtime Target to {declared}, " +
                     $"but {root.GetType().Name} is a {derived} fixture.");
             }
         }
@@ -193,13 +193,13 @@ public sealed class UatRuntime
              !fixture.Equals(options.Fixture, StringComparison.OrdinalIgnoreCase)))
         {
             throw new InvalidOperationException(
-                $"UAT config '{configFilePath}' must set Runtime Fixture to {options.Fixture}.");
+                $"The config '{configFilePath}' must set Runtime Fixture to {options.Fixture}.");
         }
 
         if (options.RequireAssemblies && config.Assemblies.Count == 0)
         {
             throw new InvalidOperationException(
-                $"UAT config '{configFilePath}' must register at least one assembly.");
+                $"The config '{configFilePath}' must register at least one assembly.");
         }
     }
 }

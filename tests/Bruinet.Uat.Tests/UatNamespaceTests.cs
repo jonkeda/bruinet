@@ -56,7 +56,7 @@ public sealed class UatNamespaceTests : IDisposable
     {
         var error = BindError("Accounts/account.feature.md", "When I add a line \"Rent\"");
 
-        Assert.Equal("UATB010", error.Code);
+        Assert.Equal("BDDB010", error.Code);
         Assert.Contains("'I add a line {text}' of the folder 'Invoicing'", error.Message, StringComparison.Ordinal);
         Assert.Contains("'I add a line {text}' of the folder 'Purchasing'", error.Message, StringComparison.Ordinal);
         Assert.Contains("which the folder 'Accounts' does not see", error.Message, StringComparison.Ordinal);
@@ -69,7 +69,7 @@ public sealed class UatNamespaceTests : IDisposable
 
         var error = BindError("Invoicing/invoice.feature.md", "When I note \"paid\"");
 
-        Assert.Equal("UATB002", error.Code);
+        Assert.Equal("BDDB002", error.Code);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public sealed class UatNamespaceTests : IDisposable
         var there = BddScenarioFiles.Load(Write("Accounts/account.feature.md", Scenario("When I note \"paid\"")));
         var here = BddScenarioFiles.Load(Write("Invoicing/invoice.feature.md", Scenario("When I add a line \"Rent\"")));
 
-        Assert.Contains(there.Diagnostics, d => d.Code == "UAT028");
+        Assert.Contains(there.Diagnostics, d => d.Code == "BDD028");
         Assert.True(here.Success, BddDiagnosticsFormatter.FormatDiagnostics(here.Diagnostics));
     }
 
@@ -116,7 +116,7 @@ public sealed class UatNamespaceTests : IDisposable
         Assert.True(bound.Success, BddDiagnosticsFormatter.FormatDiagnostics(bound.Diagnostics));
         Assert.EndsWith("InvoicingPhrases.AddLine", bound.Document!.Scenarios[0].Invocations[^1].Command.CommandId, StringComparison.Ordinal);
         var error = Assert.Single(hidden.Diagnostics, d => d.Severity == BddDiagnosticSeverity.Error);
-        Assert.Equal("UATB010", error.Code);
+        Assert.Equal("BDDB010", error.Code);
         Assert.Contains("'an account' of the folder 'Accounts'", error.Message, StringComparison.Ordinal);
     }
 
@@ -129,7 +129,7 @@ public sealed class UatNamespaceTests : IDisposable
         var result = BindFile("Invoicing/invoice.feature.md", "Given a lined ledger");
 
         var error = Assert.Single(result.Diagnostics, d => d.Severity == BddDiagnosticSeverity.Error);
-        Assert.Contains("UATB010", error.Code + error.Message, StringComparison.Ordinal);
+        Assert.Contains("BDDB010", error.Code + error.Message, StringComparison.Ordinal);
         Assert.Contains("the scenario root does not see", error.Message, StringComparison.Ordinal);
     }
 

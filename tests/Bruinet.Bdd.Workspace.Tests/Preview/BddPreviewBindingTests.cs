@@ -45,7 +45,7 @@ public sealed class BddPreviewBindingTests : IDisposable
             ```
             """);
 
-        Assert.Contains("data-code=\"UATB001\" data-line=\"7\"", html);
+        Assert.Contains("data-code=\"BDDB001\" data-line=\"7\"", html);
         Assert.Contains("<li class=\"uat-step uat-bound\" data-line=\"6\"", html);
     }
 

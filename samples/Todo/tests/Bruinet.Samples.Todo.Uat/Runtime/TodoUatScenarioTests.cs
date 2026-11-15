@@ -53,7 +53,7 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     [Theory]
     [MemberData(nameof(ExpectedFailures))]
     public void ExpectedFailure_FailsBinding(string filePath)
-        => RunExpectedBindFailureUatFile(filePath, "UATB010", "the folder 'Users'", "Using");
+        => RunExpectedBindFailureUatFile(filePath, "BDDB010", "the folder 'Users'", "Using");
 
     /// <inheritdoc />
     /// <remarks>

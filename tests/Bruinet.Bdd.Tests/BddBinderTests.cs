@@ -118,7 +118,7 @@ public sealed class BddBinderTests
         var result = BddBinder.Bind(document, catalog);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UATB003");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDDB003");
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public sealed class BddBinderTests
         var result = BddBinder.Bind(document, catalog);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UATB001");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDDB001");
     }
 
     [Fact]
@@ -156,7 +156,7 @@ public sealed class BddBinderTests
 
         var result = BddBinder.Bind(document, CreateBasicCatalog());
 
-        var unknown = Assert.Single(result.Diagnostics, x => x.Code == "UATB001");
+        var unknown = Assert.Single(result.Diagnostics, x => x.Code == "BDDB001");
         Assert.Contains("The nearest are 'I enter {value} into {control}'", unknown.Message, StringComparison.Ordinal);
     }
 
@@ -175,7 +175,7 @@ public sealed class BddBinderTests
 
         var result = BddBinder.Bind(document, CreateBasicCatalog());
 
-        Assert.DoesNotContain("nearest", Assert.Single(result.Diagnostics, x => x.Code == "UATB001").Message, StringComparison.Ordinal);
+        Assert.DoesNotContain("nearest", Assert.Single(result.Diagnostics, x => x.Code == "BDDB001").Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -197,7 +197,7 @@ public sealed class BddBinderTests
         var result = BddBinder.Bind(document, catalog);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UATB002");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDDB002");
     }
 
     [Fact]
@@ -225,14 +225,14 @@ public sealed class BddBinderTests
         var result = BddBinder.Bind(document, catalog);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UATB004");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDDB004");
     }
 
     [Theory]
-    [InlineData("Given I am on the Login page", "UATB013")]
-    [InlineData("When I tap Sign in", "UATB013")]
-    [InlineData("When I sign in as ada", "UATB013")]
-    [InlineData("Then I should see Welcome", "UATB013")]
+    [InlineData("Given I am on the Login page", "BDDB013")]
+    [InlineData("When I tap Sign in", "BDDB013")]
+    [InlineData("When I sign in as ada", "BDDB013")]
+    [InlineData("Then I should see Welcome", "BDDB013")]
     [InlineData("Given the application is running", null)]
     public void Bind_OnTheServiceHead_RefusesStepsThatNeedAScreen(string step, string? code)
     {

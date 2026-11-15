@@ -29,7 +29,7 @@ public sealed record BddValueContext(
 }
 
 /// <summary>Why a value could not be read.</summary>
-/// <param name="Code">The diagnostic code, <c>UATA001</c>-<c>UATA005</c>.</param>
+/// <param name="Code">The diagnostic code, <c>BDDA001</c>-<c>BDDA005</c>.</param>
 /// <param name="Message">What is wrong and how to write it.</param>
 /// <param name="Fix">The value rewritten, when there is exactly one right answer.</param>
 /// <param name="Original">The value as written, when there is a <paramref name="Fix"/>.</param>
@@ -108,7 +108,7 @@ public static partial class BddValues
             _ when target == typeof(Guid) => Guid.TryParse(Unquote(trimmed), out var guid) ? Set(guid, out value) : NotA(trimmed, target),
             _ when target == typeof(BddUserRole) => ReadUser(Unquote(trimmed), context, out value),
             _ when ParseMethod(target) is { } parse => ReadParsable(Unquote(trimmed), target, parse, out value),
-            _ => new BddValueProblem("UATA001", $"'{trimmed}' cannot be written in a scenario: {Describe(target)} has no inline form. Use a table, or register it with [BddArgumentType]."),
+            _ => new BddValueProblem("BDDA001", $"'{trimmed}' cannot be written in a scenario: {Describe(target)} has no inline form. Use a table, or register it with [BddArgumentType]."),
         };
 
         if (problem?.Fix is not null)
@@ -310,7 +310,7 @@ public static partial class BddValues
     }
 
     private static BddValueProblem NotA(string text, Type type)
-        => new("UATA001", $"'{text}' is not a {Describe(type)}.");
+        => new("BDDA001", $"'{text}' is not a {Describe(type)}.");
 
     private static BddValueProblem? ReadBool(string text, out object? value)
     {
@@ -320,7 +320,7 @@ public static partial class BddValues
             // on/off is how a switch is read aloud (a user's "Receives reminders | off").
             "true" or "on" => Set(true, out value),
             "false" or "off" => Set(false, out value),
-            _ => new BddValueProblem("UATA001", $"'{text}' is not true or false. Write true or false (on or off for a switch); a phrase says yes or no in its words."),
+            _ => new BddValueProblem("BDDA001", $"'{text}' is not true or false. Write true or false (on or off for a switch); a phrase says yes or no in its words."),
         };
     }
 
@@ -337,7 +337,7 @@ public static partial class BddValues
 
         var closest = names.OrderBy(candidate => Distance(key, Key(candidate))).FirstOrDefault(candidate => Distance(key, Key(candidate)) <= 2);
         return new BddValueProblem(
-            "UATA004",
+            "BDDA004",
             $"'{text}' is not a {type.Name}." + (closest is null ? string.Empty : $" Did you mean {closest}?") + $" It is one of {string.Join(", ", names)}.");
 
         static string Key(string value) => value.Replace(" ", string.Empty, StringComparison.Ordinal).Replace("_", string.Empty, StringComparison.Ordinal).ToLowerInvariant();
@@ -352,13 +352,13 @@ public static partial class BddValues
             if (CommaDecimalRegex().IsMatch(text))
             {
                 var fix = text.Replace(".", "\u0001", StringComparison.Ordinal).Replace(',', '.').Replace("\u0001", ",", StringComparison.Ordinal);
-                return new BddValueProblem("UATA003", $"'{text}' uses a comma for decimals. Write {fix}: '.' for decimals and ',' for thousands.");
+                return new BddValueProblem("BDDA003", $"'{text}' uses a comma for decimals. Write {fix}: '.' for decimals and ',' for thousands.");
             }
 
             if (DigitsRegex().IsMatch(text))
             {
                 return new BddValueProblem(
-                    "UATA003",
+                    "BDDA003",
                     integer && text.Contains('.', StringComparison.Ordinal)
                         ? $"'{text}' is not a whole number."
                         : $"'{text}' groups its digits wrongly. Write '.' for decimals and ',' between groups of three digits, e.g. 1,250.75.");
@@ -374,7 +374,7 @@ public static partial class BddValues
         }
         catch (OverflowException)
         {
-            return new BddValueProblem("UATA001", $"'{text}' is too large for a {type.Name}.");
+            return new BddValueProblem("BDDA001", $"'{text}' is too large for a {type.Name}.");
         }
     }
 
@@ -400,7 +400,7 @@ public static partial class BddValues
         if (month == 0)
         {
             return new BddValueProblem(
-                "UATA002",
+                "BDDA002",
                 $"'{text}': '{match.Groups["month"].Value}' is not an English month. Write the month as {string.Join(", ", Months)}, e.g. 12-May-2026.",
                 FullMonth(match.Groups["month"].Value) is { } short3 ? $"{match.Groups["day"].Value}-{short3}-{match.Groups["year"].Value}" : null);
         }
@@ -408,7 +408,7 @@ public static partial class BddValues
         var hasTime = match.Groups["hour"].Success;
         if (hasTime && type == typeof(DateOnly))
         {
-            return new BddValueProblem("UATA002", $"'{text}' has a time, but the value is a date. Write only the date, e.g. 12-May-2026.");
+            return new BddValueProblem("BDDA002", $"'{text}' has a time, but the value is a date. Write only the date, e.g. 12-May-2026.");
         }
 
         try
@@ -426,7 +426,7 @@ public static partial class BddValues
         }
         catch (ArgumentOutOfRangeException)
         {
-            return new BddValueProblem("UATA002", $"'{text}' is not a date that exists.");
+            return new BddValueProblem("BDDA002", $"'{text}' is not a date that exists.");
         }
     }
 
@@ -439,10 +439,10 @@ public static partial class BddValues
         {
             var fix = $"{iso.Groups["day"].Value}-{Months[month - 1]}-{iso.Groups["year"].Value}"
                 + (iso.Groups["time"].Success && type != typeof(DateOnly) ? " " + iso.Groups["time"].Value : string.Empty);
-            return new BddValueProblem("UATA002", $"'{text}' is not written as dd-MMM-yyyy. Write {fix}.", fix);
+            return new BddValueProblem("BDDA002", $"'{text}' is not written as dd-MMM-yyyy. Write {fix}.", fix);
         }
 
-        return new BddValueProblem("UATA002", $"'{text}' is not a {Describe(type)}. Write it as dd-MMM-yyyy{(type == typeof(DateOnly) ? string.Empty : " HH:mm")}, e.g. {example}, or relative: today, +2d, -1d.");
+        return new BddValueProblem("BDDA002", $"'{text}' is not a {Describe(type)}. Write it as dd-MMM-yyyy{(type == typeof(DateOnly) ? string.Empty : " HH:mm")}, e.g. {example}, or relative: today, +2d, -1d.");
     }
 
     private static string? FullMonth(string month)
@@ -454,7 +454,7 @@ public static partial class BddValues
         var match = TimeRegex().Match(text);
         if (!match.Success)
         {
-            return new BddValueProblem("UATA002", $"'{text}' is not a time. Write it as HH:mm, e.g. 14:30.");
+            return new BddValueProblem("BDDA002", $"'{text}' is not a time. Write it as HH:mm, e.g. 14:30.");
         }
 
         try
@@ -463,7 +463,7 @@ public static partial class BddValues
         }
         catch (ArgumentOutOfRangeException)
         {
-            return new BddValueProblem("UATA002", $"'{text}' is not a time that exists.");
+            return new BddValueProblem("BDDA002", $"'{text}' is not a time that exists.");
         }
     }
 
@@ -473,7 +473,7 @@ public static partial class BddValues
         var match = DurationRegex().Match(text);
         if (!match.Success || text.Length == 0)
         {
-            return new BddValueProblem("UATA001", $"'{text}' is not a duration. Write it in d, h, m and s, largest first, e.g. 90m or 1h 30m.");
+            return new BddValueProblem("BDDA001", $"'{text}' is not a duration. Write it in d, h, m and s, largest first, e.g. 90m or 1h 30m.");
         }
 
         double Part(string name) => match.Groups[name].Success ? double.Parse(match.Groups[name].Value, CultureInfo.InvariantCulture) : 0;
@@ -485,7 +485,7 @@ public static partial class BddValues
         value = null;
         if (context.Apps.Count == 0)
         {
-            return new BddValueProblem("UATA005", $"'{text}' is a user, but the config has no Apps table to say who the users are.");
+            return new BddValueProblem("BDDA005", $"'{text}' is a user, but the config has no Apps table to say who the users are.");
         }
 
         var byApp = context.Apps.FirstOrDefault(app => app.Name.Equals(text, StringComparison.OrdinalIgnoreCase));
@@ -493,7 +493,7 @@ public static partial class BddValues
         if (user is null)
         {
             var known = context.Apps.Select(app => app.User).Distinct(StringComparer.OrdinalIgnoreCase);
-            return new BddValueProblem("UATA005", $"'{text}' is not a user in the Apps table. It has: {string.Join(", ", known)}.");
+            return new BddValueProblem("BDDA005", $"'{text}' is not a user in the Apps table. It has: {string.Join(", ", known)}.");
         }
 
         return Set(BddUserRole.Of(user, context.Apps), out value);
@@ -513,7 +513,7 @@ public static partial class BddValues
         }
         catch (System.Reflection.TargetInvocationException exception) when (exception.InnerException is FormatException or ArgumentException or OverflowException)
         {
-            return new BddValueProblem("UATA001", $"'{text}' is not a {type.Name}: {exception.InnerException.Message}");
+            return new BddValueProblem("BDDA001", $"'{text}' is not a {type.Name}: {exception.InnerException.Message}");
         }
     }
 

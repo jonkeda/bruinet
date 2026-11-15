@@ -10,20 +10,20 @@ public sealed class BddDiagnosticsFormatterTests
     {
         var diagnostics = new[]
         {
-            new BddDiagnostic(BddDiagnosticSeverity.Error, "UATB001", "No phrase matches 'I fly'.", new BddSourceLocation("a.feature.md", 7))
+            new BddDiagnostic(BddDiagnosticSeverity.Error, "BDDB001", "No phrase matches 'I fly'.", new BddSourceLocation("a.feature.md", 7))
             {
                 Within = [new BddSourceLocation("lib.feature.md", 3)],
             },
-            new BddDiagnostic(BddDiagnosticSeverity.Error, "UATB002", "Unknown page 'Moon'.", new BddSourceLocation("a.feature.md", 9)),
+            new BddDiagnostic(BddDiagnosticSeverity.Error, "BDDB002", "Unknown page 'Moon'.", new BddSourceLocation("a.feature.md", 9)),
         };
 
         var text = BddDiagnosticsFormatter.FormatDiagnostics(diagnostics).Split(Environment.NewLine);
 
         Assert.Equal(3, text.Length);
-        Assert.Contains("UATB001 No phrase matches 'I fly'.", text[0], StringComparison.Ordinal);
+        Assert.Contains("BDDB001 No phrase matches 'I fly'.", text[0], StringComparison.Ordinal);
         Assert.StartsWith("    via ", text[1], StringComparison.Ordinal);
         Assert.Contains("lib.feature.md", text[1], StringComparison.Ordinal);
-        Assert.Contains("UATB002 Unknown page 'Moon'.", text[2], StringComparison.Ordinal);
+        Assert.Contains("BDDB002 Unknown page 'Moon'.", text[2], StringComparison.Ordinal);
     }
 
     [Fact]
@@ -58,11 +58,11 @@ public sealed class BddDiagnosticsFormatterTests
     [Fact]
     public void FormatBindFailure_GivesTheDiagnostics_TheDiscovery_AndTheCatalog()
     {
-        var diagnostic = new BddDiagnostic(BddDiagnosticSeverity.Error, "UATB001", "No phrase matches.", new BddSourceLocation("a.feature.md", 2));
+        var diagnostic = new BddDiagnostic(BddDiagnosticSeverity.Error, "BDDB001", "No phrase matches.", new BddSourceLocation("a.feature.md", 2));
 
         var text = BddDiagnosticsFormatter.FormatBindFailure([diagnostic], "Found 2 step classes.", Catalog(fail: false));
 
-        Assert.Contains("UATB001 No phrase matches.", text, StringComparison.Ordinal);
+        Assert.Contains("BDDB001 No phrase matches.", text, StringComparison.Ordinal);
         Assert.Contains("Found 2 step classes.", text, StringComparison.Ordinal);
         Assert.Contains("Command catalog:", text, StringComparison.Ordinal);
     }

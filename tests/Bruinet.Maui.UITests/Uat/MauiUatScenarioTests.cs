@@ -29,7 +29,7 @@ public sealed class MauiUatScenarioTests
     public void ExpectedFailureUatFile_ReturnsUsefulDiagnostics(string filePath) =>
         RunExpectedBindFailureUatFile(
             filePath,
-            "UATB009",
+            "BDDB009",
             "Imaginary Button",
             "Its controls are",
             Path.GetFileName(filePath));

@@ -181,7 +181,7 @@ public sealed class UatTestBaseTests
             Assert.Equal("A phrase nobody wrote", (string?)report["scenario"]);
             Assert.Equal("failed", (string?)report["status"]);
             Assert.Equal("bind", (string?)report["steps"]![0]!["failure"]!["kind"]);
-            Assert.Contains("UATB", (string?)report["steps"]![0]!["message"], StringComparison.Ordinal);
+            Assert.Contains("BDDB", (string?)report["steps"]![0]!["message"], StringComparison.Ordinal);
         }
         finally
         {

@@ -13,7 +13,7 @@ internal static class BddPhraseMethods
             : null;
         return property is null
             ? null
-            : $"UAT phrase '{phrase.Phrase}' on {method.DeclaringType?.FullName}.{method.Name} sets " +
+            : $"Phrase '{phrase.Phrase}' on {method.DeclaringType?.FullName}.{method.Name} sets " +
               $"{property}, which only a control verb may set.";
     }
 }

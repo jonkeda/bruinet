@@ -130,7 +130,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
 
         Assert.Equal(2, preview.Version);
         Assert.Contains("I dust the shelf", preview.Html);
-        Assert.Contains("data-code=\"UATB001\"", preview.Html);
+        Assert.Contains("data-code=\"BDDB001\"", preview.Html);
     }
 
     [Fact]
@@ -382,7 +382,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
         });
         var published = await _published.WaitAsync(uri, diagnostics => diagnostics.Count > 0);
 
-        var diagnostic = Assert.Single(published.Diagnostics, d => d.Code == "UATB001");
+        var diagnostic = Assert.Single(published.Diagnostics, d => d.Code == "BDDB001");
         Assert.Equal(1, diagnostic.Severity);
         Assert.Equal("Bruinet BDD", diagnostic.Source);
         Assert.Equal(new Range(new Position(5, 2), new Position(5, 23)), diagnostic.Range);
@@ -418,7 +418,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
         await _client.NotifyWithParameterObjectAsync("textDocument/didSave", new { textDocument = new { uri = new Uri(Feature).AbsoluteUri } });
 
         var published = await _published.WaitAsync(new Uri(other).AbsoluteUri, diagnostics => diagnostics.Count > 0);
-        Assert.Contains(published.Diagnostics, d => d.Code == "UATB001" && d.Range.Start.Line == 5);
+        Assert.Contains(published.Diagnostics, d => d.Code == "BDDB001" && d.Range.Start.Line == 5);
         Assert.Null(published.Version);
     }
 
@@ -435,7 +435,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
 
         var published = await _published.WaitAsync(uri, diagnostics => diagnostics.Count > 0);
         var failed = Assert.Single(published.Diagnostics);
-        Assert.Equal("UATRUN", failed.Code);
+        Assert.Equal("BDDRUN", failed.Code);
         Assert.Equal(5, failed.Range.Start.Line);
         Assert.StartsWith("Failed in the last run of 'One'", failed.Message);
     }

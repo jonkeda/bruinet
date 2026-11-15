@@ -9,7 +9,7 @@ namespace Bruinet.Samples.Todo.IntegrationTests.Service;
 /// <remarks>
 /// The scenario files are the MAUI suite's, linked; the <c>service</c> head in <c>bdd.config.md</c>
 /// lists only the <c>@service</c> scenarios and binds only them. A step that needs a screen is a bind
-/// error (<c>UATB013</c>), shown by the expected-failure file.
+/// error (<c>BDDB013</c>), shown by the expected-failure file.
 /// </remarks>
 [Trait("Module", "Todo")]
 [Trait("Pyramid", "Integration")]
@@ -41,7 +41,7 @@ public sealed class TodoServiceScenarioTests : UatScenarioTestBase<TodoServiceFi
     [Theory]
     [MemberData(nameof(ExpectedFailures))]
     public void ExpectedFailure_FailsBinding(string filePath)
-        => RunExpectedBindFailureUatFile(filePath, "UATB013", "the service head has no screen");
+        => RunExpectedBindFailureUatFile(filePath, "BDDB013", "the service head has no screen");
 
     /// <inheritdoc />
     protected override void BeforeFile(BddDocument document)

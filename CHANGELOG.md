@@ -189,6 +189,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **BDD and UAT (AD-040).** Diagnostic codes are `BDD…`, with the same letter and number: `UAT004` is `BDD004`,
+  `UATB001` is `BDDB001`, `UATD001` is `BDDD001`; the language server's run failure is `BDDRUN`. Engine messages
+  say "Page", "Control", "Phrase", "The config" instead of "UAT page" and so on.
 - **Breaking:** the MCP server's tools are two families with one verb per act (review 03, D2): the Scraper's start with
   `scrape_` (`scrape_next` says what to do), `failing` and `last_runs` are `list_results`, `why` is `diff_since_green`
   and runs nothing, `validate_scenario` is `check_scenario`, `review_page` is `write_review`; every rename is a row of

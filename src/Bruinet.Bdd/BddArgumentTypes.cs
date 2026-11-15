@@ -105,7 +105,7 @@ public sealed class BddArgumentTypes
         }
         catch (TargetInvocationException exception) when (exception.InnerException is FormatException or ArgumentException or OverflowException or KeyNotFoundException or InvalidOperationException)
         {
-            problem = new BddValueProblem("UATA001", $"'{text}' is not a {type.Name}: {exception.InnerException.Message.TrimEnd('.')}.");
+            problem = new BddValueProblem("BDDA001", $"'{text}' is not a {type.Name}: {exception.InnerException.Message.TrimEnd('.')}.");
             return false;
         }
     }

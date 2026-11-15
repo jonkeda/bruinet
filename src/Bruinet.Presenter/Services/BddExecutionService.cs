@@ -95,7 +95,7 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
         configPath = BddFileFormat.FindConfig(workspacePath);
         if (!File.Exists(configPath))
         {
-            throw new InvalidOperationException($"UAT config was not found: {configPath}");
+            throw new InvalidOperationException($"The config was not found: {configPath}");
         }
 
         var config = BddConfigParser.ParseFile(configPath);
@@ -152,14 +152,14 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
             !BddTargetRegistry.TryGet(target, out _))
         {
             throw new InvalidOperationException(
-                $"UAT config '{configPath}' must set Runtime Target to one of: {BddTargetRegistry.SupportedTargetList}.");
+                $"The config '{configPath}' must set Runtime Target to one of: {BddTargetRegistry.SupportedTargetList}.");
         }
 
         if (!config.Runtime.TryGetValue("Fixture", out var fixture) ||
             string.IsNullOrWhiteSpace(fixture))
         {
             throw new InvalidOperationException(
-                $"UAT config '{configPath}' must set Runtime Fixture.");
+                $"The config '{configPath}' must set Runtime Fixture.");
         }
 
         // A Project row replaces the Pages registration, so either is enough.
@@ -167,7 +167,7 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
             !config.Runtime.ContainsKey(BddConfigFields.Project))
         {
             throw new InvalidOperationException(
-                $"UAT config '{configPath}' must set Runtime Project or register at least one assembly.");
+                $"The config '{configPath}' must set Runtime Project or register at least one assembly.");
         }
     }
 
@@ -229,6 +229,6 @@ public sealed class BddExecutionService : IBddExecutionService, IDisposable
         }
 
         throw new InvalidOperationException(
-            "UAT config must set Runtime Project or register a Pages assembly.");
+            "The config must set Runtime Project or register a Pages assembly.");
     }
 }

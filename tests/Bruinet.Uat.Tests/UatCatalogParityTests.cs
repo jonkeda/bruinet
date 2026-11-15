@@ -253,7 +253,7 @@ public sealed class UatCatalogParityTests
             When I open the book "Dune"
             """);
 
-        Assert.Equal("UATB009", error.Code);
+        Assert.Equal("BDDB009", error.Code);
         Assert.Contains("no control on the Plain page has 'I open the book {item}'", error.Message, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -267,7 +267,7 @@ public sealed class UatCatalogParityTests
             When I open the book "Dune"
             """);
 
-        Assert.Equal("UATB009", error.Code);
+        Assert.Equal("BDDB009", error.Code);
         Assert.Contains("is on several controls of the Library page (Fiction, Poetry)", error.Message, StringComparison.Ordinal);
     }
 
@@ -314,7 +314,7 @@ public sealed class UatCatalogParityTests
             When I wind the gadget 3 times
             """);
 
-        Assert.Equal("UATB009", error.Code);
+        Assert.Equal("BDDB009", error.Code);
         Assert.Contains("'I wind the gadget {turns} times' is a phrase of the Gadget page", error.Message, StringComparison.Ordinal);
     }
 
@@ -345,7 +345,7 @@ public sealed class UatCatalogParityTests
             And I ring Bell
             """);
 
-        Assert.Equal("UATB008", error.Code);
+        Assert.Equal("BDDB008", error.Code);
         Assert.Contains("does not fit the Gadget page, and the page may have changed at 'I push Gadget'", error.Message, StringComparison.Ordinal);
     }
 
@@ -408,7 +408,7 @@ public sealed class UatCatalogParityTests
             Then the gadget should hum
             """);
 
-        Assert.Equal("UATB002", error.Code);
+        Assert.Equal("BDDB002", error.Code);
         Assert.Contains("on the Gadget page it matches", error.Message, StringComparison.Ordinal);
     }
 
@@ -421,7 +421,7 @@ public sealed class UatCatalogParityTests
             Given I am on the Nowhere page
             """);
 
-        Assert.Equal("UATB009", error.Code);
+        Assert.Equal("BDDB009", error.Code);
         Assert.Contains("names the page 'Nowhere', which does not exist", error.Message, StringComparison.Ordinal);
     }
 

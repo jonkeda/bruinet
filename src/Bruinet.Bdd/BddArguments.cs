@@ -56,17 +56,17 @@ internal static class BddArguments
                 case BddParameterSource.Table when step.DocString is not null:
                     if (TryReadJson(step.DocString, parameter.Type, out var error) is null && error is not null)
                     {
-                        diagnostics.Add(Error("UATA001", $"Step '{step.Text}': the doc string is not a {parameter.Type.Name}: {error}", step.Source));
+                        diagnostics.Add(Error("BDDA001", $"Step '{step.Text}': the doc string is not a {parameter.Type.Name}: {error}", step.Source));
                     }
 
                     break;
 
                 case BddParameterSource.Table when !parameter.Optional:
-                    diagnostics.Add(Error("UATA007", $"Step '{step.Text}' needs a table under it for '{parameter.Name}' ({Shape(parameter.Type)}).", step.Source));
+                    diagnostics.Add(Error("BDDA007", $"Step '{step.Text}' needs a table under it for '{parameter.Name}' ({Shape(parameter.Type)}).", step.Source));
                     break;
 
                 case BddParameterSource.DocString when step.DocString is null && !parameter.Optional:
-                    diagnostics.Add(Error("UATA007", $"Step '{step.Text}' needs a doc string (\"\"\") under it for '{parameter.Name}', which its phrase does not name.", step.Source));
+                    diagnostics.Add(Error("BDDA007", $"Step '{step.Text}' needs a doc string (\"\"\") under it for '{parameter.Name}', which its phrase does not name.", step.Source));
                     break;
             }
         }

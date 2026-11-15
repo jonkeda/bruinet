@@ -107,7 +107,7 @@ internal static class UatCatalogBuilder
                         unmatchable?.Invoke(new BddUnmatchableDeclaration(
                             attribute.Keyword,
                             new BddPhraseProblem(
-                                "UATA013",
+                                "BDDA013",
                                 $"is a control verb with an empty [Bdd{attribute.Keyword}]; a control verb writes its phrase, with {{control}}.",
                                 $"{type.FullName}.{method.Name}")));
                         continue;

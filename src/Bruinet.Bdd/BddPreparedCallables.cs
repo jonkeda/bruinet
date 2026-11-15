@@ -139,7 +139,7 @@ public sealed class BddPreparedCallables
             if (_preparing.Contains(callable))
             {
                 return new BddPreparedCallable(callable, new Dictionary<string, Type>(), [], BddPassedBlock.None, null,
-                    new BddPhraseProblem("UATC004", "calls itself.", callable.Source.ToString()));
+                    new BddPhraseProblem("BDDC004", "calls itself.", callable.Source.ToString()));
             }
 
             _preparing.Add(callable);
@@ -168,12 +168,12 @@ public sealed class BddPreparedCallables
         var used = callable.Steps.SelectMany(BddOutline.Placeholders).Distinct(StringComparer.Ordinal).ToList();
         foreach (var name in heading.GroupBy(name => name, StringComparer.Ordinal).Where(group => group.Count() > 1))
         {
-            Fail("UATC001", $"names {{{name.Key}}} twice in its heading.");
+            Fail("BDDC001", $"names {{{name.Key}}} twice in its heading.");
         }
 
         foreach (var name in heading.Where(name => !used.Contains(name, StringComparer.Ordinal)))
         {
-            Fail("UATC001", $"has {{{name}}} in its heading, but no step uses <{name}>.");
+            Fail("BDDC001", $"has {{{name}}} in its heading, but no step uses <{name}>.");
         }
 
         List<string> columns = [];
@@ -181,7 +181,7 @@ public sealed class BddPreparedCallables
         {
             foreach (var name in used.Where(name => !heading.Contains(name, StringComparer.Ordinal)))
             {
-                Fail("UATC001", $"uses <{name}>, which its heading does not name. Add {{{name}}} to the heading.");
+                Fail("BDDC001", $"uses <{name}>, which its heading does not name. Add {{{name}}} to the heading.");
             }
         }
         else
@@ -189,7 +189,7 @@ public sealed class BddPreparedCallables
             columns = used.Where(name => !heading.Contains(name, StringComparer.Ordinal)).ToList();
             if (callable.Steps.Any(step => step.Passes == BddPassedBlock.Table))
             {
-                Fail("UATC007", "runs once per row of the call's table, so it has no <table> to pass on.");
+                Fail("BDDC007", "runs once per row of the call's table, so it has no <table> to pass on.");
             }
         }
 
@@ -214,7 +214,7 @@ public sealed class BddPreparedCallables
             }
             else
             {
-                Fail("UATC002", $"passes <{name}> to steps that cannot agree on its type: no value is both {conflict}.");
+                Fail("BDDC002", $"passes <{name}> to steps that cannot agree on its type: no value is both {conflict}.");
                 types[name] = typeof(string);
             }
         }
@@ -227,20 +227,20 @@ public sealed class BddPreparedCallables
             var name = isTable ? Table : types.Keys.FirstOrDefault(key => BddTableBinding.Key(key) == BddTableBinding.Key(declared.Name));
             if (name is null)
             {
-                Fail("UATC003", $"declares '{declared.Name}' in its Parameters table, which it does not have. It has: {string.Join(", ", types.Keys)}.");
+                Fail("BDDC003", $"declares '{declared.Name}' in its Parameters table, which it does not have. It has: {string.Join(", ", types.Keys)}.");
                 continue;
             }
 
             if (TypeNamed(declared.TypeName) is not { } type)
             {
-                Fail("UATC003", $"declares '{declared.Name}' as '{declared.TypeName}', which is not a type a scenario can write. Use text, whole number, number, true/false, date, date and time, time, duration, user, list of ..., table, or a type a phrase already takes.");
+                Fail("BDDC003", $"declares '{declared.Name}' as '{declared.TypeName}', which is not a type a scenario can write. Use text, whole number, number, true/false, date, date and time, time, duration, user, list of ..., table, or a type a phrase already takes.");
                 continue;
             }
 
             var inferred = isTable ? blockType : types[name];
             if (inferred is not null && inferred != typeof(string) && inferred != typeof(BddTable) && BddValues.Describe(inferred) != BddValues.Describe(type))
             {
-                Fail("UATC002", $"declares '{declared.Name}' as {BddValues.Describe(type)}, but passes it to a step that takes {BddValues.Describe(inferred)}.");
+                Fail("BDDC002", $"declares '{declared.Name}' as {BddValues.Describe(type)}, but passes it to a step that takes {BddValues.Describe(inferred)}.");
                 continue;
             }
 
@@ -253,7 +253,7 @@ public sealed class BddPreparedCallables
             types[name] = type;
             if (!string.IsNullOrEmpty(declared.Example) && !BddValues.TryRead(declared.Example, type, context, out _, out var exampleProblem, allowNull: true))
             {
-                Fail("UATC003", $"has an example for '{declared.Name}' that is not a {BddValues.Describe(type)}: {exampleProblem!.Message}");
+                Fail("BDDC003", $"has an example for '{declared.Name}' that is not a {BddValues.Describe(type)}: {exampleProblem!.Message}");
             }
         }
 

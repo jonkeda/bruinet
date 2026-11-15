@@ -59,7 +59,7 @@ public sealed class UatCallableTests
             Given a todo "Buy milk" for Eva with 8,5 hours
             """, Assigned));
 
-        Assert.Equal("UATA003", error.Code);
+        Assert.Equal("BDDA003", error.Code);
         Assert.Equal(5, error.Location.LineNumber);
         Assert.Contains("'hours'", error.Message, StringComparison.Ordinal);
         Assert.Contains("8.5", error.Message, StringComparison.Ordinal);
@@ -78,7 +78,7 @@ public sealed class UatCallableTests
             ```
             """));
 
-        Assert.Equal("UATB001", error.Code);
+        Assert.Equal("BDDB001", error.Code);
         Assert.Equal(5, error.Location.LineNumber);
         Assert.Equal([11], error.Within.Select(inner => inner.LineNumber));
         Assert.Contains("I opn the todo \"Buy milk\"", error.Message, StringComparison.Ordinal);
@@ -98,21 +98,21 @@ public sealed class UatCallableTests
         Assert.Empty(Bind("When I open the todo \"Tea\"", Conflict));
 
         var error = Assert.Single(Bind("Given a clash 3", Conflict));
-        Assert.Equal("UATC002", error.Code);
+        Assert.Equal("BDDC002", error.Code);
         Assert.Contains("no value is both date and number", error.Message, StringComparison.Ordinal);
     }
 
     [Fact]
     public void AnUnusedOrUnknownPlaceholder_IsBroken()
     {
-        Assert.Equal("UATC001", Prepare("""
+        Assert.Equal("BDDC001", Prepare("""
             ## Step: a todo {title} and {spare}
 
             ```gherkin
             When I open the todo <title>
             ```
             """).Problem?.Code);
-        Assert.Equal("UATC001", Prepare("""
+        Assert.Equal("BDDC001", Prepare("""
             ## Step: a todo
 
             ```gherkin
@@ -132,8 +132,8 @@ public sealed class UatCallableTests
             ```
             """);
 
-        Assert.Equal("UATC008", prepared.Problem?.Code);
-        Assert.Contains("UATA003", prepared.Problem!.Message, StringComparison.Ordinal);
+        Assert.Equal("BDDC008", prepared.Problem?.Code);
+        Assert.Contains("BDDA003", prepared.Problem!.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -153,9 +153,9 @@ public sealed class UatCallableTests
 
         Assert.Equal(typeof(DateOnly), Prepare(Declared).Types["due"]);
         var error = Assert.Single(Bind("Given the report of 2026-05-12", Declared));
-        Assert.Equal("UATA002", error.Code);
+        Assert.Equal("BDDA002", error.Code);
 
-        Assert.Equal("UATC002", Prepare("""
+        Assert.Equal("BDDC002", Prepare("""
             ## Step: a todo {title} for {hours} hours
 
             | Parameter | Type |
@@ -167,7 +167,7 @@ public sealed class UatCallableTests
             ```
             """).Problem?.Code);
 
-        Assert.Equal("UATC003", Prepare("""
+        Assert.Equal("BDDC003", Prepare("""
             ## Step: the todo {title}
 
             | Parameter | Type    |
@@ -209,11 +209,11 @@ public sealed class UatCallableTests
               | Buy milk | Open    |
               | Tea      | Waiting |
             """, Server));
-        Assert.Equal("UATA004", error.Code);
+        Assert.Equal("BDDA004", error.Code);
         Assert.Equal(9, error.Location.LineNumber);
 
-        Assert.Equal("UATA007", Assert.Single(Bind("Given the server knows", Server)).Code);
-        Assert.Equal("UATB004", Assert.Single(Bind("""
+        Assert.Equal("BDDA007", Assert.Single(Bind("Given the server knows", Server)).Code);
+        Assert.Equal("BDDB004", Assert.Single(Bind("""
             Given a todo "Tea" for Eva with 1 hours
               | Title |
               | ----- |
@@ -251,7 +251,7 @@ public sealed class UatCallableTests
               | Buy milk | 12-May-2026 |
               | Tea      | 2026-05-13  |
             """, PerRow));
-        Assert.Equal(("UATA002", 9), (badCell.Code, badCell.Location.LineNumber));
+        Assert.Equal(("BDDA002", 9), (badCell.Code, badCell.Location.LineNumber));
         Assert.NotNull(badCell.Fix);
 
         var unknown = Bind("""
@@ -260,8 +260,8 @@ public sealed class UatCallableTests
               | -------- | ----------- |
               | Buy milk | 12-May-2026 |
             """, PerRow);
-        Assert.Equal(["UATA006", "UATA006"], unknown.Select(d => d.Code));
-        Assert.Equal("UATA007", Assert.Single(Bind("Given todos for Eva", PerRow)).Code);
+        Assert.Equal(["BDDA006", "BDDA006"], unknown.Select(d => d.Code));
+        Assert.Equal("BDDA007", Assert.Single(Bind("Given todos for Eva", PerRow)).Code);
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public sealed class UatCallableTests
             """;
 
         var needsTable = Assert.Single(Bind("Given the server knows", Server));
-        Assert.Equal("UATA007", needsTable.Code);
+        Assert.Equal("BDDA007", needsTable.Code);
         Assert.Contains("needs a table under it, which 'the server knows' passes on", needsTable.Message, StringComparison.Ordinal);
 
         var needsRows = Assert.Single(Bind("Given todos for Eva", PerRow));
@@ -300,7 +300,7 @@ public sealed class UatCallableTests
               | ----- |
               | Tea   |
             """, Assigned));
-        Assert.Equal("UATB004", tableNotTaken.Code);
+        Assert.Equal("BDDB004", tableNotTaken.Code);
         Assert.Contains("does not accept a table", tableNotTaken.Message, StringComparison.Ordinal);
         Assert.Equal(6, tableNotTaken.Location.LineNumber);
 
@@ -310,7 +310,7 @@ public sealed class UatCallableTests
               some text
               """
             """", Assigned));
-        Assert.Equal("UATB004", textNotTaken.Code);
+        Assert.Equal("BDDB004", textNotTaken.Code);
         Assert.Contains("does not accept a doc string", textNotTaken.Message, StringComparison.Ordinal);
         Assert.Equal(5, textNotTaken.Location.LineNumber);
     }
@@ -343,7 +343,7 @@ public sealed class UatCallableTests
             Given ping
             ```
             """));
-        Assert.Equal("UATC004", cycle.Code);
+        Assert.Equal("BDDC004", cycle.Code);
 
         var deep = Assert.Single(Bind("Given level 1", """
             ## Step: level 1
@@ -370,7 +370,7 @@ public sealed class UatCallableTests
             When I open the todo "Deep"
             ```
             """));
-        Assert.Equal("UATC005", deep.Code);
+        Assert.Equal("BDDC005", deep.Code);
         Assert.Equal(5, deep.Location.LineNumber);
         Assert.Equal(3, deep.Within.Count);
     }
@@ -386,7 +386,7 @@ public sealed class UatCallableTests
             When I open the todo "Tea"
             ```
             """));
-        Assert.Equal("UATC006", unsaid.Code);
+        Assert.Equal("BDDC006", unsaid.Code);
         Assert.Contains("does not end on one", unsaid.Message, StringComparison.Ordinal);
 
         Assert.Empty(Bind("Given a round trip", """
@@ -413,7 +413,7 @@ public sealed class UatCallableTests
             Then I should be on the Detail page
             ```
             """));
-        Assert.Equal(("UATC006", 8), (wandering.Code, wandering.Location.LineNumber));
+        Assert.Equal(("BDDC006", 8), (wandering.Code, wandering.Location.LineNumber));
     }
 
     [Fact]
@@ -450,7 +450,7 @@ public sealed class UatCallableTests
             ```
             """));
 
-        Assert.Equal("UATB002", error.Code);
+        Assert.Equal("BDDB002", error.Code);
     }
 
     [Fact]
@@ -503,7 +503,7 @@ public sealed class UatCallableTests
             Assert.True(file.Bind(CatalogSet(new ArgumentFixture())).Success);
 
             File.WriteAllText(scenario, Document("Given a users one", string.Empty));
-            Assert.Equal("UATB010", Assert.Single(BddScenarioFiles.Load(scenario).Bind(CatalogSet(new ArgumentFixture())).Diagnostics).Code);
+            Assert.Equal("BDDB010", Assert.Single(BddScenarioFiles.Load(scenario).Bind(CatalogSet(new ArgumentFixture())).Diagnostics).Code);
         }
         finally
         {
@@ -512,10 +512,10 @@ public sealed class UatCallableTests
     }
 
     [Theory]
-    [InlineData("When I open the todo \"Tea\"\n  <table>", "UAT024")]
-    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step:\n\n```gherkin\nWhen I open the todo \"Tea\"", "UAT025")]
-    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step: nothing\n\n```gherkin", "UAT026")]
-    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step: bad {x}\n\n| Parameter | Kind |\n| --- | --- |\n| x | text |\n\n```gherkin\nWhen I open the todo <x>", "UAT027")]
+    [InlineData("When I open the todo \"Tea\"\n  <table>", "BDD024")]
+    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step:\n\n```gherkin\nWhen I open the todo \"Tea\"", "BDD025")]
+    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step: nothing\n\n```gherkin", "BDD026")]
+    [InlineData("When I open the todo \"Tea\"\n```\n\n## Step: bad {x}\n\n| Parameter | Kind |\n| --- | --- |\n| x | text |\n\n```gherkin\nWhen I open the todo <x>", "BDD027")]
     public void AWrongPhraseSection_IsAParseError(string steps, string code)
     {
         var parse = BddMarkdownParser.Parse(Document(steps, string.Empty));
@@ -543,9 +543,9 @@ public sealed class UatCallableTests
             """);
 
         var error = Assert.Single(parse.Diagnostics);
-        Assert.Equal(("UAT028", 3), (error.Code, error.Location.LineNumber));
+        Assert.Equal(("BDD028", 3), (error.Code, error.Location.LineNumber));
         Assert.Equal("a good one", Assert.Single(parse.Document!.Callables).Phrase);
-        Assert.Equal("UAT028", Assert.Single(BddMarkdownParser.ParsePhrases("## Step: headless\n\n```gherkin\nWhen I open the todo \"Tea\"\n```").Diagnostics).Code);
+        Assert.Equal("BDD028", Assert.Single(BddMarkdownParser.ParsePhrases("## Step: headless\n\n```gherkin\nWhen I open the todo \"Tea\"\n```").Diagnostics).Code);
     }
 
     private static BddCatalogSet CatalogSet(ArgumentFixture fixture)

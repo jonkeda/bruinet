@@ -310,7 +310,7 @@ public sealed class UatReflectionRuntime
         var instance = GetPageInstance(context, page);
         if (instance is null)
         {
-            return Task.FromResult(BddStepResult.Failed(invocation, $"UAT page '{page.Name}' requires an active DI scope."));
+            return Task.FromResult(BddStepResult.Failed(invocation, $"Page '{page.Name}' requires an active DI scope."));
         }
 
         try
@@ -319,7 +319,7 @@ public sealed class UatReflectionRuntime
         }
         catch (Exception ex)
         {
-            return Task.FromResult(BddStepResult.Failed(invocation, $"UAT page phrase '{page.Name}.{method.Name}' failed: {ex.Message}", ex));
+            return Task.FromResult(BddStepResult.Failed(invocation, $"Page phrase '{page.Name}.{method.Name}' failed: {ex.Message}", ex));
         }
 
         context.Diagnostics.Add($"page-phrase:{page.Name}.{method.Name}");
@@ -455,7 +455,7 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{pageName}' was not found. Available pages: {FormatPageNames()}."));
+                $"Page '{pageName}' was not found. Available pages: {FormatPageNames()}."));
         }
 
         page.Navigate?.Invoke();
@@ -464,7 +464,7 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{page.Name}' requires an active DI scope."));
+                $"Page '{page.Name}' requires an active DI scope."));
         }
 
         // No fixture method: a page that knows where it is opens itself, unless it is open already.
@@ -477,7 +477,7 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{page.Name}' did not become ready."));
+                $"Page '{page.Name}' did not become ready."));
         }
 
         context.CurrentPageName = page.Key;
@@ -498,7 +498,7 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{pageName}' was not found. Available pages: {FormatPageNames()}."));
+                $"Page '{pageName}' was not found. Available pages: {FormatPageNames()}."));
         }
 
         var instance = GetPageInstance(context, page);
@@ -506,14 +506,14 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{page.Name}' requires an active DI scope."));
+                $"Page '{page.Name}' requires an active DI scope."));
         }
 
         if (!WaitPageReady(instance))
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{page.Name}' was not ready."));
+                $"Page '{page.Name}' was not ready."));
         }
 
         context.CurrentPageName = page.Key;
@@ -588,7 +588,7 @@ public sealed class UatReflectionRuntime
         {
             return Task.FromResult(BddStepResult.Failed(
                 invocation,
-                $"UAT page '{pageResult.Page!.Name}' requires an active DI scope."));
+                $"Page '{pageResult.Page!.Name}' requires an active DI scope."));
         }
 
         foreach (var controlBinding in pageResult.Page!.Controls)
@@ -636,7 +636,7 @@ public sealed class UatReflectionRuntime
                 controlName,
                 BddStepResult.Failed(
                     invocation,
-                    $"UAT control '{controlName}' was not found on page '{page.Name}'. Available controls: {FormatControlNames(page)}."));
+                    $"Control '{controlName}' was not found on page '{page.Name}'. Available controls: {FormatControlNames(page)}."));
             return false;
         }
 
@@ -648,7 +648,7 @@ public sealed class UatReflectionRuntime
                 controlName,
                 BddStepResult.Failed(
                     invocation,
-                    $"UAT page '{page.Name}' requires an active DI scope."));
+                    $"Page '{page.Name}' requires an active DI scope."));
             return false;
         }
 
@@ -660,7 +660,7 @@ public sealed class UatReflectionRuntime
                 controlName,
                 BddStepResult.Failed(
                     invocation,
-                    $"UAT control '{controlName}' on page '{page.Name}' returned null."));
+                    $"Control '{controlName}' on page '{page.Name}' returned null."));
             return false;
         }
 
@@ -707,7 +707,7 @@ public sealed class UatReflectionRuntime
             result = new UatControlResolution(
                 null,
                 declaring[0].Name,
-                BddStepResult.Failed(invocation, $"UAT control '{declaring[0].Name}' on page '{page.Name}' could not be created."));
+                BddStepResult.Failed(invocation, $"Control '{declaring[0].Name}' on page '{page.Name}' could not be created."));
             return false;
         }
 

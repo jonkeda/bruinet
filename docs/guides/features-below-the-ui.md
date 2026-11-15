@@ -19,7 +19,7 @@ Write Gherkin when someone other than the developer reads it. Plumbing (a contra
 tombstones, retry timing) stays a C# test.
 
 A `@service` scenario may not use a page step (`I am on the ... page`), a control verb
-(`I tap Sync`) or a page phrase: binding fails with **UATB013** before anything runs. Say the same
+(`I tap Sync`) or a page phrase: binding fails with **BDDB013** before anything runs. Say the same
 thing with a step the service head declares (`I sync`).
 
 ## The Suite

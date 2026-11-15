@@ -93,7 +93,7 @@ public sealed class UatReflectionRuntimeTests
             ```
             """));
 
-        Assert.Equal("UATB008", diagnostic.Code);
+        Assert.Equal("BDDB008", diagnostic.Code);
         Assert.Contains("Start with 'Given I am on the ... page'", diagnostic.Message);
     }
 
@@ -113,7 +113,7 @@ public sealed class UatReflectionRuntimeTests
             ```
             """));
 
-        Assert.Equal("UATB009", diagnostic.Code);
+        Assert.Equal("BDDB009", diagnostic.Code);
         Assert.Contains("the Main page has no control 'Imaginary Button'", diagnostic.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Greet", diagnostic.Message);
     }
@@ -192,7 +192,7 @@ public sealed class UatReflectionRuntimeTests
         var bind = BddBinder.Bind(parse.Document!, catalog);
 
         var error = Assert.Single(bind.Diagnostics);
-        Assert.Equal("UATA013", error.Code);
+        Assert.Equal("BDDA013", error.Code);
         Assert.Contains(nameof(CommandIdFixture.Remember), error.Message, StringComparison.Ordinal);
         Assert.Contains(nameof(BddStepAttribute.CommandId), error.Message, StringComparison.Ordinal);
     }

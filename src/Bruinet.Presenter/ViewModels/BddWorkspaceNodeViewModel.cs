@@ -159,7 +159,7 @@ public sealed class BddWorkspaceNodeViewModel : ViewModelBase
     {
         BddWorkspaceNodeKind.Scenario => Scenario?.StatusDescription ?? BddStatusPresentation.Description("wait"),
         BddWorkspaceNodeKind.Step => Step?.StatusDescription ?? BddStatusPresentation.Description("wait"),
-        BddWorkspaceNodeKind.MarkdownFile => "UAT Markdown file",
+        BddWorkspaceNodeKind.MarkdownFile => "Feature file",
         BddWorkspaceNodeKind.WorkflowConfig => "Workflow config",
         BddWorkspaceNodeKind.Suite => "Suite",
         BddWorkspaceNodeKind.Folder => "Folder",

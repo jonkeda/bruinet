@@ -66,7 +66,7 @@ public sealed class McpServerTests : IDisposable
         });
 
         Assert.Contains("\"valid\":false", text);
-        Assert.Contains("\"line\":7,\"severity\":\"error\",\"code\":\"UATB001\"", text);
+        Assert.Contains("\"line\":7,\"severity\":\"error\",\"code\":\"BDDB001\"", text);
         Assert.False(File.Exists(path));
     }
 

@@ -225,7 +225,7 @@ public static class UatDiscovery
         {
             diagnostics.Add(new BddDiagnostic(
                 BddDiagnosticSeverity.Error,
-                "UATD001",
+                "BDDD001",
                 $"Duplicate UAT page name '{duplicate.Key}'.",
                 new BddSourceLocation(null, 1)));
         }
@@ -241,7 +241,7 @@ public static class UatDiscovery
             {
                 diagnostics.Add(new BddDiagnostic(
                     BddDiagnosticSeverity.Error,
-                    "UATD002",
+                    "BDDD002",
                     $"Duplicate UAT control name '{duplicate.Key}' on page '{page.Name}'.",
                     new BddSourceLocation(null, 1)));
             }
@@ -256,7 +256,7 @@ public static class UatDiscovery
         {
             diagnostics.Add(new BddDiagnostic(
                 BddDiagnosticSeverity.Error,
-                "UATD003",
+                "BDDD003",
                 $"Duplicate UAT command phrase '{duplicate.First().Phrase}' for keyword '{duplicate.First().Keyword}'.",
                 new BddSourceLocation(null, 1)));
         }

@@ -27,7 +27,7 @@ public sealed class UatScenarioCheckTests
     public void ApplyFixes_RewritesTheValueOnItsLine_KeepingLineEndings()
     {
         var text = "line one\r\nWhen I lend it until 2026-05-12\r\n";
-        var fix = new BddDiagnostic(BddDiagnosticSeverity.Error, "UATA002", "date", new BddSourceLocation(null, 2))
+        var fix = new BddDiagnostic(BddDiagnosticSeverity.Error, "BDDA002", "date", new BddSourceLocation(null, 2))
         {
             Fix = new BddTextFix("2026-05-12", "12-May-2026"),
         };
@@ -54,7 +54,7 @@ public sealed class UatScenarioCheckTests
             """");
 
         var error = Assert.Single(parse.Diagnostics);
-        Assert.Equal("UAT023", error.Code);
+        Assert.Equal("BDD023", error.Code);
         Assert.Equal(7, error.Location.LineNumber);
     }
 

@@ -109,19 +109,19 @@ Common diagnostics:
 
 | Code | Meaning |
 | --- | --- |
-| `UATB001` | No command binding matches the step. |
-| `UATB002` | The step is ambiguous. |
-| `UATB003` | The matched command requires a table. |
-| `UATB004` | The matched command does not accept a table. |
-| `UATB008` | A control verb or page phrase needs the page, and no step has said it, or an earlier step may have left it (see [Page Scope](#page-scope)). |
-| `UATB009` | The step does not fit the current page, or names a page that does not exist. |
-| `UATB010` | The step matches only phrases or pages this file does not see (see [Where Phrases Live](#where-phrases-live)). |
-| `UATB011` | A `Using` names no namespace. |
-| `UATB012` | Warning: a `Using` that no step needs. |
-| `UATB013` | A page step, control verb or page phrase in a scenario for the `service` head, which has no screen. |
-| `UATA001`-`UATA007` | A value does not fit its parameter (see [Arguments](#arguments)). |
-| `UATA010`-`UATA013` | The step binds to a broken phrase (see [Broken Phrases](#broken-phrases)). |
-| `UATC001`-`UATC008` | The step calls a broken callable phrase (see [Callable Phrases](#callable-phrases)). |
+| `BDDB001` | No command binding matches the step. |
+| `BDDB002` | The step is ambiguous. |
+| `BDDB003` | The matched command requires a table. |
+| `BDDB004` | The matched command does not accept a table. |
+| `BDDB008` | A control verb or page phrase needs the page, and no step has said it, or an earlier step may have left it (see [Page Scope](#page-scope)). |
+| `BDDB009` | The step does not fit the current page, or names a page that does not exist. |
+| `BDDB010` | The step matches only phrases or pages this file does not see (see [Where Phrases Live](#where-phrases-live)). |
+| `BDDB011` | A `Using` names no namespace. |
+| `BDDB012` | Warning: a `Using` that no step needs. |
+| `BDDB013` | A page step, control verb or page phrase in a scenario for the `service` head, which has no screen. |
+| `BDDA001`-`BDDA007` | A value does not fit its parameter (see [Arguments](#arguments)). |
+| `BDDA010`-`BDDA013` | The step binds to a broken phrase (see [Broken Phrases](#broken-phrases)). |
+| `BDDC001`-`BDDC008` | The step calls a broken callable phrase (see [Callable Phrases](#callable-phrases)). |
 
 ## Arguments
 
@@ -212,10 +212,10 @@ loads, and a step that binds to it fails naming the method:
 
 | Code | The phrase |
 | --- | --- |
-| `UATA010` | does not name a parameter that the step must supply |
-| `UATA011` | has a method name that cannot be read (a parameter `i`, `TITLESTATUS` with no `_`) |
-| `UATA012` | takes two parameters from under the step |
-| `UATA013` | has two empty attributes of one keyword, a name prefix that is not its keyword, an empty attribute on a control verb, or a control-verb property (`CommandId`, `Literal`) on a phrase method |
+| `BDDA010` | does not name a parameter that the step must supply |
+| `BDDA011` | has a method name that cannot be read (a parameter `i`, `TITLESTATUS` with no `_`) |
+| `BDDA012` | takes two parameters from under the step |
+| `BDDA013` | has two empty attributes of one keyword, a name prefix that is not its keyword, an empty attribute on a control verb, or a control-verb property (`CommandId`, `Literal`) on a phrase method |
 
 `bruinet data phrases` lists the broken ones as warnings.
 
@@ -250,7 +250,7 @@ Given the synced list has todos
 
 - **The heading** says `{name}`, as a C# phrase does; **the body** says `<name>`, as an outline
   does, and the call is expanded like an outline row. A call is matched for `Given`, `When` and
-  `Then` alike. A callable and a C# phrase with the same text are ambiguous (`UATB002`): nothing
+  `Then` alike. A callable and a C# phrase with the same text are ambiguous (`BDDB002`): nothing
   shadows anything.
 - **Typed by where the value goes.** In `## Step: a todo {title} due {due}` whose body says
   `When I create a todo <title> due <due>`, `<due>` fills a `DateOnly` parameter, so `{due}` is a
@@ -297,10 +297,10 @@ Given the synced list has todos
 - **Where problems are reported.** A problem inside a call is reported at the call's line (a row's line, per row), with `via` lines to the body
   steps it came through. `--fix` rewrites the value in the call, never the body.
 - **No logic, ever.** A callable is a fixed sequence: no `If`, loop, variable or return value.
-  It may call other callables, three deep at most, and never itself (`UATC004`, `UATC005`).
+  It may call other callables, three deep at most, and never itself (`BDDC004`, `BDDC005`).
   Anything that decides is a C# phrase whose name says what it decides.
 - **Pages.** A callable whose steps name a page (`I am on`, `I should be on`) ends with one; a
-  per-row body ends on the page it started on (`UATC006`).
+  per-row body ends on the page it started on (`BDDC006`).
 - **The trace** shows each call once, its rows, and its steps indented under it.
 
 A callable that is declared wrongly loads with the rest and fails only its calls, naming its file
@@ -308,19 +308,19 @@ and line:
 
 | Code | The callable |
 | --- | --- |
-| `UATC001` | has a `{x}` its body does not use, or a `<x>` its heading does not name |
-| `UATC002` | passes a value to steps that cannot agree on its type, or disagrees with its `Parameters` table |
-| `UATC003` | has a `Parameters` row that names no parameter, an unknown type, or an example that does not read |
-| `UATC004` | calls itself, directly or through others |
-| `UATC005` | is called more than three deep |
-| `UATC006` | names a page but does not end on one, or a row ends on another page than it started |
-| `UATC007` | runs once per row and passes `<table>` on |
-| `UATC008` | has a body step with a value that does not fit, or bound to a broken C# phrase |
+| `BDDC001` | has a `{x}` its body does not use, or a `<x>` its heading does not name |
+| `BDDC002` | passes a value to steps that cannot agree on its type, or disagrees with its `Parameters` table |
+| `BDDC003` | has a `Parameters` row that names no parameter, an unknown type, or an example that does not read |
+| `BDDC004` | calls itself, directly or through others |
+| `BDDC005` | is called more than three deep |
+| `BDDC006` | names a page but does not end on one, or a row ends on another page than it started |
+| `BDDC007` | runs once per row and passes `<table>` on |
+| `BDDC008` | has a body step with a value that does not fit, or bound to a broken C# phrase |
 
-What the text alone shows is a parse error: `<table>` outside a phrase section (`UAT024`), a
-`## Step:` with no text (`UAT025`) or no steps (`UAT026`), a malformed `Parameters` table
-(`UAT027`), and a phrase file with anything but phrase sections under one `# Steps:` heading
-(`UAT028`). Phrase files hold no prose, as scenario files do not.
+What the text alone shows is a parse error: `<table>` outside a phrase section (`BDD024`), a
+`## Step:` with no text (`BDD025`) or no steps (`BDD026`), a malformed `Parameters` table
+(`BDD027`), and a phrase file with anything but phrase sections under one `# Steps:` heading
+(`BDD028`). Phrase files hold no prose, as scenario files do not.
 
 A body step that binds to nothing is not a broken callable: it may bind where it is called (in
 another app). The call reports it. `bruinet data validate` reports broken callables as warnings,
@@ -467,7 +467,7 @@ only when the runtime met it during page discovery - that is, when it is the typ
 of a control property on a discovered page object - together with its base classes,
 so a verb declared on a Bruinet base (`StateContainer`) reaches an app's subclass. A
 step on a control no page exposes is never registered, and its steps fail to bind
-with `UATB001`.
+with `BDDB001`.
 
 **Bruinet's own control verbs**, beyond the Core interfaces:
 
@@ -538,10 +538,10 @@ A button that always goes to one page says so, and the assert becomes optional:
 public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Add"));
 ```
 
-- A control that is not on the current page, or cannot do the verb, is a bind error (`UATB009`)
+- A control that is not on the current page, or cannot do the verb, is a bind error (`BDDB009`)
   listing the page's controls. Before, it failed only when the step ran.
 - **No shadowing.** A step that matches a phrase of the current page and a wider phrase (a phrase
-  class, a callable) is ambiguous (`UATB002`), never "the page wins".
+  class, a callable) is ambiguous (`BDDB002`), never "the page wins".
 - A catalog without pages, and a callable's body checked on its own, bind without page scope. A
   callable's steps are followed in the caller's page when it is called.
 
@@ -605,8 +605,8 @@ check. The Todo suites put their backend, device, app-lifecycle and stored-data 
 ```
 
 - **Explicit and not transitive.** A file sees what it names, not what those name.
-- A `Using` that names nothing is an error (`UATB011`), listing the namespaces there are; one no
-  step needs is a warning (`UATB012`).
+- A `Using` that names nothing is an error (`BDDB011`), listing the namespaces there are; one no
+  step needs is a warning (`BDDB012`).
 - A C# phrase assembly announces its namespace with `[assembly: BddNamespace("Accounts")]`; the
   fixture's module scan loads it, as it loads any step-definition class.
 
@@ -615,14 +615,14 @@ check. The Todo suites put their backend, device, app-lifecycle and stored-data 
 A page belongs to a namespace too: `[BddNamespace("Accounts")]` on the page class or its assembly.
 One name in two namespaces is two pages. `Given I am on the Detail page` finds the `Detail` page
 the file sees; when it sees two, the step is ambiguous and names it with its namespace:
-`Given I am on the Accounts/Detail page`. A page of a folder the file does not see is `UATB010`.
+`Given I am on the Accounts/Detail page`. A page of a folder the file does not see is `BDDB010`.
 
 ### Rules
 
 - **No shadowing.** A step that matches phrases of two scopes it sees (its folder and a folder above
-  it, a used namespace, or a global phrase) is ambiguous (`UATB002`), never "the nearest wins".
+  it, a used namespace, or a global phrase) is ambiguous (`BDDB002`), never "the nearest wins".
   Stop using one namespace, or rename a phrase. There are no qualified steps.
-- **A phrase it does not see** is a bind error (`UATB010`) that names where the phrase is. Add a
+- **A phrase it does not see** is a bind error (`BDDB010`) that names where the phrase is. Add a
   `Using` row, move the scenario under that folder, or move the phrase up to a folder both see.
 - **A callable's body binds where it is written**, not where it is called: a callable in the root
   phrase file cannot use `Invoicing`'s phrases, and a phrase file's callable cannot call a
@@ -926,8 +926,8 @@ that has no `{user}` form. The built-in ones all have one:
 - **The subject sticks.** The named app stays current, so `And I tap Sync` after `When Daan taps
   Save` runs on Daan's app. Still, name the user on every step of a scenario with several users.
 - **Only names from the table count.** A name that is also a page or control name is an error
-  (`UATB005`); a name the table does not have, or a `{user}` step in a suite without the table,
-  is `UATB007`. A step that names a user and binds to nothing lists the declared `{user}` phrases.
+  (`BDDB005`); a name the table does not have, or a `{user}` step in a suite without the table,
+  is `BDDB007`. A step that names a user and binds to nothing lists the declared `{user}` phrases.
 - **A user with several apps** picks the one used last in the scenario; before any is used, name
   the app (`Daan's phone taps Sync`) or start with `Daan's phone uses the app`.
 - **`{user}` elsewhere is only checked:** `the server should have received the todo {title} from

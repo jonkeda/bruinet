@@ -26,7 +26,7 @@ public sealed class BddMarkdownParserTests
         Assert.Equal(
             ["'# UAT: Login' is the old form of '# Feature: Login'", "'## Phrase: a sign-in' is the old form of '## Step: a sign-in'"],
             result.Diagnostics.Select(x => x.Message[..x.Message.IndexOf(". Run", StringComparison.Ordinal)]));
-        Assert.All(result.Diagnostics, x => Assert.Equal("UAT029", x.Code));
+        Assert.All(result.Diagnostics, x => Assert.Equal("BDD029", x.Code));
         Assert.Equal("Login", result.Document!.Title);
         Assert.Single(result.Document.Callables);
         Assert.Single(result.Document.Scenarios);
@@ -37,7 +37,7 @@ public sealed class BddMarkdownParserTests
     {
         var result = BddMarkdownParser.ParsePhrases("# Phrases: Todo\n\n## Step: one\n\n```gherkin\nWhen I sync\n```\n");
 
-        Assert.Equal("UAT029", Assert.Single(result.Diagnostics).Code);
+        Assert.Equal("BDD029", Assert.Single(result.Diagnostics).Code);
     }
 
     [Theory]
@@ -265,7 +265,7 @@ public sealed class BddMarkdownParserTests
         var result = BddMarkdownParser.Parse(markdown);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UAT000");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDD000");
     }
 
     [Fact]
@@ -289,7 +289,7 @@ public sealed class BddMarkdownParserTests
         var result = BddMarkdownParser.Parse(markdown);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UAT018");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDD018");
     }
 
     [Fact]
@@ -314,7 +314,7 @@ public sealed class BddMarkdownParserTests
         var result = BddMarkdownParser.Parse(markdown);
 
         Assert.False(result.Success);
-        Assert.Contains(result.Diagnostics, x => x.Code == "UAT015");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDD015");
     }
 
     private const string TwoBlocks = """
@@ -423,7 +423,7 @@ public sealed class BddMarkdownParserTests
             """);
 
         var problem = Assert.Single(result.Diagnostics);
-        Assert.Equal("UAT015", problem.Code);
+        Assert.Equal("BDD015", problem.Code);
         Assert.Contains("'second'", problem.Message, StringComparison.Ordinal);
     }
 
@@ -453,7 +453,7 @@ public sealed class BddMarkdownParserTests
             """);
 
         var problem = Assert.Single(result.Diagnostics);
-        Assert.Equal("UAT032", problem.Code);
+        Assert.Equal("BDD032", problem.Code);
         Assert.Equal(15, problem.Location.LineNumber);
     }
 
@@ -478,7 +478,7 @@ public sealed class BddMarkdownParserTests
             | Buy milk |
             """);
 
-        Assert.Equal("UAT017", Assert.Single(result.Diagnostics).Code);
+        Assert.Equal("BDD017", Assert.Single(result.Diagnostics).Code);
         Assert.Equal("valid", Assert.Single(result.Document!.Scenarios).ExamplesName);
     }
 
@@ -502,7 +502,7 @@ public sealed class BddMarkdownParserTests
             | Buy milk |
             """);
 
-        Assert.Contains(result.Diagnostics, x => x.Code == "UAT020");
+        Assert.Contains(result.Diagnostics, x => x.Code == "BDD020");
     }
 
     [Theory]
@@ -668,7 +668,7 @@ public sealed class BddMarkdownParserTests
             """);
 
         var diagnostic = Assert.Single(result.Diagnostics);
-        Assert.Equal("UAT007", diagnostic.Code);
+        Assert.Equal("BDD007", diagnostic.Code);
         Assert.EndsWith(BddFileFormat.FenceHint, diagnostic.Message);
     }
 
@@ -713,7 +713,7 @@ public sealed class BddMarkdownParserTests
 
         Assert.True(result.Success, FormatDiagnostics(result));
         var warning = Assert.Single(result.Diagnostics);
-        Assert.Equal(("UAT031", BddDiagnosticSeverity.Warning), (warning.Code, warning.Severity));
+        Assert.Equal(("BDD031", BddDiagnosticSeverity.Warning), (warning.Code, warning.Severity));
     }
 
     [Fact]
@@ -734,7 +734,7 @@ public sealed class BddMarkdownParserTests
             """);
 
         var diagnostic = Assert.Single(result.Diagnostics);
-        Assert.Equal(("UAT021", 3), (diagnostic.Code, diagnostic.Location.LineNumber));
+        Assert.Equal(("BDD021", 3), (diagnostic.Code, diagnostic.Location.LineNumber));
     }
 
     [Fact]
@@ -754,7 +754,7 @@ public sealed class BddMarkdownParserTests
             ```
             """);
 
-        Assert.Equal("UAT020", Assert.Single(result.Diagnostics).Code);
+        Assert.Equal("BDD020", Assert.Single(result.Diagnostics).Code);
     }
 
     [Fact]
@@ -905,7 +905,7 @@ public sealed class BddMarkdownParserTests
         var result = BddMarkdownParser.Parse(markdown, "login.feature.md");
 
         Assert.False(result.Success);
-        var diagnostic = Assert.Single(result.Diagnostics, x => x.Code == "UAT011");
+        var diagnostic = Assert.Single(result.Diagnostics, x => x.Code == "BDD011");
         Assert.Equal(7, diagnostic.Location.LineNumber);
     }
 

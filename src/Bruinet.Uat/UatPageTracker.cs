@@ -32,7 +32,7 @@ internal sealed class UatPageTracker(BddCatalogSet catalogs, HashSet<string>? us
             }
 
             problems.Add(BddBinder.Error(
-                "UATB008",
+                "BDDB008",
                 $"Step '{step.Text}' needs to know the page, but no step has said it yet. Start with 'Given I am on the ... page'.",
                 step.Source));
             return [];
@@ -43,7 +43,7 @@ internal sealed class UatPageTracker(BddCatalogSet catalogs, HashSet<string>? us
         if (fitting.Count == 0 && wide.Count == 0 && state.LostAt is { } lost)
         {
             problems.Add(BddBinder.Error(
-                "UATB008",
+                "BDDB008",
                 $"Step '{step.Text}' does not fit the {page.Name} page, and the page may have changed at '{lost.Text}' ({lost.Source}). Say where that step ends: 'Then I should be on the ... page'.",
                 step.Source));
             return [];
@@ -52,7 +52,7 @@ internal sealed class UatPageTracker(BddCatalogSet catalogs, HashSet<string>? us
         if (fitting.Count > 0 && wide.Count > 0)
         {
             problems.Add(BddBinder.Error(
-                "UATB002",
+                "BDDB002",
                 $"Step '{step.Text}' is ambiguous: on the {page.Name} page it matches {string.Join(", ", fitting.Select(BddBinder.Describe))}, and also {string.Join(", ", wide.Select(BddBinder.Describe))}. Rename one of them.",
                 step.Source));
             return [];
@@ -60,7 +60,7 @@ internal sealed class UatPageTracker(BddCatalogSet catalogs, HashSet<string>? us
 
         if (fitting.Count == 0 && wide.Count == 0)
         {
-            problems.Add(BddBinder.Error("UATB009", $"Step '{step.Text}' does not fit the {page.Name} page: {string.Join(" ", reasons.Distinct())}", step.Source));
+            problems.Add(BddBinder.Error("BDDB009", $"Step '{step.Text}' does not fit the {page.Name} page: {string.Join(" ", reasons.Distinct())}", step.Source));
             return [];
         }
 
@@ -161,10 +161,10 @@ internal sealed class UatPageTracker(BddCatalogSet catalogs, HashSet<string>? us
         }
 
         diagnostics.Add(seen.Count > 1
-            ? BddBinder.Error("UATB002", $"Step '{step.Text}' names the page '{named}', which here is {string.Join(" and ", seen.Select(page => page.Key))}. Name it with its namespace: '{seen[0].Key}'.", step.Source)
+            ? BddBinder.Error("BDDB002", $"Step '{step.Text}' names the page '{named}', which here is {string.Join(" and ", seen.Select(page => page.Key))}. Name it with its namespace: '{seen[0].Key}'.", step.Source)
             : all.Count > 0
-                ? BddBinder.Error("UATB010", $"Step '{step.Text}' names the page '{named}' of {string.Join(", ", all.Select(page => BddNamespaces.Describe(page.Namespace)))}, which {BddNamespaces.Describe(where.Namespace)} does not see. Add 'Using' for it, or move the file there.", step.Source)
-                : BddBinder.Error("UATB009", $"Step '{step.Text}' names the page '{named}', which does not exist. The pages are {string.Join(", ", UatPageSet.Of(catalog).Values.Where(page => where.Sees(page.Namespace)).Select(page => page.Key).Order(StringComparer.OrdinalIgnoreCase))}.", step.Source));
+                ? BddBinder.Error("BDDB010", $"Step '{step.Text}' names the page '{named}' of {string.Join(", ", all.Select(page => BddNamespaces.Describe(page.Namespace)))}, which {BddNamespaces.Describe(where.Namespace)} does not see. Add 'Using' for it, or move the file there.", step.Source)
+                : BddBinder.Error("BDDB009", $"Step '{step.Text}' names the page '{named}', which does not exist. The pages are {string.Join(", ", UatPageSet.Of(catalog).Values.Where(page => where.Sees(page.Namespace)).Select(page => page.Key).Order(StringComparer.OrdinalIgnoreCase))}.", step.Source));
         return null;
     }
 

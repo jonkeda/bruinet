@@ -40,11 +40,11 @@ public sealed class BddValuesTests
     public void Decimals(string text, string expected) => Assert.Equal(decimal.Parse(expected, CultureInfo.InvariantCulture), Read<decimal>(text));
 
     [Theory]
-    [InlineData("1,5", "UATA003", "1.5")]
-    [InlineData("1.250,75", "UATA003", "1,250.75")]
-    [InlineData("12,50", "UATA003", "12.50")]
-    [InlineData("1,25.0", "UATA003", "groups")]
-    [InlineData("seven", "UATA001", "not a number")]
+    [InlineData("1,5", "BDDA003", "1.5")]
+    [InlineData("1.250,75", "BDDA003", "1,250.75")]
+    [InlineData("12,50", "BDDA003", "12.50")]
+    [InlineData("1,25.0", "BDDA003", "groups")]
+    [InlineData("seven", "BDDA001", "not a number")]
     public void Numbers_NearMisses_SayHowToWriteThem(string text, string code, string hint)
     {
         var problem = Problem<double>(text);
@@ -54,7 +54,7 @@ public sealed class BddValuesTests
     }
 
     [Fact]
-    public void AWholeNumber_RefusesDecimals() => Assert.Equal("UATA003", Problem<int>("1.5").Code);
+    public void AWholeNumber_RefusesDecimals() => Assert.Equal("BDDA003", Problem<int>("1.5").Code);
 
     [Fact]
     public void Numbers_DoNotDependOnTheMachineCulture()
@@ -65,7 +65,7 @@ public sealed class BddValuesTests
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("nl-NL");
 
             Assert.Equal(1250.75m, Read<decimal>("1,250.75"));
-            Assert.Equal("UATA003", Problem<decimal>("1,5").Code);
+            Assert.Equal("BDDA003", Problem<decimal>("1,5").Code);
             Assert.Equal(new DateOnly(2026, 5, 12), Read<DateOnly>("12-May-2026"));
             Assert.Equal("1,250.75", BddValues.Write(1250.75m));
         }
@@ -93,7 +93,7 @@ public sealed class BddValuesTests
     {
         var problem = Problem<DateOnly>(text);
 
-        Assert.Equal("UATA002", problem.Code);
+        Assert.Equal("BDDA002", problem.Code);
         Assert.Equal(fix, problem.Fix);
     }
 
@@ -103,7 +103,7 @@ public sealed class BddValuesTests
     [InlineData("12-May-26")]
     [InlineData("31-Feb-2026")]
     [InlineData("12-May-2026 14:30")]
-    public void Dates_NearMisses_AreRefused(string text) => Assert.Equal("UATA002", Problem<DateOnly>(text).Code);
+    public void Dates_NearMisses_AreRefused(string text) => Assert.Equal("BDDA002", Problem<DateOnly>(text).Code);
 
     [Fact]
     public void DateTimes_TakeATime_AndTheClocksOffset()
@@ -120,7 +120,7 @@ public sealed class BddValuesTests
         Assert.Equal(TimeSpan.FromMinutes(90), Read<TimeSpan>("90m"));
         Assert.Equal(TimeSpan.FromMinutes(90), Read<TimeSpan>("1h 30m"));
         Assert.Equal(TimeSpan.FromDays(2), Read<TimeSpan>("2d"));
-        Assert.Equal("UATA001", Problem<TimeSpan>("01:30:00").Code);
+        Assert.Equal("BDDA001", Problem<TimeSpan>("01:30:00").Code);
     }
 
     [Theory]
@@ -134,7 +134,7 @@ public sealed class BddValuesTests
     {
         var problem = Problem<Status>("Dnoe");
 
-        Assert.Equal("UATA004", problem.Code);
+        Assert.Equal("BDDA004", problem.Code);
         Assert.Contains("Did you mean Done?", problem.Message, StringComparison.Ordinal);
         Assert.Contains("Open, InProgress, Done", problem.Message, StringComparison.Ordinal);
     }
@@ -143,7 +143,7 @@ public sealed class BddValuesTests
     public void Booleans_AreTrueOrFalse()
     {
         Assert.True(Read<bool>("True"));
-        Assert.Equal("UATA001", Problem<bool>("yes").Code);
+        Assert.Equal("BDDA001", Problem<bool>("yes").Code);
     }
 
     [Theory]
@@ -186,7 +186,7 @@ public sealed class BddValuesTests
     {
         var problem = Problem<int[]>("1, two and 3");
 
-        Assert.Equal("UATA001", problem.Code);
+        Assert.Equal("BDDA001", problem.Code);
         Assert.StartsWith("item 2 of the list", problem.Message, StringComparison.Ordinal);
     }
 
@@ -199,15 +199,15 @@ public sealed class BddValuesTests
         Assert.Equal("Eva's PC", Assert.Single(eva.Apps).Name);
 
         Assert.Equal("Eva", Read<BddUserRole>("Eva's PC").Name);
-        Assert.Equal("UATA005", Problem<BddUserRole>("Carol").Code);
-        Assert.Equal("UATA005", Assert.Throws<BddValueException>(() => BddValues.Read("Eva", typeof(BddUserRole), BddValueContext.Default)).Problem.Code);
+        Assert.Equal("BDDA005", Problem<BddUserRole>("Carol").Code);
+        Assert.Equal("BDDA005", Assert.Throws<BddValueException>(() => BddValues.Read("Eva", typeof(BddUserRole), BddValueContext.Default)).Problem.Code);
     }
 
     [Fact]
     public void ArgumentTypes_ReadWithTheirParse()
     {
         Assert.Equal(new Money(1250m, "EUR"), Read<Money>("1,250.00 EUR"));
-        Assert.Equal("UATA001", Problem<Money>("lots").Code);
+        Assert.Equal("BDDA001", Problem<Money>("lots").Code);
         Assert.Equal("Buy milk!", BddValues.Read("Buy milk", typeof(Shout), Context with { Types = BddArgumentTypes.Discover([typeof(ShoutConverter)]) })!.ToString());
         Assert.True(BddValues.IsInline(typeof(Money)));
     }
@@ -217,7 +217,7 @@ public sealed class BddValuesTests
     {
         Assert.False(BddValues.IsInline(typeof(Money[][])));
         Assert.False(BddValues.IsInline(typeof(Row)));
-        Assert.Equal("UATA001", Problem<Row>("x").Code);
+        Assert.Equal("BDDA001", Problem<Row>("x").Code);
     }
 
     [Theory]

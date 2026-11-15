@@ -262,7 +262,7 @@ public sealed class BddStepDefinitionRuntime
         {
             return BddStepResult.Failed(
                 invocation,
-                $"UAT phrase class '{phraseClassType.FullName}' requires an active DI scope.");
+                $"Phrase class '{phraseClassType.FullName}' requires an active DI scope.");
         }
 
         try
@@ -289,7 +289,7 @@ public sealed class BddStepDefinitionRuntime
 
             if (result is bool boolean && !boolean)
             {
-                return BddStepResult.Failed(invocation, $"UAT phrase '{method.Name}' returned false.");
+                return BddStepResult.Failed(invocation, $"Phrase '{method.Name}' returned false.");
             }
 
             context.Diagnostics.Add($"phrase:{method.Name}");
@@ -297,7 +297,7 @@ public sealed class BddStepDefinitionRuntime
         }
         catch (Exception ex)
         {
-            return BddStepResult.Failed(invocation, $"UAT phrase '{method.Name}' failed: {ex.Message}", ex);
+            return BddStepResult.Failed(invocation, $"Phrase '{method.Name}' failed: {ex.Message}", ex);
         }
     }
 

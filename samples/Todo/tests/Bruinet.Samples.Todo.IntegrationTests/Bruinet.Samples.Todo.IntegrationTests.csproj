@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The service suite runs on the UAT test base: refusing a UI step (UATB013) needs the UI step patterns. -->
+    <!-- The service suite runs on the UAT test base: refusing a UI step (BDDB013) needs the UI step patterns. -->
     <ProjectReference Include="..\..\..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
     <ProjectReference Include="..\Bruinet.Samples.Todo.TestSupport\Bruinet.Samples.Todo.TestSupport.csproj" />
     <!-- The real API, run in process by the contract tests. -->
