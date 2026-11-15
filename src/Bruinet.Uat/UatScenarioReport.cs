@@ -22,9 +22,10 @@ internal static class UatScenarioReport
     public static string FileName(string? featureFile, string scenarioName)
     {
         var stem = featureFile is null ? null : Path.GetFileName(featureFile);
-        stem = stem?.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase) == true
-            ? stem[..^BddFileFormat.FeatureExtension.Length]
-            : stem is null ? null : Path.GetFileNameWithoutExtension(stem);
+        stem = stem is null ? null
+            : stem.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase) ? stem[..^BddFileFormat.FeatureExtension.Length]
+            : stem.EndsWith(BddFileFormat.SpecExtension, StringComparison.OrdinalIgnoreCase) ? stem[..^BddFileFormat.SpecExtension.Length]
+            : Path.GetFileNameWithoutExtension(stem);
         return stem is null ? $"{scenarioName}__result.json" : $"{stem}__{scenarioName}__result.json";
     }
 

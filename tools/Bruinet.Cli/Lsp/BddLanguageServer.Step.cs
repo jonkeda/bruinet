@@ -61,7 +61,7 @@ public sealed partial class BddLanguageServer
     {
         var path = Key(request.Uri);
         var file = Context(path, request.Suite);
-        if (file.Suite is not { } suite || !path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (file.Suite is not { } suite || !BddFileFormat.IsScenarioFile(path))
         {
             return StepStartResult.Not("No suite holds or links this feature file.");
         }

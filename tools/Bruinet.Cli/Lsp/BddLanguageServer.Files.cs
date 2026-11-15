@@ -109,7 +109,7 @@ public sealed partial class BddLanguageServer
     // The newest run of each of a feature file's scenarios; of the ones accept takes, when given.
     private IReadOnlyDictionary<string, BddScenarioRun> RunsOf(BddServerFile file, Func<BddScenarioRun, bool>? accept = null)
     {
-        if (file.Suite is not { } suite || _results is not { } results || !file.Path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (file.Suite is not { } suite || _results is not { } results || !BddFileFormat.IsScenarioFile(file.Path))
         {
             return new Dictionary<string, BddScenarioRun>();
         }

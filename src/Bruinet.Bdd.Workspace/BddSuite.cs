@@ -118,8 +118,27 @@ public sealed class BddSuite : IDisposable
         }
     }
 
-    /// <summary>The feature files in the project's own <c>Features</c> folder and its subfolders.</summary>
-    public IReadOnlyList<string> FeatureFiles => FilesIn(FeatureFolder, BddFileFormat.FeatureFilePattern);
+    /// <summary>
+    /// The feature files in the project's own <c>Features</c> folder and its subfolders, and the runnable specs in the
+    /// folders the config's <c>Specs</c> row names.
+    /// </summary>
+    public IReadOnlyList<string> FeatureFiles => [.. FilesIn(FeatureFolder, BddFileFormat.FeatureFilePattern), .. SpecFiles];
+
+    /// <summary>The runnable specs (<c>*.spec.md</c>) in the folders the config's <c>Specs</c> row names, relative to it.</summary>
+    public IReadOnlyList<string> SpecFiles
+    {
+        get
+        {
+            try
+            {
+                return BddScenarioSource.SpecFiles(Path.GetDirectoryName(ConfigPath)!);
+            }
+            catch (Exception error) when (error is IOException or FormatException or InvalidOperationException)
+            {
+                return []; // a config being edited: none until it reads again
+            }
+        }
+    }
 
     /// <summary>The step files: <c>*.steps.md</c> in the project's own <c>Features</c> folder and its subfolders.</summary>
     public IReadOnlyList<string> StepFiles => FilesIn(FeatureFolder, BddFileFormat.StepFilePattern);

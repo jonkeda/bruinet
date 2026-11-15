@@ -27,7 +27,7 @@ public sealed partial class BddLanguageServer
                 : null;
             List<FileScenarios> files = [];
             foreach (var path in suite.FeatureFiles.Concat(suite.LinkedFiles)
-                .Where(path => path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+                .Where(path => BddFileFormat.IsScenarioFile(path))
                 .Select(Path.GetFullPath)
                 .Distinct(StringComparer.OrdinalIgnoreCase))
             {

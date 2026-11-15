@@ -859,7 +859,7 @@ public sealed partial class BddMcpServer : IDisposable
                 ? [Suite(arguments)]
                 : _server.Explorer(new ExplorerParams(null, null)).Suites.Select(SuiteNamed).ToList();
             files = [.. suites.SelectMany(suite => suite.FeatureFiles.Concat(suite.LinkedFiles)
-                .Where(path => path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+                .Where(path => BddFileFormat.IsScenarioFile(path))
                 .Select(Path.GetFullPath)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Select(path => (suite, path)))];
@@ -1408,7 +1408,7 @@ public sealed partial class BddMcpServer : IDisposable
         var recordingsFolder = (string?)arguments["recordingsFolder"] is { Length: > 0 } folder ? InSolution(folder, "recordingsFolder") : null;
         var suite = (string?)arguments["suite"];
         var uri = new Uri(path).AbsoluteUri;
-        var line = path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase) ? ScenarioLine(arguments, uri) : Whole(arguments, "line", 1, int.MaxValue);
+        var line = BddFileFormat.IsScenarioFile(path) ? ScenarioLine(arguments, uri) : Whole(arguments, "line", 1, int.MaxValue);
         var timeout = TimeSpan.FromMinutes(Whole(arguments, "timeoutMinutes", 1, 120) ?? 10);
         var target = _server.RecordTarget(new RecordTargetParams(uri, line, suite, recordingsFolder, (string?)arguments["voice"], null));
         if (!target.CanRecord || target.Project is not { } project || target.Filter is not { } filter)

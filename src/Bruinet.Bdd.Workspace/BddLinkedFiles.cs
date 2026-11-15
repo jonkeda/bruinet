@@ -35,7 +35,7 @@ internal static class BddLinkedFiles
                 var excluded = Expand(projectDirectory, item.Attribute("Exclude")?.Value).ToHashSet(StringComparer.OrdinalIgnoreCase);
                 files.UnionWith(Expand(projectDirectory, include)
                     .Where(file => !excluded.Contains(file))
-                    .Where(file => file.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase) ||
+                    .Where(file => BddFileFormat.IsScenarioFile(file) ||
                                    file.EndsWith(BddFileFormat.StepsExtension, StringComparison.OrdinalIgnoreCase)));
             }
         }

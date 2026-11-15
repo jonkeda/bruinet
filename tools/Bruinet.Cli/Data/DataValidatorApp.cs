@@ -43,7 +43,7 @@ public static class DataValidatorApp
     private static int Validate(ToolOptions options, TextWriter output, TextWriter errors)
     {
         List<TestDataDiagnostic> diagnostics = [];
-        var scenarioFile = options.Argument is { } argument && argument.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase)
+        var scenarioFile = options.Argument is { } argument && BddFileFormat.IsScenarioFile(argument)
             ? Existing(options, argument)
             : null;
         var testSets = 0;

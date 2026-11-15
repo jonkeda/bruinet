@@ -201,7 +201,7 @@ public sealed partial class BddLanguageServer : IDisposable
             suite = suites.FirstOrDefault(candidate => string.Equals(candidate.Name, request.Suite, StringComparison.OrdinalIgnoreCase)) ?? suites.FirstOrDefault();
         }
 
-        if (suite is null || !path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (suite is null || !BddFileFormat.IsScenarioFile(path))
         {
             return new RunTargetResult(false, "No suite holds or links this feature file.", null, null, [], null);
         }
@@ -304,7 +304,7 @@ public sealed partial class BddLanguageServer : IDisposable
     // A suite runs by address when its test class uses [BddScenarioTheory]; before it is loaded, the build that comes first tells.
     private static Bruinet.Bdd.Preview.BddPreviewRunState? RunState(BddSuite? suite, string path)
     {
-        if (suite is null || !path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (suite is null || !BddFileFormat.IsScenarioFile(path))
         {
             return null;
         }
@@ -367,7 +367,7 @@ public sealed partial class BddLanguageServer : IDisposable
         List<string> open;
         lock (_gate)
         {
-            open = _documents.Keys.Where(path => path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase)).ToList();
+            open = _documents.Keys.Where(path => BddFileFormat.IsScenarioFile(path)).ToList();
         }
 
         foreach (var path in open)

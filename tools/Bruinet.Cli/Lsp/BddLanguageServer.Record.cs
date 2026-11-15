@@ -116,7 +116,7 @@ public sealed partial class BddLanguageServer
     // Whether Record can work for the file: ffmpeg first, then a suite that runs scenarios by address.
     private static Bruinet.Bdd.Preview.BddPreviewRunState? RecordState(BddServerFile file)
     {
-        if (!BddVideoScript.IsVideoScript(file.Path) && !file.Path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (!BddVideoScript.IsVideoScript(file.Path) && !BddFileFormat.IsScenarioFile(file.Path))
         {
             return null;
         }

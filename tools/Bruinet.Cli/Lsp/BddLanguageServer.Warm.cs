@@ -59,7 +59,7 @@ public sealed partial class BddLanguageServer
     // How the runner of the suite that holds a file starts; null when no built suite does.
     private BddRunnerStart? RunnerStartFor(string path, string? suiteName)
     {
-        if (!path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+        if (!BddFileFormat.IsScenarioFile(path))
         {
             return null;
         }

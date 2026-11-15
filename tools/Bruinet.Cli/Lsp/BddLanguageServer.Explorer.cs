@@ -65,7 +65,7 @@ public sealed partial class BddLanguageServer
             return runs;
         }
 
-        foreach (var path in suite.FeatureFiles.Concat(suite.LinkedFiles).Where(path => path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase)).Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var path in suite.FeatureFiles.Concat(suite.LinkedFiles).Where(path => BddFileFormat.IsScenarioFile(path)).Distinct(StringComparer.OrdinalIgnoreCase))
         {
             IReadOnlyDictionary<string, BddScenarioRun> found;
             lock (results)

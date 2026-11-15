@@ -27,6 +27,11 @@ public static class BddFileFormat
     /// <summary>The search pattern for runnable specs.</summary>
     public const string SpecFilePattern = "*" + SpecExtension;
 
+    /// <summary>Whether a file holds scenarios: a feature file or a runnable spec.</summary>
+    /// <param name="path">A file path or name.</param>
+    public static bool IsScenarioFile(string? path) =>
+        path is not null && (path.EndsWith(FeatureExtension, StringComparison.OrdinalIgnoreCase) || path.EndsWith(SpecExtension, StringComparison.OrdinalIgnoreCase));
+
     /// <summary>The name ending of a step file.</summary>
     public const string StepsExtension = ".steps.md";
 

@@ -250,7 +250,7 @@ public sealed partial class BddLanguageServer
         {
             return (_workspace?.SuitesFor(path) ?? [])
                 .SelectMany(suite => suite.FeatureFiles.Concat(suite.LinkedFiles))
-                .Where(file => file.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
+                .Where(file => BddFileFormat.IsScenarioFile(file))
                 .Select(Path.GetFullPath)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToList();

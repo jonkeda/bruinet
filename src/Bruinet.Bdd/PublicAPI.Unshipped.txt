@@ -1152,6 +1152,7 @@ static Bruinet.Bdd.BddFileFormat.FenceSteps(string! text) -> (string! Text, int 
 static Bruinet.Bdd.BddFileFormat.FindConfig(string! directory) -> string!
 static Bruinet.Bdd.BddFileFormat.HasConfig(string! directory) -> bool
 static Bruinet.Bdd.BddFileFormat.IsConfigFileName(string! fileName) -> bool
+static Bruinet.Bdd.BddFileFormat.IsScenarioFile(string? path) -> bool
 static Bruinet.Bdd.BddFileFormat.NewFileName(string! path) -> string?
 static Bruinet.Bdd.BddFileFormat.NewHeading(string! trimmedLine) -> string?
 static Bruinet.Bdd.BddFileFormat.OldFilePatterns.get -> System.Collections.Generic.IEnumerable<string!>!
