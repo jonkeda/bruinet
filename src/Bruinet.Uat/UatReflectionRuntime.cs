@@ -363,8 +363,12 @@ public sealed class UatReflectionRuntime
         var discovered = _pages.Values
             .SelectMany(page => page.Controls)
             .Where(control => !pageTypes.Contains(control.Property.PropertyType))
-            .SelectMany(control => SelfAndBaseTypes(control.Property.PropertyType));
-        return UatCatalogBuilder.CoreStepTypes.Concat(discovered).Distinct();
+            .SelectMany(control => SelfAndBaseTypes(control.Property.PropertyType))
+            .ToList();
+
+        // Extension verbs ([BddVerbs]) in the assemblies of the controls and the pages: Bruinet's, a control library's, the suite's.
+        var extensions = BddExtensionVerbs.In(discovered.Select(type => type.Assembly).Concat(pageTypes.Select(type => type.Assembly)));
+        return UatCatalogBuilder.CoreStepTypes.Concat(discovered).Concat(extensions).Distinct();
     }
 
     private static IEnumerable<Type> SelfAndBaseTypes(Type type)
@@ -426,8 +430,16 @@ public sealed class UatReflectionRuntime
                UatNameInference.HasKnownSuffix(property.PropertyType.Name) ||
                IsElementObject(property.PropertyType) ||
                property.PropertyType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                   .Any(method => method.IsDefined(typeof(BddStepAttribute), inherit: false));
+                   .Any(method => method.IsDefined(typeof(BddStepAttribute), inherit: false)) ||
+               TakenByAnExtensionVerb(property);
     }
+
+    // A type an extension verb ([BddVerbs]) of its own or its page's assembly takes is a control too (a suite's shelf).
+    private static bool TakenByAnExtensionVerb(PropertyInfo property)
+        => BddExtensionVerbs.In([property.PropertyType.Assembly, .. property.DeclaringType is { } page ? [page.Assembly] : Array.Empty<Assembly>()])
+            .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            .Where(method => method.GetParameters().Length > 0 && method.IsDefined(typeof(BddStepAttribute), inherit: false))
+            .Any(method => BddExtensionVerbs.For(method, property.PropertyType) is not null);
 
     private static bool IsElementObject(Type type)
         => type.GetInterfaces().Any(contract => contract.IsGenericType
@@ -560,6 +572,15 @@ public sealed class UatReflectionRuntime
 
         try
         {
+            if (binding.Extension is { } extension)
+            {
+                var method = BddExtensionVerbs.For(extension, controlResult.Control!.GetType())
+                    ?? throw new MissingMethodException($"{extension.DeclaringType?.Name}.{extension.Name} does not take a {controlResult.Control!.GetType().Name}.");
+                BddInvoker.InvokeDefinition(controlResult.Control!, method, [controlResult.Control, .. arguments]);
+                context.Diagnostics.Add($"{methodName}:{controlResult.ControlName}");
+                return Task.FromResult(FollowPage(context, invocation));
+            }
+
             BddInvoker.InvokeDefinition(controlResult.Control!, methodName, arguments);
             context.Diagnostics.Add($"{methodName}:{controlResult.ControlName}");
             return Task.FromResult(FollowPage(context, invocation));
@@ -722,7 +743,7 @@ public sealed class UatReflectionRuntime
     }
 
     private static bool Declares(Type type, UatStepBinding binding)
-        => type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+        => binding.Extension is { } extension ? BddExtensionVerbs.For(extension, type) is not null : type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
             .Any(method => method.Name == binding.MethodName &&
                            method.GetCustomAttributes<BddStepAttribute>(inherit: false)
                                .Any(attribute => attribute.Keyword == binding.Keyword && attribute.Phrase == binding.Phrase));

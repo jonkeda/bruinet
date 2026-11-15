@@ -26,6 +26,9 @@ internal sealed record UatStepBinding(
     /// <summary>Whether the verb can take the user to another page.</summary>
     public bool Navigates { get; init; }
 
+    /// <summary>For an extension verb: the static method, whose first parameter is the control; null for a control's own method.</summary>
+    public MethodInfo? Extension { get; init; }
+
     /// <summary>How many arguments the step passes: the item, then the value or literal.</summary>
     public int ArgumentCount => (ItemArgumentName is null ? 0 : 1) + (ValueArgumentName is null && Literal is null ? 0 : 1);
 }
@@ -77,7 +80,7 @@ internal static class UatCatalogBuilder
                 commandIdPrefix + binding.CommandSuffix,
                 allowsTable: false,
                 handler: handlerFactory?.Invoke(binding),
-                controlVerb: new BddControlVerb(binding.MethodName, binding.ArgumentCount, binding.NamesControl, binding.Navigates),
+                controlVerb: new BddControlVerb(binding.MethodName, binding.ArgumentCount, binding.NamesControl, binding.Navigates) { Extension = binding.Extension },
                 parameters: [
                     .. binding.ItemArgumentName is { } item
                         ? [new BddPhraseParameter(item, typeof(string), BddParameterSource.Phrase, Optional: false, AllowsNull: false)]
@@ -96,9 +99,16 @@ internal static class UatCatalogBuilder
 
         foreach (var type in stepTypes)
         {
+            // An extension verb class's static methods take the control first; a control's own verbs are instance methods.
+            var extensions = BddExtensionVerbs.IsVerbClass(type);
             foreach (var method in type.GetMethods(
-                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))
+                         (extensions ? BindingFlags.Static : BindingFlags.Instance) | BindingFlags.Public | BindingFlags.DeclaredOnly))
             {
+                if (extensions && method.GetParameters().Length == 0)
+                {
+                    continue;
+                }
+
                 foreach (var attribute in method.GetCustomAttributes<BddStepAttribute>(inherit: false))
                 {
                     // A control verb declares {control} and its command in text; it is never inferred.
@@ -121,7 +131,7 @@ internal static class UatCatalogBuilder
                     var names = BddCommandPattern.ParameterNames(attribute.Phrase);
                     var itemArgument = names.Contains(ItemParameter) ? ItemParameter : null;
                     var valueArgument = ResolveValueArgument(names);
-                    var valueIndex = itemArgument is null ? 0 : 1;
+                    var valueIndex = (itemArgument is null ? 0 : 1) + (extensions ? 1 : 0);
                     bindings.Add(new UatStepBinding(
                         attribute.Keyword,
                         attribute.Phrase,
@@ -134,6 +144,7 @@ internal static class UatCatalogBuilder
                         ItemArgumentName = itemArgument,
                         NamesControl = names.Contains(ControlParameter),
                         Navigates = attribute.Navigates,
+                        Extension = extensions ? method : null,
                     });
                 }
             }

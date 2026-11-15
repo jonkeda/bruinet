@@ -36,6 +36,8 @@ Bruinet.Bdd.BddStepAttribute.Phrase.get -> string!
 Bruinet.Bdd.BddThenAttribute
 Bruinet.Bdd.BddThenAttribute.BddThenAttribute() -> void
 Bruinet.Bdd.BddThenAttribute.BddThenAttribute(string! phrase) -> void
+Bruinet.Bdd.BddVerbsAttribute
+Bruinet.Bdd.BddVerbsAttribute.BddVerbsAttribute() -> void
 Bruinet.Bdd.BddWhenAttribute
 Bruinet.Bdd.BddWhenAttribute.BddWhenAttribute() -> void
 Bruinet.Bdd.BddWhenAttribute.BddWhenAttribute(string! phrase) -> void

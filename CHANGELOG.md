@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Extension verbs (RS3).** A static class marked `[BddVerbs]` declares control verbs on the type its methods' first
+  (`this`) parameter takes, generic ones included (`this TableControl<TScope> table`): a control of that type, or derived
+  from it, takes the verb, and a property of such a type is a control. `TableVerbs` in Bruinet.Html gives every table
+  `{control} has the columns {columns}`, `{control} shows only {values}`, `{control} is empty`, `{control} has rows`
+  and `every row of {control} has {value}`. New built-in phrases: `{control} says {value}`, `{control} is shown`,
+  `I type {value} in {control}` (and the Given `I typed …`), `I empty {control}`, each with its `{user}` twin.
 - **Runnable specs (RS1, RS2's reading).** A Frainet spec (`*.spec.md`) runs as a feature: each example is a scenario
   named and tagged with its rule (`B7.CON.01.R4 …`, `@B7.CON.01.R4`), its `## Background` before every example, and a
   chapter's (`### Chapter: …`) Given and When before each of its examples (`#### R4 …`). The config's `Specs` row names

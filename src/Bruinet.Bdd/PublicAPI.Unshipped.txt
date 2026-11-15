@@ -238,6 +238,8 @@ Bruinet.Bdd.BddControlVerb
 Bruinet.Bdd.BddControlVerb.ArgumentCount.get -> int
 Bruinet.Bdd.BddControlVerb.ArgumentCount.init -> void
 Bruinet.Bdd.BddControlVerb.BddControlVerb(string! MethodName, int ArgumentCount, bool NamesControl, bool Navigates) -> void
+Bruinet.Bdd.BddControlVerb.Extension.get -> System.Reflection.MethodInfo?
+Bruinet.Bdd.BddControlVerb.Extension.init -> void
 Bruinet.Bdd.BddControlVerb.MethodName.get -> string!
 Bruinet.Bdd.BddControlVerb.MethodName.init -> void
 Bruinet.Bdd.BddControlVerb.NamesControl.get -> bool

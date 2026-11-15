@@ -84,9 +84,10 @@ internal static class UatPageScope
         return control.NavigatesTo;
     }
 
-    // The method the runtime would invoke: by name, taking the step's arguments.
+    // The method the runtime would invoke: an extension verb's, when it applies to the control's type; else by name,
+    // taking the step's arguments.
     private static MethodInfo? Method(Type controlType, BddControlVerb verb)
-        => controlType
+        => verb.Extension is { } extension ? BddExtensionVerbs.For(extension, controlType) : controlType
             .GetMethods(BindingFlags.Instance | BindingFlags.Public)
             .FirstOrDefault(method => method.Name == verb.MethodName &&
                                       method.GetParameters().Count(parameter => !parameter.IsOptional) <= verb.ArgumentCount &&
@@ -94,6 +95,11 @@ internal static class UatPageScope
 
     private static bool Declares(Type controlType, BddCommandPattern pattern)
     {
+        if (pattern.ControlVerb?.Extension is { } extension)
+        {
+            return BddExtensionVerbs.For(extension, controlType) is not null;
+        }
+
         for (Type? type = controlType; type is not null && type != typeof(object); type = type.BaseType)
         {
             if (type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)

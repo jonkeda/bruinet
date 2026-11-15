@@ -22,6 +22,8 @@ public interface IEditableTextControlObject<TScope> : ITextControlObject<TScope>
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
     [BddWhen("I clear {control}", CommandId = "Control.Clear")]
+    [BddWhen("I empty {control}", CommandId = "Control.Clear")]
+    [BddWhen("{user} empties {control}", CommandId = "Control.Clear")]
     [BddWhen("{user} clears {control}", CommandId = "Control.Clear")]
     TScope Clear(int? timeoutMs = null);
 
@@ -31,6 +33,10 @@ public interface IEditableTextControlObject<TScope> : ITextControlObject<TScope>
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
     [BddWhen("I set {control} to {value}", CommandId = "Control.SetText")]
+    [BddWhen("I type {value} in {control}", CommandId = "Control.SetText")]
+    [BddGiven("I typed {value} in {control}", CommandId = "Control.SetText")]
+    [BddWhen("{user} types {value} in {control}", CommandId = "Control.SetText")]
+    [BddGiven("{user} typed {value} in {control}", CommandId = "Control.SetText")]
     [BddWhen("{user} sets {control} to {value}", CommandId = "Control.SetText")]
     TScope SetText(string? text, int? timeoutMs = null);
 

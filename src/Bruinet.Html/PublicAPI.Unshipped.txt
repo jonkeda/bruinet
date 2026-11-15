@@ -94,6 +94,7 @@ Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitHeaderText(int column,
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitRowCount(int? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitRowTexts(int row, System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Collection.TableControl<TScope>.WaitRowTextsHasItem(int row, string! item, int? timeoutMs = null) -> bool
+Bruinet.Html.Controls.Collection.TableVerbs
 Bruinet.Html.Controls.Container.FrameScope<TParent>
 Bruinet.Html.Controls.Container.FrameScope<TParent>.FrameScope(Bruinet.Html.Interfaces.IHtmlScope<TParent>! parent, Bruinet.Core.Locators.Locator! frameLocator) -> void
 Bruinet.Html.Controls.Container.ScrollContainerControl<TParent, TScope>
@@ -526,6 +527,11 @@ override Bruinet.Html.Controls.Text.TextInputControl<TScope>.GetTextCore(Bruinet
 override Bruinet.Html.Controls.ViewBase<TScope>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.Html.Interfaces.IHtmlTestContext!
 override Bruinet.Html.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
+static Bruinet.Html.Controls.Collection.TableVerbs.EveryRowHas<TScope>(this Bruinet.Html.Controls.Collection.TableControl<TScope>! table, string! value) -> void
+static Bruinet.Html.Controls.Collection.TableVerbs.HasColumns<TScope>(this Bruinet.Html.Controls.Collection.TableControl<TScope>! table, string![]! columns) -> void
+static Bruinet.Html.Controls.Collection.TableVerbs.HasRows<TScope>(this Bruinet.Html.Controls.Collection.TableControl<TScope>! table) -> void
+static Bruinet.Html.Controls.Collection.TableVerbs.IsEmpty<TScope>(this Bruinet.Html.Controls.Collection.TableControl<TScope>! table) -> void
+static Bruinet.Html.Controls.Collection.TableVerbs.ShowsOnly<TScope>(this Bruinet.Html.Controls.Collection.TableControl<TScope>! table, string![]! values) -> void
 static Bruinet.Html.Controls.ViewBase<TScope>.ResolveLocator(string! selectorOrId) -> Bruinet.Core.Locators.Locator!
 static Bruinet.Html.Interfaces.HtmlElementExtensions.FindElement(this Bruinet.Html.Interfaces.IHtmlElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement!
 static Bruinet.Html.Interfaces.PageProbe.Navigating.get -> Bruinet.Html.Interfaces.PageProbe!
