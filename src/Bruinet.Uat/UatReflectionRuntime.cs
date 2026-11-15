@@ -187,7 +187,7 @@ public sealed class UatReflectionRuntime
             catalog.Register(BddEffectiveStepKeyword.When, phrase, "Builtin.Page.Open", handler: OpenPageAsync, namesPage: true);
         }
 
-        foreach (var phrase in new[] { "I should be on the {page} page", "{user} should be on the {page} page" })
+        foreach (var phrase in new[] { "I should be on the {page} page", "{user} should be on the {page} page", "the {page} page is open" })
         {
             catalog.Register(BddEffectiveStepKeyword.Then, phrase, "Builtin.Page.AssertOpen", handler: AssertPageAsync, namesPage: true);
         }

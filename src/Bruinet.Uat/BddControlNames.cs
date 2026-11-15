@@ -35,7 +35,8 @@ internal static partial class BddControlNames
     public static IReadOnlyList<Named> Of(Type pageType, IEnumerable<PropertyInfo> controls)
     {
         List<Named> names = [.. Declared(pageType, owner: null, includeProperties: false)];
-        foreach (var control in controls)
+        // A page that exposes itself (Self) is not a component of itself.
+        foreach (var control in controls.Where(control => control.PropertyType != pageType))
         {
             names.AddRange(Declared(control.PropertyType, control, includeProperties: true));
         }

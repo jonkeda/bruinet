@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Spec phrases without "should" (Frainet's vague word): `{control} includes {value}` (contains) and
+  `Then the {page} page is open`. A page's `Self` is not read for control names.
 - **Control names (RS4).** `[BddControl("the filter above {column}")]` on a page's or a component's method names a
   control that has no fixed name; its placeholders are the method's parameters. A step's `{control}` is first a control
   the page exposes by name, then one of these, so every verb of the returned control's type works on it

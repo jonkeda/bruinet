@@ -23,6 +23,7 @@ public static class UatGenericCatalog
         catalog.Register(BddEffectiveStepKeyword.When, "{user} opens the {page} page", "Generic.Page.Open", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "I should be on the {page} page", "Generic.Page.AssertOpen", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "{user} should be on the {page} page", "Generic.Page.AssertOpen", namesPage: true);
+        catalog.Register(BddEffectiveStepKeyword.Then, "the {page} page is open", "Generic.Page.AssertOpen", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "I should see {text}", "Generic.Page.AssertTextVisible");
         catalog.Register(BddEffectiveStepKeyword.Then, "{user} should see {text}", "Generic.Page.AssertTextVisible");
         catalog.Register(BddEffectiveStepKeyword.Then, UatReflectionRuntime.PausePhrase, "Generic.Pause", allowsTable: false);

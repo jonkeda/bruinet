@@ -64,5 +64,6 @@ public interface ITextControlObject<TScope> : IControlObject<TScope>
     /// </summary>
     /// <returns>The containing scope for fluent chaining.</returns>
     [BddThen("{control} should contain {value}", CommandId = "Control.AssertTextContains")]
+    [BddThen("{control} includes {value}", CommandId = "Control.AssertTextContains")]
     TScope AssertTextContains(string? expected, string? message = null, int? timeoutMs = null);
 }
