@@ -17,7 +17,7 @@ running app:
 
 | File | Job |
 | --- | --- |
-| `uat.config.md` | Where the app is, which assemblies hold the pages and controls, how to report. One per test project. |
+| `bdd.config.md` | Where the app is, which assemblies hold the pages and controls, how to report. One per test project. |
 | `Features/*.feature.md` | The executable scenarios themselves, in `Given / When / Then`. |
 | `Runtime/*.cs` | The fixture, the xUnit collection and the scenario test class. Written once. |
 
@@ -145,7 +145,7 @@ With `AllowNameInference` on, `AddButton` → **Add**, `Title` → **Title**, `T
 component type such as `TodoStatus` — pin the name:
 
 ```csharp
-[UatName("Status")]
+[BddControl("Status")]
 public TodoStatus<TodoEditPage> Status => new(this, "TodoEdit_Status");
 ```
 
@@ -196,7 +196,7 @@ produces `Then Todos should have todo "Write the report"`.
 
 ## 5. The config that points at the Todo app
 
-[`uat.config.md`](tests/Bruinet.Samples.Todo.Uat/uat.config.md):
+[`bdd.config.md`](tests/Bruinet.Samples.Todo.Uat/bdd.config.md):
 
 ```markdown
 ## Runtime
@@ -220,7 +220,7 @@ produces `Then Todos should have todo "Write the report"`.
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 ```
 
@@ -333,8 +333,8 @@ See `tests/Bruinet.Samples.Todo.Mixed.Uat/Features/TOD.07-mixed.feature.md` and
 
 - Journey checklist: [todo-user-journeys.md](tests/Bruinet.Samples.Todo.Uat/todo-user-journeys.md)
 - Pyramid backbone: [journeys.md](journeys.md)
-- Config and file shape: [docs/guides/uat-template-guide.md](../../docs/guides/uat-template-guide.md)
-- Phrase catalog and binding: [docs/guides/uat-step-definitions.md](../../docs/guides/uat-step-definitions.md)
+- Config and file shape: [docs/guides/bdd-suite-guide.md](../../docs/guides/bdd-suite-guide.md)
+- Phrase catalog and binding: [docs/guides/step-definitions.md](../../docs/guides/step-definitions.md)
 - Why the vocabulary is attribute-declared: [AD-011](../../.docs/decisions/ad-011-uat-vocabulary-is-attribute-declared.md)
 - Several apps in one scenario: [AD-015](../../.docs/decisions/ad-015-a-steps-subject-picks-its-app.md)
 - Todo page objects: [tests/Bruinet.Samples.Todo.UITests/Pages](tests/Bruinet.Samples.Todo.UITests/Pages)

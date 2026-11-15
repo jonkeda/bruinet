@@ -189,6 +189,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- Docs: `bdd-grammar.md` (was `uat-grammar.md`), `step-definitions.md`, `bdd-suite-guide.md` (was
+  `uat-template-guide.md`), `quick-start-bdd.md`; the guides name `bdd.config.md`, `BddScenarioTestBase`,
+  `[BddScenarioTheory]`, `[BddPage]`, `[BddControl]` and `[BddNavigatesTo]` (AD-040).
 - A suite's config is `bdd.config.md`, whatever its head (`uat.config.md` still read); the scenario test base is
   `BddScenarioTestBase` with `[BddScenarioTheory]` and `BddRuntimeValidationOptions`; scenario results go to
   `suites/<suite>/bdd`; the Discovery key is `RequireExplicitBddAttributes`. The old names are obsolete, one release

@@ -62,5 +62,5 @@ When adding a new control capability:
 3. Add unit tests for shared behavior.
 4. Add UI tests only if live driver behavior needs coverage.
 5. Add a `[BddWhen]` or `[BddThen]` phrase if the capability belongs in the UAT vocabulary, and
-   list it in [UAT Phrases And Flows](../guides/uat-step-definitions.md).
+   list it in [UAT Phrases And Flows](../guides/step-definitions.md).
 6. Update [Control Object Index](index.md).

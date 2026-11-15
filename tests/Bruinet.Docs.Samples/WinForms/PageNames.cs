@@ -1,4 +1,4 @@
-// docs/guides/uat-step-definitions.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
+// docs/guides/step-definitions.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
 using Bruinet.Bdd;
 using Bruinet.Core.Composition;
 using Bruinet.Uat;

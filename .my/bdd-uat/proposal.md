@@ -1,6 +1,6 @@
 # BDD and UAT: one meaning each
 
-Status: **option A accepted 2026-11-15**, not built. Written before runnable specs (`.my/runnablespecs/design.md`),
+Status: **option A accepted 2026-11-15**; BU1–BU6 built 2026-11-15 (Bouw7 moved in BU5); BU7, BU8 open. Written before runnable specs (`.my/runnablespecs/design.md`),
 which starts on the new names.
 
 ## Why now
@@ -86,7 +86,7 @@ Everything a suite writer reads gets its BDD name; the `Bruinet.Uat` project and
 | --- | --- | --- |
 | A1 | **Codes.** Every code becomes `BDD…`, same letter and number: `UAT004` → `BDD004`, `UATB001` → `BDDB001`, `UATD001` → `BDDD001`. One series, whatever layer raises it. The docs' code tables say "was `UATB001`" for a release. | Only a suite that filters or suppresses a code by text (none known). |
 | A2 | **Attributes** move to `Bruinet.Bdd.Abstractions`: `[UatName]` on a page → `[BddPage("Login")]`; on a control property → `[BddControl("Role")]` (a control name with no placeholder, the same attribute runnable specs adds); `[UatNavigatesTo]` → `[BddNavigatesTo]`. `[UatAction]` is removed. The old ones stay one release, `[Obsolete]`, still read. | Compiles with warnings; `api-upgrade` rows. |
-| A3 | **"Spec" freed.** `UatSpecCommandCatalog` → `UatBuiltInCatalog` (command ids `BuiltIn.*`, as the projections already call them; no suite uses it, so it keeps the layer's name); `UatSpecFormatTestBase` → `BddFeatureMetadataTestBase` (a suite writer's base, so a Bdd name; Exact.Construction uses it 26 times). | The metadata base: warnings, an `[Obsolete]` subclass, `api-upgrade` rows. Ids in saved Presenter state, if any (check). |
+| A3 | **"Spec" freed.** `UatSpecCommandCatalog` → `UatGenericCatalog` (built under that name, after its `IsGeneric`; command ids `Generic.*`, as the projections already call them; no suite uses it, so it keeps the layer's name); `UatSpecFormatTestBase` → `BddFeatureFormatTestBase` (built under that name) (a suite writer's base, so a Bdd name; Exact.Construction uses it 26 times). | The metadata base: warnings, an `[Obsolete]` subclass, `api-upgrade` rows. Ids in saved Presenter state, if any (check). |
 | A4 | **Docs.** `uat-grammar.md` → `bdd-grammar.md` ("Feature and spec grammar"); `uat-step-definitions.md` → `step-definitions.md`; `uat-template-guide.md` → `ui-suite-guide.md`; `quick-start-uat.md` → `quick-start-bdd.md`; AD-011's title. "UAT" stays where the text means the test level. | No; links repointed. |
 | A5 | **Config.** One name, `bdd.config.md`; the `Head` row says UI or service. `uat.config.md` is still read, with a warning naming the new name. Keys: `RequireExplicitBddAttributes`, the old key still read. | No, until the old name is dropped. |
 | A6 | **Test base.** `BddScenarioTestBase<TFixture>`, `[BddScenarioTheory]` and `BddRuntimeValidationOptions` in `Bruinet.Uat`; the `Uat` names stay as subclasses, `[Obsolete]`, one release. The refusal of UI steps for a service suite stays where it is. | Warnings; `api-upgrade` rows. |

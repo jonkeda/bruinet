@@ -169,7 +169,7 @@ see one app tested at five tiers. A first test per stack, compiled with the buil
 [web](docs/getting-started/quick-start-html.md), [MAUI](docs/getting-started/quick-start-maui.md),
 [WPF](docs/getting-started/quick-start-wpf.md), [WinForms](docs/getting-started/quick-start-winforms.md),
 [native Android](docs/getting-started/quick-start-native-android.md), [Stride](docs/getting-started/quick-start-stride.md)
-and [scenarios in Markdown](docs/getting-started/quick-start-uat.md).
+and [scenarios in Markdown](docs/getting-started/quick-start-bdd.md).
 
 ## Samples
 
@@ -182,7 +182,7 @@ and [scenarios in Markdown](docs/getting-started/quick-start-uat.md).
 
 - [Documentation index](docs/README.md): quick start, framework overview, guides by topic, platform and run guides.
 - Guides for the heads: [MauiHeadless](docs/guides/maui-headless.md), [bUnit](docs/guides/bunit.md), [features below the UI](docs/guides/features-below-the-ui.md).
-- Guides for writing: [test writing](docs/guides/test-writing.md), [UAT scenarios](docs/guides/uat-template-guide.md), [step definitions](docs/guides/uat-step-definitions.md), [control objects](docs/controls/index.md), [coming from Reqnroll](docs/guides/coming-from-reqnroll.md).
+- Guides for writing: [test writing](docs/guides/test-writing.md), [UAT scenarios](docs/guides/bdd-suite-guide.md), [step definitions](docs/guides/step-definitions.md), [control objects](docs/controls/index.md), [coming from Reqnroll](docs/guides/coming-from-reqnroll.md).
 - Architecture: [overview](docs/architecture/overview.md), [structure](docs/architecture/structure.md), [testing](docs/architecture/testing.md), and [the decisions and invariants](.docs/README.md).
 - Build and run: [build and test](docs/run/build-and-test.md), the [command line](docs/run/cli.md), [troubleshooting](docs/guides/troubleshooting.md).
 

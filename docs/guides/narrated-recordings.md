@@ -14,7 +14,7 @@ Record from Visual Studio, VS Code, Presenter, an AI agent (MCP) or `dotnet test
 - **A voice**: a Windows voice (Settings, Time and language, Speech), or a cloud voice
   ([Cloud Voice](#cloud-voice)). Without one, lines are timed from their words and shown as
   captions only.
-- A suite whose test class uses `[UatScenarioTheory]`, so scenarios run by their address.
+- A suite whose test class uses `[BddScenarioTheory]`, so scenarios run by their address.
 
 ## A Video Script
 
@@ -126,7 +126,7 @@ the settings decide at record time, and the check says nothing.
 
 ### Pronunciations
 
-A suite lists how its names are said once, in `pronunciations.md` beside `uat.config.md`, so no script is cluttered with tags:
+A suite lists how its names are said once, in `pronunciations.md` beside `bdd.config.md`, so no script is cluttered with tags:
 
 ```markdown
 | Term | Say | IPA |
@@ -222,7 +222,7 @@ The first of these that has an endpoint and a key is used:
 
 1. `BRUINET_VOICE_KEY`, `BRUINET_VOICE_ENDPOINT` (and `BRUINET_VOICE_DEPLOYMENT`,
    `BRUINET_VOICE_API_VERSION`): for a build agent, from its secret store; they override the file.
-2. `voice.secrets.json` beside the suite's `uat.config.md`, or in a folder above it up to the
+2. `voice.secrets.json` beside the suite's `bdd.config.md`, or in a folder above it up to the
    repository's root.
 3. `%USERPROFILE%\.bruinet\voice.secrets.json`: one key for every repository, outside them all. The
    place to start with. (A repository other than Bruinet ignores the file only if its own

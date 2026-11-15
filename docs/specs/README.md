@@ -14,4 +14,4 @@ Active specs are added here with a status.
 
 | Spec | Status |
 | --- | --- |
-| [UAT Scenario Grammar](uat-grammar.md) | Implemented |
+| [BDD Grammar](bdd-grammar.md) | Implemented |

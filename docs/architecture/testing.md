@@ -33,9 +33,9 @@ Run the platform-specific guide before running live UI tests.
 
 UAT test projects combine:
 
-- `uat.config.md`;
+- `bdd.config.md`;
 - one or more `.feature.md` scenario files;
-- a fixture, an xUnit collection and a `UatScenarioTestBase<TFixture>` class.
+- a fixture, an xUnit collection and a `BddScenarioTestBase<TFixture>` class.
 
 A scenario step binds to a phrase, and the built-in phrases are `[BddWhen]` / `[BddThen]` attributes on the
 `Bruinet.Core` control interfaces, discovered by the engine rather than listed anywhere
@@ -46,7 +46,7 @@ A UAT project drives a real app, so it costs what a UI run costs: build the app 
 one UI or UAT process at a time.
 
 An app with a MAUI and a web head has one set of scenario files; each head's UAT project runs the
-scenarios tagged for it (`Head` in `uat.config.md`, `@maui` / `@web` tags). A scenario can also
+scenarios tagged for it (`Head` in `bdd.config.md`, `@maui` / `@web` tags). A scenario can also
 use several apps, such as two devices on one backend, and a `mixed` suite runs apps of several
 heads in one scenario
 ([AD-014](../../.docs/decisions/ad-014-one-scenario-file-serves-every-head.md)). A step names the
@@ -67,8 +67,8 @@ read one `apps.md`. The Todo sample's `Bruinet.Samples.Todo.Mixed.UITests` drive
 apps side by side (`MauiDriverOptions.Placement`: `left-half`, `right-half`) and a browser on one
 fake backend; its Android test runs only with `BRUINET_ANDROID=1`.
 
-See [UAT Template Guide](../guides/uat-template-guide.md),
-[UAT Phrases And Flows](../guides/uat-step-definitions.md), and the worked example in
+See [BDD Suite Guide](../guides/bdd-suite-guide.md),
+[UAT Phrases And Flows](../guides/step-definitions.md), and the worked example in
 [One Todo UAT, end to end](../../samples/Todo/uat-walkthrough.md).
 
 ## Artifact Layout

@@ -88,17 +88,17 @@ public sealed class StoredDataPhrases(ITodoArrangement fixture) : BddStepDefinit
 | --- | --- | --- |
 | `[Binding]` | `[BddStepDefinitions]`, or derive from `BddStepDefinitionsBase` | found by the fixture's composition scan; constructor injection from it |
 | `[Given]`, `[When]`, `[Then]` | `[BddGiven]`, `[BddWhen]`, `[BddThen]` | a method named `Given…`, `When…` or `Then…` is a step without the attribute |
-| `{int}`, `{string}` in a step | `{count}`, `{title}`: any name | the parameter of that name gives the type ([Arguments](uat-step-definitions.md#arguments)) |
+| `{int}`, `{string}` in a step | `{count}`, `{title}`: any name | the parameter of that name gives the type ([Arguments](step-definitions.md#arguments)) |
 | `[StepArgumentTransformation]` | `[BddArgumentType]` with `static Parse(string)`, or an `IBddArgumentConverter<T>` | |
 | `Table`, `CreateInstance`, `CreateSet` | `BddTable`, or a record or list parameter the table binds to | |
-| `CompareToSet`, `CompareToInstance` | `table.AssertExactly`, `table.AssertContains`, `table.AssertDoesNotContain`, `BddSets.AssertSet` | one diff: missing, extra, and the closest item's different cells ([Tables](uat-step-definitions.md#tables)) |
+| `CompareToSet`, `CompareToInstance` | `table.AssertExactly`, `table.AssertContains`, `table.AssertDoesNotContain`, `BddSets.AssertSet` | one diff: missing, extra, and the closest item's different cells ([Tables](step-definitions.md#tables)) |
 | `[BeforeFeature]` | `[BddBeforeFeature]` | static, once per file per run |
-| `[BeforeScenario("tag")]`, `[AfterScenario("tag")]` | `[BddBeforeScenario("tag")]`, `[BddAfterScenario("tag")]` | ([Hooks](uat-step-definitions.md#hooks)) |
+| `[BeforeScenario("tag")]`, `[AfterScenario("tag")]` | `[BddBeforeScenario("tag")]`, `[BddAfterScenario("tag")]` | ([Hooks](step-definitions.md#hooks)) |
 | `[AfterStep]` | `[BddAfterStep]` | may take the step's `BddStepResult` |
 | `Scenario Outline` with several `Examples`, each named and tagged | `## Scenario Outline:` with one or more `### Examples: <name>`, a tag line above each | row *n* runs as `<name> [n]`, numbered across the blocks |
 | a doc string | a doc string | |
 | tags as test categories | tags, and a `BddScenario` trait per scenario | `dotnet test --filter "BddScenario=Features/TOD.02-create-a-todo.feature.md#TOD.02.2-…"` |
-| `@ignore` | skip rules: a tag and the environment variable that turns it on | a skipped scenario says why ([Skip Rules](uat-template-guide.md#skip-rules)) |
+| `@ignore` | skip rules: a tag and the environment variable that turns it on | a skipped scenario says why ([Skip Rules](bdd-suite-guide.md#skip-rules)) |
 
 ## What Works Differently
 
@@ -120,7 +120,7 @@ public sealed class StoredDataPhrases(ITodoArrangement fixture) : BddStepDefinit
   below the UI; `@maui` and `@web` pick a head
   ([AD-014](../../.docs/decisions/ad-014-one-scenario-file-serves-every-head.md)).
 - **xUnit only.** A suite is an xUnit project; scenarios are theory cases of a
-  `UatScenarioTestBase` test class ([UAT Template Guide](uat-template-guide.md#the-test-project)).
+  `BddScenarioTestBase` test class ([BDD Suite Guide](bdd-suite-guide.md#the-test-project)).
 
 ## What Is Not There, And Why
 
@@ -136,6 +136,6 @@ public sealed class StoredDataPhrases(ITodoArrangement fixture) : BddStepDefinit
 
 ## Where To Go Next
 
-- [UAT Template Guide](uat-template-guide.md): a suite's project, config and file shape.
-- [UAT Step Definitions And Flows](uat-step-definitions.md): steps, arguments, tables, hooks.
+- [BDD Suite Guide](bdd-suite-guide.md): a suite's project, config and file shape.
+- [Step Definitions And Flows](step-definitions.md): steps, arguments, tables, hooks.
 - [The Todo sample](../../samples/Todo/README.md): one app tested at five tiers, with these features.

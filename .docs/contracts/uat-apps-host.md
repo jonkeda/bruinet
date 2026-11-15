@@ -21,7 +21,7 @@ types; only UAT has subjects and a current app.
 
 - **One table.** Apps are the rows of an `Apps` table (`Name`, `User`, optional `Head`, any other
   columns as values). A UAT suite and the UI tests of the same apps read one file (`AppsFile` in
-  `uat.config.md`); an inline table also works. Two app names that differ only in case are an
+  `bdd.config.md`); an inline table also works. Two app names that differ only in case are an
   error.
 - **Found by name or user.** `Get("Daan")` finds the app called `Daan` or the one app of user
   `Daan`. A miss names every choice. `Get<TApp>` fails naming the app's head when the app is of

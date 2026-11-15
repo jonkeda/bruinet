@@ -9,7 +9,7 @@ the app showed or sent. This page says where each goes and what it can hold.
 | --- | --- | --- |
 | SQL recordings | The suite's recordings folder. Every command's text and every row it read; secret-named parameters are `***` ([SQL Replay](sql-replay.md#what-a-recording-holds)). | Yes |
 | HTTP recordings | The suite's recordings folder. Every call and answer; named headers, fields and query parameters are `***` ([HTTP Replay](http-replay.md#secrets)). | Yes |
-| Step traces | `TestResults/…/step-traces/`. Each step's text and, after a failure, what every control showed; password fields are `***` ([UAT reporting](uat-template-guide.md)). | No |
+| Step traces | `TestResults/…/step-traces/`. Each step's text and, after a failure, what every control showed; password fields are `***` ([UAT reporting](bdd-suite-guide.md)). | No |
 | Call logs and results | `TestResults/…`. Locators, page and control names, messages. | No |
 | Screenshots and videos | `TestResults/…/screenshots`, the recordings folder for narrated videos. Whatever was on the screen. | No |
 | Scraper snapshots | The scraped project's `Recordings` folder. All text on a captured page, unless the project masks it ([Scraper](scraper.md)). | Yes, for your own app's pages |

@@ -49,7 +49,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 
 - `Bruinet.*.Tests` for unit and integration-style checks;
 - `Bruinet.*.UITests` for live UI automation: the UI tests, the page objects, and the platform's
-  UAT suite (`uat.config.md`, `Features/`, and `Uat/` with its fixture and scenario test class),
+  UAT suite (`bdd.config.md`, `Features/`, and `Uat/` with its fixture and scenario test class),
   which drives the same page objects. A UAT run is the filter `Category=UAT`.
 
 ## Samples

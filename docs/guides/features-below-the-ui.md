@@ -27,11 +27,11 @@ thing with a step the service head declares (`I sync`).
 In the Todo sample, `Bruinet.Samples.Todo.IntegrationTests` is the service suite:
 
 - `bdd.config.md`, with `Head | service`, `Fixture | TodoServiceFixture` and a `## Using` table;
-  the tools read it as they read a `uat.config.md`.
+  the tools read it as they read a `bdd.config.md`.
 - The feature files, linked from `Bruinet.Samples.Todo.Uat/Features/`.
 - `TodoServiceFixture`, which starts a new headless host per scenario (a database from the file's
   `TestData`, a WireMock backend, online), so no scenario sees another's data.
-- `TodoServiceScenarioTests : UatScenarioTestBase<TodoServiceFixture>`, with the traits
+- `TodoServiceScenarioTests : BddScenarioTestBase<TodoServiceFixture>`, with the traits
   `Pyramid = Integration` and `Category = BDD`.
 
 Only scenarios tagged `@service` are listed; an untagged scenario never runs there.
@@ -39,7 +39,7 @@ Only scenarios tagged `@service` are listed; an untagged scenario never runs the
 ## Step Definitions
 
 A service step definition is a step-definition class like any other
-([UAT Step Definitions And Flows](uat-step-definitions.md#step-definition-classes)), resolved from
+([Step Definitions And Flows](step-definitions.md#step-definition-classes)), resolved from
 the scenario's scope. Use the words the UI heads use for the same action:
 
 <!-- sample: tests/Bruinet.Docs.Samples/Guides/FeaturesBelowTheUi.cs#steps -->

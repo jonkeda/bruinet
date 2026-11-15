@@ -77,7 +77,7 @@ public void EveryTestSet_FollowsTheRules()
 
 The same engine from the command line, for people and for models editing test data. It loads
 the app's test-support assembly at run time, found through a `TestData` row in the UAT
-project's `uat.config.md`:
+project's `bdd.config.md`:
 
 ```markdown
 | Kind | Assembly |
@@ -122,7 +122,7 @@ project's): rebuild, or it checks the old types.
 | `DATA004` | Not valid JSON |
 | `DATA010` / `DATA011` | A rule failed / a duplicate id |
 | `DATA020` | A `TestData` reference names no test set |
-| `UAT0xx`, `UATB0xx`, `UATA0xx`, `UATC0xx` | A scenario file's parse, bind, argument and callable-phrase errors ([Arguments](uat-step-definitions.md#arguments), [Callable Phrases](uat-step-definitions.md#callable-phrases)). `validate` also checks each `*.steps.md` under `Features/`, and reports a broken callable as a warning at its heading |
+| `UAT0xx`, `UATB0xx`, `UATA0xx`, `UATC0xx` | A scenario file's parse, bind, argument and callable-phrase errors ([Arguments](step-definitions.md#arguments), [Callable Phrases](step-definitions.md#callable-phrases)). `validate` also checks each `*.steps.md` under `Features/`, and reports a broken callable as a warning at its heading |
 
 ## In UAT
 
@@ -135,7 +135,7 @@ A scenario file names its test set; the fixture loads it:
 | TestData | one-todo |
 ```
 
-`DefaultTestData` in `uat.config.md`'s `Runtime` table covers files that name none. The test
+`DefaultTestData` in `bdd.config.md`'s `Runtime` table covers files that name none. The test
 class loads it in `BeforeFile`, before the file's first scenario:
 
 <!-- sample: tests/Bruinet.Docs.Samples/Uat/TestData.cs#before-file -->
@@ -150,7 +150,7 @@ In the Todo sample, `UseTestSet` seeds a fresh database, resets the fake backend
 server half and restarts the app with the set's now - only when the set changes.
 
 Steps then add to the set and check what the app did, through tables bound to the real types
-(see [Step Tables](uat-template-guide.md#step-tables)):
+(see [Step Tables](bdd-suite-guide.md#step-tables)):
 
 ```gherkin
 Given the server also has todos

@@ -110,7 +110,7 @@ public sealed class TodoEditPage(IMauiTestContext context) : PageObjectBase<Todo
 
 public sealed class TodoDetailPage(IMauiTestContext context) : PageObjectBase<TodoDetailPage>(context);
 
-// docs/guides/uat-step-definitions.md quotes this page's regions: change them here, then run
+// docs/guides/step-definitions.md quotes this page's regions: change them here, then run
 // tools/Scripts/update-doc-samples.ps1.
 public sealed class TodoListPage(IMauiTestContext context) : PageObjectBase<TodoListPage>(context)
 {

@@ -274,7 +274,7 @@ journey (`Features/TOD.02-create-a-todo.feature.md`, `TOD.04-...`, `TOD.05-...`)
 per subtask, named and tagged with its id (`@TOD.02.3`).
 
 Each file names its starting data in `TestData` metadata (`one-todo`, from `TestSupport/TestData/`;
-`DefaultTestData` in `uat.config.md` is the fallback), and steps such as `the database should have todos` check what the app
+`DefaultTestData` in `bdd.config.md` is the fallback), and steps such as `the database should have todos` check what the app
 stored. Every scenario is its own test case. Today that is TOD.02 complete (02.1, 02.2, 02.3,
 02.5) plus TOD.04.3 and TOD.05.1. The checklist marks the rest honestly: `[!]` where
 another tier already proves it (rule tables, sync, persistence), `[-]` where UAT cannot

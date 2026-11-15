@@ -69,7 +69,7 @@ Each scenario heading has four buttons, and the title the file's **Run**, **Run 
 | **⏭ Step** | Step through: the scenario in the suite's runner, paused before each step. | to stop at a step (see below) |
 
 Every way writes the same result, marked with how it ran, and the preview shows it. Run as test and
-Debug need `[UatScenarioTheory]` on the suite's test class, which gives each case its address; with
+Debug need `[BddScenarioTheory]` on the suite's test class, which gives each case its address; with
 `[Theory]` the buttons are disabled and say why. Test Explorer runs the same cases either way.
 
 The suite's runner is kept ready: it starts, from a copy of the build output, when you open one of
@@ -166,7 +166,7 @@ the **Bruinet BDD** pane of the Output window.
 
 ## In The Editor
 
-Feature files, step files and the suite configs (`uat.config.md`, `bdd.config.md`) open in the
+Feature files, step files and the suite configs (`bdd.config.md`, `bdd.config.md`) open in the
 Markdown editor with a language server of their own, the same `bruinet lsp`:
 
 - **Diagnostics.** The gate's problems show as squiggles and in the Error List, word for word as
@@ -213,7 +213,7 @@ Markdown editor with a language server of their own, the same `bruinet lsp`:
 
 ## Suite Configs
 
-`uat.config.md` and `bdd.config.md` are checked as you type, with diagnostics `UATG001`-`UATG009`:
+`bdd.config.md` and `bdd.config.md` are checked as you type, with diagnostics `UATG001`-`UATG009`:
 - an unknown section, field or assembly kind;
 - a Runtime table without a Fixture;
 - a head, boolean or test set that is not one;
@@ -249,7 +249,7 @@ Above a step definition, a page phrase or a page object's control, CodeLens says
 steps use it: "used in 12 BDD steps · 5 scenarios". Click it for the list: file, line, step and
 scenario. It counts every suite of the solution, linked files included. A control counts the
 control verbs on its page (`When I tap Sync` on the Todo List page for `TodoListPage.Sync`). A
-solution without a `uat.config.md` or `bdd.config.md` never starts the server for it. The counts
+solution without a `bdd.config.md` or `bdd.config.md` never starts the server for it. The counts
 come from the last build: build to see new steps.
 
 ## Copilot And Other Agents
@@ -266,7 +266,7 @@ VS Code) and any other MCP client:
   file, a suite or every suite, the failed ones unless `status: all`, each with its heading's line; a suite that cannot
   load is named under `notLoaded`, and the others still answer;
 - `list_states` gives the states the suite's app can be put in (`[BddState]`, see
-  [states](uat-step-definitions.md#states)); `set_state` puts it in one on the suite's runner and leaves it paused there,
+  [states](step-definitions.md#states)); `set_state` puts it in one on the suite's runner and leaves it paused there,
   for `step_state` and `step_screenshot`;
 - `step_start`, `step_move` and `step_screenshot` are the preview's Step through for an agent: each answers
   where the run paused (file, line, step, depth, page, arguments), whether the step just run failed, or how it

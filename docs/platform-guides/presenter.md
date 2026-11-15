@@ -33,7 +33,7 @@ Workspace mode with "Not built yet" and the Diagnostics tab is the expected firs
 
 ## The Workspace
 
-A workspace is a folder with `uat.config.md` and `.feature.md` scenario files. It is anchored on a
+A workspace is a folder with `bdd.config.md` and `.feature.md` scenario files. It is anchored on a
 **UAT project and a fixture** (AD-018):
 
 ```markdown
@@ -121,7 +121,7 @@ own catalogs, loaded through `Bruinet.Bdd.Workspace` from a shadow copy of its b
 Diagnostics tab lists the gate's diagnostics, with severity and code. A suite that is not built yet
 is only parsed, and Diagnostics says to build it. A file under an `ExpectedFailures` folder fails
 on purpose: it is reported as "expected failure" and does not make the workspace need attention.
-The config can be `uat.config.md` or, for a service suite, `bdd.config.md`.
+The config can be `bdd.config.md` or, for a service suite, `bdd.config.md`.
 
 Pick in a tree, step in a list. The **Scenarios** tree starts at the workspace folder and shows only
 Markdown: folders with Markdown in them, `.md` files, and under each `.feature.md` its suite and
@@ -214,7 +214,7 @@ Narrator mode makes a whole video script (`*.video.md`) into its video from Pres
 a time.
 
 - **Open**: the mode opens the workspace's last script, or its first. **Open script** picks
-  another; its suite is found by walking up from the script to `uat.config.md`, and loaded as the
+  another; its suite is found by walking up from the script to `bdd.config.md`, and loaded as the
   workspace when it is not the one open.
 - **The tree**: the script, then its scenes. Under a scene: its intro, each step of its scenario
   with what is said before it (or *silent*), and its outro. What the script has wrong (`VID0xx`)

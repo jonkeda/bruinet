@@ -1,4 +1,4 @@
-// docs/guides/uat-template-guide.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
+// docs/guides/bdd-suite-guide.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
 using Bruinet.Bdd;
 using Bruinet.Core.Composition;
 using Bruinet.Maui.Interfaces;

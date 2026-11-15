@@ -63,7 +63,7 @@ changed since its last build), then runs
 `dotnet test --no-build --filter BddScenario=<address>`, and marks each scenario from the report
 its run wrote. A failed scenario points at its failed step. **Debug** runs the same way; the C#
 debugger attaches to the testhost, and step breakpoints stop the run. The suite's test class must
-use `[UatScenarioTheory]`; a suite that does not says so in the view. One run at a time, and
+use `[BddScenarioTheory]`; a suite that does not says so in the view. One run at a time, and
 cancelling a run stops the test process and the app it started. The **Run on the runner** and
 **Step through** profiles (the run button's menu) run one scenario or file on the suite's runner.
 

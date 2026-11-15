@@ -12,7 +12,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   [MAUI](getting-started/quick-start-maui.md), [WPF](getting-started/quick-start-wpf.md),
   [WinForms](getting-started/quick-start-winforms.md),
   [native Android](getting-started/quick-start-native-android.md),
-  [Stride](getting-started/quick-start-stride.md), and [scenarios in Markdown](getting-started/quick-start-uat.md)
+  [Stride](getting-started/quick-start-stride.md), and [scenarios in Markdown](getting-started/quick-start-bdd.md)
 - [Framework Overview](getting-started/framework-overview.md)
 - [Test Writing Guide](guides/test-writing.md)
 - [Troubleshooting](guides/troubleshooting.md)
@@ -42,9 +42,9 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 ## Guides
 
 - [Test Writing](guides/test-writing.md)
-- [UAT Template Guide](guides/uat-template-guide.md) - project layout, `uat.config.md`,
+- [BDD Suite Guide](guides/bdd-suite-guide.md) - project layout, `bdd.config.md`,
   scenario file shape
-- [UAT Step Definitions And Flows](guides/uat-step-definitions.md) - the step vocabulary and how to
+- [Step Definitions And Flows](guides/step-definitions.md) - the step vocabulary and how to
   extend it
 - [Features Below The UI](guides/features-below-the-ui.md) - the `service` head: when a scenario
   runs without a screen, its suite and step definitions
@@ -109,7 +109,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 ## Specs
 
 - [Spec Status](specs/README.md)
-- [UAT Scenario Grammar](specs/uat-grammar.md) - the formal format of `.feature.md` and `.steps.md`
+- [BDD Grammar](specs/bdd-grammar.md) - the formal format of `.feature.md` and `.steps.md`
   files, and the parser's diagnostics
 
 ## Maintenance Rules

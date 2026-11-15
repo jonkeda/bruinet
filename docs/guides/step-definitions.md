@@ -1,4 +1,4 @@
-# UAT Step Definitions And Flows
+# Step Definitions And Flows
 
 Bruinet UAT scenarios are markdown files whose steps bind to a command catalog.
 There is no separate flow-file format. In current code, a flow is the ordered
@@ -30,7 +30,7 @@ invocations in order and stops after a failed or canceled step.
 
 ## Step Text
 
-The formal grammar of scenario and phrase files is in [UAT Scenario Grammar](../specs/uat-grammar.md).
+The formal grammar of scenario and phrase files is in [BDD Grammar](../specs/bdd-grammar.md).
 
 Step lines must start with one of these exact keywords:
 
@@ -350,7 +350,7 @@ registered directly in the runtime and generic catalogs:
 
 A fourth is registered only when the fixture hosts several apps (`IBddSessionHost`):
 `{app} uses the app`, as a `Given` or a `When`, makes an app of the config's `Apps` table current.
-See [Several Apps In One Scenario](uat-template-guide.md#several-apps-in-one-scenario).
+See [Several Apps In One Scenario](bdd-suite-guide.md#several-apps-in-one-scenario).
 
 Everything else is discovered. The built-in set is 15 phrases over 13 methods on
 six interfaces in `Bruinet.Core/Interfaces/`:
@@ -516,7 +516,7 @@ out before anything runs, by reading the steps in order:
 | --- | --- |
 | `Given I am on the X page`, `Then I should be on the X page` | X |
 | a page phrase or control verb whose method returns a page object | that page |
-| a tap on a control marked `[UatNavigatesTo(typeof(XPage))]` | X |
+| a tap on a control marked `[BddNavigatesTo(typeof(XPage))]` | X |
 | a call to a callable phrase | the page its steps end on |
 | another verb marked `Navigates = true` (`I tap {control}`, `I choose {value} in {control}`) | a guess: still the same page, until a step does not fit it |
 | any other step | unchanged |
@@ -702,7 +702,7 @@ For each parsed scenario:
 2. Scenario outlines are expanded into one scenario per examples row.
 3. Tags from immediate `@tag` lines are evaluated against configured skip rules.
    The metadata `Tags` row documents intent but is not used for skip decisions.
-4. `UatScenarioTestBase` resolves scenario settings and attaches them to the
+4. `BddScenarioTestBase` resolves scenario settings and attaches them to the
    execution context.
 5. A `TestComposition` scope is created when the fixture exposes `Composition`
    or `TestComposition`.

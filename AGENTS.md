@@ -15,7 +15,7 @@ Then read the focused doc for the task:
 - architecture or project layout: [docs/architecture/structure.md](docs/architecture/structure.md)
 - tests or artifacts: [docs/architecture/testing.md](docs/architecture/testing.md)
 - controls: [docs/controls/index.md](docs/controls/index.md)
-- UAT: [docs/guides/uat-template-guide.md](docs/guides/uat-template-guide.md)
+- UAT: [docs/guides/bdd-suite-guide.md](docs/guides/bdd-suite-guide.md)
 - commands: [docs/run/build-and-test.md](docs/run/build-and-test.md)
 
 ## Skills
@@ -231,7 +231,7 @@ browser). Shared code (`src/`, the test base, the sample's layout and start) run
 
 Notes:
 
-- A platform's UAT suite lives in its `*.UITests` project (`uat.config.md`, `Features/`, `Uat/`):
+- A platform's UAT suite lives in its `*.UITests` project (`bdd.config.md`, `Features/`, `Uat/`):
   `--filter "Category=UAT"` runs it alone, `--filter "Category!=UAT"` the UI tests alone.
 - `dotnet test` takes **one** `--filter`; passing two silently drops the first. Use
   `|` for OR and `&` for AND inside a single filter string.

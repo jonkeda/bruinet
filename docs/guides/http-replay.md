@@ -96,7 +96,7 @@ The recording is the same format either way, so one made in process replays thro
 
 ## A Suite's Dependencies
 
-A suite says per dependency how its tests get it, in `uat.config.md`:
+A suite says per dependency how its tests get it, in `bdd.config.md`:
 
 ```markdown
 ## Runtime

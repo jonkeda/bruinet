@@ -1,4 +1,4 @@
-# UAT Scenario Grammar
+# BDD Grammar
 
 Status: **Implemented**. The parser is
 [BddMarkdownParser.cs](../../src/Bruinet.Bdd/BddMarkdownParser.cs); this page writes down the
@@ -12,10 +12,10 @@ Three layers, each owned by one piece of code:
    catalog ([BddCommandCatalog.cs](../../src/Bruinet.Bdd/BddCommandCatalog.cs)); phrases are
    declared by attributes (AD-011) or as callable phrases (AD-017).
 3. **The lexicon**: the page, control, app and user names that fill the placeholders. Owned by
-   name resolution (`[UatName]`, `UatNameInference`, the `Apps` table).
+   name resolution (`[BddPage]/[BddControl]`, `UatNameInference`, the `Apps` table).
 
-How to write scenarios is in the [UAT Template Guide](../guides/uat-template-guide.md); what the
-phrases are and how they bind is in [UAT Phrases And Flows](../guides/uat-step-definitions.md).
+How to write scenarios is in the [BDD Suite Guide](../guides/bdd-suite-guide.md); what the
+phrases are and how they bind is in [UAT Phrases And Flows](../guides/step-definitions.md).
 
 ## 1. Scenario files (`*.feature.md`)
 
@@ -113,7 +113,7 @@ phrases-document = "# Steps:" , text , NEWLINE , phrase-section* ;
 
 A phrase file holds only phrase sections. A phrase in a scenario file is seen by that file; a
 phrase in a `*.steps.md` file in `Features/` or a folder under it is seen by the scenarios in
-that folder and below (AD-017, [Where Phrases Live](../guides/uat-step-definitions.md#where-phrases-live)).
+that folder and below (AD-017, [Where Phrases Live](../guides/step-definitions.md#where-phrases-live)).
 
 In a phrase section:
 
@@ -148,7 +148,7 @@ No optional words, alternatives, regexes or types in phrase text (AD-016).
 
 ## 4. The lexicon
 
-A page or control name is its `[UatName("...")]`, or, without one, its member name with the
+A page or control name is its `[BddPage("...")]` or `[BddControl("...")]`, or, without one, its member name with the
 type suffix removed (`Page`, `Button`, `Entry`, ...) and split into words: `TodoListPage` is
 `Todo List`, `AddButton` is `Add`, `TitleError` is `Title Error`. Users and apps come from the
 `Apps` table. A scenario never names an AutomationId.

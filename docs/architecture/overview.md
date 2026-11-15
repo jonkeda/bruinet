@@ -43,7 +43,7 @@ Tests live under `tests/` and follow three broad styles:
 
 - unit tests: no external app or device required;
 - UI tests: require a sample app, browser, Appium server, or desktop UI;
-- UAT tests: load `uat.config.md` plus `.feature.md` scenario files.
+- UAT tests: load `bdd.config.md` plus `.feature.md` scenario files.
 
 ## Artifacts
 

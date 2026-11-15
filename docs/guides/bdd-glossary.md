@@ -20,6 +20,6 @@ its own words where Cucumber has no equivalent.
 
 The attributes keep a `Bdd` prefix so a project can reference Reqnroll as well.
 
-See [UAT Step Definitions And Flows](uat-step-definitions.md) for how to write them, and
+See [Step Definitions And Flows](step-definitions.md) for how to write them, and
 [Coming From Reqnroll](coming-from-reqnroll.md) for the attributes side by side, what works
 differently and what is not there.

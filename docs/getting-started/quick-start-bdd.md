@@ -34,10 +34,10 @@ It brings `Bruinet.Bdd`, the engine that reads the scenarios.
 
 ## 3. The config and a scenario
 
-`uat.config.md`, beside the project file, says what the suite drives and where its page objects are:
+`bdd.config.md`, beside the project file, says what the suite drives and where its page objects are:
 
 ```markdown
-# UAT Config
+# BDD Config
 
 ## Runtime
 
@@ -77,7 +77,7 @@ Both go to the output folder, where the runner reads them:
 
 ```xml
 <ItemGroup>
-  <None Include="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+  <None Include="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
   <None Include="Features\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />
 </ItemGroup>
 ```
@@ -153,4 +153,4 @@ dotnet test --filter "Category=UAT"
 ```
 
 A step that binds to nothing fails before the browser opens, naming the phrases the page has. Next: the
-[UAT template guide](../guides/uat-template-guide.md) and [UAT step definitions](../guides/uat-step-definitions.md).
+[UAT template guide](../guides/bdd-suite-guide.md) and [UAT step definitions](../guides/step-definitions.md).

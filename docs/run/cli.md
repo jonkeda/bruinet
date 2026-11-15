@@ -105,7 +105,7 @@ For tools, not people:
 | `-y`, `--yes` | Yes to the question before it starts | Ask; with no one at a terminal, do not start |
 | `--headless` | No browser window | A window when someone is at a terminal |
 
-`data` commands find their `uat.config.md` (or `bdd.config.md`) in the current folder, or take
+`data` commands find their `bdd.config.md` (or `bdd.config.md`) in the current folder, or take
 `--config` and `--assembly`.
 
 A scenario's place is `<file>:<line>`, the line of its heading. An option that takes several values is repeated:

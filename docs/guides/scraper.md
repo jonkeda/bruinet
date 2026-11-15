@@ -122,7 +122,7 @@ controls):
   data. A password field is always a secret, with the placeholder `password`.
 - `Tests` (fields `Target`, `Base`): what a test recording is drafted as, `xunit`, `scenario` or
   `both`, and the test base an xUnit draft derives from (it gives `Context` and `NavigateToPage(path)`).
-  A new config gets `Target`: `scenario` when the project has a `uat.config.md`, otherwise `xunit`.
+  A new config gets `Target`: `scenario` when the project has a `bdd.config.md`, otherwise `xunit`.
   An xUnit draft goes to `Tests/Recorded/<Name>Tests.recorded.cs`, beside your part `<Name>Tests.cs`,
   which is written once and never changed; a scenario to `Features/Recorded/<name>.feature.md`. Each
   starts with what it was recorded from (`// <recorded session=… hash=… />`, or a `Recorded` metadata

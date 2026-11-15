@@ -1,6 +1,6 @@
-# UAT Template Guide
+# BDD Suite Guide
 
-Bruinet UAT tests execute markdown scenarios using a `uat.config.md` file and
+Bruinet UAT tests execute markdown scenarios using a `bdd.config.md` file and
 one or more `.feature.md` scenario files. A small C# project ties them to a running
 app.
 
@@ -16,7 +16,7 @@ name: a scenario is only as good as those, and a page object changes for both.
 
 ```text
 tests/Bruinet.<Platform>.UITests/
-  uat.config.md
+  bdd.config.md
   Features/
     scenario-name.feature.md
   ExpectedFailures/
@@ -38,7 +38,7 @@ is): the layout inside is the same, with its C# under `Runtime/`.
 A suite below the UI (the `service` head) names its config `bdd.config.md` instead; it is read the
 same way, and the name says which kind of suite it is.
 
-Put `uat.config.md`, `Features/**/*.feature.md` and `TestSettings/**/*.json` in the
+Put `bdd.config.md`, `Features/**/*.feature.md` and `TestSettings/**/*.json` in the
 csproj as `CopyToOutputDirectory="PreserveNewest"`; the runtime reads them from
 the output folder.
 
@@ -76,7 +76,7 @@ public sealed class TodoUatCollection : ICollectionFixture<TodoUatFixture>
 }
 ```
 
-The **test class** derives from `UatScenarioTestBase<TFixture>` and turns each
+The **test class** derives from `BddScenarioTestBase<TFixture>` and turns each
 scenario - each outline row too - into a theory case of its own:
 
 <!-- sample: tests/Bruinet.Docs.Samples/Uat/TemplateGuide.cs#scenarios -->
@@ -121,7 +121,7 @@ order unless told otherwise, so the Todo sample adds a small `ITestCaseOrderer`
 set, not once per scenario. `GetScenarioFiles` / `RunFileAsync` still run a
 whole file as one case.
 
-`[UatScenarioTheory]` is `[Theory]` with a stable address per case: the `BddScenario` trait is
+`[BddScenarioTheory]` is `[Theory]` with a stable address per case: the `BddScenario` trait is
 the file relative to the config and a slug of the scenario's name, so one scenario runs by filter
 (from the UAT project folder):
 
@@ -136,7 +136,7 @@ feature file is the project's own, the case's source is the scenario's line in i
 ## Config Shape
 
 ```markdown
-# UAT Config
+# BDD Config
 
 ## Runtime
 
@@ -160,7 +160,7 @@ feature file is the project's own, the case's source is the scenario's line in i
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting
@@ -206,18 +206,18 @@ What each section carries:
 | Assemblies | `Pages` | The assembly holding the page objects - the source of control names. |
 | Assemblies | `Controls` | The ControlObject assembly for the platform. |
 | Assemblies | `Commands` | `Bruinet.Uat`, which carries the engine's own verbs. |
-| Using | `Namespace` | Optional: namespaces every scenario uses, such as the subjects outside the screen (`Backend`). See [Where Phrases Live](uat-step-definitions.md#where-phrases-live). |
+| Using | `Namespace` | Optional: namespaces every scenario uses, such as the subjects outside the screen (`Backend`). See [Where Phrases Live](step-definitions.md#where-phrases-live). |
 | Apps | `Name` (+ the fixture's columns) | Optional: the apps a scenario can switch between with `{app} uses the app`. See [Several Apps In One Scenario](#several-apps-in-one-scenario). |
-| Discovery | `AllowNameInference` | `true` lets `AddButton` be **Add** without `[UatName]`. |
-| Discovery | `RequireExplicitUatAttributes` | `true` limits discovery to members carrying UAT attributes. |
+| Discovery | `AllowNameInference` | `true` lets `AddButton` be **Add** without `[BddPage]/[BddControl]`. |
+| Discovery | `RequireExplicitBddAttributes` | `true` limits discovery to members carrying UAT attributes. |
 
-`Assemblies` is required by default: `UatRuntimeValidationOptions` fails a config
+`Assemblies` is required by default: `BddRuntimeValidationOptions` fails a config
 that registers none. Pass `RequireAssemblies: false` if a project drives the app
 purely through its fixture's composition.
 
 ## Scenario File Shape
 
-The formal grammar, with every parser diagnostic, is in [UAT Scenario Grammar](../specs/uat-grammar.md).
+The formal grammar, with every parser diagnostic, is in [BDD Grammar](../specs/bdd-grammar.md).
 
 ````markdown
 # Feature: MAUI Main Page Greeting
@@ -293,7 +293,7 @@ that overrides `BeforeFile` loads it; `DefaultTestData` in the config's `Runtime
 table covers files that name none. See [Test Data](test-data.md). `Using`
 (`BddMetadataFields.Using`) names the namespaces whose phrases and pages the file
 sees besides its folder's: `Accounts, Backend`. See
-[Where Phrases Live](uat-step-definitions.md#where-phrases-live). Otherwise the
+[Where Phrases Live](step-definitions.md#where-phrases-live). Otherwise the
 `@tag` line above `## Scenario:` is what skip rules read, not the `Tags` row.
 
 ## One File Per Journey
@@ -320,7 +320,7 @@ The Todo sample's
 is a complete one.
 
 For how step text binds to executable commands, see
-[UAT Phrases And Flows](uat-step-definitions.md).
+[UAT Phrases And Flows](step-definitions.md).
 
 ## Step Tables
 
@@ -408,16 +408,16 @@ error naming the known ones. An empty cell or `null` is `null` where the type
 allows it, and dates may be relative to the test set's now: `today`, `+2d`, `-1d`.
 Cells are written in the scenario format - `12-May-2026`, `1,250.75`, `In Progress` - and a
 phrase that takes a record list instead of a `BddTable` gets its rows bound and checked when the
-step binds ([Arguments](uat-step-definitions.md#arguments)).
+step binds ([Arguments](step-definitions.md#arguments)).
 
 ## Phrase Files
 
 Steps a tester repeats can be named once, as a callable phrase
-([Callable Phrases](uat-step-definitions.md#callable-phrases)). One that several files use goes
+([Callable Phrases](step-definitions.md#callable-phrases)). One that several files use goes
 in a `*.steps.md` file: one `# Steps:` heading, then only `## Step:` and
 `## Step for each row:` sections. Put it in `Features/` for every scenario, or in a module's
 folder (`Features/Invoicing/`) for the scenarios in that folder and below
-([Where Phrases Live](uat-step-definitions.md#where-phrases-live)). The gate reads scenarios from
+([Where Phrases Live](step-definitions.md#where-phrases-live)). The gate reads scenarios from
 the build output, so the project copies phrase files as it copies scenarios:
 
 ```xml

@@ -1,4 +1,4 @@
-// docs/getting-started/quick-start-uat.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
+// docs/getting-started/quick-start-bdd.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
 #region docs:scenarios
 using Bruinet.Uat;
 using Xunit;

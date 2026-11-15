@@ -1,4 +1,4 @@
-// docs/guides/uat-step-definitions.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
+// docs/guides/step-definitions.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
 // The control verbs and phrases the guide shows by their declaration only are interface members here.
 using Bruinet.Bdd;
 using Xunit;

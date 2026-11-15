@@ -40,7 +40,7 @@
       },
       {
         "command": "bruinetBdd.refreshTests",
-        "title": "Refresh UAT Scenarios",
+        "title": "Refresh BDD Scenarios",
         "category": "Bruinet BDD"
       },
       {

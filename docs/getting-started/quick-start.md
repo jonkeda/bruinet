@@ -106,7 +106,7 @@ Rules:
 - Start a test project for your stack: [web](quick-start-html.md), [MAUI](quick-start-maui.md),
   [WPF](quick-start-wpf.md), [WinForms](quick-start-winforms.md),
   [native Android](quick-start-native-android.md), [Stride](quick-start-stride.md), or
-  [scenarios in Markdown](quick-start-uat.md).
+  [scenarios in Markdown](quick-start-bdd.md).
 - Read [Framework Overview](framework-overview.md).
 - Read [Test Writing](../guides/test-writing.md).
 - Use [Build And Test](../run/build-and-test.md) for common commands.
