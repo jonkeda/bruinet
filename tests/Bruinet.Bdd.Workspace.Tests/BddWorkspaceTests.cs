@@ -15,9 +15,9 @@ public sealed class BddWorkspaceTests
         Assert.Equal(
             [
                 "tests/Bruinet.Samples.Todo.IntegrationTests/bdd.config.md",
-                "tests/Bruinet.Samples.Todo.Mixed.Uat/uat.config.md",
-                "tests/Bruinet.Samples.Todo.Uat/uat.config.md",
-                "tests/Bruinet.Samples.Todo.Web.Uat/uat.config.md",
+                "tests/Bruinet.Samples.Todo.Mixed.Uat/bdd.config.md",
+                "tests/Bruinet.Samples.Todo.Uat/bdd.config.md",
+                "tests/Bruinet.Samples.Todo.Web.Uat/bdd.config.md",
             ],
             configs);
     }
@@ -37,7 +37,7 @@ public sealed class BddWorkspaceTests
 
             var configs = BddWorkspace.FindConfigs(folder).Select(path => Path.GetRelativePath(Todo, path).Replace('\\', '/')).ToList();
 
-            Assert.Equal(["tests/Bruinet.Samples.Todo.IntegrationTests/bdd.config.md", "tests/Bruinet.Samples.Todo.Uat/uat.config.md"], configs);
+            Assert.Equal(["tests/Bruinet.Samples.Todo.IntegrationTests/bdd.config.md", "tests/Bruinet.Samples.Todo.Uat/bdd.config.md"], configs);
         }
         finally
         {
@@ -56,7 +56,7 @@ public sealed class BddWorkspaceTests
 
             var config = Assert.Single(BddWorkspace.FindConfigs(folder));
 
-            Assert.Equal(Path.Combine(Todo, "tests", "Bruinet.Samples.Todo.Web.Uat", "uat.config.md"), config, ignoreCase: true);
+            Assert.Equal(Path.Combine(Todo, "tests", "Bruinet.Samples.Todo.Web.Uat", "bdd.config.md"), config, ignoreCase: true);
         }
         finally
         {

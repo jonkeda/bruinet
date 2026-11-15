@@ -1,6 +1,7 @@
 #nullable enable
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.AttachmentsDirectory.get -> string!
+Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.BddDirectory.get -> string!
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.CoverageDirectory.get -> string!
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.DownloadsDirectory.get -> string!
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.EnsureDirectories() -> void
@@ -18,6 +19,7 @@ Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.UatDirectory.get -> strin
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.VideosDirectory.get -> string!
 Bruinet.Core.Artifacts.ITestArtifactPathProvider
 Bruinet.Core.Artifacts.ITestArtifactPathProvider.AttachmentsDirectory.get -> string!
+Bruinet.Core.Artifacts.ITestArtifactPathProvider.BddDirectory.get -> string!
 Bruinet.Core.Artifacts.ITestArtifactPathProvider.CoverageDirectory.get -> string!
 Bruinet.Core.Artifacts.ITestArtifactPathProvider.DownloadsDirectory.get -> string!
 Bruinet.Core.Artifacts.ITestArtifactPathProvider.EnsureDirectories() -> void

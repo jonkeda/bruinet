@@ -87,7 +87,7 @@ public sealed class PronunciationsTests : IDisposable
     [Fact]
     public async Task TheLinesOfAScene_AreSpokenWithTheirTermsWrapped_AndTheHashNoticesAChange()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), "# Feature: A\n\n## Scenario: A.1 Opens\n\n```gherkin\nWhen I tap Sync\n```\n");
         var script = "# Video: V\n\n## Scene: S\nScenario: Features/A.feature.md#A.1-Opens\n\nWelcome to Bruinet.\n\n| Step | Say |\n| --- | --- |\n| When I tap Sync | Tap it in Todo. |\n";
@@ -113,7 +113,7 @@ public sealed class PronunciationsTests : IDisposable
     [Fact]
     public void AScriptWithoutPronunciations_KeepsItsHash()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), "# Feature: A\n\n## Scenario: A.1 Opens\n\n```gherkin\nWhen I tap Sync\n```\n");
         var path = Path.Combine(_suite, "Features", "v.video.md");
@@ -126,7 +126,7 @@ public sealed class PronunciationsTests : IDisposable
     [Fact]
     public void TheFilesProblems_AreReportedInTheFile_NotAtTheScriptsLine()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         File.WriteAllText(Path.Combine(_suite, Pronunciations.FileName), "| Term | Say |\n| --- | --- |\n| A | a |\n| A | b |\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         var path = Path.Combine(_suite, "Features", "v.video.md");

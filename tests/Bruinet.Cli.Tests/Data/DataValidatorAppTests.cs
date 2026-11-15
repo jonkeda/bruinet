@@ -79,7 +79,7 @@ public sealed class DataValidatorAppTests : IDisposable
         Assert.Equal(1, exit);
         Assert.Contains("Features/shelf.feature.md:7: DATA020", output);
         Assert.Contains("Did you mean 'good'?", output);
-        Assert.DoesNotContain("uat.config.md", output);
+        Assert.DoesNotContain("bdd.config.md", output);
     }
 
     [Fact]
@@ -90,7 +90,7 @@ public sealed class DataValidatorAppTests : IDisposable
         var (exit, output, _) = Run("list");
 
         Assert.Equal(0, exit);
-        Assert.Matches(@"good\s+books 2\s+used by: uat\.config\.md", output);
+        Assert.Matches(@"good\s+books 2\s+used by: bdd\.config\.md", output);
     }
 
     [Fact]
@@ -155,7 +155,7 @@ public sealed class DataValidatorAppTests : IDisposable
         return path;
     }
 
-    private void WriteConfig(string defaultTestData) => Write("uat.config.md", $"""
+    private void WriteConfig(string defaultTestData) => Write("bdd.config.md", $"""
         # UAT Config
 
         ## Runtime

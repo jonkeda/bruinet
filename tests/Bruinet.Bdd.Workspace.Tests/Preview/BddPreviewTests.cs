@@ -126,9 +126,9 @@ public sealed class BddPreviewTests
     [Fact]
     public void RunButtons_AreDisabled_WithTheReason_WhenTheSuiteCannotRun()
     {
-        var result = BddPreview.Render(Scenario, "shelf.feature.md", new BddPreviewOptions { Run = new BddPreviewRunState(false, "Use [UatScenarioTheory].") });
+        var result = BddPreview.Render(Scenario, "shelf.feature.md", new BddPreviewOptions { Run = new BddPreviewRunState(false, "Use [BddScenarioTheory].") });
 
-        Assert.Contains("data-run=\"3\" disabled title=\"Use [UatScenarioTheory].\"", result.Html);
+        Assert.Contains("data-run=\"3\" disabled title=\"Use [BddScenarioTheory].\"", result.Html);
     }
 
     [Fact]

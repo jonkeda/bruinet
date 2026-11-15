@@ -41,7 +41,7 @@ public sealed class SelectionTests : IDisposable
         Write("Shop.App/Components/Pages/Bench.razor", "@page \"/bench/{Id}\"\n<BenchTools />");
         Write("Shared/Pages/BenchPage.cs", "public sealed class BenchPage() : PageBase(\"/bench/\") {}");
         Write("Shop.App/Components/Layout/MainLayout.razor", "@Body");
-        Write("Shop.UITests/uat.config.md", "# UAT Config\n");
+        Write("Shop.UITests/bdd.config.md", "# UAT Config\n");
         Write("Shop.UITests/Features/counter.feature.md", """
             # Feature: Counter
 
@@ -269,7 +269,7 @@ public sealed class SelectionTests : IDisposable
     [InlineData("Lib/Control.cs", "in Lib, which the suite builds on")]
     [InlineData("Shop.UITests/TestBase/ShopTestBase.cs", "the suite's shared test code")]
     [InlineData("Shared/ShopFixture.cs", "the suite's shared test code")]
-    [InlineData("Shop.UITests/uat.config.md", "the suite's set-up")]
+    [InlineData("Shop.UITests/bdd.config.md", "the suite's set-up")]
     [InlineData("Directory.Packages.props", "every project's build")]
     public void SharedCode_RunsTheSuiteWhole(string file, string why)
     {

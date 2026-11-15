@@ -10,7 +10,7 @@ namespace Bruinet.Samples.Todo.Mixed.Uat.Runtime;
 [Trait("Category", "UAT")]
 [Trait("Target", "MIXED")]
 public sealed class TodoMixedUatScenarioTests(TodoMixedUatFixture fixture)
-    : UatScenarioTestBase<TodoMixedUatFixture>(fixture)
+    : BddScenarioTestBase<TodoMixedUatFixture>(fixture)
 {
     /// <summary>One case per scenario: <c>[filePath, scenarioName]</c>.</summary>
     public static IEnumerable<object[]> Scenarios => GetScenarioTheoryData();
@@ -18,7 +18,7 @@ public sealed class TodoMixedUatScenarioTests(TodoMixedUatFixture fixture)
     /// <summary>Runs one scenario and asserts it passes, or that the engine skipped it.</summary>
     /// <param name="filePath">The scenario file.</param>
     /// <param name="scenarioName">The scenario in it.</param>
-    [UatScenarioTheory(Timeout = 240000)]
+    [BddScenarioTheory(Timeout = 240000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
@@ -36,6 +36,6 @@ public sealed class TodoMixedUatScenarioTests(TodoMixedUatFixture fixture)
     }
 
     /// <inheritdoc />
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "MIXED", Fixture: "TodoMixedUatFixture");
 }

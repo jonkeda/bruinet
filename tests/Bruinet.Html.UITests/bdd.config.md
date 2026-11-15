@@ -1,25 +1,24 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
 | Field | Value |
 | --- | --- |
-| Target | STRIDE |
-| Fixture | StrideUatFixture |
-| AppPath | ../../samples/Bruinet.Samples.Stride.App/bin/Debug/net10.0-windows/Bruinet.Samples.Stride.App.exe |
-| WorkingDirectory | ../.. |
+| Target | HTML |
+| Fixture | HtmlUatFixture |
+| AppPath | ../../samples/Bruinet.Samples.Blazor.App/Bruinet.Samples.Blazor.App.csproj |
 
 ## Assemblies
 
 | Kind | Assembly |
 | --- | --- |
-| Pages | Bruinet.Stride.UITests.dll |
+| Pages | Bruinet.Html.UITests.dll |
 
 ## Discovery
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

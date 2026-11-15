@@ -8,7 +8,7 @@ namespace Bruinet.Maui.UITests.Uat;
 [Trait("Category", "UAT")]
 [Trait("Target", "MAUI")]
 public sealed class MauiUatScenarioTests
-    : UatScenarioTestBase<MauiFixture>
+    : BddScenarioTestBase<MauiFixture>
 {
     public MauiUatScenarioTests(MauiFixture fixture)
         : base(fixture)
@@ -34,6 +34,6 @@ public sealed class MauiUatScenarioTests
             "Its controls are",
             Path.GetFileName(filePath));
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "MAUI", Fixture: "MauiFixture");
 }

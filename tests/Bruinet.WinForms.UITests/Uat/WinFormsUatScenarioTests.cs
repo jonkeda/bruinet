@@ -3,12 +3,12 @@ namespace Bruinet.WinForms.UITests.Uat;
 [Trait("Category", "UAT")]
 [Trait("Target", "WINFORMS")]
 public sealed class WinFormsUatScenarioTests(WinFormsUatFixture fixture)
-    : UatScenarioTestBase<WinFormsUatFixture>(fixture),
+    : BddScenarioTestBase<WinFormsUatFixture>(fixture),
         IClassFixture<WinFormsUatFixture>
 {
     public static IEnumerable<object[]> ScenarioFiles => GetScenarioFiles();
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "WINFORMS", Fixture: "WinFormsUatFixture");
 
     [Theory(Timeout = 120000)]

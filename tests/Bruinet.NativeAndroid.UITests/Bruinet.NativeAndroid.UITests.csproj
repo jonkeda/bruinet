@@ -9,12 +9,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.NativeAndroid\Bruinet.NativeAndroid.csproj" />
-    <!-- The UAT suite: uat.config.md, Features/ and Uat/ (the scenario test class). -->
+    <!-- The UAT suite: bdd.config.md, Features/ and Uat/ (the scenario test class). -->
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Features\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

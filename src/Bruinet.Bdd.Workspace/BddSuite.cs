@@ -193,7 +193,7 @@ public sealed class BddSuite : IDisposable
     }
 
     /// <summary>
-    /// Whether the suite's test class runs its scenarios through <c>[UatScenarioTheory]</c>, so one
+    /// Whether the suite's test class runs its scenarios through <c>[BddScenarioTheory]</c>, so one
     /// scenario can be run by its address (R1); false before the suite is loaded.
     /// </summary>
     public bool HasScenarioTheory

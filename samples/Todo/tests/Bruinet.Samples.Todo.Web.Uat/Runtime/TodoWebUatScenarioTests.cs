@@ -17,7 +17,7 @@ namespace Bruinet.Samples.Todo.Web.Uat.Runtime;
 [TestCaseOrderer(BddScenarioOrderer.TypeName, BddScenarioOrderer.AssemblyName)]
 [Trait("Category", "UAT")]
 [Trait("Target", "BLAZOR")]
-public sealed class TodoWebUatScenarioTests : UatScenarioTestBase<TodoWebUatFixture>
+public sealed class TodoWebUatScenarioTests : BddScenarioTestBase<TodoWebUatFixture>
 {
     /// <summary>Creates the scenario runner over the shared fixture.</summary>
     /// <param name="fixture">The hermetic web head.</param>
@@ -32,7 +32,7 @@ public sealed class TodoWebUatScenarioTests : UatScenarioTestBase<TodoWebUatFixt
     /// <summary>Runs one scenario and asserts it passes, or that the engine skipped it.</summary>
     /// <param name="filePath">The scenario file.</param>
     /// <param name="scenarioName">The scenario in it.</param>
-    [UatScenarioTheory(Timeout = 120000)]
+    [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
@@ -60,7 +60,7 @@ public sealed class TodoWebUatScenarioTests : UatScenarioTestBase<TodoWebUatFixt
     }
 
     /// <inheritdoc />
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "BLAZOR", Fixture: "TodoWebUatFixture");
 }
 

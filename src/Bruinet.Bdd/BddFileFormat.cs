@@ -27,30 +27,42 @@ public static class BddFileFormat
     /// <summary>The search pattern for step files.</summary>
     public const string StepFilePattern = "*" + StepsExtension;
 
-    /// <summary>The config of a suite that drives a UI.</summary>
-    public const string UiConfigFileName = "uat.config.md";
+    /// <summary>A suite's config, whatever its head; the <c>Head</c> row says whether it drives a UI (AD-040).</summary>
+    public const string ConfigFileName = "bdd.config.md";
 
-    /// <summary>The config of a suite below the UI (the <c>service</c> head).</summary>
-    public const string ServiceConfigFileName = "bdd.config.md";
+    /// <summary>The config's old name for a suite that drives a UI, still read, one release (AD-040).</summary>
+    public const string OldConfigFileName = "uat.config.md";
+
+    /// <summary>The old name of a UI suite's config.</summary>
+    [Obsolete("A suite's config is ConfigFileName, bdd.config.md, whatever its head (AD-040).")]
+    public const string UiConfigFileName = OldConfigFileName;
+
+    /// <summary>The config's name.</summary>
+    [Obsolete("Use ConfigFileName (AD-040).")]
+    public const string ServiceConfigFileName = ConfigFileName;
 
     /// <summary>
-    /// The config in a folder: <c>uat.config.md</c> or <c>bdd.config.md</c>. The name says which
-    /// kind of suite it is; both are read the same way. When neither exists, the
-    /// <c>uat.config.md</c> path.
+    /// The config in a folder: <c>bdd.config.md</c>, or the old <c>uat.config.md</c> when only that exists. When neither
+    /// exists, the <c>bdd.config.md</c> path.
     /// </summary>
     /// <param name="directory">The folder to look in.</param>
     public static string FindConfig(string directory)
     {
-        var service = Path.Combine(directory, ServiceConfigFileName);
-        var ui = Path.Combine(directory, UiConfigFileName);
-        return !File.Exists(ui) && File.Exists(service) ? service : ui;
+        var config = Path.Combine(directory, ConfigFileName);
+        var old = Path.Combine(directory, OldConfigFileName);
+        return !File.Exists(config) && File.Exists(old) ? old : config;
     }
+
+    /// <summary>Whether a folder holds a config, by either name.</summary>
+    /// <param name="directory">The folder to look in.</param>
+    public static bool HasConfig(string directory) =>
+        File.Exists(Path.Combine(directory, ConfigFileName)) || File.Exists(Path.Combine(directory, OldConfigFileName));
 
     /// <summary>Whether a file name is a config's.</summary>
     /// <param name="fileName">A file name, without folder.</param>
     public static bool IsConfigFileName(string fileName) =>
-        fileName.Equals(UiConfigFileName, StringComparison.OrdinalIgnoreCase) ||
-        fileName.Equals(ServiceConfigFileName, StringComparison.OrdinalIgnoreCase);
+        fileName.Equals(ConfigFileName, StringComparison.OrdinalIgnoreCase) ||
+        fileName.Equals(OldConfigFileName, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The diagnostic code for a heading or file name in the old form.</summary>
     public const string OldFormCode = "BDD029";

@@ -15,7 +15,7 @@ public sealed class BddRunnerChannelTests
     public static TheoryData<BddRunnerMessage> Messages =>
     [
         new BddRunnerHello(BddRunnerProtocol.Version),
-        new BddRunnerOpen(@"C:\suite\uat.config.md", @"C:\suite\bin\Suite.dll", @"C:\suite\Features\a.feature.md", "Finn's \"first\" scenario"),
+        new BddRunnerOpen(@"C:\suite\bdd.config.md", @"C:\suite\bin\Suite.dll", @"C:\suite\Features\a.feature.md", "Finn's \"first\" scenario"),
         new BddRunnerOpened(7, "Discovery report:\r\n- a", "Command catalog:"),
         new BddRunnerNext(),
         new BddRunnerSkip("Skipped by Run from here."),

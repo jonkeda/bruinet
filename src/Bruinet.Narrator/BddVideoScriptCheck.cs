@@ -102,7 +102,7 @@ public sealed record BddVideoScriptCheck(
         if (configDirectory is null && script.Scenes.Any(scene => scene.Scenario is not null))
         {
             Report(BddDiagnosticSeverity.Error, NoConfigCode,
-                $"No {BddFileFormat.UiConfigFileName} or {BddFileFormat.ServiceConfigFileName} above the script, so its scenario addresses cannot be found.", 1);
+                $"No {BddFileFormat.ConfigFileName} above the script, so its scenario addresses cannot be found.", 1);
             return new BddVideoScriptCheck(script, diagnostics, scenes, null);
         }
 
@@ -209,8 +209,7 @@ public sealed record BddVideoScriptCheck(
     {
         for (var folder = directory is null ? null : new DirectoryInfo(directory); folder is not null; folder = folder.Parent)
         {
-            if (File.Exists(Path.Combine(folder.FullName, BddFileFormat.UiConfigFileName)) ||
-                File.Exists(Path.Combine(folder.FullName, BddFileFormat.ServiceConfigFileName)))
+            if (BddFileFormat.HasConfig(folder.FullName))
             {
                 return folder.FullName;
             }

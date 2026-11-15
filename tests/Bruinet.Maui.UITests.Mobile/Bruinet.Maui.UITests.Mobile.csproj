@@ -36,7 +36,7 @@
     Excluding them by name keeps the break visible: a shared test that stops being shared
     should say so here rather than hide behind a platform #if.
 
-    Uat is the UAT suite (the scenario test class over uat.config.md and Features), which runs
+    Uat is the UAT suite (the scenario test class over bdd.config.md and Features), which runs
     on the Windows head: this head has no config of its own.
 
     AssemblyInfo.cs is excluded too, and this project has its own. The two heads genuinely

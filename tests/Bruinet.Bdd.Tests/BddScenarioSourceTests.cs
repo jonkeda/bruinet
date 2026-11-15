@@ -33,7 +33,7 @@ public sealed class BddScenarioSourceTests
         var directory = CreateTempDirectory();
         try
         {
-            File.WriteAllText(Path.Combine(directory, "uat.config.md"), "# UAT Config\n\n## Runtime\n\n| Field | Value |\n| --- | --- |\n| Features | Modules |\n");
+            File.WriteAllText(Path.Combine(directory, "bdd.config.md"), "# UAT Config\n\n## Runtime\n\n| Field | Value |\n| --- | --- |\n| Features | Modules |\n");
             WriteScenario(directory, "Modules", Path.Combine("Contacts", "Features"), "B7.CON.01.feature.md");
             WriteScenario(directory, "Modules", Path.Combine("Invoices", "Features"), "B7.INV.01.feature.md");
             WriteScenario(directory, "Features", "Old", "not-read.feature.md");

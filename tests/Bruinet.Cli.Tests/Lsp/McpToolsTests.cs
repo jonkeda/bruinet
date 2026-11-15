@@ -20,7 +20,7 @@ public sealed class McpToolsTests : IDisposable
     {
         Directory.CreateDirectory(Path.Combine(Counter, "Features"));
         File.WriteAllText(Path.Combine(_solution, "Tools.sln"), string.Empty);
-        File.WriteAllText(Path.Combine(Counter, "uat.config.md"), Config(nameof(StepCounterFixture), string.Empty));
+        File.WriteAllText(Path.Combine(Counter, "bdd.config.md"), Config(nameof(StepCounterFixture), string.Empty));
         File.WriteAllText(Feature, """
             # Feature: Counter
 
@@ -172,7 +172,7 @@ public sealed class McpToolsTests : IDisposable
     {
         var stale = Path.Combine(_solution, "Stale.Uat");
         Directory.CreateDirectory(Path.Combine(stale, "Features"));
-        File.WriteAllText(Path.Combine(stale, "uat.config.md"), Config(nameof(StaleBuildFixture), "\n## Apps\n\n| Name | Head |\n| --- | --- |\n| Web | web |\n"));
+        File.WriteAllText(Path.Combine(stale, "bdd.config.md"), Config(nameof(StaleBuildFixture), "\n## Apps\n\n| Name | Head |\n| --- | --- |\n| Web | web |\n"));
         Call("run_scenario", new JsonObject { ["path"] = Feature });
         using var server = new BddMcpServer(_solution);
 
@@ -196,7 +196,7 @@ public sealed class McpToolsTests : IDisposable
         var suite = Answer(Call("list_suites", []))["suites"]![0]!.AsObject();
 
         Assert.DoesNotContain(suite, field => field.Value is null);
-        Assert.Equal(Path.Combine(Path.GetFileName(Counter), "uat.config.md"), (string?)suite["config"]);
+        Assert.Equal(Path.Combine(Path.GetFileName(Counter), "bdd.config.md"), (string?)suite["config"]);
     }
 
     private static string Config(string fixture, string more) => $"""

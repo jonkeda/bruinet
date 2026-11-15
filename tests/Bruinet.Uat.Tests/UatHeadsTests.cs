@@ -33,7 +33,7 @@ namespace Bruinet.Uat.Tests.HeadCases
             var directory = CreateSuite(out var configFilePath);
             try
             {
-                var runtime = new UatRuntime(new HeadsFixture(), configFilePath, new UatRuntimeValidationOptions(RequireAssemblies: false));
+                var runtime = new UatRuntime(new HeadsFixture(), configFilePath, new BddRuntimeValidationOptions(RequireAssemblies: false));
 
                 var catalogs = runtime.CreateCatalogSet();
 
@@ -152,7 +152,7 @@ namespace Bruinet.Uat.Tests.HeadCases
 
                 string[] Listed(string head)
                 {
-                    File.WriteAllText(Path.Combine(directory, "uat.config.md"), $"""
+                    File.WriteAllText(Path.Combine(directory, "bdd.config.md"), $"""
                         # UAT Config
 
                         ## Runtime
@@ -192,7 +192,7 @@ namespace Bruinet.Uat.Tests.HeadCases
         {
             var directory = Path.Combine(Path.GetTempPath(), $"bruinet-uat-heads-{Guid.NewGuid():N}");
             Directory.CreateDirectory(directory);
-            configFilePath = Path.Combine(directory, "uat.config.md");
+            configFilePath = Path.Combine(directory, "bdd.config.md");
             File.WriteAllText(configFilePath, $$"""
                 # UAT Config
 
@@ -220,11 +220,11 @@ namespace Bruinet.Uat.Tests.HeadCases
         }
 
         private sealed class Harness(HeadsFixture fixture, string configFilePath)
-            : UatScenarioTestBase<HeadsFixture>(fixture)
+            : BddScenarioTestBase<HeadsFixture>(fixture)
         {
             protected override string ConfigFilePath => configFilePath;
 
-            protected override UatRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
+            protected override BddRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
 
             public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
         }

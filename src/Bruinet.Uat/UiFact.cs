@@ -12,7 +12,7 @@ namespace Bruinet.Uat;
 /// failed, before the test object is disposed: the page as the failure left it. The screenshot
 /// comes from the test object or a fixture it was given, whichever holds a test context that takes
 /// its own (<see cref="IScreenshotSource"/>, as Html's Playwright context is) or a screenshot service.
-/// A UAT scenario's failure already gets one (<see cref="UatScenarioTestBase{TFixture}"/>).
+/// A UAT scenario's failure already gets one (<see cref="BddScenarioTestBase{TFixture}"/>).
 /// </summary>
 [XunitTestCaseDiscoverer("Bruinet.Uat.UiFactDiscoverer", "Bruinet.Uat")]
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]

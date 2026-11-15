@@ -1,25 +1,25 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
 | Field | Value |
 | --- | --- |
-| Target | MAUI |
-| Fixture | FlaUI |
+| Target | STRIDE |
+| Fixture | StrideUatFixture |
+| AppPath | ../../samples/Bruinet.Samples.Stride.App/bin/Debug/net10.0-windows/Bruinet.Samples.Stride.App.exe |
+| WorkingDirectory | ../.. |
 
 ## Assemblies
 
 | Kind | Assembly |
 | --- | --- |
-| Pages | Bruinet.Presenter.Bdd.Tests.dll |
-| Controls | Bruinet.Maui.dll |
-| Commands | Bruinet.Uat.dll |
+| Pages | Bruinet.Stride.UITests.dll |
 
 ## Discovery
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

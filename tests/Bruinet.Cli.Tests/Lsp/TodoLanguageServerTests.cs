@@ -58,7 +58,7 @@ public sealed class TodoLanguageServerTests : IAsyncLifetime
 
     private static IReadOnlyList<BddDiagnostic> GateDiagnostics(string path)
     {
-        using var suite = Workspace.BddSuite.Open(Path.Combine(Project, BddFileFormat.UiConfigFileName));
+        using var suite = Workspace.BddSuite.Open(Path.Combine(Project, BddFileFormat.ConfigFileName));
         var catalogs = suite.TryGetCatalogs(out var reason) ?? throw new InvalidOperationException($"The Todo MAUI suite cannot be bound: {reason} Build samples/Todo first.");
         return UatScenarioCheck.CheckFile(path, catalogs);
     }

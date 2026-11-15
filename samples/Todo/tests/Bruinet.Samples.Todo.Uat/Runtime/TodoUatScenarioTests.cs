@@ -22,7 +22,7 @@ namespace Bruinet.Samples.Todo.Uat.Runtime;
 [TestCaseOrderer(BddScenarioOrderer.TypeName, BddScenarioOrderer.AssemblyName)]
 [Trait("Category", "UAT")]
 [Trait("Target", "MAUI")]
-public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
+public sealed class TodoUatScenarioTests : BddScenarioTestBase<TodoUatFixture>
 {
     /// <summary>Creates the scenario runner over the shared fixture.</summary>
     /// <param name="fixture">The hermetic Todo app.</param>
@@ -37,7 +37,7 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     /// <summary>Runs one scenario and asserts it passes.</summary>
     /// <param name="filePath">The scenario file.</param>
     /// <param name="scenarioName">The scenario in it.</param>
-    [UatScenarioTheory(Timeout = 120000)]
+    [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
@@ -67,6 +67,6 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     }
 
     /// <inheritdoc />
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "MAUI", Fixture: "TodoUatFixture");
 }

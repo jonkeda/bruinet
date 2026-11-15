@@ -5,7 +5,7 @@ namespace Bruinet.Cli.Data;
 
 /// <summary>
 /// <c>bruinet data</c>: an app's test data and scenario files (docs/guides/test-data.md), from a UAT project
-/// folder with a uat.config.md, or with --assembly. Exit 0 fine, 1 problems found, 2 could not run.
+/// folder with a bdd.config.md, or with --assembly. Exit 0 fine, 1 problems found, 2 could not run.
 /// </summary>
 internal static class DataCommands
 {
@@ -26,7 +26,7 @@ internal static class DataCommands
     private static Command Make(CliIo io, string name, string description, Argument<string?>? argument = null, bool fix = false, bool keyword = false, bool json = false, bool check = false)
     {
         var assembly = new Option<string[]>("--assembly") { Description = "The assembly with the TestDataDefinition (repeatable).", AllowMultipleArgumentsPerToken = true };
-        var config = new Option<string?>("--config") { Description = "The config to read. Default: ./uat.config.md or ./bdd.config.md." };
+        var config = new Option<string?>("--config") { Description = "The config to read. Default: ./bdd.config.md, or the old ./uat.config.md." };
         var command = new Command(name, description) { assembly, config };
         if (argument is not null)
             command.Add(argument);

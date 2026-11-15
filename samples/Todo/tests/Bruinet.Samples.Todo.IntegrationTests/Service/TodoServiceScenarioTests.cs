@@ -14,7 +14,7 @@ namespace Bruinet.Samples.Todo.IntegrationTests.Service;
 [Trait("Module", "Todo")]
 [Trait("Pyramid", "Integration")]
 [Trait("Category", "BDD")]
-public sealed class TodoServiceScenarioTests : UatScenarioTestBase<TodoServiceFixture>, IClassFixture<TodoServiceFixture>
+public sealed class TodoServiceScenarioTests : BddScenarioTestBase<TodoServiceFixture>, IClassFixture<TodoServiceFixture>
 {
     /// <summary>Creates the runner over the shared fixture.</summary>
     /// <param name="fixture">The headless app.</param>
@@ -29,7 +29,7 @@ public sealed class TodoServiceScenarioTests : UatScenarioTestBase<TodoServiceFi
     /// <summary>Runs one scenario and asserts it passes.</summary>
     /// <param name="filePath">The scenario file.</param>
     /// <param name="scenarioName">The scenario in it.</param>
-    [UatScenarioTheory]
+    [BddScenarioTheory]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
@@ -53,6 +53,6 @@ public sealed class TodoServiceScenarioTests : UatScenarioTestBase<TodoServiceFi
     protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTest();
 
     /// <inheritdoc />
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "SERVICE", Fixture: nameof(TodoServiceFixture));
 }

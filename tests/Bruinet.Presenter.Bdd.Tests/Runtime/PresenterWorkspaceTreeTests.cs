@@ -24,7 +24,7 @@ public sealed class PresenterWorkspaceTreeTests : IDisposable
         ReloadWorkspace();
 
         var allTree = _page.AllWorkspaceTree.GetText(timeoutMs: 10000) ?? string.Empty;
-        Assert.Contains("uat.config.md", allTree, StringComparison.Ordinal);
+        Assert.Contains("bdd.config.md", allTree, StringComparison.Ordinal);
         Assert.Contains("main-page-greeting.feature.md", allTree, StringComparison.Ordinal);
         Assert.Contains("main-page-validation.feature.md", allTree, StringComparison.Ordinal);
         Assert.DoesNotContain(".csproj", allTree, StringComparison.OrdinalIgnoreCase);

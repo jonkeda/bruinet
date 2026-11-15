@@ -239,7 +239,7 @@ public sealed class ProjectResolutionTests
             }
 
             File.WriteAllText(
-                Path.Combine(Root, "uat.config.md"),
+                Path.Combine(Root, "bdd.config.md"),
                 string.Join(
                     Environment.NewLine,
                     "# UAT Config",

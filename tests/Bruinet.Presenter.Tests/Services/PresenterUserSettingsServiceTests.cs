@@ -158,8 +158,8 @@ public sealed class PresenterUserSettingsServiceTests
         var fallback = Path.Combine(root, "FallbackWorkspace");
         Directory.CreateDirectory(recent);
         Directory.CreateDirectory(fallback);
-        File.WriteAllText(Path.Combine(recent, "uat.config.md"), "# Recent");
-        File.WriteAllText(Path.Combine(fallback, "uat.config.md"), "# Fallback");
+        File.WriteAllText(Path.Combine(recent, "bdd.config.md"), "# Recent");
+        File.WriteAllText(Path.Combine(fallback, "bdd.config.md"), "# Fallback");
 
         try
         {
@@ -200,7 +200,7 @@ public sealed class PresenterUserSettingsServiceTests
         var root = Path.Combine(Path.GetTempPath(), "BruinetPresenterStartup", Guid.NewGuid().ToString("N"));
         var workspace = Path.Combine(root, "Workspace");
         Directory.CreateDirectory(workspace);
-        File.WriteAllText(Path.Combine(workspace, "uat.config.md"), "# Workspace");
+        File.WriteAllText(Path.Combine(workspace, "bdd.config.md"), "# Workspace");
 
         try
         {
@@ -242,7 +242,7 @@ public sealed class PresenterUserSettingsServiceTests
         var root = Path.Combine(Path.GetTempPath(), "BruinetPresenterStartup", Guid.NewGuid().ToString("N"));
         var workspace = Path.Combine(root, "Workspace");
         Directory.CreateDirectory(workspace);
-        File.WriteAllText(Path.Combine(workspace, "uat.config.md"), "# Workspace");
+        File.WriteAllText(Path.Combine(workspace, "bdd.config.md"), "# Workspace");
 
         try
         {
@@ -305,7 +305,7 @@ public sealed class PresenterUserSettingsServiceTests
         var root = Path.Combine(Path.GetTempPath(), "BruinetPresenterStartup", Guid.NewGuid().ToString("N"));
         var workspace = Path.Combine(root, "Workspace");
         Directory.CreateDirectory(workspace);
-        File.WriteAllText(Path.Combine(workspace, "uat.config.md"), "# Workspace");
+        File.WriteAllText(Path.Combine(workspace, "bdd.config.md"), "# Workspace");
 
         try
         {
@@ -344,7 +344,7 @@ public sealed class PresenterUserSettingsServiceTests
         var root = Path.Combine(Path.GetTempPath(), "BruinetPresenterStartup", Guid.NewGuid().ToString("N"));
         var workspace = Path.Combine(root, "Workspace");
         Directory.CreateDirectory(workspace);
-        File.WriteAllText(Path.Combine(workspace, "uat.config.md"), "# Workspace");
+        File.WriteAllText(Path.Combine(workspace, "bdd.config.md"), "# Workspace");
 
         try
         {
@@ -497,7 +497,7 @@ public sealed class PresenterUserSettingsServiceTests
                 new DirectoryInfo(fullPath).Name,
                 new BddWorkspaceConfigLoadResult(
                     true,
-                    Path.Combine(fullPath, "uat.config.md"),
+                    Path.Combine(fullPath, "bdd.config.md"),
                     "MAUI",
                     "Fixture",
                     "App.exe",

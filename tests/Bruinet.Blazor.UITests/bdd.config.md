@@ -1,24 +1,24 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
 | Field | Value |
 | --- | --- |
-| Target | HTML |
-| Fixture | HtmlUatFixture |
+| Target | BLAZOR |
+| Fixture | BlazorUatFixture |
 | AppPath | ../../samples/Bruinet.Samples.Blazor.App/Bruinet.Samples.Blazor.App.csproj |
 
 ## Assemblies
 
 | Kind | Assembly |
 | --- | --- |
-| Pages | Bruinet.Html.UITests.dll |
+| Pages | Bruinet.Blazor.UITests.dll |
 
 ## Discovery
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

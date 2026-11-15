@@ -7,7 +7,7 @@ namespace Bruinet.Uat;
 /// <summary>
 /// Writes a scenario's result where the IDEs and the BDD Explorer read it: its report
 /// (<c>__result.json</c>) and its record in the run's manifest (P5 of AD-022, AD-007). The gate
-/// (<see cref="UatScenarioTestBase{TFixture}"/>) and the runner process write through it alike, so a
+/// (<see cref="BddScenarioTestBase{TFixture}"/>) and the runner process write through it alike, so a
 /// scenario run from either shows the same way.
 /// </summary>
 public static class UatScenarioResults

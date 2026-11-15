@@ -167,7 +167,7 @@ public sealed class TestDrafterTests : IDisposable
     {
         var (project, _) = UserForm.Make(_root, config);
         if (uat)
-            File.WriteAllText(Path.Combine(project.Folder, ScrapeProject.UatConfigFileName), "# UAT Config\n");
+            File.WriteAllText(Path.Combine(project.Folder, ScrapeProject.BddConfigFileName), "# UAT Config\n");
 
         Assert.Equal(expected, ScrapeProject.Open(project.Folder).TestTarget);
     }

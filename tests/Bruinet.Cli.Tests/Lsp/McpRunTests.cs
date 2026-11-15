@@ -17,7 +17,7 @@ public sealed class McpRunTests : IDisposable
         var features = Path.Combine(Suite, "Features");
         Directory.CreateDirectory(features);
         File.WriteAllText(Path.Combine(_solution, "Counter.sln"), string.Empty);
-        File.WriteAllText(Path.Combine(Suite, "uat.config.md"), $"""
+        File.WriteAllText(Path.Combine(Suite, "bdd.config.md"), $"""
             # UAT Config
 
             ## Runtime

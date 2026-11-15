@@ -28,7 +28,7 @@ public sealed partial class BddLanguageServer
         var names = suites.Select(candidate => candidate.Name).ToList();
         if (suite is null)
         {
-            return new ExplorerResult(view, $"<p class=\"uat-banner\">No suite in {System.Net.WebUtility.HtmlEncode(root)}: no project under it, or listed by a solution in it, has a {BddFileFormat.UiConfigFileName} or {BddFileFormat.ServiceConfigFileName}. Open the solution that holds the suites.</p>", names, null);
+            return new ExplorerResult(view, $"<p class=\"uat-banner\">No suite in {System.Net.WebUtility.HtmlEncode(root)}: no project under it, or listed by a solution in it, has a {BddFileFormat.ConfigFileName}. Open the solution that holds the suites.</p>", names, null);
         }
 
         if (view == BddExplorerWriter.Results)

@@ -245,7 +245,7 @@ public sealed class BddConfigWriterTests
             return data;
         }
 
-        foreach (var path in Directory.EnumerateFiles(root, "uat.config.md", SearchOption.AllDirectories))
+        foreach (var path in Directory.EnumerateFiles(root, "bdd.config.md", SearchOption.AllDirectories))
         {
             if (!path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase) &&
                 !path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))

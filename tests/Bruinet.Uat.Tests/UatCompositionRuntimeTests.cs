@@ -141,7 +141,7 @@ public sealed class UatCompositionRuntimeTests
             var runtime = new UatRuntime(
                 fixture,
                 configFilePath,
-                new UatRuntimeValidationOptions(RequireAssemblies: false));
+                new BddRuntimeValidationOptions(RequireAssemblies: false));
 
             Assert.Same(fixture.TestComposition, runtime.Composition);
         }
@@ -175,7 +175,7 @@ public sealed class UatCompositionRuntimeTests
 
     private static string WriteConfig(string directory)
     {
-        var filePath = Path.Combine(directory, "uat.config.md");
+        var filePath = Path.Combine(directory, "bdd.config.md");
         File.WriteAllText(filePath, $$"""
             # UAT Config
 
@@ -357,11 +357,11 @@ public sealed class UatCompositionRuntimeTests
     private sealed class CompositionScenarioHarness(
         CompositionFixture fixture,
         string configFilePath)
-        : UatScenarioTestBase<CompositionFixture>(fixture)
+        : BddScenarioTestBase<CompositionFixture>(fixture)
     {
         protected override string ConfigFilePath => configFilePath;
 
-        protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+        protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
             new(RequireAssemblies: false);
 
         public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Features\*.feature.md" CopyToOutputDirectory="PreserveNewest" />
     <!-- RootDirectory null puts artifacts in the repository's TestResults (AD-007). -->
     <None Include="bruinet.maui.config.json" CopyToOutputDirectory="PreserveNewest" />

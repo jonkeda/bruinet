@@ -702,7 +702,7 @@ public sealed partial class BddMcpServer : IDisposable
         {
             throw new ToolProblem(file.Catalogs is null
                 ? $"{suite.Name} is not bound: {file.Reason}"
-                : $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [UatScenarioTheory].");
+                : $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [BddScenarioTheory].");
         }
 
         var names = _server.ScenarioNames(uri, line);
@@ -1235,7 +1235,7 @@ public sealed partial class BddMcpServer : IDisposable
         }
 
         // Only where the value is a test id: a string elsewhere is as likely a test's or the framework's.
-        var hits = AppSources().Find(value, max: 3, hint: new BddAppSourceHint(Path.Combine(suiteFolder, "uat.config.md"), null, null))
+        var hits = AppSources().Find(value, max: 3, hint: new BddAppSourceHint(BddFileFormat.FindConfig(suiteFolder), null, null))
             .Where(hit => hit.IsAttribute)
             .ToList();
         return hits.Count == 0 ? null : hits.Select(hit => $"{Path.GetRelativePath(_solutionDir, hit.File)}:{hit.Line}: {hit.Text}").ToList();

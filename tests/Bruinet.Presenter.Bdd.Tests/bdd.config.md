@@ -1,24 +1,25 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
 | Field | Value |
 | --- | --- |
-| Target | BLAZOR |
-| Fixture | BlazorUatFixture |
-| AppPath | ../../samples/Bruinet.Samples.Blazor.App/Bruinet.Samples.Blazor.App.csproj |
+| Target | MAUI |
+| Fixture | FlaUI |
 
 ## Assemblies
 
 | Kind | Assembly |
 | --- | --- |
-| Pages | Bruinet.Blazor.UITests.dll |
+| Pages | Bruinet.Presenter.Bdd.Tests.dll |
+| Controls | Bruinet.Maui.dll |
+| Commands | Bruinet.Uat.dll |
 
 ## Discovery
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

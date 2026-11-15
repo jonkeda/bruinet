@@ -81,7 +81,7 @@ public sealed class BruinetCommandTests : IDisposable
     [InlineData("scrape config set Explore MaxPages 20")]
     [InlineData("scrape config add \"Explore hosts\" shop.example")]
     [InlineData("scrape record --by-hand --session first --url https://x")]
-    [InlineData("data validate Features/TOD.01.feature.md --json --fix --assembly a.dll --assembly b.dll --config uat.config.md")]
+    [InlineData("data validate Features/TOD.01.feature.md --json --fix --assembly a.dll --assembly b.dll --config bdd.config.md")]
     [InlineData("data phrases --keyword When --json")]
     [InlineData("data snippet Features/TOD.01.feature.md:14")]
     [InlineData("data schema --check")]

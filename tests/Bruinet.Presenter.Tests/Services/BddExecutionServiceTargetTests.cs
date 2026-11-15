@@ -45,7 +45,7 @@ public sealed class BddExecutionServiceTargetTests
                 """);
 
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 $$"""
                 # UAT Config
 

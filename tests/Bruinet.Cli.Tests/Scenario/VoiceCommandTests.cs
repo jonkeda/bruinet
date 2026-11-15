@@ -12,7 +12,7 @@ public sealed class VoiceCommandTests : IDisposable
     {
         Directory.CreateDirectory(Path.Combine(_root, "Features"));
         File.WriteAllText(Path.Combine(_root, "Suite.csproj"), "<Project />");
-        File.WriteAllText(Path.Combine(_root, "uat.config.md"), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_root, "bdd.config.md"), "# UAT Config\n");
         File.WriteAllText(Path.Combine(_root, "Features", "todo.feature.md"), """
             # Feature: Todo
 

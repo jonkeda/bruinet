@@ -7,7 +7,7 @@ public sealed class BddVideoScriptMarkupTests : IDisposable
 
     public BddVideoScriptMarkupTests()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), "# Feature: A\n\n## Scenario: A.1 Opens\n\n```gherkin\nWhen I tap Sync\nThen the list shows \"Buy bread\"\n```\n");
     }

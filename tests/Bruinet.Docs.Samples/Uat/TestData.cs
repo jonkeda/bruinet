@@ -36,9 +36,9 @@ public sealed class TestDataGate
     #endregion
 }
 
-public sealed class TestDataScenarioTests(TodoUatFixture fixture) : UatScenarioTestBase<TodoUatFixture>(fixture)
+public sealed class TestDataScenarioTests(TodoUatFixture fixture) : BddScenarioTestBase<TodoUatFixture>(fixture)
 {
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } = new(Target: "MAUI", Fixture: "TodoUatFixture");
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } = new(Target: "MAUI", Fixture: "TodoUatFixture");
 
     #region docs:before-file
     protected override void BeforeFile(BddDocument document)

@@ -31,7 +31,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
         Directory.CreateDirectory(Path.Combine(Shelf, "Features"));
         Directory.CreateDirectory(Linked);
         File.WriteAllText(Path.Combine(Shelf, "bdd.config.md"), Config("bin/Debug/net10.0/Shelf.Steps.dll"));
-        File.WriteAllText(Path.Combine(Linked, "uat.config.md"), Config("bin/Debug/net10.0/Shelf.Web.dll"));
+        File.WriteAllText(Path.Combine(Linked, "bdd.config.md"), Config("bin/Debug/net10.0/Shelf.Web.dll"));
         File.WriteAllText(Path.Combine(Linked, "Shelf.Web.csproj"), """
             <Project Sdk="Microsoft.NET.Sdk">
               <ItemGroup>
@@ -219,7 +219,7 @@ public sealed class LanguageServerTests : IAsyncLifetime
         Assert.Equal(new Uri(Feature).AbsoluteUri, await _resultsChanged.Task.WaitAsync(TimeSpan.FromSeconds(10)));
     }
 
-    // A run as UatScenarioTestBase writes it: the report, and its manifest record naming suite and file.
+    // A run as BddScenarioTestBase writes it: the report, and its manifest record naming suite and file.
     private void WriteRun(string runId, string status, string stepStatus)
     {
         var run = Path.Combine(_solution, "TestResults", runId);
@@ -559,7 +559,7 @@ public sealed class ShelfFixture
 // The suite's test class, as a suite that runs by address has it.
 public sealed class ShelfScenarioTests
 {
-    [Bruinet.Uat.UatScenarioTheory]
+    [Bruinet.Uat.BddScenarioTheory]
     [InlineData("x.feature.md", "x")]
     public void Scenario_Passes(string filePath, string scenarioName)
     {

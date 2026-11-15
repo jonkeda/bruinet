@@ -7,11 +7,11 @@ namespace Bruinet.NativeAndroid.UITests.Uat;
 [Trait("Category", "UAT")]
 [Trait("Target", "NATIVEANDROID")]
 public sealed class NativeAndroidUatScenarioTests(GalleryFixture fixture)
-    : UatScenarioTestBase<GalleryFixture>(fixture)
+    : BddScenarioTestBase<GalleryFixture>(fixture)
 {
     public static IEnumerable<object[]> ScenarioFiles => GetScenarioFiles();
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "NATIVEANDROID", Fixture: "GalleryFixture");
 
     [Theory(Timeout = 180000)]

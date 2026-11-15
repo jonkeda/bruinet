@@ -1049,10 +1049,12 @@ const Bruinet.Bdd.BddConfigFields.Project = "Project" -> string!
 const Bruinet.Bdd.BddConfigFields.Target = "Target" -> string!
 const Bruinet.Bdd.BddConfigFields.TestDataAssemblyKind = "TestData" -> string!
 const Bruinet.Bdd.BddConfigFields.WorkingDirectory = "WorkingDirectory" -> string!
+const Bruinet.Bdd.BddFileFormat.ConfigFileName = "bdd.config.md" -> string!
 const Bruinet.Bdd.BddFileFormat.FeatureExtension = ".feature.md" -> string!
 const Bruinet.Bdd.BddFileFormat.FeatureFilePattern = "*.feature.md" -> string!
 const Bruinet.Bdd.BddFileFormat.FeatureFolder = "Features" -> string!
 const Bruinet.Bdd.BddFileFormat.FenceHint = "Steps go in a ```gherkin block; run 'bruinet data validate --fix' to wrap them." -> string!
+const Bruinet.Bdd.BddFileFormat.OldConfigFileName = "uat.config.md" -> string!
 const Bruinet.Bdd.BddFileFormat.OldFeatureFolder = "Scenarios" -> string!
 const Bruinet.Bdd.BddFileFormat.OldFormCode = "BDD029" -> string!
 const Bruinet.Bdd.BddFileFormat.ServiceConfigFileName = "bdd.config.md" -> string!
@@ -1141,6 +1143,7 @@ static Bruinet.Bdd.BddExecutionContextSettingsExtensions.GetSettings(this Bruine
 static Bruinet.Bdd.BddExecutionContextSettingsExtensions.SetSettings(this Bruinet.Bdd.BddExecutionContext! context, Bruinet.Core.Settings.TestSettings! settings) -> void
 static Bruinet.Bdd.BddFileFormat.FenceSteps(string! text) -> (string! Text, int Count)
 static Bruinet.Bdd.BddFileFormat.FindConfig(string! directory) -> string!
+static Bruinet.Bdd.BddFileFormat.HasConfig(string! directory) -> bool
 static Bruinet.Bdd.BddFileFormat.IsConfigFileName(string! fileName) -> bool
 static Bruinet.Bdd.BddFileFormat.NewFileName(string! path) -> string?
 static Bruinet.Bdd.BddFileFormat.NewHeading(string! trimmedLine) -> string?

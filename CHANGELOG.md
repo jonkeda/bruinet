@@ -189,6 +189,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- A suite's config is `bdd.config.md`, whatever its head (`uat.config.md` still read); the scenario test base is
+  `BddScenarioTestBase` with `[BddScenarioTheory]` and `BddRuntimeValidationOptions`; scenario results go to
+  `suites/<suite>/bdd`; the Discovery key is `RequireExplicitBddAttributes`. The old names are obsolete, one release
+  (AD-040).
 - `[BddPage]`, `[BddControl]` and `[BddNavigatesTo]` in `Bruinet.Bdd.Abstractions` name pages and controls, so a control
   library can declare them; `[UatName]`, `[UatNavigatesTo]` and `[UatAction]` are obsolete and still read (AD-040).
 - `UatSpecFormatTestBase` is `BddFeatureFormatTestBase` (`AssertFeature*`); the old name stays one release, obsolete.

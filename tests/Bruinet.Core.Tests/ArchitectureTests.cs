@@ -60,7 +60,8 @@ public sealed class ArchitectureTests
     {
         var root = Root();
         var declaration = new Regex(@"^\s*(public|internal|private|protected)?\s*(sealed |static |abstract |partial |readonly )*(class|record|interface|enum|struct) (\w*Uat\w*)");
-        string[] allowed = ["UatPlatformsAttribute"];
+        // [Uat] writes Category=UAT, the test level, the one place the word is right (AD-040).
+        string[] allowed = ["UatPlatformsAttribute", "UatAttribute"];
 
         var offenders = new[] { "src", "tools" }
             .SelectMany(folder => Sources(Path.Combine(root, folder)))
@@ -77,7 +78,7 @@ public sealed class ArchitectureTests
                 .Select(file => Relative(root, file)))
             .ToList();
 
-        Assert.True(offenders.Count == 0, $"Name these Bdd, not Uat (AD-021): {string.Join(", ", offenders)}");
+        Assert.True(offenders.Count == 0, $"Name these Bdd, not Uat (AD-021, AD-040): {string.Join(", ", offenders)}");
     }
 
     /// <summary>

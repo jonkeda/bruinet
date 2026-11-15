@@ -19,7 +19,7 @@ public sealed class BddRunnerProcessTests : IDisposable
     public BddRunnerProcessTests()
     {
         Directory.CreateDirectory(_root);
-        _config = Path.Combine(_root, "uat.config.md");
+        _config = Path.Combine(_root, "bdd.config.md");
         _feature = Path.Combine(_root, "runner.feature.md");
         File.WriteAllText(_config, $"""
             # UAT Config

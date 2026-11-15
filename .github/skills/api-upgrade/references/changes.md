@@ -9,6 +9,9 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| BU5 | The run's scenario folder is `suites/<suite>/bdd`, was `uat`; `ITestArtifactPathProvider.BddDirectory` (the old `UatDirectory` is obsolete) | `\bUatDirectory\b`, `[/\]uat[/\]` in scripts that read results | `BddDirectory`, `bdd` |
+| BU5 | A suite's config is `bdd.config.md` whatever its head (`uat.config.md` still read, one release); `BddFileFormat.ConfigFileName`, the old `UiConfigFileName` and `ServiceConfigFileName` are obsolete; the Discovery key is `RequireExplicitBddAttributes` | `uat\.config\.md` (file name, `*.csproj` `None Update`), `\bUiConfigFileName\b`, `\bServiceConfigFileName\b`, `RequireExplicitUatAttributes` | `bdd.config.md`, `ConfigFileName`, `RequireExplicitBddAttributes` |
+| BU5 | `UatScenarioTestBase<T>` is `BddScenarioTestBase<T>`, `[UatScenarioTheory]` is `[BddScenarioTheory]`, `UatRuntimeValidationOptions` is `BddRuntimeValidationOptions`. The old ones stay one release, obsolete | `\bUatScenarioTestBase\b`, `\bUatScenarioTheory\b`, `\bUatRuntimeValidationOptions\b` | `BddScenarioTestBase`, `BddScenarioTheory`, `BddRuntimeValidationOptions` |
 | BU4 | `[UatNavigatesTo]` is `[BddNavigatesTo]`, in `Bruinet.Bdd` (package `Bruinet.Bdd.Abstractions`). The old one is obsolete and still read, one release | `\[UatNavigatesTo\(` | `[BddNavigatesTo(` and `using Bruinet.Bdd;` |
 | BU4 | `[UatName]` is `[BddPage]` on a page type or a fixture's page property, `[BddControl]` on a control property, in `Bruinet.Bdd`. The old one is obsolete and still read, one release | `\[UatName\(` on a `class` or a `…Page` property; `\[UatName\(` on other properties | `[BddPage(`; `[BddControl(` |
 | BU4 | `[UatAction]` is obsolete, removed next release: a control's verbs are its `[BddWhen]`/`[BddThen]` methods | `\[UatAction\(` | a `[BddWhen("…")]` or `[BddThen("…")]` on the method |

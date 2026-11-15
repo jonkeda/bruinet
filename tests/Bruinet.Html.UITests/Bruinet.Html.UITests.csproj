@@ -30,13 +30,13 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- The UAT suite: uat.config.md, Features/ and Uat/ (the fixture and the scenario test class). -->
+  <!-- The UAT suite: bdd.config.md, Features/ and Uat/ (the fixture and the scenario test class). -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Features\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="TestSettings\**\*.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

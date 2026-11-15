@@ -22,12 +22,13 @@ public sealed partial class BddLanguageServer
             [BddConfigFields.WorkingDirectory] = "The working directory of a run, relative to the config.",
             [BddConfigFields.DefaultTestData] = "The test set a feature file runs on when its metadata names none.",
             [BddConfigFields.AppsFile] = "A markdown file with the suite's Apps table, relative to the config (apps.md, shared with the UI tests).",
-            [BddConfigFields.Project] = "The UAT test project, from which the Pages assembly is resolved.",
+            [BddConfigFields.Project] = "The test project, from which the Pages assembly is resolved.",
         },
         ["Discovery"] = new(StringComparer.OrdinalIgnoreCase)
         {
-            ["RequireExplicitUatAttributes"] = "true: only members marked for UAT are steps and controls.",
-            ["AllowNameInference"] = "true: a control's UAT name may be inferred from its property name.",
+            ["RequireExplicitBddAttributes"] = "true: only pages and controls named by [BddPage] and [BddControl] are pages and controls.",
+            ["RequireExplicitUatAttributes"] = "The old name of RequireExplicitBddAttributes, still read.",
+            ["AllowNameInference"] = "true: a control's name may be inferred from its property name.",
         },
         ["Reporting"] = new(StringComparer.OrdinalIgnoreCase)
         {
@@ -55,7 +56,7 @@ public sealed partial class BddLanguageServer
 
     private static readonly string[] ConfigSections = ["Runtime", "Assemblies", "Discovery", "Reporting", "Settings", "Skip Rules", "Apps", "Using"];
 
-    private static readonly HashSet<string> BooleanFields = new(StringComparer.OrdinalIgnoreCase) { "RequireExplicitUatAttributes", "AllowNameInference", "ScreenshotOnFailure", "IncludeRuntimeTrace" };
+    private static readonly HashSet<string> BooleanFields = new(StringComparer.OrdinalIgnoreCase) { "RequireExplicitBddAttributes", "RequireExplicitUatAttributes", "AllowNameInference", "ScreenshotOnFailure", "IncludeRuntimeTrace" };
 
     internal static bool IsConfig(string path) => BddFileFormat.IsConfigFileName(Path.GetFileName(path));
 

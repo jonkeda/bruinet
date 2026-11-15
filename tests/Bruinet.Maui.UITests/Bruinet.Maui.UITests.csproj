@@ -49,13 +49,13 @@
     <None Include="timing-baseline.json" CopyToOutputDirectory="PreserveNewest" Condition="Exists('timing-baseline.json')" />
   </ItemGroup>
 
-  <!-- The UAT suite: uat.config.md, Features/ and Uat/ (the fixture and the scenario test class). -->
+  <!-- The UAT suite: bdd.config.md, Features/ and Uat/ (the fixture and the scenario test class). -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Features\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Features\**\*.video.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="ExpectedFailures\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />

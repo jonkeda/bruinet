@@ -172,7 +172,7 @@ public sealed record BddReportingSettings(
     public static BddReportingSettings CreateDefault(string? suiteName = null)
     {
         return new BddReportingSettings(
-            DefaultTestArtifactPathProvider.Create(suiteName).UatDirectory);
+            DefaultTestArtifactPathProvider.Create(suiteName).BddDirectory);
     }
 }
 
@@ -394,7 +394,8 @@ public static class BddConfigParser
             runtime,
             assemblies,
             new BddDiscoverySettings(
-                ReadBool(discovery, "RequireExplicitUatAttributes", defaultValue: false),
+                // The old key is still read, one release (AD-040).
+                ReadBool(discovery, "RequireExplicitBddAttributes", defaultValue: ReadBool(discovery, "RequireExplicitUatAttributes", defaultValue: false)),
                 ReadBool(discovery, "AllowNameInference", defaultValue: true)),
             new BddReportingSettings(
                 ResolveReportingOutputDirectory(
@@ -508,7 +509,7 @@ public static class BddConfigParser
         var provider = DefaultTestArtifactPathProvider.Create(suiteName);
         if (string.IsNullOrWhiteSpace(configured))
         {
-            return provider.UatDirectory;
+            return provider.BddDirectory;
         }
 
         var expanded = configured

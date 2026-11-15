@@ -29,15 +29,19 @@ public sealed partial class ScrapeProject
     /// <summary>Its settings.</summary>
     public ScraperConfig Config { get; }
 
-    /// <summary>The UAT suite's config beside the scraped one: its presence makes a scenario the default draft.</summary>
+    /// <summary>The BDD suite's config beside the scraped one: its presence makes a scenario the default draft.</summary>
+    public const string BddConfigFileName = "bdd.config.md";
+
+    /// <summary>The old name of <see cref="BddConfigFileName"/>, still read (AD-040).</summary>
+    [Obsolete("Use BddConfigFileName (AD-040).")]
     public const string UatConfigFileName = "uat.config.md";
 
     /// <summary>What a test recording is drafted as by default: the config's <c>## Tests</c> Target, else a scenario when the project is a UAT suite, else an xUnit test.</summary>
     public TestTarget TestTarget => Config.Tests.Target ?? DefaultTestTarget(Folder);
 
-    /// <summary>The target written into a new config: a scenario when the folder has a <c>uat.config.md</c>, otherwise an xUnit test.</summary>
+    /// <summary>The target written into a new config: a scenario when the folder has a <c>bdd.config.md</c> (or the old <c>uat.config.md</c>), otherwise an xUnit test.</summary>
     public static TestTarget DefaultTestTarget(string folder) =>
-        File.Exists(Path.Combine(folder, UatConfigFileName)) ? TestTarget.Scenario : TestTarget.Xunit;
+        File.Exists(Path.Combine(folder, BddConfigFileName)) || File.Exists(Path.Combine(folder, "uat.config.md")) ? TestTarget.Scenario : TestTarget.Xunit;
 
     /// <summary>The namespace generated code goes in.</summary>
     public string Namespace => Config.Namespace.Length > 0 ? Config.Namespace : Name;

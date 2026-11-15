@@ -140,7 +140,7 @@ public sealed class UatSessionTests
                 """);
         }
 
-        private string ConfigFilePath => Path.Combine(_directory, "uat.config.md");
+        private string ConfigFilePath => Path.Combine(_directory, "bdd.config.md");
 
         public Task Run(SessionFixture fixture, string scenario)
         {
@@ -153,11 +153,11 @@ public sealed class UatSessionTests
     }
 
     private sealed class Harness(SessionFixture fixture, string configFilePath)
-        : UatScenarioTestBase<SessionFixture>(fixture)
+        : BddScenarioTestBase<SessionFixture>(fixture)
     {
         protected override string ConfigFilePath => configFilePath;
 
-        protected override UatRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
+        protected override BddRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
 
         public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
     }

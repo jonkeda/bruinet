@@ -19,7 +19,7 @@ public sealed class TestArtifactPathProviderTests
         Assert.Equal(Path.GetFullPath(root), provider.RootDirectory);
         Assert.EndsWith(Path.Combine("run_42", "suites", "Suite_Name"), provider.SuiteDirectory);
         Assert.EndsWith(Path.Combine("run_42", "suites", "Suite_Name", "screenshots"), provider.ScreenshotsDirectory);
-        Assert.EndsWith(Path.Combine("run_42", "suites", "Suite_Name", "uat"), provider.UatDirectory);
+        Assert.EndsWith(Path.Combine("run_42", "suites", "Suite_Name", "bdd"), provider.BddDirectory);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public sealed class TestArtifactPathProviderTests
         Assert.True(Directory.Exists(provider.RunnerDirectory));
         Assert.True(Directory.Exists(provider.LogsDirectory));
         Assert.True(Directory.Exists(provider.ScreenshotsDirectory));
-        Assert.True(Directory.Exists(provider.UatDirectory));
+        Assert.True(Directory.Exists(provider.BddDirectory));
         Assert.True(Directory.Exists(provider.CoverageDirectory));
         Assert.True(Directory.Exists(provider.TracesDirectory));
         Assert.True(Directory.Exists(provider.VideosDirectory));

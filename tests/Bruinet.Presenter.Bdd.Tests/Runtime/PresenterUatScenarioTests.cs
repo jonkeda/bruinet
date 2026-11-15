@@ -8,11 +8,11 @@ namespace Bruinet.Presenter.Bdd.Tests.Runtime;
 [Trait("Category", "UAT")]
 [Trait("Target", "Presenter")]
 public sealed class PresenterUatScenarioTests(PresenterFixture fixture)
-    : UatScenarioTestBase<PresenterFixture>(fixture)
+    : BddScenarioTestBase<PresenterFixture>(fixture)
 {
     public static IEnumerable<object[]> ScenarioFiles => GetScenarioFiles();
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "MAUI", Fixture: "FlaUI");
 
     [Theory(Timeout = 120000)]

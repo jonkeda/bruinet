@@ -29,7 +29,7 @@ public sealed class BddWorkspaceServiceTests
             File.WriteAllText(appPath, string.Empty);
 
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 $$"""
                 # UAT Config
 
@@ -76,7 +76,7 @@ public sealed class BddWorkspaceServiceTests
         try
         {
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 """
                 # UAT Config
 
@@ -124,7 +124,7 @@ public sealed class BddWorkspaceServiceTests
         try
         {
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 """
                 # UAT Config
 
@@ -215,7 +215,7 @@ public sealed class BddWorkspaceServiceTests
         try
         {
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 """
                 # UAT Config
 

@@ -12,7 +12,7 @@ public sealed class UatRuntime
     public UatRuntime(
         object root,
         string configFilePath,
-        UatRuntimeValidationOptions? validationOptions = null)
+        BddRuntimeValidationOptions? validationOptions = null)
     {
         ArgumentNullException.ThrowIfNull(root);
         ArgumentException.ThrowIfNullOrWhiteSpace(configFilePath);
@@ -21,7 +21,7 @@ public sealed class UatRuntime
         ConfigFilePath = Path.GetFullPath(configFilePath);
         ConfigDirectory = Path.GetDirectoryName(ConfigFilePath) ?? Directory.GetCurrentDirectory();
         Config = BddConfigParser.ParseFile(ConfigFilePath, root.GetType().Assembly.GetName().Name);
-        ValidateConfig(root, Config, ConfigFilePath, validationOptions ?? UatRuntimeValidationOptions.Default);
+        ValidateConfig(root, Config, ConfigFilePath, validationOptions ?? BddRuntimeValidationOptions.Default);
         Composition = ResolveComposition(root);
         _reflectionRuntime = Composition is null
             ? UatReflectionRuntime.FromRoot(root)
@@ -159,7 +159,7 @@ public sealed class UatRuntime
         object root,
         BddConfig config,
         string configFilePath,
-        UatRuntimeValidationOptions options)
+        BddRuntimeValidationOptions options)
     {
         // The declared target is checked against the fixture, not against a string in the
         // config: the fixture's base is what a target actually is. A config row still counts,
@@ -204,10 +204,15 @@ public sealed class UatRuntime
     }
 }
 
-public sealed record UatRuntimeValidationOptions(
+/// <summary>What a suite's config must say for its scenarios to run: its target and fixture, and at least one assembly.</summary>
+/// <param name="Target">The target the config must name; null for any.</param>
+/// <param name="Fixture">The fixture the config must name; null for any.</param>
+/// <param name="RequireAssemblies">Whether the config must register an assembly.</param>
+public record BddRuntimeValidationOptions(
     string? Target = null,
     string? Fixture = null,
     bool RequireAssemblies = true)
 {
-    public static UatRuntimeValidationOptions Default { get; } = new();
+    /// <summary>Any target and fixture, at least one assembly.</summary>
+    public static BddRuntimeValidationOptions Default { get; } = new();
 }

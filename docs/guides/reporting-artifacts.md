@@ -91,4 +91,4 @@ written `***`, but anything else on the page is kept: `TestResults` is not for p
 - `src/Bruinet.Core/Artifacts/DefaultTestArtifactPathProvider.cs`
 - `src/Bruinet.Core/Artifacts/ITestArtifactPathProvider.cs`
 - `src/Bruinet.Core/Artifacts/TestArtifactManifestWriter.cs`
-- `src/Bruinet.Uat/UatScenarioTestBase.cs`
+- `src/Bruinet.Uat/BddScenarioTestBase.cs`

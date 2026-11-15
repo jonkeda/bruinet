@@ -18,7 +18,7 @@ public sealed class ScenarioValidationTests : IDisposable
     public ScenarioValidationTests()
     {
         Directory.CreateDirectory(_folder);
-        Write("uat.config.md", $"""
+        Write("bdd.config.md", $"""
             # UAT Config
 
             ## Runtime
@@ -314,7 +314,7 @@ public sealed class ScenarioValidationTests : IDisposable
     [Fact]
     public void Validate_ReportsAConfigUsingThatNamesNothing_Once()
     {
-        File.AppendAllText(Path.Combine(_folder, "uat.config.md"), "\n## Using\n\n| Namespace |\n| --- |\n| Lendng |\n");
+        File.AppendAllText(Path.Combine(_folder, "bdd.config.md"), "\n## Using\n\n| Namespace |\n| --- |\n| Lendng |\n");
         Scenario("""
             When I lend "Dune" to Eva until 12-May-2026
             """);
@@ -322,7 +322,7 @@ public sealed class ScenarioValidationTests : IDisposable
         var (exit, output, _) = Run("validate");
 
         Assert.Equal(1, exit);
-        Assert.Contains("uat.config.md:1: BDDB011", output);
+        Assert.Contains("bdd.config.md:1: BDDB011", output);
         Assert.Contains("1 error(s).", output);
     }
 

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="uat.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
     <!-- How the suite's names are said in narrated videos (the narrator reads it beside the config). -->
     <None Update="pronunciations.md" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Features\**\*.feature.md" CopyToOutputDirectory="PreserveNewest" />

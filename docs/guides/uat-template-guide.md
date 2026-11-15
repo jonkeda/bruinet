@@ -83,13 +83,13 @@ scenario - each outline row too - into a theory case of its own:
 ```csharp
 [Collection(TodoUatCollection.CollectionName)]
 [TestCaseOrderer(BddScenarioOrderer.TypeName, BddScenarioOrderer.AssemblyName)]
-public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
+public sealed class TodoUatScenarioTests : BddScenarioTestBase<TodoUatFixture>
 {
     public TodoUatScenarioTests(TodoUatFixture fixture) : base(fixture) { }
 
     public static IEnumerable<object[]> Scenarios => GetScenarioTheoryData();
 
-    [UatScenarioTheory(Timeout = 120000)]
+    [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 
@@ -100,7 +100,7 @@ public sealed class TodoUatScenarioTests : UatScenarioTestBase<TodoUatFixture>
     // Reset the app between scenarios so they stay order-independent.
     protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTest();
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "MAUI", Fixture: "TodoUatFixture");
 }
 ```

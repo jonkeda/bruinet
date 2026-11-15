@@ -21,7 +21,7 @@ public sealed class NarratorRunTests : IDisposable
         Directory.CreateDirectory(Path.Combine(_root, "Features"));
         _home = Path.Combine(_root, "home");
         Directory.CreateDirectory(_home);
-        File.WriteAllText(Path.Combine(_root, "uat.config.md"), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_root, "bdd.config.md"), "# UAT Config\n");
         _feature = Path.Combine(_root, "Features", "greeting.feature.md");
         File.WriteAllText(
             _feature,
@@ -415,7 +415,7 @@ public sealed class NarratorRunTests : IDisposable
             return new BddWorkspaceLoadResult(
                 root,
                 "Workspace",
-                new BddWorkspaceConfigLoadResult(true, Path.Combine(root, "uat.config.md"), "MAUI", "Fixture", "App.exe", "App.exe", true, string.Empty, string.Empty, true, [], []),
+                new BddWorkspaceConfigLoadResult(true, Path.Combine(root, "bdd.config.md"), "MAUI", "Fixture", "App.exe", "App.exe", true, string.Empty, string.Empty, true, [], []),
                 [new BddFileLoadResult(feature, "greeting.feature.md", true, true, [])],
                 [Scenario("First", 6), Scenario("Second", 12), Scenario("Third", 18)],
                 [],

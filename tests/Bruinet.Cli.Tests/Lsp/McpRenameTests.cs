@@ -16,7 +16,7 @@ public sealed class McpRenameTests : IDisposable
     {
         Directory.CreateDirectory(Path.Combine(Suite, "Features"));
         File.WriteAllText(Path.Combine(_solution, "Counter.sln"), string.Empty);
-        File.WriteAllText(Path.Combine(Suite, "uat.config.md"), $"""
+        File.WriteAllText(Path.Combine(Suite, "bdd.config.md"), $"""
             # UAT Config
 
             ## Runtime

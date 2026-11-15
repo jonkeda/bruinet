@@ -114,7 +114,7 @@ public sealed class BddConfigParserTests
             Assert.False(config.Discovery.RequireExplicitUatAttributes);
             Assert.True(config.Discovery.AllowNameInference);
             Assert.Equal(
-                Path.Combine(root, "run-1", "suites", "ConfigParserSuite", "uat"),
+                Path.Combine(root, "run-1", "suites", "ConfigParserSuite", "bdd"),
                 config.Reporting.OutputDirectory);
             Assert.False(config.Reporting.ScreenshotOnFailure);
             Assert.False(config.Reporting.IncludeRuntimeTrace);

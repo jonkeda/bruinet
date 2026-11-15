@@ -14,7 +14,7 @@ public sealed class BddPreviewMarkupTests : IDisposable
     [Fact]
     public void ALineWithMarkup_ShowsItsWordsOnly_WithAMarkNamingItsElements()
     {
-        File.WriteAllText(Path.Combine(_suite, "uat.config.md"), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, "bdd.config.md"), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), "# Feature: A\n\n## Scenario: A.1 Opens\n\n```gherkin\nWhen I tap Sync\n```\n");
         var path = Path.Combine(_suite, "Features", "v.video.md");

@@ -29,7 +29,7 @@ public sealed class BddWarmRunnersTests : IAsyncLifetime
             File.Copy(file, target);
         }
 
-        _config = Path.Combine(_root, "uat.config.md");
+        _config = Path.Combine(_root, "bdd.config.md");
         _feature = Path.Combine(_root, "warm.feature.md");
         File.WriteAllText(_config, $"""
             # UAT Config

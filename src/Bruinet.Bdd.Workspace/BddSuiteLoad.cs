@@ -19,7 +19,7 @@ internal sealed class BddSuiteLoad : IDisposable
     // The built assembly the fixture was found in, as built: the runner starts from it, not from the copy.
     public string? FixtureAssemblyPath { get; set; }
 
-    // Whether a loaded assembly has a [UatScenarioTheory] method, so its scenarios have addresses to run by.
+    // Whether a loaded assembly has a [BddScenarioTheory] method, so its scenarios have addresses to run by.
     public bool HasScenarioTheory { get; private set; }
 
     // The context, for a test that the load is released.
@@ -117,7 +117,7 @@ internal sealed class BddSuiteLoad : IDisposable
         try
         {
             return type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                .Any(method => method.CustomAttributes.Any(attribute => attribute.AttributeType.FullName == "Bruinet.Uat.UatScenarioTheoryAttribute"));
+                .Any(method => method.CustomAttributes.Any(attribute => attribute.AttributeType.FullName is "Bruinet.Uat.BddScenarioTheoryAttribute" or "Bruinet.Uat.UatScenarioTheoryAttribute"));
         }
         catch (Exception exception) when (exception is TypeLoadException or FileNotFoundException or FileLoadException)
         {

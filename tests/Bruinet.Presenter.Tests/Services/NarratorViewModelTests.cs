@@ -14,7 +14,7 @@ public sealed class NarratorViewModelTests : IDisposable
     public NarratorViewModelTests()
     {
         Directory.CreateDirectory(Path.Combine(_root, "Features", "Videos"));
-        File.WriteAllText(Path.Combine(_root, "uat.config.md"), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_root, "bdd.config.md"), "# UAT Config\n");
         File.WriteAllText(
             Path.Combine(_root, "Features", "greeting.feature.md"),
             """

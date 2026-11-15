@@ -23,7 +23,7 @@ public sealed partial class BddLanguageServer
             var runnable = bound && suite.HasScenarioTheory && suite.ProjectFile is not null;
             reason = !bound ? reason
                 : suite.ProjectFile is null ? $"{suite.Name} has no project file."
-                : !suite.HasScenarioTheory ? $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [UatScenarioTheory]."
+                : !suite.HasScenarioTheory ? $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [BddScenarioTheory]."
                 : null;
             List<FileScenarios> files = [];
             foreach (var path in suite.FeatureFiles.Concat(suite.LinkedFiles)

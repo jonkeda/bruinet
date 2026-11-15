@@ -105,7 +105,7 @@ public sealed class BddPreviewTodoTests : IClassFixture<BddPreviewTodoTests.Todo
     {
         public static readonly string Project = Path.Combine(FindTodo(), "tests", "Bruinet.Samples.Todo.Uat");
 
-        private readonly BddSuite _suite = BddSuite.Open(Path.Combine(Project, BddFileFormat.UiConfigFileName));
+        private readonly BddSuite _suite = BddSuite.Open(Path.Combine(Project, BddFileFormat.ConfigFileName));
 
         public BddCatalogSet Catalogs => _suite.TryGetCatalogs(out var reason)
             ?? throw new InvalidOperationException($"The Todo MAUI suite cannot be bound: {reason} Build samples/Todo first.");

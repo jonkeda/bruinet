@@ -2,7 +2,7 @@ namespace Bruinet.Uat;
 
 /// <summary>
 /// What a fixture does before a file's scenarios and before each scenario: its test set, a clean
-/// start. <see cref="UatScenarioTestBase{TFixture}"/> calls it, and so does a host that runs
+/// start. <see cref="BddScenarioTestBase{TFixture}"/> calls it, and so does a host that runs
 /// scenarios without the suite's test class (Presenter), so both start a scenario the same way.
 /// </summary>
 public interface IUatScenarioLifecycle

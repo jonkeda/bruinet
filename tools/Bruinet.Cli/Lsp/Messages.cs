@@ -347,7 +347,7 @@ public sealed record ExplorerResult(string View, string Html, IReadOnlyList<stri
 /// <summary>A suite's scenarios, for an IDE's test explorer.</summary>
 /// <param name="Suite">The suite's name.</param>
 /// <param name="Project">Its project file, which <c>dotnet test</c> runs.</param>
-/// <param name="Runnable">Whether its scenarios run by address (<c>[UatScenarioTheory]</c>, built).</param>
+/// <param name="Runnable">Whether its scenarios run by address (<c>[BddScenarioTheory]</c>, built).</param>
 /// <param name="Reason">Why not; null when they do.</param>
 /// <param name="Files">Its feature files, linked ones included.</param>
 public sealed record SuiteScenarios(string Suite, string? Project, bool Runnable, string? Reason, IReadOnlyList<FileScenarios> Files);

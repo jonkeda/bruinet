@@ -247,7 +247,7 @@ public sealed class BddRecordingSessionTests : IDisposable
 
     public BddRecordingSessionTests()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), Scenarios.Feature);
         File.WriteAllText(Path.Combine(_suite, "Features", "a.video.md"), """

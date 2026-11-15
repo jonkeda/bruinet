@@ -17,7 +17,7 @@ public sealed class DefaultTestArtifactPathProvider : ITestArtifactPathProvider
         RunnerDirectory = Path.Combine(SuiteDirectory, "runner");
         LogsDirectory = Path.Combine(SuiteDirectory, "logs");
         ScreenshotsDirectory = Path.Combine(SuiteDirectory, "screenshots");
-        UatDirectory = Path.Combine(SuiteDirectory, "uat");
+        BddDirectory = Path.Combine(SuiteDirectory, "bdd");
         CoverageDirectory = Path.Combine(SuiteDirectory, "coverage");
         TracesDirectory = Path.Combine(SuiteDirectory, "traces");
         VideosDirectory = Path.Combine(SuiteDirectory, "videos");
@@ -42,7 +42,12 @@ public sealed class DefaultTestArtifactPathProvider : ITestArtifactPathProvider
 
     public string ScreenshotsDirectory { get; }
 
-    public string UatDirectory { get; }
+    /// <inheritdoc />
+    [Obsolete("Use BddDirectory (AD-040).")]
+    public string UatDirectory => BddDirectory;
+
+    /// <inheritdoc />
+    public string BddDirectory { get; }
 
     public string CoverageDirectory { get; }
 
@@ -99,7 +104,7 @@ public sealed class DefaultTestArtifactPathProvider : ITestArtifactPathProvider
             RunnerDirectory,
             LogsDirectory,
             ScreenshotsDirectory,
-            UatDirectory,
+            BddDirectory,
             CoverageDirectory,
             TracesDirectory,
             VideosDirectory,

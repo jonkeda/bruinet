@@ -8,7 +8,7 @@ namespace Bruinet.Bdd.LanguageServer.Tests;
 /// </summary>
 public sealed class ConfigTests : IAsyncLifetime
 {
-    private static readonly string Config = Path.Combine(TodoPaths.Project, "uat.config.md");
+    private static readonly string Config = Path.Combine(TodoPaths.Project, "bdd.config.md");
     private static readonly string Feature = Path.Combine(TodoPaths.Project, "Features", "TOD.01-see-my-todos.feature.md");
     private ServerHarness _server = null!;
 

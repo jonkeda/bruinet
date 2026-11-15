@@ -138,7 +138,7 @@ public sealed class BddVideoScriptCheckTests : IDisposable
 
     public BddVideoScriptCheckTests()
     {
-        File.WriteAllText(Path.Combine(_suite, BddFileFormat.UiConfigFileName), "# UAT Config\n");
+        File.WriteAllText(Path.Combine(_suite, BddFileFormat.ConfigFileName), "# UAT Config\n");
         Directory.CreateDirectory(Path.Combine(_suite, "Features"));
         File.WriteAllText(Path.Combine(_suite, "Features", "A.feature.md"), """
             # Feature: A

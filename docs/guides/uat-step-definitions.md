@@ -534,7 +534,7 @@ A button that always goes to one page says so, and the assert becomes optional:
 
 <!-- sample: tests/Bruinet.Docs.Samples/Uat/TodoStandIns.cs#navigates-to -->
 ```csharp
-[UatNavigatesTo(typeof(TodoEditPage))]
+[BddNavigatesTo(typeof(TodoEditPage))]
 public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Add"));
 ```
 
@@ -648,10 +648,10 @@ Names can be explicit:
 <!-- sample: tests/Bruinet.Docs.Samples/WinForms/PageNames.cs#names -->
 ```csharp
 [TestPage("Login")]
-[UatName("Login")]
+[BddPage("Login")]
 public sealed class LoginUatPage(IWinFormsTestContext context) : PageObjectBase<LoginUatPage>(context)
 {
-    [UatName("Role")]
+    [BddControl("Role")]
     public ComboBox<LoginUatPage> RoleCombo => ComboBox("cmbRole");
 }
 ```
@@ -969,6 +969,6 @@ The rule is [AD-015](../../.docs/decisions/ad-015-a-steps-subject-picks-its-app.
 - `src/Bruinet.Uat/UatSessions.cs` — `IBddSessionHost`, `IUatAppsHost`
 - `src/Bruinet.Uat/UatCatalogBuilder.cs`
 - `src/Bruinet.Uat/UatReflectionRuntime.cs`
-- `src/Bruinet.Uat/UatScenarioTestBase.cs`
+- `src/Bruinet.Uat/BddScenarioTestBase.cs`
 - `src/Bruinet.Uat/UatGenericCatalog.cs`
 - `src/Bruinet.Uat/UatAttributes.cs`

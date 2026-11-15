@@ -170,7 +170,7 @@ public sealed class RunnerSessionTests : IDisposable
 
     private void Config(string fixture)
         => File.WriteAllText(
-            Path.Combine(_root, "uat.config.md"),
+            Path.Combine(_root, "bdd.config.md"),
             $$"""
             # UAT Config
 

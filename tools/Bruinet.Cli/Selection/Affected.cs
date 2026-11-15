@@ -95,7 +95,7 @@ internal sealed record Affected(string? Whole, IReadOnlyList<PickedTest> Picked,
             return null;
         }
 
-        if (Regex.IsMatch(source, @"\[(?:Fact|Theory|UiFact|BrowserFact|UatScenarioTheory)\b"))
+        if (Regex.IsMatch(source, @"\[(?:Fact|Theory|UiFact|BrowserFact|BddScenarioTheory|UatScenarioTheory)\b"))
         {
             var space = Regex.Match(source, @"\bnamespace\s+([\w.]+)").Groups[1].Value;
             foreach (var type in types)

@@ -177,7 +177,7 @@ public sealed class ConfigEditorViewModel : ViewModelBase
         {
             if (!ConfigExists)
             {
-                return $"No {BddFileFormat.UiConfigFileName}";
+                return $"No {BddFileFormat.ConfigFileName}";
             }
 
             var problems = _hasErrors ? "problems" : string.Empty;
@@ -194,7 +194,7 @@ public sealed class ConfigEditorViewModel : ViewModelBase
     private bool WorkspacePathIsSet => _workspacePath.Length > 0;
 
     // uat.config.md or bdd.config.md, whichever the workspace has.
-    private string ConfigName => _configPath.Length > 0 ? Path.GetFileName(_configPath) : BddFileFormat.UiConfigFileName;
+    private string ConfigName => _configPath.Length > 0 ? Path.GetFileName(_configPath) : BddFileFormat.ConfigFileName;
 
     /// <summary>Shows the workspace's config, discarding any unsaved edits.</summary>
     /// <param name="workspacePath">The workspace folder.</param>

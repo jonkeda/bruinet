@@ -39,7 +39,7 @@ public sealed partial class BddLanguageServer
 
         if (suite.IsLoaded && !suite.HasScenarioTheory)
         {
-            return RecordTargetResult.Not($"{suite.Name} runs its scenarios with [Theory], so they have no address to record by. Change it to [UatScenarioTheory].");
+            return RecordTargetResult.Not($"{suite.Name} runs its scenarios with [Theory], so they have no address to record by. Change it to [BddScenarioTheory].");
         }
 
         var folder = RecordingsFolder(request.RecordingsFolder, suite);
@@ -132,7 +132,7 @@ public sealed partial class BddLanguageServer
         }
 
         return suite.IsLoaded && !suite.HasScenarioTheory
-            ? new(false, $"{suite.Name} runs its scenarios with [Theory], so they have no address to record by. Change it to [UatScenarioTheory].")
+            ? new(false, $"{suite.Name} runs its scenarios with [Theory], so they have no address to record by. Change it to [BddScenarioTheory].")
             : new(true);
     }
 

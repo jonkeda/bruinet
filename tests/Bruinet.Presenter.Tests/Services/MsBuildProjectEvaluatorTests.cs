@@ -88,7 +88,7 @@ public sealed class MsBuildProjectEvaluatorTests
         try
         {
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 BddConfigWriter.Create(new BddConfigTemplate(project, "TodoUatFixture")));
 
             var config = new BddWorkspaceService().LoadFolder(root).Config;

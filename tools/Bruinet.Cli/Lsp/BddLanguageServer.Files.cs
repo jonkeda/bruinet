@@ -81,7 +81,7 @@ public sealed partial class BddLanguageServer
         reason = catalogs is not null
             ? null
             : suite is null
-                ? $"No suite holds or links this file: no project with a {BddFileFormat.UiConfigFileName} or {BddFileFormat.ServiceConfigFileName} in {root} (under it, or listed by its solution) has it."
+                ? $"No suite holds or links this file: no project with a {BddFileFormat.ConfigFileName} in {root} (under it, or listed by its solution) has it."
                 : reason;
         return new BddServerFile(path, document.Text, document.Version, suites, suite, catalogs, reason);
     }

@@ -4,7 +4,7 @@ using Xunit.Sdk;
 
 namespace Bruinet.Uat.Tests;
 
-/// <summary>A <c>[UatScenarioTheory]</c> case: its <c>BddScenario</c> trait, through serialization too.</summary>
+/// <summary>A <c>[BddScenarioTheory]</c> case: its <c>BddScenario</c> trait, through serialization too.</summary>
 public sealed class UatScenarioTheoryTests
 {
     private static readonly string Output = Path.GetDirectoryName(BddScenarioSource.GetConfigFilePath())!;
@@ -38,12 +38,12 @@ public sealed class UatScenarioTheoryTests
     [Fact]
     public void TheDiscoverer_IsNamedOnTheAttribute()
     {
-        var discoverer = typeof(UatScenarioTheoryAttribute).GetCustomAttributes(typeof(XunitTestCaseDiscovererAttribute), inherit: false)
+        var discoverer = typeof(BddScenarioTheoryAttribute).GetCustomAttributes(typeof(XunitTestCaseDiscovererAttribute), inherit: false)
             .Cast<XunitTestCaseDiscovererAttribute>()
             .Single();
 
         Assert.NotNull(Type.GetType($"{typeof(UatScenarioTheoryDiscoverer).FullName}, {typeof(UatScenarioTheoryDiscoverer).Assembly.GetName().Name}"));
-        Assert.Equal(typeof(TheoryAttribute), typeof(UatScenarioTheoryAttribute).BaseType);
+        Assert.Equal(typeof(TheoryAttribute), typeof(BddScenarioTheoryAttribute).BaseType);
         Assert.NotNull(discoverer);
     }
 
@@ -58,7 +58,7 @@ public sealed class UatScenarioTheoryTests
 
     public sealed class Scenarios
     {
-        [UatScenarioTheory]
+        [BddScenarioTheory]
         [InlineData("x.feature.md", "x")]
         public void Scenario_Passes(string filePath, string scenarioName)
         {

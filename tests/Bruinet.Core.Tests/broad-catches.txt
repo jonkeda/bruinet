@@ -10,6 +10,7 @@
 1 src/Bruinet.Core/Artifacts/TestArtifactManifestWriter.cs
 1 src/Bruinet.Core/Calls/ControlCall.cs
 2 src/Bruinet.Core/Services/ScreenshotService.cs
+1 src/Bruinet.Core/Testing/RunMarker.cs
 1 src/Bruinet.Core/Testing/TestApps.cs
 1 src/Bruinet.FlaUI/DesktopApp.cs
 1 src/Bruinet.FlaUI/Windowing/AppWindow.cs
@@ -38,7 +39,7 @@
 1 src/Bruinet.Stride/Infrastructure/StrideGameDriver.cs
 4 src/Bruinet.Uat/Runner/BddRunnerHost.cs
 2 src/Bruinet.Uat/UatReflectionRuntime.cs
-2 src/Bruinet.Uat/UatScenarioTestBase.cs
+2 src/Bruinet.Uat/BddScenarioTestBase.cs
 2 src/Bruinet.Uia.Contracts/BruinetAutomationPatternHandler.cs
 1 src/Bruinet.Uia.Contracts/BruinetPatternRegistration.cs
 3 src/Bruinet.Uia.Contracts/Provider/BridgeTargetProvider.cs

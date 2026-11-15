@@ -21,3 +21,26 @@ public abstract class UatSpecFormatTestBase : BddFeatureFormatTestBase
     /// <summary>Renamed to <see cref="BddFeatureFormatTestBase.AssertConfigParses"/>.</summary>
     protected void AssertUatConfigParses() => AssertConfigParses();
 }
+
+/// <summary>Renamed to <see cref="BddScenarioTestBase{TFixture}"/>.</summary>
+/// <typeparam name="TFixture">The suite's fixture.</typeparam>
+[Obsolete("Renamed to BddScenarioTestBase (AD-040).")]
+public abstract class UatScenarioTestBase<TFixture> : BddScenarioTestBase<TFixture>
+    where TFixture : class
+{
+    /// <param name="fixture">The suite's fixture.</param>
+    protected UatScenarioTestBase(TFixture fixture)
+        : base(fixture)
+    {
+    }
+}
+
+/// <summary>Renamed to <see cref="BddRuntimeValidationOptions"/>.</summary>
+/// <param name="Target">The target the config must name; null for any.</param>
+/// <param name="Fixture">The fixture the config must name; null for any.</param>
+/// <param name="RequireAssemblies">Whether the config must register an assembly.</param>
+[Obsolete("Renamed to BddRuntimeValidationOptions (AD-040).")]
+public sealed record UatRuntimeValidationOptions(
+    string? Target = null,
+    string? Fixture = null,
+    bool RequireAssemblies = true) : BddRuntimeValidationOptions(Target, Fixture, RequireAssemblies);

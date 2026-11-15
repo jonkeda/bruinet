@@ -186,7 +186,7 @@ public sealed partial class BddLanguageServer : IDisposable
     /// <summary>
     /// <c>bruinet/runTarget</c>: the project and filter that run the scenario at a heading's line
     /// (every row of an outline), or the whole file. Asked after the build, so the suite's test class
-    /// is known to use <c>[UatScenarioTheory]</c>.
+    /// is known to use <c>[BddScenarioTheory]</c>.
     /// </summary>
     [JsonRpcMethod("bruinet/runTarget")]
     public RunTargetResult RunTarget(RunTargetParams request)
@@ -301,7 +301,7 @@ public sealed partial class BddLanguageServer : IDisposable
             deleted.Skipped.Select(skipped => new SkippedRun(skipped.Run, skipped.Reason)).ToList());
     }
 
-    // A suite runs by address when its test class uses [UatScenarioTheory]; before it is loaded, the build that comes first tells.
+    // A suite runs by address when its test class uses [BddScenarioTheory]; before it is loaded, the build that comes first tells.
     private static Bruinet.Bdd.Preview.BddPreviewRunState? RunState(BddSuite? suite, string path)
     {
         if (suite is null || !path.EndsWith(BddFileFormat.FeatureExtension, StringComparison.OrdinalIgnoreCase))
@@ -311,7 +311,7 @@ public sealed partial class BddLanguageServer : IDisposable
 
         return !suite.IsLoaded || suite.HasScenarioTheory
             ? new Bruinet.Bdd.Preview.BddPreviewRunState(true)
-            : new Bruinet.Bdd.Preview.BddPreviewRunState(false, $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [UatScenarioTheory]; Test Explorer still runs them.");
+            : new Bruinet.Bdd.Preview.BddPreviewRunState(false, $"{suite.Name} runs its scenarios with [Theory], so one has no address to run by. Change it to [BddScenarioTheory]; Test Explorer still runs them.");
     }
 
     // A screenshot under the results folder, through the virtual host the client maps to it.

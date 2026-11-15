@@ -70,7 +70,7 @@ public static class BddConfigWriter
 
         List<string> lines =
         [
-            "# UAT Config",
+            "# BDD Config",
             string.Empty,
             "## Runtime",
             string.Empty,

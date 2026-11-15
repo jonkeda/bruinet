@@ -32,7 +32,7 @@ public sealed class BddExecutionServiceStrideTests
                 """);
 
             File.WriteAllText(
-                Path.Combine(root, "uat.config.md"),
+                Path.Combine(root, "bdd.config.md"),
                 $$"""
                 # UAT Config
 

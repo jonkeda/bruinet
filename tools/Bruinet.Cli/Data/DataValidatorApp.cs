@@ -11,7 +11,7 @@ namespace Bruinet.DataValidator;
 /// <summary>The <c>bruinet data</c> commands.</summary>
 public static class DataValidatorApp
 {
-    private const string ConfigFileName = "uat.config.md";
+    private const string ConfigFileName = BddFileFormat.ConfigFileName;
 
     private static readonly JsonSerializerOptions OutputJson = new(JsonSerializerDefaults.Web) { WriteIndented = true };
 
@@ -254,7 +254,7 @@ public static class DataValidatorApp
 
     private static int Phrases(ToolOptions options, TextWriter output)
     {
-        var config = options.ConfigPath ?? throw new ToolException($"No {ConfigFileName} here. Run from a UAT project folder, or pass --config.");
+        var config = options.ConfigPath ?? throw new ToolException($"No {ConfigFileName} here. Run from a suite folder, or pass --config.");
         var catalogs = ScenarioCheck.Catalogs(config);
         var catalog = catalogs.Default;
         var callables = new BddCallableSet(ScenarioCheck.PhraseFiles(config)
@@ -311,7 +311,7 @@ public static class DataValidatorApp
     // and the files in its folder, which see it without saying so.
     private static int References(ToolOptions options, TextWriter output)
     {
-        var config = options.ConfigPath ?? throw new ToolException($"No {ConfigFileName} here. Run from a UAT project folder, or pass --config.");
+        var config = options.ConfigPath ?? throw new ToolException($"No {ConfigFileName} here. Run from a suite folder, or pass --config.");
         var name = BddNamespaces.Normalize(options.Argument ?? throw new ToolException("references needs a namespace, e.g. 'bruinet data references Backend'."));
         var found = new List<(string File, string Reason)>();
         if (BddConfigParser.ParseFile(config).Usings.Contains(name, StringComparer.OrdinalIgnoreCase))
@@ -499,7 +499,7 @@ public static class DataValidatorApp
     {
         if (options.ConfigPath is not { } config)
         {
-            throw new ToolException($"No {ConfigFileName} here and no --assembly given. Run from a UAT project folder, or pass --assembly <path-to-dll>.");
+            throw new ToolException($"No {ConfigFileName} here and no --assembly given. Run from a suite folder, or pass --assembly <path-to-dll>.");
         }
 
         var directory = Path.GetDirectoryName(config)!;

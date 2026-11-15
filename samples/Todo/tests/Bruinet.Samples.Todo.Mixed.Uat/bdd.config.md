@@ -1,4 +1,4 @@
-# UAT Config
+# BDD Config
 
 The mixed suite: scenarios that use apps of several heads. Its apps are the ones in `apps.md`,
 the table the mixed UI tests read too. It runs only scenarios tagged `@mixed`.
@@ -36,7 +36,7 @@ The subjects outside the screen every scenario may arrange or check (phrase name
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

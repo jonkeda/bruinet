@@ -11,14 +11,18 @@ using Bruinet.Recording;
 
 namespace Bruinet.Uat;
 
-public abstract class UatScenarioTestBase<TFixture>
+/// <summary>
+/// The base of a suite's scenario test class: one theory case per scenario, run on <typeparamref name="TFixture"/>.
+/// </summary>
+/// <typeparam name="TFixture">The suite's fixture.</typeparam>
+public abstract class BddScenarioTestBase<TFixture>
     where TFixture : class
 {
     // One recording session per suite per test process: every scenario of the run shares its scenes folder.
     private static readonly ConcurrentDictionary<string, Lazy<BddRecordingSession?>> Recordings = new(StringComparer.OrdinalIgnoreCase);
     private static readonly Lazy<ScreenRecorders> Recorders = new(ScreenRecorders.Discover);
 
-    protected UatScenarioTestBase(TFixture fixture)
+    protected BddScenarioTestBase(TFixture fixture)
     {
         Fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
     }
@@ -27,7 +31,7 @@ public abstract class UatScenarioTestBase<TFixture>
 
     protected virtual string ConfigFilePath => BddScenarioSource.GetConfigFilePath();
 
-    protected virtual UatRuntimeValidationOptions RuntimeValidation => UatRuntimeValidationOptions.Default;
+    protected virtual BddRuntimeValidationOptions RuntimeValidation => BddRuntimeValidationOptions.Default;
 
     protected virtual BddConfig? GetRunConfig(UatRuntime runtime) => runtime.Config;
 

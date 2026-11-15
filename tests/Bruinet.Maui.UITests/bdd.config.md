@@ -1,4 +1,4 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
@@ -21,7 +21,7 @@
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting

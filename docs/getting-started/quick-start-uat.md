@@ -131,14 +131,14 @@ namespace MyApp.UITests;
 // One test case per scenario of every Features/*.feature.md.
 [Trait("Category", "UAT")]
 public sealed class CounterUatScenarioTests(CounterUatFixture fixture)
-    : UatScenarioTestBase<CounterUatFixture>(fixture), IClassFixture<CounterUatFixture>
+    : BddScenarioTestBase<CounterUatFixture>(fixture), IClassFixture<CounterUatFixture>
 {
     public static IEnumerable<object[]> Scenarios => GetScenarioTheoryData();
 
-    protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+    protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
         new(Target: "HTML", Fixture: "CounterUatFixture");
 
-    [UatScenarioTheory(Timeout = 120000)]
+    [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
 }

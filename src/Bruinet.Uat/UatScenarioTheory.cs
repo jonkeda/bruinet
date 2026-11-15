@@ -7,17 +7,25 @@ namespace Bruinet.Uat;
 
 /// <summary>
 /// A theory over scenarios (<c>[filePath, scenarioName]</c> rows, as
-/// <see cref="UatScenarioTestBase{TFixture}"/> gives them): the same one case per scenario as
+/// <see cref="BddScenarioTestBase{TFixture}"/> gives them): the same one case per scenario as
 /// <c>[Theory]</c>, each with its stable address in the <c>BddScenario</c> trait
 /// (<see cref="BddScenarioAddress"/>), so one scenario can be run by filter (R1 of the IDE plan).
 /// </summary>
+[XunitTestCaseDiscoverer("Bruinet.Uat.UatScenarioTheoryDiscoverer", "Bruinet.Uat")]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class BddScenarioTheoryAttribute : TheoryAttribute
+{
+}
+
+/// <summary>Renamed to <see cref="BddScenarioTheoryAttribute"/> (AD-040).</summary>
+[Obsolete("Renamed to [BddScenarioTheory] (AD-040).")]
 [XunitTestCaseDiscoverer("Bruinet.Uat.UatScenarioTheoryDiscoverer", "Bruinet.Uat")]
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public sealed class UatScenarioTheoryAttribute : TheoryAttribute
 {
 }
 
-/// <summary>Finds the cases of a <see cref="UatScenarioTheoryAttribute"/>: one <see cref="UatScenarioTestCase"/> per row.</summary>
+/// <summary>Finds the cases of a <see cref="BddScenarioTheoryAttribute"/>: one <see cref="UatScenarioTestCase"/> per row.</summary>
 /// <param name="diagnosticMessageSink">Where discovery reports problems.</param>
 // xUnit v2 only: a move to v3 redoes this discoverer (v3 lets a case set its own source location).
 public sealed class UatScenarioTheoryDiscoverer(IMessageSink diagnosticMessageSink) : TheoryDiscoverer(diagnosticMessageSink)

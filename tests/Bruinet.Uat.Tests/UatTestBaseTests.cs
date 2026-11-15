@@ -570,7 +570,7 @@ public sealed class UatTestBaseTests
 
     private static string WriteConfig(string directory, bool screenshotOnFailure = false)
     {
-        var filePath = Path.Combine(directory, "uat.config.md");
+        var filePath = Path.Combine(directory, "bdd.config.md");
         File.WriteAllText(filePath, $$"""
             # UAT Config
 
@@ -613,7 +613,7 @@ public sealed class UatTestBaseTests
         HarnessFixture fixture,
         string configFilePath,
         BddCommandCatalog catalog)
-        : UatScenarioTestBase<HarnessFixture>(fixture)
+        : BddScenarioTestBase<HarnessFixture>(fixture)
     {
         public string? BeforeScenarioName { get; private set; }
 
@@ -621,7 +621,7 @@ public sealed class UatTestBaseTests
 
         protected override string ConfigFilePath => configFilePath;
 
-        protected override UatRuntimeValidationOptions RuntimeValidation { get; } =
+        protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
             new(RequireAssemblies: false);
 
         public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);

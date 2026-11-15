@@ -1,23 +1,29 @@
-# UAT Config
+# BDD Config
 
 ## Runtime
 
 | Field | Value |
 | --- | --- |
-| Target | MAUI |
-| Fixture | TodoUatFixture |
-| Head | maui |
-| AppPath | ../../src/Bruinet.Samples.Todo.App/bin/Debug/net10.0-windows10.0.19041.0/win-x64/Bruinet.Samples.Todo.App.exe |
+| Target | BLAZOR |
+| Fixture | TodoWebUatFixture |
+| Head | web |
 | WorkingDirectory | ../../../.. |
 | DefaultTestData | one-todo |
 | Hermetic | true |
 | HttpReplayPace | recorded |
 
+## Apps
+
+| Name | ClientId |
+| --- | --- |
+| Alice | web-alice |
+| Bob | web-bob |
+
 ## Dependencies
 
 How each scenario gets what is outside the app ([HTTP Replay](../../../../docs/guides/http-replay.md)). The backend is the
-stub the scenarios arrange; a run with `BRUINET_HTTP_REPLAY=Record`, then `Replay` (what `run_scenario`'s `replay` sets),
-answers the app's calls from recordings instead (`Recordings/headless/http`), the stub reached only while recording. The database is the test set's, restored before each scenario.
+stub the scenarios arrange; on bUnit a run with `BRUINET_HTTP_REPLAY=Record`, then `Replay`, answers the main app's calls
+from recordings instead (`Bruinet.Samples.Todo.Web.UITests/Recordings/bunit/http`). The database is the test set's.
 
 | Name | Kind | Mode | Where |
 | --- | --- | --- | --- |
@@ -28,8 +34,8 @@ answers the app's calls from recordings instead (`Recordings/headless/http`), th
 
 | Kind | Assembly |
 | --- | --- |
-| Pages | bin/Debug/net10.0-windows/Bruinet.Samples.Todo.Uat.dll |
-| Controls | ../../../../src/Bruinet.Maui/bin/Debug/net10.0/Bruinet.Maui.dll |
+| Pages | bin/Debug/net10.0/Bruinet.Samples.Todo.Web.Uat.dll |
+| Controls | ../../../../src/Bruinet.Html/bin/Debug/net10.0/Bruinet.Html.dll |
 | Commands | ../../../../src/Bruinet.Uat/bin/Debug/net10.0/Bruinet.Uat.dll |
 | TestData | ../Bruinet.Samples.Todo.TestSupport/bin/Debug/net10.0/Bruinet.Samples.Todo.TestSupport.dll |
 
@@ -48,7 +54,7 @@ The subjects outside the screen every scenario may arrange or check (phrase name
 
 | Field | Value |
 | --- | --- |
-| RequireExplicitUatAttributes | false |
+| RequireExplicitBddAttributes | false |
 | AllowNameInference | true |
 
 ## Reporting
