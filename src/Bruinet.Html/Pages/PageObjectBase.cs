@@ -41,6 +41,9 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Brui
     /// <summary>Whether the page has a path, and so can open itself.</summary>
     public bool CanOpen => Url is not null;
 
+    /// <inheritdoc />
+    public bool IsAtItsAddress() => Uri.TryCreate(_context.CurrentUrl, UriKind.Absolute, out _) && CompareUrl();
+
     /// <summary>
     /// Opens the page at its <see cref="Url"/>; a path is taken on the site the browser is on now.
     /// </summary>

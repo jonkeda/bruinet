@@ -9,6 +9,7 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| IsAtItsAddress | `IOpenablePage.IsAtItsAddress()` added, with a default body (`IsLoaded()`): breaks no one. A page of your own that implements `IOpenablePage` and can tell its address may override it | `IOpenablePage` | nothing; optionally `public bool IsAtItsAddress() => <the app is at the page's address>` |
 | BU5 | The scenario test base's `RunUatScenarioAsync`, `RunUatFileAsync` and `RunExpectedFailureUatFileAsync` are `RunScenarioAsync`, `RunFileAsync` and `RunExpectedFailureFileAsync` (on `BddScenarioTestBase`; the obsolete `UatScenarioTestBase` keeps the old ones) | `\bRun(ExpectedFailure)?Uat(Scenario|File)Async\b` | `Run$1$2Async` |
 | BU5 | The run's scenario folder is `suites/<suite>/bdd`, was `uat`; `ITestArtifactPathProvider.BddDirectory` (the old `UatDirectory` is obsolete) | `\bUatDirectory\b`, `[/\]uat[/\]` in scripts that read results | `BddDirectory`, `bdd` |
 | BU5 | A suite's config is `bdd.config.md` whatever its head (`uat.config.md` still read, one release); `BddFileFormat.ConfigFileName`, the old `UiConfigFileName` and `ServiceConfigFileName` are obsolete; the Discovery key is `RequireExplicitBddAttributes` | `uat\.config\.md` (file name, `*.csproj` `None Update`), `\bUiConfigFileName\b`, `\bServiceConfigFileName\b`, `RequireExplicitUatAttributes` | `bdd.config.md`, `ConfigFileName`, `RequireExplicitBddAttributes` |

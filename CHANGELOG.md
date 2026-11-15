@@ -184,6 +184,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- `Given I am on the … page` opened a page with a URL again when the app was at its address but the page was still
+  loading (a tab's content after the step that chose it), throwing that away: it now opens the page only when the app
+  is elsewhere (`IOpenablePage.IsAtItsAddress`). Found by tomorrow's Studio scenarios on the bUnit head.
 - Explore: a sort link inside a table header (`th > a`) sorts the table, so the table is sorted once, not once per column.
 - Frainet: a full stop inside brackets or quotes ("Amount (excl. VAT)") is not a sentence break.
 - A generated assertion on a collection compares item by item even without `[GenerateComparisons]`: before, it compared
