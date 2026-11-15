@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Samples.Todo.UITests.Containers;
 using Bruinet.Samples.Todo.UITests.Controls;
 using Bruinet.Uat;
@@ -55,7 +56,7 @@ public class TodoEditPage(IMauiTestContext context) : PageObjectBase<TodoEditPag
     public Label<SectionCard<TodoEditPage>> TitleError => BasicsCard.Label("TodoEdit_TitleError");
 
     /// <summary>The notes.</summary>
-    [UatName("Notes")]
+    [BddControl("Notes")]
     public Editor<SectionCard<TodoEditPage>> Notes => new(BasicsCard, "TodoEdit_Notes");
 
     /// <summary>Whether the todo has a due date.</summary>
@@ -65,7 +66,7 @@ public class TodoEditPage(IMauiTestContext context) : PageObjectBase<TodoEditPag
     public DatePicker<SectionCard<TodoEditPage>> DueDate => new(ScheduleCard, "TodoEdit_Due");
 
     /// <summary>The status, set with Next.</summary>
-    [UatName("Status")]
+    [BddControl("Status")]
     public TodoStatus<TodoEditPage> Status => new(this, "TodoEdit_Status");
 
     /// <summary>Replaces the title.</summary>

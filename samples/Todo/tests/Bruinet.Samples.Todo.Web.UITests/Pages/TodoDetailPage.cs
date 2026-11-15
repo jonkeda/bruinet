@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Html.Controls.Buttons;
 using Bruinet.Html.Controls.Display;
 using Bruinet.Uat;
@@ -25,7 +26,7 @@ public sealed class TodoDetailPage : BlazorPageObjectBase<TodoDetailPage>
 
     public LabelControl<TodoDetailPage> Title => new(this, Locator.ByDataTestId("TodoDetail_Title"));
 
-    [UatName("Status")]
+    [BddControl("Status")]
     public TodoStatus<TodoDetailPage> Status => new(this, "TodoDetail_Status");
 
     public SectionCard<TodoDetailPage> InfoCard => new(this, "TodoDetail_Info");
@@ -41,15 +42,15 @@ public sealed class TodoDetailPage : BlazorPageObjectBase<TodoDetailPage>
     public LabelControl<SectionCard<TodoDetailPage>> Notes => NotesCard.Value("NotesValue");
 
     /// <summary>Back to the list: the MAUI navigation bar's back button.</summary>
-    [UatNavigatesTo(typeof(TodoListPage))]
-    [UatName("Back")]
+    [BddNavigatesTo(typeof(TodoListPage))]
+    [BddControl("Back")]
     public ButtonControl<TodoDetailPage> BackButton => new(this, Locator.ByDataTestId("TodoDetail_Back"));
 
     public SectionCard<TodoDetailPage> SyncCard => new(this, "TodoDetail_Sync");
 
     public LabelControl<SectionCard<TodoDetailPage>> SyncState => SyncCard.Value("SyncValue");
 
-    [UatNavigatesTo(typeof(TodoEditPage))]
+    [BddNavigatesTo(typeof(TodoEditPage))]
     public ButtonControl<TodoDetailPage> EditButton => new(this, Locator.ByDataTestId("TodoDetail_Edit"));
 
     public ButtonControl<TodoDetailPage> DeleteButton => new(this, Locator.ByDataTestId("TodoDetail_Delete"));

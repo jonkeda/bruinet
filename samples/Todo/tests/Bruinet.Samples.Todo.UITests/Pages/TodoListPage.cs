@@ -23,11 +23,11 @@ public class TodoListPage(IMauiTestContext context) : PageObjectBase<TodoListPag
     public ToolbarButton<AppRoot> SyncButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Sync"));
 
     /// <summary>Opens a new, empty edit page.</summary>
-    [UatNavigatesTo(typeof(TodoEditPage))]
+    [BddNavigatesTo(typeof(TodoEditPage))]
     public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Add"));
 
     /// <summary>Opens the users (TOD.11).</summary>
-    [UatNavigatesTo(typeof(UserListPage))]
+    [BddNavigatesTo(typeof(UserListPage))]
     public ToolbarButton<AppRoot> UsersButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Users"));
 
     /// <summary>The status filter: All, Open, In progress, Done.</summary>
@@ -37,18 +37,18 @@ public class TodoListPage(IMauiTestContext context) : PageObjectBase<TodoListPag
     public Label<TodoListPage> LastSync => new(this, "TodoList_LastSync");
 
     /// <summary>Loading, Empty, Error, or the rows.</summary>
-    [UatName("List")]
+    [BddControl("List")]
     public TodoListState State => new(this, "TodoList_State");
 
     /// <summary>The rows.</summary>
     public TodoList Todos => new(this, "TodoList_Items");
 
     /// <summary>"Nothing to do", in the Empty state.</summary>
-    [UatName("Empty Message")]
+    [BddControl("Empty Message")]
     public Label<TodoListState> EmptyMessage => State.EmptyLabel;
 
     /// <summary>What went wrong, in the Error state.</summary>
-    [UatName("Error Message")]
+    [BddControl("Error Message")]
     public Label<TodoListState> ErrorMessage => State.ErrorLabel;
 
     /// <summary>Retries the sync, in the Error state.</summary>

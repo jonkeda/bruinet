@@ -117,7 +117,7 @@ public sealed class TodoListPage(IMauiTestContext context) : PageObjectBase<Todo
     private readonly AppRoot _appRoot = new(context);
 
     #region docs:navigates-to
-    [UatNavigatesTo(typeof(TodoEditPage))]
+    [BddNavigatesTo(typeof(TodoEditPage))]
     public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("TodoList_Add"));
     #endregion
 

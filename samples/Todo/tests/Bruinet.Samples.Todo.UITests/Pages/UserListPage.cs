@@ -22,11 +22,11 @@ public class UserListPage(IMauiTestContext context) : PageObjectBase<UserListPag
     public override string Name => "UserListPage";
 
     /// <summary>Opens a new, empty user. Disabled offline.</summary>
-    [UatNavigatesTo(typeof(UserEditPage))]
+    [BddNavigatesTo(typeof(UserEditPage))]
     public ToolbarButton<AppRoot> AddButton => new(_appRoot, Locator.ByAccessibilityId("UserList_Add"));
 
     /// <summary>"You are offline. Users can be viewed, but not changed."; not shown online.</summary>
-    [UatName("Offline Notice")]
+    [BddControl("Offline Notice")]
     public ShownLabel<UserListPage> OfflineNotice => new(this, "UserList_Offline");
 
     /// <summary>The rows: available users first, then the rest, each by name.</summary>
@@ -34,7 +34,7 @@ public class UserListPage(IMauiTestContext context) : PageObjectBase<UserListPag
 
     /// <summary>Shell's back arrow, to the todo list.</summary>
     /// <remarks>As on <see cref="TodoDetailPage.BackButton"/>.</remarks>
-    [UatNavigatesTo(typeof(TodoListPage))]
+    [BddNavigatesTo(typeof(TodoListPage))]
     public Button<AppRoot> BackButton => Context.Platform == Bruinet.Maui.Enums.MauiPlatform.Android
         ? new(_appRoot, Locator.ByAccessibilityId("Navigate up"))
         : new(_appRoot, "NavigationViewBackButton");

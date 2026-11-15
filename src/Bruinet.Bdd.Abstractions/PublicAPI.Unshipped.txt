@@ -1,4 +1,7 @@
 #nullable enable
+Bruinet.Bdd.BddControlAttribute
+Bruinet.Bdd.BddControlAttribute.BddControlAttribute(string! name) -> void
+Bruinet.Bdd.BddControlAttribute.Name.get -> string!
 Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddEffectiveStepKeyword.Given = 0 -> Bruinet.Bdd.BddEffectiveStepKeyword
 Bruinet.Bdd.BddEffectiveStepKeyword.Then = 2 -> Bruinet.Bdd.BddEffectiveStepKeyword
@@ -9,6 +12,12 @@ Bruinet.Bdd.BddGivenAttribute.BddGivenAttribute(string! phrase) -> void
 Bruinet.Bdd.BddNamespaceAttribute
 Bruinet.Bdd.BddNamespaceAttribute.BddNamespaceAttribute(string! name) -> void
 Bruinet.Bdd.BddNamespaceAttribute.Name.get -> string!
+Bruinet.Bdd.BddNavigatesToAttribute
+Bruinet.Bdd.BddNavigatesToAttribute.BddNavigatesToAttribute(System.Type! page) -> void
+Bruinet.Bdd.BddNavigatesToAttribute.Page.get -> System.Type!
+Bruinet.Bdd.BddPageAttribute
+Bruinet.Bdd.BddPageAttribute.BddPageAttribute(string! name) -> void
+Bruinet.Bdd.BddPageAttribute.Name.get -> string!
 Bruinet.Bdd.BddStateAttribute
 Bruinet.Bdd.BddStateAttribute.BddStateAttribute(string! phrase) -> void
 Bruinet.Bdd.BddStepAttribute

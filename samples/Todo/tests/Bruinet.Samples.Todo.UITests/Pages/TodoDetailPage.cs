@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Samples.Todo.UITests.Containers;
 using Bruinet.Samples.Todo.UITests.Controls;
 using Bruinet.Uat;
@@ -19,7 +20,7 @@ public class TodoDetailPage(IMauiTestContext context) : PageObjectBase<TodoDetai
     public override string Name => "TodoDetailPage";
 
     /// <summary>Opens the edit page for this todo.</summary>
-    [UatNavigatesTo(typeof(TodoEditPage))]
+    [BddNavigatesTo(typeof(TodoEditPage))]
     public ToolbarButton<AppRoot> EditButton => new(_appRoot, Locator.ByAccessibilityId("TodoDetail_Edit"));
 
     /// <summary>Asks, then deletes this todo.</summary>
@@ -32,7 +33,7 @@ public class TodoDetailPage(IMauiTestContext context) : PageObjectBase<TodoDetai
     /// Windows: WinUI's <c>NavigationViewBackButton</c>, which answers Invoke (probed 2026-09-18).
     /// Android: the toolbar's "up" button, whose content description is "Navigate up".
     /// </remarks>
-    [UatNavigatesTo(typeof(TodoListPage))]
+    [BddNavigatesTo(typeof(TodoListPage))]
     public Button<AppRoot> BackButton => Context.Platform == Bruinet.Maui.Enums.MauiPlatform.Android
         ? new(_appRoot, Locator.ByAccessibilityId("Navigate up"))
         : new(_appRoot, "NavigationViewBackButton");
@@ -49,7 +50,7 @@ public class TodoDetailPage(IMauiTestContext context) : PageObjectBase<TodoDetai
     public Label<TodoDetailPage> Title => new(this, "TodoDetail_Title");
 
     /// <summary>The status, changeable here with Next.</summary>
-    [UatName("Status")]
+    [BddControl("Status")]
     public TodoStatus<TodoDetailPage> Status => new(this, "TodoDetail_Status");
 
     /// <summary>The Details card: due, created, updated.</summary>

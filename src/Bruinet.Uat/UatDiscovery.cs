@@ -117,8 +117,7 @@ public static class UatDiscovery
 
             var actions = property.PropertyType
                 .GetMethods(BindingFlags.Instance | BindingFlags.Public)
-                .SelectMany(method => method.GetCustomAttributes<UatActionAttribute>())
-                .Select(attribute => attribute.ActionName)
+                .SelectMany(BddNames.Actions)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToArray();
 
@@ -130,7 +129,7 @@ public static class UatDiscovery
 
     private static bool IsPageType(Type type, UatDiscoveryOptions options)
     {
-        if (type.GetCustomAttribute<UatNameAttribute>() is not null)
+        if (BddNames.IsDeclared(type))
         {
             return true;
         }
@@ -147,7 +146,7 @@ public static class UatDiscovery
 
     private static bool IsControlProperty(PropertyInfo property, UatDiscoveryOptions options)
     {
-        if (property.GetCustomAttribute<UatNameAttribute>() is not null)
+        if (BddNames.IsDeclared(property))
         {
             return true;
         }
@@ -158,7 +157,7 @@ public static class UatDiscovery
         }
 
         if (property.PropertyType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-            .Any(method => method.GetCustomAttributes<UatActionAttribute>().Any() ||
+            .Any(method => BddNames.Actions(method).Any() ||
                            method.GetCustomAttributes<BddStepAttribute>().Any()))
         {
             return true;
@@ -182,10 +181,10 @@ public static class UatDiscovery
 
     private static string? ResolveName(MemberInfo member, UatDiscoveryOptions options)
     {
-        var attribute = member.GetCustomAttribute<UatNameAttribute>();
-        if (attribute is not null)
+        var declared = BddNames.Declared(member);
+        if (declared is not null)
         {
-            return attribute.Name;
+            return declared;
         }
 
         return options.AllowNameInference && !options.RequireExplicitUatAttributes

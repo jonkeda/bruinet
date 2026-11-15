@@ -34,7 +34,7 @@ public sealed record UatPageModel(string Name, Type PageType, IReadOnlyList<UatC
 /// <summary>A control of a page, as the binder sees it.</summary>
 /// <param name="Name">The UAT name.</param>
 /// <param name="ControlType">The property's type.</param>
-/// <param name="NavigatesTo">The key of the page tapping it always goes to (<see cref="UatNavigatesToAttribute"/>); null when not declared.</param>
+/// <param name="NavigatesTo">The key of the page tapping it always goes to (<c>[BddNavigatesTo]</c>); null when not declared.</param>
 public sealed record UatControlModel(string Name, Type ControlType, string? NavigatesTo)
 {
     /// <summary>The page object's member it is (<c>EditButton</c> for "Edit"); null when not known.</summary>

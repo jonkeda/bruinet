@@ -27,7 +27,7 @@ public sealed class TodoListPage : BlazorPageObjectBase<TodoListPage>
 
     public ButtonControl<TodoListPage> SyncButton => new(this, Locator.ByDataTestId("TodoList_Sync"));
 
-    [UatNavigatesTo(typeof(TodoEditPage))]
+    [BddNavigatesTo(typeof(TodoEditPage))]
     public ButtonControl<TodoListPage> AddButton => new(this, Locator.ByDataTestId("TodoList_Add"));
 
     public SelectControl<TodoListPage> Filter => new(this, Locator.ByDataTestId("TodoList_Filter"));
@@ -35,18 +35,18 @@ public sealed class TodoListPage : BlazorPageObjectBase<TodoListPage>
     public LabelControl<TodoListPage> LastSync => new(this, Locator.ByDataTestId("TodoList_LastSync"));
 
     /// <summary>Loading, Empty, Error or the rows: exactly one shows.</summary>
-    [UatName("List")]
+    [BddControl("List")]
     public TodoListState State => new(this);
 
-    [UatName("Empty Message")]
+    [BddControl("Empty Message")]
     public LabelControl<TodoListPage> EmptyMessage => new(this, Locator.ByDataTestId("TodoList_EmptyLabel"));
 
-    [UatName("Error Message")]
+    [BddControl("Error Message")]
     public LabelControl<TodoListPage> ErrorMessage => new(this, Locator.ByDataTestId("TodoList_ErrorLabel"));
 
     public ButtonControl<TodoListPage> RetryButton => new(this, Locator.ByDataTestId("TodoList_Retry"));
 
-    [UatName("Todos")]
+    [BddControl("Todos")]
     public TodoRows Todos => new(this);
 
     /// <summary>Opens a new, empty edit form.</summary>

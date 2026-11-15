@@ -1,6 +1,8 @@
 using Bruinet.Bdd;
 using Xunit;
 
+#pragma warning disable CS0618 // [UatAction] and [UatName] are obsolete and still read, one release (AD-040).
+
 namespace Bruinet.Uat.Tests;
 
 public sealed class UatDiscoveryTests
@@ -30,6 +32,17 @@ public sealed class UatDiscoveryTests
         Assert.Contains(result.Catalog.Patterns, x =>
             x.Keyword == BddEffectiveStepKeyword.When &&
             x.Phrase == "I sign in with credentials");
+    }
+
+    [Fact]
+    public void Discover_ObsoleteUatName_IsStillRead()
+    {
+        var result = UatDiscovery.Discover(
+            new UatDiscoveryOptions { RequireExplicitUatAttributes = true },
+            typeof(UatDiscoveryTests).Assembly);
+
+        var legacy = Assert.Single(result.Pages, x => x.Name == "Legacy");
+        Assert.Contains(legacy.Controls, x => x.Name == "Old save" && x.MemberName == nameof(LegacyPage.OldSave));
     }
 
     [Fact]
@@ -95,16 +108,23 @@ public sealed class UatDiscoveryTests
         public SaveButton InternalButton { get; } = new();
     }
 
-    [UatName("Login")]
+    [BddPage("Login")]
     public sealed class LoginPage
     {
-        [UatName("Sign in")]
+        [BddControl("Sign in")]
         public SaveButton SubmitButton { get; } = new();
 
         [BddWhen("I sign in with credentials")]
         public void SignInWithCredentials()
         {
         }
+    }
+
+    [UatName("Legacy")]
+    public sealed class LegacyPage
+    {
+        [UatName("Old save")]
+        public SaveButton OldSave { get; } = new();
     }
 
     public sealed class PhraseCatalogPage

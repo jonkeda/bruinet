@@ -589,10 +589,10 @@ public sealed class UatCatalogParityTests
         // A page that exposes itself, as Bruinet page objects do: its phrases stay page phrases.
         public GadgetPage Self => this;
 
-        [UatNavigatesTo(typeof(PlainPage))]
+        [BddNavigatesTo(typeof(PlainPage))]
         public GadgetControl Door { get; } = new();
 
-        [UatNavigatesTo(typeof(PlainPage))]
+        [BddNavigatesTo(typeof(PlainPage))]
         public PageLink Exit => new(this);
 
         [BddThen("the gadget should hum")]

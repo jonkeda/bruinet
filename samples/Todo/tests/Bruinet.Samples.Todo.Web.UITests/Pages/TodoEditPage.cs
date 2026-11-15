@@ -1,3 +1,4 @@
+using Bruinet.Bdd;
 using Bruinet.Html.Controls.Buttons;
 using Bruinet.Html.Controls.DateTime;
 using Bruinet.Html.Controls.Display;
@@ -37,7 +38,7 @@ public sealed class TodoEditPage : BlazorPageObjectBase<TodoEditPage>
 
     public DateInputControl<TodoEditPage> DueDate => new(this, Locator.ByDataTestId("TodoEdit_Due"));
 
-    [UatName("Status")]
+    [BddControl("Status")]
     public TodoStatus<TodoEditPage> Status => new(this, "TodoEdit_Status");
 
     public ButtonControl<TodoEditPage> Save => new(this, Locator.ByDataTestId("TodoEdit_Save"));

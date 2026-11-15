@@ -1,7 +1,7 @@
 namespace Bruinet.WinForms.UITests.Uat.Pages;
 
 [TestPage("Login")]
-[UatName("Login")]
+[BddPage("Login")]
 public sealed class LoginUatPage : PageObjectBase<LoginUatPage>
 {
     public LoginUatPage(IWinFormsTestContext context)
@@ -15,7 +15,7 @@ public sealed class LoginUatPage : PageObjectBase<LoginUatPage>
 
     public CheckBox<LoginUatPage> RememberCheckBox => CheckBox("chkRemember");
 
-    [UatName("Role")]
+    [BddControl("Role")]
     public ComboBox<LoginUatPage> RoleCombo => ComboBox("cmbRole");
 
     public Button<LoginUatPage> LoginButton => Button("btnLogin");

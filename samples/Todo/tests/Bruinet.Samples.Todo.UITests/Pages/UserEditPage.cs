@@ -35,18 +35,18 @@ public class UserEditPage(IMauiTestContext context) : PageObjectBase<UserEditPag
     public ToolbarButton<AppRoot> SaveButton => new(_appRoot, Locator.ByAccessibilityId("UserEdit_Save"));
 
     /// <summary>Returns without saving.</summary>
-    [UatNavigatesTo(typeof(UserListPage))]
+    [BddNavigatesTo(typeof(UserListPage))]
     public ToolbarButton<AppRoot> CancelButton => new(_appRoot, Locator.ByAccessibilityId("UserEdit_Cancel"));
 
     /// <summary>"You are offline. ..."; not shown online.</summary>
-    [UatName("Offline Notice")]
+    [BddControl("Offline Notice")]
     public ShownLabel<UserEditPage> OfflineNotice => new(this, "UserEdit_Offline");
 
     /// <summary>Why the server could not be asked; not shown otherwise.</summary>
     public ShownLabel<UserEditPage> SaveError => new(this, "UserEdit_SaveError");
 
     /// <summary>The name.</summary>
-    [UatName("Name")]
+    [BddControl("Name")]
     public Entry<UserEditPage> NameField => new(this, "UserEdit_Name");
 
     /// <summary>The name's error.</summary>
@@ -59,22 +59,22 @@ public class UserEditPage(IMauiTestContext context) : PageObjectBase<UserEditPag
     public ShownLabel<UserEditPage> EmailError => new(this, "UserEdit_EmailError");
 
     /// <summary>The notes.</summary>
-    [UatName("Notes")]
+    [BddControl("Notes")]
     public Editor<UserEditPage> Notes => new(this, "UserEdit_Notes");
 
     /// <summary>The notes' error.</summary>
     public ShownLabel<UserEditPage> NotesError => new(this, "UserEdit_NotesError");
 
     /// <summary>The Active status.</summary>
-    [UatName("Active")]
+    [BddControl("Active")]
     public RadioButton<UserEditPage> ActiveStatus => new(this, "UserEdit_Status_Active");
 
     /// <summary>The On leave status.</summary>
-    [UatName("On Leave")]
+    [BddControl("On Leave")]
     public RadioButton<UserEditPage> OnLeaveStatus => new(this, "UserEdit_Status_OnLeave");
 
     /// <summary>The Inactive status.</summary>
-    [UatName("Inactive")]
+    [BddControl("Inactive")]
     public RadioButton<UserEditPage> InactiveStatus => new(this, "UserEdit_Status_Inactive");
 
     /// <summary>Whether the user has an end date.</summary>
@@ -96,7 +96,7 @@ public class UserEditPage(IMauiTestContext context) : PageObjectBase<UserEditPag
     public ShownLabel<UserEditPage> HoursError => new(this, "UserEdit_HoursError");
 
     /// <summary>The hourly rate, as typed: <c>1,250.75</c>.</summary>
-    [UatName("Rate")]
+    [BddControl("Rate")]
     public Entry<UserEditPage> Rate => new(this, "UserEdit_Rate");
 
     /// <summary>The rate's error.</summary>
@@ -106,7 +106,7 @@ public class UserEditPage(IMauiTestContext context) : PageObjectBase<UserEditPag
     public TimePicker<UserEditPage> StartOfDay => new(this, "UserEdit_StartOfDay");
 
     /// <summary>Whether the user receives reminders.</summary>
-    [UatName("Reminders")]
+    [BddControl("Reminders")]
     public Switch<UserEditPage> Reminders => new(this, "UserEdit_Reminders");
 
     /// <summary>The workload, 0-100 in steps of 5.</summary>

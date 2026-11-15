@@ -233,9 +233,9 @@ public sealed class UatReflectionRuntime
                     .Select(control => new UatControlModel(
                         control.Name,
                         control.Property.PropertyType,
-                        control.Property.GetCustomAttribute<UatNavigatesToAttribute>() is { } goesTo
-                            ? nameOf.GetValueOrDefault(goesTo.Page) ?? throw new InvalidOperationException(
-                                $"{page.PageType.Name}.{control.MemberName} navigates to {goesTo.Page.Name}, which is not a UAT page.")
+                        BddNames.NavigatesTo(control.Property) is { } goesTo
+                            ? nameOf.GetValueOrDefault(goesTo) ?? throw new InvalidOperationException(
+                                $"{page.PageType.Name}.{control.MemberName} navigates to {goesTo.Name}, which is not a page of the suite.")
                             : null)
                     {
                         MemberName = control.MemberName,
@@ -397,13 +397,13 @@ public sealed class UatReflectionRuntime
 
     private static bool IsRuntimePageProperty(PropertyInfo property)
     {
-        return property.GetCustomAttribute<UatNameAttribute>() is not null ||
+        return BddNames.IsDeclared(property) ||
                UatNameInference.HasKnownSuffix(property.Name) && property.Name.EndsWith("Page", StringComparison.Ordinal);
     }
 
     private static bool IsRuntimeControlProperty(PropertyInfo property)
     {
-        if (property.GetCustomAttribute<UatNameAttribute>() is not null)
+        if (BddNames.IsDeclared(property))
         {
             return true;
         }
@@ -429,7 +429,7 @@ public sealed class UatReflectionRuntime
 
     private static string ResolveRuntimeName(MemberInfo member)
     {
-        return member.GetCustomAttribute<UatNameAttribute>()?.Name ??
+        return BddNames.Declared(member) ??
                UatNameInference.FromMember(member);
     }
 

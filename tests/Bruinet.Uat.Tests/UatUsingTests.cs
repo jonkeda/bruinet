@@ -167,10 +167,10 @@ public sealed class UatUsingTests : IDisposable
 
     private sealed class DetailFixture
     {
-        [UatName("Detail")]
+        [BddPage("Detail")]
         public InvoiceDetailPage Invoice { get; } = new();
 
-        [UatName("Detail")]
+        [BddPage("Detail")]
         public AccountDetailPage Account { get; } = new();
     }
 
