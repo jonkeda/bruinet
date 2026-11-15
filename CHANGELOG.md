@@ -189,6 +189,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- `[BddPage]`, `[BddControl]` and `[BddNavigatesTo]` in `Bruinet.Bdd.Abstractions` name pages and controls, so a control
+  library can declare them; `[UatName]`, `[UatNavigatesTo]` and `[UatAction]` are obsolete and still read (AD-040).
 - `UatSpecFormatTestBase` is `BddFeatureFormatTestBase` (`AssertFeature*`); the old name stays one release, obsolete.
   `UatSpecCommandCatalog` is `UatGenericCatalog`, command ids `Generic.*`. "Spec" is left for runnable specs (AD-040).
 - **BDD and UAT (AD-040).** Diagnostic codes are `BDD…`, with the same letter and number: `UAT004` is `BDD004`,

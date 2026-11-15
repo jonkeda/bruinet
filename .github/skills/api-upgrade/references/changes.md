@@ -9,6 +9,9 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| BU4 | `[UatNavigatesTo]` is `[BddNavigatesTo]`, in `Bruinet.Bdd` (package `Bruinet.Bdd.Abstractions`). The old one is obsolete and still read, one release | `\[UatNavigatesTo\(` | `[BddNavigatesTo(` and `using Bruinet.Bdd;` |
+| BU4 | `[UatName]` is `[BddPage]` on a page type or a fixture's page property, `[BddControl]` on a control property, in `Bruinet.Bdd`. The old one is obsolete and still read, one release | `\[UatName\(` on a `class` or a `…Page` property; `\[UatName\(` on other properties | `[BddPage(`; `[BddControl(` |
+| BU4 | `[UatAction]` is obsolete, removed next release: a control's verbs are its `[BddWhen]`/`[BddThen]` methods | `\[UatAction\(` | a `[BddWhen("…")]` or `[BddThen("…")]` on the method |
 | BU3 | `UatSpecCommandCatalog` is `UatGenericCatalog`; its command ids start `Generic.`, were `Spec.` | `\bUatSpecCommandCatalog\b`, `"Spec\.` | `UatGenericCatalog`, `"Generic.` |
 | BU3 | `UatSpecFormatTestBase` is `BddFeatureFormatTestBase`, its `AssertUatFile*` methods `AssertFeature*`, `AssertUatConfigParses` is `AssertConfigParses`. The old class stays one release, `[Obsolete]` | `\bUatSpecFormatTestBase\b`, `\bAssertUatFile(\w+)`, `\bAssertUatConfigParses\b` | `BddFeatureFormatTestBase`, `AssertFeature$1`, `AssertConfigParses` |
 | BU2 | Diagnostic codes are `BDDâ€¦`, same letter and number (in `*.cs`, `*.md`, suppressions, CI filters) | `\bUAT([A-D]?\d{3})\b` | `BDD$1` |
