@@ -58,6 +58,7 @@ How this differs from the other trees:
 - [AD-037: A MAUI runner is chosen apart from the platform, and DevFlow judges no gate](decisions/ad-037-a-maui-runner-is-chosen-apart-from-the-platform.md)
 - [AD-038: A test names its account and never holds a secret](decisions/ad-038-a-test-names-its-account-and-never-holds-a-secret.md)
 - [AD-039: A tab's content is a page object of its own](decisions/ad-039-a-tabs-content-is-a-page-object-of-its-own.md)
+- [AD-040: BDD is the format and engine, UAT is a test level](decisions/ad-040-bdd-is-the-format-uat-is-a-test-level.md)
 
 ## Contracts
 
