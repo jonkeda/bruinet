@@ -24,11 +24,15 @@ accepts it; you never do, unless the person has said in so many words that you d
    rule is one sentence a person can check on the screen. Name things by the words on the screen.
 3. **One example per rule**, `### R<n> <title>`, a sentence on why it matters, then gherkin with
    `Given` (the account and the page), `When`, `Then`. The account in `Given` is the one whose
-   data the example is true for: organizations differ (statuses, counts, column order).
+   data the example is true for: organizations differ (statuses, counts, column order). Examples
+   that start the same way go in a chapter: `### Chapter: <name>` with the Given and When once,
+   then `#### R<n> <title>` with the Then (and a When of its own where the example acts). Write the
+   steps in the suite's vocabulary (`bruinet data phrases`), so the spec can run.
 4. **Check every example on the app** before you hand the spec over. Facts read from recordings
    alone were wrong in Bouw7 four times (a default that was empty, three options of six, statuses of
-   another organization, a button that did less than its name). A throwaway probe test per module is
-   fine; delete it after, never commit it. What a probe disproves goes into the rule, not around it.
+   another organization, a button that did less than its name). A runnable spec checks itself: run
+   it (`dotnet test --filter Spec=<id>`) — a draft runs too. Otherwise a throwaway probe test,
+   deleted after. What a run disproves goes into the rule, not around it.
 5. **Unclear points are open questions**, each with `Proposal:`. Behaviour that looks like a bug
    (a date in UTC, "Clear filters" keeping the search) is a question for the owner, not a rule.
 6. **Not in this journey**: neighbouring journeys and features you saw and left out.

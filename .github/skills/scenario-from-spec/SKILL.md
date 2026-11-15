@@ -8,14 +8,20 @@ description: Turn an accepted Frainet spec into tests - one per example, tagged 
 Stage 5 of the site loop. Input: a spec with `Status: accepted …`. Output: tests that `frainet trace`
 finds for every rule, passing on the app.
 
-## C# test or `.feature.md`
+## Make the spec run (the default), C# where it says something badly
 
-- **C# test (the default).** One `[Fact]` per example, named after the example's title
-  (`### R4 Part of a name is enough` → `PartOfANameIsEnough`), with `[Trait("Rule", "<id>.R4")]`. The
-  class is `<Journey name>Tests` in `Modules/<Module>/Tests/`, with `[Module("<Module>")]` and `[Live]`.
-- **`.feature.md`** only when every phrase of the example already binds to a step (the UAT runner's
-  phrases and the suite's). Tag each scenario `@<id>.R<n>`. A phrase that would need a new step
-  binding is a reason to write C# instead, not to invent steps.
+- **The spec runs itself** (`docs/guides/runnable-specs.md`). The suite's config names the specs' folder
+  (`Specs | ../specs, Specs`) and the project copies the spec; each example is then a scenario named and
+  tagged with its rule. Your work is to make every step bind: `bruinet data validate Specs/<id>.spec.md`
+  from the output folder lists the steps that don't.
+- **Make a step bind, in this order:** a word the vocabulary already has (`bruinet data phrases`: say
+  the step that way, the rule's meaning unchanged); a control name on the component
+  (`[BddControl("the filter above {column}")]` on its method); an extension verb written once for the
+  control's type (`[BddVerbs]`, `this TableControl<TScope>`); a page phrase for a page's own workflow.
+  Never a phrase with "should": Frainet's check refuses it in a spec.
+- **C# test** only for what an example says badly (a race, a layout, a polled value): one `[Fact]` with
+  `[Trait("Rule", "<id>.R4")]` in `Modules/<Module>/Tests/`. A rule is checked once: its example or a
+  C# test, never both; delete the C# test when the example runs.
 
 ## Rules for the test
 
@@ -31,9 +37,9 @@ finds for every rule, passing on the app.
 ## Gate
 
 ```bash
-frainet trace specs/<id>.spec.md <suite>/Modules
-dotnet test <suite> --filter Module=<Module> --logger trx
-frainet trace specs/<id>.spec.md <suite>/Modules --results <suite>/TestResults
+frainet trace specs/<id>.spec.md <suite>/Modules --runnable
+dotnet test <suite> --filter "Module=<Module>|Spec=<id>" --logger trx
+frainet trace specs/<id>.spec.md <suite>/Modules --runnable --results <suite>/TestResults
 ```
 
 Every rule `Passing`. A failure that is the app's (not the test's) stays a failure: hand it to

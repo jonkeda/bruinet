@@ -32,12 +32,22 @@ never reused. Each rule is one sentence about what a person can see or do, exact
 false: a number, a message's words in quotes, a state the screen shows. A line above the table may
 say what holds for every rule.
 
+## Background
+
+Optional. A `gherkin` block of Given steps that hold for every example, such as the account that is signed in. Its
+steps go in front of every example.
+
 ## Examples
 
 One `### R<n> <short name>` per rule, at least one example each. A short paragraph says why the
 rule is there, in the person's terms. Then a `gherkin` block with `Given`, `When`, `Then` and
 `And`, in the words on the screen: the buttons' names, the messages as shown, the values typed.
 More than one example of a rule go in the same block, separated by a blank line.
+
+Examples that start the same way may go in a **chapter**: a `### Chapter: <name>` heading, an optional paragraph, and
+a `gherkin` block of Given and When steps, no Then; then its examples as `#### R<n> <short name>`, each with the
+steps that follow the chapter's (often only Then). A reader reads an example as the Background's steps, the
+chapter's, then its own. An example at the `###` level after a chapter is outside it.
 
 ## Choices
 
@@ -62,11 +72,16 @@ words below. It names each finding with its line.
 
 ## The trace
 
-`frainet trace <spec> <tests folder>...` reads the test sources as text, without building or running
+`frainet trace <spec> <tests folder>... [--runnable]` reads the test sources as text, without building or running
 them, and lists each rule with the tests that name it. A C# test names a rule with
 `[Trait("Rule", "TOD.02.R3")]`, a scenario with the tag `@TOD.02.R3`. It fails on a rule no test
 names, and on a test naming a rule the spec does not have. Naming a rule in a test is the builder's
 work, not the spec writer's: the spec stays free of tests.
+
+With `--runnable` the spec's own examples count as the tests of their rules: a suite that runs its specs (Bruinet's
+runnable specs) runs each example as a test case named after its rule (`TOD.02.R3 …`), and `--results` matches it by
+that name. What makes a step run lives in the suite's code, never in the spec; the spec only has to use words the
+suite's vocabulary knows.
 
 ## What a spec never holds
 

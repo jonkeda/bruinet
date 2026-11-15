@@ -480,6 +480,19 @@ A page exposes them as it exposes any control: the Todo pages have a `Dialog` pr
 and the list page names its state container `List`, so the scenarios read
 `Then the dialog should ask "Delete todo?"` and `Then the list should show the Empty state`.
 
+## Control Names And Extension Verbs
+
+Two ways to reach a control without writing a phrase per page ([Runnable Specs](runnable-specs.md) has the whole
+story):
+
+- **A control name**: `[BddControl("the filter above {column}")]` on a page's or a component's method names the control
+  it returns, the placeholders being its parameters. A step's `{control}` is first a control the page exposes by name,
+  then one of these; every verb of the returned type works on it. Two components that match the same words are
+  ambiguous (`BDDB002`).
+- **An extension verb**: a static method in a class marked `[BddVerbs]`, the control first (`this`). It is a control
+  verb of that type and of every type derived from it, generic ones included (`this TableControl<TScope> table`), and a
+  property of such a type is a control of its page.
+
 ## Page Phrases
 
 A page's own workflow, several controls in one user intent, is a keyword attribute on the
