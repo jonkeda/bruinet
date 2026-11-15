@@ -37,7 +37,14 @@ public static partial class UatScenarioTraits
             traits.Add(new(TraitKeys.Module, area));
         }
 
-        var journeys = scenarioTags.Select(BddTagConventions.NormalizeTag).Where(IsJourney).ToList();
+        var tags = scenarioTags.Select(BddTagConventions.NormalizeTag).ToList();
+        foreach (var rule in tags.Where(IsRule).Distinct(StringComparer.Ordinal))
+        {
+            traits.Add(new(TraitKeys.Rule, rule));
+            traits.Add(new(TraitKeys.Spec, rule[..rule.LastIndexOf(".R", StringComparison.Ordinal)]));
+        }
+
+        var journeys = tags.Where(tag => IsJourney(tag) && !IsRule(tag)).ToList();
         if (journeys.Count == 0 && Field(metadata, "Journey") is { } fileJourneys)
         {
             journeys = [.. fileJourneys.Split([',', ' '], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Where(IsJourney)];
@@ -95,6 +102,12 @@ public static partial class UatScenarioTraits
 
     // A journey id has a prefix and at least one dotted part: CTS.06, CTS.06.3.
     private static bool IsJourney(string tag) => JourneyId().IsMatch(tag);
+
+    // A spec's rule (B7.CON.01.R4): a journey id, then .R and a number.
+    private static bool IsRule(string tag) => RuleId().IsMatch(tag);
+
+    [GeneratedRegex(@"^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z0-9]+)*\.\d+\.R\d+$")]
+    private static partial Regex RuleId();
 
     [GeneratedRegex(@"^[A-Za-z][A-Za-z0-9]*(\.[A-Za-z0-9]+)+$")]
     private static partial Regex JourneyId();

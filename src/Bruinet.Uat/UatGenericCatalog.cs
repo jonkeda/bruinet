@@ -19,6 +19,8 @@ public static class UatGenericCatalog
         // generic catalog.
         catalog.Register(BddEffectiveStepKeyword.Given, "I am on the {page} page", "Generic.Page.Open", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Given, "{user} is on the {page} page", "Generic.Page.Open", namesPage: true);
+        catalog.Register(BddEffectiveStepKeyword.When, "I open the {page} page", "Generic.Page.Open", namesPage: true);
+        catalog.Register(BddEffectiveStepKeyword.When, "{user} opens the {page} page", "Generic.Page.Open", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "I should be on the {page} page", "Generic.Page.AssertOpen", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "{user} should be on the {page} page", "Generic.Page.AssertOpen", namesPage: true);
         catalog.Register(BddEffectiveStepKeyword.Then, "I should see {text}", "Generic.Page.AssertTextVisible");

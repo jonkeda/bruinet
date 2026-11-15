@@ -39,6 +39,7 @@ public static class BddScenarioSource
         ArgumentException.ThrowIfNullOrWhiteSpace(folderName);
 
         var directory = baseDirectory ?? AppContext.BaseDirectory;
+        var withSpecs = folderName == BddFileFormat.FeatureFolder;
         if (folderName == BddFileFormat.FeatureFolder && ConfiguredFeatures(directory) is { } configured)
         {
             folderName = configured;
@@ -51,7 +52,7 @@ public static class BddScenarioSource
                 .Order(StringComparer.OrdinalIgnoreCase)
             : Array.Empty<string>();
 
-        return ApplyFilter(files, configurationFilter);
+        return ApplyFilter(withSpecs ? [.. files, .. SpecFiles(directory)] : files, configurationFilter);
     }
 
     // The config's Features folder (BddConfigFields.Features), when the folder's config names one.
@@ -59,6 +60,24 @@ public static class BddScenarioSource
     {
         var configPath = BddFileFormat.FindConfig(directory);
         return File.Exists(configPath) ? BddConfigParser.ParseFile(configPath).FeaturesFolder : null;
+    }
+
+    /// <summary>The runnable specs in the folders the config's <c>Specs</c> row names, in order; none when it names none.</summary>
+    /// <param name="directory">The folder of the config.</param>
+    public static IReadOnlyList<string> SpecFiles(string directory)
+    {
+        var configPath = BddFileFormat.FindConfig(directory);
+        if (!File.Exists(configPath))
+        {
+            return [];
+        }
+
+        return [.. BddConfigParser.ParseFile(configPath).SpecsFolders
+            .Select(folder => Path.GetFullPath(Path.Combine(directory, folder)))
+            .Where(Directory.Exists)
+            .SelectMany(folder => Directory.EnumerateFiles(folder, BddFileFormat.SpecFilePattern, SearchOption.AllDirectories))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.OrdinalIgnoreCase)];
     }
 
     /// <summary>

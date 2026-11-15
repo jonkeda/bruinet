@@ -1,4 +1,6 @@
 #nullable enable
+Bruinet.Traits.ArchitectureAttribute
+Bruinet.Traits.ArchitectureAttribute.ArchitectureAttribute() -> void
 Bruinet.Traits.BruinetTraitAttribute
 Bruinet.Traits.BruinetTraitAttribute.Traits.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!
 Bruinet.Traits.BruinetTraitDiscoverer
@@ -12,9 +14,15 @@ Bruinet.Traits.ComponentAttribute.ComponentAttribute(string! name) -> void
 Bruinet.Traits.ComponentAttribute.Name.get -> string!
 Bruinet.Traits.ContractAttribute
 Bruinet.Traits.ContractAttribute.ContractAttribute() -> void
+Bruinet.Traits.CoversAttribute
+Bruinet.Traits.CoversAttribute.CoversAttribute(string! id) -> void
+Bruinet.Traits.CoversAttribute.Id.get -> string!
 Bruinet.Traits.FeatureAttribute
 Bruinet.Traits.FeatureAttribute.FeatureAttribute(string! name) -> void
 Bruinet.Traits.FeatureAttribute.Name.get -> string!
+Bruinet.Traits.HeadAttribute
+Bruinet.Traits.HeadAttribute.HeadAttribute(string! name) -> void
+Bruinet.Traits.HeadAttribute.Name.get -> string!
 Bruinet.Traits.HermeticUiAttribute
 Bruinet.Traits.HermeticUiAttribute.HermeticUiAttribute() -> void
 Bruinet.Traits.IntegrationAttribute
@@ -27,6 +35,8 @@ Bruinet.Traits.LiveAttribute.LiveAttribute() -> void
 Bruinet.Traits.ModuleAttribute
 Bruinet.Traits.ModuleAttribute.ModuleAttribute(string! name) -> void
 Bruinet.Traits.ModuleAttribute.Name.get -> string!
+Bruinet.Traits.ReviewAttribute
+Bruinet.Traits.ReviewAttribute.ReviewAttribute() -> void
 Bruinet.Traits.SmokeAttribute
 Bruinet.Traits.SmokeAttribute.SmokeAttribute() -> void
 Bruinet.Traits.TierNames
@@ -50,6 +60,8 @@ Bruinet.Traits.TraitProblem.Test.init -> void
 Bruinet.Traits.TraitProblem.TraitProblem(string! Test, string! Problem) -> void
 Bruinet.Traits.UatAttribute
 Bruinet.Traits.UatAttribute.UatAttribute() -> void
+Bruinet.Traits.UiAttribute
+Bruinet.Traits.UiAttribute.UiAttribute() -> void
 Bruinet.Traits.UnitAttribute
 Bruinet.Traits.UnitAttribute.UnitAttribute() -> void
 Bruinet.Traits.VideoAttribute
@@ -59,32 +71,22 @@ const Bruinet.Traits.BruinetTraitDiscoverer.TypeName = "Bruinet.Traits.BruinetTr
 const Bruinet.Traits.TierNames.HermeticUi = "Hermetic UI" -> string!
 const Bruinet.Traits.TierNames.Integration = "Integration" -> string!
 const Bruinet.Traits.TierNames.Live = "Live" -> string!
+const Bruinet.Traits.TierNames.Ui = "UI" -> string!
 const Bruinet.Traits.TierNames.Unit = "Unit" -> string!
 const Bruinet.Traits.TierNames.Video = "Video" -> string!
 const Bruinet.Traits.TraitKeys.Category = "Category" -> string!
 const Bruinet.Traits.TraitKeys.CommonArea = "CommonArea" -> string!
 const Bruinet.Traits.TraitKeys.Component = "Component" -> string!
+const Bruinet.Traits.TraitKeys.Covers = "Covers" -> string!
 const Bruinet.Traits.TraitKeys.Feature = "Feature" -> string!
+const Bruinet.Traits.TraitKeys.Head = "Head" -> string!
 const Bruinet.Traits.TraitKeys.Journey = "Journey" -> string!
 const Bruinet.Traits.TraitKeys.Module = "Module" -> string!
 const Bruinet.Traits.TraitKeys.Pyramid = "Pyramid" -> string!
+const Bruinet.Traits.TraitKeys.Rule = "Rule" -> string!
+const Bruinet.Traits.TraitKeys.Spec = "Spec" -> string!
 static Bruinet.Traits.TierNames.All.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Traits.TierNames.Current(string! tier) -> string!
 static Bruinet.Traits.TraitCheck.Check(System.Reflection.Assembly! assembly, Bruinet.Traits.TraitCheckOptions? options = null) -> System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>!
 static Bruinet.Traits.TraitCheck.ReadTraits(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<System.Collections.Generic.KeyValuePair<string!, string!>>!>!
 static Bruinet.Traits.TraitCheck.Report(System.Collections.Generic.IReadOnlyList<Bruinet.Traits.TraitProblem!>! problems) -> string!
-Bruinet.Traits.ArchitectureAttribute
-Bruinet.Traits.ArchitectureAttribute.ArchitectureAttribute() -> void
-Bruinet.Traits.CoversAttribute
-Bruinet.Traits.CoversAttribute.CoversAttribute(string! id) -> void
-Bruinet.Traits.CoversAttribute.Id.get -> string!
-Bruinet.Traits.HeadAttribute
-Bruinet.Traits.HeadAttribute.HeadAttribute(string! name) -> void
-Bruinet.Traits.HeadAttribute.Name.get -> string!
-Bruinet.Traits.ReviewAttribute
-Bruinet.Traits.ReviewAttribute.ReviewAttribute() -> void
-Bruinet.Traits.UiAttribute
-Bruinet.Traits.UiAttribute.UiAttribute() -> void
-const Bruinet.Traits.TierNames.Ui = "UI" -> string!
-const Bruinet.Traits.TraitKeys.Covers = "Covers" -> string!
-const Bruinet.Traits.TraitKeys.Head = "Head" -> string!
-static Bruinet.Traits.TierNames.Current(string! tier) -> string!

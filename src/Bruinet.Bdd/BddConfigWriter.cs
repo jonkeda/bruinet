@@ -151,6 +151,12 @@ public static class BddConfigFields
     /// </summary>
     public const string Features = "Features";
 
+    /// <summary>
+    /// The folders the suite's runnable specs (<c>*.spec.md</c>) are in, relative to the config, with <c>, </c> between them,
+    /// each read with its subfolders: <c>Modules</c>, <c>Specs</c>. Not set, the suite runs no spec.
+    /// </summary>
+    public const string Specs = "Specs";
+
     /// <summary>The <c>Assemblies</c> kind of the assembly holding the test-data definitions.</summary>
     public const string TestDataAssemblyKind = "TestData";
 }

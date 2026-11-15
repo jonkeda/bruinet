@@ -13,10 +13,20 @@ public static partial class BddMarkdownParser
     private const string TableMarker = "<table>";
     private const string DocStringMarker = "<doc string>";
 
+    /// <summary>Parses a feature file, or a runnable spec (<c>*.spec.md</c>, <c># Spec:</c>) as one (<see cref="BddSpecReader"/>).</summary>
+    /// <param name="markdown">The file's text.</param>
+    /// <param name="filePath">The file's path, for locations.</param>
     public static BddParseResult Parse(string markdown, string? filePath = null)
     {
         ArgumentNullException.ThrowIfNull(markdown);
+        return BddSpecReader.IsSpecFile(filePath) || (filePath is null && BddSpecReader.IsSpec(markdown))
+            ? BddSpecReader.Parse(markdown, filePath)
+            : ParseFeature(markdown, filePath);
+    }
 
+    // The feature grammar itself; a spec is rewritten into it first.
+    internal static BddParseResult ParseFeature(string markdown, string? filePath)
+    {
         var parser = new Parser(markdown, filePath);
         return parser.Parse();
     }

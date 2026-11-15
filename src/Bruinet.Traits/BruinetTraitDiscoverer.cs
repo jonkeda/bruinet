@@ -35,6 +35,12 @@ public static class TraitKeys
 
     /// <summary>The one head the test needs.</summary>
     public const string Head = "Head";
+
+    /// <summary>The rule of a spec the test proves (<c>B7.CON.01.R4</c>), as <c>frainet trace</c> reads it.</summary>
+    public const string Rule = "Rule";
+
+    /// <summary>The spec the test's rule is in (<c>B7.CON.01</c>).</summary>
+    public const string Spec = "Spec";
 }
 
 /// <summary>The values of the <see cref="TraitKeys.Pyramid"/> trait.</summary>

@@ -39,6 +39,11 @@ public sealed record BddConfig(
     /// <summary>The suite's <c>Features</c> folder, trimmed; null when it names none (then it is <c>Features</c>).</summary>
     public string? FeaturesFolder => Runtime.TryGetValue(BddConfigFields.Features, out var folder) && folder.Trim() is { Length: > 0 } trimmed ? trimmed : null;
 
+    /// <summary>The suite's <c>Specs</c> folders, trimmed; empty when it names none (then it runs no spec).</summary>
+    public IReadOnlyList<string> SpecsFolders => Runtime.TryGetValue(BddConfigFields.Specs, out var folders)
+        ? [.. folders.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)]
+        : [];
+
     /// <summary>The suite's <c>Head</c>, trimmed; null when it names none.</summary>
     public string? SuiteHead => Runtime.TryGetValue(BddConfigFields.Head, out var head) && head.Trim() is { Length: > 0 } trimmed ? trimmed : null;
 

@@ -199,6 +199,7 @@ Bruinet.Bdd.BddConfig.Settings.get -> Bruinet.Bdd.BddSettingsConfig!
 Bruinet.Bdd.BddConfig.Settings.init -> void
 Bruinet.Bdd.BddConfig.SkipRules.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Bdd.BddSkipRule!>!
 Bruinet.Bdd.BddConfig.SkipRules.init -> void
+Bruinet.Bdd.BddConfig.SpecsFolders.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Bdd.BddConfig.SuiteHead.get -> string?
 Bruinet.Bdd.BddConfig.Usings.get -> System.Collections.Generic.IReadOnlyList<string!>!
 Bruinet.Bdd.BddConfig.Usings.init -> void
@@ -581,6 +582,7 @@ Bruinet.Bdd.BddSourceLocation.FilePath.get -> string?
 Bruinet.Bdd.BddSourceLocation.FilePath.init -> void
 Bruinet.Bdd.BddSourceLocation.LineNumber.get -> int
 Bruinet.Bdd.BddSourceLocation.LineNumber.init -> void
+Bruinet.Bdd.BddSpecReader
 Bruinet.Bdd.BddStep
 Bruinet.Bdd.BddStep.BddStep(Bruinet.Bdd.BddStepKeyword Keyword, Bruinet.Bdd.BddEffectiveStepKeyword EffectiveKeyword, string! Text, Bruinet.Bdd.BddTable? Table, Bruinet.Bdd.BddSourceLocation! Source, string? DocString = null) -> void
 Bruinet.Bdd.BddStep.DocString.get -> string?
@@ -1046,6 +1048,7 @@ const Bruinet.Bdd.BddConfigFields.Features = "Features" -> string!
 const Bruinet.Bdd.BddConfigFields.Fixture = "Fixture" -> string!
 const Bruinet.Bdd.BddConfigFields.Head = "Head" -> string!
 const Bruinet.Bdd.BddConfigFields.Project = "Project" -> string!
+const Bruinet.Bdd.BddConfigFields.Specs = "Specs" -> string!
 const Bruinet.Bdd.BddConfigFields.Target = "Target" -> string!
 const Bruinet.Bdd.BddConfigFields.TestDataAssemblyKind = "TestData" -> string!
 const Bruinet.Bdd.BddConfigFields.WorkingDirectory = "WorkingDirectory" -> string!
@@ -1058,6 +1061,8 @@ const Bruinet.Bdd.BddFileFormat.OldConfigFileName = "uat.config.md" -> string!
 const Bruinet.Bdd.BddFileFormat.OldFeatureFolder = "Scenarios" -> string!
 const Bruinet.Bdd.BddFileFormat.OldFormCode = "BDD029" -> string!
 const Bruinet.Bdd.BddFileFormat.ServiceConfigFileName = "bdd.config.md" -> string!
+const Bruinet.Bdd.BddFileFormat.SpecExtension = ".spec.md" -> string!
+const Bruinet.Bdd.BddFileFormat.SpecFilePattern = "*.spec.md" -> string!
 const Bruinet.Bdd.BddFileFormat.StepFilePattern = "*.steps.md" -> string!
 const Bruinet.Bdd.BddFileFormat.StepsExtension = ".steps.md" -> string!
 const Bruinet.Bdd.BddFileFormat.UiConfigFileName = "uat.config.md" -> string!
@@ -1079,6 +1084,8 @@ const Bruinet.Bdd.BddReplayFields.HttpReplayVariable = "BRUINET_HTTP_REPLAY" -> 
 const Bruinet.Bdd.BddScenarioAddress.Trait = "BddScenario" -> string!
 const Bruinet.Bdd.BddScenarioFiles.PhraseFilePattern = "*.steps.md" -> string!
 const Bruinet.Bdd.BddScenarioSource.SourceDirectoryEnvironmentVariable = "BRUINET_SUITE_SOURCE" -> string!
+const Bruinet.Bdd.BddSpecReader.SpecTag = "spec" -> string!
+const Bruinet.Bdd.BddSpecReader.ThenOnlyTag = "chapter-then" -> string!
 const Bruinet.Bdd.BddTagConventions.Android = "android" -> string!
 const Bruinet.Bdd.BddTagConventions.Automated = "automated" -> string!
 const Bruinet.Bdd.BddTagConventions.Browser = "browser" -> string!
@@ -1177,6 +1184,7 @@ static Bruinet.Bdd.BddScenarioSource.GetOrderKey(string! filePath, string! scena
 static Bruinet.Bdd.BddScenarioSource.GetScenarioFileTheoryData(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IEnumerable<object![]!>!
 static Bruinet.Bdd.BddScenarioSource.GetScenarioTheoryData(string! folderName = "Features", string? baseDirectory = null, string? configurationFilter = null) -> System.Collections.Generic.IEnumerable<object![]!>!
 static Bruinet.Bdd.BddScenarioSource.SourceDirectory.get -> string?
+static Bruinet.Bdd.BddScenarioSource.SpecFiles(string! directory) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Bdd.BddScenarioSource.SuiteDirectory(string! output) -> string!
 static Bruinet.Bdd.BddScope.Of(Bruinet.Bdd.BddCallable! callable, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddScope!
 static Bruinet.Bdd.BddScope.Of(Bruinet.Bdd.BddDocument! document, Bruinet.Bdd.BddCatalogSet! catalogs) -> Bruinet.Bdd.BddScope!
@@ -1184,6 +1192,10 @@ static Bruinet.Bdd.BddScope.OwnerOf(Bruinet.Bdd.BddCommandPattern! pattern) -> s
 static Bruinet.Bdd.BddSets.AssertSet<T>(System.Collections.Generic.IEnumerable<T>! expected, System.Collections.Generic.IEnumerable<T>! actual, bool ordered = false, string? what = null) -> void
 static Bruinet.Bdd.BddSettingsConfig.Default.get -> Bruinet.Bdd.BddSettingsConfig!
 static Bruinet.Bdd.BddSkipDecision.Run.get -> Bruinet.Bdd.BddSkipDecision!
+static Bruinet.Bdd.BddSpecReader.ChapterKey(string! chapterName) -> string!
+static Bruinet.Bdd.BddSpecReader.IsSpec(string! markdown) -> bool
+static Bruinet.Bdd.BddSpecReader.IsSpecFile(string? filePath) -> bool
+static Bruinet.Bdd.BddSpecReader.Parse(string! markdown, string? filePath = null) -> Bruinet.Bdd.BddParseResult!
 static Bruinet.Bdd.BddStepDefinitionRuntime.FromTypes(object! root, params System.Type![]! stepDefinitionTypes) -> Bruinet.Bdd.BddStepDefinitionRuntime!
 static Bruinet.Bdd.BddStepDefinitionRuntime.SetServiceProvider(Bruinet.Bdd.BddExecutionContext! context, System.IServiceProvider! serviceProvider) -> void
 static Bruinet.Bdd.BddStepResult.Canceled(Bruinet.Bdd.BddStepInvocation! invocation, string? message = null) -> Bruinet.Bdd.BddStepResult!

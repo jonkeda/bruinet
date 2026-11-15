@@ -181,6 +181,12 @@ public sealed class UatReflectionRuntime
             catalog.Register(BddEffectiveStepKeyword.Given, phrase, "Builtin.Page.Open", handler: OpenPageAsync, namesPage: true);
         }
 
+        // The same as a When: what a person does, in a runnable spec's example ("When I open the Contacts page").
+        foreach (var phrase in new[] { "I open the {page} page", "{user} opens the {page} page" })
+        {
+            catalog.Register(BddEffectiveStepKeyword.When, phrase, "Builtin.Page.Open", handler: OpenPageAsync, namesPage: true);
+        }
+
         foreach (var phrase in new[] { "I should be on the {page} page", "{user} should be on the {page} page" })
         {
             catalog.Register(BddEffectiveStepKeyword.Then, phrase, "Builtin.Page.AssertOpen", handler: AssertPageAsync, namesPage: true);

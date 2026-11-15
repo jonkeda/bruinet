@@ -21,6 +21,12 @@ public static class BddFileFormat
     /// <summary>The search pattern for feature files.</summary>
     public const string FeatureFilePattern = "*" + FeatureExtension;
 
+    /// <summary>The extension of a runnable spec, read as a feature (<see cref="BddSpecReader"/>).</summary>
+    public const string SpecExtension = ".spec.md";
+
+    /// <summary>The search pattern for runnable specs.</summary>
+    public const string SpecFilePattern = "*" + SpecExtension;
+
     /// <summary>The name ending of a step file.</summary>
     public const string StepsExtension = ".steps.md";
 

@@ -11,6 +11,16 @@ public sealed class UatScenarioTraitsTests : IDisposable
     public void Dispose() => Directory.Delete(_folder, recursive: true);
 
     [Fact]
+    public void Of_GivesARuleTagItsRuleAndSpec_AndNotAJourney()
+    {
+        var traits = UatScenarioTraits.Of(new Dictionary<string, string>(), ["@B7.CON.01.R4", "@spec"]);
+
+        Assert.Contains(new KeyValuePair<string, string>(TraitKeys.Rule, "B7.CON.01.R4"), traits);
+        Assert.Contains(new KeyValuePair<string, string>(TraitKeys.Spec, "B7.CON.01"), traits);
+        Assert.DoesNotContain(traits, trait => trait.Key == TraitKeys.Journey);
+    }
+
+    [Fact]
     public void Of_GivesTheModuleFromArea_TheJourneysFromTheScenariosTags_AndATierFromPriority()
     {
         var traits = UatScenarioTraits.Of(

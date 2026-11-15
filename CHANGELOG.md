@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Runnable specs (RS1, RS2's reading).** A Frainet spec (`*.spec.md`) runs as a feature: each example is a scenario
+  named and tagged with its rule (`B7.CON.01.R4 …`, `@B7.CON.01.R4`), its `## Background` before every example, and a
+  chapter's (`### Chapter: …`) Given and When before each of its examples (`#### R4 …`). The config's `Specs` row names
+  the folders (`Specs | ../specs, Specs`). A rule tag gives the case the `Rule` and `Spec` traits, as a C# test's
+  `[Trait("Rule", …)]` does. Built-in `When I open the {page} page`.
 - `RunMarker` (`BRN-MMdd-HHmm`, one per run, `BRUINET_RUN_MARKER` to share it) and `CleanUpRegistry` (undos in
   reverse, a failing one collected) in `Bruinet.Core.Testing`: the first step of the service clients' design (B18).
 - `bruinet scrape find <text>`: a text, a placeholder or an attribute's value in the recorded pages, shadow roots
