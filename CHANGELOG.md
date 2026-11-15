@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Frainet: a spec may have a `## Background` (after Rules) and chapters (`### Chapter: <name>` with Given and When,
+  then `#### R<n> …` examples); `frainet check` checks each example with the Background's and its chapter's steps in
+  front, and a chapter with a Then is `chapter-steps`.
 - Frainet: `frainet trace … --runnable` counts a runnable spec's examples as the tests of their rules, and with
   `--results` matches each by the case named after its rule (`"B7.INV.01.R1 …`). `site-loop.ps1` passes it, and runs
   `Spec=<spec>` too, for a suite whose config names `Specs`.

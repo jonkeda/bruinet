@@ -128,4 +128,81 @@ public sealed class SpecCheckTests
 
         throw new InvalidOperationException("Frainet.slnx not found above the test's folder.");
     }
+
+    private const string Chapters = """
+        # Spec: ABC.01 Look at the list
+
+        | Field | Value |
+        | --- | --- |
+        | Product | ABC |
+        | Journey | ABC.01 Look at the list |
+        | Where | The web app |
+        | Status | draft |
+
+        ## Intent
+
+        Someone checks the list.
+
+        ## Rules
+
+        | Id | Rule |
+        | --- | --- |
+        | ABC.01.R1 | The page shows "List". |
+        | ABC.01.R2 | A text in the filter narrows the list. |
+
+        ## Background
+
+        ```gherkin
+        Given Creator is signed in
+        ```
+
+        ## Examples
+
+        ### Chapter: At a glance
+
+        ```gherkin
+        When I open the List page
+        ```
+
+        #### R1 The title
+
+        The person sees where they are.
+
+        ```gherkin
+        Then the title says "List"
+        ```
+
+        ### R2 Filtering
+
+        People remember part of a name.
+
+        ```gherkin
+        When I type "a" in the filter above Name
+        Then the list shows only "Ann"
+        ```
+        """;
+
+    private static string Lf => Chapters.ReplaceLineEndings("\n");
+
+    [Fact]
+    public void A_background_and_a_chapter_go_before_their_examples_so_a_then_only_example_is_whole()
+        => Assert.Empty(SpecCheck.Check(Lf));
+
+    [Fact]
+    public void A_chapter_with_a_then_is_found()
+    {
+        var findings = SpecCheck.Check(Lf.Replace("When I open the List page", "When I open the List page\nThen the title says 'List'"));
+
+        Assert.Contains(findings, finding => finding.Code == "chapter-steps");
+    }
+
+    [Fact]
+    public void A_then_only_example_outside_a_chapter_is_incomplete()
+    {
+        var start = Lf.IndexOf("### Chapter:", StringComparison.Ordinal);
+        var end = Lf.IndexOf("#### R1", StringComparison.Ordinal);
+        var findings = SpecCheck.Check(Lf.Remove(start, end - start).Replace("#### R1", "### R1"));
+
+        Assert.Contains(findings, finding => finding.Code == "gherkin-incomplete");
+    }
 }
