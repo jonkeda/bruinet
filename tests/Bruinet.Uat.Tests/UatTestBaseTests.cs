@@ -266,11 +266,11 @@ public sealed class UatTestBaseTests
                 When I run the custom action
                 ```
                 """);
-            var harness = new SpecFormatHarness(configFilePath);
+            var harness = new FeatureFormatHarness(configFilePath);
 
             harness.AssertMetadata(scenarioFilePath);
             harness.AssertBinds(scenarioFilePath);
-            harness.AssertConfigParses();
+            harness.CheckConfig();
 
             Assert.True(harness.ConfigAsserted);
         }
@@ -654,8 +654,8 @@ public sealed class UatTestBaseTests
         }
     }
 
-    private sealed class SpecFormatHarness(string configFilePath)
-        : UatSpecFormatTestBase
+    private sealed class FeatureFormatHarness(string configFilePath)
+        : BddFeatureFormatTestBase
     {
         public bool ConfigAsserted { get; private set; }
 
@@ -668,11 +668,11 @@ public sealed class UatTestBaseTests
         protected override Type? RuntimeRootType => typeof(HarnessFixture);
 
         public void AssertMetadata(string filePath) =>
-            AssertUatFileParsesAndContainsRequiredMetadata(filePath);
+            AssertFeatureParsesAndContainsRequiredMetadata(filePath);
 
-        public void AssertBinds(string filePath) => AssertUatFileBindsThroughCatalog(filePath);
+        public void AssertBinds(string filePath) => AssertFeatureBindsThroughCatalog(filePath);
 
-        public void AssertConfigParses() => AssertUatConfigParses();
+        public void CheckConfig() => AssertConfigParses();
 
         protected override void AssertConfig(BddConfig config)
         {

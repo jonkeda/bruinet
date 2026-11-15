@@ -41,7 +41,7 @@ public sealed class BddCommandCatalog
     public IStepScopeModel? Scope { get; set; }
 
     /// <summary>
-    /// Whether this is the generic catalog of built-in phrases only (Bruinet.Uat's <c>UatSpecCommandCatalog</c>),
+    /// Whether this is the generic catalog of built-in phrases only (Bruinet.Uat's <c>UatGenericCatalog</c>),
     /// which knows no app's phrases: a file's <c>Using</c> is not checked against it.
     /// </summary>
     public bool IsGeneric { get; set; }

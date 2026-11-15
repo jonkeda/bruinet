@@ -2,9 +2,9 @@ using Bruinet.Bdd;
 using Bruinet.Core.Composition;
 using Xunit;
 
-namespace Bruinet.Uat.Tests.SpecCompositionCases;
+namespace Bruinet.Uat.Tests.FormatCompositionCases;
 
-public sealed class UatSpecCompositionTests
+public sealed class FeatureFormatCompositionTests
 {
     [Fact]
     public void SpecFormatTestBase_BindsCompositionPhraseClasses()
@@ -12,9 +12,9 @@ public sealed class UatSpecCompositionTests
         var directory = CreateTempDirectory();
         try
         {
-            var scenarioFilePath = Path.Combine(directory, "composition-spec.feature.md");
+            var scenarioFilePath = Path.Combine(directory, "composition.feature.md");
             File.WriteAllText(scenarioFilePath, """
-                # Feature: Composition Spec
+                # Feature: Composition
 
                 ## Metadata
 
@@ -36,7 +36,7 @@ public sealed class UatSpecCompositionTests
                 When I run the composition-only phrase
                 ```
                 """);
-            var harness = new SpecCompositionHarness();
+            var harness = new FormatCompositionHarness();
 
             harness.AssertBinds(scenarioFilePath);
         }
@@ -48,20 +48,20 @@ public sealed class UatSpecCompositionTests
 
     private static string CreateTempDirectory()
     {
-        var directory = Path.Combine(Path.GetTempPath(), $"bruinet-uat-spec-composition-{Guid.NewGuid():N}");
+        var directory = Path.Combine(Path.GetTempPath(), $"bruinet-format-composition-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
         return directory;
     }
 
-    [TestModuleScan(typeof(UatSpecCompositionTests), NamespacePrefix = "Bruinet.Uat.Tests.SpecCompositionCases")]
+    [TestModuleScan(typeof(FeatureFormatCompositionTests), NamespacePrefix = "Bruinet.Uat.Tests.FormatCompositionCases")]
     [BddIgnore]
-    public sealed class SpecCompositionFixture
+    public sealed class FormatCompositionFixture
     {
     }
 
     [BddStepDefinitions]
     [BddIgnore]
-    public sealed class SpecCompositionPhrases : BddStepDefinitionsBase
+    public sealed class FormatCompositionPhrases : BddStepDefinitionsBase
     {
         [BddWhen("I run the composition-only phrase")]
         public void RunCompositionOnlyPhrase()
@@ -69,10 +69,10 @@ public sealed class UatSpecCompositionTests
         }
     }
 
-    private sealed class SpecCompositionHarness : UatSpecFormatTestBase
+    private sealed class FormatCompositionHarness : BddFeatureFormatTestBase
     {
-        protected override Type? RuntimeRootType => typeof(SpecCompositionFixture);
+        protected override Type? RuntimeRootType => typeof(FormatCompositionFixture);
 
-        public void AssertBinds(string filePath) => AssertUatFileBindsThroughCatalog(filePath);
+        public void AssertBinds(string filePath) => AssertFeatureBindsThroughCatalog(filePath);
     }
 }

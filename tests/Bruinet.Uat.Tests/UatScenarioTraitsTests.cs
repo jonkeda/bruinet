@@ -78,9 +78,9 @@ public sealed class UatScenarioTraitsTests : IDisposable
         var draft = Write("draft.feature.md", Feature("Tags | contacts, no-format-check |\n| FormatCheck | Draft: the steps are not written yet", "@A.1"));
         var unexplained = Write("unexplained.feature.md", Feature("Tags | @no-format-check", "@A.1"));
 
-        Assert.Null(UatSpecFormatTestBase.OptOutReason(checkedFile));
-        Assert.Equal("Draft: the steps are not written yet", UatSpecFormatTestBase.OptOutReason(draft));
-        var failure = Assert.Throws<InvalidOperationException>(() => UatSpecFormatTestBase.OptOutReason(unexplained));
+        Assert.Null(BddFeatureFormatTestBase.OptOutReason(checkedFile));
+        Assert.Equal("Draft: the steps are not written yet", BddFeatureFormatTestBase.OptOutReason(draft));
+        var failure = Assert.Throws<InvalidOperationException>(() => BddFeatureFormatTestBase.OptOutReason(unexplained));
         Assert.Contains("FormatCheck", failure.Message, StringComparison.Ordinal);
     }
 
@@ -110,7 +110,7 @@ public sealed class UatScenarioTraitsTests : IDisposable
         ```
         """;
 
-    private sealed class FormatCheck : UatSpecFormatTestBase
+    private sealed class FormatCheck : BddFeatureFormatTestBase
     {
         public static IEnumerable<object[]> Files(string folder) => GetFolderFiles(folder);
     }

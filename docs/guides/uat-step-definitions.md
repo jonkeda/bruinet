@@ -330,16 +330,16 @@ and `phrases` lists callables with their types.
 
 The 19 built-in phrases have two sources. Three page verbs and the pause are registered
 directly by `UatReflectionRuntime.CreateCommandCatalog()` and
-`UatSpecCommandCatalog.RegisterDefault()`, since they do not bind to control
+`UatGenericCatalog.RegisterDefault()`, since they do not bind to control
 methods. The other fifteen are `[BddWhen]` / `[BddThen]` attributes on `Bruinet.Core` control
 interfaces. `UatCatalogBuilder` discovers them for the runtime catalog, the
-spec catalog and the Presenter's preview, so the phrase and its method cannot
+generic catalog and the Presenter's preview, so the phrase and its method cannot
 drift apart. To add a control verb, annotate its method rather than registering
 another catalog entry. See
 [AD-011](../../.docs/decisions/ad-011-uat-vocabulary-is-attribute-declared.md).
 
 Four phrases are the engine's own. They bind to no control method, so they are
-registered directly in the runtime and spec catalogs:
+registered directly in the runtime and generic catalogs:
 
 | Keyword | Phrase | What it does |
 | --- | --- | --- |
@@ -453,7 +453,7 @@ Rules for a control verb:
   `Literal` to the boolean to pass, as `AssertVisible` does for
   `should be visible` / `should not be visible`.
 - `CommandId` sets the stable command-id suffix; it defaults to the method name.
-  The projections prepend their own prefix (`Builtin.` / `Spec.`), so one
+  The projections prepend their own prefix (`Builtin.` / `Generic.`), so one
   attribute serves both.
 - `CommandId`, `Literal` and `HasLiteral` are for control verbs only. On a
   fixture or step-definition method they fail discovery with an error naming the
@@ -970,5 +970,5 @@ The rule is [AD-015](../../.docs/decisions/ad-015-a-steps-subject-picks-its-app.
 - `src/Bruinet.Uat/UatCatalogBuilder.cs`
 - `src/Bruinet.Uat/UatReflectionRuntime.cs`
 - `src/Bruinet.Uat/UatScenarioTestBase.cs`
-- `src/Bruinet.Uat/UatSpecCommandCatalog.cs`
+- `src/Bruinet.Uat/UatGenericCatalog.cs`
 - `src/Bruinet.Uat/UatAttributes.cs`

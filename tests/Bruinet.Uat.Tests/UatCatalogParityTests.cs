@@ -11,7 +11,7 @@ public sealed class UatCatalogParityTests
     public void EveryCoreIVerb_HasANamedTwin_WithTheSameCommand()
     {
         // The built-in pairs cannot drift: "I tap {control}" has "{user} taps {control}" (AD-015).
-        var patterns = UatSpecCommandCatalog.CreateDefault().Patterns;
+        var patterns = UatGenericCatalog.CreateDefault().Patterns;
         var twins = patterns
             .Where(pattern => pattern.Phrase.StartsWith("{user} ", StringComparison.Ordinal))
             .Select(pattern => (pattern.Keyword, pattern.CommandId))
@@ -61,7 +61,7 @@ public sealed class UatCatalogParityTests
     }
 
     [Fact]
-    public void SpecCatalog_ControlVerbs_ComeFromCoreStepAttributes()
+    public void GenericCatalog_ControlVerbs_ComeFromCoreStepAttributes()
     {
         // Core's controls declare the built-in verbs; the attributes themselves live in Bruinet.Bdd.Abstractions.
         var expected = typeof(Bruinet.Core.Interfaces.IClickableControlObject<>).Assembly
@@ -72,7 +72,7 @@ public sealed class UatCatalogParityTests
             .Select(attribute => (attribute.Keyword, attribute.Phrase))
             .ToHashSet();
 
-        var catalogPhrases = ControlVerbs(UatSpecCommandCatalog.CreateDefault())
+        var catalogPhrases = ControlVerbs(UatGenericCatalog.CreateDefault())
             .Select(pattern => (pattern.Keyword, pattern.Phrase))
             .ToHashSet();
 
@@ -87,12 +87,12 @@ public sealed class UatCatalogParityTests
             .Select(pattern => (pattern.Keyword, pattern.Phrase, Suffix: StripPrefix(pattern.CommandId)))
             .ToHashSet();
 
-        var spec = ControlVerbs(UatSpecCommandCatalog.CreateDefault())
+        var generic = ControlVerbs(UatGenericCatalog.CreateDefault())
             .Select(pattern => (pattern.Keyword, pattern.Phrase, Suffix: StripPrefix(pattern.CommandId)))
             .ToHashSet();
 
-        Assert.NotEmpty(spec);
-        Assert.Equal(spec, runtime);
+        Assert.NotEmpty(generic);
+        Assert.Equal(generic, runtime);
     }
 
     [Fact]

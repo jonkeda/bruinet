@@ -92,7 +92,7 @@ public sealed class BddWorkspaceService : IBddWorkspaceService, IDisposable
             scenarios,
             diagnostics,
             discoveryReport,
-            FormatCatalog(catalogs?.Default ?? UatSpecCommandCatalog.CreateDefault()),
+            FormatCatalog(catalogs?.Default ?? UatGenericCatalog.CreateDefault()),
             catalogs);
     }
 

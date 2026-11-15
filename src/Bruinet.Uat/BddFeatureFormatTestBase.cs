@@ -1,6 +1,6 @@
 namespace Bruinet.Uat;
 
-public abstract class UatSpecFormatTestBase
+public abstract class BddFeatureFormatTestBase
 {
     protected virtual IReadOnlyList<string> RequiredMetadata { get; } =
     [
@@ -23,7 +23,7 @@ public abstract class UatSpecFormatTestBase
     protected virtual Type? RuntimeRootType => null;
 
     /// <summary>
-    /// The tag in a file's <c>Tags</c> metadata that leaves it out of <see cref="AssertUatFileFormat"/>, such as a draft
+    /// The tag in a file's <c>Tags</c> metadata that leaves it out of <see cref="AssertFeatureFormat"/>, such as a draft
     /// whose steps do not bind yet. The file must then say why in its <see cref="OptOutReasonField"/> metadata.
     /// </summary>
     public const string OptOutTag = "no-format-check";
@@ -47,15 +47,15 @@ public abstract class UatSpecFormatTestBase
     /// unless it opts out with <see cref="OptOutTag"/> and a reason.
     /// </summary>
     /// <param name="filePath">The feature file.</param>
-    protected void AssertUatFileFormat(string filePath)
+    protected void AssertFeatureFormat(string filePath)
     {
         if (OptOutReason(filePath) is not null)
         {
             return;
         }
 
-        AssertUatFileParsesAndContainsRequiredMetadata(filePath);
-        AssertUatFileBindsThroughCatalog(filePath);
+        AssertFeatureParsesAndContainsRequiredMetadata(filePath);
+        AssertFeatureBindsThroughCatalog(filePath);
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public abstract class UatSpecFormatTestBase
             configurationFilter: configurationFilter);
     }
 
-    protected void AssertUatFileParsesAndContainsRequiredMetadata(string filePath)
+    protected void AssertFeatureParsesAndContainsRequiredMetadata(string filePath)
     {
         var parse = BddMarkdownParser.ParseFile(filePath);
 
@@ -132,7 +132,7 @@ public abstract class UatSpecFormatTestBase
         }
     }
 
-    protected void AssertUatFileBindsThroughCatalog(string filePath)
+    protected void AssertFeatureBindsThroughCatalog(string filePath)
     {
         var file = BddScenarioFiles.Load(filePath);
         if (!file.Success)
@@ -149,14 +149,14 @@ public abstract class UatSpecFormatTestBase
         }
     }
 
-    protected void AssertUatConfigParses()
+    protected void AssertConfigParses()
     {
         AssertConfig(BddConfigParser.ParseFile(ConfigFilePath, GetReportingSuiteName()));
     }
 
     protected virtual BddCommandCatalog CreateCatalog()
     {
-        var catalog = UatSpecCommandCatalog.CreateDefault();
+        var catalog = UatGenericCatalog.CreateDefault();
         if (RuntimeRootType is { } runtimeRootType)
         {
             UatReflectionRuntime.RegisterCompositionPhrases(catalog, runtimeRootType);

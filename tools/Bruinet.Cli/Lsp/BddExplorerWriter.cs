@@ -100,7 +100,7 @@ internal static class BddExplorerWriter
         foreach (var group in patterns
             .GroupBy(pattern => pattern.ControlVerb is not null ? "Control verbs"
                 : pattern.Page is { } page ? $"Page {page}"
-                : pattern.CommandId.StartsWith("Builtin.", StringComparison.Ordinal) || pattern.CommandId.StartsWith("Spec.", StringComparison.Ordinal) ? "Built in"
+                : pattern.CommandId.StartsWith("Builtin.", StringComparison.Ordinal) || pattern.CommandId.StartsWith("Generic.", StringComparison.Ordinal) ? "Built in"
                 : TypeName(pattern.CommandId))
             .OrderBy(group => group.Key.StartsWith("Built in", StringComparison.Ordinal) ? 2 : group.Key.StartsWith("Control", StringComparison.Ordinal) ? 1 : 0)
             .ThenBy(group => group.Key, StringComparer.OrdinalIgnoreCase))

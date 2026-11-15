@@ -33,7 +33,7 @@ internal sealed record UatStepBinding(
 /// <summary>
 /// Discovers control-step vocabulary from <see cref="BddStepAttribute"/> declarations on control methods and
 /// projects it into a <see cref="BddCommandCatalog"/>. This replaces the hand-written phrase
-/// tables: the runtime and spec catalogs are the same discovery pass with and without handlers.
+/// tables: the runtime and generic catalogs are the same discovery pass with and without handlers.
 /// </summary>
 internal static class UatCatalogBuilder
 {

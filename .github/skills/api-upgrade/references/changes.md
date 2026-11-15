@@ -9,6 +9,9 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| BU3 | `UatSpecCommandCatalog` is `UatGenericCatalog`; its command ids start `Generic.`, were `Spec.` | `\bUatSpecCommandCatalog\b`, `"Spec\.` | `UatGenericCatalog`, `"Generic.` |
+| BU3 | `UatSpecFormatTestBase` is `BddFeatureFormatTestBase`, its `AssertUatFile*` methods `AssertFeature*`, `AssertUatConfigParses` is `AssertConfigParses`. The old class stays one release, `[Obsolete]` | `\bUatSpecFormatTestBase\b`, `\bAssertUatFile(\w+)`, `\bAssertUatConfigParses\b` | `BddFeatureFormatTestBase`, `AssertFeature$1`, `AssertConfigParses` |
+| BU2 | Diagnostic codes are `BDDâ€¦`, same letter and number (in `*.cs`, `*.md`, suppressions, CI filters) | `\bUAT([A-D]?\d{3})\b` | `BDD$1` |
 | R2-T96 | The MCP server is `bruinet` (`serverInfo.name`), was `bruinet-bdd`; rename the key in `.mcp.json` and an agent's `tools:` list to match | `bruinet-bdd` | `bruinet` |
 | R2-T96 | The MCP tools `failing` and `last_runs` are one, `list_results`: `path` for a file (what `last_runs` gave), `suite`, or every suite; `status: all` adds the passed; rows are `results` with the heading's `line`, and a suite that cannot load is under `notLoaded` (in skills, agents, prompts, `*.md`, `.mcp.json`) | `\b(failing\|last_runs)\b` where it names the tool | `list_results` |
 | R2-T96 | The MCP tool `why` is `diff_since_green` and runs nothing: with no traced failure or no green run it answers `compared: false` and a `note`, not an error; run the scenario with `run_scenario` first (in skills, agents, prompts, `*.md`, `.mcp.json`) | `\bwhy\b` where it names the tool | `diff_since_green` |
