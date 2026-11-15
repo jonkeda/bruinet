@@ -16,7 +16,7 @@
 Given I am on the Presenter page
 When I tap Reload
 Then Status Summary should contain "Ready"
-Then Workspace Tree should contain "uat.config.md"
+Then Workspace Tree should contain "bdd.config.md"
 And Workspace Tree should contain "Features"
 And All Workspace Tree should contain "main-page-greeting.feature.md"
 And All Workspace Tree should contain "user-form-basic-input.feature.md"

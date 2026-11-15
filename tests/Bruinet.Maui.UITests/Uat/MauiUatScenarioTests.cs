@@ -21,7 +21,7 @@ public sealed class MauiUatScenarioTests
 
     [Theory(Timeout = 120000)]
     [MemberData(nameof(ScenarioFiles))]
-    public Task UatFile_Passes(string filePath) => RunUatFileAsync(filePath);
+    public Task UatFile_Passes(string filePath) => RunFileAsync(filePath);
 
     // A control the page does not have is a bind error: the file fails before the app is driven.
     [Theory]

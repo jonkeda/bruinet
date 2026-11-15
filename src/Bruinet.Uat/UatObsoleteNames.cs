@@ -33,6 +33,25 @@ public abstract class UatScenarioTestBase<TFixture> : BddScenarioTestBase<TFixtu
         : base(fixture)
     {
     }
+
+    /// <summary>Renamed to <see cref="BddScenarioTestBase{TFixture}.RunScenarioAsync(string, string, CancellationToken)"/>.</summary>
+    /// <param name="filePath">The scenario file.</param>
+    /// <param name="scenarioName">The scenario's name.</param>
+    /// <param name="cancellationToken">Cancels the run.</param>
+    protected Task RunUatScenarioAsync(string filePath, string scenarioName, CancellationToken cancellationToken = default)
+        => RunScenarioAsync(filePath, scenarioName, cancellationToken);
+
+    /// <summary>Renamed to <see cref="BddScenarioTestBase{TFixture}.RunFileAsync"/>.</summary>
+    /// <param name="filePath">The scenario file.</param>
+    /// <param name="cancellationToken">Cancels the run.</param>
+    protected Task RunUatFileAsync(string filePath, CancellationToken cancellationToken = default)
+        => RunFileAsync(filePath, cancellationToken);
+
+    /// <summary>Renamed to <see cref="BddScenarioTestBase{TFixture}.RunExpectedFailureFileAsync"/>.</summary>
+    /// <param name="filePath">The scenario file.</param>
+    /// <param name="expectedDiagnostics">The diagnostics the file must give.</param>
+    protected Task RunExpectedFailureUatFileAsync(string filePath, params string[] expectedDiagnostics)
+        => RunExpectedFailureFileAsync(filePath, expectedDiagnostics);
 }
 
 /// <summary>Renamed to <see cref="BddRuntimeValidationOptions"/>.</summary>

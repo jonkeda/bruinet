@@ -91,7 +91,7 @@ public sealed class TodoUatScenarioTests : BddScenarioTestBase<TodoUatFixture>
 
     [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
     // Load the file's TestData before its first scenario (the fixture may restart the app).
     protected override void BeforeFile(BddDocument document)
@@ -118,7 +118,7 @@ what a file's metadata asks for; it runs before the file is bound, once per file
 position (`BddScenarioSource.GetOrderKey`). xUnit 2 runs theory cases in case-id
 order unless told otherwise, so the Todo sample adds a small `ITestCaseOrderer`
 (`BddScenarioOrderer`) that sorts by that key: the app then restarts once per test
-set, not once per scenario. `GetScenarioFiles` / `RunUatFileAsync` still run a
+set, not once per scenario. `GetScenarioFiles` / `RunFileAsync` still run a
 whole file as one case.
 
 `[UatScenarioTheory]` is `[Theory]` with a stable address per case: the `BddScenario` trait is

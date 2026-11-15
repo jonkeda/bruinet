@@ -19,7 +19,7 @@ public sealed class PresenterUatScenarioTests(PresenterFixture fixture)
     [MemberData(nameof(ScenarioFiles))]
     public Task UatFile_Passes(string filePath)
     {
-        return RunUatFileAsync(filePath);
+        return RunFileAsync(filePath);
     }
 
     protected override void BeforeScenario(BddBoundScenario scenario)

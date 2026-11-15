@@ -42,7 +42,7 @@ public sealed class UatTestBaseTests
             var fixture = new HarnessFixture();
             var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture));
 
-            await harness.RunFileAsync(scenarioFilePath);
+            await harness.RunFile(scenarioFilePath);
 
             Assert.Equal(1, fixture.ActionCount);
             Assert.Equal("Passing flow", harness.BeforeScenarioName);
@@ -73,7 +73,7 @@ public sealed class UatTestBaseTests
             var fixture = new HarnessFixture();
             var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture)) { ThrowAfterScenario = true };
 
-            var error = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenarioAsync(scenarioFilePath, "Failing flow"));
+            var error = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenario(scenarioFilePath, "Failing flow"));
             Assert.Contains("Action did not run.", error.Message, StringComparison.Ordinal);
             Assert.Equal("Failing flow", harness.AfterScenarioName);
         }
@@ -102,7 +102,7 @@ public sealed class UatTestBaseTests
             var fixture = new HarnessFixture();
             var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture)) { ThrowAfterScenario = true };
 
-            var error = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenarioAsync(scenarioFilePath, "Passing flow"));
+            var error = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenario(scenarioFilePath, "Passing flow"));
             Assert.Equal("AfterScenario failed", error.Message);
         }
         finally
@@ -138,7 +138,7 @@ public sealed class UatTestBaseTests
                     BddStepResult.Failed(invocation, "Intentional failure from harness")));
             var harness = new ScenarioHarness(fixture, configFilePath, catalog);
 
-            await harness.RunExpectedFailureFileAsync(
+            await harness.RunExpectedFailureFile(
                 scenarioFilePath,
                 "Harness.Fail",
                 "Intentional failure from harness");
@@ -174,7 +174,7 @@ public sealed class UatTestBaseTests
                 """);
             var harness = new ScenarioHarness(new HarnessFixture(), configFilePath, new BddCommandCatalog());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenarioAsync(scenarioFilePath, "A phrase nobody wrote"));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenario(scenarioFilePath, "A phrase nobody wrote"));
 
             var result = Directory.EnumerateFiles(Path.Combine(directory, "uat"), "*__result.json").Single();
             var report = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(result))!;
@@ -215,7 +215,7 @@ public sealed class UatTestBaseTests
                 handler: (_, invocation, _) => Task.FromResult(BddStepResult.Failed(invocation, "Intentional failure from harness")));
             var harness = new ScenarioHarness(fixture, configFilePath, catalog);
 
-            await harness.RunExpectedFailureFileAsync(scenarioFilePath, "Intentional failure from harness");
+            await harness.RunExpectedFailureFile(scenarioFilePath, "Intentional failure from harness");
 
             using var report = System.Text.Json.JsonDocument.Parse(File.ReadAllText(Path.Combine(directory, "uat", "scenario__Reported flow__result.json")));
             var root = report.RootElement;
@@ -332,7 +332,7 @@ public sealed class UatTestBaseTests
                 });
             var harness = new ScenarioHarness(fixture, configFilePath, catalog);
 
-            await harness.RunFileAsync(scenarioFilePath);
+            await harness.RunFile(scenarioFilePath);
         }
         finally
         {
@@ -375,9 +375,9 @@ public sealed class UatTestBaseTests
             var fixture = new HarnessFixture();
             var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture));
 
-            await harness.RunScenarioAsync(first, "Two");
-            await harness.RunScenarioAsync(first, "One");
-            await harness.RunScenarioAsync(second, "Three");
+            await harness.RunScenario(first, "Two");
+            await harness.RunScenario(first, "One");
+            await harness.RunScenario(second, "Three");
 
             Assert.Equal(3, fixture.ActionCount);
             Assert.Equal(["First file", "Second file"], harness.FilesEntered);
@@ -437,7 +437,7 @@ public sealed class UatTestBaseTests
             async Task Run(HarnessFixture fixture, string file, string scenario)
             {
                 var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture));
-                await harness.RunScenarioAsync(file, scenario);
+                await harness.RunScenario(file, scenario);
                 entered.AddRange(harness.FilesEntered.Select(title => $"{(ReferenceEquals(fixture, fixtureA) ? "A" : "B")}: {title}"));
             }
 
@@ -473,7 +473,7 @@ public sealed class UatTestBaseTests
             var fixture = new HarnessFixture();
             var harness = new ScenarioHarness(fixture, configFilePath, CreatePassingCatalog(fixture));
 
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenarioAsync(file, "Absent"));
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => harness.RunScenario(file, "Absent"));
 
             Assert.Contains("'Present'", exception.Message);
             Assert.Equal(0, fixture.ActionCount);
@@ -624,16 +624,16 @@ public sealed class UatTestBaseTests
         protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
             new(RequireAssemblies: false);
 
-        public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
+        public Task RunFile(string filePath) => RunFileAsync(filePath);
 
-        public Task RunScenarioAsync(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+        public Task RunScenario(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
         public List<string> FilesEntered { get; } = [];
 
         protected override void BeforeFile(BddDocument document) => FilesEntered.Add(document.Title);
 
-        public Task RunExpectedFailureFileAsync(string filePath, params string[] expectedDiagnostics) =>
-            RunExpectedFailureUatFileAsync(filePath, expectedDiagnostics);
+        public Task RunExpectedFailureFile(string filePath, params string[] expectedDiagnostics) =>
+            RunExpectedFailureFileAsync(filePath, expectedDiagnostics);
 
         protected override BddCommandCatalog CreateCommandCatalog(UatRuntime runtime) => catalog;
 

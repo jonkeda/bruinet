@@ -112,7 +112,7 @@ public abstract class BddScenarioTestBase<TFixture>
             configurationFilter: configurationFilter);
     }
 
-    /// <summary>One theory case per scenario, <c>[filePath, scenarioName]</c>; run each with <see cref="RunUatScenarioAsync"/>.</summary>
+    /// <summary>One theory case per scenario, <c>[filePath, scenarioName]</c>; run each with <see cref="RunScenarioAsync(string, string, CancellationToken)"/>.</summary>
     protected static IEnumerable<object[]> GetScenarioTheoryData(
         string folderName = BddFileFormat.FeatureFolder,
         string? configurationFilter = null)
@@ -134,7 +134,7 @@ public abstract class BddScenarioTestBase<TFixture>
     }
 
     [DebuggerNonUserCode] // see RunBoundScenarioAsync
-    protected async Task RunUatFileAsync(
+    protected async Task RunFileAsync(
         string filePath,
         CancellationToken cancellationToken = default)
     {
@@ -152,7 +152,7 @@ public abstract class BddScenarioTestBase<TFixture>
     /// <param name="scenarioName">The scenario's name, as <see cref="GetScenarioTheoryData"/> gives it.</param>
     /// <param name="cancellationToken">Cancels the run.</param>
     [DebuggerNonUserCode] // see RunBoundScenarioAsync
-    protected async Task RunUatScenarioAsync(
+    protected async Task RunScenarioAsync(
         string filePath,
         string scenarioName,
         CancellationToken cancellationToken = default)
@@ -237,7 +237,7 @@ public abstract class BddScenarioTestBase<TFixture>
         }
     }
 
-    protected async Task RunExpectedFailureUatFileAsync(
+    protected async Task RunExpectedFailureFileAsync(
         string filePath,
         params string[] expectedDiagnostics)
     {

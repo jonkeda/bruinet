@@ -40,7 +40,7 @@ public sealed class UatCompositionRuntimeTests
             var fixture = new CompositionFixture();
             var harness = new CompositionScenarioHarness(fixture, configFilePath);
 
-            await harness.RunFileAsync(scenarioFilePath);
+            await harness.RunFile(scenarioFilePath);
 
             Assert.Equal(2, fixture.NavigationCalls);
             Assert.Equal(0, fixture.RootPhraseCalls);
@@ -75,7 +75,7 @@ public sealed class UatCompositionRuntimeTests
                 """);
             var harness = new CompositionScenarioHarness(new CompositionFixture(), configFilePath);
 
-            await harness.RunFileAsync(scenarioFilePath);
+            await harness.RunFile(scenarioFilePath);
         }
         finally
         {
@@ -107,7 +107,7 @@ public sealed class UatCompositionRuntimeTests
                 """);
             var harness = new CompositionScenarioHarness(new CompositionFixture(), configFilePath);
 
-            await harness.RunFileAsync(scenarioFilePath);
+            await harness.RunFile(scenarioFilePath);
         }
         finally
         {
@@ -364,6 +364,6 @@ public sealed class UatCompositionRuntimeTests
         protected override BddRuntimeValidationOptions RuntimeValidation { get; } =
             new(RequireAssemblies: false);
 
-        public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
+        public Task RunFile(string filePath) => RunFileAsync(filePath);
     }
 }

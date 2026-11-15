@@ -180,7 +180,7 @@ namespace Bruinet.Uat.Tests.HeadCases
             {
                 var filePath = Path.Combine(directory, "heads.feature.md");
                 File.WriteAllText(filePath, scenario);
-                await new Harness(fixture, configFilePath).RunFileAsync(filePath);
+                await new Harness(fixture, configFilePath).RunFile(filePath);
             }
             finally
             {
@@ -226,7 +226,7 @@ namespace Bruinet.Uat.Tests.HeadCases
 
             protected override BddRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
 
-            public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
+            public Task RunFile(string filePath) => RunFileAsync(filePath);
         }
     }
 

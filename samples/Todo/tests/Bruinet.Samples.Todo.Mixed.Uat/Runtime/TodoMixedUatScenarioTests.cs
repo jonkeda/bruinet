@@ -20,7 +20,7 @@ public sealed class TodoMixedUatScenarioTests(TodoMixedUatFixture fixture)
     /// <param name="scenarioName">The scenario in it.</param>
     [BddScenarioTheory(Timeout = 240000)]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
     /// <inheritdoc />
     protected override void BeforeScenario(BddBoundScenario scenario) => Fixture.StartTestAsync().GetAwaiter().GetResult();

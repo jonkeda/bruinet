@@ -34,7 +34,7 @@ public sealed class TodoWebUatScenarioTests : BddScenarioTestBase<TodoWebUatFixt
     /// <param name="scenarioName">The scenario in it.</param>
     [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
     /// <inheritdoc />
     /// <remarks>An earlier scenario may have restarted the app with other launch settings; they are put back here.</remarks>

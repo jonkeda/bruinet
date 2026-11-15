@@ -15,6 +15,6 @@ public sealed class WinFormsUatScenarioTests(WinFormsUatFixture fixture)
     [MemberData(nameof(ScenarioFiles))]
     public async Task UatFile_Passes(string filePath)
     {
-        await RunUatFileAsync(filePath);
+        await RunFileAsync(filePath);
     }
 }

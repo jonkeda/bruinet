@@ -109,7 +109,7 @@ public sealed class UatAppsHostTests
         {
             var filePath = Path.Combine(_directory, "apps.feature.md");
             File.WriteAllText(filePath, scenario);
-            return new Harness(fixture, ConfigFilePath).RunFileAsync(filePath);
+            return new Harness(fixture, ConfigFilePath).RunFile(filePath);
         }
 
         public void Dispose() => Directory.Delete(_directory, recursive: true);
@@ -122,7 +122,7 @@ public sealed class UatAppsHostTests
 
         protected override BddRuntimeValidationOptions RuntimeValidation { get; } = new(RequireAssemblies: false);
 
-        public Task RunFileAsync(string filePath) => RunUatFileAsync(filePath);
+        public Task RunFile(string filePath) => RunFileAsync(filePath);
     }
 }
 

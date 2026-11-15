@@ -31,7 +31,7 @@ public sealed class TodoServiceScenarioTests : BddScenarioTestBase<TodoServiceFi
     /// <param name="scenarioName">The scenario in it.</param>
     [BddScenarioTheory]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
     /// <summary>The files that must fail binding: <c>ExpectedFailures/*.feature.md</c>.</summary>
     public static IEnumerable<object[]> ExpectedFailures => GetScenarioFiles("ExpectedFailures");

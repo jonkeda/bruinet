@@ -140,7 +140,7 @@ public sealed class CounterUatScenarioTests(CounterUatFixture fixture)
 
     [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 }
 ```
 

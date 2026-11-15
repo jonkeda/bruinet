@@ -41,7 +41,7 @@ public sealed class TodoUatScenarioTests : BddScenarioTestBase<TodoUatFixture>
 
     [BddScenarioTheory(Timeout = 120000)]
     [MemberData(nameof(Scenarios))]
-    public Task Scenario_Passes(string filePath, string scenarioName) => RunUatScenarioAsync(filePath, scenarioName);
+    public Task Scenario_Passes(string filePath, string scenarioName) => RunScenarioAsync(filePath, scenarioName);
 
     // Load the file's TestData before its first scenario (the fixture may restart the app).
     protected override void BeforeFile(BddDocument document)

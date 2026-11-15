@@ -16,7 +16,7 @@
 Given I am on the Presenter page
 When I tap Workspace Mode
 And I tap Config
-Then Config State should contain "uat.config.md"
+Then Config State should contain "bdd.config.md"
 And Config Derived Target should contain "MAUI"
 And Config Derived Pages should contain "Bruinet.Maui.UITests.dll"
 And Config Derived App should contain "configured override"

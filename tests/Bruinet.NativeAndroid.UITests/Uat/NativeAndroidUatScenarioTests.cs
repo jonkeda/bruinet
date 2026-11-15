@@ -18,6 +18,6 @@ public sealed class NativeAndroidUatScenarioTests(GalleryFixture fixture)
     [MemberData(nameof(ScenarioFiles))]
     public Task UatFile_Passes(string filePath)
     {
-        return RunUatFileAsync(filePath);
+        return RunFileAsync(filePath);
     }
 }

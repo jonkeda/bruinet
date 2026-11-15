@@ -16,6 +16,6 @@ public sealed class BlazorUatScenarioTests(BlazorUatFixture fixture)
     [MemberData(nameof(Scenarios))]
     public Task Scenario_Passes(string filePath, string scenarioName)
     {
-        return RunUatScenarioAsync(filePath, scenarioName);
+        return RunScenarioAsync(filePath, scenarioName);
     }
 }
