@@ -70,7 +70,7 @@ $TestProject = Get-ChildItem $Suite -Directory -Filter '*.UITests' | Select-Obje
 # A suite whose config names Specs runs them (runnable specs): a spec's examples are its tests, run by the Spec trait.
 $SuiteConfig = @('bdd.config.md', 'uat.config.md') | ForEach-Object { Join-Path $TestProject.FullName $_ } | Where-Object { Test-Path $_ } | Select-Object -First 1
 $RunsSpecs = $SuiteConfig -and (Select-String -Path $SuiteConfig -Pattern '^\|\s*Specs\s*\|' -Quiet)
-$Runnable = if ($RunsSpecs) { '--runnable' } else { $null }  # a $null argument is left out
+$ProjectText = Get-Content (Get-ChildItem $TestProject.FullName -Filter *.csproj | Select-Object -First 1).FullName -Raw
 
 # Frainet is built once and run from its output, not through dotnet run per call.
 $FrainetProject = Join-Path $Bruinet 'Frainet/src/Frainet.Cli/Frainet.Cli.csproj'
@@ -135,6 +135,9 @@ foreach ($row in $rows) {
     $gates = @()
     $specPath = Join-Path $Suite "specs/$($row.Spec).spec.md"
     $modulePath = Join-Path $TestProject.FullName "Modules/$($row.Module)"
+    # This spec runs when the project copies it (by name, or all specs): its examples are then its tests.
+    $runsThis = $RunsSpecs -and ($ProjectText.Contains("$($row.Spec).spec.md") -or $ProjectText.Contains('*.spec.md'))
+    $Runnable = if ($runsThis) { '--runnable' } else { $null }  # a $null argument is left out
 
     # 1 Spec
     $gate = Invoke-Gate '1 Spec: frainet check' { if (Test-Path $specPath) { dotnet $Frainet.FullName check $specPath } else { "no $specPath"; $global:LASTEXITCODE = 1 } }
@@ -166,7 +169,7 @@ foreach ($row in $rows) {
                 $green = 0
                 for ($run = 1; $run -le $Runs; $run++) {
                     $results = Join-Path $RunDir "$($row.Module)-$run"
-                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)$(if ($RunsSpecs) { "|Spec=$($row.Spec)" })" --logger trx --results-directory $results }
+                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)$(if ($runsThis) { "|Spec=$($row.Spec)" })" --logger trx --results-directory $results }
                     $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
