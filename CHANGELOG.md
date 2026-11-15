@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Control names (RS4).** `[BddControl("the filter above {column}")]` on a page's or a component's method names a
+  control that has no fixed name; its placeholders are the method's parameters. A step's `{control}` is first a control
+  the page exposes by name, then one of these, so every verb of the returned control's type works on it
+  (`When I type "arend" in the filter above Name`). On a component's property it is a fixed name (`the footer`).
 - **Extension verbs (RS3).** A static class marked `[BddVerbs]` declares control verbs on the type its methods' first
   (`this`) parameter takes, generic ones included (`this TableControl<TScope> table`): a control of that type, or derived
   from it, takes the verb, and a property of such a type is a control. `TableVerbs` in Bruinet.Html gives every table

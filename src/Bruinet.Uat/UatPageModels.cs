@@ -24,6 +24,9 @@ public sealed record UatPageSet(IReadOnlyDictionary<string, UatPageModel> Pages)
 /// <summary>A page the binder can follow: its name, its page object type and its controls.</summary>
 public sealed record UatPageModel(string Name, Type PageType, IReadOnlyList<UatControlModel> Controls)
 {
+    /// <summary>The control names the page and its components declare with <c>[BddControl]</c> on a method (<c>the filter above {column}</c>).</summary>
+    internal IReadOnlyList<BddControlNames.Named> ControlNames { get; init; } = [];
+
     /// <summary>The page's namespace (<see cref="BddNamespaces"/>); <c>""</c> when every scenario sees it.</summary>
     public string Namespace { get; init; } = string.Empty;
 

@@ -17,6 +17,9 @@ internal static class UatPageScope
         => page.Controls.FirstOrDefault(control => control.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
            ?? (name.StartsWith("the ", StringComparison.OrdinalIgnoreCase)
                ? page.Controls.FirstOrDefault(control => control.Name.Equals(name[4..].TrimStart(), StringComparison.OrdinalIgnoreCase))
+               : null)
+           ?? (BddControlNames.Match(page.ControlNames, name, out _, out _) is { } named
+               ? new UatControlModel(name, named.ControlType, null) { MemberName = named.Member.Name }
                : null);
 
     /// <summary>
@@ -32,7 +35,10 @@ internal static class UatPageScope
             var control = FindControl(page, name);
             if (control is null)
             {
-                problem = $"the {page.Name} page has no control '{name}'. Its controls are {string.Join(", ", page.Controls.Select(c => c.Name).Order(StringComparer.OrdinalIgnoreCase))}.";
+                BddControlNames.Match(page.ControlNames, name, out _, out var several);
+                problem = several is not null
+                    ? $"on the {page.Name} page {several}"
+                    : $"the {page.Name} page has no control '{name}'. Its controls are {string.Join(", ", page.Controls.Select(c => c.Name).Concat(page.ControlNames.Select(n => n.Phrase)).Order(StringComparer.OrdinalIgnoreCase))}.";
                 return null;
             }
 

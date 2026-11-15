@@ -249,8 +249,26 @@ public sealed class UatReflectionRuntime
                     .ToArray())
             {
                 Namespace = page.Namespace,
+                ControlNames = NamesOf(page),
             },
             StringComparer.OrdinalIgnoreCase);
+    }
+
+    // The [BddControl] names of a page and its components, read once per page type.
+    private readonly Dictionary<Type, IReadOnlyList<BddControlNames.Named>> _controlNames = [];
+
+    private IReadOnlyList<BddControlNames.Named> NamesOf(UatRuntimePage page)
+    {
+        lock (_controlNames)
+        {
+            if (!_controlNames.TryGetValue(page.PageType, out var names))
+            {
+                names = BddControlNames.Of(page.PageType, page.Controls.Select(control => control.Property));
+                _controlNames[page.PageType] = names;
+            }
+
+            return names;
+        }
     }
 
     // A page's own workflows: keyword attributes on page-object methods (D4). A method that returns
@@ -364,6 +382,7 @@ public sealed class UatReflectionRuntime
             .SelectMany(page => page.Controls)
             .Where(control => !pageTypes.Contains(control.Property.PropertyType))
             .SelectMany(control => SelfAndBaseTypes(control.Property.PropertyType))
+            .Concat(_pages.Values.SelectMany(NamesOf).SelectMany(named => SelfAndBaseTypes(named.ControlType)))
             .ToList();
 
         // Extension verbs ([BddVerbs]) in the assemblies of the controls and the pages: Bruinet's, a control library's, the suite's.
@@ -656,6 +675,26 @@ public sealed class UatReflectionRuntime
         var controlName = invocation.Arguments[controlArgumentName];
         var page = pageResult.Page!;
         var controlBinding = FindControl(page, controlName);
+        if (controlBinding is null && BddControlNames.Match(NamesOf(page), controlName, out var namedArguments, out _) is { } named)
+        {
+            var instance = GetPageInstance(context, page);
+            object? namedControl;
+            try
+            {
+                namedControl = instance is null ? null : BddControlNames.Resolve(named, instance, namedArguments);
+            }
+            catch (TargetInvocationException ex) when (ex.InnerException is not null)
+            {
+                result = new UatControlResolution(null, controlName, BddStepResult.Failed(invocation, $"'{controlName}' on page '{page.Name}': {ex.InnerException.Message}", ex.InnerException));
+                return false;
+            }
+
+            result = namedControl is null
+                ? new UatControlResolution(null, controlName, BddStepResult.Failed(invocation, $"'{controlName}' on page '{page.Name}' gave no control."))
+                : new UatControlResolution(namedControl, controlName, BddStepResult.Passed(invocation));
+            return namedControl is not null;
+        }
+
         if (controlBinding is null)
         {
             result = new UatControlResolution(
