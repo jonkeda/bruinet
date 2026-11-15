@@ -70,7 +70,7 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     public bool WaitDropdownItemTexts(IReadOnlyList<string>? expected, int? timeoutMs = null)
     {
         return RunWaitWithElement(expected,
-           element => GetDropdownItemTextsCore(element) == expected,
+           element => GetDropdownItemTextsCore(element)?.SequenceEqual(expected!) == true,
            timeoutMs);
     }
 
@@ -78,8 +78,8 @@ public partial class Picker<TScope> : Base.SelectorControlBase<TScope>
     public TScope AssertDropdownItemTexts(IReadOnlyList<string>? expected, string? message = null, int? timeoutMs = null)
     {
         return RunAssertWithElement(expected,
-           element => GetDropdownItemTextsCore(element), (actual, expected1) => (actual == expected1),
-           message ?? $"Expected DropdownItemTexts to be '{expected}'. Locator: {Locator}", timeoutMs);
+           element => GetDropdownItemTextsCore(element), (actual, expected1) => (actual?.SequenceEqual(expected1!) == true),
+           message ?? $"Expected DropdownItemTexts to be [{(expected is null ? "null" : string.Join(", ", expected))}]. Locator: {Locator}", timeoutMs);
     }
 
     #endregion

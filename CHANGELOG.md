@@ -161,6 +161,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- A generated assertion on a collection compares item by item even without `[GenerateComparisons]`: before, it compared
+  references and could never pass (MAUI `Picker.AssertDropdownItemTexts` among them).
 - A generated assertion on a collection names its items in its message (`[Client, Supplier]`), not the list's type.
 - "accepted … and did not take it" names a list's items, not `System.String[]`.
 - Frainet: a full stop after a number ("00. Intern") is not a sentence break.

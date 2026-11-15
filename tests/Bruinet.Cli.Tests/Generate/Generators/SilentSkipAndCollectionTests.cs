@@ -129,6 +129,28 @@ public class SilentSkipAndCollectionTests
     }
 
     [Fact]
+    public void A_collection_without_GenerateComparisons_IsStillComparedElementWise_AndNamedByItsItems()
+    {
+        var code = GenerateAll(Wrap("""
+            protected virtual IReadOnlyList<string>? GetQuickFiltersCore(IMauiElement? element) => null;
+            """));
+
+        Assert.Contains("GetQuickFiltersCore(element)?.SequenceEqual(expected!) == true", code);
+        Assert.DoesNotContain("GetQuickFiltersCore(element) == expected", code);
+        Assert.Contains("string.Join(\", \", expected)", code);
+    }
+
+    [Fact]
+    public void A_dictionary_is_not_taken_for_a_sequence()
+    {
+        var code = GenerateAll(Wrap("""
+            protected virtual IReadOnlyDictionary<string, string>? GetPairsCore(IMauiElement? element) => null;
+            """));
+
+        Assert.DoesNotContain("SequenceEqual", code);
+    }
+
+    [Fact]
     public void HasItem_TakesAnItem_NotTheCollection()
     {
         var code = GenerateAll(Wrap(ItemTextsCore));

@@ -116,6 +116,13 @@ public class IsWaitAssertGenerator : IMemberGenerator
             {
                 info.Comparisons.Add(comparison);
             }
+
+            // A collection is compared item by item: the reference comparison a plain getter gets could never pass
+            // for a list the test writes, however equal its items.
+            if (IsSequence(info.ReturnType) && !info.Comparisons.Contains("SequenceEquals"))
+            {
+                info.Comparisons.Add("SequenceEquals");
+            }
         }
 
         return info;
@@ -514,6 +521,17 @@ public class IsWaitAssertGenerator : IMemberGenerator
         writer.WriteLine($"{BuildAssertMessage(memberName, isCollection: ElementTypeOf(expectedType) != expectedType)}, timeoutMs);");
         writer.DecreaseSpace(1);
         writer.Close();
+    }
+
+    private static bool IsSequence(string type)
+    {
+        var bare = type.TrimEnd('?').Trim();
+        var open = bare.IndexOf('<');
+        if (open < 0 || ElementTypeOf(bare) == bare)
+            return false;
+        var name = bare[..open];
+        name = name[(name.LastIndexOf('.') + 1)..];
+        return name is "IReadOnlyList" or "IList" or "List" or "IEnumerable" or "IReadOnlyCollection" or "ICollection";
     }
 
     /// <summary>
