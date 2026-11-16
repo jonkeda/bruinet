@@ -119,6 +119,29 @@ namespace Bruinet.Uat.Tests.HeadCases
             Assert.Equal(!skipped, config.RunsOnHead(tags));
         }
 
+        [Theory]
+        [InlineData("native-android", new[] { "@native" }, false)]
+        [InlineData("native-ios", new[] { "@native" }, false)]
+        [InlineData("maui", new[] { "@native" }, true)]
+        [InlineData("native-android", new[] { "@native-ios" }, true)]
+        [InlineData("native-ios", new[] { "@maui", "@native-ios" }, false)]
+        [InlineData("native-android", new[] { "@maui" }, true)]
+        [InlineData("native-android", new[] { "@contacts" }, false)]
+        public void NativeTag_RunsOnBothNativeHeadsOnly(string head, string[] tags, bool skipped)
+        {
+            var config = BddConfigParser.Parse($"""
+                # UAT Config
+
+                ## Runtime
+
+                | Field | Value |
+                | --- | --- |
+                | Head | {head} |
+                """);
+
+            Assert.Equal(skipped, config.EvaluateSkip(tags).ShouldSkip);
+        }
+
         [Fact]
         public void AServiceSuite_ListsOnlyItsScenarios_AndAUiSuiteStillListsEveryScenario()
         {

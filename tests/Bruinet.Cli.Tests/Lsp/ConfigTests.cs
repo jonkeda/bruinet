@@ -70,7 +70,7 @@ public sealed class ConfigTests : IAsyncLifetime
         var sets = await _server.AtAsync<CompletionList>("textDocument/completion", uri, Array.IndexOf(lines, "| DefaultTestData |  |"), 20);
 
         Assert.Contains(fields.Items, item => item.Label == "Head" && item.Detail!.StartsWith("The head this suite drives", StringComparison.Ordinal));
-        Assert.Equal(["maui", "web", "mixed", "service"], heads.Items.Select(item => item.Label));
+        Assert.Equal(["maui", "web", "mixed", "service", "native-android", "native-ios"], heads.Items.Select(item => item.Label));
         Assert.Contains(sets.Items, item => item.Label == "one-todo");
     }
 

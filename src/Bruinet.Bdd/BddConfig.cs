@@ -251,6 +251,15 @@ public static class BddTagConventions
 
     /// <summary>A scenario that runs without a screen, against the app's services; it runs only on a suite whose head is <c>service</c>.</summary>
     public const string Service = "service";
+
+    /// <summary>The native Android app, driven by the NativeAndroid platform.</summary>
+    public const string NativeAndroid = "native-android";
+
+    /// <summary>The native iOS app, driven by the NativeIos platform.</summary>
+    public const string NativeIos = "native-ios";
+
+    /// <summary>Not a head but a short tag for both native heads: <c>@native</c> means <c>@native-android @native-ios</c>.</summary>
+    public const string Native = "native";
     public const string Windows = "windows";
     public const string Android = "android";
     public const string Ios = "ios";
@@ -274,7 +283,16 @@ public static class BddTagConventions
     /// The head tags. A scenario tagged with one or more runs only on a suite whose
     /// <see cref="BddConfigFields.Head"/> is among them; one with none runs on every head.
     /// </summary>
-    public static IReadOnlyList<string> Heads { get; } = [Maui, Web, Mixed, Service];
+    public static IReadOnlyList<string> Heads { get; } = [Maui, Web, Mixed, Service, NativeAndroid, NativeIos];
+
+    /// <summary>The heads these tags name, with <c>@native</c> read as both native heads; empty when they name none.</summary>
+    /// <param name="normalizedTags">The scenario's tags without <c>@</c>, compared ignoring case.</param>
+    public static IReadOnlyList<string> HeadsOf(IReadOnlySet<string> normalizedTags)
+    {
+        ArgumentNullException.ThrowIfNull(normalizedTags);
+        var native = normalizedTags.Contains(Native);
+        return [.. Heads.Where(head => normalizedTags.Contains(head) || (native && head is NativeAndroid or NativeIos))];
+    }
 
     /// <summary>
     /// The heads a scenario must name to run there: a suite with one of these runs only the
@@ -294,7 +312,7 @@ public static class BddTagConventions
         ArgumentNullException.ThrowIfNull(normalizedTags);
         ArgumentNullException.ThrowIfNull(suiteHead);
 
-        var heads = Heads.Where(normalizedTags.Contains).ToList();
+        var heads = HeadsOf(normalizedTags);
         if (heads.Count == 0 && OptInHeads.FirstOrDefault(optIn => optIn.Equals(suiteHead, StringComparison.OrdinalIgnoreCase)) is { } optInHead)
         {
             return $"Scenario is not tagged @{optInHead}; this suite runs only @{optInHead} scenarios.";

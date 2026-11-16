@@ -497,11 +497,13 @@ One set of scenario files can run on two heads of the same app: the Todo sample'
 and its web suite (`samples/Todo/tests/Bruinet.Samples.Todo.Web.Uat`) run the same
 `TOD.*.feature.md` files, the web project linking them from the MAUI one.
 
-- `Head` in the config's `Runtime` names the head a suite drives: `maui`, `web`, or `mixed` for
-  a suite whose apps are of several heads (see below).
-- A scenario tagged with head tags (`@maui`, `@web`) runs only on a suite whose `Head` is one of
-  them; the engine skips it elsewhere, with the reason in the result. A scenario with no head tag
-  runs on every head. A suite without `Head` runs everything.
+- `Head` in the config's `Runtime` names the head a suite drives: `maui`, `web`, `native-android`
+  or `native-ios` for an app built natively, or `mixed` for a suite whose apps are of several
+  heads (see below).
+- A scenario tagged with head tags (`@maui`, `@web`, `@native-android`, `@native-ios`) runs only on a
+  suite whose `Head` is one of them; the engine skips it elsewhere, with the reason in the result.
+  `@native` means both native heads. A scenario with no head tag runs on every head. A suite
+  without `Head` runs everything.
 - Each suite has its own page objects and step-definition classes with the same names and phrases: the
   scenario text is the contract between them. Steps that do not touch the screen can be one class
   for both heads (`BackendPhrases`, `DevicePhrases` and `StoredDataPhrases`, over an

@@ -1099,6 +1099,9 @@ const Bruinet.Bdd.BddTagConventions.LiveApi = "live-api" -> string!
 const Bruinet.Bdd.BddTagConventions.Manual = "manual" -> string!
 const Bruinet.Bdd.BddTagConventions.Maui = "maui" -> string!
 const Bruinet.Bdd.BddTagConventions.Mixed = "mixed" -> string!
+const Bruinet.Bdd.BddTagConventions.Native = "native" -> string!
+const Bruinet.Bdd.BddTagConventions.NativeAndroid = "native-android" -> string!
+const Bruinet.Bdd.BddTagConventions.NativeIos = "native-ios" -> string!
 const Bruinet.Bdd.BddTagConventions.NeedsStub = "needs-stub" -> string!
 const Bruinet.Bdd.BddTagConventions.OpenAiLive = "openai-live" -> string!
 const Bruinet.Bdd.BddTagConventions.Regression = "regression" -> string!
@@ -1211,6 +1214,7 @@ static Bruinet.Bdd.BddTableBinding.Bind(this Bruinet.Bdd.BddTable! table, System
 static Bruinet.Bdd.BddTableBinding.Bind<T>(this Bruinet.Bdd.BddTable! table, System.DateTimeOffset? now = null) -> System.Collections.Generic.IReadOnlyList<T>!
 static Bruinet.Bdd.BddTableBinding.Check(Bruinet.Bdd.BddTable! table, System.Type! type, Bruinet.Bdd.BddValueContext! context) -> System.Collections.Generic.IReadOnlyList<(Bruinet.Bdd.BddValueProblem! Problem, Bruinet.Bdd.BddSourceLocation! Location)>!
 static Bruinet.Bdd.BddTagConventions.Heads.get -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Bdd.BddTagConventions.HeadsOf(System.Collections.Generic.IReadOnlySet<string!>! normalizedTags) -> System.Collections.Generic.IReadOnlyList<string!>!
 static Bruinet.Bdd.BddTagConventions.IsService(string? head) -> bool
 static Bruinet.Bdd.BddTagConventions.NormalizeTag(string! tag) -> string!
 static Bruinet.Bdd.BddTagConventions.OptInHeads.get -> System.Collections.Generic.IReadOnlyList<string!>!

@@ -48,7 +48,7 @@ public static partial class ScenarioCatalog
 
     private static IEnumerable<string> Tiers(IReadOnlyList<string> tags)
     {
-        var heads = BddTagConventions.Heads.Where(head => tags.Contains(head, StringComparer.OrdinalIgnoreCase)).ToList();
+        var heads = BddTagConventions.HeadsOf(tags.Select(BddTagConventions.NormalizeTag).ToHashSet(StringComparer.OrdinalIgnoreCase));
         if (heads.Contains(BddTagConventions.Service, StringComparer.OrdinalIgnoreCase))
         {
             yield return "Integration";

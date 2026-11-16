@@ -15,6 +15,11 @@ suite whose `Head` is `mixed`: it runs only scenarios tagged `@mixed`, its apps 
 
 A tier below the UI is a head too, `service`, opt-in like `mixed`: see AD-020.
 
+The same app built natively, outside MAUI, is a head of its own: `native-android` and
+`native-ios` (the NativeAndroid and NativeIos platforms). `@native` is shorthand for both; it is a
+tag, never a suite's `Head`. `@android` and `@ios` stay MAUI driver tags and never mean a native
+app. Evidence: [000-Plan.md](https://github.com/exact-mobile-apps/test-tooling/blob/7c44c49a/.my/native/000-Plan.md).
+
 **Why:** a journey is the same on both heads; two copies of its scenario text drift, and a
 difference between heads should show as a failing scenario, not as two files that say different
 things. Evidence (at 7162ac7): [review-html-vs-maui.md](https://github.com/exact-mobile-apps/test-tooling/blob/7162ac7/.my/html/review-html-vs-maui.md) section 4
@@ -22,9 +27,9 @@ things. Evidence (at 7162ac7): [review-html-vs-maui.md](https://github.com/exact
 
 **Ruled out:** a copy of a scenario file per head; head-specific wording for the same step; a
 skip rule or environment variable standing in for a head tag; apps of different heads in one
-scenario outside a `mixed` suite.
+scenario outside a `mixed` suite; `@android` or `@ios` to mark a scenario for a native app.
 
 **Broken when:** a scenario file exists in two suites' folders; a step passes on one head only
 because the other head's phrase class words it differently; a suite with `Head` runs a scenario
 tagged only for another head; a session switch resolves page types from another head; a one-head
-suite runs a `@mixed` scenario.
+suite runs a `@mixed` scenario; a native suite skips a scenario tagged `@native`.
