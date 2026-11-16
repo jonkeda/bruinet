@@ -1,0 +1,9 @@
+global using System.Drawing;
+global using System.Globalization;
+global using Bruinet.Core;
+global using Bruinet.Core.Collections;
+global using Bruinet.Core.Configuration;
+global using Bruinet.Core.Exceptions;
+global using Bruinet.Core.Locators;
+global using Bruinet.Core.Logging;
+global using Bruinet.NativeIos.Interfaces;

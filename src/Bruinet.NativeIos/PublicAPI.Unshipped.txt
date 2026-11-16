@@ -1,0 +1,522 @@
+Bruinet.NativeIos.Appium.NativeIosTestContext
+Bruinet.NativeIos.Appium.NativeIosTestContext.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+Bruinet.NativeIos.Appium.NativeIosTestContext.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeIos.Appium.NativeIosTestContext.Dispose() -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.Driver.get -> Bruinet.NativeIos.Interfaces.INativeIosDriver!
+Bruinet.NativeIos.Appium.NativeIosTestContext.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement!
+Bruinet.NativeIos.Appium.NativeIosTestContext.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+Bruinet.NativeIos.Appium.NativeIosTestContext.Logger.get -> Bruinet.Core.Logging.ITestLogger!
+Bruinet.NativeIos.Appium.NativeIosTestContext.Name.get -> string?
+Bruinet.NativeIos.Appium.NativeIosTestContext.NativeIosTestContext(Bruinet.NativeIos.Interfaces.INativeIosDriver! driver, Bruinet.NativeIos.NativeIosTestContextOptions? options = null) -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.NavigateBack() -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.NavigateTo(string! destination) -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.NearMiss.get -> Bruinet.Core.Calls.NearMissSettings!
+Bruinet.NativeIos.Appium.NativeIosTestContext.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Appium.NativeIosTestContext.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+Bruinet.NativeIos.Appium.NativeIosTestContext.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.NativeIos.Appium.NativeIosTestContext.Refresh() -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.ResetAppState() -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.SaveScreenshot(string! path) -> void
+Bruinet.NativeIos.Appium.NativeIosTestContext.TakeScreenshot() -> byte[]!
+Bruinet.NativeIos.Appium.NativeIosTestContext.Timeouts.get -> Bruinet.Core.Configuration.TimeoutSettings!
+Bruinet.NativeIos.Appium.NativeIosTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+Bruinet.NativeIos.Appium.NativeIosTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.NativeIos.Appium.NativeIosTestContext.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>
+Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.CollectionObjectBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, string! identifier, Bruinet.Core.Locators.Locator? itemLocator = null) -> void
+Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Parent.get -> TParent
+Bruinet.NativeIos.Collections.INativeIosCollection
+Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>
+Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.ItemObjectBase(Bruinet.NativeIos.Collections.INativeIosCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>
+Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parentScope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.ContainerObjectBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parentScope, string! identifier) -> void
+Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.Parent.get -> TParent
+Bruinet.NativeIos.Controls.Buttons.Button<TScope>
+Bruinet.NativeIos.Controls.Buttons.Button<TScope>.Button(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Buttons.Button<TScope>.Button(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.AssertClickable(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.Click(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.ClickableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.DoubleClick(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.Hover(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.IsClickable() -> bool
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.LongPress(int? durationMs = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.RightClick(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.WaitClickable(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>
+Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>.CollectionView(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemKey = null) -> void
+Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>.CollectionView(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, string! identifier, string? itemKeyId = null) -> void
+Bruinet.NativeIos.Controls.Collection.ListItem
+Bruinet.NativeIos.Controls.Collection.ListItem.Button(string! identifier) -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Collection.ListItem!>!
+Bruinet.NativeIos.Controls.Collection.ListItem.ListItem(Bruinet.NativeIos.Collections.INativeIosCollection! collection, Bruinet.Core.Collections.ItemKey key, int position) -> void
+Bruinet.NativeIos.Controls.Collection.ListItem.Row.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Collection.ListItem!>!
+Bruinet.NativeIos.Controls.Collection.ListItem.Switch(string! identifier) -> Bruinet.NativeIos.Controls.Toggle.Switch<Bruinet.NativeIos.Controls.Collection.ListItem!>!
+Bruinet.NativeIos.Controls.Collection.ListItem.Text(string! identifier) -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Collection.ListItem!>!
+Bruinet.NativeIos.Controls.Collection.TableView<TParent>
+Bruinet.NativeIos.Controls.Collection.TableView<TParent>.TableView(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator? itemKey = null) -> void
+Bruinet.NativeIos.Controls.Collection.TableView<TParent>.TableView(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, string! identifier, string? itemKeyId = null) -> void
+Bruinet.NativeIos.Controls.Container.ScrollView<TScope>
+Bruinet.NativeIos.Controls.Container.ScrollView<TScope>.ScrollView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Container.ScrollView<TScope>.ScrollView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>
+Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.Action(string! label) -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.ActionSheet(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent) -> void
+Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.Message.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.Title.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Alert(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent) -> void
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Button(string! label) -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Message.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.TextField(int index = 0) -> Bruinet.NativeIos.Controls.Text.TextField<Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Title.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.Allow.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.AllowOnce.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.Deny.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.Message.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!>!
+Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.PermissionAlert(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent) -> void
+Bruinet.NativeIos.Controls.Display.Image<TScope>
+Bruinet.NativeIos.Controls.Display.Image<TScope>.Image(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Display.Image<TScope>.Image(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.AssertFocused(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.Blur(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.Focus(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.FocusableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.IsFocused() -> bool
+Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.WaitFocused(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.Action(string! label) -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>!>!
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.BackButton.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>!>!
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.NavigationBar(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent) -> void
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.NavigationBar(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.Title.get -> Bruinet.NativeIos.Controls.Text.Label<Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>!>!
+Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>
+Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>.Action(string! label) -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>!>!
+Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>.Toolbar(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent) -> void
+Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>.Toolbar(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Range.ProgressView<TScope>
+Bruinet.NativeIos.Controls.Range.ProgressView<TScope>.ProgressView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.NativeIos.Controls.Range.ProgressView<TScope>.ProgressView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath, double minimum = 0, double? maximum = 100, double step = 1) -> void
+Bruinet.NativeIos.Controls.Range.Slider<TScope>
+Bruinet.NativeIos.Controls.Range.Slider<TScope>.Slider(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeIos.Controls.Range.Slider<TScope>.Slider(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeIos.Controls.Range.Stepper<TParent>
+Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Decrement.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Range.Stepper<TParent>!>!
+Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Increment.get -> Bruinet.NativeIos.Controls.Buttons.Button<Bruinet.NativeIos.Controls.Range.Stepper<TParent>!>!
+Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Stepper(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Stepper(Bruinet.NativeIos.Interfaces.INativeIosScope<TParent>! parent, string! identifier) -> void
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertMaximum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertMinimum(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertStep(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValue(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValueAtLeast(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValueAtMost(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValueGreaterThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValueLessThan(double? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.AssertValueWithin(double? expected, double tolerance, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.Decrement(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetMaximum(int? timeoutMs = null) -> double?
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetMinimum(int? timeoutMs = null) -> double?
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetStep(int? timeoutMs = null) -> double?
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetValue(int? timeoutMs = null) -> double?
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.Increment(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.RangeControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath, double minimum = 0, double? maximum = null, double step = 1) -> void
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.SetValue(double? value, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitMaximum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitMinimum(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitStep(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValue(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueAtLeast(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueAtMost(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueGreaterThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueLessThan(double? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.Scroll(Bruinet.NativeIos.Interfaces.GestureDirection direction, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToEnd(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToStart(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollableControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>
+Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>
+Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>
+Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.SegmentedControl(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.SegmentedControl(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Selection.TabBar<TScope>
+Bruinet.NativeIos.Controls.Selection.TabBar<TScope>.TabBar(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Selection.TabBar<TScope>.TabBar(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertItemCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertItemTextsCount(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertItemTextsHasItem(string! item, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertSelectedIndex(int? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertSelectedText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.AssertSelectedValue(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetItemCount(int? timeoutMs = null) -> int?
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetItemTexts(int? timeoutMs = null) -> System.Collections.Generic.IReadOnlyList<string!>?
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedIndex(int? timeoutMs = null) -> int?
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedText(int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedValue(int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByIndex(int? index, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByValue(string? value, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectorControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitItemCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitItemTexts(System.Collections.Generic.IReadOnlyList<string!>? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitItemTextsCount(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitItemTextsHasItem(string! item, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitSelectedIndex(int? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitSelectedText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.WaitSelectedValue(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.Text.Label<TScope>
+Bruinet.NativeIos.Controls.Text.Label<TScope>.Label(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Text.Label<TScope>.Label(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Text.SearchField<TScope>
+Bruinet.NativeIos.Controls.Text.SearchField<TScope>.SearchField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Text.SearchField<TScope>.SearchField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Text.SecureTextField<TScope>
+Bruinet.NativeIos.Controls.Text.SecureTextField<TScope>.SecureTextField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Text.SecureTextField<TScope>.SecureTextField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Text.TextField<TScope>
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.Append(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.AssertPlaceholder(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.AssertReadOnly(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.Clear(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.Enter(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.GetPlaceholder(int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.IsReadOnly() -> bool
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.SetText(string? text, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.Submit(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.TextField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.TextField(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.Text.TextField<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.Text.TextView<TScope>
+Bruinet.NativeIos.Controls.Text.TextView<TScope>.TextView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Text.TextView<TScope>.TextView(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Toggle.Switch<TScope>
+Bruinet.NativeIos.Controls.Toggle.Switch<TScope>.Switch(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.Toggle.Switch<TScope>.Switch(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.AssertChecked(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.Check(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.IsChecked() -> bool
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.SetChecked(bool? checked, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.Toggle(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.ToggleControlBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.Uncheck(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.WaitChecked(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>
+Bruinet.NativeIos.Controls.ViewBase<TScope>.ActAndConfirm<T>(string! action, System.Action! act, System.Func<T?>! read, System.Func<T?, bool>! done, string! expected, int? timeoutMs) -> void
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertAccessibilityLabel(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertAccessibilityLabelContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertAttribute(string? name, string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertEnabled(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertExists(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertText(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertTextContains(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertTextEmpty(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertTextEndsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertTextStartsWith(string? expected, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.AssertVisible(bool? expected = true, string? message = null, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.CallRemainingMs.get -> int
+Bruinet.NativeIos.Controls.ViewBase<TScope>.Confirm<T>(System.Func<T?>! read, System.Func<T?, bool>! done, int? timeoutMs) -> Bruinet.Core.Calls.Confirmation<T>
+Bruinet.NativeIos.Controls.ViewBase<TScope>.ContainingScope.get -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.Exists() -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.FindElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement!
+Bruinet.NativeIos.Controls.ViewBase<TScope>.GetAccessibilityLabel(int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.GetAttribute(string? name, int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.GetText(int? timeoutMs = null) -> string?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.IsEnabled() -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.IsVisible() -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.Locator.get -> Bruinet.Core.Locators.Locator!
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunAssert<T>(T? expected, System.Func<T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunAssertWithElement<T>(T? expected, System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement!, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunAssertWithOptionalElement<T>(T? expected, System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement?, T?>! getActual, System.Func<T?, T?, bool>! compare, string? message = null, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunDo(System.Action! operation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunDoWithElement(System.Action<Bruinet.NativeIos.Interfaces.INativeIosElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunGetWithElement<T>(System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement!, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunGetWithOptionalElement<T>(System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement?, T>! coreOperation, int? timeoutMs = null, string? caller = null) -> T?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunSetWithElement<T>(T? value, System.Action<Bruinet.NativeIos.Interfaces.INativeIosElement!>! coreOperation, int? timeoutMs = null, string? caller = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWait(System.Func<bool>! operation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWaitForValue(System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement!, string?>! read, System.Func<string?, bool>! until, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWaitWithElement<T>(T? expected, System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement!, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
+Bruinet.NativeIos.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.TryGetText() -> string?
+Bruinet.NativeIos.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
+Bruinet.NativeIos.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitAccessibilityLabel(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitAccessibilityLabelContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitAttribute(string! name, System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitAttribute(string? name, string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitEnabled(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitExists(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitText(System.Func<string?, bool>! until, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitText(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitTextContains(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitTextEmpty(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitTextEndsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitTextStartsWith(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Controls.ViewBase<TScope>.WaitVisible(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Interfaces.GestureDirection
+Bruinet.NativeIos.Interfaces.GestureDirection.Down = 1 -> Bruinet.NativeIos.Interfaces.GestureDirection
+Bruinet.NativeIos.Interfaces.GestureDirection.Left = 2 -> Bruinet.NativeIos.Interfaces.GestureDirection
+Bruinet.NativeIos.Interfaces.GestureDirection.Right = 3 -> Bruinet.NativeIos.Interfaces.GestureDirection
+Bruinet.NativeIos.Interfaces.GestureDirection.Up = 0 -> Bruinet.NativeIos.Interfaces.GestureDirection
+Bruinet.NativeIos.Interfaces.INativeIosContainer<TParent, TSelf>
+Bruinet.NativeIos.Interfaces.INativeIosContainer<TParent, TSelf>.Parent.get -> TParent
+Bruinet.NativeIos.Interfaces.INativeIosDriver
+Bruinet.NativeIos.Interfaces.INativeIosDriver.ActivateApp() -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.Back() -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.BundleId.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosDriver.CurrentBundleId.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+Bruinet.NativeIos.Interfaces.INativeIosDriver.HideKeyboard() -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.IsAppInForeground() -> bool
+Bruinet.NativeIos.Interfaces.INativeIosDriver.IsKeyboardShown.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosDriver.OpenDeepLink(string! uri) -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.PressButton(string! name) -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
+Bruinet.NativeIos.Interfaces.INativeIosDriver.ResetAppState() -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.SaveScreenshot(string! path) -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.TakeScreenshot() -> byte[]!
+Bruinet.NativeIos.Interfaces.INativeIosDriver.TerminateApp() -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator) -> bool
+Bruinet.NativeIos.Interfaces.INativeIosDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator, Bruinet.Core.Locators.Locator! scrollable) -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement
+Bruinet.NativeIos.Interfaces.INativeIosElement.Adjust(string! value) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Checked.get -> bool?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Clear() -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Click() -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.DoubleTap() -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.ElementType.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Enabled.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+Bruinet.NativeIos.Interfaces.INativeIosElement.Focused.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement.GetAttribute(string! name) -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Identifier.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.InstanceKey.get -> string!
+Bruinet.NativeIos.Interfaces.INativeIosElement.Label.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.LongPress(int durationMs = 1000) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Placeholder.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Rect.get -> System.Drawing.Rectangle
+Bruinet.NativeIos.Interfaces.INativeIosElement.Scroll(Bruinet.NativeIos.Interfaces.GestureDirection direction, double percent = 0.75) -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement.ScrollIntoView(int timeoutMs) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Selected.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement.SendKeys(string! text, Bruinet.Core.TextInputMethod method = Bruinet.Core.TextInputMethod.Keys) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.StepWheel(bool forward) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Swipe(Bruinet.NativeIos.Interfaces.GestureDirection direction, double percent = 0.75) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.TapAt(double x, double y) -> void
+Bruinet.NativeIos.Interfaces.INativeIosElement.Text.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Value.get -> string?
+Bruinet.NativeIos.Interfaces.INativeIosElement.Visible.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElementScope
+Bruinet.NativeIos.Interfaces.INativeIosElementScope.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+Bruinet.NativeIos.Interfaces.INativeIosElementScope.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Interfaces.INativeIosPage
+Bruinet.NativeIos.Interfaces.INativeIosPage<TSelf>
+Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>
+Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>.Self.get -> TScope
+Bruinet.NativeIos.Interfaces.INativeIosTestContext
+Bruinet.NativeIos.Interfaces.INativeIosTestContext.Driver.get -> Bruinet.NativeIos.Interfaces.INativeIosDriver!
+Bruinet.NativeIos.Interfaces.NativeIosElementExtensions
+Bruinet.NativeIos.NativeIosEvidenceCapture
+Bruinet.NativeIos.NativeIosEvidenceCapture.Capture(string! directory, string! name) -> string!
+Bruinet.NativeIos.NativeIosEvidenceCapture.NativeIosEvidenceCapture(Bruinet.NativeIos.Interfaces.INativeIosDriver! driver) -> void
+Bruinet.NativeIos.NativeIosLocator
+Bruinet.NativeIos.NativeIosTestContextOptions
+Bruinet.NativeIos.NativeIosTestContextOptions.AdditionalCapabilities.get -> System.Collections.Generic.Dictionary<string!, object!>!
+Bruinet.NativeIos.NativeIosTestContextOptions.AppPath.get -> string?
+Bruinet.NativeIos.NativeIosTestContextOptions.AppPath.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.AppiumServerUri.get -> System.Uri!
+Bruinet.NativeIos.NativeIosTestContextOptions.AppiumServerUri.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.AutoAcceptAlerts.get -> bool
+Bruinet.NativeIos.NativeIosTestContextOptions.AutoAcceptAlerts.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.AutomationName.get -> string!
+Bruinet.NativeIos.NativeIosTestContextOptions.AutomationName.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.BundleId.get -> string?
+Bruinet.NativeIos.NativeIosTestContextOptions.BundleId.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.DeviceName.get -> string!
+Bruinet.NativeIos.NativeIosTestContextOptions.DeviceName.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.FullReset.get -> bool
+Bruinet.NativeIos.NativeIosTestContextOptions.FullReset.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.NativeIosTestContextOptions() -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.NoReset.get -> bool
+Bruinet.NativeIos.NativeIosTestContextOptions.NoReset.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.PlatformVersion.get -> string?
+Bruinet.NativeIos.NativeIosTestContextOptions.PlatformVersion.set -> void
+Bruinet.NativeIos.NativeIosTestContextOptions.Udid.get -> string?
+Bruinet.NativeIos.NativeIosTestContextOptions.Udid.set -> void
+Bruinet.NativeIos.ObjectBase
+Bruinet.NativeIos.ObjectBase.ObjectBase() -> void
+Bruinet.NativeIos.Pages.AppRoot
+Bruinet.NativeIos.Pages.AppRoot.AppRoot(Bruinet.NativeIos.Interfaces.INativeIosTestContext! context) -> void
+Bruinet.NativeIos.Pages.AppRoot.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Pages.AppRoot.Self.get -> Bruinet.NativeIos.Pages.AppRoot!
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.AssertIdle(string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.AssertLoaded(bool? expected = true, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.AssertTitle(string? expected, string? message = null, int? timeoutMs = null) -> void
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.DefaultLocatorStrategy.get -> Bruinet.Core.Locators.LocatorStrategy
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.FindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement!
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.IsBusy() -> bool
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.IsReady() -> bool
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.Page.get -> Bruinet.NativeIos.Interfaces.INativeIosPage?
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.PageObjectBase(Bruinet.NativeIos.Interfaces.INativeIosTestContext! context) -> void
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.Self.get -> TSelf!
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.TakeScreenshot(string? filename = null) -> void
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.WaitBusy(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.WaitLoaded(bool? expected = true, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.WaitTitle(string? expected, int? timeoutMs = null) -> bool
+Bruinet.NativeIos.Testing.NativeIosTestFixtureBase
+Bruinet.NativeIos.Testing.NativeIosTestFixtureBase.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+Bruinet.NativeIos.Testing.NativeIosTestFixtureBase.NativeIosTestFixtureBase() -> void
+abstract Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+abstract Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.IsChosen(Bruinet.NativeIos.Interfaces.INativeIosElement! choice) -> bool
+const Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.BusyViewName = "bruinet_busy" -> string!
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.FindAllIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.IsShown(Bruinet.NativeIos.Interfaces.INativeIosElement! root) -> bool
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.Item(string! key, int? timeoutMs = null) -> TItem!
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.KeyOf(Bruinet.NativeIos.Interfaces.INativeIosElement! row, int position) -> Bruinet.Core.Collections.ItemKey
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollStep(Bruinet.NativeIos.Interfaces.INativeIosElement! list, bool onwards) -> bool
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryFindIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+override Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+override Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.FindAllIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+override Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.IsShown(Bruinet.NativeIos.Interfaces.INativeIosElement! root) -> bool
+override Bruinet.NativeIos.Containers.ContainerObjectBase<TParent, TScope>.TryFindIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+override Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.EnsureReadyForActionCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> void
+override Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> Bruinet.NativeIos.Controls.Collection.ListItem!
+override Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+override Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>.Self.get -> Bruinet.NativeIos.Controls.Collection.CollectionView<TParent>!
+override Bruinet.NativeIos.Controls.Collection.ListItem.Self.get -> Bruinet.NativeIos.Controls.Collection.ListItem!
+override Bruinet.NativeIos.Controls.Collection.TableView<TParent>.CreateItem(Bruinet.Core.Collections.ItemKey key, int position) -> Bruinet.NativeIos.Controls.Collection.ListItem!
+override Bruinet.NativeIos.Controls.Collection.TableView<TParent>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+override Bruinet.NativeIos.Controls.Collection.TableView<TParent>.Self.get -> Bruinet.NativeIos.Controls.Collection.TableView<TParent>!
+override Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.AsksParent.get -> bool
+override Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>.Self.get -> Bruinet.NativeIos.Controls.Dialogs.ActionSheet<TParent>!
+override Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.AsksParent.get -> bool
+override Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Self.get -> Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!
+override Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.AsksParent.get -> bool
+override Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.Self.get -> Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!
+override Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.Self.get -> Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>!
+override Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>.Self.get -> Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>!
+override Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Self.get -> Bruinet.NativeIos.Controls.Range.Stepper<TParent>!
+override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.GetItemTextsCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
+override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.GetSelectedTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> string?
+override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.SelectByIndexCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? index, int? timeoutMs = null) -> void
+override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.SelectByTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+override Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.IsChosen(Bruinet.NativeIos.Interfaces.INativeIosElement! choice) -> bool
+override Bruinet.NativeIos.Controls.Selection.TabBar<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
+override Bruinet.NativeIos.Controls.Selection.TabBar<TScope>.IsChosen(Bruinet.NativeIos.Interfaces.INativeIosElement! choice) -> bool
+override Bruinet.NativeIos.Controls.ViewBase<TScope>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+override Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
+override Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.ScopeName.get -> string!
+static Bruinet.NativeIos.Appium.NativeIosTestContext.Create(Bruinet.NativeIos.NativeIosTestContextOptions! options) -> Bruinet.NativeIos.Appium.NativeIosTestContext!
+static Bruinet.NativeIos.Controls.ViewBase<TScope>.ResolveLocator(string! identifierOrXPath) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.Interfaces.NativeIosElementExtensions.FindElement(this Bruinet.NativeIos.Interfaces.INativeIosElement! element, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement!
+static Bruinet.NativeIos.NativeIosLocator.ByIdentifier(string! identifier) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByIdentifierEndsWith(string! suffix) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByIosXPath(string! xpath) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByLabel(string! label) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByLabelOrValue(string! value) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByText(string! text) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByTextContains(string! text) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosLocator.ByType(string! elementType) -> Bruinet.Core.Locators.Locator!
+static Bruinet.NativeIos.NativeIosTestContextOptions.FromEnvironment() -> Bruinet.NativeIos.NativeIosTestContextOptions!
+static Bruinet.NativeIos.NativeIosTestContextOptions.FromEnvironment(System.Func<string!, string?>! read) -> Bruinet.NativeIos.NativeIosTestContextOptions!
+static readonly Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.DirectChildren -> Bruinet.Core.Locators.Locator!
+virtual Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ItemKeyLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.ClickCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.DoubleClickCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.HoverCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.IsClickableCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.LongPressCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? durationMs = null, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ClickableControlBase<TScope>.RightClickCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.BlurCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.FocusCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.FocusableControlBase<TScope>.IsFocusedCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.DecrementCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetMaximumCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> double?
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetMinimumCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> double?
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetStepCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> double?
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> double?
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.IncrementCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.SetValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, double? value, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, Bruinet.NativeIos.Interfaces.GestureDirection direction, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToEndCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToStartCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.Label(Bruinet.NativeIos.Interfaces.INativeIosElement! choice) -> string?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetItemCountCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> int?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetItemTextsCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> System.Collections.Generic.IReadOnlyList<string!>?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedIndexCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> int?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> string?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.GetSelectedValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> string?
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByIndexCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? index, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.SelectorControlBase<TScope>.SelectByValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? value, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.AppendCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.ClearCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.EnterCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.GetPlaceholderCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> string?
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.IsReadOnlyCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.SetTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.Text.TextField<TScope>.SubmitCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.SetCheckedCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, bool? checked, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ToggleControlBase<TScope>.ToggleCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.EnsureEnabledCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> void
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.EnsureReadyForActionCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> void
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.GetAccessibilityLabelCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> string?
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.GetAttributeCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? name) -> string?
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.GetTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> string?
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.IsEnabledCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.IsVisibleCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> bool?
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.NotFound() -> Bruinet.Core.Exceptions.ElementNotFoundException!
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.RequiresVisibilityForAction.get -> bool
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> void
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollsToFind.get -> bool
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string! keys, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.Name.get -> string!
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.ProbeReadiness() -> Bruinet.Core.Scopes.ScopeReadiness
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.ReadsBusySignal.get -> bool
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.ReadyLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.TitleLocator.get -> Bruinet.Core.Locators.Locator?
+virtual Bruinet.NativeIos.Testing.NativeIosTestFixtureBase.CreateOptions() -> Bruinet.NativeIos.NativeIosTestContextOptions!
+virtual Bruinet.NativeIos.Testing.NativeIosTestFixtureBase.DisposeAsync() -> System.Threading.Tasks.Task!
+virtual Bruinet.NativeIos.Testing.NativeIosTestFixtureBase.InitializeAsync() -> System.Threading.Tasks.Task!

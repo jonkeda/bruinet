@@ -1,0 +1,11 @@
+global using Bruinet.Core.Configuration;
+global using Bruinet.Core.Exceptions;
+global using Bruinet.Core.Locators;
+global using Bruinet.Core.Logging;
+global using Bruinet.NativeIos;
+global using Bruinet.NativeIos.Appium;
+global using Bruinet.NativeIos.Interfaces;
+global using Bruinet.NativeIos.Pages;
+global using Moq;
+global using Xunit;
+global using Bruinet.Core;

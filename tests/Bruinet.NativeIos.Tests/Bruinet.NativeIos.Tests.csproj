@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.NativeIos.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.NativeIos\Bruinet.NativeIos.csproj" />
+    <ProjectReference Include="..\Bruinet.ControlContracts\Bruinet.ControlContracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

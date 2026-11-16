@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageTags>$(PackageTags);appium</PackageTags>
     <RootNamespace>Bruinet.Appium</RootNamespace>
-    <Description>What the Appium stacks share: Appium's error mapping, the emulator's host address and adb reverse, and the Android screen recorder.</Description>
+    <Description>What the Appium stacks share: Appium's error mapping, the emulator's host address and adb reverse, the iOS simulator through simctl, and the Android and iOS screen recorders.</Description>
     <PackageId>Bruinet.Appium</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Bruinet.Recording.Tests" />
+    <InternalsVisibleTo Include="Bruinet.Appium.Tests" />
   </ItemGroup>
 
 </Project>

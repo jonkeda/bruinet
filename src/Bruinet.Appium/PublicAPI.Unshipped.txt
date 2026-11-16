@@ -5,6 +5,11 @@ Bruinet.Appium.AndroidRecorder.AndroidRecorder() -> void
 Bruinet.Appium.AndroidRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
 Bruinet.Appium.AndroidRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
 Bruinet.Appium.AppiumErrors
+Bruinet.Appium.IosHost
+Bruinet.Appium.IosRecorder
+Bruinet.Appium.IosRecorder.CanRecord(Bruinet.Core.Recording.RecordingTarget! target) -> bool
+Bruinet.Appium.IosRecorder.IosRecorder() -> void
+Bruinet.Appium.IosRecorder.StartAsync(Bruinet.Core.Recording.RecordingTarget! target, Bruinet.Recording.RecordingOptions! options, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Recording.IRecording!>!
 const Bruinet.Appium.AndroidHost.EmulatorHostAddress = "10.0.2.2" -> string!
 static Bruinet.Appium.AndroidHost.EmulatorUrl(string! hostUrl) -> string!
 static Bruinet.Appium.AndroidHost.Reverse(int port, string? deviceSerial = null) -> void
@@ -16,4 +21,13 @@ static Bruinet.Appium.AppiumErrors.IsSessionGone(System.Exception! error) -> boo
 static Bruinet.Appium.AppiumErrors.IsUnknownCommand(System.Exception! error) -> bool
 static Bruinet.Appium.AppiumErrors.Live(System.Action! touch) -> void
 static Bruinet.Appium.AppiumErrors.Live<T>(System.Func<T>! touch) -> T
+static Bruinet.Appium.IosHost.Boot(string! udid) -> void
+static Bruinet.Appium.IosHost.BootedSimulator() -> string!
+static Bruinet.Appium.IosHost.Erase(string! udid) -> void
+static Bruinet.Appium.IosHost.Grant(string! udid, string! service, string! bundleId) -> void
+static Bruinet.Appium.IosHost.Install(string! udid, string! appPath) -> void
+static Bruinet.Appium.IosHost.IsSimulator(string? udid) -> bool
+static Bruinet.Appium.IosHost.OpenUrl(string! udid, string! url) -> void
+static Bruinet.Appium.IosHost.Screen(string! udid) -> (int Width, int Height, double Scale)
+static Bruinet.Appium.IosHost.Uninstall(string! udid, string! bundleId) -> void
 static readonly Bruinet.Appium.AndroidRecorder.SegmentLimit -> System.TimeSpan
