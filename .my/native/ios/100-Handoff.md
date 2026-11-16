@@ -28,7 +28,7 @@ Pull before editing, push right after.
 | I3: controls | Done | 22 generated controls plus navigation bar, toolbar, alerts, sheets, stepper, table and collection views. DatePicker deferred. Measured live in I4 |
 | I4: gallery sample and UI tests | Done on iOS | `Bruinet.Samples.NativeIos.App` and `Bruinet.NativeIos.UITests`: 28 UI tests and both shared gallery features pass on the iOS 27 simulator; 87 unit tests pass. The features are linked from the Android test project. Rerunning them on Android waits on Windows |
 | I5: docs, skills, decision | Done | Platform, run and quick-start guides with compiled samples; skills `ios-control` and `ios-ui-test`; AD-042 (with iOS in AD-010, AD-013 and the control-object contract); CHANGELOG; the doc indexes |
-| J0 on native iOS | Not started | May start now, see [the Mac prompt](200-Mac-Prompt.md) |
+| J0 on native iOS | Done | Passed twice in a row on the iOS 27 simulator against Acceptance, 84 and 86 s test time (about 125 s wall each), from the shared feature file. Head: `Journeys/Exact.Bouw7.NativeIos.UITests` |
 | I6: generic list and dialog steps | Waiting | On Windows: generic steps |
 | I7: Scraper iOS source | Waiting | On Windows: Scraper Android source |
 | I8: Contacts pilot on iOS | Waiting | On Windows: handoff |
@@ -87,3 +87,13 @@ Newest last. One line each: date, machine, what happened or what is asked.
   token from `AcceptanceApi.GetPortalRefreshTokenAsync`; saving a new contact returns to the
   list, which shows it only after a pull to refresh; the fixture restarts the app once per
   session, because a kept app reopens on the screen the last run left.
+- 2026-11-16, Mac: J0 passes twice in a row on native iOS (84 and 86 s), about 3 hours. The iOS
+  head mirrors the native Android head: page, step, fixture and runner names, steps scanned
+  from its Steps namespace only. Found: the server exchanges a portal token only for the client
+  that asked for it, so `GetPortalRefreshTokenAsync` now takes an optional client, and the head
+  reads the iOS app's own test client from the local `exact-bouw-ios` checkout at run time
+  (nothing committed). The link token stays pending until Login is tapped. A fresh install shows
+  a Select Project sheet, sometimes twice around the sync splash; the fixture cancels it and
+  waits until the main screen is steady. iOS lists a saved contact straight away, without a
+  pull to refresh. The head logs in and arranges as `admin`. I wrote J0 into the feature file
+  before Windows pushed it, and kept the Windows version on merge.
