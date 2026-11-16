@@ -221,6 +221,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **Lirenet, the spec tool, is a folder of its own** (`Lirenet/`, beside `Frainet/`): the spec format, `check` and
+  `trace` moved there from Frainet, as `Lirenet.Specs` and the `lirenet` command, with their tests and
+  `docs/spec-format.md`. Output and exit codes are the same. `frainet check` and `frainet trace` stay one release: they
+  run `lirenet` and say so. The Todo sample's spec is with the sample, `samples/Todo/specs/` (was
+  `Frainet/specs/todo/`). `site-loop.ps1`, the skills `spec-from-app` and `scenario-from-spec`, and the guides name
+  `lirenet`.
 - Docs: `bdd-grammar.md` (was `uat-grammar.md`), `step-definitions.md`, `bdd-suite-guide.md` (was
   `uat-template-guide.md`), `quick-start-bdd.md`; the guides name `bdd.config.md`, `BddScenarioTestBase`,
   `[BddScenarioTheory]`, `[BddPage]`, `[BddControl]` and `[BddNavigatesTo]` (AD-040).

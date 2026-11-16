@@ -4,10 +4,10 @@ using System.Text.RegularExpressions;
 namespace Bruinet.Bdd;
 
 /// <summary>
-/// Reads a Frainet spec (<c>*.spec.md</c>) as a feature: each example a scenario named and tagged with its rule's id
+/// Reads a Lirenet spec (<c>*.spec.md</c>) as a feature: each example a scenario named and tagged with its rule's id
 /// (<c>B7.CON.01.R4 Part of a name is enough</c>, <c>@B7.CON.01.R4</c>). The spec's <c>## Background</c> goes before every
 /// example; a chapter's (<c>### Chapter: …</c>) Given and When go before each of its examples (<c>#### R4 …</c>).
-/// Everything else in a spec is for its readers and Frainet. The text is rewritten line for line into the feature
+/// Everything else in a spec is for its readers and Lirenet. The text is rewritten line for line into the feature
 /// grammar, so every step keeps its line, and then read by <see cref="BddMarkdownParser"/>.
 /// </summary>
 public static partial class BddSpecReader

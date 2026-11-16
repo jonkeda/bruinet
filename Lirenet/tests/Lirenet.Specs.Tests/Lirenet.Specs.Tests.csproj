@@ -11,6 +11,6 @@
     <Using Include="Xunit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Frainet.Specs\Frainet.Specs.csproj" />
+    <ProjectReference Include="..\..\src\Lirenet.Specs\Lirenet.Specs.csproj" />
   </ItemGroup>
 </Project>

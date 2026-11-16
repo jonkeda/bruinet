@@ -1,4 +1,4 @@
-namespace Frainet.Specs;
+namespace Lirenet.Specs;
 
 /// <summary>
 /// One thing a spec breaks of the format (<c>docs/spec-format.md</c>), at the line it is on.

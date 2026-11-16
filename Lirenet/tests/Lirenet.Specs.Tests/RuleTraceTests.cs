@@ -1,6 +1,6 @@
-using Frainet.Specs;
+using Lirenet.Specs;
 
-namespace Frainet.Specs.Tests;
+namespace Lirenet.Specs.Tests;
 
 /// <summary>
 /// The work check on a small spec of three rules and test sources written here: a C# test names a

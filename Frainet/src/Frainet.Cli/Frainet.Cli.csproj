@@ -3,7 +3,10 @@
     <OutputType>Exe</OutputType>
     <AssemblyName>frainet</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Frainet.Specs\Frainet.Specs.csproj" />
-  </ItemGroup>
+  <!-- frainet check and frainet trace run lirenet for one more release. Lirenet is not referenced (no project
+       reference crosses a tool's folder): it is built beside this build, in the same configuration, so the command
+       frainet runs is there. Goes when the forwarding commands go. -->
+  <Target Name="BuildLirenetForTheForwardingCommands" AfterTargets="Build" Condition="Exists('..\..\..\Lirenet\src\Lirenet.Cli\Lirenet.Cli.csproj')">
+    <MSBuild Projects="..\..\..\Lirenet\src\Lirenet.Cli\Lirenet.Cli.csproj" Targets="Restore;Build" Properties="Configuration=$(Configuration)" />
+  </Target>
 </Project>

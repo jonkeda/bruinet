@@ -1,12 +1,12 @@
 ---
 name: spec-from-app
-description: Draft a Frainet spec for one journey of a running app - from its recordings and the app itself, in Frainet's format, with every unclear point as an open question with a proposal - and check every example on the app before a person accepts it. Use when asked to write, draft or reverse-engineer a spec, rules or acceptance criteria for an existing app or module, or for loop stage 1 (Spec).
+description: Draft a Lirenet spec for one journey of a running app - from its recordings and the app itself, in Lirenet's format, with every unclear point as an open question with a proposal - and check every example on the app before a person accepts it. Use when asked to write, draft or reverse-engineer a spec, rules or acceptance criteria for an existing app or module, or for loop stage 1 (Spec).
 ---
 
 # A spec from a running app
 
-Stage 1 of the site loop. The output is `specs/<journey id>.spec.md` in Frainet's format
-(`Frainet/docs/spec-format.md`: read it first), `Status: draft`, passing `frainet check`. A person
+Stage 1 of the site loop. The output is `specs/<journey id>.spec.md` in Lirenet's format
+(`Lirenet/docs/spec-format.md`: read it first), `Status: draft`, passing `lirenet check`. A person
 accepts it; you never do, unless the person has said in so many words that you decide for them.
 
 ## Inputs
@@ -36,7 +36,7 @@ accepts it; you never do, unless the person has said in so many words that you d
 5. **Unclear points are open questions**, each with `Proposal:`. Behaviour that looks like a bug
    (a date in UTC, "Clear filters" keeping the search) is a question for the owner, not a rule.
 6. **Not in this journey**: neighbouring journeys and features you saw and left out.
-7. `frainet check specs/` until it passes. Then set the module in `.testing/100-Loops.md` to
+7. `lirenet check specs/` until it passes. Then set the module in `.testing/100-Loops.md` to
    `1 Spec, waiting: 👤 accept B7.XXX.01 (N open questions)`.
 
 ## Accepting

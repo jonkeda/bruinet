@@ -1,11 +1,11 @@
 ---
 name: scenario-from-spec
-description: Turn an accepted Frainet spec into tests - one per example, tagged with its rule id, as the account the example names, using the suite's page objects - until frainet trace reaches every rule and the tests pass on acc. Use when asked to write tests or scenarios for a spec, to cover a spec's rules, or for loop stage 5 (Scenarios).
+description: Turn an accepted Lirenet spec into tests - one per example, tagged with its rule id, as the account the example names, using the suite's page objects - until lirenet trace reaches every rule and the tests pass on acc. Use when asked to write tests or scenarios for a spec, to cover a spec's rules, or for loop stage 5 (Scenarios).
 ---
 
 # Tests from a spec
 
-Stage 5 of the site loop. Input: a spec with `Status: accepted …`. Output: tests that `frainet trace`
+Stage 5 of the site loop. Input: a spec with `Status: accepted …`. Output: tests that `lirenet trace`
 finds for every rule, passing on the app.
 
 ## Make the spec run (the default), C# where it says something badly
@@ -18,7 +18,7 @@ finds for every rule, passing on the app.
   the step that way, the rule's meaning unchanged); a control name on the component
   (`[BddControl("the filter above {column}")]` on its method); an extension verb written once for the
   control's type (`[BddVerbs]`, `this TableControl<TScope>`); a page phrase for a page's own workflow.
-  Never a phrase with "should": Frainet's check refuses it in a spec.
+  Never a phrase with "should": Lirenet's check refuses it in a spec.
 - **C# test** only for what an example says badly (a race, a layout, a polled value): one `[Fact]` with
   `[Trait("Rule", "<id>.R4")]` in `Modules/<Module>/Tests/`. A rule is checked once: its example or a
   C# test, never both; delete the C# test when the example runs.
@@ -37,9 +37,9 @@ finds for every rule, passing on the app.
 ## Gate
 
 ```bash
-frainet trace specs/<id>.spec.md <suite>/Modules --runnable
+lirenet trace specs/<id>.spec.md <suite>/Modules --runnable
 dotnet test <suite> --filter "Module=<Module>|Spec=<id>" --logger trx
-frainet trace specs/<id>.spec.md <suite>/Modules --runnable --results <suite>/TestResults
+lirenet trace specs/<id>.spec.md <suite>/Modules --runnable --results <suite>/TestResults
 ```
 
 Every rule `Passing`. A failure that is the app's (not the test's) stays a failure: hand it to

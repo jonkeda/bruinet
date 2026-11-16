@@ -12,10 +12,10 @@
 
     The gates, in order (the proposal's section 5):
 
-      1 Spec          specs/<Spec>.spec.md exists, passes frainet check, and its Status is accepted   👤 accepts
+      1 Spec          specs/<Spec>.spec.md exists, passes lirenet check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
-      5 Scenarios     frainet trace reaches every rule of the spec from Modules/<Module>
-      6 Run           dotnet test --filter Module=<Module> (and Spec=<spec> for runnable specs), -Runs times, every rule Passing (frainet trace --results)
+      5 Scenarios     lirenet trace reaches every rule of the spec from Modules/<Module>
+      6 Run           dotnet test --filter Module=<Module> (and Spec=<spec> for runnable specs), -Runs times, every rule Passing (lirenet trace --results)
 
     Explore (2) and Controls (3) have no gate of their own here: their work shows in 4 to 6.
     A module whose gates all pass is done. A 👤 gate marks the module waiting and the loop goes on to the next one.
@@ -72,11 +72,11 @@ $SuiteConfig = @('bdd.config.md', 'uat.config.md') | ForEach-Object { Join-Path 
 $RunsSpecs = $SuiteConfig -and (Select-String -Path $SuiteConfig -Pattern '^\|\s*Specs\s*\|' -Quiet)
 $ProjectText = Get-Content (Get-ChildItem $TestProject.FullName -Filter *.csproj | Select-Object -First 1).FullName -Raw
 
-# Frainet is built once and run from its output, not through dotnet run per call.
-$FrainetProject = Join-Path $Bruinet 'Frainet/src/Frainet.Cli/Frainet.Cli.csproj'
-dotnet build $FrainetProject -c Release -v:q -nologo | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "Frainet did not build: $FrainetProject" }
-$Frainet = Get-Item (dotnet msbuild $FrainetProject -getProperty:TargetPath -p:Configuration=Release).Trim()
+# Lirenet is built once and run from its output, not through dotnet run per call.
+$LirenetProject = Join-Path $Bruinet 'Lirenet/src/Lirenet.Cli/Lirenet.Cli.csproj'
+dotnet build $LirenetProject -c Release -v:q -nologo | Out-Null
+if ($LASTEXITCODE -ne 0) { throw "Lirenet did not build: $LirenetProject" }
+$Lirenet = Get-Item (dotnet msbuild $LirenetProject -getProperty:TargetPath -p:Configuration=Release).Trim()
 
 function Invoke-Gate([string]$Name, [scriptblock]$Command) {
     $started = Get-Date
@@ -140,12 +140,12 @@ foreach ($row in $rows) {
     $Runnable = if ($runsThis) { '--runnable' } else { $null }  # a $null argument is left out
 
     # 1 Spec
-    $gate = Invoke-Gate '1 Spec: frainet check' { if (Test-Path $specPath) { dotnet $Frainet.FullName check $specPath } else { "no $specPath"; $global:LASTEXITCODE = 1 } }
+    $gate = Invoke-Gate '1 Spec: lirenet check' { if (Test-Path $specPath) { dotnet $Lirenet.FullName check $specPath } else { "no $specPath"; $global:LASTEXITCODE = 1 } }
     for ($try = 0; -not $gate.Passed -and $try -lt $Attempts -and (Invoke-Agent 'spec-from-app' $row.Module $row.Spec $gate); $try++) {
-        $gate = Invoke-Gate '1 Spec: frainet check' { dotnet $Frainet.FullName check $specPath }
+        $gate = Invoke-Gate '1 Spec: lirenet check' { dotnet $Lirenet.FullName check $specPath }
     }
     $gates += $gate
-    if (-not $gate.Passed) { $row.Stage = '1 Spec'; $row.State = 'stuck'; $row.Waiting = 'frainet check'; $stuck++ }
+    if (-not $gate.Passed) { $row.Stage = '1 Spec'; $row.State = 'stuck'; $row.Waiting = 'lirenet check'; $stuck++ }
     elseif (-not (Select-String -Path $specPath -Pattern '^\| Status \| accepted' -Quiet)) {
         $questions = (Select-String -Path $specPath -Pattern '^- .*Proposal:').Count
         $row.Stage = '1 Spec'; $row.State = 'waiting'; $row.Waiting = "👤 accept $($row.Spec) ($questions open questions)"
@@ -157,20 +157,20 @@ foreach ($row in $rows) {
         if (-not $build.Passed) { $row.Stage = '4 Page objects'; $row.State = 'stuck'; $row.Waiting = 'build'; $stuck++ }
         else {
             # 5 Scenarios
-            $gate = Invoke-Gate '5 Scenarios: frainet trace' { if (Test-Path $modulePath) { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
+            $gate = Invoke-Gate '5 Scenarios: lirenet trace' { if (Test-Path $modulePath) { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
             for ($try = 0; -not $gate.Passed -and $try -lt $Attempts -and (Invoke-Agent 'scenario-from-spec' $row.Module $row.Spec $gate); $try++) {
                 $build = Invoke-Gate '4 Page objects: build' { dotnet build $Solution.FullName -v:q -nologo }
-                $gate = Invoke-Gate '5 Scenarios: frainet trace' { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable }
+                $gate = Invoke-Gate '5 Scenarios: lirenet trace' { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable }
             }
             $gates += $gate
-            if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'frainet trace'; $stuck++ }
+            if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'lirenet trace'; $stuck++ }
             else {
                 # 6 Run, -Runs times in a row
                 $green = 0
                 for ($run = 1; $run -le $Runs; $run++) {
                     $results = Join-Path $RunDir "$($row.Module)-$run"
                     $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)$(if ($runsThis) { "|Spec=$($row.Spec)" })" --logger trx --results-directory $results }
-                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Frainet.FullName trace $specPath $modulePath $Runnable --results $results }
+                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
                     $gates += $gate

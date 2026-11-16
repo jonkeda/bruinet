@@ -1,6 +1,6 @@
 # Runnable Specs
 
-A Frainet spec (`*.spec.md`, [the format](../../Frainet/docs/spec-format.md)) runs as tests on the same engine as the
+A Lirenet spec (`*.spec.md`, [the format](../../Lirenet/docs/spec-format.md)) runs as tests on the same engine as the
 feature files: each example is a scenario, named and tagged with its rule. The example *is* the test, so nothing has
 to copy it into C#, and a person can read what runs. Features stay for longer journeys told step by step; specs hold
 rules and an example per rule.
@@ -38,7 +38,7 @@ rules and an example per rule.
 | `## Background` | steps before every example |
 | `### Chapter: Creator opens the invoices` with Given and When | steps before each of its examples, `#### R1 …` |
 | `### R5 …` after a chapter | an example outside the chapter |
-| Intent, Rules, Choices, Not in this journey, Open questions | nothing: they are for readers and Frainet |
+| Intent, Rules, Choices, Not in this journey, Open questions | nothing: they are for readers and Lirenet |
 
 Every step keeps its line, so a failure, the editors and `bruinet data validate` point into the spec.
 
@@ -50,7 +50,7 @@ Make it bind, in this order:
 1. **Say it the way the vocabulary does** (`bruinet data phrases`), the rule's meaning unchanged. Built-in phrases a
    spec reads well with: `When I open the {page} page`, `Then the {page} page is open`, `{control} says {value}`,
    `{control} includes {value}`, `{control} is shown`, `{control} is not shown`, `When I type {value} in {control}`, `Given I typed …`,
-   `When I empty {control}`, `When I tap {control}`. A spec never says "should" (Frainet's vague word).
+   `When I empty {control}`, `When I tap {control}`. A spec never says "should" (Lirenet's vague word).
 2. **Name the control** where it has no fixed name: `[BddControl]` on the page's or a component's method; its
    placeholders are the method's parameters. Every verb of the returned control's type then works on it.
 
@@ -88,7 +88,7 @@ Make it bind, in this order:
 A rule is checked by its example or by a C# test with its `Rule` trait, never both: delete the C# test when the example
 runs. A C# test stays for what an example says badly (a race, a layout, a polled value).
 
-`frainet trace <spec> <tests> --runnable` counts the spec's examples as the tests of their rules; with `--results` it
+`lirenet trace <spec> <tests> --runnable` counts the spec's examples as the tests of their rules; with `--results` it
 matches each by its case's name. The site loop (`tools/Scripts/site-loop.ps1`) passes `--runnable`, and runs
 `Spec=<spec>`, for every spec the test project copies.
 

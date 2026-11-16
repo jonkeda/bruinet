@@ -1,16 +1,25 @@
 # Frainet
 
 Frainet is for running software as a dark factory: agents write, test and review the code, people
-design the line and judge what comes out. Its own part is the specs and the checks on them. A
-loop can only run dark when its spec is exact and something other than a person tells it whether
-the work meets it. Frainet lives in Bruinet's repository for now and may become its own later.
+design the line and judge what comes out. A loop can only run dark when its spec is exact and
+something other than a person tells it whether the work meets it. Frainet is the factory: the
+loops, and what runs the agents in them. Frainet lives in Bruinet's repository for now and may
+become its own later.
 
-## What it does
+## The four parts
 
-- A spec format in small layers: intent, rules, examples, acceptance, each line with an id.
-- Checks on a spec before anything is built: is every rule there, exact, and given an example.
-- Checks on the work against the spec: every spec id reached by a test, every test pointing back.
-- Bruinet runs the tests; Frainet says which spec lines they prove and which they leave open.
+| Part | Does |
+| --- | --- |
+| **Bruinet** | Tests: runs the scenarios and the specs' examples |
+| **Lirenet** ([../Lirenet](../Lirenet/README.md)) | Specs: the format, `lirenet check`, `lirenet trace` |
+| **Gaminet** | Migration (not built yet) |
+| **Frainet** | The factory: the loops that use the other three |
+
+The spec code started here and moved to Lirenet. For one release `frainet check` and
+`frainet trace` still work: they run `lirenet` with the same arguments, give its output and its
+exit code, and say on the error stream that the command moved. Frainet reaches Lirenet as a
+command, never as code. It finds `lirenet.dll` beside itself, in `../Lirenet` (built with
+Frainet's own build), or where the `LIRENET` variable says.
 
 ## The idea behind it
 
@@ -23,31 +32,12 @@ spec is where the factory's light stays on longest. The loops are written out in
 ## Commands
 
 ```bash
-dotnet run --project src/Frainet.Cli -- check specs
+dotnet build Frainet.slnx
 ```
 
-```bash
-dotnet run --project src/Frainet.Cli -- trace specs/todo/TOD.02.spec.md ../samples/Todo/tests
-```
-
-```bash
-dotnet test ../samples/Todo/tests --logger trx --results-directory TestResults/todo
-dotnet run --project src/Frainet.Cli -- trace specs/todo/TOD.02.spec.md ../samples/Todo/tests --results TestResults/todo
-```
-
-```bash
-dotnet test Frainet.slnx
-```
-
-The first checks every spec against the [format](docs/spec-format.md) and says what breaks it,
-line by line. The second lists each rule of a spec with the tests that reach it, and fails on a
-rule no test reaches. With `--results` (the `.trx` files of a run, or their folder) it gives each
-rule a state, as F1 asks: not reached, not run, failing, or passing, and fails unless every rule
-passes; a C# test is matched by its class and method, a scenario by its name. The last runs the
-checks on the specs and on broken copies.
+Today's loop over a site's modules is `tools/Scripts/site-loop.ps1` in Bruinet's repository.
 
 ## How it grows
 
 It starts very small, on Bruinet's Todo sample, which already has journeys, tiers and a coverage
-report. Once Todo's spec and its checks are understood, Frainet moves to Tomorrow, one module at a
-time. Nothing is built ahead of a sample that needs it. The plan is [.my/plan.md](.my/plan.md).
+report. Nothing is built ahead of a sample that needs it. The plan is [.my/plan.md](.my/plan.md).

@@ -1,94 +1,79 @@
-using Frainet.Specs;
+using System.Diagnostics;
 
-// frainet check <spec or folder>...: every *.spec.md checked against docs/spec-format.md; exit 1 on a finding.
-// frainet trace <spec> <tests folder>... [--results <trx or folder>...]: every rule of the spec reached by a test; with
-// results, every rule's tests ran and passed (F1); exit 1 on a finding.
+// The spec commands moved to Lirenet, the spec tool. For one release frainet still takes them, and runs lirenet:
+// frainet check ...  is  lirenet check ...
+// frainet trace ...  is  lirenet trace ...
+// Frainet reaches Lirenet as a command, never as code: no project reference crosses a tool's folder.
 return args switch
 {
-    ["check", _, ..] => Check(args[1..]),
-    ["trace", _, _, ..] => Trace(args[1], args[2..]),
+    ["check" or "trace", ..] => Forward(args),
     _ => Usage(),
 };
 
 static int Usage()
 {
-    Console.Error.WriteLine("Usage: frainet check <spec.md or folder>...");
-    Console.Error.WriteLine("       frainet trace <spec.md> <tests folder>... [--runnable] [--results <file.trx or folder>...]");
+    Console.Error.WriteLine("Usage: frainet check ...   moved: lirenet check <spec.md or folder>...");
+    Console.Error.WriteLine("       frainet trace ...   moved: lirenet trace <spec.md> <tests folder>... [--runnable] [--results <file.trx or folder>...]");
     return 2;
 }
 
-static int Check(string[] paths)
+static int Forward(string[] args)
 {
-    var files = paths
-        .SelectMany<string, string>(path => Directory.Exists(path)
-            ? Directory.EnumerateFiles(path, "*.spec.md", SearchOption.AllDirectories).Order()
-            : [path])
-        .ToList();
-
-    if (files.Count == 0)
+    Console.Error.WriteLine($"frainet {args[0]} is lirenet {args[0]} now; frainet runs it for one more release.");
+    var start = Lirenet();
+    if (start is null)
     {
-        Console.Error.WriteLine("No *.spec.md found.");
+        Console.Error.WriteLine("lirenet was not found: not beside frainet, not in Lirenet/src/Lirenet.Cli above it. Build Lirenet, or set LIRENET to lirenet.dll.");
         return 2;
     }
 
-    var failed = 0;
-    foreach (var file in files)
+    foreach (var arg in args)
     {
-        if (!File.Exists(file))
+        start.ArgumentList.Add(arg);
+    }
+
+    // Not redirected: lirenet writes to this process's output and error as its own.
+    start.UseShellExecute = false;
+    using var process = Process.Start(start)!;
+    process.WaitForExit();
+    return process.ExitCode;
+}
+
+// lirenet.dll: the one LIRENET names, the one beside frainet, or the one built in Lirenet's folder beside Frainet's
+// (the same configuration first).
+static ProcessStartInfo? Lirenet()
+{
+    var here = AppContext.BaseDirectory;
+    var named = Environment.GetEnvironmentVariable("LIRENET");
+    var candidates = new List<string>();
+    if (!string.IsNullOrWhiteSpace(named))
+    {
+        candidates.Add(named);
+    }
+
+    candidates.Add(Path.Combine(here, "lirenet.dll"));
+    for (var dir = new DirectoryInfo(here); dir is not null; dir = dir.Parent)
+    {
+        var bin = Path.Combine(dir.FullName, "Lirenet", "src", "Lirenet.Cli", "bin");
+        if (!Directory.Exists(bin))
         {
-            Console.Error.WriteLine($"{file}: not found");
-            failed++;
             continue;
         }
 
-        var findings = SpecCheck.CheckFile(file);
-        Console.WriteLine(findings.Count == 0 ? $"{file}: follows the format" : $"{file}: {findings.Count} finding(s)");
-        foreach (var finding in findings)
-        {
-            Console.WriteLine($"  {finding}");
-        }
-
-        failed += findings.Count > 0 ? 1 : 0;
+        var configuration = here.Contains($"{Path.DirectorySeparatorChar}Release{Path.DirectorySeparatorChar}", StringComparison.Ordinal) ? "Release" : "Debug";
+        candidates.AddRange(Directory.EnumerateFiles(bin, "lirenet.dll", SearchOption.AllDirectories)
+            .OrderByDescending(path => path.Contains($"{Path.DirectorySeparatorChar}{configuration}{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .ThenByDescending(File.GetLastWriteTimeUtc));
+        break;
     }
 
-    return failed == 0 ? 0 : 1;
-}
-
-static int Trace(string spec, string[] rest)
-{
-    var runnable = rest.Contains("--runnable");
-    rest = [.. rest.Where(arg => arg != "--runnable")];
-    var at = Array.IndexOf(rest, "--results");
-    var folders = at < 0 ? rest : rest[..at];
-    var resultPaths = at < 0 ? [] : rest[(at + 1)..];
-    foreach (var missing in folders.Concat(resultPaths).Prepend(spec).Where(path => !File.Exists(path) && !Directory.Exists(path)))
+    var found = candidates.FirstOrDefault(File.Exists);
+    if (found is null)
     {
-        Console.Error.WriteLine($"{missing}: not found");
-        return 2;
+        return null;
     }
 
-    var result = RuleTrace.TraceFile(spec, folders, runnable);
-    IReadOnlyDictionary<string, RuleState>? states = at < 0 ? null : RuleResults.States(result, RuleResults.ReadTrx(resultPaths));
-    foreach (var (rule, reaches) in result.Rules)
-    {
-        var state = states is null ? string.Empty : $" [{states[rule]}]";
-        Console.WriteLine($"{rule}: {(reaches.Count == 0 ? "no test" : $"{reaches.Count} test(s)")}{state}");
-        foreach (var reach in reaches)
-        {
-            Console.WriteLine($"  {reach.Name} ({reach.File}:{reach.Line})");
-        }
-    }
-
-    var findings = states is null
-        ? result.Findings
-        : result.Findings.Where(finding => finding.Code != "rule-untested").Concat(RuleResults.Findings(states)).ToList();
-    var reached = result.Rules.Count(rule => rule.Value.Count > 0);
-    var passing = states is null ? string.Empty : $", {states.Count(state => state.Value == RuleState.Passing)} passing";
-    Console.WriteLine($"{reached} of {result.Rules.Count} rules reached by a test{passing}, {findings.Count} finding(s)");
-    foreach (var finding in findings)
-    {
-        Console.WriteLine($"  {finding}");
-    }
-
-    return findings.Count == 0 ? 0 : 1;
+    var start = new ProcessStartInfo("dotnet");
+    start.ArgumentList.Add(found);
+    return start;
 }

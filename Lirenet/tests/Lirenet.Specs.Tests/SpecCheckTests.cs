@@ -1,16 +1,17 @@
-using Frainet.Specs;
+using Lirenet.Specs;
 
-namespace Frainet.Specs.Tests;
+namespace Lirenet.Specs.Tests;
 
 /// <summary>
 /// The spec check on the real specs, and on broken copies of TOD.02: each copy breaks one thing the
-/// format asks, and the check names it.
+/// format asks, and the check names it. The specs are the Todo sample's, kept with the sample they describe
+/// (<c>samples/Todo/specs</c>).
 /// </summary>
 public sealed class SpecCheckTests
 {
     private static readonly string Root = FindRoot();
 
-    private static readonly string Tod02 = File.ReadAllText(Path.Combine(Root, "specs", "todo", "TOD.02.spec.md"))
+    private static readonly string Tod02 = File.ReadAllText(Path.Combine(Root, "specs", "TOD.02.spec.md"))
         .ReplaceLineEndings("\n");
 
     public static TheoryData<string> Specs() =>
@@ -120,13 +121,14 @@ public sealed class SpecCheckTests
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
         {
-            if (File.Exists(Path.Combine(dir.FullName, "Frainet.slnx")))
+            var sample = Path.Combine(dir.FullName, "samples", "Todo");
+            if (Directory.Exists(Path.Combine(sample, "specs")))
             {
-                return dir.FullName;
+                return sample;
             }
         }
 
-        throw new InvalidOperationException("Frainet.slnx not found above the test's folder.");
+        throw new InvalidOperationException("samples/Todo/specs not found above the test's folder.");
     }
 
     private const string Chapters = """

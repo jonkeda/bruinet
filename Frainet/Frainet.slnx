@@ -1,9 +1,5 @@
 <Solution>
   <Folder Name="/src/">
-    <Project Path="src/Frainet.Specs/Frainet.Specs.csproj" />
     <Project Path="src/Frainet.Cli/Frainet.Cli.csproj" />
-  </Folder>
-  <Folder Name="/tests/">
-    <Project Path="tests/Frainet.Specs.Tests/Frainet.Specs.Tests.csproj" />
   </Folder>
 </Solution>

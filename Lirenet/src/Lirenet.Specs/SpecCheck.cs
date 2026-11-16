@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Frainet.Specs;
+namespace Lirenet.Specs;
 
 /// <summary>
 /// Checks a spec against the format in <c>docs/spec-format.md</c>, without a model: what is there,

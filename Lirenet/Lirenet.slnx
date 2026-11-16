@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lirenet.Specs/Lirenet.Specs.csproj" />
+    <Project Path="src/Lirenet.Cli/Lirenet.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Lirenet.Specs.Tests/Lirenet.Specs.Tests.csproj" />
+  </Folder>
+</Solution>
