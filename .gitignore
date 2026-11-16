@@ -474,3 +474,6 @@ Scraper.Sites/*/Recordings/
 
 # set_state's scenario, written in the suite it runs in (AI10)
 **/.bruinet/set-state-*.feature.md
+
+# Visual Studio generates these with machine-local ports; tracked ones stay tracked
+**/Properties/launchSettings.json
