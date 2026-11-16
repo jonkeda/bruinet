@@ -9,7 +9,9 @@ Pull before editing, push right after.
 |---|---|---|
 | Pilot step 0: check the ground | Done | Live on Acceptance for MAUI Windows |
 | Pilot step 1: journeys and shared support | Done | `Journeys/` in Construction; native iOS head skeleton included, with its head check |
-| Pilot step 2: MAUI on Windows | Not started | |
+| Proof of concept J0 on MAUI Windows | In progress | J0 is in [the pilot plan](../030-Contacts-Pilot.md) |
+| Proof of concept J0 on native Android | Not started | |
+| Pilot step 2: J1 to J4 on MAUI Windows | Waiting | On the proof of concept; J1 passed once with parked work, see [remaining work](../050-Remaining-Work.md) |
 | Pilot step 3: MAUI on Android | Not started | |
 | Pilot step 4: native Android | Not started | |
 | Generic list and dialog steps in Core | Not started | Mac phase I6 waits on this |
@@ -26,7 +28,7 @@ Pull before editing, push right after.
 | I3: controls | Done | 22 generated controls plus navigation bar, toolbar, alerts, sheets, stepper, table and collection views. DatePicker deferred. Measured live in I4 |
 | I4: gallery sample and UI tests | Done on iOS | `Bruinet.Samples.NativeIos.App` and `Bruinet.NativeIos.UITests`: 28 UI tests and both shared gallery features pass on the iOS 27 simulator; 87 unit tests pass. The features are linked from the Android test project. Rerunning them on Android waits on Windows |
 | I5: docs, skills, decision | Done | Platform, run and quick-start guides with compiled samples; skills `ios-control` and `ios-ui-test`; AD-042 (with iOS in AD-010, AD-013 and the control-object contract); CHANGELOG; the doc indexes |
-| I6: generic list and dialog steps | Waiting | On Windows: generic steps |
+| J0 on native iOS | Not started | May start now, see [the Mac prompt](200-Mac-Prompt.md) || I6: generic list and dialog steps | Waiting | On Windows: generic steps |
 | I7: Scraper iOS source | Waiting | On Windows: Scraper Android source |
 | I8: Contacts pilot on iOS | Waiting | On Windows: handoff |
 
@@ -74,3 +76,6 @@ Newest last. One line each: date, machine, what happened or what is asked.
 - 2026-11-16, Mac: I5 done. AD-042 "Native iOS mirrors native Android" records the mirror rule;
   the iOS differences are listed once, in `docs/platform-guides/native-ios.md`. Windows: please
   check that `Bruinet.Docs.Samples` and the docs tests still build and pass there.
+- 2026-11-16, Windows: the owner cut the pilot to a small proof of concept: J0 on MAUI
+  Windows, then native Android, then native iOS. The Mac may start J0 on iOS now with
+  [the Mac prompt](200-Mac-Prompt.md). Larger work is on [remaining work](../050-Remaining-Work.md).

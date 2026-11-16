@@ -1,0 +1,291 @@
+diff --git a/samples/Bruinet.Samples.Maui.App/Navigation/SamplePage.cs b/samples/Bruinet.Samples.Maui.App/Navigation/SamplePage.cs
+index c28dbfcd..7594d048 100644
+--- a/samples/Bruinet.Samples.Maui.App/Navigation/SamplePage.cs
++++ b/samples/Bruinet.Samples.Maui.App/Navigation/SamplePage.cs
+@@ -81,5 +81,8 @@ public enum SamplePage
+     Covered,
+ 
+     /// <summary>UI that changes by time: delays, delayed work, a debounce, a message that hides.</summary>
+-    Timed
++    Timed,
++
++    /// <summary>A WebView with app content after it.</summary>
++    WebView
+ }
+diff --git a/samples/Bruinet.Samples.Maui.App/Navigation/SamplePages.cs b/samples/Bruinet.Samples.Maui.App/Navigation/SamplePages.cs
+index 81f00fb4..824caea6 100644
+--- a/samples/Bruinet.Samples.Maui.App/Navigation/SamplePages.cs
++++ b/samples/Bruinet.Samples.Maui.App/Navigation/SamplePages.cs
+@@ -125,6 +125,9 @@ public static class SamplePages
+ 
+         new(SamplePage.Timed, "Timed", "Delays, delayed work, a debounce, a message that hides",
+             () => new TimedPage()),
++
++        new(SamplePage.WebView, "WebView", "A WebView with app content after it",
++            () => new WebViewPage()),
+     ];
+ 
+     /// <summary>
+diff --git a/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml b/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml
+new file mode 100644
+index 00000000..e97e7dc5
+--- /dev/null
++++ b/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml
+@@ -0,0 +1,25 @@
++<?xml version="1.0" encoding="utf-8" ?>
++<!--
++    A WebView with app content after it. On Windows a UI Automation descendant search that reaches the
++    WebView2 leaves its scope: it answers elements from the rest of the window and never reaches what
++    follows the WebView2. "Marker" is both outside and inside the host, so a lookup that leaves the
++    host answers the wrong one.
++-->
++<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
++             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
++             x:Class="Bruinet.Samples.Maui.App.WebViewPage"
++             AutomationId="WebViewPage"
++             Title="WebView">
++    <VerticalStackLayout Padding="20" Spacing="12">
++        <Label AutomationId="Marker" Text="outside" />
++        <Grid AutomationId="WebViewHost" RowDefinitions="160,Auto">
++            <WebView AutomationId="Web">
++                <WebView.Source>
++                    <HtmlWebViewSource Html="&lt;p&gt;Web content&lt;/p&gt;" />
++                </WebView.Source>
++            </WebView>
++            <Label Grid.Row="1" AutomationId="Marker" Text="inside" />
++        </Grid>
++        <Label AutomationId="AfterWebView" Text="after" />
++    </VerticalStackLayout>
++</ContentPage>
+diff --git a/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml.cs b/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml.cs
+new file mode 100644
+index 00000000..b8c26f85
+--- /dev/null
++++ b/samples/Bruinet.Samples.Maui.App/Pages/WebViewPage.xaml.cs
+@@ -0,0 +1,9 @@
++namespace Bruinet.Samples.Maui.App;
++
++public partial class WebViewPage : ContentPage
++{
++    public WebViewPage()
++    {
++        InitializeComponent();
++    }
++}
+diff --git a/src/Bruinet.FlaUI/UiaElements.cs b/src/Bruinet.FlaUI/UiaElements.cs
+index 12350a80..897c4052 100644
+--- a/src/Bruinet.FlaUI/UiaElements.cs
++++ b/src/Bruinet.FlaUI/UiaElements.cs
+@@ -109,7 +109,16 @@ public static class UiaElements
+         ArgumentNullException.ThrowIfNull(app);
+         ArgumentNullException.ThrowIfNull(within);
+         ArgumentNullException.ThrowIfNull(locator);
+-        return within.FindFirstDescendant(locator.ToCondition(app.ConditionFactory));
++        var condition = locator.ToCondition(app.ConditionFactory);
++        var found = within.FindFirstDescendant(condition);
++        if (found != null && IsUnder(app, found, within))
++        {
++            return found;
++        }
++
++        // A descendant search that reaches a WinUI WebView2 leaves the scope: it answers elements
++        // from the rest of the window and never reaches what follows the WebView2.
++        return HostsWebView(app, within) ? Walk(app, within, condition, firstOnly: true).FirstOrDefault() : null;
+     }
+ 
+     /// <summary>Every descendant of <paramref name="within"/> matching <paramref name="locator"/> now. One attempt.</summary>
+@@ -121,6 +130,78 @@ public static class UiaElements
+         ArgumentNullException.ThrowIfNull(app);
+         ArgumentNullException.ThrowIfNull(within);
+         ArgumentNullException.ThrowIfNull(locator);
+-        return within.FindAllDescendants(locator.ToCondition(app.ConditionFactory));
++        var condition = locator.ToCondition(app.ConditionFactory);
++        return HostsWebView(app, within)
++            ? Walk(app, within, condition, firstOnly: false)
++            : within.FindAllDescendants(condition);
++    }
++
++    private static readonly string[] WebViewHostClassNames = ["Microsoft.UI.Xaml.Controls.WebView2"];
++
++    private static bool HostsWebView(DesktopApp app, AutomationElement within)
++    {
++        var factory = app.ConditionFactory;
++        var condition = new OrCondition(WebViewHostClassNames.Select(name => (ConditionBase)factory.ByClassName(name)).ToArray());
++        return within.FindFirstDescendant(condition) != null;
++    }
++
++    private static bool IsUnder(DesktopApp app, AutomationElement element, AutomationElement ancestor)
++    {
++        var walker = app.Automation.TreeWalkerFactory.GetControlViewWalker();
++        var node = walker.GetParent(element);
++        for (var depth = 0; node != null && depth < MaxAttachedDepth; depth++)
++        {
++            if (node.Equals(ancestor))
++            {
++                return true;
++            }
++
++            node = walker.GetParent(node);
++        }
++
++        return false;
++    }
++
++    // Child by child in document order, never into a WebView2: its content is web content,
++    // reached through the browser, not through a search of the app's tree.
++    private static List<AutomationElement> Walk(DesktopApp app, AutomationElement within, ConditionBase condition, bool firstOnly)
++    {
++        var found = new List<AutomationElement>();
++        var pending = new Stack<(AutomationElement Element, int Depth)>();
++        Push(within, 0);
++
++        while (pending.Count > 0)
++        {
++            var (element, depth) = pending.Pop();
++            if (element.FindFirst(global::FlaUI.Core.Definitions.TreeScope.Element, condition) != null)
++            {
++                found.Add(element);
++                if (firstOnly)
++                {
++                    break;
++                }
++            }
++
++            if (Array.IndexOf(WebViewHostClassNames, element.Properties.ClassName.ValueOrDefault) < 0)
++            {
++                Push(element, depth);
++            }
++        }
++
++        return found;
++
++        void Push(AutomationElement parent, int depth)
++        {
++            if (depth >= MaxAttachedDepth)
++            {
++                return;
++            }
++
++            var children = parent.FindAllChildren();
++            for (var index = children.Length - 1; index >= 0; index--)
++            {
++                pending.Push((children[index], depth + 1));
++            }
++        }
+     }
+ }
+diff --git a/src/Bruinet.Maui.FlaUI/FlaUIMauiDriver.cs b/src/Bruinet.Maui.FlaUI/FlaUIMauiDriver.cs
+index 6e5f2bb3..c514d646 100644
+--- a/src/Bruinet.Maui.FlaUI/FlaUIMauiDriver.cs
++++ b/src/Bruinet.Maui.FlaUI/FlaUIMauiDriver.cs
+@@ -149,11 +149,9 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
+     /// <inheritdoc />
+     public IReadOnlyList<IMauiElement> FindElements(Locator locator)
+     {
+-        var condition = locator.ToCondition(ConditionFactory);
+-
+         try
+         {
+-            return RootElement.FindAllDescendants(condition)
++            return UiaElements.FindAll(_app, RootElement, locator)
+                 .Select(e => new FlaUIMauiElement(e, this))
+                 .ToList();
+         }
+@@ -167,11 +165,9 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
+     /// <remarks>Stops at the first match rather than collecting the whole tree.</remarks>
+     public IMauiElement? TryFindElement(Locator locator)
+     {
+-        var condition = locator.ToCondition(ConditionFactory);
+-
+         try
+         {
+-            var found = RootElement.FindFirstDescendant(condition);
++            var found = UiaElements.FindFirst(_app, RootElement, locator);
+             return found == null ? null : new FlaUIMauiElement(found, this);
+         }
+         catch (Exception error) when (FlaUIErrors.IsElementGone(error) && AppHasExited)
+diff --git a/tests/Bruinet.Maui.UITests/Pages/HubPage.cs b/tests/Bruinet.Maui.UITests/Pages/HubPage.cs
+index 1b206768..0208195c 100644
+--- a/tests/Bruinet.Maui.UITests/Pages/HubPage.cs
++++ b/tests/Bruinet.Maui.UITests/Pages/HubPage.cs
+@@ -35,7 +35,8 @@ public enum SamplePage
+     CommunityToolkitMedia,
+     PagedList,
+     Covered,
+-    Timed
++    Timed,
++    WebView
+ }
+ 
+ /// <summary>
+diff --git a/tests/Bruinet.Maui.UITests/Pages/WebViewTestPage.cs b/tests/Bruinet.Maui.UITests/Pages/WebViewTestPage.cs
+new file mode 100644
+index 00000000..4739ffb2
+--- /dev/null
++++ b/tests/Bruinet.Maui.UITests/Pages/WebViewTestPage.cs
+@@ -0,0 +1,22 @@
++namespace Bruinet.Maui.UITests.Pages;
++
++/// <summary>A WebView with app content after it; "Marker" is both outside and inside the host.</summary>
++public class WebViewTestPage : PageObjectBase<WebViewTestPage>
++{
++    public WebViewTestPage(IMauiTestContext context)
++        : base(context)
++    {
++    }
++
++    /// <inheritdoc />
++    public override string Name => "WebViewPage";
++
++    /// <summary>The Grid holding the WebView and, after it, the inside "Marker".</summary>
++    public Grid<WebViewTestPage> Host => new(this, "WebViewHost");
++
++    /// <summary>"inside": the host's own marker, after the WebView.</summary>
++    public Label<Grid<WebViewTestPage>> InsideMarker => new(Host, "Marker");
++
++    /// <summary>"after": below the host, so after the WebView in the page.</summary>
++    public Label<WebViewTestPage> AfterWebView => new(this, "AfterWebView");
++}
+diff --git a/tests/Bruinet.Maui.UITests/Tests/Container/WebViewLookupTests.cs b/tests/Bruinet.Maui.UITests/Tests/Container/WebViewLookupTests.cs
+new file mode 100644
+index 00000000..7c2275b4
+--- /dev/null
++++ b/tests/Bruinet.Maui.UITests/Tests/Container/WebViewLookupTests.cs
+@@ -0,0 +1,37 @@
++using Bruinet.Maui.UITests.Pages;
++
++namespace Bruinet.Maui.UITests.Tests.Container;
++
++/// <summary>
++/// Lookups past a WebView: on Windows a UI Automation descendant search that reaches the WebView2
++/// leaves its scope, so the lookup must still answer the element inside the scope and after the WebView.
++/// </summary>
++[Collection("Maui")]
++[Trait("Category", "UITest")]
++[Trait("Pattern", "Container")]
++public class WebViewLookupTests
++{
++    private readonly WebViewTestPage _page;
++
++    public WebViewLookupTests(MauiFixture fixture)
++    {
++        fixture.Open(SamplePage.WebView);
++        _page = new WebViewTestPage(fixture.Context);
++    }
++
++    [WindowsOnlyFact("it checks the Windows UI Automation search past a WebView2", Timeout = TestConstants.DefaultTestTimeoutMs)]
++    public Task ElementAfterAWebView_InItsContainer_IsTheContainersOwn()
++    {
++        _page.InsideMarker.AssertText("inside");
++
++        return Task.CompletedTask;
++    }
++
++    [WindowsOnlyFact("it checks the Windows UI Automation search past a WebView2", Timeout = TestConstants.DefaultTestTimeoutMs)]
++    public Task ElementAfterAWebView_OnThePage_IsFound()
++    {
++        _page.AfterWebView.AssertText("after");
++
++        return Task.CompletedTask;
++    }
++}

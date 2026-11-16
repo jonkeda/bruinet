@@ -3,6 +3,39 @@
 Status: proposed, 2026-11-16. Part of [the plan](000-Plan.md); the journeys are in
 [the Contacts example](010-Contacts-Example.md).
 
+## First: a small proof of concept (decided 2026-11-16)
+
+Step 2 grew too large (see [where step 2 stood](035-Step2-Where-We-Are.md)), so the owner cut
+the pilot down. Before any of the steps below continue, one small journey must run from the same
+feature file on each app, in this order:
+
+1. **MAUI on Windows.** Done when J0 passes twice in a row.
+2. **Native Android.** Done when the same J0 passes twice in a row on the emulator.
+3. **Native iOS, on the Mac.** Done when the same J0 passes twice in a row on the simulator.
+   The Mac starts now with [its prompt](ios/200-Mac-Prompt.md).
+
+J0 creates a Client contact with only a name, searches the list, opens it and checks the name
+and type. No comment, filter, favourite, project or share:
+
+```gherkin
+Given I am logged in to Bouw7
+When I create a Client contact named "{run} Client"
+And I search the contact list for "{run} Client"
+Then the contact list shows only "{run} Client"
+When I open "{run} Client" from the contact list
+Then the contact shows the name "{run} Client" and type Client
+```
+
+Rules for the proof of concept:
+
+- **Half a day per blocker.** A step that takes longer goes on
+  [the remaining work list](050-Remaining-Work.md) and is worked around or skipped.
+- **No framework fixes on the way,** unless J0 cannot pass without one.
+- **One log line per work session** in the Events of [the handoff board](ios/100-Handoff.md).
+
+J1 to J4 stay in the feature file as the later target. After the proof of concept the owner
+decides how to make it more complex; the steps below are the plan for then.
+
 ## The pilot in short
 
 The pilot runs the Contacts journeys on every app, one app at a time, and measures what it
@@ -249,6 +282,5 @@ marks the handoff ready on [the handoff board](ios/100-Handoff.md). The outline:
 
 ## Next action
 
-Steps 0 and 1 are done. Start step 2, MAUI on Windows: the `MauiJourneyFixture` needs the
-app path and the WebView2 login, and the MAUI head check lists the 20 phrases to write, most
-of them through the existing Contacts page objects.
+Steps 0 and 1 are done. Add J0 to the feature file and make it pass on MAUI Windows, then on
+native Android. The Mac builds the iOS head for J0 in parallel.
