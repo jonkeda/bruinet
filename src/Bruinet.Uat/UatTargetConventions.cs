@@ -18,7 +18,8 @@ public static class UatTargetConventions
         ["StrideTestFixtureBase"] = "STRIDE",
         ["BlazorTestFixtureBase"] = "BLAZOR",
         ["HtmlTestFixtureBase"] = "HTML",
-        ["NativeAndroidTestFixtureBase"] = "NATIVEANDROID"
+        ["NativeAndroidTestFixtureBase"] = "NATIVEANDROID",
+        ["NativeIosTestFixtureBase"] = "NATIVEIOS"
     };
 
     /// <summary>The fixture base names that identify a target.</summary>

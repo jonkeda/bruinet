@@ -154,6 +154,49 @@ fallback is the last resort. *Decision needed* in step 3. The DevFlow-enabled Wi
 (`MauiDevFlowEnabled=true`) failed on an ambiguous `Keyboard` in four email rows; that is
 fixed in Construction, so the DevFlow route builds again.
 
+### Step 1 results (2026-11-16)
+
+Step 1 is done: the feature parses, and each head's check lists the phrases it still needs.
+Everything lives in Construction under `Journeys/`, in five projects added to
+`Construction.sln`. CI does not build them, because the pilot runs on demand.
+
+| Project | What it holds |
+|---|---|
+| `Exact.Bouw7.Journeys` | The Contacts feature file, the run prefix, the Acceptance API client, the shared steps and the head check |
+| `Exact.Bouw7.Journeys.Tests` | Offline tests of the run prefix, and a live API test that runs only with `BOUW7_JOURNEYS_LIVE=1` |
+| `Exact.Bouw7.Maui.UITests`, `.NativeAndroid.UITests`, `.NativeIos.UITests` | One fixture, `bdd.config.md` and head check per head; the features are linked in from the journeys project |
+
+**How the heads share the work.** Each fixture implements `IJourneyHost` and scans
+`Exact.Bouw7.Journeys.Steps`, so every head gets the same arranging step
+(`a {type} contact named {name} exists`) and the same cleanup hook after each `@journey`
+scenario. A `{run}` in a value becomes the run prefix, such as `UIT-1116-1956-na`, through a
+Bruinet argument converter. The prefix carries the head's label, so two heads never share a
+record, and the leftover sweep can remove what a crashed run left behind.
+
+**The head check.** It binds the feature with the same parser and binder as a run, without
+an app or a device. It lists each unbound step once as work still to do, and fails only on
+other errors. Each head writes its list to `head-check.md` in its output folder.
+
+| Head | Unbound phrases | Note |
+|---|---|---|
+| MAUI | 20 | Includes the two share phrases |
+| Native Android | 18 | The share scenario is skipped, as its tags say |
+| Native iOS | 20 | Includes the two share phrases |
+
+All 18 shared phrases are app steps, such as logging in, the contact form and the list. Steps
+2, 4 and 5 write them per head; the arranging step is already bound everywhere.
+
+**The live API test settled three open points from step 0.** It ran once on Acceptance as
+the `create` account and passed in 9 seconds.
+
+- **Portal login without an app works.** Headless Chromium went through the login, password
+  and organization pages. The callback link showed up as a redirect, so any head can get a
+  token without a browser on the device.
+- **The access token lives 15 minutes.** The client refreshes it two minutes before expiry
+  with the rotating refresh token, which it keeps only in memory.
+- **The `create` account may delete.** It created contact 55396 with type Client, found it
+  in the list, and deleted it through Heimdall.
+
 ### Step 4: native Android in more detail
 
 - **Fixture:** installs the debug APK, picks Acceptance in the login screen's list, opens
@@ -206,6 +249,6 @@ marks the handoff ready on [the handoff board](ios/100-Handoff.md). The outline:
 
 ## Next action
 
-Step 0 is done. The `.env.local` accounts (`create` for the journeys) are the test accounts;
-start step 1, whose cleanup and API client also settle the token lifetime and the delete
-rights.
+Steps 0 and 1 are done. Start step 2, MAUI on Windows: the `MauiJourneyFixture` needs the
+app path and the WebView2 login, and the MAUI head check lists the 20 phrases to write, most
+of them through the existing Contacts page objects.

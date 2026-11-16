@@ -7,8 +7,8 @@ Pull before editing, push right after.
 
 | Item | State | Note |
 |---|---|---|
-| Pilot step 0: check the ground | Done | Live on Acceptance for MAUI Windows; token lifetime and delete rights settle in step 1 |
-| Pilot step 1: journeys and shared support | Not started | |
+| Pilot step 0: check the ground | Done | Live on Acceptance for MAUI Windows |
+| Pilot step 1: journeys and shared support | Done | `Journeys/` in Construction; native iOS head skeleton included, with its head check |
 | Pilot step 2: MAUI on Windows | Not started | |
 | Pilot step 3: MAUI on Android | Not started | |
 | Pilot step 4: native Android | Not started | |
@@ -55,3 +55,8 @@ Newest last. One line each: date, machine, what happened or what is asked.
 - 2026-11-16, Windows: step 0 done. The `create` account logged in and created a contact and
   a project on Acceptance through Bruinet; the old iOS `-dev` constants are unused. The
   DevFlow-enabled Windows build is fixed in Construction.
+- 2026-11-16, Windows: step 1 done. For the Mac: `Journeys/Exact.Bouw7.NativeIos.UITests`
+  is the iOS head skeleton (fixture on `NativeIosTestFixtureBase`, head `native-ios`); its head
+  check lists the 20 phrases the iOS head needs. A portal token can be had headless without
+  the device, and the access token lives 15 minutes. Bruinet now maps `NativeIosTestFixtureBase`
+  to target NATIVEIOS.
