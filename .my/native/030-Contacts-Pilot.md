@@ -33,6 +33,23 @@ Rules for the proof of concept:
 - **No framework fixes on the way,** unless J0 cannot pass without one.
 - **One log line per work session** in the Events of [the handoff board](ios/100-Handoff.md).
 
+### Proof of concept results
+
+| App | Result | Run times |
+|---|---|---|
+| MAUI on Windows | Passed twice in a row | 30 s, 25 s |
+| Native Android, emulator | Passed twice in a row | 40 s, 38 s |
+| Native iOS, simulator | With the Mac | |
+
+The Android head took about half a day: the portal-token login, four pages and seven steps.
+The same feature file ran unchanged on both apps. The heads differ in three places, and the
+steps hide all three. After saving a new contact, MAUI opens its detail, while Android returns
+to the list. That list shows the new contact only after a pull to refresh. Android also shows
+the type in capitals.
+
+Every journey deletes what it made, even when a step fails, and it also deletes test records
+that crashed runs left a day ago or more. J0 needed no Bruinet change.
+
 J1 to J4 stay in the feature file as the later target. After the proof of concept the owner
 decides how to make it more complex; the steps below are the plan for then.
 
@@ -282,5 +299,5 @@ marks the handoff ready on [the handoff board](ios/100-Handoff.md). The outline:
 
 ## Next action
 
-Steps 0 and 1 are done. Add J0 to the feature file and make it pass on MAUI Windows, then on
-native Android. The Mac builds the iOS head for J0 in parallel.
+Steps 0 and 1 are done, and J0 passes on MAUI Windows and native Android. The Mac builds the
+iOS head for J0. When that passes, the owner decides how to make the pilot more complex.
