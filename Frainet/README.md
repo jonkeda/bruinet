@@ -12,7 +12,7 @@ become its own later.
 | --- | --- |
 | **Bruinet** | Tests: runs the scenarios and the specs' examples |
 | **Lirenet** ([../Lirenet](../Lirenet/README.md)) | Specs: the format, `lirenet check`, `lirenet trace` |
-| **Gaminet** | Migration (not built yet) |
+| **Gaminet** ([../Gaminet](../Gaminet/README.md)) | Migration (the layout and an empty tool; not built yet) |
 | **Frainet** | The factory: the loops that use the other three |
 
 The spec code started here and moved to Lirenet. For one release `frainet check` and

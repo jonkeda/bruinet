@@ -2,7 +2,7 @@
   <!-- The checks every build runs (.my/checks): the SDK's analyzers at their recommended level,
        code style from .editorconfig, and Meziantou's analyzers, less the
        rules Quality.globalconfig turns off with why. Imported by the root and src's
-       Directory.Build.props; Frainet and Lirenet stand alone and keep their own. -->
+       Directory.Build.props; Frainet, Lirenet and Gaminet stand alone and keep their own. -->
   <PropertyGroup>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>

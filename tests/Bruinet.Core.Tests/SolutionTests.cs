@@ -6,8 +6,8 @@ public sealed class SolutionTests
     private static readonly string[] SkippedFolders = [".git", ".my", ".vs", "bin", "obj", "node_modules", "TestResults"];
 
     // Products of their own that live in this repository for now, each with its own solution and global.json: Frainet
-    // (Frainet/Frainet.slnx) and Lirenet (Lirenet/Lirenet.slnx). Skipped at the root only.
-    private static readonly string[] SeparateProducts = ["Frainet", "Lirenet"];
+    // (Frainet/Frainet.slnx), Lirenet (Lirenet/Lirenet.slnx) and Gaminet (Gaminet/Gaminet.slnx). Skipped at the root only.
+    private static readonly string[] SeparateProducts = ["Frainet", "Lirenet", "Gaminet"];
 
     [Fact]
     public void EveryProjectInTheRepository_IsInBruinetSln()

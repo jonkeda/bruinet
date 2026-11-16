@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Gaminet, the migrator, has its folder beside Frainet and Lirenet: its own solution and build settings, and an empty
+  `gaminet` tool (`gaminet --help`). It has no commands yet.
 - Frainet: a spec may have a `## Background` (after Rules) and chapters (`### Chapter: <name>` with Given and When,
   then `#### R<n> …` examples); `frainet check` checks each example with the Background's and its chapter's steps in
   front, and a chapter with a Then is `chapter-steps`.
