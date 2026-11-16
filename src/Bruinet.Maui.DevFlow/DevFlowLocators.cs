@@ -69,10 +69,24 @@ internal static class DevFlowLocators
     }
 
     /// <summary>A CollectionView, ListView or CarouselView: a list whose rows the agent shows as its children.</summary>
-    public static bool IsItemsView(DevFlowNode node) => IsItemsView(node.Type);
+    public static bool IsItemsView(DevFlowNode node) => IsItemsView(node.Info);
+
+    /// <summary>
+    /// Whether the element is a list whose rows the agent shows as its children: by its MAUI type, or,
+    /// for an app's subclass (the agent names only the element's own type), by its platform list view.
+    /// </summary>
+    public static bool IsItemsView(Microsoft.Maui.DevFlow.Driver.ElementInfo info)
+        => IsItemsView(info.Type) || IsPlatformList(info.NativeType);
 
     /// <summary>Whether an element of that type is a list whose rows the agent shows as its children.</summary>
     public static bool IsItemsView(string type) => type is "CollectionView" or "ListView" or "CarouselView";
+
+    private static bool IsPlatformList(string? nativeType)
+        => nativeType is { Length: > 0 }
+           && (nativeType == "Android.Widget.ListView"
+               || nativeType.Contains("RecyclerView", StringComparison.Ordinal)
+               || nativeType.Contains("UITableView", StringComparison.Ordinal)
+               || nativeType.Contains("UICollectionView", StringComparison.Ordinal));
 
     /// <summary>What a platform's tree names an element by: its text where it shows one, else its AutomationId.</summary>
     public static string? NameOf(DevFlowNode node) => string.IsNullOrEmpty(node.Text) ? node.AutomationId : node.Text;

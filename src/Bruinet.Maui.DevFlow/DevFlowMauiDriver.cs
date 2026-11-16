@@ -411,6 +411,43 @@ public sealed class DevFlowMauiDriver : IMauiDriver
 
     private readonly Dictionary<DevFlowTree, Dictionary<string, Dictionary<string, int>>> _rowIndexes = [];
 
+    /// <summary>
+    /// Taps the node through the app's bridge when its tap is a platform behavior's (the toolkit's
+    /// TouchBehavior), which the agent's tap never reaches. The bridge finds the node's view by its
+    /// AutomationId and the <c>Element.Id</c> start the agent's id carries, or for the bare AutomationId
+    /// (the first view the agent met with it) by none of the starts its namesakes carry.
+    /// </summary>
+    internal BridgeAnswer TapBehavior(DevFlowNode node)
+    {
+        var prefix = ElementIdPrefix(node);
+        if (prefix is null && node.AutomationId is not { Length: > 0 })
+            return BridgeAnswer.None("the node has neither an AutomationId nor an element id");
+
+        var exclude = prefix is not null ? [] : Snapshot().All
+            .Where(other => other.AutomationId == node.AutomationId && other.Id != node.Id)
+            .Select(ElementIdPrefix)
+            .OfType<string>()
+            .ToList();
+        return _agent.TapBehavior(node.AutomationId is { Length: > 0 } ? node.AutomationId : null, prefix, exclude);
+    }
+
+    /// <summary>Opens a SwipeView node on a side through the app's bridge, by the <c>Element.Id</c> start its id carries.</summary>
+    internal BridgeAnswer OpenSwipe(DevFlowNode swipeView, string side)
+        => ElementIdPrefix(swipeView) is { } prefix
+            ? _agent.OpenSwipe(prefix, side)
+            : BridgeAnswer.None("the SwipeView's id carries no element id");
+
+    // The start of the view's Element.Id (lowercase hex) the agent's id carries: all of a 12-digit id
+    // (a view without an AutomationId) or the 8 digits after an AutomationId's '_'; none for the bare
+    // AutomationId, the first view the agent met with it.
+    private static string? ElementIdPrefix(DevFlowNode node)
+    {
+        var tail = node.Id[(node.Id.LastIndexOf('_') + 1)..];
+        return node.Id.Length == 12 && node.AutomationId is null ? node.Id
+            : tail.Length == 8 && tail.All(char.IsAsciiHexDigitLower) && node.Id.Contains('_', StringComparison.Ordinal) ? tail
+            : null;
+    }
+
     private static Dictionary<string, int> MatchRows(DevFlowNode list, IReadOnlyList<(string ElementId, string? AutomationId, int Index)>? rows)
     {
         var matched = new Dictionary<string, int>(StringComparer.Ordinal);
@@ -422,10 +459,7 @@ public sealed class DevFlowMauiDriver : IMauiDriver
         var plain = new List<DevFlowNode>();
         foreach (var row in list.Children)
         {
-            var tail = row.Id[(row.Id.LastIndexOf('_') + 1)..];
-            var prefix = row.Id.Length == 12 && row.AutomationId is null ? row.Id
-                : tail.Length == 8 && tail.All(char.IsAsciiHexDigitLower) && row.Id.Contains('_', StringComparison.Ordinal) ? tail
-                : null;
+            var prefix = ElementIdPrefix(row);
             if (prefix is null)
             {
                 plain.Add(row);

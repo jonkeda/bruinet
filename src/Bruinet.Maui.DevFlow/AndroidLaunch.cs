@@ -40,7 +40,9 @@ internal sealed class AndroidLaunch : ILaunchedApp
         var adb = Adb();
         string[] device = string.IsNullOrWhiteSpace(serial) ? [] : ["-s", serial];
 
-        Run(adb, [.. device, "install", "-r", apk], TimeSpan.FromMinutes(3));
+        // -g grants the runtime permissions, as Appium's autoGrantPermissions does: a permission prompt
+        // is the system's, outside the agent's tree, and would cover the app.
+        Run(adb, [.. device, "install", "-r", "-g", apk], TimeSpan.FromMinutes(3));
         Run(adb, [.. device, "shell", "am", "force-stop", package]);
 
         // Bruinet's bridge, asked for as Android allows (an app is given no environment variables):
@@ -55,7 +57,9 @@ internal sealed class AndroidLaunch : ILaunchedApp
             .LastOrDefault(line => line.Contains('/', StringComparison.Ordinal))
             ?? throw new BruinetException($"'{package}' has no launcher activity on the device. Is the APK installed?");
 
-        List<string> start = [.. device, "shell", "am", "start", "-W", "-n", activity];
+        // A system activity the app opened (a picker, a prompt) outlives force-stop on top of the app's
+        // task, and a plain start would land on it without starting the app; the launch clears the task.
+        List<string> start = [.. device, "shell", "am", "start", "-W", "--activity-clear-task", "-n", activity];
         foreach (var (name, value) in settings)
         {
             if (value.Any(c => char.IsWhiteSpace(c) || c is '"' or '\''))

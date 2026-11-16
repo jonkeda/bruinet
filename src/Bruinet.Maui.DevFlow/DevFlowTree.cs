@@ -114,7 +114,7 @@ internal sealed class DevFlowTree
             if (pages.Count == 0)
                 break;
             var next = HoldsPages(level) ? pages[^1] : pages[0];
-            if (!IsPage(next))
+            if (!(HoldsPages(level) ? IsStackedPage(level, next) : IsPage(next)))
                 break;
             top = next;
             level = next;
@@ -130,7 +130,8 @@ internal sealed class DevFlowTree
         var level = MainWindow;
         while (level is not null)
         {
-            var pages = level.Children.Where(child => !child.IsSynthetic && IsPage(child)).ToList();
+            var stack = level;
+            var pages = level.Children.Where(child => HoldsPages(stack) ? IsStackedPage(stack, child) : !child.IsSynthetic && IsPage(child)).ToList();
             if (pages.Count == 0)
                 break;
             if (HoldsPages(level) && level.Type != "Window")
@@ -172,7 +173,7 @@ internal sealed class DevFlowTree
         // A list's rows come in the order the platform recycles their containers, not the items'
         // order; a platform tree reads them in reading order, so they are put in it here: top to
         // bottom, then left to right, by where they are in the window.
-        IEnumerable<ElementInfo> ordered = DevFlowLocators.IsItemsView(info.Type) ? Rows(info, children) : children;
+        IEnumerable<ElementInfo> ordered = DevFlowLocators.IsItemsView(info) ? Rows(info, children) : children;
         foreach (var child in ordered)
             node.Add(Build(child, node));
         return node;
@@ -187,16 +188,18 @@ internal sealed class DevFlowTree
     internal static List<ElementInfo> Rows(ElementInfo list, List<ElementInfo> children)
     {
         static double Order(ElementInfo child, bool alongX)
-            => child.WindowBounds is { } b ? (alongX ? b.X : b.Y) : double.MaxValue;
+            => Place(child) is { } b ? (alongX ? b.X : b.Y) : double.MaxValue;
 
-        var placed = children.Where(child => child.WindowBounds is { Width: > 0, Height: > 0 }).ToList();
+        // A legacy cell stands where its view stands; one whose view is nowhere is a recycled copy.
+        children = children.Where(child => !IsCell(child) || Place(child) is { Width: > 0, Height: > 0 }).ToList();
+        var placed = children.Where(child => Place(child) is { Width: > 0, Height: > 0 }).ToList();
         if (placed.Count < 2)
             return [.. children.OrderBy(child => Order(child, false)).ThenBy(child => Order(child, true))];
 
         // A list that lays its rows side by side (a carousel, a horizontal list) is read along X.
-        var horizontal = placed.Max(child => child.WindowBounds!.Y) - placed.Min(child => child.WindowBounds!.Y) < 1;
-        double Start(ElementInfo child) => horizontal ? child.WindowBounds!.X : child.WindowBounds!.Y;
-        double Size(ElementInfo child) => horizontal ? child.WindowBounds!.Width : child.WindowBounds!.Height;
+        var horizontal = placed.Max(child => Place(child)!.Y) - placed.Min(child => Place(child)!.Y) < 1;
+        double Start(ElementInfo child) => horizontal ? Place(child)!.X : Place(child)!.Y;
+        double Size(ElementInfo child) => horizontal ? Place(child)!.Width : Place(child)!.Height;
 
         var sorted = placed.OrderBy(Start).ThenBy(child => Order(child, !horizontal)).ToList();
         var runs = new List<List<ElementInfo>> { new() { sorted[0] } };
@@ -219,9 +222,25 @@ internal sealed class DevFlowTree
             return sorted;
 
         var port = list.WindowBounds;
-        return (port is null ? null : runs.FirstOrDefault(run => run.Any(child => Overlaps(child.WindowBounds!, port, horizontal))))
+        return (port is null ? null : runs.FirstOrDefault(run => run.Any(child => Overlaps(Place(child)!, port, horizontal))))
                ?? runs.MaxBy(run => run.Count)!;
     }
+
+    /// <summary>
+    /// A legacy ListView's row: a Cell, which is no view, so the agent gives it no bounds, no native
+    /// view, and calls it invisible; its one child is the view the row shows.
+    /// </summary>
+    internal static bool IsCell(ElementInfo row)
+        => row.WindowBounds is null && row.NativeType is null && !row.IsVisible
+           && row.Children is [{ IsVisible: true }];
+
+    // Where a row is in the window: its own bounds, or a cell's view's.
+    private static BoundsInfo? Place(ElementInfo row)
+        => row.WindowBounds ?? (IsCell(row) ? row.Children![0].WindowBounds : null);
+
+    /// <summary>A legacy list's cell, whose view, not the cell, says whether the row shows and is enabled.</summary>
+    internal static bool IsListCell(DevFlowNode node)
+        => node.Parent is { } list && DevFlowLocators.IsItemsView(list) && IsCell(node.Info);
 
     private static bool Overlaps(BoundsInfo row, BoundsInfo port, bool horizontal)
         => horizontal
@@ -240,8 +259,10 @@ internal sealed class DevFlowTree
 
     private void MarkShown(DevFlowNode node, bool parentShown)
     {
-        // A window reports itself invisible; its page says what shows. So does Shell's structure.
-        var own = node.Info.IsVisible || node.Type == "Window" || IsShellStructure(node);
+        // A window reports itself invisible; its page says what shows. So does Shell's structure, and
+        // a legacy list's cell, whose view says whether the row shows, and a SwipeView's SwipeItems,
+        // which is no view: its items say (D33).
+        var own = node.Info.IsVisible || node.Type is "Window" or "SwipeItems" || IsShellStructure(node) || IsListCell(node);
 
         // Under Shell's structure only its pages show, and only the one on screen: a tab left keeps
         // its page with no height, one never opened has no bounds. The flyout item's template beside
@@ -253,14 +274,19 @@ internal sealed class DevFlowTree
         node.Shown = parentShown && own;
         DevFlowNode? onTop = null;
         if (HoldsPages(node) && (node.Type != "Window" || _modalsCover))
-            onTop = node.Children.LastOrDefault(child => !child.IsSynthetic && IsPage(child));
+            onTop = node.Children.LastOrDefault(child => IsStackedPage(node, child));
 
         foreach (var child in node.Children)
         {
-            var covered = onTop is not null && IsPage(child) && !child.IsSynthetic && !ReferenceEquals(child, onTop);
+            var covered = onTop is not null && IsStackedPage(node, child) && !ReferenceEquals(child, onTop);
             MarkShown(child, node.Shown && !covered);
         }
     }
+
+    // A page in a window's or NavigationPage's stack. A NavigationPage holds only pages, so there an
+    // app's page type is a page whatever its name (MauiCore's PageView).
+    private static bool IsStackedPage(DevFlowNode holder, DevFlowNode child)
+        => !child.IsSynthetic && (IsPage(child) || holder.Type != "Window");
 
     // A window holds its page and the modal pages over it; a NavigationPage its stack.
     private static bool HoldsPages(DevFlowNode node)

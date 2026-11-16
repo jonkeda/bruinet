@@ -24,12 +24,13 @@ public static class BruinetDevFlowBridge
     /// <summary>The extension's namespace, in the reverse-domain form the agent requires: its routes are under <c>/api/v1/ext/dev.bruinet.bridge/</c>.</summary>
     public const string Namespace = "dev.bruinet.bridge";
 
-    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c>, <c>media</c>, <c>rows</c>, <c>selectrow</c>, and on iOS <c>alert</c>.</summary>
+    /// <summary>Adds the bridge's routes to the agent: <c>invoke</c>, <c>exchange</c>, <c>declares</c>, <c>media</c>, <c>rows</c>, <c>selectrow</c>, <c>tapbehavior</c>, and on iOS <c>alert</c>.</summary>
     /// <param name="options">The agent's options, in <c>AddMauiDevFlowAgent(options => ...)</c>.</param>
     /// <returns>The same options.</returns>
     public static AgentOptions AddBruinetBridge(this AgentOptions options)
     {
         ArgumentNullException.ThrowIfNull(options);
+        AllowDeepTrees();
         var extension = options.RegisterExtension(Namespace, "Bruinet's verb bridge: the verbs an element declares, by AutomationId.");
         extension.MapPost("/invoke", request => Task.FromResult(Invoke(request.BodyAs<VerbRequest>())));
         extension.MapPost("/exchange", request => Task.FromResult(Exchange(request.BodyAs<VerbRequest>())));
@@ -37,12 +38,70 @@ public static class BruinetDevFlowBridge
             request.QueryParams.GetValueOrDefault("automationId"), request.QueryParams.GetValueOrDefault("verb"))));
         extension.MapPost("/media", request => Media(request.BodyAs<MediaRequest>()));
         extension.MapGet("/rows", request => Rows(request.QueryParams.GetValueOrDefault("automationId")));
+        extension.MapGet("/names", _ => Names());
         extension.MapPost("/selectrow", request => SelectRow(request.BodyAs<RowRequest>()));
+        extension.MapPost("/openswipe", request => OpenSwipe(request.BodyAs<SwipeOpenRequest>()));
+        extension.MapPost("/tapbehavior", request => TapBehavior(request.BodyAs<BehaviorTapRequest>()));
 #if IOS
         extension.MapGet("/alert", _ => Alert(null));
         extension.MapPost("/alert", request => Alert(request.BodyAs<AlertRequest>() ?? new AlertRequest()));
 #endif
         return options;
+    }
+
+    // The agent writes its tree with JsonSerializerOptions that keep the default MaxDepth of 64, so a
+    // page more than 31 elements deep (a form input inside a form section inside a PagePattern) fails
+    // as "a possible object cycle" and the runner sees no page. The agent has no setting for it; its
+    // template is raised here, before it serves a request, to fit its own layout-depth clamp of 200.
+    private const int TreeJsonDepth = 256;
+
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicFields, typeof(HttpResponse))]
+    private static void AllowDeepTrees()
+    {
+        var field = typeof(HttpResponse).GetField("JsonOptions", BindingFlags.NonPublic | BindingFlags.Static);
+        if (field?.GetValue(null) is System.Text.Json.JsonSerializerOptions { IsReadOnly: false } template)
+        {
+            template.MaxDepth = Math.Max(template.MaxDepth, TreeJsonDepth);
+            return;
+        }
+
+        System.Diagnostics.Debug.WriteLine("[Bruinet] The DevFlow agent's HttpResponse.JsonOptions is gone or read-only: a page deeper than 31 elements cannot be read.");
+    }
+
+    /// <summary>
+    /// Shows a popup page in the agent's tree while it is open. A popup library (Mopups) draws its page
+    /// over the window without making it a child of anything, and the agent walks a window only through
+    /// its visual children, so the popup could not be found, read or tapped. The app calls this when a
+    /// popup opens, and <see cref="PopupClosed"/> when it closes.
+    /// </summary>
+    /// <param name="page">The popup page that opened.</param>
+    public static void PopupOpened(Page page)
+    {
+        if (BruinetBridgeGate.IsOpen && VisualChildren(page) is { } children && !children.Contains(page))
+            children.Add(page);
+    }
+
+    /// <summary>Takes a popup page that <see cref="PopupOpened"/> showed out of the agent's tree again.</summary>
+    /// <param name="page">The popup page that closed.</param>
+    public static void PopupClosed(Page page)
+        => VisualChildren(page)?.Remove(page);
+
+    // A Window's visual children are its logical children (its page and modal pages), kept in this
+    // Element list. The page goes straight into the list: AddLogicalChild would re-parent it, and only
+    // the list changes here, so the popup's parent, layout and rendering stay as the popup library made them.
+    [System.Diagnostics.CodeAnalysis.DynamicDependency(System.Diagnostics.CodeAnalysis.DynamicallyAccessedMemberTypes.NonPublicFields, typeof(Element))]
+    private static IList<Element>? VisualChildren(Page page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        var window = page.Window ?? Application.Current?.Windows.FirstOrDefault();
+        if (window is null)
+            return null;
+
+        if (typeof(Element).GetField("_internalChildren", BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(window) is IList<Element> children)
+            return children;
+
+        System.Diagnostics.Debug.WriteLine("[Bruinet] MAUI's Element._internalChildren is gone: a popup cannot be shown in the DevFlow tree.");
+        return null;
     }
 
 #if IOS
@@ -250,6 +309,48 @@ public static class BruinetDevFlowBridge
     }
 
     /// <summary>
+    /// The AutomationId and visibility of each element in the windows that is no <c>VisualElement</c>
+    /// (a swipe item, a menu item), by its <c>Element.Id</c>: the agent sends such an element nameless
+    /// and hidden, under an id made from that Guid. A swipe item counts as visible only while its
+    /// SwipeView is open, as on iOS and Windows, which create it only then.
+    /// </summary>
+    private static async Task<HttpResponse> Names()
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            var names = new List<object>();
+            var pending = new Stack<(Microsoft.Maui.IVisualTreeElement Element, bool? SwipeOpen)>();
+            var seen = new HashSet<Microsoft.Maui.IVisualTreeElement>(ReferenceEqualityComparer.Instance);
+            foreach (var window in Microsoft.Maui.Controls.Application.Current?.Windows ?? [])
+                pending.Push((window, null));
+            while (pending.Count > 0)
+            {
+                var (next, swipeOpen) = pending.Pop();
+                if (!seen.Add(next))
+                    continue;
+                if (next is Microsoft.Maui.ISwipeView swipe)
+                    swipeOpen = swipe.IsOpen;
+                if (next is Microsoft.Maui.Controls.Element { AutomationId: { Length: > 0 } automationId } element
+                    and not Microsoft.Maui.Controls.VisualElement)
+                {
+                    var visible = element switch
+                    {
+                        Microsoft.Maui.Controls.SwipeItem item => item.IsVisible && swipeOpen == true,
+                        _ => true,
+                    };
+                    names.Add(new { id = element.Id.ToString("N"), automationId, visible, enabled = (element as Microsoft.Maui.Controls.MenuItem)?.IsEnabled ?? true });
+                }
+                foreach (var child in next.GetVisualChildren())
+                    pending.Push((child, swipeOpen));
+            }
+            return HttpResponse.Json(new { declared = true, delivered = true, names });
+        });
+    }
+
+    /// <summary>
     /// Selects a list's item as a tap on its row does: in a single selection it becomes the
     /// <c>SelectedItem</c>, in a multiple one it is added or taken out. For iOS, where the agent's tap
     /// reaches no row's selection (the collection view's delegate selects, not the cell).
@@ -286,6 +387,127 @@ public static class BruinetDevFlowBridge
 
             return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
         });
+    }
+
+    /// <summary>
+    /// Opens the SwipeView whose <c>Element.Id</c> starts with <c>id</c> on <c>side</c>, as a finger
+    /// dragging it does, the rule MauiHeadless applies (D19): the agent's swipe reaches
+    /// SwipeGestureRecognizers only. Not declared when it has no items on that side.
+    /// </summary>
+    private static async Task<HttpResponse> OpenSwipe(SwipeOpenRequest? request)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+        if (request is not { Id.Length: > 0 } || !Enum.TryParse<Microsoft.Maui.OpenSwipeItem>(request.Side + "Items", out var side))
+            return HttpResponse.Error("id and side (Left, Right, Top, Bottom) are required.");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            var targets = AllElements().OfType<Microsoft.Maui.Controls.SwipeView>()
+                .Where(view => view.Id.ToString("N").StartsWith(request.Id, StringComparison.Ordinal))
+                .ToList();
+            if (targets.Count != 1)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, $"{targets.Count} SwipeViews match {request.Id}");
+            var view = targets[0];
+            var items = side switch
+            {
+                Microsoft.Maui.OpenSwipeItem.LeftItems => view.LeftItems,
+                Microsoft.Maui.OpenSwipeItem.RightItems => view.RightItems,
+                Microsoft.Maui.OpenSwipeItem.TopItems => view.TopItems,
+                _ => view.BottomItems,
+            };
+            if (items is not { Count: > 0 })
+                return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, $"the SwipeView has no {side}");
+            if (!view.IsEnabled)
+                return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, "the SwipeView is disabled");
+
+            view.Open(side, animated: false);
+            return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+        });
+    }
+
+    /// <summary>
+    /// Taps a view whose tap is a platform behavior's (the toolkit's TouchBehavior): the behavior
+    /// listens to the platform's touches, which the agent's tap does not make. Runs the behavior's
+    /// <c>Command</c> as a finger's tap would, the rule MauiHeadless applies to such behaviors. The view
+    /// is the agent's element: its AutomationId, and the start of its <c>Element.Id</c> (32 hex digits)
+    /// where the agent's id carries one, or else none of the starts in <c>exclude</c> (the agent's
+    /// other elements with that AutomationId). Not declared when the view has no such command: the
+    /// agent's tap is the route.
+    /// </summary>
+    private static async Task<HttpResponse> TapBehavior(BehaviorTapRequest? request)
+    {
+        if (!BruinetBridgeGate.IsOpen)
+            return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0, "the bridge is off");
+        if (request is null || (string.IsNullOrEmpty(request.AutomationId) && string.IsNullOrEmpty(request.Id)))
+            return HttpResponse.Error("automationId or id is required.");
+
+        return await Microsoft.Maui.ApplicationModel.MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            var exclude = request.Exclude ?? [];
+            var targets = AllElements()
+                .Where(element => string.IsNullOrEmpty(request.AutomationId) || element.AutomationId == request.AutomationId)
+                .Where(element =>
+                {
+                    var id = element.Id.ToString("N");
+                    return string.IsNullOrEmpty(request.Id)
+                        ? !exclude.Any(other => id.StartsWith(other, StringComparison.Ordinal))
+                        : id.StartsWith(request.Id, StringComparison.Ordinal);
+                })
+                .ToList();
+            var name = request.AutomationId is { Length: > 0 } automationId ? $"'{automationId}'" : $"element {request.Id}";
+            if (targets.Count != 1 || BehaviorCommand(targets[0]) is not { } command)
+                return Answer(declared: false, delivered: false, HResults.UIA_E_NOTSUPPORTED, string.Empty, 0,
+                    targets.Count == 1 ? $"{name} has no platform behavior with a Command" : $"{targets.Count} views match {name}");
+            if (!targets[0].IsEnabled || !command.Command.CanExecute(command.Parameter))
+                return Answer(declared: true, delivered: false, HResults.UIA_E_ELEMENTNOTAVAILABLE, string.Empty, 0, "the behavior's command cannot execute");
+
+            command.Command.Execute(command.Parameter);
+            return Answer(declared: true, delivered: true, HResults.S_OK, string.Empty, 0, string.Empty);
+        });
+    }
+
+    private static (System.Windows.Input.ICommand Command, object? Parameter)? BehaviorCommand(Microsoft.Maui.Controls.VisualElement element)
+    {
+        foreach (var behavior in element.Behaviors.Where(IsPlatformBehavior))
+        {
+            var type = behavior.GetType();
+            if (type.GetProperty("Command")?.GetValue(behavior) is System.Windows.Input.ICommand command)
+                return (command, type.GetProperty("CommandParameter")?.GetValue(behavior));
+        }
+
+        return null;
+    }
+
+    private static bool IsPlatformBehavior(Microsoft.Maui.Controls.Behavior behavior)
+    {
+        for (var type = behavior.GetType(); type is not null; type = type.BaseType)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Microsoft.Maui.Controls.PlatformBehavior<,>))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Every element in the app's windows, by their visual trees, each once: a legacy ListView lists a
+    // realized cell among its visual children twice once its page has been covered and shown again.
+    private static IEnumerable<Microsoft.Maui.Controls.VisualElement> AllElements()
+    {
+        var pending = new Stack<Microsoft.Maui.IVisualTreeElement>();
+        var seen = new HashSet<Microsoft.Maui.IVisualTreeElement>(ReferenceEqualityComparer.Instance);
+        foreach (var window in Microsoft.Maui.Controls.Application.Current?.Windows ?? [])
+            pending.Push(window);
+        while (pending.Count > 0)
+        {
+            var next = pending.Pop();
+            if (!seen.Add(next))
+                continue;
+            if (next is Microsoft.Maui.Controls.VisualElement element)
+                yield return element;
+            foreach (var child in next.GetVisualChildren())
+                pending.Push(child);
+        }
     }
 
     // The first element with the AutomationId in the app's windows, by their visual trees.
@@ -370,6 +592,22 @@ public static class BruinetDevFlowBridge
         public string? AutomationId { get; set; }
 
         public int Index { get; set; }
+    }
+
+    private sealed class SwipeOpenRequest
+    {
+        public string? Id { get; set; }
+
+        public string? Side { get; set; }
+    }
+
+    private sealed class BehaviorTapRequest
+    {
+        public string? AutomationId { get; set; }
+
+        public string? Id { get; set; }
+
+        public string[]? Exclude { get; set; }
     }
 
     private sealed class VerbRequest

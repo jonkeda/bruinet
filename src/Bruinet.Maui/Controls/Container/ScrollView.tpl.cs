@@ -102,6 +102,13 @@ public partial class ScrollView<TParent, TSelf> : ContainerObjectBase<TParent, T
                 return;
             }
 
+            // A virtualized list holds only the rows it has made, on a head that can step it (DevFlow).
+            if (element is null && ContainerRoot.TryFindByScrolling(locator) is { } swept)
+            {
+                swept.RevealClearOfEdges();
+                return;
+            }
+
             ScrollHelper.ScrollIntoView(element, CallRemainingMs);
 
             // A sliver at the bottom edge is in the tree without its children; move it clear.

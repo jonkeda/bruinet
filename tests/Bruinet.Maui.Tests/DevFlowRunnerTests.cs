@@ -41,11 +41,51 @@ public class DevFlowRunnerTests
     }
 
     [Fact]
+    public void NavigationStackOfAppPageViews_CoversAllButTheTopOne()
+    {
+        // MauiCore's page type is named PageView; a NavigationPage holds only pages, whatever their names.
+        static ElementInfo PageView(string id, string buttonId)
+            => Node(id, "PageView", children: [Node(buttonId, "Button", text: id, automationId: "OpenButton")]);
+        var driver = Driver(new FakeAgent(
+        [
+            Node("w", "Window", visible: false, enabled: false, children:
+            [
+                Node("nav", "BackAwareNavigationPage", children: [PageView("More", "b1"), PageView("OldDeveloper", "b2"), PageView("Developer", "b3")]),
+            ]),
+        ]));
+
+        Assert.Equal(3, driver.NavigationDepth());
+        Assert.Equal("Developer", Assert.Single(driver.FindElements(Locator.ByAutomationId("OpenButton"))).Text);
+    }
+
+    [Fact]
     public void FindElements_UnderAnInvisibleLayout_FindsNothing()
     {
         var driver = Driver(new FakeAgent(Stack()));
 
         Assert.Empty(driver.FindElements(Locator.ByAutomationId("HiddenLabel")));
+    }
+
+    [Fact]
+    public void FindElements_ASwipeItemTheBridgeNamed_IsFoundAndEnabled()
+    {
+        // The agent sends SwipeItems as no view (hidden, disabled); its items, named by the bridge, say (D33).
+        var driver = Driver(new FakeAgent(
+        [
+            Node("w", "Window", visible: false, enabled: false, children:
+            [
+                Node("Page", "ContentPage", children:
+                [
+                    Node("swipe_1", "SwipeView", children:
+                    [
+                        Node("items_1", "SwipeItems", visible: false, enabled: false, children: [Node("Remove", "SwipeItem")]),
+                        Node("Row", "Grid"),
+                    ]),
+                ]),
+            ]),
+        ]));
+
+        Assert.True(Assert.Single(driver.FindElements(Locator.ByAutomationId("Remove"))).Enabled);
     }
 
     [Fact]
@@ -169,6 +209,69 @@ public class DevFlowRunnerTests
         var rows = driver.FindElements(Locator.ByControlType("ListItem"));
 
         Assert.Equal(["Row 1", "Row 2", "Row 3"], rows.Select(row => row.FindElements(Locator.ByControlType("text")).Single().Text));
+    }
+
+    [Fact]
+    public void LegacyListSubclass_GivesItsRealizedCellRows_InReadingOrder()
+    {
+        // An app's ListView subclass: the agent names its own type, and its rows are Cells with no
+        // bounds whose view is placed; recycled copies have a view with no bounds.
+        static ElementInfo Cell(string id, string text, double? y)
+        {
+            var view = Node($"Item_{id}", "Grid", children: [Node($"Caption_{id}", "Label", text: text)]);
+            if (y is { } top)
+            {
+                Placed(view, top, 56);
+                view.NativeType = "Microsoft.Maui.Platform.LayoutViewGroup";
+            }
+
+            return Node($"Cell_{id}", "MenuItemCell", visible: false, enabled: false, children: [view]);
+        }
+
+        var list = Placed(Node("Menu", "BaseListView", children:
+        [
+            Cell("a", "Dashboard", 239), Cell("c", "Developer", 351), Cell("b", "Settings", 295),
+            Cell("c1", "Developer", null), Cell("c2", "Developer", null),
+        ]), 239, 600);
+        list.NativeType = "Android.Widget.ListView";
+        var driver = Driver(new FakeAgent(
+        [
+            Node("w", "Window", visible: false, enabled: false, children: [Node("More", "ContentPage", children: [list])]),
+        ]));
+
+        var rows = driver.FindElements(Locator.ByControlType("ListItem"));
+
+        Assert.Equal(["Dashboard", "Settings", "Developer"], rows.Select(row => row.FindElements(Locator.ByControlType("text")).Single().Text));
+        var developer = driver.FindElements(Locator.ByText("Developer")).Single();
+        Assert.True(developer.Visible);
+        Assert.True(developer.Enabled);
+    }
+
+    [Fact]
+    public void VirtualizedList_TryFindByScrolling_StepsToAnUnrealizedRow()
+    {
+        // A list whose long header fills the screen: its 30 items are realized only once scrolled to.
+        static List<ElementInfo> Page(int? top) =>
+        [
+            Node("w", "Window", visible: false, enabled: false, children:
+            [
+                Node("Inspector", "ContentPage", children:
+                [
+                    Placed(Node("rights_list", "CollectionView", automationId: "rights_list", children: top is not { } first
+                        ? [Placed(Node("Header_h", "VerticalStackLayout"), 150, 740)]
+                        : [.. Enumerable.Range(first, 10).Select(k => Placed(Node($"right_{k}", "Label", text: $"Right {k}", automationId: $"right_{k}"), 150 + (k - first) * 70, 70))]),
+                        150, 740),
+                ]),
+            ]),
+        ];
+        var agent = new FakeAgent(Page(null)) { ScrolledTo = index => Page(Math.Min(index, 20)) };
+        agent.Properties["rights_list.ItemsSource.Count"] = "30";
+        var list = Driver(agent).FindElements(Locator.ByAutomationId("rights_list")).Single();
+
+        var row = list.TryFindByScrolling(Locator.ByAutomationId("right_17"));
+
+        Assert.Equal("Right 17", row?.Text);
+        Assert.Null(list.TryFindByScrolling(Locator.ByAutomationId("right_99")));
     }
 
     [Fact]
@@ -536,8 +639,15 @@ public class DevFlowRunnerTests
         public bool Gesture(ElementInfo element, string type, string? direction = null, double? distance = null, int? durationMs = null)
             => Record($"{type} {element.Id} {direction} {distance}");
 
+        /// <summary>What the list shows once scrolled to an item, when the test models it.</summary>
+        public Func<int, List<ElementInfo>>? ScrolledTo { get; set; }
+
         public bool Scroll(ElementInfo? element, double deltaX, double deltaY, int? itemIndex = null, string? position = null)
-            => Record($"scroll {element?.Id} {position ?? deltaY.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        {
+            if (itemIndex is { } index && ScrolledTo is { } scrolled)
+                Windows = scrolled(index);
+            return Record($"scroll {element?.Id} {position ?? deltaY.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
+        }
 
         public bool Navigate(string route) => Record($"navigate {route}");
 

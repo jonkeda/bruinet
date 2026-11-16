@@ -126,7 +126,7 @@ internal sealed class DevFlowMauiElement : IMauiElement
 
     // A window and Shell's structure report themselves disabled; their pages say.
     private static bool SelfEnabled(DevFlowNode node)
-        => node.Info.IsEnabled && Ancestors(node).All(n => n.Info.IsEnabled || n.Type == "Window" || DevFlowTree.IsShellStructure(n));
+        => node.Info.IsEnabled && Ancestors(node).All(n => n.Info.IsEnabled || n.Type is "Window" or "SwipeItems" || DevFlowTree.IsShellStructure(n) || DevFlowTree.IsListCell(n));
 
     private bool PartEnabled() => _part switch
     {
@@ -484,6 +484,17 @@ internal sealed class DevFlowMauiElement : IMauiElement
             return;
         }
 
+        // A view tapped through a platform behavior (the toolkit's TouchBehavior, MauiCore's
+        // ClickableContainer) hears no agent tap: the agent reports it done and nothing runs. The
+        // app's bridge runs the behavior's command instead; a view without one is the agent's to tap.
+        if (_driver.TapBehavior(Node) is { Declared: true } behavior)
+        {
+            _driver.Changed();
+            if (!behavior.Delivered)
+                throw new InvalidOperationException($"Cannot tap {Describe()}: {behavior.Reason}");
+            return;
+        }
+
         if (!_driver.Agent.Tap(info))
         {
             _driver.Changed();
@@ -767,6 +778,16 @@ internal sealed class DevFlowMauiElement : IMauiElement
             return;
         }
 
+        // A finger on a SwipeView, or on its content, drags the SwipeView open (D19 on headless): the
+        // agent's swipe looks for a SwipeGestureRecognizer only.
+        if (type == "swipe" && SwipeViewAt(Node) is { } swipe
+            && _driver.OpenSwipe(swipe, direction switch { "left" => "Right", "right" => "Left", "up" => "Bottom", _ => "Top" }) is { Delivered: true })
+        {
+            _driver.Changed();
+            _driver.Settle();
+            return;
+        }
+
         _driver.Act(_driver.Agent.Gesture(info, type, direction), $"{type} {direction} on {Describe()}".Replace("  ", " ", StringComparison.Ordinal));
     }
 
@@ -827,6 +848,39 @@ internal sealed class DevFlowMauiElement : IMauiElement
         _driver.Act(_driver.Agent.Scroll(list.Info, 0, 0, index, "Start"), $"scroll {Describe()} to item {index}");
         return _driver.Snapshot().Find(list.Id) is { } listAfter && !RowIds(listAfter).SequenceEqual(rowsBefore) ? ScrollStep.Moved : ScrollStep.NotMoved;
     }
+
+    /// <summary>
+    /// On a list, steps it from its first item, a screen of rows at a time, until a row matching
+    /// <paramref name="locator"/> is realized. The agent's tree holds only the rows the list has made,
+    /// so a row far down is found only by scrolling to it, as a finger would.
+    /// </summary>
+    /// <returns>The row's element, or null when this is no list or the list ends without it.</returns>
+    public IMauiElement? TryFindByScrolling(Locator locator)
+    {
+        if (TryNode is not { } list || !DevFlowLocators.IsItemsView(list))
+            return null;
+
+        var count = Math.Min(ItemCountOf(list), MaxSweptItems);
+        for (var index = 0; index < count;)
+        {
+            if (FindShown(locator) is { } found)
+                return found;
+
+            var rows = _driver.Snapshot().Find(list.Id) is { } now ? RowIds(now).Count : 0;
+            if (ScrollTowards(index) == ScrollStep.NotMoved && index > 0)
+                break;
+
+            // The last row of a screen may be cut off, so the next screen starts with it.
+            index += Math.Max(1, rows - 1);
+        }
+
+        return FindShown(locator);
+    }
+
+    private const int MaxSweptItems = 1000;
+
+    private IMauiElement? FindShown(Locator locator)
+        => _driver.Snapshot().Find(_id!) is { } node ? _driver.Find(node, locator).FirstOrDefault() : null;
 
     // The list this element is, or the first one it holds.
     private DevFlowNode? ItemsViewNode()
@@ -1058,6 +1112,9 @@ internal sealed class DevFlowMauiElement : IMauiElement
     }
 
     // The RefreshView the element is, holds, or sits in.
+    private static DevFlowNode? SwipeViewAt(DevFlowNode node)
+        => node.Type == "SwipeView" ? node : Ancestors(node).FirstOrDefault(n => n.Type == "SwipeView");
+
     private static DevFlowNode? RefreshViewAt(DevFlowNode node)
         => node.DescendantsAndSelf().FirstOrDefault(n => n.Type == "RefreshView")
            ?? Ancestors(node).FirstOrDefault(n => n.Type == "RefreshView");

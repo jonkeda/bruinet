@@ -79,6 +79,21 @@ internal interface IDevFlowAgent : IDisposable
     /// agent's tap reaches no row's selection.
     /// </summary>
     BridgeAnswer SelectRow(string listAutomationId, int index) => BridgeAnswer.None("the app has no row selection route");
+
+    /// <summary>
+    /// Taps a view whose tap is a platform behavior's command (the toolkit's TouchBehavior), through the
+    /// app's bridge: the agent's tap makes no platform touch, so such a behavior never hears it. The view
+    /// has the AutomationId and an <c>Element.Id</c> starting with <paramref name="idPrefix"/>, or, with
+    /// none, starting with none of <paramref name="exclude"/>. Not declared when it has no such command.
+    /// </summary>
+    BridgeAnswer TapBehavior(string? automationId, string? idPrefix, IReadOnlyList<string> exclude) => BridgeAnswer.None("the app has no behavior tap route");
+
+    /// <summary>
+    /// Opens the SwipeView whose <c>Element.Id</c> starts with <paramref name="idPrefix"/> on
+    /// <paramref name="side"/> (Left, Right, Top, Bottom items), as a finger dragging it does: the
+    /// agent's swipe reaches SwipeGestureRecognizers only. Not declared when it has no items there.
+    /// </summary>
+    BridgeAnswer OpenSwipe(string idPrefix, string side) => BridgeAnswer.None("the app has no swipe route");
 }
 
 /// <summary>
@@ -135,16 +150,96 @@ internal sealed class DevFlowAgent : IDevFlowAgent
     // On Windows a dialog is a native window, absent from the tree without native nodes.
     public IReadOnlyList<ElementInfo> Tree(bool includeNative)
     {
-        // The agent refuses a read while the UI changes under it and asks for the read again.
+        // The agent refuses a read while the UI changes under it (409) and asks for the read again.
         for (var attempt = 1; ; attempt++)
         {
             try
             {
-                return Run(_client.GetTreeAsync(0, null, includeNative));
+                var body = Run(_client.CallExtensionToolAsync("GET", "/api/v1/ui/tree",
+                    includeNative ? null : JsonSerializer.SerializeToElement(new { native = "false" })));
+                var tree = JsonSerializer.Deserialize<List<ElementInfo>>(body, TreeJson) ?? [];
+                NameItems(tree);
+                return tree;
             }
-            catch (InvalidOperationException changing) when (attempt < 4 && changing.Message.Contains("kept changing", StringComparison.Ordinal))
+            catch (HttpRequestException changing) when (attempt < 8 && changing.StatusCode == HttpStatusCode.Conflict)
             {
-                Thread.Sleep(50 * attempt);
+                Thread.Sleep(25 * attempt);
+            }
+            catch (HttpRequestException changing) when (changing.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new InvalidOperationException("The UI kept changing while DevFlow was reading it.", changing);
+            }
+            // As the client's own read: an app that is not answering (starting, relaunching) has no tree yet.
+            catch (HttpRequestException)
+            {
+                return [];
+            }
+            catch (TaskCanceledException)
+            {
+                return [];
+            }
+        }
+    }
+
+    // The client reads the tree with System.Text.Json's default depth of 64, two per element (the
+    // element and its children), and answers an empty tree for a page deeper than 31 elements, such
+    // as a form input in a PagePattern. The tree is read here with room; the app's bridge raises the
+    // agent's own limit to match (AddBruinetBridge).
+    private static readonly JsonSerializerOptions TreeJson = new() { MaxDepth = 256 };
+
+    // The agent names and sizes only visual elements, so a swipe or menu item arrives without its
+    // AutomationId and hidden. The app's bridge names them by Element.Id, whose first 12 hex digits are
+    // the node's id (before a window scope or a collision suffix); one read per tree that has such a node.
+    private void NameItems(List<ElementInfo> tree)
+    {
+        if (_noBridge)
+            return;
+        var nameless = new List<ElementInfo>();
+        var pending = new Stack<ElementInfo>(tree);
+        while (pending.Count > 0)
+        {
+            var node = pending.Pop();
+            if (node.AutomationId is null && node.Type.EndsWith("Item", StringComparison.Ordinal))
+                nameless.Add(node);
+            foreach (var child in node.Children ?? [])
+                pending.Push(child);
+        }
+        if (nameless.Count == 0)
+            return;
+
+        Dictionary<string, (string AutomationId, bool Visible, bool Enabled)> names;
+        try
+        {
+            var body = Run(_client.CallExtensionToolAsync("GET", BridgePath + "/names", null));
+            using var answer = JsonDocument.Parse(body);
+            if (!answer.RootElement.TryGetProperty("names", out var list))
+                return;
+            names = list.EnumerateArray()
+                .Select(name => (Key: name.GetProperty("id").GetString() ?? string.Empty,
+                    Value: (name.GetProperty("automationId").GetString() ?? string.Empty, name.GetProperty("visible").GetBoolean(),
+                        !name.TryGetProperty("enabled", out var enabled) || enabled.GetBoolean())))
+                .Where(name => name.Key.Length >= 12)
+                .GroupBy(name => name.Key[..12])
+                .ToDictionary(group => group.Key, group => group.First().Value);
+        }
+        catch (HttpRequestException missing) when (missing.StatusCode == HttpStatusCode.NotFound)
+        {
+            _noBridge = true;
+            return;
+        }
+        catch (HttpRequestException)
+        {
+            return;
+        }
+
+        foreach (var node in nameless)
+        {
+            var id = node.Id.Split(':')[0].Split('_')[0];
+            if (names.TryGetValue(id, out var name))
+            {
+                node.AutomationId = name.AutomationId;
+                node.IsVisible = name.Visible;
+                node.IsEnabled = name.Enabled;
             }
         }
     }
@@ -255,6 +350,36 @@ internal sealed class DevFlowAgent : IDevFlowAgent
         try
         {
             return Bridge("/selectrow", new { automationId = listAutomationId, index });
+        }
+        finally
+        {
+            // An older bridge without the route answers 404: that is no route, not no bridge.
+            _noBridge = false;
+        }
+    }
+
+    public BridgeAnswer TapBehavior(string? automationId, string? idPrefix, IReadOnlyList<string> exclude)
+    {
+        if (_noBridge)
+            return BridgeAnswer.None("the app carries no Bruinet bridge (AddBruinetBridge)");
+        try
+        {
+            return Bridge("/tapbehavior", new { automationId, id = idPrefix, exclude });
+        }
+        finally
+        {
+            // An older bridge without the route answers 404: that is no route, not no bridge.
+            _noBridge = false;
+        }
+    }
+
+    public BridgeAnswer OpenSwipe(string idPrefix, string side)
+    {
+        if (_noBridge)
+            return BridgeAnswer.None("the app carries no Bruinet bridge (AddBruinetBridge)");
+        try
+        {
+            return Bridge("/openswipe", new { id = idPrefix, side });
         }
         finally
         {
