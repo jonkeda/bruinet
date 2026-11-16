@@ -7,7 +7,7 @@ Pull before editing, push right after.
 
 | Item | State | Note |
 |---|---|---|
-| Pilot step 0: check the ground | Not started | |
+| Pilot step 0: check the ground | Done from source | Four live confirmations wait on test accounts; see the pilot's step 0 results |
 | Pilot step 1: journeys and shared support | Not started | |
 | Pilot step 2: MAUI on Windows | Not started | |
 | Pilot step 3: MAUI on Android | Not started | |
@@ -47,3 +47,6 @@ When the Windows machine sets "Handoff to Mac" to Ready, it lists here:
 Newest last. One line each: date, machine, what happened or what is asked.
 
 - 2026-11-16, Windows: plan written; Mac may start I0.
+- 2026-11-16, Windows: pilot step 0 answered from source. For the Mac: iOS Acceptance maps
+  to `-acc`, login is `SFSafariViewController`, and `exact-bouw-ios` has no accessibility
+  identifiers.

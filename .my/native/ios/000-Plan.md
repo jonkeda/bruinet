@@ -152,8 +152,10 @@ Check: a capture of the gallery's Controls screen drafts a page object that buil
 ### I8: The Contacts pilot on iOS (after the handoff)
 
 Starts when the board shows "Handoff to Mac: ready". Do pilot step 5 from
-[the pilot](../030-Contacts-Pilot.md): the native iOS head for `exact-bouw-ios` (fixture with
-seven taps, environment pick and deep link; the seven Contacts pages with the same class and
+[the pilot](../030-Contacts-Pilot.md): the native iOS head for `exact-bouw-ios` (fixture that
+picks Acceptance and logs in as the pilot's step 0 results describe: `SFSafariViewController`
+portal or the `exactbouw://login.do?token=` callback; the app has no accessibility
+identifiers; the seven Contacts pages with the same class and
 control names as Android; the missing steps), and Construction for iOS. Construction on iOS
 gates on Appium (AD-037); DevFlow may be used for the inner loop only.
 

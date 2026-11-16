@@ -69,6 +69,82 @@ That is roughly four to six weeks in total, with native iOS as the largest part.
    CDP, including the organization chooser? If not, decide between a coordinate fallback and
    a debug-only login hook in Construction.
 
+### Step 0 results (from source, 2026-11-16)
+
+All six checks are answered from the source of the backend, both native apps and
+Construction. Four still need one live confirmation on Acceptance; that needs a test
+account's credentials, which this machine does not have yet.
+
+**1. The refresh token rotates.** Every refresh returns a new refresh token and invalidates
+the old one, and the default lifetime is one hour
+(bouw `apps/login/src/Bundle/Authentication/Session/UserSessionRefresher.php:32-44`,
+`login/.env.dist:54`). A stored token therefore goes stale between runs, so every fixture
+must be able to log in through the portal, and must write the new token back after each
+refresh. Two heads can never share one token, so each head gets its own account, or the
+heads run one after another. *Live:* confirm the Acceptance lifetime, which the environment
+may override.
+
+**2. Cleanup by API delete works, in order.** Heimdall hard-deletes contacts and projects
+(`DELETE /contact`, `DELETE /project`, rights `contacts.delete` and `projects.delete`), but a
+contact with references, such as a project, cannot be deleted
+(bouw `apps/heimdall/src/Component/Contact/ContactWriter.php:176-193`).
+The cleanup hook deletes the run's projects first, then its contacts. We still use a
+dedicated test tenant with the run prefix, so a failed cleanup harms nobody. Favourites are
+stored on the device in every app, so a fresh app install clears them.
+
+**3. The account needs these rights:** `contacts.view`, `contacts.create`, `contacts.update`,
+`contacts.delete`, `projects.view`, `projects.create` and `projects.delete`. *Live:* check
+that the web suite's Creator account has them in the test tenant and can open all three
+apps; otherwise create one mobile test user per head.
+
+**4. The environment is not a blocker.** The earlier note was wrong: both native apps have an
+environment picker on the login screen, and Acceptance maps to `-acc` hosts on iOS and
+Android (exact-bouw-ios `bouw7-Universal-Swift/Abstractions/Login/LoginSessionManager.swift:79-97`,
+exact-bouw-android `app/src/main/java/com/gobuildit/bouw7/MainApplication.java:928-949`).
+On iOS the picker is visible in debug builds, and in release builds after seven taps on the
+logo. No app change is needed. *Live:* iOS still has an older constants file that points
+"acceptance" at `-dev` hosts
+(exact-bouw-ios `bouw7-Universal-Swift/Constants.swift:14-23`); the
+first iOS run must check that the Contacts and project screens do not use it.
+
+**5. Navigation is the same shape in both native apps.** Contacts and Projects are tabs; New
+sits in the toolbar; the project form has a contact field that opens a picker; and the
+project detail shows the client, which opens the contact.
+
+| Journey step | Native Android | Native iOS |
+|---|---|---|
+| Create a contact | Contacts tab, New, `ContactCreationWindow` with name, type and comments | Contacts tab, create, `ContactCreationVC` with type and comments |
+| Search and filter | Search view and a type filter that is remembered | Search bar and type filter; whether it is remembered is unknown |
+| Favourite | Checkbox on `ContactDetailActivity` | Button on `ContactDetailVC` |
+| Share as a card | **Not there**: only NFC | Share sheet with a vCard |
+| Project for a client | Projects tab, New, `input_contact` picker | Projects list, create, Contact field |
+| Open client from project | Tap the client on the project info | Tap the contact view on the project detail |
+
+This confirms the share scenario's tags `@maui @native-ios`: it is the first parity
+difference. Android has stable resource IDs on these screens (`input_name`, `spinner`,
+`input_comments`, `input_contact`); iOS has no accessibility identifiers at all, so the iOS
+head starts with text locators and adds identifiers only where text is ambiguous.
+
+Both native apps log in through the system browser: Android opens the portal with an
+external intent, and iOS opens it in `SFSafariViewController`. The portal returns a token
+to the app through a callback link (`exactbouwacc://login.do?token=` on Android,
+`exactbouw://login.do?token=` on iOS). So a native fixture either drives the browser
+pages, or gets a portal token another way and opens the callback link. Which is cheaper
+is decided in step 4.
+
+**6. MAUI login on Android does not work through DevFlow today.** Construction logs in through
+an embedded web view
+(construction `Exact.Construction/Modules/Authentication/Views/LoginView.xaml:181`),
+but the Android build does not turn on web view debugging, and Bruinet's DevFlow driver does
+not run scripts in web views
+([DevFlowMauiDriver.cs:612](../../src/Bruinet.Maui.DevFlow/DevFlowMauiDriver.cs)). The UI tests
+already contain a Playwright CDP helper for Android
+(construction `Exact.Construction.UITests/Auth/Automation/PlaywrightCdpAndroidWebAuthAutomation.Android.cs`).
+Proposal: turn on web view debugging in Debug builds for Android, forward its port with adb,
+and reuse that helper for the portal and the organization chooser. A debug-only hook that
+plants a refresh token is the fallback, but rotation makes it fragile, and a coordinate
+fallback is the last resort. *Decision needed* in step 3.
+
 ### Step 4: native Android in more detail
 
 - **Fixture:** installs the debug APK, picks Acceptance in the login screen's list, opens
@@ -114,9 +190,12 @@ marks the handoff ready on [the handoff board](ios/100-Handoff.md). The outline:
   starts on Windows, so it does not block.
 - **The iOS platform grows too large.** The Mac builds the controls Contacts needs first, so
   the pilot never waits on the rest.
-- **Secrets in logs.** The refresh token is in the deep link; Appium server logs stay local.
+- **Secrets in logs.** Tokens travel in callback links and refreshes; Appium server logs and
+  run artifacts stay local, and the fixture never logs a token.
+- **The token rotates.** A head that loses its fresh token must log in through the portal
+  again, so every fixture keeps a working portal login, not only a stored token.
 
 ## Next action
 
-Do step 0, starting with the refresh token and cleanup checks, because both decide how the
-fixtures and the shared support are built.
+Step 0 is answered from source. Before step 1, get a test tenant and one account per head
+with the rights in result 3, and run the four live confirmations. Then start step 1.

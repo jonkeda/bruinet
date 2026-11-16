@@ -71,10 +71,13 @@ the session. Only a login journey logs out.
 
 | Head | Login |
 |---|---|
-| Native Android | Debug build: pick Acceptance in the login screen's environment list, then open the OAuth callback `exactbouwacc://login.do?token=<refresh token>` as a deep link. No browser, no app change. |
-| Native iOS | Seven taps unlock the environment picker; pick the test environment, then open `exactbouw://login.do?token=<refresh token>`. No app change. |
+| Native Android | Debug build: pick Acceptance in the login screen's environment list, log in through the portal in the browser, or open the callback link `exactbouwacc://login.do?token=<portal token>` with a token obtained another way. No app change. |
+| Native iOS | Debug build shows the environment picker (release: seven taps on the logo); pick Acceptance, then the same choice with `exactbouw://login.do?token=<portal token>`. No app change. |
 | MAUI on Windows | The existing WebView2 helper drives the Bouw7 portal through CDP ([devflow-auth skill](https://github.com/exact-mobile-apps/construction/blob/main/.github/skills/construction-devflow-auth/SKILL.md)). |
-| MAUI on Android and iOS | The portal in the in-app WebView. Its organization chooser is invisible to the accessibility tree, so this needs a guarded coordinate fallback or a debug login hook in Construction. |
+| MAUI on Android and iOS | The portal in the in-app web view. On Android, turning on web view debugging in Debug builds lets the existing Playwright CDP helper drive it; see the pilot's step 0 results. |
+
+Refresh tokens rotate and live about an hour, so no head can rely on a stored token alone
+([pilot step 0 results](030-Contacts-Pilot.md#step-0-results-from-source-2026-11-16)).
 
 MAUI cannot take the native shortcut: its callback must carry the `state` value it created
 when the login started.
@@ -96,13 +99,13 @@ when the login started.
 1. **Where the suites live.** Proposal: in this repository. The journeys project holds the
    feature files and shared support; each head is its own test project that links them.
 2. **Test tenant and accounts.** Proposal: one Acceptance organization for UI tests only,
-   with its own user and refresh token, apart from the contract-test accounts.
-3. **One environment for all heads.** iOS calls its test environment "acceptance" but its
-   hosts are `-dev`; Android offers `-acc`, `-test` and `-dev`; MAUI has its own setting. All
-   three heads must point at the same environment and tenant, or the journeys see other data.
-4. **MAUI on Android and iOS.** Proposal: add a debug-only login hook to Construction, because
-   we own it and a coordinate click on the portal is fragile. Alternative: run MAUI journeys
-   on Windows only.
+   with one user per head, because a rotating refresh token cannot be shared between heads.
+3. **One environment for all heads.** All three apps reach `-acc` hosts through their
+   Acceptance setting, so every head points at the same environment and tenant. iOS still has
+   an older constants file with `-dev` hosts, which the first iOS run must rule out.
+4. **MAUI on Android and iOS.** Proposal: turn on web view debugging in Debug builds and drive
+   the portal with the existing Playwright CDP helper. A debug-only hook that plants a token
+   is the fallback. Alternative: run MAUI journeys on Windows only.
 5. **Which journeys per module.** Proposal: two to four per module, chosen from the module's
    parity matrix (`310-ParityMatrix.md`): its main user flows, plus each flow where a
    difference is suspected. Contacts gives the first ones.
@@ -113,8 +116,8 @@ when the login started.
 
 ### Phase 0: Agree
 
-Answer the six decisions. Check that a refresh token survives repeated use; if each login
-rotates it, the native deep link needs a fresh token per run from the API client.
+Answer the six decisions. The refresh token rotates (pilot step 0), so each fixture keeps a
+working portal login and writes back every new token.
 
 ### Phase 1: Bruinet
 
