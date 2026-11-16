@@ -101,8 +101,7 @@ when the login started.
 2. **Test tenant and accounts.** Proposal: one Acceptance organization for UI tests only,
    with one user per head, because a rotating refresh token cannot be shared between heads.
 3. **One environment for all heads.** All three apps reach `-acc` hosts through their
-   Acceptance setting, so every head points at the same environment and tenant. iOS still has
-   an older constants file with `-dev` hosts, which the first iOS run must rule out.
+   Acceptance setting, so every head points at the same environment and tenant.
 4. **MAUI on Android and iOS.** Proposal: turn on web view debugging in Debug builds and drive
    the portal with the existing Playwright CDP helper. A debug-only hook that plants a token
    is the fallback. Alternative: run MAUI journeys on Windows only.

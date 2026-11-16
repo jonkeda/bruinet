@@ -69,11 +69,11 @@ That is roughly four to six weeks in total, with native iOS as the largest part.
    CDP, including the organization chooser? If not, decide between a coordinate fallback and
    a debug-only login hook in Construction.
 
-### Step 0 results (from source, 2026-11-16)
+### Step 0 results (2026-11-16)
 
 All six checks are answered from the source of the backend, both native apps and
-Construction. Four still need one live confirmation on Acceptance; that needs a test
-account's credentials, which this machine does not have yet.
+Construction. Live runs on Acceptance then confirmed check 3 for MAUI on Windows; check 1's
+lifetime is measured in step 1, and check 6 is tried in step 3.
 
 **1. The refresh token rotates.** Every refresh returns a new refresh token and invalidates
 the old one, and the default lifetime is one hour
@@ -81,8 +81,9 @@ the old one, and the default lifetime is one hour
 `login/.env.dist:54`). A stored token therefore goes stale between runs, so every fixture
 must be able to log in through the portal, and must write the new token back after each
 refresh. Two heads can never share one token, so each head gets its own account, or the
-heads run one after another. *Live:* confirm the Acceptance lifetime, which the environment
-may override.
+heads run one after another. *Still open:* the Acceptance lifetime. The app keeps the expiry
+in secure storage beside the tokens, so it is not read from there; the shared API client in
+step 1 logs the lifetime, never the token.
 
 **2. Cleanup by API delete works, in order.** Heimdall hard-deletes contacts and projects
 (`DELETE /contact`, `DELETE /project`, rights `contacts.delete` and `projects.delete`), but a
@@ -90,22 +91,28 @@ contact with references, such as a project, cannot be deleted
 (bouw `apps/heimdall/src/Component/Contact/ContactWriter.php:176-193`).
 The cleanup hook deletes the run's projects first, then its contacts. We still use a
 dedicated test tenant with the run prefix, so a failed cleanup harms nobody. Favourites are
-stored on the device in every app, so a fresh app install clears them.
+stored on the device in every app, so a fresh app install clears them. The existing live
+create contract tests already leave `ZZ-Contract-` records on Acceptance, so prefixed
+leftovers are accepted practice there.
 
-**3. The account needs these rights:** `contacts.view`, `contacts.create`, `contacts.update`,
-`contacts.delete`, `projects.view`, `projects.create` and `projects.delete`. *Live:* check
-that the web suite's Creator account has them in the test tenant and can open all three
-apps; otherwise create one mobile test user per head.
+**3. The `create` account works for MAUI.** The rights needed are `contacts.view`,
+`contacts.create`, `contacts.update`, `contacts.delete`, `projects.view`, `projects.create`
+and `projects.delete`. On 2026-11-16 the live create contract tests ran through Bruinet as the
+`.env.local` account `create` (`run-uitests.ps1 -LiveAccount create`): the portal login
+passed, and the app created contact 55391 and project 17816 with a client on Acceptance,
+every endpoint matching. So view and create are proven for MAUI on Windows. *Still open:*
+delete, which no app screen does, so step 1's cleanup proves it; and whether the same account
+opens both native apps, which steps 4 and 5 show on their first login.
 
 **4. The environment is not a blocker.** The earlier note was wrong: both native apps have an
 environment picker on the login screen, and Acceptance maps to `-acc` hosts on iOS and
 Android (exact-bouw-ios `bouw7-Universal-Swift/Abstractions/Login/LoginSessionManager.swift:79-97`,
 exact-bouw-android `app/src/main/java/com/gobuildit/bouw7/MainApplication.java:928-949`).
 On iOS the picker is visible in debug builds, and in release builds after seven taps on the
-logo. No app change is needed. *Live:* iOS still has an older constants file that points
-"acceptance" at `-dev` hosts
-(exact-bouw-ios `bouw7-Universal-Swift/Constants.swift:14-23`); the
-first iOS run must check that the Contacts and project screens do not use it.
+logo. No app change is needed. An older iOS constants file names `-dev` hosts as
+"acceptance" (exact-bouw-ios `bouw7-Universal-Swift/Constants.swift:14-23`), but nothing
+references those constants; the Contacts, project and login screens all take their hosts from
+the picker.
 
 **5. Navigation is the same shape in both native apps.** Contacts and Projects are tabs; New
 sits in the toolbar; the project form has a contact field that opens a picker; and the
@@ -143,7 +150,9 @@ already contain a Playwright CDP helper for Android
 Proposal: turn on web view debugging in Debug builds for Android, forward its port with adb,
 and reuse that helper for the portal and the organization chooser. A debug-only hook that
 plants a refresh token is the fallback, but rotation makes it fragile, and a coordinate
-fallback is the last resort. *Decision needed* in step 3.
+fallback is the last resort. *Decision needed* in step 3. The DevFlow-enabled Windows build
+(`MauiDevFlowEnabled=true`) failed on an ambiguous `Keyboard` in four email rows; that is
+fixed in Construction, so the DevFlow route builds again.
 
 ### Step 4: native Android in more detail
 
@@ -197,5 +206,6 @@ marks the handoff ready on [the handoff board](ios/100-Handoff.md). The outline:
 
 ## Next action
 
-Step 0 is answered from source. Before step 1, get a test tenant and one account per head
-with the rights in result 3, and run the four live confirmations. Then start step 1.
+Step 0 is done. The `.env.local` accounts (`create` for the journeys) are the test accounts;
+start step 1, whose cleanup and API client also settle the token lifetime and the delete
+rights.

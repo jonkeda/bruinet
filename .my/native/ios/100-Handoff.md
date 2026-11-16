@@ -7,7 +7,7 @@ Pull before editing, push right after.
 
 | Item | State | Note |
 |---|---|---|
-| Pilot step 0: check the ground | Done from source | Four live confirmations wait on test accounts; see the pilot's step 0 results |
+| Pilot step 0: check the ground | Done | Live on Acceptance for MAUI Windows; token lifetime and delete rights settle in step 1 |
 | Pilot step 1: journeys and shared support | Not started | |
 | Pilot step 2: MAUI on Windows | Not started | |
 | Pilot step 3: MAUI on Android | Not started | |
@@ -52,3 +52,6 @@ Newest last. One line each: date, machine, what happened or what is asked.
   identifiers.
 - 2026-11-16, Mac: I0 to I3 done; `Bruinet.NativeIos` builds clean and its unit tests pass.
   Open for I4: off-screen table cells, alerts and sheets, picker wheels and DatePicker.
+- 2026-11-16, Windows: step 0 done. The `create` account logged in and created a contact and
+  a project on Acceptance through Bruinet; the old iOS `-dev` constants are unused. The
+  DevFlow-enabled Windows build is fixed in Construction.
