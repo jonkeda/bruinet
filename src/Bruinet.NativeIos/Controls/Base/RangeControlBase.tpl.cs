@@ -15,6 +15,11 @@ namespace Bruinet.NativeIos.Controls;
 public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TScope>, IRangeControlObject<TScope>
     where TScope : INativeIosScope<TScope>
 {
+    private const int AdjustAttempts = 3;
+
+    // How close SetValue must land, as a share of the range: what XCUITest can reach (AdjustTo).
+    private const double SetValuePrecision = 0.05;
+
     private readonly double _minimum;
     private readonly double? _maximum;
     private readonly double _step;
@@ -40,7 +45,10 @@ public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TS
     protected virtual double? GetValueCore(INativeIosElement? element)
         => Parse(element?.Value) is { } percent ? _minimum + (percent / 100 * Span) : null;
 
-    /// <summary>Sets the progress once, and confirms it took.</summary>
+    /// <summary>
+    /// Sets the value once, and confirms it took to within 5% of the range: XCUITest cannot place a
+    /// slider's thumb more precisely.
+    /// </summary>
     /// <param name="element">The pre-found view.</param>
     /// <param name="value">The value; null skips.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
@@ -51,11 +59,10 @@ public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TS
             return;
         }
 
-        // XCUITest moves the thumb to the nearest point it can: within half a step, or a percent.
         var fraction = Math.Clamp((target - _minimum) / Span, 0, 1);
-        var tolerance = Math.Max(_step / 2, Span / 100);
+        var tolerance = Math.Max(_step / 2, Span * SetValuePrecision);
         ActAndConfirm(
-            "SetValue", () => element.Adjust(fraction.ToString(CultureInfo.InvariantCulture)),
+            "SetValue", () => AdjustTo(element, target, fraction, tolerance),
             () => GetValueCore(element), actual => actual is { } value && Math.Abs(value - target) <= tolerance,
             $"'{target.ToString(CultureInfo.InvariantCulture)}'", timeoutMs);
     }
@@ -91,6 +98,24 @@ public abstract partial class RangeControlBase<TScope> : ClickableControlBase<TS
     {
         var next = (GetValueCore(element) ?? _minimum) - _step;
         SetValueCore(element, Math.Max(next, _minimum), timeoutMs);
+    }
+
+    // XCUITest places the thumb only roughly, and overshoots in the direction it moves: a slider of
+    // 0 to 100 set to 0.65 read 68, 71 or 70 depending on where the thumb started, and a slow drag
+    // fell short by up to 6 and ignored moves under 4 (iOS 27 simulator, 2026-11-16). One SetValue
+    // is one act, so it corrects itself by the error it reads, a few times.
+    private void AdjustTo(INativeIosElement element, double target, double fraction, double tolerance)
+    {
+        for (var attempt = 0; attempt < AdjustAttempts; attempt++)
+        {
+            element.Adjust(fraction.ToString(CultureInfo.InvariantCulture));
+            if (GetValueCore(element) is not { } now || Math.Abs(now - target) <= tolerance)
+            {
+                return;
+            }
+
+            fraction = Math.Clamp(fraction - ((now - target) / Span), 0, 1);
+        }
     }
 
     private static double? Parse(string? value)

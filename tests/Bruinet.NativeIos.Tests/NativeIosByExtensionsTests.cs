@@ -6,7 +6,7 @@ public sealed class NativeIosByExtensionsTests
 {
     [Theory]
     [InlineData(LocatorStrategy.XPath, "//XCUIElementTypeButton", "By.XPath")]
-    [InlineData(LocatorStrategy.ClassName, "XCUIElementTypeTextField", "By.ClassName")]
+    [InlineData(LocatorStrategy.ClassName, "XCUIElementTypeTextField", "ByIosNSPredicate")]
     [InlineData(LocatorStrategy.Id, "save", "ByIosNSPredicate")]
     [InlineData(LocatorStrategy.Text, "Save", "ByIosNSPredicate")]
     public void ToIosBy_Maps_Supported_Locators(LocatorStrategy strategy, string value, string expectedPrefix)
@@ -43,6 +43,12 @@ public sealed class NativeIosByExtensionsTests
     [Fact]
     public void ToPredicate_ClassName_Matches_The_Type()
         => Assert.Equal("type == 'XCUIElementTypeCell'", Locator.ByClassName("XCUIElementTypeCell").ToPredicate());
+
+    [Fact]
+    public void ToPredicate_ControlTypeAndName_Matches_Only_That_Type()
+        => Assert.Equal(
+            "type == 'XCUIElementTypeButton' AND (label == 'Rename' OR value == 'Rename')",
+            Locator.ByControlTypeAndName("XCUIElementTypeButton", "Rename").ToPredicate());
 
     [Fact]
     public void ToPredicate_Escapes_Quotes_And_Backslashes()

@@ -4,7 +4,7 @@ using Bruinet.NativeIos.Interfaces;
 namespace Bruinet.NativeIos.Controls.Range;
 
 /// <summary>
-/// A progress view (<c>UIProgressView</c>): read and asserted; the app sets it. XCUITest reports it as a percentage.
+/// A progress view (<c>UIProgressView</c>): read and asserted; the app sets it. XCUITest type <c>ProgressIndicator</c>, its value a percentage.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 public partial class ProgressView<TScope> : RangeControlBase<TScope>

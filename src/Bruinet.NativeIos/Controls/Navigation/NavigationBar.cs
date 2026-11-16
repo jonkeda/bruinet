@@ -32,8 +32,8 @@ public class NavigationBar<TParent> : ContainerObjectBase<TParent, NavigationBar
     /// <summary>The title: the bar's text.</summary>
     public Label<NavigationBar<TParent>> Title => new(this, Locator.ByClassName("XCUIElementTypeStaticText"));
 
-    /// <summary>The back button: the bar's first button, labelled with the previous page's title or "Back".</summary>
-    public Button<NavigationBar<TParent>> BackButton => new(this, Locator.ByXPath("./XCUIElementTypeButton[1]"));
+    /// <summary>The back button: XCUITest names it <c>BackButton</c> and labels it with the previous page's title.</summary>
+    public Button<NavigationBar<TParent>> BackButton => new(this, Locator.ById("BackButton"));
 
     /// <summary>A bar button item, by its label.</summary>
     public Button<NavigationBar<TParent>> Action(string label) => new(this, Locator.ByText(label));

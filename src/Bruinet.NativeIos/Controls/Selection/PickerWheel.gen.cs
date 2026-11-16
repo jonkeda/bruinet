@@ -11,7 +11,9 @@ namespace Bruinet.NativeIos.Controls.Selection;
 
 /// <summary>
 /// One wheel of a picker (<c>UIPickerView</c>, a wheels-style <c>UIDatePicker</c>): XCUITest type
-/// <c>PickerWheel</c>. A picker with several wheels is one <see cref="PickerWheel{TScope}"/> per wheel.
+/// <c>PickerWheel</c>. The accessibility identifier is on the picker and its wheels have none, so a
+/// locator that finds the picker reads the wheel at <c>wheel</c> inside it. A picker with several
+/// wheels is one <see cref="PickerWheel{TScope}"/> per wheel.
 /// </summary>
 /// <typeparam name="TScope">The containing scope type for fluent chaining.</typeparam>
 

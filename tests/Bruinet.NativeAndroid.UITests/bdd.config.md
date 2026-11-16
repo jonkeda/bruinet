@@ -6,6 +6,7 @@
 | --- | --- |
 | Target | NATIVEANDROID |
 | Fixture | GalleryFixture |
+| Head | native-android |
 | AppPath | ../../samples/Bruinet.Samples.NativeAndroid.App/Bruinet.Samples.NativeAndroid.App.csproj |
 
 ## Assemblies

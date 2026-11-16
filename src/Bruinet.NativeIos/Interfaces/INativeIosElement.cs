@@ -113,5 +113,12 @@ public interface INativeIosElement
     /// <summary>The matching descendants now. One attempt.</summary>
     IReadOnlyList<INativeIosElement> FindElements(Locator locator);
 
+    /// <summary>
+    /// The descendants that match an XCUITest class chain now (<c>*[$label == 'x'$]</c>: a child holding
+    /// a descendant labelled x). One attempt. A class chain can select an element by what it holds, which
+    /// a <see cref="Locator"/> cannot, so a long list finds one row without reading every row.
+    /// </summary>
+    IReadOnlyList<INativeIosElement> FindByClassChain(string classChain);
+
     #endregion
 }

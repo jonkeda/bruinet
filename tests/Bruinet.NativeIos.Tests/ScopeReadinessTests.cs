@@ -67,13 +67,26 @@ public class ScopeReadinessTests
         Assert.True(page.IsLoaded());
     }
 
+    /// <summary>AutoFill's "Save Password?" leaves the app in front but covers the page: the readiness names it.</summary>
+    [Fact]
+    public void APageCoveredByASystemAlert_SaysWhichAlert()
+    {
+        _app.Given("LoginForm", () => FakeApp.View(visible: false).Object);
+        _app.Driver.Setup(d => d.SystemAlertText).Returns("Save Password?\nSecurely store your password.");
+
+        var readiness = new LoginPage(_app.Context.Object).ProbeReadiness();
+
+        Assert.Equal(ScopeReadinessState.NotLoaded, readiness.State);
+        Assert.Contains("covered by a system alert: \"Save Password? Securely store your password.\"", readiness.Detail, StringComparison.Ordinal);
+    }
+
     /// <summary>The privacy prompt is usable while it covers the app: it does not ask the app.</summary>
     [Fact]
     public void ThePermissionAlert_IsReady_WhileItCoversTheApp()
     {
         _app.InFront = false;
         var alert = FakeApp.View();
-        _app.Context.Setup(c => c.TryFindElement(It.Is<Locator>(l => l.Value == "XCUIElementTypeAlert"))).Returns(alert.Object);
+        _app.Driver.Setup(d => d.FindSystemElements(It.Is<Locator>(l => l.Value == "XCUIElementTypeAlert"))).Returns([alert.Object]);
 
         var prompt = new PermissionAlert<AppRoot>(new AppRoot(_app.Context.Object));
 

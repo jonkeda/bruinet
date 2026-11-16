@@ -6,13 +6,13 @@
 | --- | --- |
 | App | Bruinet.Samples.NativeAndroid.App |
 | Area | Controls |
-| Target | NATIVEANDROID |
-| Tags | android, controls |
+| Target | NATIVEANDROID, NATIVEIOS |
+| Tags | native, controls |
 
 The same control verbs as on MAUI and Html, on Android's own widgets: a check box, a radio group
 and a spinner whose option is below its popup's fold.
 
-@android @controls
+@native @controls
 ## Scenario: Controls take what the user chooses
 
 ```gherkin

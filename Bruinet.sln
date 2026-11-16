@@ -332,6 +332,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bruinet.NativeIos", "src\Br
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bruinet.NativeIos.Tests", "tests\Bruinet.NativeIos.Tests\Bruinet.NativeIos.Tests.csproj", "{638818E1-E1F1-4CD2-ADB9-E4519A1554BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bruinet.NativeIos.UITests", "tests\Bruinet.NativeIos.UITests\Bruinet.NativeIos.UITests.csproj", "{82620F63-8838-4440-B60F-E530BFC97859}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1902,6 +1904,18 @@ Global
 		{638818E1-E1F1-4CD2-ADB9-E4519A1554BD}.Release|x64.Build.0 = Release|Any CPU
 		{638818E1-E1F1-4CD2-ADB9-E4519A1554BD}.Release|x86.ActiveCfg = Release|Any CPU
 		{638818E1-E1F1-4CD2-ADB9-E4519A1554BD}.Release|x86.Build.0 = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|x64.Build.0 = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Debug|x86.Build.0 = Debug|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|x64.ActiveCfg = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|x64.Build.0 = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|x86.ActiveCfg = Release|Any CPU
+		{82620F63-8838-4440-B60F-E530BFC97859}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -2051,6 +2065,7 @@ Global
 		{16BE8695-DEB9-2D36-E28F-938CB241E254} = {4528AA20-9BFB-770F-A668-2C94F79F11DC}
 		{1440F96B-2067-4858-BEE2-2A1DCF82564E} = {16BE8695-DEB9-2D36-E28F-938CB241E254}
 		{638818E1-E1F1-4CD2-ADB9-E4519A1554BD} = {16BE8695-DEB9-2D36-E28F-938CB241E254}
+		{82620F63-8838-4440-B60F-E530BFC97859} = {16BE8695-DEB9-2D36-E28F-938CB241E254}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BA30356B-516B-4AA8-A3AF-BB4DF94D3013}

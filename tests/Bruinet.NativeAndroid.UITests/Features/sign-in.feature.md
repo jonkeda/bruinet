@@ -6,13 +6,13 @@
 | --- | --- |
 | App | Bruinet.Samples.NativeAndroid.App |
 | Area | Sign in |
-| Target | NATIVEANDROID |
-| Tags | android, sign-in |
+| Target | NATIVEANDROID, NATIVEIOS |
+| Tags | native, sign-in |
 
 The sign-in button enables once both fields are filled. Signing in keeps the app busy for a
 moment; the next step waits it out through the busy signal, not a pause.
 
-@android @sign-in
+@native @sign-in
 ## Scenario: A user signs in and is greeted
 
 ```gherkin

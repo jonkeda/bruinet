@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Drives the native iOS sample (samples/Bruinet.Samples.NativeIos.App) on a simulator through
+       Appium, and holds the platform's UAT suite (AD-026). Needs a Mac with a simulator, so it stays
+       out of CI's unit test list. -->
+  <PropertyGroup>
+    <RootNamespace>Bruinet.NativeIos.UITests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.NativeIos\Bruinet.NativeIos.csproj" />
+    <!-- The UAT suite: bdd.config.md, Features/ and Uat/ (the scenario test class). -->
+    <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bdd.config.md" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The gallery features are shared with native Android: both galleries have the same pages and controls. -->
+    <None Include="..\Bruinet.NativeAndroid.UITests\Features\**\*.feature.md" Link="Features\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

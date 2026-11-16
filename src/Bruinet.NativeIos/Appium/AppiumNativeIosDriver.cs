@@ -21,12 +21,15 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
 
     private const double IdleWaitSeconds = 0.5;
 
+    private const string Springboard = "com.apple.springboard";
+
     /// <summary>The element types that scroll: a screen-wide scroll uses the first.</summary>
     internal const string ScrollablePredicate
         = "type IN {'XCUIElementTypeTable', 'XCUIElementTypeCollectionView', 'XCUIElementTypeScrollView', 'XCUIElementTypeWebView'}";
 
     private readonly IOSDriver _driver;
     private readonly NativeIosTestContextOptions _options;
+    private readonly object _idleWaitSeconds;
     private bool _disposed;
 
     /// <summary>Wraps a session that is already open.</summary>
@@ -34,6 +37,10 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
     {
         _driver = driver ?? throw new ArgumentNullException(nameof(driver));
         _options = options ?? new NativeIosTestContextOptions();
+        _idleWaitSeconds = _options.AdditionalCapabilities.TryGetValue(WaitForIdle, out var idle)
+            || _options.AdditionalCapabilities.TryGetValue("waitForIdleTimeout", out idle)
+            ? idle
+            : IdleWaitSeconds;
         _driver.Manage().Timeouts().ImplicitWait = TimeSpan.Zero;
     }
 
@@ -57,6 +64,19 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
             : null;
 
     /// <inheritdoc />
+    public string? SystemAlertText => AppiumNativeIosElement.Live(() =>
+    {
+        try
+        {
+            return _driver.SwitchTo().Alert().Text;
+        }
+        catch (NoAlertPresentException)
+        {
+            return null;
+        }
+    });
+
+    /// <inheritdoc />
     public bool IsKeyboardShown => Mobile("mobile: isKeyboardShown") is true;
 
     /// <inheritdoc />
@@ -68,8 +88,9 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
 
     /// <inheritdoc />
     /// <remarks>
-    /// The app in front (<c>activeAppInfo</c>), not <c>queryAppState</c>: a system alert in front of
-    /// the app leaves it "in the foreground", but puts Springboard in front.
+    /// The app in front (<c>activeAppInfo</c>), not <c>queryAppState</c>: another app in front leaves the
+    /// app under test "in the foreground". A privacy prompt does not change the app in front (measured
+    /// 2026-11); find it with <see cref="FindSystemElements"/>.
     /// </remarks>
     public bool IsAppInForeground()
         => BundleId is not { } bundle || string.Equals(CurrentBundleId, bundle, StringComparison.Ordinal);
@@ -90,6 +111,47 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Switches XCUITest's active application to Springboard for this one lookup and back to
+    /// <c>auto</c> after it. Measured 2026-11: an element found this way can still be tapped and searched
+    /// after the switch back.
+    /// </remarks>
+    public IReadOnlyList<INativeIosElement> FindSystemElements(Locator locator)
+    {
+        ArgumentNullException.ThrowIfNull(locator);
+        return AppiumNativeIosElement.Live(() =>
+        {
+            SetActiveApplication(Springboard);
+            try
+            {
+                return FindElements(locator);
+            }
+            finally
+            {
+                SetActiveApplication("auto");
+            }
+        });
+    }
+
+    // XCUITest's swipe waited 21 s for the fling to end with an idle wait of 0.5 s, and 1.4 s without
+    // one (measured, 2026-11-16): the caller waits for the content to settle itself.
+    internal void WithoutIdleWait(Action action)
+    {
+        _driver.SetSetting("waitForIdleTimeout", 0);
+        try
+        {
+            action();
+        }
+        finally
+        {
+            _driver.SetSetting("waitForIdleTimeout", _idleWaitSeconds);
+        }
+    }
+
+    private void SetActiveApplication(string bundleId)
+        => _driver.SetSetting("defaultActiveApplication", bundleId);
+
+    /// <inheritdoc />
     public bool TryScrollIntoView(Locator locator)
         => TryScrollIntoView(locator, MobileBy.IosNSPredicate(ScrollablePredicate));
 
@@ -100,39 +162,28 @@ internal sealed class AppiumNativeIosDriver : INativeIosDriver
         return TryScrollIntoView(locator, scrollable.ToIosBy());
     }
 
-    // mobile: scroll with a predicate reaches only an element already in the tree: a collection view
-    // keeps only the cells on the screen, so a row far down is "not matched" (measured, 2026-11-16).
-    // Then the caller scrolls by hand.
+    // How long one attempt may move the screen. mobile: scroll with a predicate is not used: it ran for
+    // 167 s and gave up with "max scroll count reached" on a table row, and a collection view keeps
+    // only the cells on the screen, so a row far down is not matched at all (measured, 2026-11-16).
+    // The element is found in the container's tree and the screen moved to it; otherwise the caller
+    // scrolls by hand.
+    private const int ScrollAttemptMs = 30_000;
+
     private bool TryScrollIntoView(Locator locator, By scrollable)
     {
         ArgumentNullException.ThrowIfNull(locator);
-        if (locator.ToPredicate() is not { } predicate)
+        var target = AppiumNativeIosElement.Live(() =>
+            _driver.FindElements(scrollable).FirstOrDefault() is { } container
+                ? container.FindElements(locator.ToIosChildBy()).FirstOrDefault()
+                : null);
+        if (target is null)
         {
             return false;
         }
 
-        return AppiumNativeIosElement.Live(() =>
-        {
-            if (_driver.FindElements(scrollable).FirstOrDefault() is not { } container)
-            {
-                return false;
-            }
-
-            try
-            {
-                _driver.ExecuteScript("mobile: scroll", new Dictionary<string, object>
-                {
-                    ["elementId"] = container.Id,
-                    ["predicateString"] = predicate,
-                });
-                return true;
-            }
-            catch (WebDriverException error) when (!AppiumErrors.IsSessionGone(error) && !AppiumErrors.IsElementGone(error))
-            {
-                // "predicate didn't match any elements": not in the tree yet. Not this attempt's answer.
-                return false;
-            }
-        });
+        var element = new AppiumNativeIosElement(target, this);
+        element.ScrollIntoView(ScrollAttemptMs);
+        return element.Visible;
     }
 
     /// <inheritdoc />

@@ -7,11 +7,12 @@ namespace Bruinet.NativeIos.Appium;
 
 /// <summary>
 /// One app under test on one device, and the screen as the outermost scope: ready while the app is
-/// in front, not ready while another app or a system alert covers it.
+/// in front, not ready while another app covers it. A privacy prompt leaves the app in front, so the
+/// context stays ready under it; handle the prompt with <c>PermissionAlert</c> or grant the permission up front.
 /// </summary>
 public sealed class NativeIosTestContext : INativeIosTestContext, IRecordable
 {
-    // A system alert (a permission prompt, "open in") is Springboard's: it is in front of the app.
+    // Springboard in front: the home screen or a Springboard dialog such as "Open in".
     private const string Springboard = "com.apple.springboard";
 
     private readonly NativeIosTestContextOptions _options;
@@ -70,7 +71,7 @@ public sealed class NativeIosTestContext : INativeIosTestContext, IRecordable
 
         var front = Driver.CurrentBundleId;
         var detail = front == Springboard
-            ? $"a system alert ({front}) covers the app"
+            ? $"Springboard ({front}) is in front of the app"
             : $"the app '{Driver.BundleId}' is not in front; '{front ?? "nothing"}' is";
         return new ScopeReadiness(nameof(NativeIosTestContext), ScopeReadinessState.NotLoaded, detail);
     }

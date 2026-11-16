@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- A native iOS app (UIKit views, no MAUI): the gallery that Bruinet.NativeIos.UITests drives.
+       Every view the tests touch has an accessibility identifier equal to the Android gallery's
+       resource id. Builds on a Mac only. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-ios</TargetFramework>
+    <SupportedOSPlatformVersion>17.0</SupportedOSPlatformVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Bruinet.Samples.NativeIos.App</RootNamespace>
+    <ApplicationId>com.bruinet.samples.nativeios</ApplicationId>
+    <ApplicationTitle>Bruinet Native</ApplicationTitle>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <IsPackable>false</IsPackable>
+    <!-- The simulator build the tests install; a device build needs signing. -->
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
+    <!-- The Xcode on the Mac may be newer than the workload names. -->
+    <ValidateXcodeVersion>false</ValidateXcodeVersion>
+  </PropertyGroup>
+
+</Project>

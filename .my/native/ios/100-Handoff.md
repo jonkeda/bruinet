@@ -20,11 +20,11 @@ Pull before editing, push right after.
 
 | Item | State | Note |
 |---|---|---|
-| I0: set up the Mac | Done | Xcode 27.2, Appium 3.9 with XCUITest 12.19, iOS 27 simulator; Construction and `exact-bouw-ios` build. No Java, so the Android projects and the full solution do not build here; launch check moves to I4 |
+| I0: set up the Mac | Done | Xcode 27.2, Appium 3.9 with XCUITest 12.19, iOS 27 simulator; Construction and `exact-bouw-ios` build and launch on the simulator; `exact-bouw-ios` needs `CODE_SIGN_IDENTITY=-` so its app-group entitlement is embedded, else it stops at start. No Java, so the Android projects and the full solution do not build here |
 | I1: skeleton and unit tests | Done | `Bruinet.NativeIos` and its tests in the solution under 2 Platforms/iOS; 83 unit tests pass, Hover and RightClick contracts skip |
 | I2: driver, element, readiness, host | Done | Measured live on the simulator; `IosHost` and `IosRecorder` in `Bruinet.Appium`, recorder times from simctl's "Recording started" |
-| I3: controls | Done, unproven live | 22 generated controls plus navigation bar, toolbar, alerts, sheets, stepper, table and collection views. DatePicker deferred. Switch, keyboard, alert, sheet, picker-wheel and back-button behaviour to be measured in I4 |
-| I4: gallery sample and UI tests | Not started | |
+| I3: controls | Done | 22 generated controls plus navigation bar, toolbar, alerts, sheets, stepper, table and collection views. DatePicker deferred. Measured live in I4 |
+| I4: gallery sample and UI tests | Done on iOS | `Bruinet.Samples.NativeIos.App` and `Bruinet.NativeIos.UITests`: 28 UI tests and both shared gallery features pass on the iOS 27 simulator; 87 unit tests pass. The features are linked from the Android test project. Rerunning them on Android waits on Windows |
 | I5: docs, skills, decision | Not started | |
 | I6: generic list and dialog steps | Waiting | On Windows: generic steps |
 | I7: Scraper iOS source | Waiting | On Windows: Scraper Android source |
@@ -60,3 +60,14 @@ Newest last. One line each: date, machine, what happened or what is asked.
   check lists the 20 phrases the iOS head needs. A portal token can be had headless without
   the device, and the access token lives 15 minutes. Bruinet now maps `NativeIosTestFixtureBase`
   to target NATIVEIOS.
+- 2026-11-16, Mac: I4 done on iOS. Asked of Windows: rerun the native Android gallery suite;
+  its only changes are the tags and `Head` below.
+- 2026-11-16, Mac: per AD-014 the shared gallery features now say `Target NATIVEANDROID,
+  NATIVEIOS` and `@native` instead of `@android`; the gallery suites name `Head native-android`
+  and `native-ios`. No engine change was needed.
+- 2026-11-16, Mac: measured in I4, for the I5 guides: the permission prompt lives in Springboard;
+  the Save Password sheet shows only through `/alert/text`; a search under an element also
+  matches the element itself; `mobile: scroll` gave up on a row 150 down after 167 s, so
+  scrolling is done by swipes with the idle wait off, then a drag; a view inside an off-screen
+  cell reports the first row's position; each table lookup costs about 1.2 to 1.5 s; a slider
+  lands within about 5%.

@@ -16,19 +16,25 @@ public class CollectionTests
     public CollectionTests()
     {
         _list.Setup(l => l.FindElements(It.IsAny<Locator>())).Returns(() => _rows);
+
+        // XCUITest's answer to "a row holding a text with the key": the rows whose name is the key.
+        _list.Setup(l => l.FindByClassChain(It.IsAny<string>())).Returns((string chain) =>
+            _rows.Where(row => chain.Contains($"label == '{row.TryFindElement(NameView)?.Text}'", StringComparison.Ordinal)).ToList());
         _app.Given("invoices", () => _list.Object);
     }
 
     private TableView<TestPage> Invoices => new(_app.Page(), "invoices", "name");
 
-    private static INativeIosElement Row(string name)
+    private static INativeIosElement Row(string name) => RowMock(name).Object;
+
+    private static Mock<INativeIosElement> RowMock(string name, bool visible = true)
     {
         var label = FakeApp.View(text: name);
-        var row = FakeApp.View();
+        var row = FakeApp.View(visible);
         row.Setup(r => r.TryFindElement(It.Is<Locator>(l => l.Value == NameView.Value))).Returns(label.Object);
         row.Setup(r => r.FindElements(It.Is<Locator>(l => l.Value == "."))).Returns([row.Object]);
         row.Setup(r => r.TryFindElement(It.Is<Locator>(l => l.Value == "."))).Returns(row.Object);
-        return row.Object;
+        return row;
     }
 
     /// <summary>A row's key is the text of the row view the list names.</summary>
@@ -40,7 +46,37 @@ public class CollectionTests
         var item = Invoices.Item("Invoice 2");
 
         Assert.Equal(new ItemKey(ItemKeyKind.Logical, "Invoice 2"), item.Key);
-        Assert.Equal(1, item.Position);
+        Assert.Equal(-1, item.Position);
+    }
+
+    /// <summary>
+    /// A row is found by its key with one query for the rows holding it: a table keeps all its rows in
+    /// the tree, and reading each costs a tree snapshot.
+    /// </summary>
+    [Fact]
+    public void ARow_IsFoundByItsKey_WithoutReadingEveryRow()
+    {
+        _rows = [Row("Invoice 1"), Row("Invoice 2")];
+
+        Invoices.Item("Invoice 2");
+
+        _list.Verify(l => l.FindByClassChain("**/XCUIElementTypeCell[$(name == 'name') AND (label == 'Invoice 2' OR value == 'Invoice 2')$]"), Times.Once);
+        _list.Verify(l => l.FindElements(It.IsAny<Locator>()), Times.Never);
+    }
+
+    /// <summary>
+    /// A table keeps a row far down in the tree, off the screen: the row found is scrolled into view
+    /// within the call's budget.
+    /// </summary>
+    [Fact]
+    public void ARowFoundOffTheScreen_IsScrolledIntoView()
+    {
+        var far = RowMock("Invoice 150", visible: false);
+        _rows = [Row("Invoice 1"), far.Object];
+
+        Invoices.Item("Invoice 150", timeoutMs: 5000);
+
+        far.Verify(r => r.ScrollIntoView(It.IsInRange(1, 5000, Moq.Range.Inclusive)), Times.Once);
     }
 
     /// <summary>

@@ -24,8 +24,21 @@ public interface INativeIosDriver : IDiagnosticDriver, IDisposable
     /// <summary>Whether the app under test is running in the foreground.</summary>
     bool IsAppInForeground();
 
+    /// <summary>
+    /// The text of the alert iOS shows over the app now, or null when there is none. It sees alerts
+    /// that are in neither the app's tree nor Springboard's, such as AutoFill's "Save Password?".
+    /// One attempt.
+    /// </summary>
+    string? SystemAlertText { get; }
+
     /// <summary>The elements that match now, on the whole screen. One attempt.</summary>
     IReadOnlyList<INativeIosElement> FindElements(Locator locator);
+
+    /// <summary>
+    /// The elements that match now in Springboard's tree: a privacy prompt is drawn there and is not in
+    /// the app's tree. The elements stay usable afterwards; lookups inside them work as usual. One attempt.
+    /// </summary>
+    IReadOnlyList<INativeIosElement> FindSystemElements(Locator locator);
 
     /// <summary>
     /// Scrolls the first scrollable element until one matching <paramref name="locator"/> is shown.
@@ -35,8 +48,8 @@ public interface INativeIosDriver : IDiagnosticDriver, IDisposable
 
     /// <summary>
     /// Scrolls <paramref name="scrollable"/> until an element matching <paramref name="locator"/> is
-    /// shown in it (<c>mobile: scroll</c> with a predicate). One attempt; false when the locator cannot
-    /// be expressed as a predicate or the element did not come into view.
+    /// shown in it. One attempt of at most 30 s; false when no such element is in the container's tree
+    /// (a collection view keeps only the cells on the screen) or it did not come into view.
     /// </summary>
     bool TryScrollIntoView(Locator locator, Locator scrollable);
 

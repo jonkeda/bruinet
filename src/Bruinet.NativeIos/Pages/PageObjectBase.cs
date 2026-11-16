@@ -80,8 +80,7 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeIosPage<TSelf>
 
         if (!IsLoaded())
         {
-            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded,
-                ReadyLocator is { } ready ? $"'{ready}' is not shown" : null);
+            return new ScopeReadiness(Name, ScopeReadinessState.NotLoaded, NotShownDetail());
         }
 
         if (ReadsBusySignal && _context.TryFindElement(BusyView)?.Visible == true)
@@ -102,6 +101,23 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, INativeIosPage<TSelf>
 
     /// <inheritdoc />
     public bool IsReady() => ProbeReadiness().IsReady;
+
+    // A ready element that is in the tree but not shown is usually covered by an alert iOS draws
+    // over the app (AutoFill's "Save Password?"): it is named, so the failure says what to dismiss.
+    private string? NotShownDetail()
+    {
+        if (ReadyLocator is not { } ready)
+        {
+            return null;
+        }
+
+        if (_context.TryFindElement(ready) is not null && _context.Driver.SystemAlertText is { } alert)
+        {
+            return $"'{ready}' is covered by a system alert: \"{alert.ReplaceLineEndings(" ")}\"";
+        }
+
+        return $"'{ready}' is not shown";
+    }
 
     /// <inheritdoc />
     public int WaitFirst(int? timeoutMs, params Func<bool>[] outcomes) => RunFirst(timeoutMs, outcomes);

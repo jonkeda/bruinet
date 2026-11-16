@@ -24,11 +24,18 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
     // How long the finger rests before a drag moves, in seconds: short, so it is no long press.
     private const double DragPressSeconds = 0.05;
 
+    // ScrollIntoView: swipe velocities in points per second, fastest first, with how far each moved a
+    // table (iOS 27 simulator, 2026-11-16). At 10,000 it did not move.
+    private static readonly (int Velocity, int Points)[] Swipes = [(5000, 2500), (2500, 1500), (1500, 980), (1000, 665), (500, 380)];
+
+    // ScrollIntoView: the longest drag, as a share of the screen, so it starts and ends away from the edges.
+    private const double DragScreenFraction = 0.6;
+
     private const string ContentPredicate
         = "type IN {'XCUIElementTypeCell', 'XCUIElementTypeStaticText', 'XCUIElementTypeButton', 'XCUIElementTypeImage'}";
 
-    // How many content elements make the signature: enough to see a move, few enough to be quick.
-    private const int SignatureChildren = 4;
+    // The first content element: one element, as every element returned costs XCUITest a snapshot.
+    private const string FirstContent = "**/*[`" + ContentPredicate + "`][1]";
 
     private readonly AppiumElement _element;
     private readonly AppiumNativeIosDriver _driver;
@@ -245,9 +252,14 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
 
     /// <inheritdoc />
     /// <remarks>
-    /// A collection view keeps only the cells on the screen in the tree, but a scroll view keeps all of
-    /// its content: an element that was found may be outside the screen. <c>mobile: scroll</c> with
-    /// <c>toVisible</c> scrolls its nearest scrollable ancestor until it is, once.
+    /// A table and a scroll view keep all of their content in the tree, so an element that was found
+    /// may be outside the screen. <c>mobile: scroll</c> with <c>toVisible</c> or a predicate gave up with
+    /// "max scroll count reached", for a row 150 rows down after 167 s (iOS 27 simulator, 2026-11-16).
+    /// So the screen is moved by hand towards the element's position: the fastest swipe that does not
+    /// carry it past (0.5 s for 380 to 2,500 points, then about 3 s to settle, with XCUITest's wait for
+    /// an idle app turned off), then a drag of at most 60% of the screen (about 5 s), until it is
+    /// shown, it stops moving, or <paramref name="timeoutMs"/> runs out. An element inside a table cell
+    /// that is off the screen reports the position of the first row's (measured), so scroll its row in.
     /// </remarks>
     public void ScrollIntoView(int timeoutMs)
     {
@@ -256,7 +268,68 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
             return;
         }
 
-        Gesture("mobile: scroll", new() { ["toVisible"] = true });
+        var deadline = Environment.TickCount64 + timeoutMs;
+        var screen = Live(() => _driver.Raw.Manage().Window.Size);
+        var before = Rect;
+        while (Environment.TickCount64 < deadline)
+        {
+            // How far the element's centre is from the screen's: the content moves against the finger.
+            var dx = before.X + (before.Width / 2.0) - (screen.Width / 2.0);
+            var dy = before.Y + (before.Height / 2.0) - (screen.Height / 2.0);
+            var vertical = Math.Abs(dy) / screen.Height >= Math.Abs(dx) / screen.Width;
+            var distance = vertical ? Math.Abs(dy) : Math.Abs(dx);
+            Rectangle after;
+            if (Array.FindIndex(Swipes, swipe => swipe.Points <= distance) is var index and >= 0)
+            {
+                var arguments = new Dictionary<string, object>
+                {
+                    ["direction"] = vertical ? (dy > 0 ? "up" : "down") : (dx > 0 ? "left" : "right"),
+                    ["velocity"] = Swipes[index].Velocity,
+                };
+                _driver.WithoutIdleWait(() => Live(() => _driver.Raw.ExecuteScript("mobile: swipe", arguments)));
+                after = new Rectangle(Settled(deadline), before.Size);
+            }
+            else
+            {
+                var moveX = Math.Clamp(dx, -DragScreenFraction * screen.Width, DragScreenFraction * screen.Width);
+                var moveY = Math.Clamp(dy, -DragScreenFraction * screen.Height, DragScreenFraction * screen.Height);
+                Live(() => _driver.Raw.ExecuteScript("mobile: dragFromToForDuration", new Dictionary<string, object>
+                {
+                    ["duration"] = DragPressSeconds,
+                    ["fromX"] = (screen.Width / 2.0) + (moveX / 2),
+                    ["fromY"] = (screen.Height / 2.0) + (moveY / 2),
+                    ["toX"] = (screen.Width / 2.0) - (moveX / 2),
+                    ["toY"] = (screen.Height / 2.0) - (moveY / 2),
+                }));
+                after = new Rectangle(Live(() => _element.Location), before.Size);
+            }
+
+            if (Visible || after == before)
+            {
+                return;
+            }
+
+            before = after;
+        }
+    }
+
+    // Where the element is once a fling has stopped: two readings in a row agree (about 3 s after a
+    // swipe, measured 2026-11-16), or the deadline. The location alone: one request, not two.
+    private Point Settled(long deadline)
+    {
+        var last = Live(() => _element.Location);
+        while (Environment.TickCount64 < deadline)
+        {
+            var next = Live(() => _element.Location);
+            if (next == last)
+            {
+                return next;
+            }
+
+            last = next;
+        }
+
+        return last;
     }
 
     /// <inheritdoc />
@@ -289,10 +362,27 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
     public INativeIosElement? TryFindElement(Locator locator) => FindElements(locator).FirstOrDefault();
 
     /// <inheritdoc />
+    /// <remarks>
+    /// A predicate search under an element matches the element too: "Rename" under an alert titled
+    /// Rename found the alert first (iOS 27 simulator, 2026-11-16). Only an XPath can ask for the
+    /// element itself (<c>.</c>), so other strategies drop it.
+    /// </remarks>
     public IReadOnlyList<INativeIosElement> FindElements(Locator locator)
     {
         ArgumentNullException.ThrowIfNull(locator);
         var by = locator.ToIosChildBy();
+        var self = locator.Strategy == LocatorStrategy.XPath ? null : _element.Id;
+        return Live(() => _element.FindElements(by)
+            .Where(child => child.Id != self)
+            .Select(child => (INativeIosElement)new AppiumNativeIosElement(child, _driver))
+            .ToList());
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<INativeIosElement> FindByClassChain(string classChain)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(classChain);
+        var by = MobileBy.IosClassChain(classChain);
         return Live(() => _element.FindElements(by).Select(child => (INativeIosElement)new AppiumNativeIosElement(child, _driver)).ToList());
     }
 
@@ -310,7 +400,7 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
     private string? Describe() => Label ?? Identifier;
 
     // A drag across the element, centred, in the finger's direction. Not mobile: swipe, whose fling
-    // ran on for up to 35 s, nor a drag by velocity, which did not always move (measured, 2026-11-16):
+    // ran on for up to 35 s at its default velocity, nor a drag by velocity, which did not always move (measured, 2026-11-16):
     // a drag of fixed length takes about 2 s and moves the content by that length.
     private void Drag(GestureDirection direction, double percent)
     {
@@ -330,11 +420,12 @@ internal sealed class AppiumNativeIosElement : INativeIosElement
         }));
     }
 
-    // Which content elements come first, and where: changes when the content moved. By type, not
-    // "visible == 1": that predicate under a collection view took 80 s (measured, 2026-11-16).
+    // Which content element comes first, and where: changes when the content moved. A table keeps
+    // all its rows in the tree, so listing its content took over 60 s on 200 rows, and "visible == 1"
+    // 80 s; the first element alone takes about 3 s there (measured, 2026-11).
     private string ContentSignature() => Live(() => string.Join(
         ';',
-        _element.FindElements(MobileBy.IosNSPredicate(ContentPredicate)).Take(SignatureChildren)
+        _element.FindElements(MobileBy.IosClassChain(FirstContent))
             .Select(child => child.Id + "@" + child.Location.X + "," + child.Location.Y)));
 
     private static (int Dx, int Dy) Vector(GestureDirection direction) => direction switch

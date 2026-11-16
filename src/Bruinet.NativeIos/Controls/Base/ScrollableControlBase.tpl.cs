@@ -48,6 +48,17 @@ public abstract partial class ScrollableControlBase<TScope> : ViewBase<TScope>
         ScrollToEdge(element, GestureDirection.Up);
     }
 
+    /// <summary>
+    /// Pulls the content down once, from its top, to start its refresh control (<c>UIRefreshControl</c>).
+    /// The refresh is the app's: wait for its effect, or for the page's busy signal.
+    /// </summary>
+    /// <param name="element">The pre-found view.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    protected virtual void PullToRefreshCore(INativeIosElement element, int? timeoutMs = null)
+    {
+        element.Swipe(GestureDirection.Down, 0.6);
+    }
+
     // Each scroll is a gesture that moved the content; it stops at the edge or when the call's
     // budget is spent, never by a pause.
     private void ScrollToEdge(INativeIosElement element, GestureDirection direction)

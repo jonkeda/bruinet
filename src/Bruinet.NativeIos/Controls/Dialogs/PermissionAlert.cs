@@ -6,8 +6,9 @@ namespace Bruinet.NativeIos.Controls.Dialogs;
 
 /// <summary>
 /// iOS's privacy prompt (camera, photos, location, notifications), drawn by Springboard over the
-/// app. Its own scope: while it is shown the app is covered, so it never waits for the app. To skip
-/// prompts, grant the permission up front with <c>IosHost.Grant</c> or set <c>AutoAcceptAlerts</c>.
+/// app. It is not in the app's tree, so it is found in Springboard's (<see cref="INativeIosDriver.FindSystemElements"/>).
+/// Its own scope: it never waits for the app. To skip prompts, grant the permission up front with
+/// <c>IosHost.Grant</c> or set <c>AutoAcceptAlerts</c>.
 /// </summary>
 /// <typeparam name="TParent">The scope it is declared in, usually the app root.</typeparam>
 public class PermissionAlert<TParent> : ContainerObjectBase<TParent, PermissionAlert<TParent>>
@@ -24,8 +25,11 @@ public class PermissionAlert<TParent> : ContainerObjectBase<TParent, PermissionA
     /// <inheritdoc />
     public override PermissionAlert<TParent> Self => this;
 
-    /// <summary>The system alert covers the app, which is then not ready: it must not ask it.</summary>
+    /// <summary>The prompt covers the app: whether the app is ready says nothing about the prompt.</summary>
     protected override bool AsksParent => false;
+
+    /// <summary>The prompt, from Springboard's tree.</summary>
+    protected override INativeIosElement? TryFindRootElement() => Context.Driver.FindSystemElements(Frame).FirstOrDefault();
 
     /// <summary>What the app asks for: the prompt's first text.</summary>
     public Label<PermissionAlert<TParent>> Message => new(this, Locator.ByXPath("(.//XCUIElementTypeStaticText)[1]"));

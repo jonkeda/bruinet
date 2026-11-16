@@ -12,6 +12,9 @@ namespace Bruinet.NativeIos.Controls.Dialogs;
 public class ActionSheet<TParent> : ContainerObjectBase<TParent, ActionSheet<TParent>>
     where TParent : INativeIosScope<TParent>
 {
+    // A button only: the title is a text with the same label as a button ("Rename") and came first.
+    private const string ButtonType = "XCUIElementTypeButton";
+
     private static readonly Locator Frame = Locator.ByClassName("XCUIElementTypeSheet");
 
     /// <summary>The action sheet shown over <paramref name="parent"/>.</summary>
@@ -33,5 +36,5 @@ public class ActionSheet<TParent> : ContainerObjectBase<TParent, ActionSheet<TPa
     public Label<ActionSheet<TParent>> Message => new(this, Locator.ByXPath("(.//XCUIElementTypeStaticText)[2]"));
 
     /// <summary>An action, by its label.</summary>
-    public Button<ActionSheet<TParent>> Action(string label) => new(this, Locator.ByText(label));
+    public Button<ActionSheet<TParent>> Action(string label) => new(this, Locator.ByControlTypeAndName(ButtonType, label));
 }

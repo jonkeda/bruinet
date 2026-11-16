@@ -82,6 +82,8 @@ public sealed class StatefulElement(string identifier, ContractApp app) : INativ
     public INativeIosElement? TryFindElement(Locator locator) => null;
 
     public IReadOnlyList<INativeIosElement> FindElements(Locator locator) => [];
+
+    public IReadOnlyList<INativeIosElement> FindByClassChain(string classChain) => [];
 }
 
 /// <summary>The fake app the contracts run on: its elements by accessibility identifier; one missing.</summary>

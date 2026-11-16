@@ -143,6 +143,7 @@ Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueGreaterThan(double?
 Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueLessThan(double? expected, int? timeoutMs = null) -> bool
 Bruinet.NativeIos.Controls.RangeControlBase<TScope>.WaitValueWithin(double? expected, double tolerance, int? timeoutMs = null) -> bool
 Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>
+Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.PullToRefresh(int? timeoutMs = null) -> TScope
 Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.Scroll(Bruinet.NativeIos.Interfaces.GestureDirection direction, int? timeoutMs = null) -> TScope
 Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToEnd(int? timeoutMs = null) -> TScope
 Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToStart(int? timeoutMs = null) -> TScope
@@ -152,8 +153,8 @@ Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>
 Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.ChoiceGroupBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
 Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>
-Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
-Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
+Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator, int wheel = 0) -> void
+Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.PickerWheel(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath, int wheel = 0) -> void
 Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>
 Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.SegmentedControl(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.SegmentedControl(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
@@ -262,7 +263,6 @@ Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWaitWithElement<T>(T? expected, S
 Bruinet.NativeIos.Controls.ViewBase<TScope>.RunWaitWithOptionalElement<T>(T? expected, System.Func<Bruinet.NativeIos.Interfaces.INativeIosElement?, bool>! coreOperation, int? timeoutMs = null, string? caller = null) -> bool
 Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollIntoView(int? timeoutMs = null) -> TScope
 Bruinet.NativeIos.Controls.ViewBase<TScope>.SendKeys(string! keys, int? timeoutMs = null) -> TScope
-Bruinet.NativeIos.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement?
 Bruinet.NativeIos.Controls.ViewBase<TScope>.TryGetText() -> string?
 Bruinet.NativeIos.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.NativeIos.Controls.ViewBase<TScope>.ViewBase(Bruinet.NativeIos.Interfaces.INativeIosScope<TScope>! scope, string! identifierOrXPath) -> void
@@ -292,6 +292,7 @@ Bruinet.NativeIos.Interfaces.INativeIosDriver.Back() -> void
 Bruinet.NativeIos.Interfaces.INativeIosDriver.BundleId.get -> string?
 Bruinet.NativeIos.Interfaces.INativeIosDriver.CurrentBundleId.get -> string?
 Bruinet.NativeIos.Interfaces.INativeIosDriver.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+Bruinet.NativeIos.Interfaces.INativeIosDriver.FindSystemElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
 Bruinet.NativeIos.Interfaces.INativeIosDriver.HideKeyboard() -> void
 Bruinet.NativeIos.Interfaces.INativeIosDriver.IsAppInForeground() -> bool
 Bruinet.NativeIos.Interfaces.INativeIosDriver.IsKeyboardShown.get -> bool
@@ -300,6 +301,7 @@ Bruinet.NativeIos.Interfaces.INativeIosDriver.PressButton(string! name) -> void
 Bruinet.NativeIos.Interfaces.INativeIosDriver.RecordingTarget.get -> Bruinet.Core.Recording.RecordingTarget?
 Bruinet.NativeIos.Interfaces.INativeIosDriver.ResetAppState() -> void
 Bruinet.NativeIos.Interfaces.INativeIosDriver.SaveScreenshot(string! path) -> void
+Bruinet.NativeIos.Interfaces.INativeIosDriver.SystemAlertText.get -> string?
 Bruinet.NativeIos.Interfaces.INativeIosDriver.TakeScreenshot() -> byte[]!
 Bruinet.NativeIos.Interfaces.INativeIosDriver.TerminateApp() -> void
 Bruinet.NativeIos.Interfaces.INativeIosDriver.TryScrollIntoView(Bruinet.Core.Locators.Locator! locator) -> bool
@@ -312,6 +314,7 @@ Bruinet.NativeIos.Interfaces.INativeIosElement.Click() -> void
 Bruinet.NativeIos.Interfaces.INativeIosElement.DoubleTap() -> void
 Bruinet.NativeIos.Interfaces.INativeIosElement.ElementType.get -> string?
 Bruinet.NativeIos.Interfaces.INativeIosElement.Enabled.get -> bool
+Bruinet.NativeIos.Interfaces.INativeIosElement.FindByClassChain(string! classChain) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
 Bruinet.NativeIos.Interfaces.INativeIosElement.FindElements(Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
 Bruinet.NativeIos.Interfaces.INativeIosElement.Focused.get -> bool
 Bruinet.NativeIos.Interfaces.INativeIosElement.GetAttribute(string! name) -> string?
@@ -408,7 +411,9 @@ override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TIte
 override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollStep(Bruinet.NativeIos.Interfaces.INativeIosElement! list, bool onwards) -> bool
 override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.ScrollsToFind.get -> bool
 override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryFindIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoot(Bruinet.Core.Collections.ItemKey key) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
 override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryGetItemRoots() -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
+override Bruinet.NativeIos.Collections.CollectionObjectBase<TParent, TSelf, TItem>.TryItem(string! key) -> TItem?
 override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.Context.get -> Bruinet.NativeIos.Interfaces.INativeIosTestContext!
 override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.FindAllIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> System.Collections.Generic.IReadOnlyList<Bruinet.NativeIos.Interfaces.INativeIosElement!>!
 override Bruinet.NativeIos.Collections.ItemObjectBase<TSelf>.TryFindIn(Bruinet.NativeIos.Interfaces.INativeIosElement! root, Bruinet.Core.Locators.Locator! locator) -> Bruinet.NativeIos.Interfaces.INativeIosElement?
@@ -430,6 +435,7 @@ override Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.AsksParent.get -> boo
 override Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>.Self.get -> Bruinet.NativeIos.Controls.Dialogs.Alert<TParent>!
 override Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.AsksParent.get -> bool
 override Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.Self.get -> Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>!
+override Bruinet.NativeIos.Controls.Dialogs.PermissionAlert<TParent>.TryFindRootElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement?
 override Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>.Self.get -> Bruinet.NativeIos.Controls.Navigation.NavigationBar<TParent>!
 override Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>.Self.get -> Bruinet.NativeIos.Controls.Navigation.Toolbar<TParent>!
 override Bruinet.NativeIos.Controls.Range.Stepper<TParent>.Self.get -> Bruinet.NativeIos.Controls.Range.Stepper<TParent>!
@@ -437,6 +443,7 @@ override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.GetItemTex
 override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.GetSelectedTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> string?
 override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.SelectByIndexCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? index, int? timeoutMs = null) -> void
 override Bruinet.NativeIos.Controls.Selection.ChoiceGroupBase<TScope>.SelectByTextCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string? text, int? timeoutMs = null) -> void
+override Bruinet.NativeIos.Controls.Selection.PickerWheel<TScope>.TryFindElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement?
 override Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
 override Bruinet.NativeIos.Controls.Selection.SegmentedControl<TScope>.IsChosen(Bruinet.NativeIos.Interfaces.INativeIosElement! choice) -> bool
 override Bruinet.NativeIos.Controls.Selection.TabBar<TScope>.ChoicesLocator.get -> Bruinet.Core.Locators.Locator!
@@ -475,6 +482,7 @@ virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetStepCore(Bruinet.
 virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.GetValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement? element) -> double?
 virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.IncrementCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.NativeIos.Controls.RangeControlBase<TScope>.SetValueCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, double? value, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.PullToRefreshCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, Bruinet.NativeIos.Interfaces.GestureDirection direction, int? timeoutMs = null) -> void
 virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToEndCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
 virtual Bruinet.NativeIos.Controls.ScrollableControlBase<TScope>.ScrollToStartCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, int? timeoutMs = null) -> void
@@ -509,6 +517,7 @@ virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.RequiresVisibilityForAction.
 virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollIntoViewCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element) -> void
 virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.ScrollsToFind.get -> bool
 virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.SendKeysCore(Bruinet.NativeIos.Interfaces.INativeIosElement! element, string! keys, int? timeoutMs = null) -> void
+virtual Bruinet.NativeIos.Controls.ViewBase<TScope>.TryFindElement() -> Bruinet.NativeIos.Interfaces.INativeIosElement?
 virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.BusyIndicators.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Locators.Locator!>!
 virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.GetTitle() -> string?
 virtual Bruinet.NativeIos.Pages.PageObjectBase<TSelf>.IsLoaded() -> bool

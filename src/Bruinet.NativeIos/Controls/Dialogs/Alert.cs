@@ -12,6 +12,9 @@ namespace Bruinet.NativeIos.Controls.Dialogs;
 public class Alert<TParent> : ContainerObjectBase<TParent, Alert<TParent>>
     where TParent : INativeIosScope<TParent>
 {
+    // A button only: the title is a text with the same label as a button ("Rename") and came first.
+    private const string ButtonType = "XCUIElementTypeButton";
+
     private static readonly Locator Frame = Locator.ByClassName("XCUIElementTypeAlert");
 
     /// <summary>The alert shown over <paramref name="parent"/>.</summary>
@@ -33,7 +36,7 @@ public class Alert<TParent> : ContainerObjectBase<TParent, Alert<TParent>>
     public Label<Alert<TParent>> Message => new(this, Locator.ByXPath("(.//XCUIElementTypeStaticText)[2]"));
 
     /// <summary>A button, by its label ("OK", "Cancel", "Delete").</summary>
-    public Button<Alert<TParent>> Button(string label) => new(this, Locator.ByText(label));
+    public Button<Alert<TParent>> Button(string label) => new(this, Locator.ByControlTypeAndName(ButtonType, label));
 
     /// <summary>A text field in the alert, by its position (0-based).</summary>
     public TextField<Alert<TParent>> TextField(int index = 0)

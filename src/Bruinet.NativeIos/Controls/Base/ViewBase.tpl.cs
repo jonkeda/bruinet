@@ -37,8 +37,8 @@ public abstract partial class ViewBase<TScope> : ObjectBase, IControlObject<TSco
 
     public override INativeIosTestContext Context => _scope.Context;
 
-    /// <summary>The view, found in one attempt, or null.</summary>
-    protected INativeIosElement? TryFindElement() => _scope.TryFindElement(Locator);
+    /// <summary>The view, found in one attempt, or null. A control whose element is inside the located one overrides it.</summary>
+    protected virtual INativeIosElement? TryFindElement() => _scope.TryFindElement(Locator);
 
     /// <summary>The view, found in one attempt.</summary>
     /// <exception cref="ElementNotFoundException">It is not there.</exception>

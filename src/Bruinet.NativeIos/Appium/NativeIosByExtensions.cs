@@ -14,7 +14,8 @@ internal static class NativeIosByExtensions
         return locator.Strategy switch
         {
             LocatorStrategy.XPath => By.XPath(locator.Value),
-            LocatorStrategy.ClassName or LocatorStrategy.TagName or LocatorStrategy.ControlType => By.ClassName(locator.Value),
+            // Selenium sends By.ClassName as a CSS selector, which XCUITest rejects: an element type
+            // goes as a predicate on "type", like the other strategies.
             _ => locator.ToPredicate() is { } predicate
                 ? MobileBy.IosNSPredicate(predicate)
                 : throw new LocatorNotSupportedException(
@@ -27,7 +28,8 @@ internal static class NativeIosByExtensions
     /// <summary>
     /// The selector for a search under an element. Unlike UiAutomator2, XCUITest evaluates every
     /// strategy in the element's own subtree: <c>//X</c> is a descendant, <c>./*</c> a child and
-    /// <c>.</c> the element (measured on the iOS 27 simulator, 2026-11-16). So no rewrite is needed.
+    /// <c>.</c> the element (measured on the iOS 27 simulator, 2026-11-16). So no rewrite is needed;
+    /// a predicate also matches the element itself, which the element's search drops.
     /// </summary>
     public static By ToIosChildBy(this Locator locator)
     {
@@ -52,6 +54,8 @@ internal static class NativeIosByExtensions
             LocatorStrategy.Name or LocatorStrategy.Text => $"label == {value} OR value == {value}",
             LocatorStrategy.ClassName or LocatorStrategy.TagName or LocatorStrategy.ControlType => $"type == {value}",
             LocatorStrategy.DataTestId or LocatorStrategy.DataAutomationId => $"name == {value} OR label == {value}",
+            LocatorStrategy.ControlTypeAndName when locator.TypeName is { } type
+                => $"type == {ToPredicateLiteral(type)} AND (label == {value} OR value == {value})",
             _ => null,
         };
     }
