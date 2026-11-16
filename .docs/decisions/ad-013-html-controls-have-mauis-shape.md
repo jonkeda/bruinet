@@ -11,6 +11,7 @@ one synchronous call.
 | --- | --- | --- |
 | Html, Blazor | `CreateHtml.Bat` | the `Control` suffix (`ButtonControl`), kept by the owner 2026-11-10 |
 | Native Android (2026-10-07) | `CreateNativeAndroid.Bat` | Android's widget names (`EditText`, `Spinner`) |
+| Native iOS (2026-11-16) | `CreateNativeIos.sh` | UIKit's names (`TextField`, `SegmentedControl`); the members are native Android's (AD-042) |
 | WPF (2026-11-10) | `CreateWpf.Bat` | WPF's names (`TextBox`, `PasswordBox`, `TreeViewItem`); a Core method acts through a UI Automation pattern of the shared `UiaElementBase` (`Bruinet.FlaUI`) |
 | WinForms (2026-11-10) | `CreateWinForms.Bat` | its names (`TrackBar`, `NumericUpDown`, `DateTimePicker`, `TabPage`, `TreeNode`); the same patterns |
 | Stride (2026-11-10) | `CreateStride.Bat` | a Core method is one command to the game over the automation pipe |
@@ -29,7 +30,7 @@ Evidence: [review-html-vs-maui.md at 7162ac7](https://github.com/exact-mobile-ap
 members (`*Async` wrappers, async interfaces); a public member whose name differs from MAUI's for
 the same behaviour.
 
-**Broken when:** an Html, Blazor, native Android, WPF, WinForms or Stride control with `*Core` methods is a plain `.cs`,
-or its `.gen.cs` differs from what its `Create*.Bat` writes; the generator needs a stack-specific
+**Broken when:** an Html, Blazor, native Android, native iOS, WPF, WinForms or Stride control with `*Core` methods is a plain `.cs`,
+or its `.gen.cs` differs from what its `Create*` script writes; the generator needs a stack-specific
 branch; a `Task`-returning public member appears on a control, page or container; a UAT phrase
-fails on Html, native Android, WPF, WinForms or Stride with "available methods" for a method MAUI has.
+fails on Html, native Android, native iOS, WPF, WinForms or Stride with "available methods" for a method MAUI has.

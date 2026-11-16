@@ -2,7 +2,8 @@
 
 Each platform has one options type a test project sets: `HtmlTestContextOptions` (and bUnit's
 `BunitTestContextOptions`), `MauiTestContextOptions`, `WpfTestContextOptions`,
-`WinFormsTestContextOptions`, `StrideTestContextOptions` and `NativeAndroidTestContextOptions`.
+`WinFormsTestContextOptions`, `StrideTestContextOptions`, `NativeAndroidTestContextOptions` and
+`NativeIosTestContextOptions`.
 All derive from `TestContextOptionsBase`, which holds what every platform shares.
 
 ## What every platform shares

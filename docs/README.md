@@ -12,6 +12,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   [MAUI](getting-started/quick-start-maui.md), [WPF](getting-started/quick-start-wpf.md),
   [WinForms](getting-started/quick-start-winforms.md),
   [native Android](getting-started/quick-start-native-android.md),
+  [native iOS](getting-started/quick-start-native-ios.md),
   [Stride](getting-started/quick-start-stride.md), and [scenarios in Markdown](getting-started/quick-start-bdd.md)
 - [Framework Overview](getting-started/framework-overview.md)
 - [Test Writing Guide](guides/test-writing.md)
@@ -93,6 +94,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 - [WPF](platform-guides/wpf.md)
 - [Stride](platform-guides/stride.md)
 - [Native Android](platform-guides/native-android.md)
+- [Native iOS](platform-guides/native-ios.md)
 - [Presenter](platform-guides/presenter.md)
 
 ## Run Guides
@@ -103,6 +105,7 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 - [MAUI](run/MAUI.md)
 - [MAUI Android](run/maui-android.md)
 - [Native Android](run/native-android.md)
+- [Native iOS](run/native-ios.md)
 - [Playwright](run/Playwright.md)
 - [HTML](run/Html.md)
 - [WinForms](run/WinForms.md)

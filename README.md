@@ -54,6 +54,7 @@ work on every head of its stack. The device or browser stays the judge at a gate
 | Web | Playwright in a browser, **bUnit** (`bunit`: a Blazor component, no browser) |
 | WPF, WinForms | FlaUI on Windows |
 | Native Android | Appium with UiAutomator2 |
+| Native iOS | Appium with XCUITest, on a Mac |
 | Stride | An in-game automation server and a test client |
 | Below the UI | The **service** head: the same feature files against the app's services, no screen |
 | Mixed | One scenario that drives several apps at once: Windows, web and Android (Todo's `Mixed.Uat`) |
@@ -79,7 +80,7 @@ or MSTest, with no Bruinet in it.
 The SDK is pinned in `global.json`. What each package targets (review 11, proposal 10):
 
 - `net8.0`, `net9.0` and `net10.0`: Core, Bdd, Bdd.Abstractions, Uat, Traits, Logging, Html, Html.Playwright, Blazor,
-  Appium, NativeAndroid, Stride, Stride.Protocol, Recording and Narrator.
+  Appium, NativeAndroid, NativeIos, Stride, Stride.Protocol, Recording and Narrator.
 - `net10.0` only: Maui, Maui.Appium, Maui.Headless, Maui.CommunityToolkit, MauiHeadless, Html.Bunit, TestData,
   Mocking, Mocking.Http, the Mocking.Data hooks for EF Core and ASP.NET Core, Contracts and Stride.Automation.
 - `net10.0-windows`: FlaUI, Maui.FlaUI, Wpf, WinForms, Uia.Contracts, and Narrator.Windows (`net10.0-windows10.0.19041.0`).
@@ -114,6 +115,7 @@ The packages come from this organisation's GitHub Packages feed, not nuget.org: 
 | `Bruinet.Html.Bunit`, `Bruinet.Blazor` | The bUnit head, and Blazor helpers |
 | `Bruinet.Wpf`, `Bruinet.WinForms` | Desktop automation through FlaUI |
 | `Bruinet.NativeAndroid` | Native Android apps through Appium |
+| `Bruinet.NativeIos` | Native iOS apps through Appium |
 | `Bruinet.Stride`, `Bruinet.Stride.Automation`, `Bruinet.Stride.Protocol` | Stride game UI testing: the client, the server inside the game, and the wire both speak (the game takes no test client) |
 | `Bruinet.Appium`, `Bruinet.FlaUI`, `Bruinet.Uia.Contracts` | What the Appium stacks share, what the FlaUI stacks share (MAUI on Windows, WPF, WinForms), and the wire contract of the custom UI Automation pattern |
 
@@ -168,7 +170,7 @@ Then read the [Quick Start](docs/getting-started/quick-start.md) for a first pag
 see one app tested at five tiers. A first test per stack, compiled with the build:
 [web](docs/getting-started/quick-start-html.md), [MAUI](docs/getting-started/quick-start-maui.md),
 [WPF](docs/getting-started/quick-start-wpf.md), [WinForms](docs/getting-started/quick-start-winforms.md),
-[native Android](docs/getting-started/quick-start-native-android.md), [Stride](docs/getting-started/quick-start-stride.md)
+[native Android](docs/getting-started/quick-start-native-android.md), [native iOS](docs/getting-started/quick-start-native-ios.md), [Stride](docs/getting-started/quick-start-stride.md)
 and [scenarios in Markdown](docs/getting-started/quick-start-bdd.md).
 
 ## Samples

@@ -3,7 +3,8 @@
 Each stack owns its element and its driver. What the stacks share is in Core, once, and a stack's
 interfaces derive from Core's. The title is the decision's first form: MAUI left Core's old
 interfaces first (2026-09), Html (2026-09-26) and native Android (2026-10-07) followed, and since
-2026-11-10 WPF, WinForms and Stride have too. Every stack is on the call model and the first model
+2026-11-10 WPF, WinForms and Stride have too. Native iOS (2026-11-16) was built on Core's
+interfaces from the start (AD-042). Every stack is on the call model and the first model
 is gone (AD-029).
 
 | Layer | Where | What |

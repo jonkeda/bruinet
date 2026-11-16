@@ -6,7 +6,7 @@ What the Appium stacks share: Appium's error mapping, the emulator's host addres
 dotnet add package Bruinet.Appium
 ```
 
-**Name with it:** Brought by Bruinet.Maui.Appium and Bruinet.NativeAndroid.
+**Name with it:** Brought by Bruinet.Maui.Appium, Bruinet.NativeAndroid and Bruinet.NativeIos.
 
 The packages come from the organisation's GitHub Packages feed; Bruinet's README says which package goes with which
 app, and what each targets.

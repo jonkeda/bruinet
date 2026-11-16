@@ -37,6 +37,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - `Bruinet.Logging` - an `ILoggerProvider` for an app's services: what the app logs goes with the step that made it (`StepLog` in Core)
 - `Bruinet.Mocking`
 - `Bruinet.NativeAndroid` - native Android apps (Views, AndroidX, Material) through Appium, in MAUI's and Html's shape
+- `Bruinet.NativeIos` - native iOS apps (UIKit) through Appium and XCUITest, in native Android's shape
 - `Bruinet.Presenter`
 - `Bruinet.Stride`
 - `Bruinet.Uat` - UAT on top of `Bruinet.Bdd`: pages, controls, page scope, apps, the UAT test base
@@ -59,6 +60,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - Blazor;
 - MAUI;
 - native Android (`Bruinet.Samples.NativeAndroid.App`, a .NET for Android control gallery);
+- native iOS (`Bruinet.Samples.NativeIos.App`, a .NET for iOS control gallery);
 - Stride;
 - WinForms;
 - WPF;

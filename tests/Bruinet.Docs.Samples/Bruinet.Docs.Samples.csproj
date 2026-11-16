@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\src\Bruinet.Maui\Bruinet.Maui.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Maui.Headless\Bruinet.Maui.Headless.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.NativeAndroid\Bruinet.NativeAndroid.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.NativeIos\Bruinet.NativeIos.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Stride\Bruinet.Stride.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Stride.Automation\Bruinet.Stride.Automation.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />

@@ -37,6 +37,10 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
   ControlObject, container or collection.
 - [android-ui-test](.github/skills/android-ui-test/SKILL.md) - write native Android UI tests, UAT
   scenarios and page objects (the gallery app on the emulator).
+- [ios-control](.github/skills/ios-control/SKILL.md) - create or extend a native iOS
+  ControlObject, container or collection.
+- [ios-ui-test](.github/skills/ios-ui-test/SKILL.md) - write native iOS UI tests, UAT scenarios
+  and page objects (the gallery app on the simulator, on a Mac).
 - [scrape-pages](.github/skills/scrape-pages/SKILL.md) - make Html or Blazor page objects and
   controls from an app's pages recorded with the Scraper (MCP `scrape_start`,
   `scrape_detect_patterns`, `scrape_write_file`, `scrape_build`).

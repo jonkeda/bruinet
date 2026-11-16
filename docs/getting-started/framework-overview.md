@@ -30,6 +30,7 @@ Tests and UAT scenarios
 | `Bruinet.Stride` and `Bruinet.Stride.Automation` | Stride UI automation and in-game hooks |
 | `Bruinet.Mocking` | WireMock and mock sensor helpers |
 | `Bruinet.NativeAndroid` | Native Android automation helpers |
+| `Bruinet.NativeIos` | Native iOS automation helpers |
 | `Bruinet.Uat` | Markdown-driven UAT scenario runtime |
 | `Bruinet.Presenter` | Desktop presenter for UAT workspaces |
 

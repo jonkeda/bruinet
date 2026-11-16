@@ -42,7 +42,7 @@ element replaced before it can be read - fails the call and returns
 - A `Core` method retries its own action instead of confirming its effect (R0).
 - A `Core` method opens its own wait loop instead of relying on the call's poll (R2).
 - The element type in a `.tpl.cs` is a platform driver type rather than `IMauiElement`,
-  `IHtmlElement` or `INativeAndroidElement`.
+  `IHtmlElement`, `INativeAndroidElement` or `INativeIosElement`.
 - A `Core` method that has acted throws `ElementNotReadyException`: the call would act again.
   After acting, a missing effect is a confirmation failure.
 
@@ -69,3 +69,11 @@ the same Core interfaces, so the UAT verbs are the same. Controls carry Android'
 (`EditText`, `Spinner`, `RecyclerView`), not MAUI's. Gestures are named and relative to the view;
 no public member takes screen coordinates. An action Android has no route for (`Hover`) throws
 `RouteUnavailableException`.
+
+## Native iOS controls
+
+The same as native Android's (AD-042), from `.tpl.cs` templates under
+`src/Bruinet.NativeIos/Controls` (`tools/Scripts/CreateNativeIos.sh`), with `INativeIosElement` as
+the element type. A member Android has keeps its name and meaning. Controls carry UIKit's names
+(`TextField`, `SegmentedControl`, `TableView`). `Hover` throws `RouteUnavailableException`;
+`RightClick` is a long press.

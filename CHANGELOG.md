@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Bruinet.NativeIos**: native iOS apps (UIKit) through Appium and XCUITest, in native Android's shape (AD-042): page
+  objects, generated controls with UIKit's names (`TextField`, `SegmentedControl`, `TableView`), Springboard's
+  permission prompt (`PermissionAlert`), collections keyed by a row's text, evidence and simulator recording
+  (`IosRecorder`). `Bruinet.Appium` gains `IosHost` (`simctl`). A .NET for iOS gallery app, its UI tests, and the native
+  Android feature files, now shared (`Target | NATIVEANDROID, NATIVEIOS`, `@native`). Guides: the
+  [platform guide](docs/platform-guides/native-ios.md), the [run guide](docs/run/native-ios.md) and the
+  [quick start](docs/getting-started/quick-start-native-ios.md); skills `ios-control` and `ios-ui-test`.
 - Gaminet, the migrator, has its folder beside Frainet and Lirenet: its own solution and build settings, and an empty
   `gaminet` tool (`gaminet --help`). It has no commands yet.
 - Frainet: a spec may have a `## Background` (after Rules) and chapters (`### Chapter: <name>` with Given and When,

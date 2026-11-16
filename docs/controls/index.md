@@ -49,5 +49,8 @@ Controls should not:
 - Native Android controls: `src/Bruinet.NativeAndroid/Controls`, generated the same way, with
   Android's widget names (`EditText`, `Spinner`, `RecyclerView`) and the same members and UAT
   verbs. See the [native Android guide](../platform-guides/native-android.md).
+- Native iOS controls: `src/Bruinet.NativeIos/Controls`, the same members as native Android with
+  UIKit's names (`TextField`, `SegmentedControl`, `TableView`). See the
+  [native iOS guide](../platform-guides/native-ios.md).
 
 See [Core Interfaces](interfaces.md).
