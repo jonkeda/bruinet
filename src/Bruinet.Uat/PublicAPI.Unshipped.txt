@@ -15,3 +15,6 @@ static Bruinet.Uat.UatScenarioTraits.Of(string! file, string! scenarioName) -> S
 static Bruinet.Uat.UiSetup.Setup(System.Action! setup) -> void
 static Bruinet.Uat.UiSetup.Setup<T>(System.Func<T>! setup) -> T
 static Bruinet.Uat.UiSetup.SetupAsync(System.Func<System.Threading.Tasks.Task!>! setup) -> System.Threading.Tasks.Task!
+Bruinet.Uat.BddDocumentOrder
+Bruinet.Uat.BddDocumentOrder.BddDocumentOrder() -> void
+Bruinet.Uat.BddDocumentOrder.OrderTestCases<TTestCase>(System.Collections.Generic.IEnumerable<TTestCase>! testCases) -> System.Collections.Generic.IEnumerable<TTestCase>!

@@ -17,7 +17,7 @@ internal static class ScrapeCommands
 {
     public static Command Build(CliIo io) => new("scrape", "The Scraper: record or explore an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
-        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Resolve(io), DraftTest(io), Config(io), InstallBrowser(io),
+        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Look(io), Resolve(io), DraftTest(io), Config(io), InstallBrowser(io),
     };
 
     private static Command New(CliIo io)
@@ -312,6 +312,47 @@ internal static class ScrapeCommands
             }
 
             return hits.Count > 0 ? 0 : 1;
+        });
+        return command;
+    }
+
+    // 0 when the page opened and every click landed, 1 when something stopped it.
+    private static Command Look(CliIo io)
+    {
+        var (solution, project, json, headless) = (Solution(), Project(), Json(), Headless());
+        var url = new Option<string?>("--url") { Description = "The address, full or a path on the start URL's site. Default: the config's StartUrl." };
+        var click = new Option<string[]>("--click") { Description = "Click this before looking, as the page says it (\"+ Contact\"), field: and the label of a field (field:Status, which opens its list), or css: and a selector. Several, in order.", AllowMultipleArgumentsPerToken = false };
+        var waitMs = Positive("--wait-ms", "How long the page gets to settle after it opens and after each click. Default: 2000.");
+        var command = new Command("look", "Open a page as the project's saved sign-in, click what is asked, and say what it shows: headings, buttons, fields, messages. Under the project's guards; nothing is typed or saved.")
+        {
+            project, solution, url, click, waitMs, headless, json,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var options = new Bruinet.Scraper.Service.LookOptions
+            {
+                Url = parsed.GetValue(url),
+                Clicks = parsed.GetValue(click) ?? [],
+                Visible = !parsed.GetValue(headless) && io.Interactive,
+                WaitMs = parsed.GetValue(waitMs) ?? 2000,
+            };
+            var look = await service.LookAsync(ProjectName(service, parsed.GetValue(project), io), options, cancellationToken).ConfigureAwait(false);
+            if (parsed.GetValue(json))
+            {
+                await io.Out.WriteLineAsync(ToJson(look)).ConfigureAwait(false);
+            }
+            else
+            {
+                foreach (var step in look.Steps)
+                    await io.Out.WriteLineAsync(step.Refused is null ? $"clicked '{step.Clicked}'" : $"'{step.Asked}': {step.Refused}").ConfigureAwait(false);
+                if (look.Facts is not null)
+                    await io.Out.WriteLineAsync(look.Facts.ToText()).ConfigureAwait(false);
+                if (look.Problem is not null)
+                    await io.Error.WriteLineAsync(look.Problem).ConfigureAwait(false);
+            }
+
+            return look.Problem is null ? 0 : 1;
         });
         return command;
     }

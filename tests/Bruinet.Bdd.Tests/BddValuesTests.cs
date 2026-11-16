@@ -25,6 +25,16 @@ public sealed class BddValuesTests
         Done,
     }
 
+    [Fact]
+    public void AText_WithTheRunPlaceholder_HoldsTheRunsMarker()
+    {
+        var marker = Bruinet.Core.Testing.RunMarker.Current;
+
+        Assert.Equal($"{marker} Test contact", Read<string>("\"{run} Test contact\""));
+        Assert.True(Bruinet.Core.Testing.RunMarker.IsMarked(Read<string>("\"{run} Test contact\"")));
+        Assert.Equal("Test contact", Read<string>("\"Test contact\""));
+    }
+
     [Theory]
     [InlineData("7", 7)]
     [InlineData("-3", -3)]

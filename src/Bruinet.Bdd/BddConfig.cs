@@ -44,6 +44,9 @@ public sealed record BddConfig(
         ? [.. folders.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)]
         : [];
 
+    // ShareChapters in the Runtime table: a chapter's steps run once for the examples that only check (ChapterRuns).
+    internal bool SharesChapters => Runtime.TryGetValue("ShareChapters", out var share) && share.Trim().Equals("true", StringComparison.OrdinalIgnoreCase);
+
     /// <summary>The suite's <c>Head</c>, trimmed; null when it names none.</summary>
     public string? SuiteHead => Runtime.TryGetValue(BddConfigFields.Head, out var head) && head.Trim() is { Length: > 0 } trimmed ? trimmed : null;
 

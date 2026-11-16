@@ -44,3 +44,16 @@ accepts it; you never do, unless the person has said in so many words that you d
 The owner accepts by setting `Status: accepted <date>`; open questions must be gone by then: each
 becomes a rule, a choice (`## Choices`) or a line under Not in this journey. If the owner delegated
 the decision, say so in the commit and keep each decided question visible as a choice.
+
+## Facts without a probe
+
+A fact the recordings do not hold (a form's required fields, what an empty submit says, a list's options, a dialog's
+question) comes from one command, not from a throwaway test:
+
+```bash
+bruinet scrape look --url /contact#/create --click "Create"
+bruinet scrape look --url /project/create --click "field:Status"
+```
+
+`bruinet scrape find <text>` reads the recordings; `look` reads the running app, under the project's guards. What a
+filled and saved form does is not a look's to find: nothing is typed. That is the example's own run.

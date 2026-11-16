@@ -241,7 +241,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource
                 frames[frame] = capture;
         }
         if (!frames.TryGetValue(page.MainFrame, out var main))
-            throw new InvalidOperationException($"The page at {page.Url} could not be captured: it navigated away while it was read. Capture again.");
+            throw new Bruinet.Scraper.Explore.PageMovedException($"The page at {page.Url} could not be captured: it navigated away while it was read. Capture again.");
 
         // Which iframe node (local number in its parent frame) holds which frame.
         var hosts = new Dictionary<(IFrame, int), IFrame>();
@@ -439,7 +439,13 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     {
         try
         {
-            await Started().GotoAsync(url, Opening).ConfigureAwait(false);
+            // Going to the address the page is at already, hash route included, loads nothing: what an earlier click
+            // opened (a menu, a dialog) would still cover the page. Explore asks for the page as it opens, so reload.
+            var page = Started();
+            var stays = ClickRefusal.StaysInDocument(page.Url, url);
+            await page.GotoAsync(url, Opening).ConfigureAwait(false);
+            if (stays)
+                await page.ReloadAsync(new() { WaitUntil = WaitUntilState.DOMContentLoaded }).ConfigureAwait(false);
             return true;
         }
         catch (Exception e) when (e is PlaywrightException or TimeoutException)
@@ -464,7 +470,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         }
         catch (Exception e) when (e is PlaywrightException or TimeoutException)
         {
-            return e.Message.ReplaceLineEndings(" ").Split(" Call log:")[0]; // hidden, detached or covered
+            return ClickRefusal.Describe(e.Message); // hidden, detached or covered
         }
     }
 

@@ -1,0 +1,194 @@
+using Bruinet.Scraper.Snapshots;
+
+namespace Bruinet.Scraper.Service;
+
+/// <summary>A field of a page: its label, what kind it is, and whether it says it is required.</summary>
+/// <param name="Label">The field's name, placeholder or id.</param>
+/// <param name="Kind">The input's type, or the element (<c>select</c>, <c>textarea</c>, <c>combobox</c>).</param>
+/// <param name="Required">Whether the field itself says it is required.</param>
+/// <param name="Disabled">Whether it is disabled.</param>
+public sealed record PageField(string Label, string Kind, bool Required, bool Disabled);
+
+/// <summary>
+/// What a page shows, as the few facts a spec or a page object is written from: its headings, buttons, tabs, fields,
+/// what is marked as required, its messages, a table's columns, an open list's options. Read from one capture, shadow
+/// roots included; only what is on the screen counts. When a dialog is open, the facts are the dialog's.
+/// </summary>
+public sealed record PageFacts
+{
+    /// <summary>The page's address.</summary>
+    public required string Location { get; init; }
+
+    /// <summary>The browser tab's title.</summary>
+    public required string Title { get; init; }
+
+    /// <summary>The open dialog's first words, when the facts are a dialog's; otherwise null.</summary>
+    public string? Dialog { get; init; }
+
+    public IReadOnlyList<string> Headings { get; init; } = [];
+
+    public IReadOnlyList<string> Buttons { get; init; } = [];
+
+    /// <summary>The tabs, the selected one marked with a star.</summary>
+    public IReadOnlyList<string> Tabs { get; init; } = [];
+
+    public IReadOnlyList<PageField> Fields { get; init; } = [];
+
+    /// <summary>Texts the page marks as required (a class named so): a label's star, where the field itself says nothing.</summary>
+    public IReadOnlyList<string> MarkedRequired { get; init; } = [];
+
+    /// <summary>Alerts and validation messages.</summary>
+    public IReadOnlyList<string> Messages { get; init; } = [];
+
+    /// <summary>The header cells of the tables on the page.</summary>
+    public IReadOnlyList<string> Columns { get; init; } = [];
+
+    /// <summary>The options of a list that is open.</summary>
+    public IReadOnlyList<string> Options { get; init; } = [];
+
+    private const int Most = 60;
+
+    /// <summary>The facts of a capture.</summary>
+    /// <param name="snapshot">The capture.</param>
+    public static PageFacts Of(ScrapeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var shown = Shown(snapshot);
+
+        // An open dialog covers the page: what a person can read and press is the dialog's.
+        var dialog = shown.LastOrDefault(node => node.Role == "dialog" || node.Type == "dialog");
+        var scope = dialog is null ? shown : [.. shown.Where(node => Within(snapshot, node, dialog.Number))];
+
+        string Text(ScrapeNode node) => Clean(node.Text is { Length: > 0 } own ? own : node.Name ?? snapshot.TextWithin(node) ?? string.Empty);
+
+        return new PageFacts
+        {
+            Location = snapshot.Location,
+            Title = snapshot.Title,
+            Dialog = dialog is null ? null : Shorten(Clean(string.Join(' ', scope.Select(node => node.Text).Where(text => text is { Length: > 0 }).Take(12))), 160),
+            Headings = Texts(scope.Where(node => node.Type is "h1" or "h2" or "h3" || node.Role == "heading"), Text),
+            Buttons = Texts(scope.Where(IsButton), node => Text(node) + (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" ? " (disabled)" : string.Empty)),
+            Tabs = Texts(scope.Where(node => node.Role == "tab" || Classes(node).Contains("v-tab")), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
+            Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
+            MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
+            Messages = Texts(scope.Where(IsMessage), Text),
+            Columns = Texts(scope.Where(node => node.Type == "th" || node.Role == "columnheader"), Text),
+            Options = Texts(scope.Where(node => node.Role is "option" or "menuitem"), Text),
+        };
+    }
+
+    private static PageField Field(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ScrapeNode> shown)
+    {
+        var label = LabelOf(snapshot, node, shown);
+        var kind = node.Role == "combobox" ? "combobox" : node.Type == "input" ? node.Attribute("type") ?? "text" : node.Type;
+        return new PageField(Clean(label), kind, node.Attributes.ContainsKey("required") || node.Attribute("aria-required") == "true", node.Attributes.ContainsKey("disabled"));
+    }
+
+    /// <summary>
+    /// What a field is called: its own name; where that is only its placeholder, or it has none, the text beside it;
+    /// then its placeholder, and a name or id a person gave it.
+    /// </summary>
+    internal static string LabelOf(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown)
+    {
+        var placeholder = field.Attribute("placeholder");
+        var named = field.Name is { Length: > 0 } name && !string.Equals(name, placeholder, StringComparison.Ordinal) ? name : null;
+        return Clean(named ?? LabelBeside(snapshot, field, shown) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
+    }
+
+    /// <summary>The elements of a capture that are on the screen.</summary>
+    internal static List<ScrapeNode> Shown(ScrapeSnapshot snapshot)
+        => [.. snapshot.Nodes.Where(node => node.Kind == ScrapeNodeKind.Element && node.Bounds is { Width: > 0, Height: > 0 })];
+
+    // A field with no name of its own is named by the text beside it: the first text before the field in the smallest
+    // part of the page that holds this field and no other (a form's row).
+    private static string? LabelBeside(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown)
+    {
+        var at = field.Parent;
+        for (var level = 0; level < 6 && at > 0; level++, at = snapshot[at].Parent)
+        {
+            var part = at;
+            var inPart = shown.Where(node => node.Number != part && Within(snapshot, node, part)).ToList();
+            // Another field in the part: it is wider than this field's row. A field inside this one, or around it
+            // (a combobox and its input), is the same field.
+            if (inPart.Any(node => IsField(node) && node.Number != field.Number && !Within(snapshot, node, field.Number) && !Within(snapshot, field, node.Number)))
+            {
+                return null;
+            }
+
+            if (inPart.FirstOrDefault(node => node.Number < field.Number && node.Text is { Length: > 0 } && Clean(node.Text).Length > 0) is { } text)
+            {
+                return Clean(text.Text!);
+            }
+        }
+
+        return null;
+    }
+
+    // An id a framework counted out (input-28, list-603) says nothing about the field.
+    private static string? Given(string? id)
+        => id is { Length: > 0 } && !(id.Contains('-', StringComparison.Ordinal) && char.IsAsciiDigit(id[^1])) ? id : null;
+
+    internal static bool IsField(ScrapeNode node)
+        => node.Type is "textarea" or "select" || node.Role == "combobox"
+            || (node.Type == "input" && node.Attribute("type") is not ("hidden" or "button" or "submit"));
+
+    private static bool IsButton(ScrapeNode node)
+        => node.Type == "button" || node.Role == "button"
+            || (node.Type == "input" && node.Attribute("type") is "button" or "submit")
+            || (node.Type == "a" && Classes(node).Any(name => name is "btn" or "button" || name.EndsWith("-btn", StringComparison.Ordinal)));
+
+    private static bool IsMessage(ScrapeNode node)
+        => node.Role is "alert" or "status"
+            || Classes(node).Any(name => name.EndsWith("message", StringComparison.Ordinal) || name.EndsWith("error", StringComparison.Ordinal) || name.Contains("snack", StringComparison.Ordinal) && name.Contains("content", StringComparison.Ordinal));
+
+    private static string[] Classes(ScrapeNode node)
+        => node.Attribute("class")?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
+
+    private static bool Within(ScrapeSnapshot snapshot, ScrapeNode node, int ancestor)
+    {
+        for (var at = node.Number; at > 0; at = snapshot[at].Parent)
+        {
+            if (at == ancestor)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static IReadOnlyList<string> Texts(IEnumerable<ScrapeNode> nodes, Func<ScrapeNode, string> text)
+        => [.. nodes.Select(text).Where(value => value.Trim(' ', '*').Length > 0).Distinct(StringComparer.Ordinal).Take(Most).Select(value => Shorten(value, 80))];
+
+    private static string Clean(string text) => string.Join(' ', text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)).Replace("​", string.Empty, StringComparison.Ordinal).Trim();
+
+    private static string Shorten(string text, int most) => text.Length <= most ? text : text[..most] + "…";
+
+    /// <summary>The facts as lines of text, a kind per line; a kind with nothing is left out.</summary>
+    public string ToText()
+    {
+        var lines = new List<string> { $"{Location}  ({Title})" };
+        if (Dialog is not null)
+        {
+            lines.Add($"A dialog is open, and these are its facts: {Dialog}");
+        }
+
+        void Add(string name, IReadOnlyList<string> values)
+        {
+            if (values.Count > 0)
+            {
+                lines.Add($"{name}: {string.Join(" | ", values)}");
+            }
+        }
+
+        Add("Headings", Headings);
+        Add("Buttons", Buttons);
+        Add("Tabs", Tabs);
+        Add("Fields", [.. Fields.Select(field => $"{field.Label} [{field.Kind}{(field.Required ? ", required" : string.Empty)}{(field.Disabled ? ", disabled" : string.Empty)}]")]);
+        Add("Marked required", MarkedRequired);
+        Add("Messages", Messages);
+        Add("Columns", Columns);
+        Add("Options", Options);
+        return string.Join('\n', lines);
+    }
+}

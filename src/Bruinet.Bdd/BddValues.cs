@@ -97,7 +97,7 @@ public static partial class BddValues
 
         problem = target switch
         {
-            _ when target == typeof(string) => Set(Unquote(trimmed), out value),
+            _ when target == typeof(string) => Set(WithRunMarker(Unquote(trimmed)), out value),
             _ when target == typeof(bool) => ReadBool(trimmed, out value),
             _ when target.IsEnum => ReadEnum(Unquote(trimmed), target, out value),
             _ when IsInteger(target) => ReadNumber(trimmed, target, integer: true, out value),
@@ -302,6 +302,16 @@ public static partial class BddValues
             : Activator.CreateInstance(listType, array);
         return true;
     }
+
+    /// <summary>The placeholder a text value may hold for the run's marker: <c>"{run} Test contact"</c>.</summary>
+    internal const string RunPlaceholder = "{run}";
+
+    // What a test makes on a shared environment starts its name with the run's marker, so it can be told from real
+    // data and cleaned up: a text value says where the marker goes.
+    internal static string WithRunMarker(string text)
+        => text.Contains(RunPlaceholder, StringComparison.Ordinal)
+            ? text.Replace(RunPlaceholder, Bruinet.Core.Testing.RunMarker.Current, StringComparison.Ordinal)
+            : text;
 
     private static BddValueProblem? Set(object? read, out object? value)
     {

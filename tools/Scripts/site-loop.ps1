@@ -15,7 +15,9 @@
       1 Spec          specs/<Spec>.spec.md exists, passes lirenet check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
       5 Scenarios     lirenet trace reaches every rule of the spec from Modules/<Module>
-      6 Run           dotnet test --filter Module=<Module> (and Spec=<spec> for runnable specs), -Runs times, every rule Passing (lirenet trace --results)
+      6 Run           the spec's own tests, -Runs times in a row, every rule Passing (lirenet trace --results): a runnable
+                      spec's examples (--filter Spec=<spec>), otherwise the module's tests (--filter Module=<Module>).
+                      A module's code tests beside its runnable specs run once per loop, not once per spec per run.
 
     Explore (2) and Controls (3) have no gate of their own here: their work shows in 4 to 6.
     A module whose gates all pass is done. A 👤 gate marks the module waiting and the loop goes on to the next one.
@@ -30,6 +32,13 @@
 
 .PARAMETER Module
     Only this module; all modules of 100-Loops.md when empty.
+
+.PARAMETER Spec
+    Only this spec of 100-Loops.md, such as B7.CON.03; all specs of the modules chosen when empty.
+
+.PARAMETER Rule
+    While writing: build, then run only this rule's tests (--filter Rule=<id>), -Runs times. No other gate, and
+    100-Loops.md is left as it is. The gate for the journey is the loop without -Rule.
 
 .PARAMETER Agent
     none (the default: gates only, free and deterministic) or claude (Claude Code headless).
@@ -47,10 +56,14 @@
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Module Hours -Runs 3
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Module Invoices -Agent claude
+    pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Spec B7.CON.03 -Runs 3
+    pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Rule B7.CON.03.R4
 #>
 param(
     [Parameter(Mandatory)][string]$Suite,
     [string]$Module,
+    [string]$Spec,
+    [string]$Rule,
     [ValidateSet('none', 'claude')][string]$Agent = 'none',
     [int]$Runs = 1,
     [int]$Attempts = 2,
@@ -85,6 +98,17 @@ function Invoke-Gate([string]$Name, [scriptblock]$Command) {
     [pscustomobject]@{ Name = $Name; Passed = $passed; Output = $output.Trim(); Seconds = [int]((Get-Date) - $started).TotalSeconds }
 }
 
+# What a gate's row of the report says: the run's summary, else a failing gate's first error, else its last line.
+function Get-GateNote($Gate) {
+    if ($Gate.PSObject.Properties['Summary'] -and $Gate.Summary) { return $Gate.Summary }
+    $lines = @($Gate.Output -split "`n" | Where-Object { $_.Trim() })
+    if (-not $Gate.Passed) {
+        $first = $lines | Where-Object { $_ -match '(: error |\berror [A-Z]+\d+|^\s*Failed |finding\(s\))' } | Select-Object -First 1
+        if ($first) { return $first.Trim() }
+    }
+    $lines | Select-Object -Last 1
+}
+
 function Read-Loops {
     $rows = @()
     foreach ($line in Get-Content $Loops) {
@@ -99,7 +123,8 @@ function Read-Loops {
 function Write-Loops($rows) {
     $text = Get-Content $Loops -Raw
     foreach ($row in $rows) {
-        $pattern = '(?m)^\|\s*' + [regex]::Escape($row.Module) + '\s*\|.*$'
+        # A module may have several specs: a row is its module and its spec.
+        $pattern = '(?m)^\|\s*' + [regex]::Escape($row.Module) + '\s*\|\s*' + [regex]::Escape($row.Spec) + '\s*\|.*$'
         $text = [regex]::Replace($text, $pattern, "| $($row.Module) | $($row.Spec) | $($row.Stage) | $($row.State) | $($row.Waiting) |")
     }
     Set-Content $Loops $text.TrimEnd() -NoNewline
@@ -127,11 +152,44 @@ $report.Add('')
 $report.Add("Suite ``$(Split-Path $Suite -Leaf)``, agent $Agent, $Runs run(s) per module.")
 $report.Add('')
 
+# While writing: one rule, built and run, nothing else. The loop's state is the gate's, so it is not written.
+if ($Rule) {
+    $build = Invoke-Gate 'build' { dotnet build $Solution.FullName -v:q -nologo }
+    $gates = @($build)
+    for ($run = 1; $build.Passed -and $run -le $Runs; $run++) {
+        $test = Invoke-Gate "run $run/${Runs}: Rule=$Rule" { dotnet test $TestProject.FullName --no-build -nologo --filter "Rule=$Rule" --logger trx --results-directory (Join-Path $RunDir "rule-$run") }
+        # A rule no test names is not a pass.
+        if ($test.Output -match 'No test matches') { $test.Passed = $false }
+        $test | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!|No test matches' }) -join ' ').Trim()
+        $gates += $test
+        if (-not $test.Passed) { break }
+    }
+    $report.Add("## Rule $Rule")
+    $report.Add('')
+    foreach ($g in $gates) {
+        $line = "$(if ($g.Passed) { 'pass' } else { 'FAIL' })  $($g.Name)  $($g.Seconds) s  $(Get-GateNote $g)"
+        $report.Add("- $line")
+        Write-Host $line
+    }
+    foreach ($g in $gates | Where-Object { -not $_.Passed }) {
+        @($g.Output -split "`n" | Where-Object { $_ -match '^\s+Failed |Error Message|^\s{3,}\S' -and $_ -notmatch '^\s+at ' } | Select-Object -First 12) | ForEach-Object { Write-Host $_.TrimEnd() }
+        $report.Add('')
+        $report.Add('```text')
+        $report.Add((($g.Output -split "`n") | Select-Object -Last 60) -join "`n")
+        $report.Add('```')
+    }
+    $report | Set-Content (Join-Path $RunDir 'report.md')
+    Write-Host "Report: $(Join-Path $RunDir 'report.md')"
+    exit (@($gates | Where-Object { -not $_.Passed }).Count -eq 0 ? 0 : 1)
+}
+
 $rows = Read-Loops
 $build = $null
+$moduleTests = @{}
 $stuck = 0
 foreach ($row in $rows) {
     if ($Module -and $row.Module -ne $Module) { continue }
+    if ($Spec -and $row.Spec -ne $Spec) { continue }
     $gates = @()
     $specPath = Join-Path $Suite "specs/$($row.Spec).spec.md"
     $modulePath = Join-Path $TestProject.FullName "Modules/$($row.Module)"
@@ -165,18 +223,35 @@ foreach ($row in $rows) {
             $gates += $gate
             if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'lirenet trace'; $stuck++ }
             else {
-                # 6 Run, -Runs times in a row
+                # 6 Run. A runnable spec's own examples, -Runs times in a row; the module's code tests beside it once
+                # per loop: they are not this spec's, and repeating them per spec and per run proves nothing more.
+                $filter = if ($runsThis) { "Spec=$($row.Spec)" } else { "Module=$($row.Module)" }
+                $moduleOk = $true
+                if ($runsThis) {
+                    if (-not $moduleTests.ContainsKey($row.Module)) {
+                        $moduleResults = Join-Path $RunDir "$($row.Module)-module"
+                        $moduleGate = Invoke-Gate "6 Run: the module's code tests, once" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)" --logger trx --results-directory $moduleResults }
+                        $summary = (($moduleGate.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!|No test matches' }) -join ' ').Trim()
+                        # A module without code tests has nothing to fail.
+                        if ($summary -match 'No test matches') { $moduleGate.Passed = $true }
+                        $moduleGate | Add-Member Summary $summary
+                        $moduleTests[$row.Module] = $moduleGate
+                    }
+                    $gates += $moduleTests[$row.Module]
+                    $moduleOk = $moduleTests[$row.Module].Passed
+                }
                 $green = 0
                 for ($run = 1; $run -le $Runs; $run++) {
-                    $results = Join-Path $RunDir "$($row.Module)-$run"
-                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter "Module=$($row.Module)$(if ($runsThis) { "|Spec=$($row.Spec)" })" --logger trx --results-directory $results }
+                    $results = Join-Path $RunDir "$($row.Spec)-$run"
+                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter $filter --logger trx --results-directory $results }
                     $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
                     $gates += $gate
                     if ($gate.Passed) { $green++ } else { break }
                 }
-                if ($green -eq $Runs) { $row.Stage = '6 Run'; $row.State = 'done'; $row.Waiting = "green $Runs run(s), every rule passing" }
+                if ($green -eq $Runs -and $moduleOk) { $row.Stage = '6 Run'; $row.State = 'done'; $row.Waiting = "green $Runs run(s), every rule passing" }
+                elseif ($green -eq $Runs) { $row.Stage = '7 Triage'; $row.State = 'stuck'; $row.Waiting = "run-triage: a code test of $($row.Module) is not passing"; $stuck++ }
                 else { $row.Stage = '7 Triage'; $row.State = 'stuck'; $row.Waiting = 'run-triage: a rule is not passing'; $stuck++ }
             }
         }
@@ -188,7 +263,7 @@ foreach ($row in $rows) {
     $report.Add('| Gate | Result | Seconds | Note |')
     $report.Add('| --- | --- | --- | --- |')
     foreach ($g in $gates) {
-        $note = if ($g.PSObject.Properties['Summary'] -and $g.Summary) { $g.Summary } else { (($g.Output -split "`n") | Select-Object -Last 1) }
+        $note = Get-GateNote $g
         $report.Add("| $($g.Name) | $(if ($g.Passed) { 'pass' } else { 'FAIL' }) | $($g.Seconds) | $($note -replace '\|', '/') |")
     }
     $report.Add('')

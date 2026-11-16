@@ -190,7 +190,12 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             return default;
         }
         await PauseAsync(cancellationToken).ConfigureAwait(false);
-        var snapshot = await io.Capture(cancellationToken).ConfigureAwait(false);
+        var snapshot = await MovingPage.ReadAsync(io.Capture, PauseAsync, cancellationToken).ConfigureAwait(false);
+        if (snapshot is null)
+        {
+            Report($"Could not read {item.Url} ({item.Via}): the page kept moving while it was read.");
+            return default;
+        }
         if (await CheckAsync(snapshot, requested, "opening " + item.Url, cancellationToken).ConfigureAwait(false) is { } stop)
             return new Reached(null, false, stop);
 
@@ -205,7 +210,12 @@ public sealed class Explorer(ScrapeProject project, IExploreSource source, Explo
             }
             _clicks++;
             await PauseAsync(cancellationToken).ConfigureAwait(false);
-            snapshot = await io.Capture(cancellationToken).ConfigureAwait(false);
+            snapshot = await MovingPage.ReadAsync(io.Capture, PauseAsync, cancellationToken).ConfigureAwait(false);
+            if (snapshot is null)
+            {
+                Report($"Could not read {requested} after clicking '{click.Label}' ({item.Via}): the page kept moving while it was read.");
+                return default;
+            }
             if (await CheckAsync(snapshot, requested, $"clicking '{click.Label}' on {requested}", cancellationToken).ConfigureAwait(false) is { } after)
                 return new Reached(null, false, after);
             if (PageKey.Of(snapshot.Location) != requested)

@@ -83,6 +83,31 @@ Make it bind, in this order:
    or a fixture's phrase where the step makes data on a shared environment: the fixture marks it and removes it after
    the scenario (Bouw7's `I save the booking`).
 
+## A chapter run once
+
+A chapter's Given and When go before each of its examples, so a chapter of ten examples that only read a page opens
+that page ten times. A suite may share the run instead:
+
+```markdown
+## Runtime
+
+| Field | Value |
+| --- | --- |
+| ShareChapters | true |
+```
+
+and, on its scenario class, `[TestCaseOrderer("Bruinet.Uat.BddDocumentOrder", "Bruinet.Uat")]`, which runs the
+scenarios file by file as they are written (xUnit's own order mixes the files).
+
+Then an example whose own steps are all Then runs on the page the example before left, when that one was of the same
+chapter, also only checked, and passed: its own steps run, the chapter's do not. An example with a When of its own, a
+failed example, another chapter or another file starts over with every step. Each example is still a test of its
+own, with its own result; one run alone (`--filter Rule=…`) runs every step. A recording (`BRUINET_RECORD`) never
+shares.
+
+It holds only where **a Then step never changes the page**: a verb that opens something to read it (a menu's
+options) closes it again. That is the suite's to keep, which is why it asks for the sharing.
+
 ## One check per rule
 
 A rule is checked by its example or by a C# test with its `Rule` trait, never both: delete the C# test when the example
@@ -90,7 +115,9 @@ runs. A C# test stays for what an example says badly (a race, a layout, a polled
 
 `lirenet trace <spec> <tests> --runnable` counts the spec's examples as the tests of their rules; with `--results` it
 matches each by its case's name. The site loop (`tools/Scripts/site-loop.ps1`) passes `--runnable`, and runs
-`Spec=<spec>`, for every spec the test project copies.
+`Spec=<spec>`, for every spec the test project copies: the spec's own examples as often as `-Runs` asks, and the
+module's code tests once per loop. `-Spec <id>` takes one spec; `-Rule <id>` builds and runs one rule while it is
+being written, and leaves the loop's state alone.
 
 ## Not yet
 

@@ -303,7 +303,7 @@ public sealed class BddCommandPattern
         for (var i = 0; i < _parameterNames.Count; i++)
         {
             raw[_parameterNames[i]] = match.Groups[$"p{i}"].Value.Trim();
-            arguments[_parameterNames[i]] = TrimArgument(match.Groups[$"p{i}"].Value);
+            arguments[_parameterNames[i]] = BddValues.WithRunMarker(TrimArgument(match.Groups[$"p{i}"].Value));
         }
 
         return new BddCommandMatch(this, arguments) { RawArguments = raw };

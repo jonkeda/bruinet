@@ -334,6 +334,9 @@ public abstract class BddScenarioTestBase<TFixture>
         return RunScenarioWithScopeAsync(scenario, runtime, scope, cancellationToken);
     }
 
+    // What the example before left, per fixture: xUnit makes a test-class instance per case.
+    private static readonly ConditionalWeakTable<object, ChapterRuns> Chapters = new();
+
     private async Task<BddScenarioExecutionResult> RunScenarioWithScopeAsync(
         BddBoundScenario scenario,
         UatRuntime runtime,
@@ -342,17 +345,27 @@ public abstract class BddScenarioTestBase<TFixture>
     {
         using (scope)
         {
+            // A suite that shares chapters runs an example that only checks on the page the one before left, with the
+            // chapter's own steps left out; a recording always runs every step.
+            var chapters = runtime.Config.SharesChapters && Environment.GetEnvironmentVariable(BddRecordingSession.Variable) is not { Length: > 0 }
+                ? Chapters.GetValue(Fixture, _ => new ChapterRuns())
+                : null;
+            var file = scenario.Source.Source.FilePath;
+            var shares = chapters?.Shares(file, scenario.Source.Tags) == true;
+            var run = shares ? ChapterRuns.OwnChecksOf(scenario) : scenario;
             BddScenarioExecutionResult execution;
             try
             {
-                execution = await RecordScenarioAsync(scenario, runtime, scope, cancellationToken).ConfigureAwait(false);
+                execution = await RecordScenarioAsync(run, runtime, scope, cancellationToken, shares ? chapters!.Page : null).ConfigureAwait(false);
             }
             catch
             {
+                chapters?.Ran(file, scenario.Source.Tags, passed: false);
                 AfterFailedScenario(scenario);
                 throw;
             }
 
+            chapters?.Ran(file, scenario.Source.Tags, execution.Result.Passed, execution.Context.CurrentPageName);
             if (execution.Result.Passed)
             {
                 AfterScenario(scenario);
@@ -385,7 +398,8 @@ public abstract class BddScenarioTestBase<TFixture>
         BddBoundScenario scenario,
         UatRuntime runtime,
         IDisposable? scope,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? startsOnPage = null)
     {
         var session = Recordings.GetOrAdd(runtime.ConfigDirectory, directory => new Lazy<BddRecordingSession?>(() => BddRecordingSession.FromEnvironment(directory))).Value;
         await using var recording = session is null ? null : await RecordingFor(session, scenario, cancellationToken).ConfigureAwait(false);
@@ -397,6 +411,12 @@ public abstract class BddScenarioTestBase<TFixture>
             {
                 runtime.ConfigureContext(context);
                 ConfigureScenarioContext(context, scenario, runtime);
+
+                // A run that shares its chapter has no step that names the page: it is the one the chapter left.
+                if (startsOnPage is not null)
+                {
+                    context.CurrentPageName = startsOnPage;
+                }
                 if (scope is Microsoft.Extensions.DependencyInjection.IServiceScope serviceScope)
                 {
                     UatRuntime.ConfigureScope(context, serviceScope.ServiceProvider);

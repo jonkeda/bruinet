@@ -173,6 +173,23 @@ no model.
 - **An agent:** `scrape_explore` (links only and headless unless asked otherwise), `scrape_draft_page_objects`,
   `scrape_check_page_objects` and `scrape_update_config`. Each asks you first.
 
+**A look at one page.** A fact about a page (which fields a form marks as required, what an empty submit answers,
+what a list offers) does not need a recording or a probe test:
+
+```powershell
+bruinet scrape look --url /contact#/create
+bruinet scrape look --url /contact#/create --click "Create"
+bruinet scrape look --url /project/create --click "field:Status"
+```
+
+It opens the address with the project's profile and saved sign-in, clicks what `--click` names, in order, and prints
+the page's facts: its headings, buttons, tabs, fields (named by the label beside them where they have no name of
+their own), what is marked as required, messages, a table's columns, an open list's options. When a dialog is open
+the facts are the dialog's. A click is a text as the page says it, `field:` and a field's label, or `css:` and a
+selector. The project's guards hold: its hosts, its request guard, and for every click what Explore itself may not
+click (`Never click`, the danger words). Nothing is typed, so a form is never filled; what a filled form does is a
+test's to find out.
+
 **Signing in is yours.** Explore uses the project's browser profile. When it reaches a sign-in page
 (the config's `LoginUrl`, a page with a password field it was sent to, or another host), it stops
 and asks you to sign in in the window. It never types. A project whose UI suite already signs in can

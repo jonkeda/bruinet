@@ -43,6 +43,27 @@ public sealed class BddBinderTests
     }
 
     [Fact]
+    public void Bind_ATextWithTheRunPlaceholder_GivesTheRunsMarker()
+    {
+        var document = ParseValid("""
+            # Feature: Contacts
+
+            ## Scenario: A contact is made
+
+            ```gherkin
+            Given I am on the Login page
+            When I enter "{run} Test contact" into User name
+            ```
+            """);
+
+        var result = BddBinder.Bind(document, CreateBasicCatalog());
+
+        Assert.True(result.Success, FormatDiagnostics(result));
+        var value = Assert.Single(result.Document!.Scenarios).Invocations[1].Arguments["value"];
+        Assert.Equal($"{Bruinet.Core.Testing.RunMarker.Current} Test contact", value);
+    }
+
+    [Fact]
     public void Bind_ExactPhrase_BeatsParameterizedPhrase()
     {
         var document = ParseValid("""
