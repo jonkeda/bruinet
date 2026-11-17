@@ -115,6 +115,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         _context.Page += (_, page) => _ = FollowInRecordedPageAsync(page);
         _page.FrameNavigated += OnFrameNavigated;
         _page.Download += (_, download) => Downloaded?.Invoke(this, download.SuggestedFilename);
+        _context.Response += OnResponse;
         // With a handler, Playwright no longer dismisses a dialog itself: a confirm is always answered no.
         _page.Dialog += (_, dialog) =>
         {
@@ -507,6 +508,27 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         var page = Started();
         var cookies = await _context!.CookiesAsync([page.Url]).ConfigureAwait(false);
         return cookies.Where(c => c.HttpOnly).Select(c => c.Name).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+    }
+
+    private readonly System.Collections.Concurrent.ConcurrentQueue<Bruinet.Scraper.Service.PageCall> _calls = new();
+
+    /// <summary>
+    /// The calls the page's scripts made since the last <see cref="TakeCalls"/> (fetch and XHR, not documents, scripts
+    /// or images), each with its answer's status. Never a header: a token is in none of it.
+    /// </summary>
+    public IReadOnlyList<Bruinet.Scraper.Service.PageCall> TakeCalls()
+    {
+        var calls = new List<Bruinet.Scraper.Service.PageCall>();
+        while (_calls.TryDequeue(out var call))
+            calls.Add(call);
+        return calls;
+    }
+
+    private void OnResponse(object? sender, IResponse response)
+    {
+        var request = response.Request;
+        if (request.ResourceType is "xhr" or "fetch")
+            _calls.Enqueue(Bruinet.Scraper.Service.PageCall.Of(request.Method, request.Url, response.Status, request.Method is "GET" or "HEAD" or "OPTIONS" ? null : request.PostData));
     }
 
     /// <summary>How long a click waits for its element to be visible and still.</summary>

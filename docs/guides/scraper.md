@@ -197,6 +197,11 @@ selector. The project's guards hold: its hosts, its request guard, and for every
 click (`Never click`, the danger words). Nothing is typed, so a form is never filled; what a filled form does is a
 test's to find out.
 
+**The calls a page makes.** `--calls` adds a line per call the page's scripts made (fetch and XHR) after the last
+click, or on opening when nothing is clicked: `Call: GET https://api…/organization/department/904 -> 200`, and for a
+call that writes what it sent. It is how a suite learns where a record lives, so a test can delete beside the screen
+what it made on it, without guessing addresses. No header is shown, so no token.
+
 **As another account, and a sign-in that ran out.** `--as Reader` looks with that account's saved sign-in: the file
 named so beside the project's own `SignInState`, in a browser profile of its own, so one account's session never
 answers for another's. When a look meets the sign-in page and `## Explore` has a `RenewSignIn` row, the Scraper runs

@@ -25,6 +25,9 @@ public sealed record LookOptions
 
     /// <summary>How long the page gets to settle after it opens and after each click.</summary>
     public int WaitMs { get; init; } = 2000;
+
+    /// <summary>Whether the look also says which calls the page made: after the last click, or on opening when nothing is clicked.</summary>
+    public bool Calls { get; init; }
 }
 
 /// <summary>One click of a look: what was asked, what was clicked, or why it was not.</summary>
@@ -38,7 +41,11 @@ public sealed record LookStep(string Asked, string? Clicked, string? Refused);
 /// <param name="Steps">The clicks, in order, up to the first that was refused.</param>
 /// <param name="Facts">The page's facts at the end; null when the page did not open.</param>
 /// <param name="Problem">What stopped the look (the page did not open, a sign-in page, a refused click); null when nothing did.</param>
-public sealed record Look(string Url, IReadOnlyList<LookStep> Steps, PageFacts? Facts, string? Problem);
+public sealed record Look(string Url, IReadOnlyList<LookStep> Steps, PageFacts? Facts, string? Problem)
+{
+    /// <summary>The calls the page made after the last click (on opening, when nothing was clicked); empty unless asked for.</summary>
+    public IReadOnlyList<PageCall> Calls { get; init; } = [];
+}
 
 public sealed partial class ScraperService
 {
@@ -200,6 +207,7 @@ public sealed partial class ScraperService
                     return (new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' may not be clicked: {judgement.Reason}."), false);
                 }
 
+                _ = source.TakeCalls(); // only what this click sets off counts
                 if (await source.ClickAsync(node.Number, cancellationToken).ConfigureAwait(false) is { } failed)
                 {
                     steps.Add(new LookStep(asked, null, failed));
@@ -214,7 +222,7 @@ public sealed partial class ScraperService
                     return (new Look(url, steps, PageFacts.Of(snapshot), wentToSignIn), true);
             }
 
-            return (new Look(url, steps, PageFacts.Of(snapshot), null), false);
+            return (new Look(url, steps, PageFacts.Of(snapshot), null) { Calls = options.Calls ? PageCall.Distinct(source.TakeCalls()) : [] }, false);
         }
     }
 

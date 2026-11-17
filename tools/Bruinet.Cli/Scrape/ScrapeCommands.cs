@@ -341,9 +341,10 @@ internal static class ScrapeCommands
         var click = new Option<string[]>("--click") { Description = "Click this before looking, as the page says it (\"+ Contact\"), field: and the label of a field (field:Status, which opens its list), or css: and a selector. Several, in order.", AllowMultipleArgumentsPerToken = false };
         var waitMs = Positive("--wait-ms", "How long the page gets to settle after it opens and after each click. Default: 2000.");
         var asAccount = new Option<string?>("--as") { Description = "Look as this account: its saved sign-in beside the project's own (Reader is Reader.json there). Default: the project's own." };
+        var calls = new Option<bool>("--calls") { Description = "Also list the calls the page made (method, address, status, and what a writing call sent): after the last click, or on opening when nothing is clicked. No header is shown." };
         var command = new Command("look", "Open a page as the project's saved sign-in, click what is asked, and say what it shows: headings, buttons, fields, messages. Under the project's guards; nothing is typed or saved.")
         {
-            project, solution, url, click, asAccount, waitMs, headless, json,
+            project, solution, url, click, asAccount, waitMs, calls, headless, json,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -355,6 +356,7 @@ internal static class ScrapeCommands
                 Clicks = parsed.GetValue(click) ?? [],
                 Visible = !parsed.GetValue(headless) && io.Interactive,
                 WaitMs = parsed.GetValue(waitMs) ?? 2000,
+                Calls = parsed.GetValue(calls),
             };
             var look = await service.LookAsync(ProjectName(service, parsed.GetValue(project), io), options, cancellationToken).ConfigureAwait(false);
             if (parsed.GetValue(json))
@@ -367,6 +369,8 @@ internal static class ScrapeCommands
                     await io.Out.WriteLineAsync(step.Refused is null ? $"clicked '{step.Clicked}'" : $"'{step.Asked}': {step.Refused}").ConfigureAwait(false);
                 if (look.Facts is not null)
                     await io.Out.WriteLineAsync(look.Facts.ToText()).ConfigureAwait(false);
+                foreach (var call in look.Calls)
+                    await io.Out.WriteLineAsync("Call: " + call.ToText()).ConfigureAwait(false);
                 if (look.Problem is not null)
                     await io.Error.WriteLineAsync(look.Problem).ConfigureAwait(false);
             }
