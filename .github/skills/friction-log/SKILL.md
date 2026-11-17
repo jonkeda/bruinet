@@ -20,6 +20,13 @@ a retry, a probe or a person adds a row; nothing is too small if it will happen 
 - **Where**: Bruinet, a control library, the suite, `Bouw7 (owner)` for a question to the app's owner,
   or won't fix (only the owner closes one as won't fix, with why).
 
+Add a row with the command, from anywhere in the suite, not by hand and not with a script; it numbers and dates
+the row:
+
+```powershell
+bruinet friction add --stage "6 Run (B7.HRS.04)" --what "The approval list counted 0 rows: its rows are not marked as data rows" --cost "1 failed run" --change "Done: the table's rows are either kind" --where "the suite"
+```
+
 ## The friction step
 
 Every phase ends by fixing its rows: each `Change` done with a test, moved to the harvest, or closed

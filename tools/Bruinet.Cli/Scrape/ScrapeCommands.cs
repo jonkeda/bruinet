@@ -340,15 +340,17 @@ internal static class ScrapeCommands
         var url = new Option<string?>("--url") { Description = "The address, full or a path on the start URL's site. Default: the config's StartUrl." };
         var click = new Option<string[]>("--click") { Description = "Click this before looking, as the page says it (\"+ Contact\"), field: and the label of a field (field:Status, which opens its list), or css: and a selector. Several, in order.", AllowMultipleArgumentsPerToken = false };
         var waitMs = Positive("--wait-ms", "How long the page gets to settle after it opens and after each click. Default: 2000.");
+        var asAccount = new Option<string?>("--as") { Description = "Look as this account: its saved sign-in beside the project's own (Reader is Reader.json there). Default: the project's own." };
         var command = new Command("look", "Open a page as the project's saved sign-in, click what is asked, and say what it shows: headings, buttons, fields, messages. Under the project's guards; nothing is typed or saved.")
         {
-            project, solution, url, click, waitMs, headless, json,
+            project, solution, url, click, asAccount, waitMs, headless, json,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             await using var service = Service(io, parsed.GetValue(solution));
             var options = new Bruinet.Scraper.Service.LookOptions
             {
+                As = parsed.GetValue(asAccount),
                 Url = parsed.GetValue(url),
                 Clicks = parsed.GetValue(click) ?? [],
                 Visible = !parsed.GetValue(headless) && io.Interactive,

@@ -57,3 +57,20 @@ bruinet scrape look --url /project/create --click "field:Status"
 
 `bruinet scrape find <text>` reads the recordings; `look` reads the running app, under the project's guards. What a
 filled and saved form does is not a look's to find: nothing is typed. That is the example's own run.
+
+A look says a table's rows too (how many, and the first three), so an empty list and a full one do not look the
+same. A page only another account sees: `--as Reader`. A sign-in that ran out is renewed by the suite's own command
+(`RenewSignIn` in `scraper.config.md`); without that row, run a test that signs in as the account.
+
+## A module's read-only journeys as one batch
+
+Journeys of one module that only read (lists, tabs, a page at a glance) are made together, not one after another:
+
+1. Every look for all of them first, one command each.
+2. All their specs. Run `lirenet check` on each before anything is built: it costs nothing and names what is wrong.
+3. Their pages and steps, one build, and the bind test (`--filter Category=Bind`).
+4. One run of all their examples (`--filter "Spec=<id>|Spec=<id>"`): the failures of all of them in one run.
+5. A gate per spec (`scenario-from-spec`), with `-AtOnce`.
+
+Four journeys of Bouw7's Hours took 12 minutes each this way, against 20 for one alone. Keep a batch to one module,
+and keep a journey that writes data out of it: it is made alone, one rule at a time.

@@ -190,12 +190,20 @@ bruinet scrape look --url /project/create --click "field:Status"
 
 It opens the address with the project's profile and saved sign-in, clicks what `--click` names, in order, and prints
 the page's facts: its headings, buttons, tabs, fields (named by the label beside them where they have no name of
-their own), what is marked as required, messages, a table's columns, an open list's options, and its links (what each says and where it goes: an open menu
+their own), what is marked as required, messages, a table's columns and rows (how many, and the first three by their cells), an open list's options, and its links (what each says and where it goes: an open menu
 is the app's map). When a dialog is open
 the facts are the dialog's. A click is a text as the page says it, `field:` and a field's label, or `css:` and a
 selector. The project's guards hold: its hosts, its request guard, and for every click what Explore itself may not
 click (`Never click`, the danger words). Nothing is typed, so a form is never filled; what a filled form does is a
 test's to find out.
+
+**As another account, and a sign-in that ran out.** `--as Reader` looks with that account's saved sign-in: the file
+named so beside the project's own `SignInState`, in a browser profile of its own, so one account's session never
+answers for another's. When a look meets the sign-in page and `## Explore` has a `RenewSignIn` row, the Scraper runs
+that command in the project's folder (`{account}` in it is the account looked as), then looks once more. The command
+is the UI suite's own: a test that signs in and saves the sign-in
+(`dotnet test --no-build --filter Category=SignIn -e SUITE_SIGN_IN_AS={account}`). The Scraper types no credential
+itself. Without the row, the look stops and says the sign-in ran out.
 
 **Signing in is yours.** Explore uses the project's browser profile. When it reaches a sign-in page
 (the config's `LoginUrl`, a page with a password field it was sent to, or another host), it stops

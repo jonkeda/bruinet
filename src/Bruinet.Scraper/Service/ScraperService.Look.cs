@@ -14,6 +14,12 @@ public sealed record LookOptions
     /// <summary>What to click, in order: a text as the page shows it, <c>field:</c> and a field's label, or <c>css:</c> and a selector.</summary>
     public IReadOnlyList<string> Clicks { get; init; } = [];
 
+    /// <summary>
+    /// The account to look as: the saved sign-in named so (<c>Reader</c> is <c>Reader.json</c>) in the folder of the
+    /// project's own <c>SignInState</c>. The project's own when null.
+    /// </summary>
+    public string? As { get; init; }
+
     /// <summary>Whether the browser shows.</summary>
     public bool Visible { get; init; }
 
@@ -37,6 +43,32 @@ public sealed record Look(string Url, IReadOnlyList<LookStep> Steps, PageFacts? 
 public sealed partial class ScraperService
 {
     /// <summary>
+    /// The saved sign-in a look starts from: the project's own, or another account's beside it (the same folder, the
+    /// account's name as the file's).
+    /// </summary>
+    /// <param name="configured">The project's own saved sign-in, as a full path; null when it has none.</param>
+    /// <param name="account">The account asked for; null or empty for the project's own.</param>
+    /// <exception cref="ScraperProblem">The project has no saved sign-in to stand beside, the name is a path, or the account has no saved sign-in.</exception>
+    internal static string? SignInFor(string? configured, string? account)
+    {
+        if (string.IsNullOrWhiteSpace(account))
+            return configured;
+        if (configured is null)
+            throw new ScraperProblem($"--as {account} needs a SignInState in {ScraperConfig.FileName}: the account's saved sign-in is looked for beside it.");
+        if (account.IndexOfAny(['/', '\\', ':']) >= 0 || account.Contains("..", StringComparison.Ordinal))
+            throw new ScraperProblem($"'{account}' is not an account's name: give the name of a saved sign-in, such as Reader.");
+        var folder = Path.GetDirectoryName(configured)!;
+        var path = Path.Combine(folder, account + Path.GetExtension(configured));
+        if (!File.Exists(path))
+        {
+            var there = Directory.Exists(folder) ? string.Join(", ", Directory.GetFiles(folder, "*" + Path.GetExtension(configured)).Select(Path.GetFileNameWithoutExtension).Order(StringComparer.OrdinalIgnoreCase)) : string.Empty;
+            throw new ScraperProblem($"No saved sign-in for '{account}' in {folder}{(there.Length > 0 ? $" (there: {there})" : string.Empty)}: run a test that signs in as that account.");
+        }
+
+        return path;
+    }
+
+    /// <summary>
     /// Opens an address with the project's profile and saved sign-in, clicks what is asked, and says what the page shows
     /// then: a fact about a page without a recording or a test. Under the project's guards: its hosts, its request
     /// guard, and for each click what Explore itself may click (never-click, danger words, the click policy). Nothing is
@@ -50,6 +82,70 @@ public sealed partial class ScraperService
     {
         ArgumentNullException.ThrowIfNull(options);
         var project = Project(projectName);
+        var look = await LookOnceAsync(project, options, cancellationToken).ConfigureAwait(false);
+        if (!look.SignedOut || project.Config.Explore.RenewSignIn.Length == 0)
+            return look.Look;
+
+        // The saved sign-in ran out: the suite's own command makes it new (the Scraper types no credential), once.
+        var account = string.IsNullOrWhiteSpace(options.As) ? Path.GetFileNameWithoutExtension(project.SignInStatePath) : options.As;
+        var command = RenewLine(project.Config.Explore.RenewSignIn, account);
+        if (await RunRenewAsync(command, project.Folder, cancellationToken).ConfigureAwait(false) is { } failed)
+            return look.Look with { Problem = $"{look.Look.Problem} The command that renews it failed ({command}): {failed}" };
+        var again = await LookOnceAsync(project, options, cancellationToken).ConfigureAwait(false);
+        return again.SignedOut
+            ? again.Look with { Problem = $"{again.Look.Problem} The sign-in was renewed ({command}) and the sign-in page came again." }
+            : again.Look;
+    }
+
+    /// <summary>
+    /// The browser profile a look uses: the project's own, or one of the account's own beside it, so one account's
+    /// session never answers for another's.
+    /// </summary>
+    internal static string ProfileFor(string profileFolder, string? account)
+        => string.IsNullOrWhiteSpace(account) ? profileFolder : profileFolder.TrimEnd('/', Path.DirectorySeparatorChar) + "-" + account;
+
+    /// <summary>The renew command for an account: <c>{account}</c> in it is the account's name.</summary>
+    internal static string RenewLine(string command, string? account)
+        => command.Replace("{account}", account ?? string.Empty, StringComparison.OrdinalIgnoreCase);
+
+    // Runs the renew command through the shell, in the project's folder; null when it ended well, else why not.
+    private static async Task<string?> RunRenewAsync(string command, string folder, CancellationToken cancellationToken)
+    {
+        var windows = OperatingSystem.IsWindows();
+        var start = new System.Diagnostics.ProcessStartInfo(windows ? "cmd.exe" : "/bin/sh")
+        {
+            WorkingDirectory = folder,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        start.ArgumentList.Add(windows ? "/c" : "-c");
+        start.ArgumentList.Add(command);
+        using var process = System.Diagnostics.Process.Start(start);
+        if (process is null)
+            return "it did not start";
+        var output = process.StandardOutput.ReadToEndAsync(cancellationToken);
+        var errors = process.StandardError.ReadToEndAsync(cancellationToken);
+        using var limit = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        limit.CancelAfter(TimeSpan.FromMinutes(5));
+        try
+        {
+            await process.WaitForExitAsync(limit.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            process.Kill(entireProcessTree: true);
+            return "it took more than 5 minutes";
+        }
+
+        if (process.ExitCode == 0)
+            return null;
+        var last = (await errors.ConfigureAwait(false) + "\n" + await output.ConfigureAwait(false)).Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).LastOrDefault();
+        return $"exit code {process.ExitCode}{(last is null ? string.Empty : ": " + last)}";
+    }
+
+    private async Task<(Look Look, bool SignedOut)> LookOnceAsync(ScrapeProject project, LookOptions options, CancellationToken cancellationToken)
+    {
         if (_recording is not null)
             throw new ScraperProblem("A recording is in progress, and it holds the project's browser profile: stop it first.");
         if (_sourceFor(project.Config.Platform) is not PlaywrightScrapeSource source)
@@ -58,15 +154,16 @@ public sealed partial class ScraperService
             ?? throw new ScraperProblem($"'{options.Url ?? project.Config.StartUrl}' is not an address: give a full address, or a path with a StartUrl in {ScraperConfig.FileName}.");
         var settings = project.Config.Explore;
         if (RequestGuard.RefuseHost(new Uri(url), settings) is { } refused)
-            return new Look(url, [], null, refused);
+            return (new Look(url, [], null, refused), false);
 
+        var signInState = SignInFor(project.SignInStatePath, options.As);
         var steps = new List<LookStep>();
         await using (source.ConfigureAwait(false))
         {
-            await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, options.Visible) { SignInState = project.SignInStatePath }, cancellationToken).ConfigureAwait(false);
+            await source.StartAsync(new ScrapeStart("about:blank", ProfileFor(project.ProfileFolder, options.As), options.Visible) { SignInState = signInState }, cancellationToken).ConfigureAwait(false);
             await source.GuardAsync(new RequestGuard(settings)).ConfigureAwait(false);
             if (!await source.GoToAsync(url, cancellationToken).ConfigureAwait(false))
-                return new Look(url, steps, null, "The page did not open: it did not answer, or a guard refused it.");
+                return (new Look(url, steps, null, "The page did not open: it did not answer, or a guard refused it."), false);
 
             async Task<ScrapeSnapshot?> SettledAsync()
             {
@@ -76,9 +173,9 @@ public sealed partial class ScraperService
 
             var snapshot = await SettledAsync().ConfigureAwait(false);
             if (snapshot is null)
-                return new Look(url, steps, null, "The page kept moving while it was read.");
+                return (new Look(url, steps, null, "The page kept moving while it was read."), false);
             if (SignInPage(project, snapshot) is { } signIn)
-                return new Look(url, steps, PageFacts.Of(snapshot), signIn);
+                return (new Look(url, steps, PageFacts.Of(snapshot), signIn), true);
 
             foreach (var asked in options.Clicks)
             {
@@ -88,7 +185,7 @@ public sealed partial class ScraperService
                 if (LookTarget.Find(snapshot, asked, matched) is not { } node)
                 {
                     steps.Add(new LookStep(asked, null, "Nothing on the page says or matches that."));
-                    return new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' was not found.");
+                    return (new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' was not found."), false);
                 }
 
                 var context = new JudgeContext(settings, uri => project.IsOwnPage(uri.AbsoluteUri))
@@ -100,24 +197,24 @@ public sealed partial class ScraperService
                 if (!LookTarget.MayClick(settings.ClickPolicy, judgement))
                 {
                     steps.Add(new LookStep(asked, null, $"Not clicked: {judgement.Reason}."));
-                    return new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' may not be clicked: {judgement.Reason}.");
+                    return (new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' may not be clicked: {judgement.Reason}."), false);
                 }
 
                 if (await source.ClickAsync(node.Number, cancellationToken).ConfigureAwait(false) is { } failed)
                 {
                     steps.Add(new LookStep(asked, null, failed));
-                    return new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' could not be clicked: {failed}");
+                    return (new Look(url, steps, PageFacts.Of(snapshot), $"'{asked}' could not be clicked: {failed}"), false);
                 }
 
                 steps.Add(new LookStep(asked, judgement.Label.Trim().Trim((char)0x200B).Length > 0 ? judgement.Label.Trim() : asked, null));
                 snapshot = await SettledAsync().ConfigureAwait(false);
                 if (snapshot is null)
-                    return new Look(url, steps, null, "The page kept moving while it was read.");
+                    return (new Look(url, steps, null, "The page kept moving while it was read."), false);
                 if (SignInPage(project, snapshot) is { } wentToSignIn)
-                    return new Look(url, steps, PageFacts.Of(snapshot), wentToSignIn);
+                    return (new Look(url, steps, PageFacts.Of(snapshot), wentToSignIn), true);
             }
 
-            return new Look(url, steps, PageFacts.Of(snapshot), null);
+            return (new Look(url, steps, PageFacts.Of(snapshot), null), false);
         }
     }
 

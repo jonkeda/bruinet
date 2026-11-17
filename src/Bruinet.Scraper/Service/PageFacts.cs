@@ -43,6 +43,12 @@ public sealed record PageFacts
     /// <summary>The header cells of the tables on the page.</summary>
     public IReadOnlyList<string> Columns { get; init; } = [];
 
+    /// <summary>
+    /// The tables' rows: how many are on the screen, then the first few as their cells' texts (<c>3 rows</c>,
+    /// <c>14/11/2026 · Arend · 2.00</c>). Empty when no table has a row with cells.
+    /// </summary>
+    public IReadOnlyList<string> Rows { get; init; } = [];
+
     /// <summary>The options of a list that is open.</summary>
     public IReadOnlyList<string> Options { get; init; } = [];
 
@@ -79,6 +85,7 @@ public sealed record PageFacts
             MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
             Messages = Texts(scope.Where(IsMessage), Text),
             Columns = Texts(scope.Where(node => node.Type == "th" || node.Role == "columnheader"), Text),
+            Rows = RowsOf(snapshot, scope),
             Options = Texts(scope.Where(node => node.Role is "option" or "menuitem"), Text),
             Links = [.. scope.Where(node => node.Type == "a" && Target(snapshot.Location, node.Attribute("href")) is not null)
                 .Select(node => $"{Text(node)} -> {Target(snapshot.Location, node.Attribute("href"))}")
@@ -132,6 +139,22 @@ public sealed record PageFacts
         }
 
         return null;
+    }
+
+    // A row is a tr with cells (a header's row has th, and is the columns). The count first, then the first rows.
+    private static IReadOnlyList<string> RowsOf(ScrapeSnapshot snapshot, IReadOnlyList<ScrapeNode> scope)
+    {
+        var rows = scope.Where(node => node.Type == "tr" || node.Role == "row")
+            .Select(row => scope.Where(cell => cell.Parent == row.Number && (cell.Type == "td" || cell.Role is "cell" or "gridcell")).ToList())
+            .Where(cells => cells.Count > 0)
+            .ToList();
+        if (rows.Count == 0)
+        {
+            return [];
+        }
+
+        string Cell(ScrapeNode cell) => Clean(cell.Text is { Length: > 0 } own ? own : snapshot.TextWithin(cell) ?? string.Empty);
+        return [rows.Count == 1 ? "1 row" : $"{rows.Count} rows", .. rows.Take(3).Select(cells => Shorten(string.Join(" · ", cells.Select(Cell).Where(text => text.Length > 0)), 200))];
     }
 
     // An id a framework counted out (input-28, list-603) says nothing about the field.
@@ -214,6 +237,7 @@ public sealed record PageFacts
         Add("Marked required", MarkedRequired);
         Add("Messages", Messages);
         Add("Columns", Columns);
+        Add("Rows", Rows);
         Add("Options", Options);
         Add("Links", Links);
         return string.Join('\n', lines);

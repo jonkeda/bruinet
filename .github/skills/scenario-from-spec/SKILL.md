@@ -45,6 +45,9 @@ pwsh tools/Scripts/site-loop.ps1 -Suite <suite's folder> -Rule <id>.R4
 It fails when no test names the rule. It leaves `100-Loops.md` alone. Go to the gate only when every rule has
 passed this way once.
 
+Read-only journeys of one module made as a batch (`spec-from-app`) are the exception: one run of all their
+examples first, then one rule at a time only for what failed.
+
 ## Gate
 
 ```bash
@@ -54,6 +57,8 @@ pwsh tools/Scripts/site-loop.ps1 -Suite <suite's folder> -Spec <id> -Runs 3
 which is, per run: the spec's own tests (`dotnet test <suite> --filter "Spec=<id>"`, or `Module=<Module>` for a spec
 that does not run from its examples) and `lirenet trace specs/<id>.spec.md <suite>/Modules --runnable --results …`;
 the module's code tests once, beside it.
+
+A spec that only reads runs its `-Runs` side by side with `-AtOnce`: the gate in about a minute and a half.
 
 Every rule `Passing`. A failure that is the app's (not the test's) stays a failure: hand it to
 `run-triage`. What the spec got wrong goes back to the spec (and its owner), not into the test.

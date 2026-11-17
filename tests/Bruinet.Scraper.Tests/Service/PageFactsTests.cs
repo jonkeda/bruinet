@@ -104,6 +104,56 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void A_table_s_rows_are_counted_and_the_first_are_read_by_their_cells()
+    {
+        var facts = PageFacts.Of(Page(
+            N(1, 0, "body"),
+            N(2, 1, "tr"), N(3, 2, "th", "Date"), N(4, 2, "th", "Employee"),
+            N(5, 1, "tr"), N(6, 5, "td", "14/11/2026"), N(7, 5, "td", "Arend"),
+            N(8, 1, "tr"), N(9, 8, "td", "15/11/2026"), N(10, 8, "td", "Daan")));
+
+        Assert.Equal(["Date", "Employee"], facts.Columns);
+        Assert.Equal(["2 rows", "14/11/2026 · Arend", "15/11/2026 · Daan"], facts.Rows);
+        Assert.Contains("Rows: 2 rows | 14/11/2026 · Arend", facts.ToText(), StringComparison.Ordinal);
+        Assert.Empty(PageFacts.Of(Form()).Rows);
+    }
+
+    [Fact]
+    public void A_look_as_an_account_starts_from_that_account_s_saved_sign_in_beside_the_project_s()
+    {
+        var folder = Directory.CreateTempSubdirectory("bruinet-look-as").FullName;
+        try
+        {
+            var creator = Path.Combine(folder, "Creator.json");
+            File.WriteAllText(creator, "{}");
+            File.WriteAllText(Path.Combine(folder, "Reader.json"), "{}");
+
+            Assert.Equal(creator, ScraperService.SignInFor(creator, null));
+            Assert.Equal(Path.Combine(folder, "Reader.json"), ScraperService.SignInFor(creator, "Reader"));
+            Assert.Contains("there: Creator, Reader", Assert.Throws<ScraperProblem>(() => ScraperService.SignInFor(creator, "Admin")).Message, StringComparison.Ordinal);
+            Assert.Throws<ScraperProblem>(() => ScraperService.SignInFor(creator, "../Reader"));
+            Assert.Throws<ScraperProblem>(() => ScraperService.SignInFor(null, "Reader"));
+            Assert.Equal(Path.Combine(folder, "profile"), ScraperService.ProfileFor(Path.Combine(folder, "profile"), null));
+            Assert.Equal(Path.Combine(folder, "profile-Reader"), ScraperService.ProfileFor(Path.Combine(folder, "profile"), "Reader"));
+        }
+        finally
+        {
+            Directory.Delete(folder, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void The_command_that_renews_a_sign_in_is_the_config_s_with_the_account_in_it()
+    {
+        var config = ScraperConfig.Parse(string.Join('\n',
+            "# Scraper", "", "## App", "", "| Field | Value |", "| --- | --- |", "| Platform | html |", "| StartUrl | https://app.example |", "",
+            "## Explore", "", "| Field | Value |", "| --- | --- |", "| RenewSignIn | dotnet test --filter Category=SignIn -e SIGN_IN_AS={account} |", ""));
+
+        Assert.Equal("dotnet test --filter Category=SignIn -e SIGN_IN_AS={account}", config.Explore.RenewSignIn);
+        Assert.Equal("dotnet test --filter Category=SignIn -e SIGN_IN_AS=Reader", ScraperService.RenewLine(config.Explore.RenewSignIn, "Reader"));
+    }
+
+    [Fact]
     public void A_field_with_a_name_of_its_own_keeps_it()
     {
         var named = N(2, 1, "input", null, ("type", "email")) with { Name = "E-mail address" };

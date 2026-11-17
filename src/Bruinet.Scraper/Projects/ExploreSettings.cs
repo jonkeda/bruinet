@@ -38,6 +38,13 @@ public sealed record ExploreSettings
     /// </summary>
     public string SignInState { get; init; } = "";
 
+    /// <summary>
+    /// A command that makes the saved sign-in new again, run in the project's folder when a look meets a sign-in page
+    /// (a test of the UI suite that signs in: <c>dotnet test --no-build --filter Category=SignIn</c>); <c>{account}</c>
+    /// in it is the account looked as. The Scraper itself types no credential. Empty: the look stops and says so.
+    /// </summary>
+    public string RenewSignIn { get; init; } = "";
+
     /// <summary>A path (or <c>/#/route</c>) the links Explore visits stay under; empty: the whole app.</summary>
     public string Within { get; init; } = "";
 
@@ -89,11 +96,12 @@ public sealed record ExploreSettings
                     "AgentMinutes" => settings with { AgentMinutes = Count(value, line) },
                     "LoginUrl" => settings with { LoginUrl = value },
                     "SignInState" => settings with { SignInState = value },
+                    "RenewSignIn" => settings with { RenewSignIn = value },
                     "Within" => settings with { Within = WithinValue(value, $"Line {line}") },
                     "ClickPolicy" => settings with { ClickPolicy = Policy(value, line) },
                     "BlockMethods" => settings with { BlockMethods = Methods(value, line) },
                     "WebsocketApps" => settings with { WebsocketApps = Websockets(value, line) },
-                    var other => throw new FormatException($"Line {line}: '{other}' is not a field of ## Explore (MaxPages, MaxDepth, MaxMinutes, DelayMs, AgentMinutes, LoginUrl, SignInState, Within, ClickPolicy, BlockMethods, WebsocketApps)."),
+                    var other => throw new FormatException($"Line {line}: '{other}' is not a field of ## Explore (MaxPages, MaxDepth, MaxMinutes, DelayMs, AgentMinutes, LoginUrl, SignInState, RenewSignIn, Within, ClickPolicy, BlockMethods, WebsocketApps)."),
                 };
             }
         }
