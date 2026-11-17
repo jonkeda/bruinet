@@ -21,6 +21,13 @@ the element type. Only the base classes and the platform probe differ.
 | Frame | `FrameScope<TParent>` | `FramesPage.Inner` |
 | Collection with rows | `CollectionObjectBase<TParent, TSelf, TItem>` plus `ItemObjectBase<TSelf>` | `RecyclingListPage.TodoRows` |
 
+A **form's row** (a label and its field) is a component with named parts, one type per kind of field (a text row, a
+select row, a date row), so a page declares `SelectRow ContactType`, not a row whose caller picks the kind. A
+**section** that folds is a container with its rows as members, and opens itself when one of them is asked for. A
+**list's row** is an `ItemObjectBase` with a member per column, found by the column's header, never by its place.
+What not to make: one control with a `Text`, a `Select` and a `Checkbox` on every instance, or one found by a label
+the caller passes for what the app always shows (`html-ui-test`, "Members have names").
+
 ## Probe the element
 
 Read it in the browser's DevTools, or with a short Playwright script: the tag, the ARIA role,

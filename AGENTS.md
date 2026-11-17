@@ -50,8 +50,9 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
   per example, tagged with its rule (stage 5).
 - [run-triage](.github/skills/run-triage/SKILL.md) - classify a run's failures and act on each (stage 7).
 - [friction-log](.github/skills/friction-log/SKILL.md) - a row per workaround, and the harvest (stage 8).
-- [improvement-review](.github/skills/improvement-review/SKILL.md) - every few journeys, a look back for what would
-  make the next ones cheaper: at most five proposals, each with a measure (the site loop says when one is due).
+- [improvement-review](.github/skills/improvement-review/SKILL.md) - every few journeys, a look back on four
+  counts (speed, ease of use, trust, reach): at most five proposals, each with a measure and its price on the other
+  counts (the site loop says when one is due).
 - [site-setup](.github/skills/site-setup/SKILL.md) - a suite for a new site in a container repository.
 - [narrated-review](.github/skills/narrated-review/SKILL.md) - finish a feature with its
   scenarios recorded on video with a voice-over, and a review page (MCP `record_video`,

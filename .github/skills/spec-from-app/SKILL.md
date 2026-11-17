@@ -39,6 +39,10 @@ accepts it; you never do, unless the person has said in so many words that you d
 7. `lirenet check specs/` until it passes. Then set the module in `.testing/100-Loops.md` to
    `1 Spec, waiting: 👤 accept B7.XXX.01 (N open questions)`.
 
+**A form or a list the journey touches gets its page object first**, with a member per field and per column
+(`html-ui-test`, "Members have names"). The spec's "the field ..." and "the column ..." are then looked up in it, and
+the bind check says when one is not there.
+
 ## Accepting
 
 The owner accepts by setting `Status: accepted <date>`; open questions must be gone by then: each

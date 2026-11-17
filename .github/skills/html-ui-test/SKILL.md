@@ -59,6 +59,22 @@ public sealed class FramesPageTests : BlazorSampleTestBase
   `Assert` only when a chain cannot say it. No FluentAssertions.
 - Assert on what the user sees (text, value, checked state, a row), never on app state.
 
+## Members have names; a text is for data
+
+A page object says what the page **has**: a member per field, section, tab, column and button, named after what the
+page calls it and typed as the control it is. Whoever writes the next test reads the page object, not the app.
+
+- **A member that takes a text** (`Field(string label)`, `Tab(string name)`, `Column("Name")`,
+  `[BddControl("the field {label}")]`) is for **data** only: a row by its name, a field an organization made itself,
+  a choice in a list. Never for the app's fixed structure, however fast it is to write: nobody can read the form's
+  fields from it, the editor completes nothing, and a misspelt name fails only in a browser.
+- **A member says its kind.** `SelectRow ContactType`, `TextRow Name`: not a row on which the caller picks `.Text` or
+  `.Select`.
+- **A label that is on the page twice** (a "Sales price" in two sections) is two members, each on its own part.
+- **A row of a list** is a row object with a member per column and its own actions (the next section, Rows).
+- A page with more members than a person types is **drafted** from the app (`scrape-pages`), not shortened to one
+  member with a parameter.
+
 ## Rules that are Html's own
 
 - **Locate by `data-testid`** in page objects: `Locator.ByDataTestId("TodoEdit_Title")`, or a

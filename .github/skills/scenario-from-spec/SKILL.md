@@ -34,6 +34,9 @@ finds for every rule, passing on the app.
   made in a `finally`, and first removes what an earlier failed run left.
 - Exact counts only where only the tests change the data (the Creator's own organization).
 
+A step for a field, a section, a tab or a column goes to a **named member** of the page object. Add the member; do
+not bind the step to one member that takes the name as a text (`html-ui-test`, "Members have names").
+
 ## While writing: one rule
 
 Run the rule you are on, not the spec: a build and that rule's tests, in well under a minute. From Bruinet's root:
