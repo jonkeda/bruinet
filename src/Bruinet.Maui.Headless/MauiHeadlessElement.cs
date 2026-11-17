@@ -197,9 +197,42 @@ internal sealed class MauiHeadlessElement : IMauiElement
 
     #region Identity
 
+    // Stale once off the window, as a device's element of a removed row is. Headless the MAUI object
+    // lives on, so a container that cached a list row would keep finding it after its item left.
     public string InstanceKey
-        => Keys.GetValue(Element, _ => Interlocked.Increment(ref s_nextKey).ToString(CultureInfo.InvariantCulture))
+        => (IsAttached()
+               ? Keys.GetValue(Element, _ => Interlocked.Increment(ref s_nextKey).ToString(CultureInfo.InvariantCulture))
+               : throw new StaleElementException(detail: "The element has left the window, or its list row's item left the list."))
            + (_part == StepperPart.None ? "" : "/" + _part);
+
+    // A list detaches a row whose item left only when it is read again, so the outermost list
+    // around the element is read first.
+    private bool IsAttached()
+    {
+        if (_isApp)
+            return true;
+
+        return AfterAppWork(() =>
+        {
+            ItemsView? outermostList = null;
+            for (var walker = Element.Parent; walker is not null; walker = walker.Parent)
+            {
+                if (walker is ItemsView list)
+                    outermostList = list;
+            }
+
+            if (outermostList is not null)
+                _ = _driver.Read(outermostList);
+
+            for (var walker = (MauiElement?)Element; walker is not null; walker = walker.Parent)
+            {
+                if (walker is Window)
+                    return ReferenceEquals(walker, _driver.Window);
+            }
+
+            return false;
+        });
+    }
 
     public string? AutomationId => _part == StepperPart.None ? Element.AutomationId : Element.AutomationId + _part;
 
