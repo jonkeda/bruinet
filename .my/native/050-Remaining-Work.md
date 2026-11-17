@@ -11,7 +11,7 @@ runs into it. Part of [the Contacts pilot](030-Contacts-Pilot.md).
 | Filter sheet (J2) | Fails on MAUI Windows: the Reset button is not found within the filter sheet. | Not investigated. |
 | Client picker in the project form (J3) | Fails on MAUI Windows: the picker row is "no longer in its collection, or not realized". | Not investigated. |
 | Share as a card (J4) | Not tried. Native Android has no share. | Not started. |
-| MAUI on Android (pilot step 3) | DevFlow cannot log in through the in-app web view today; see step 0 check 6. | After the proof of concept. |
+| MAUI on Android (pilot step 3) | Construction already runs on the emulator through Bruinet (Appium or DevFlow) with mock login and the mock backend. Only the live Acceptance login is untried: step 0 check 6, postponed. | After the proof of concept. |
 | Generic list and dialog steps in Core | Needed by every platform; see [generic steps](040-Generic-Steps.md). | Mac phase I6 waits on this. |
 | Scraper Android source | Appium source for the Scraper. | Mac phase I7 waits on this. |
 | Flaky Bruinet test | `PagedListTests.ScrollToEnd_LoadsEveryPage` failed once and passed once, with and without the fix. | Not investigated. |
