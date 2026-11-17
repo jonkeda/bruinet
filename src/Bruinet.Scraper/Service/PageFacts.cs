@@ -69,7 +69,9 @@ public sealed record PageFacts
 
         // An open dialog covers the page: what a person can read and press is the dialog's.
         var dialog = shown.LastOrDefault(node => node.Role == "dialog" || node.Type == "dialog");
-        var scope = dialog is null ? shown : [.. shown.Where(node => Within(snapshot, node, dialog.Number))];
+        // A list or a calendar the dialog opened is drawn beside it, not in it: it is the dialog's too.
+        var beside = dialog is null ? [] : shown.Where(node => IsPopup(node) && !Within(snapshot, node, dialog.Number)).Select(node => node.Number).ToList();
+        var scope = dialog is null ? shown : [.. shown.Where(node => Within(snapshot, node, dialog.Number) || beside.Any(popup => Within(snapshot, node, popup)))];
 
         string Text(ScrapeNode node) => Clean(node.Text is { Length: > 0 } own ? own : node.Name ?? snapshot.TextWithin(node) ?? string.Empty);
 
@@ -93,6 +95,10 @@ public sealed record PageFacts
                 .Distinct(StringComparer.Ordinal).Take(2 * Most)],
         };
     }
+
+    // An open menu, list or calendar: by its role, or as Vuetify marks the one that is open.
+    private static bool IsPopup(ScrapeNode node)
+        => node.Role is "menu" or "listbox" || Classes(node).Contains("menuable__content__active");
 
     private static PageField Field(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ScrapeNode> shown)
     {

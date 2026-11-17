@@ -89,6 +89,21 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void A_list_or_a_calendar_a_dialog_opened_beside_it_is_the_dialog_s_too()
+    {
+        var facts = PageFacts.Of(Form(
+            N(12, 1, "div", null, ("role", "dialog")),
+            N(13, 12, "button", "Cancel"),
+            N(14, 1, "div", null, ("role", "listbox")),
+            N(15, 14, "div", "Esther Voorbeeld", ("role", "option")),
+            N(16, 1, "div", null, ("class", "v-menu__content menuable__content__active")),
+            N(17, 16, "button", "November 2026")));
+
+        Assert.Equal(["Cancel", "November 2026"], facts.Buttons);
+        Assert.Equal(["Esther Voorbeeld"], facts.Options);
+    }
+
+    [Fact]
     public void An_open_menu_s_links_are_the_app_s_map()
     {
         var facts = PageFacts.Of(Page(
