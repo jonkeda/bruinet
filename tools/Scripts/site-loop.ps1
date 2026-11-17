@@ -15,6 +15,7 @@
       1 Spec          specs/<Spec>.spec.md exists, passes lirenet check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
       5 Scenarios     lirenet trace reaches every rule of the spec from Modules/<Module>
+                      and, for runnable specs, every step binds (--filter Category=Bind: no browser, once per loop)
       6 Run           the spec's own tests, -Runs times in a row, every rule Passing (lirenet trace --results): a runnable
                       spec's examples (--filter Spec=<spec>), otherwise the module's tests (--filter Module=<Module>).
                       A module's code tests beside its runnable specs run once per loop, not once per spec per run.
@@ -25,6 +26,8 @@
     output, then the gate again, up to -Attempts times; then the module is stuck.
 
     Writes .testing/100-Loops.md and .testing/runs/<yyyy-MM-dd-HHmm>/report.md (and the runs' .trx files beside it).
+    The report ends with "Improvement review" when the suite's .testing/600-Improvements.md is behind: as many
+    journeys done since its last review as its Every row says (the improvement-review skill).
     Exit code 0 when every module is done or waiting for a person, 1 when one is stuck.
 
 .PARAMETER Suite
@@ -46,6 +49,10 @@
 .PARAMETER Runs
     How many green runs in a row stage 6 asks (the proposal's phase gate is 3).
 
+.PARAMETER AtOnce
+    Stage 6's runs side by side, a test process each, instead of one after another. For a journey that only reads:
+    runs that write in the same account at once would break each other.
+
 .PARAMETER Attempts
     Agent attempts per failed gate.
 
@@ -57,6 +64,7 @@
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Module Hours -Runs 3
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Module Invoices -Agent claude
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Spec B7.CON.03 -Runs 3
+    pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Spec B7.CON.03 -Runs 3 -AtOnce
     pwsh tools/Scripts/site-loop.ps1 -Suite ../Bouw7 -Rule B7.CON.03.R4
 #>
 param(
@@ -66,6 +74,7 @@ param(
     [string]$Rule,
     [ValidateSet('none', 'claude')][string]$Agent = 'none',
     [int]$Runs = 1,
+    [switch]$AtOnce,
     [int]$Attempts = 2,
     [int]$AgentMinutes = 20
 )
@@ -131,6 +140,24 @@ function Write-Loops($rows) {
     Add-Content $Loops ''
 }
 
+# The outer loop (the improvement-review skill): the suite's 600-Improvements.md says how often (Every, 5 journeys
+# unless it says otherwise) and how many journeys were done at its last review. Nothing when the suite has no such file.
+function Get-ReviewDue([string]$Improvements, [int]$Done) {
+    if (-not (Test-Path $Improvements)) { return $null }
+    $every = 5
+    $last = $null
+    foreach ($line in Get-Content $Improvements) {
+        if ($line -match '^\|\s*Every\s*\|\s*(?<n>\d+)') { $every = [int]$Matches.n }
+        elseif ($line -match '^\|\s*(?<nr>\d+)\s*\|\s*(?<date>\d{4}-\d{2}-\d{2})\s*\|\s*(?<done>\d+)\s*\|') {
+            $last = [pscustomobject]@{ Number = [int]$Matches.nr; Date = $Matches.date; Done = [int]$Matches.done }
+        }
+    }
+    $since = $Done - $(if ($last) { $last.Done } else { 0 })
+    if ($since -lt $every) { return $null }
+    $after = if ($last) { "review $($last.Number) of $($last.Date)" } else { 'the start: no review yet' }
+    "An improvement review is due: $since journeys done since $after (every $every). Skill: improvement-review."
+}
+
 function Invoke-Agent([string]$Skill, [string]$ModuleName, [string]$SpecId, $Gate) {
     if ($Agent -eq 'none') { return $false }
     $prompt = @"
@@ -185,6 +212,7 @@ if ($Rule) {
 
 $rows = Read-Loops
 $build = $null
+$bind = $null
 $moduleTests = @{}
 $stuck = 0
 foreach ($row in $rows) {
@@ -221,7 +249,17 @@ foreach ($row in $rows) {
                 $gate = Invoke-Gate '5 Scenarios: lirenet trace' { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable }
             }
             $gates += $gate
+            # Every step binds, checked once per loop with no browser opened: a suite's test with the trait Category=Bind.
+            if ($gate.Passed -and $runsThis) {
+                if (-not $bind) {
+                    $bind = Invoke-Gate '5 Scenarios: every step binds' { dotnet test $TestProject.FullName --no-build -nologo --filter 'Category=Bind' }
+                    if ($bind.Output -match 'No test matches') { $bind.Passed = $true }
+                    $bind | Add-Member Summary (($bind.Output -split "`n" | Where-Object { $_ -match 'BDDB\d+|do not bind|(Passed|Failed)!|No test matches' } | Select-Object -First 3) -join ' ').Trim()
+                }
+                $gates += $bind
+            }
             if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'lirenet trace'; $stuck++ }
+            elseif ($runsThis -and -not $bind.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'a step does not bind'; $stuck++ }
             else {
                 # 6 Run. A runnable spec's own examples, -Runs times in a row; the module's code tests beside it once
                 # per loop: they are not this spec's, and repeating them per spec and per run proves nothing more.
@@ -241,14 +279,26 @@ foreach ($row in $rows) {
                     $moduleOk = $moduleTests[$row.Module].Passed
                 }
                 $green = 0
+                # -AtOnce: the runs side by side, a process each, for a journey that only reads. They still prove the
+                # same thing (three runs, each green), in the time of one.
+                $sideBySide = @{}
+                if ($AtOnce -and $Runs -gt 1) {
+                    $project = $TestProject.FullName
+                    $started = 1..$Runs | ForEach-Object {
+                        $results = Join-Path $RunDir "$($row.Spec)-$_"
+                        Start-Job { param($project, $filter, $results) $at = Get-Date; $out = dotnet test $project --no-build -nologo --filter $filter --logger trx --results-directory $results 2>&1 | Out-String; [pscustomobject]@{ Output = $out.Trim(); Passed = $LASTEXITCODE -eq 0; Seconds = [int]((Get-Date) - $at).TotalSeconds } } -ArgumentList $project, $filter, $results
+                    }
+                    $run = 0
+                    foreach ($job in $started) { $run++; $done = Receive-Job $job -Wait -AutoRemoveJob; $sideBySide[$run] = [pscustomobject]@{ Name = "6 Run $run/${Runs}: dotnet test"; Passed = $done.Passed; Output = $done.Output; Seconds = $done.Seconds } }
+                }
                 for ($run = 1; $run -le $Runs; $run++) {
                     $results = Join-Path $RunDir "$($row.Spec)-$run"
-                    $test = Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter $filter --logger trx --results-directory $results }
+                    $test = if ($sideBySide.ContainsKey($run)) { $sideBySide[$run] } else { Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter $filter --logger trx --results-directory $results } }
                     $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
                     $gates += $gate
-                    if ($gate.Passed) { $green++ } else { break }
+                    if ($gate.Passed) { $green++ } elseif (-not $AtOnce) { break }
                 }
                 if ($green -eq $Runs -and $moduleOk) { $row.Stage = '6 Run'; $row.State = 'done'; $row.Waiting = "green $Runs run(s), every rule passing" }
                 elseif ($green -eq $Runs) { $row.Stage = '7 Triage'; $row.State = 'stuck'; $row.Waiting = "run-triage: a code test of $($row.Module) is not passing"; $stuck++ }
@@ -284,6 +334,14 @@ $report.Add('## For a person')
 $report.Add('')
 if ($waiting.Count -eq 0) { $report.Add('Nothing waits for a person.') }
 foreach ($w in $waiting) { $report.Add("- $($w.Module): $($w.Waiting)") }
+$reviewDue = Get-ReviewDue (Join-Path $Suite '.testing/600-Improvements.md') (@(Read-Loops | Where-Object State -eq 'done').Count)
+if ($reviewDue) {
+    $report.Add('')
+    $report.Add('## Improvement review')
+    $report.Add('')
+    $report.Add($reviewDue)
+    Write-Host $reviewDue
+}
 $report | Set-Content (Join-Path $RunDir 'report.md')
 Write-Host "Report: $(Join-Path $RunDir 'report.md')"
 exit ($stuck -eq 0 ? 0 : 1)

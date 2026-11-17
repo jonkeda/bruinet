@@ -173,6 +173,12 @@ no model.
 - **An agent:** `scrape_explore` (links only and headless unless asked otherwise), `scrape_draft_page_objects`,
   `scrape_check_page_objects` and `scrape_update_config`. Each asks you first.
 
+**Several starts, and a page of one record.** `--url` may be given several times: a run for each, one after
+another, each kept within its own start's path unless `--within` says otherwise, so a module is explored route by
+route with one command. An address with a record's id in it is one page (`/contact#/view/{id}`): explore it from one
+record's address, and its draft knows it is open on any record (it cannot open itself: a test goes there from the page
+that leads to it). Each exploration also writes `facts.md` beside its captures: what every captured state shows.
+
 **A look at one page.** A fact about a page (which fields a form marks as required, what an empty submit answers,
 what a list offers) does not need a recording or a probe test:
 
@@ -184,7 +190,8 @@ bruinet scrape look --url /project/create --click "field:Status"
 
 It opens the address with the project's profile and saved sign-in, clicks what `--click` names, in order, and prints
 the page's facts: its headings, buttons, tabs, fields (named by the label beside them where they have no name of
-their own), what is marked as required, messages, a table's columns, an open list's options. When a dialog is open
+their own), what is marked as required, messages, a table's columns, an open list's options, and its links (what each says and where it goes: an open menu
+is the app's map). When a dialog is open
 the facts are the dialog's. A click is a text as the page says it, `field:` and a field's label, or `css:` and a
 selector. The project's guards hold: its hosts, its request guard, and for every click what Explore itself may not
 click (`Never click`, the danger words). Nothing is typed, so a form is never filled; what a filled form does is a

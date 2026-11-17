@@ -123,6 +123,34 @@ public abstract class BddScenarioTestBase<TFixture>
     }
 
     /// <summary>
+    /// Binds every scenario file of the suite and runs none: each step is matched to its phrase, its page and its
+    /// control, as a run does before a scenario starts. A step that does not bind fails here in a second, with every
+    /// file's problems in one message, where a run says it per scenario, among the scenarios that do run.
+    /// </summary>
+    /// <param name="folderName">The suite's scenario folder.</param>
+    /// <exception cref="InvalidOperationException">A file does not parse, or a step does not bind.</exception>
+    protected void AssertEveryFileBinds(string folderName = BddFileFormat.FeatureFolder)
+    {
+        var problems = new List<string>();
+        foreach (var file in GetScenarioTheoryData(folderName).Select(row => (string)row[0]).Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            try
+            {
+                BindUatFile(file);
+            }
+            catch (InvalidOperationException problem)
+            {
+                problems.Add(problem.Message);
+            }
+        }
+
+        if (problems.Count > 0)
+        {
+            throw new InvalidOperationException($"{problems.Count} file(s) do not bind:{Environment.NewLine}{string.Join(Environment.NewLine, problems)}");
+        }
+    }
+
+    /// <summary>
     /// Called before the first scenario of a file runs, and again whenever the file changes: the
     /// place to load what the file's metadata asks for, such as its <c>TestData</c>. By default the
     /// fixture's <see cref="IUatScenarioLifecycle"/>, when it has one.

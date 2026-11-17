@@ -89,6 +89,21 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void An_open_menu_s_links_are_the_app_s_map()
+    {
+        var facts = PageFacts.Of(Page(
+            N(1, 0, "body"),
+            N(2, 1, "a", "Overview", ("href", "/contact?_=1a2b3c#/")),
+            N(3, 1, "a", "Create contact", ("href", "#/create")),
+            N(4, 1, "a", "Accounting", ("href", "https://other.example/portal")),
+            N(5, 1, "a", "Sort", ("href", "javascript:void(0)")),
+            N(6, 1, "a", "Overview", ("href", "/contact?_=9f8e7d#/"))));
+
+        Assert.Equal(["Overview -> /contact#/", "Create contact -> /contact#/create"], facts.Links);
+        Assert.Equal(["Project 001 -> /project/view?id=17790"], PageFacts.Of(Page(N(1, 0, "body"), N(2, 1, "a", "Project 001", ("href", "/project/view?id=17790&_=9f8e")))).Links);
+    }
+
+    [Fact]
     public void A_field_with_a_name_of_its_own_keeps_it()
     {
         var named = N(2, 1, "input", null, ("type", "email")) with { Name = "E-mail address" };

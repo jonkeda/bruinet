@@ -177,9 +177,10 @@ public static class PageDrafter
         code.AppendLine(CultureInfo.InvariantCulture, $"namespace {pageNamespace};");
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update; add to the other part, {className}.cs.</summary>");
-        // The page's path and hash route, so it can open itself and know it is open; none for a path with an id.
+        // The page's path and hash route, so it can open itself and know it is open. A path with an id
+        // (/orders/{id}) is passed too: the page knows it is open on any record, and does not open itself.
         var pagePath = header.Page!;
-        var urlArgument = pagePath.Length > 0 && !pagePath.Contains('{', StringComparison.Ordinal) ? $", \"{pagePath}\"" : string.Empty;
+        var urlArgument = pagePath.Length > 0 ? $", \"{pagePath}\"" : string.Empty;
         code.AppendLine(CultureInfo.InvariantCulture, $"public sealed partial class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context{urlArgument})");
         code.AppendLine("{");
         for (var i = 0; i < members.Count; i++)

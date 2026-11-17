@@ -57,3 +57,15 @@ the module's code tests once, beside it.
 
 Every rule `Passing`. A failure that is the app's (not the test's) stays a failure: hand it to
 `run-triage`. What the spec got wrong goes back to the spec (and its owner), not into the test.
+
+## A step that goes to another page
+
+A step that leaves the page says where it lands, or the steps after it are looked for on the page it left
+("The Contacts page has no control 'the tab Financial'"). Two ways, both in code:
+
+- a control that always goes to one page: `[BddNavigatesTo(typeof(OrderPage))]` on its property;
+- a step of the page itself that returns the page it lands on:
+  `[BddWhen("I open the contact {name}")] public ContactViewPage OpenContact(string name)`. Use this for a page whose
+  address holds an id, which "I open the … page" cannot open.
+
+A fixture's step cannot say it: keep the fixture for what makes or removes data.

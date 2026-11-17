@@ -151,7 +151,7 @@ internal static class ScrapeCommands
     private static Command Explore(CliIo io)
     {
         var (solution, project, json, yes, headless) = (Solution(), Project(), Json(), Yes(), Headless());
-        var url = new Option<string?>("--url") { Description = "Where to start. Default: the config's StartUrl." };
+        var url = new Option<string[]>("--url") { Description = "Where to start. Default: the config's StartUrl. Several: a run for each, one after another, each kept within its own path unless --within says otherwise.", AllowMultipleArgumentsPerToken = false };
         var dryRun = new Option<bool>("--dry-run") { Description = "Follow links only, and list what it would click." };
         var maxPages = Positive("--max-pages", "At most this many pages.");
         var maxDepth = Positive("--max-depth", "At most this many clicks from the start.");
@@ -166,10 +166,11 @@ internal static class ScrapeCommands
         {
             var unattended = parsed.GetValue(yes) || !io.Interactive;
             var noWindow = parsed.GetValue(headless) || !io.Interactive;
+            var starts = parsed.GetValue(url) is { Length: > 0 } given ? given : [null!];
             var options = new ExploreOptions
             {
                 DryRun = parsed.GetValue(dryRun),
-                Url = parsed.GetValue(url),
+                Url = starts[0],
                 MaxPages = parsed.GetValue(maxPages),
                 MaxDepth = parsed.GetValue(maxDepth),
                 MaxMinutes = parsed.GetValue(maxMinutes),
@@ -195,20 +196,29 @@ internal static class ScrapeCommands
                 return 2;
             }
 
-            var result = await service.ExploreAsync(name, options, cancellationToken).ConfigureAwait(false);
-            if (parsed.GetValue(json))
+            // Several starts: a run for each, each within its own path, so a module is explored route by route with
+            // one command and no change to the config between them.
+            var withinGuards = true;
+            var results = new List<ExploreResult>();
+            foreach (var start in starts)
             {
-                await io.Out.WriteLineAsync(ToJson(result)).ConfigureAwait(false);
-            }
-            else
-            {
+                var run = starts.Length == 1 ? options : options with { Url = start, Within = options.Within ?? WithinOf(start) };
+                if (starts.Length > 1)
+                    await io.Error.WriteLineAsync($"--- {start}").ConfigureAwait(false);
+                var result = await service.ExploreAsync(name, run, cancellationToken).ConfigureAwait(false);
+                results.Add(result);
+                withinGuards &= result.WithinGuards;
+                if (parsed.GetValue(json))
+                    continue;
                 await io.Out.WriteLineAsync($"{result.Stop}: {result.StopDetail}").ConfigureAwait(false);
                 await io.Out.WriteLineAsync(string.Create(CultureInfo.InvariantCulture, $"{result.Captures.Count} captures, {result.Clicks} clicks, {result.Skipped.Count} skipped, {result.Blocked.Count} blocked in {result.Took.TotalSeconds:0.0} s")).ConfigureAwait(false);
                 if (result.Report is not null)
                     await io.Out.WriteLineAsync($"Report: {result.Report}").ConfigureAwait(false);
             }
 
-            return result.WithinGuards ? 0 : 1;
+            if (parsed.GetValue(json))
+                await io.Out.WriteLineAsync(results.Count == 1 ? ToJson(results[0]) : ToJson(results)).ConfigureAwait(false);
+            return withinGuards ? 0 : 1;
         });
         return command;
     }
@@ -283,6 +293,13 @@ internal static class ScrapeCommands
         });
         return command;
     }
+
+    // The path a start is kept within when several are given: its own path, without a route or a query.
+    internal static string? WithinOf(string? start)
+        => start is null ? null
+            : Uri.TryCreate(start, UriKind.Absolute, out var full) ? full.AbsolutePath
+            : start.Split('#', '?')[0] is { Length: > 1 } path && path.StartsWith('/') ? path
+            : null;
 
     // 0 when found, 1 when nothing holds the text.
     private static Command Find(CliIo io)

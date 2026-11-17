@@ -355,6 +355,16 @@ public sealed partial class ScraperService : IAsyncDisposable
         }
     }
 
+    /// <summary>The file in an exploration's folder that says what each captured state shows.</summary>
+    public const string FactsFileName = "facts.md";
+
+    // One capture's part of the facts file: its number, its page, what led to it, and the facts.
+    internal static string FactsOf(int number, ScrapeSnapshot snapshot, string? name)
+    {
+        var heading = $"## {number:000} {PageKey.Of(snapshot.Location)}{(name is null ? string.Empty : $" ({name})")}";
+        return heading + Environment.NewLine + Environment.NewLine + PageFacts.Of(snapshot).ToText() + Environment.NewLine + Environment.NewLine;
+    }
+
     private async Task<RecordingEvent> ExploreSaveAsync(ScrapeSnapshot snapshot, string? name, CancellationToken cancellationToken)
     {
         await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -366,6 +376,13 @@ public sealed partial class ScraperService : IAsyncDisposable
             var screenshot = recording.Project.Config.Screenshots ? await recording.Source.ScreenshotAsync(cancellationToken).ConfigureAwait(false) : null;
             added = recording.Session.AddPage(snapshot, screenshot, name);
             recording.Remember(snapshot);
+
+            // What each captured state shows, as the few facts a spec is written from (PageFacts): one file for the
+            // exploration, a part per capture, beside the captures themselves.
+            await File.AppendAllTextAsync(
+                Path.Combine(recording.Session.Folder, FactsFileName),
+                FactsOf(added.Number, snapshot, name),
+                cancellationToken).ConfigureAwait(false);
         }
         finally
         {

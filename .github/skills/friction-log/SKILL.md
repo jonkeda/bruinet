@@ -30,3 +30,6 @@ by the owner. A phase is not done while one of its rows is open.
 Group the rows by the change they ask for, not by symptom. For each group: the rows, the cost added
 up, the change, where it goes. Rank by cost saved per module. Build the top ones, each with its test,
 then measure the next module against the first (proposal, section 9).
+
+What no single row shows (work that went fine and was slow, the same thing done by hand again) is for the
+`improvement-review` skill, every few journeys.

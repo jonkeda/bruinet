@@ -38,8 +38,11 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Brui
 
     public string? Url { get; }
 
-    /// <summary>Whether the page has a path, and so can open itself.</summary>
-    public bool CanOpen => Url is not null;
+    /// <summary>
+    /// Whether the page has a path of its own, and so can open itself. A path with an id in it
+    /// (<c>/orders/{id}</c>) is one record's page: it is reached from the page that leads to it.
+    /// </summary>
+    public bool CanOpen => Url is not null && !PageAddress.HasId(Url);
 
     /// <inheritdoc />
     public bool IsAtItsAddress() => Uri.TryCreate(_context.CurrentUrl, UriKind.Absolute, out _) && CompareUrl();
@@ -50,6 +53,11 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Brui
     /// <exception cref="InvalidOperationException">The page has no path, or a path and the browser is on no site yet.</exception>
     public void Open()
     {
+        if (Url is { } pattern && PageAddress.HasId(pattern))
+        {
+            throw new InvalidOperationException($"{Name} is the page of one record ({pattern}): it has no address of its own to open. Go there from the page that leads to it.");
+        }
+
         if (Url is not { } url)
         {
             throw new InvalidOperationException($"{Name} has no path to open; give it one, or a fixture method NavigateTo{GetType().Name.Replace("Page", string.Empty, StringComparison.Ordinal)}.");
@@ -94,6 +102,10 @@ public abstract class PageObjectBase<TSelf> : ObjectBase, IHtmlPage<TSelf>, Brui
         }
 
         var uri = new Uri(_context.CurrentUrl);
+        if (PageAddress.HasId(Url))
+        {
+            return PageAddress.Matches(Url, uri);
+        }
 
         // A page of a hash route (/contact#/create) is that route: its path and fragment both.
         return Url.Contains('#', StringComparison.Ordinal)

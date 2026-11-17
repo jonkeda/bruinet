@@ -46,6 +46,12 @@ public sealed record PageFacts
     /// <summary>The options of a list that is open.</summary>
     public IReadOnlyList<string> Options { get; init; } = [];
 
+    /// <summary>
+    /// The links on the screen, each as what it says and where it goes on its own site (<c>Overview -> /contact#/</c>):
+    /// an open menu read this way is the app's map.
+    /// </summary>
+    public IReadOnlyList<string> Links { get; init; } = [];
+
     private const int Most = 60;
 
     /// <summary>The facts of a capture.</summary>
@@ -74,6 +80,10 @@ public sealed record PageFacts
             Messages = Texts(scope.Where(IsMessage), Text),
             Columns = Texts(scope.Where(node => node.Type == "th" || node.Role == "columnheader"), Text),
             Options = Texts(scope.Where(node => node.Role is "option" or "menuitem"), Text),
+            Links = [.. scope.Where(node => node.Type == "a" && Target(snapshot.Location, node.Attribute("href")) is not null)
+                .Select(node => $"{Text(node)} -> {Target(snapshot.Location, node.Attribute("href"))}")
+                .Where(link => !link.StartsWith(" ->", StringComparison.Ordinal))
+                .Distinct(StringComparer.Ordinal).Take(2 * Most)],
         };
     }
 
@@ -141,6 +151,22 @@ public sealed record PageFacts
         => node.Role is "alert" or "status"
             || Classes(node).Any(name => name.EndsWith("message", StringComparison.Ordinal) || name.EndsWith("error", StringComparison.Ordinal) || name.Contains("snack", StringComparison.Ordinal) && name.Contains("content", StringComparison.Ordinal));
 
+    // Where a link goes on the page's own site, without what changes per visit (a cache-busting query); null for a
+    // link that goes nowhere (javascript:, #) or to another site.
+    private static string? Target(string location, string? href)
+    {
+        if (string.IsNullOrWhiteSpace(href) || href == "#" || href.StartsWith("javascript:", StringComparison.OrdinalIgnoreCase)
+            || !Uri.TryCreate(location, UriKind.Absolute, out var page) || !Uri.TryCreate(page, href, out var target)
+            || !string.Equals(target.Host, page.Host, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        // A record's id is part of where a link goes (?id=12); a parameter that only defeats the cache (_=1a2b) is not.
+        var query = string.Join('&', target.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries).Where(part => !part.StartsWith("_=", StringComparison.Ordinal)));
+        return target.AbsolutePath + (query.Length > 0 ? "?" + query : string.Empty) + target.Fragment;
+    }
+
     private static string[] Classes(ScrapeNode node)
         => node.Attribute("class")?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
 
@@ -189,6 +215,7 @@ public sealed record PageFacts
         Add("Messages", Messages);
         Add("Columns", Columns);
         Add("Options", Options);
+        Add("Links", Links);
         return string.Join('\n', lines);
     }
 }
