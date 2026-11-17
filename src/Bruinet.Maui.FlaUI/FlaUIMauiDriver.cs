@@ -149,11 +149,9 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <inheritdoc />
     public IReadOnlyList<IMauiElement> FindElements(Locator locator)
     {
-        var condition = locator.ToCondition(ConditionFactory);
-
         try
         {
-            return RootElement.FindAllDescendants(condition)
+            return UiaElements.FindAll(_app, RootElement, locator)
                 .Select(e => new FlaUIMauiElement(e, this))
                 .ToList();
         }
@@ -167,11 +165,9 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <remarks>Stops at the first match rather than collecting the whole tree.</remarks>
     public IMauiElement? TryFindElement(Locator locator)
     {
-        var condition = locator.ToCondition(ConditionFactory);
-
         try
         {
-            var found = RootElement.FindFirstDescendant(condition);
+            var found = UiaElements.FindFirst(_app, RootElement, locator);
             return found == null ? null : new FlaUIMauiElement(found, this);
         }
         catch (Exception error) when (FlaUIErrors.IsElementGone(error) && AppHasExited)
@@ -189,9 +185,8 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <exception cref="ElementNotFoundException">It did not appear in time.</exception>
     internal IMauiElement FindChrome(Locator locator, int timeoutMs)
     {
-        var condition = locator.ToCondition(ConditionFactory);
         var found = Bruinet.Core.Calls.Settle.Read(
-            () => RootElement.FindFirstDescendant(condition), element => element is not null, timeoutMs, pollingIntervalMs: 100);
+            () => UiaElements.FindFirst(_app, RootElement, locator), element => element is not null, timeoutMs, pollingIntervalMs: 100);
 
         return found is not null ? new FlaUIMauiElement(found, this) : throw new ElementNotFoundException(locator);
     }

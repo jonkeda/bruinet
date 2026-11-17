@@ -1,3 +1,5 @@
+using FlaUI.Core.Definitions;
+
 namespace Bruinet.FlaUI;
 
 /// <summary>
@@ -9,6 +11,7 @@ public static class UiaElements
 {
     // Deep UI trees are tens of levels, not hundreds; the bound only stops a cycle.
     private const int MaxAttachedDepth = 256;
+    private const string WebViewClassName = "Microsoft.UI.Xaml.Controls.WebView2";
 
     /// <summary>
     /// Runs a UI Automation read or action, reporting a removed element as
@@ -109,7 +112,7 @@ public static class UiaElements
         ArgumentNullException.ThrowIfNull(app);
         ArgumentNullException.ThrowIfNull(within);
         ArgumentNullException.ThrowIfNull(locator);
-        return within.FindFirstDescendant(locator.ToCondition(app.ConditionFactory));
+        return FindFirstPastWebViews(app, within, TreeScope.Descendants, locator.ToCondition(app.ConditionFactory));
     }
 
     /// <summary>Every descendant of <paramref name="within"/> matching <paramref name="locator"/> now. One attempt.</summary>
@@ -121,6 +124,68 @@ public static class UiaElements
         ArgumentNullException.ThrowIfNull(app);
         ArgumentNullException.ThrowIfNull(within);
         ArgumentNullException.ThrowIfNull(locator);
-        return within.FindAllDescendants(locator.ToCondition(app.ConditionFactory));
+        var found = new List<AutomationElement>();
+        FindAllPastWebViews(app, within, TreeScope.Descendants, locator.ToCondition(app.ConditionFactory), found);
+        return found;
+    }
+
+    // A WinUI WebView2 hosts its page in another process, and a UI Automation search from above it
+    // stops there: nothing after it in the tree is found, although a tree walker still reaches it.
+    // So a search that misses resumes in each subtree that follows a web view.
+    private static AutomationElement? FindFirstPastWebViews(
+        DesktopApp app, AutomationElement within, TreeScope scope, ConditionBase condition)
+    {
+        if (within.FindFirst(scope, condition) is { } found)
+        {
+            return found;
+        }
+
+        foreach (var after in SubtreesAfterWebView(app, within))
+        {
+            if (FindFirstPastWebViews(app, after, TreeScope.Subtree, condition) is { } later)
+            {
+                return later;
+            }
+        }
+
+        return null;
+    }
+
+    private static void FindAllPastWebViews(
+        DesktopApp app, AutomationElement within, TreeScope scope, ConditionBase condition, List<AutomationElement> found)
+    {
+        foreach (var element in within.FindAll(scope, condition))
+        {
+            if (!found.Contains(element))
+            {
+                found.Add(element);
+            }
+        }
+
+        foreach (var after in SubtreesAfterWebView(app, within))
+        {
+            FindAllPastWebViews(app, after, TreeScope.Subtree, condition, found);
+        }
+    }
+
+    // The siblings after the first web view under within, then after each of its ancestors up to within.
+    private static IEnumerable<AutomationElement> SubtreesAfterWebView(DesktopApp app, AutomationElement within)
+    {
+        if (within.FindFirstDescendant(app.ConditionFactory.ByClassName(WebViewClassName)) is not { } webView)
+        {
+            yield break;
+        }
+
+        var walker = app.Automation.TreeWalkerFactory.GetRawViewWalker();
+        var node = webView;
+        for (var depth = 0; depth < MaxAttachedDepth && node is not null && !node.Equals(within); depth++)
+        {
+            for (var sibling = walker.GetNextSibling(node); sibling is not null; sibling = walker.GetNextSibling(sibling))
+            {
+                yield return sibling;
+            }
+
+            node = walker.GetParent(node);
+        }
     }
 }
