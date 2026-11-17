@@ -58,7 +58,7 @@ pwsh tools/Scripts/site-loop.ps1 -Suite <suite's folder> -Spec <id> -Runs 3
 ```
 
 which is, per run: the spec's own tests (`dotnet test <suite> --filter "Spec=<id>"`, or `Module=<Module>` for a spec
-that does not run from its examples) and `lirenet trace specs/<id>.spec.md <suite>/Modules --runnable --results …`;
+that does not run from its examples) and `lirenet trace <the spec> <suite>/Modules --runnable --results …`;
 the module's code tests once, beside it.
 
 A spec that only reads runs its `-Runs` side by side with `-AtOnce`: the gate in about a minute and a half.

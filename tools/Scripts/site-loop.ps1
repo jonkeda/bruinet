@@ -12,7 +12,7 @@
 
     The gates, in order (the proposal's section 5):
 
-      1 Spec          specs/<Spec>.spec.md exists, passes lirenet check, and its Status is accepted   👤 accepts
+      1 Spec          <Spec>.spec.md exists (in its module's Specs folder, or the suite's specs/), passes lirenet check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
       5 Scenarios     lirenet trace reaches every rule of the spec from Modules/<Module>
                       and, for runnable specs, every step binds (--filter Category=Bind: no browser, once per loop)
@@ -31,7 +31,7 @@
     Exit code 0 when every module is done or waiting for a person, 1 when one is stuck.
 
 .PARAMETER Suite
-    The suite's folder (with .testing/, specs/ and a *.slnx), such as ../Bouw7.
+    The suite's folder (with .testing/ and a *.slnx), such as ../Bouw7.
 
 .PARAMETER Module
     Only this module; all modules of 100-Loops.md when empty.
@@ -219,8 +219,13 @@ foreach ($row in $rows) {
     if ($Module -and $row.Module -ne $Module) { continue }
     if ($Spec -and $row.Spec -ne $Spec) { continue }
     $gates = @()
-    $specPath = Join-Path $Suite "specs/$($row.Spec).spec.md"
     $modulePath = Join-Path $TestProject.FullName "Modules/$($row.Module)"
+    # A spec is in its module's Specs folder, beside the pages and tests it is about; or in the suite's specs folder.
+    $specPath = Join-Path $modulePath "Specs/$($row.Spec).spec.md"
+    if (-not (Test-Path $specPath)) {
+        $inSuite = Join-Path $Suite "specs/$($row.Spec).spec.md"
+        if (Test-Path $inSuite) { $specPath = $inSuite }
+    }
     # This spec runs when the project copies it (by name, or all specs): its examples are then its tests.
     $runsThis = $RunsSpecs -and ($ProjectText.Contains("$($row.Spec).spec.md") -or $ProjectText.Contains('*.spec.md'))
     $Runnable = if ($runsThis) { '--runnable' } else { $null }  # a $null argument is left out

@@ -5,7 +5,8 @@ description: Draft a Lirenet spec for one journey of a running app - from its re
 
 # A spec from a running app
 
-Stage 1 of the site loop. The output is `specs/<journey id>.spec.md` in Lirenet's format
+Stage 1 of the site loop. The output is `<journey id>.spec.md` in its module's `Specs` folder (`Modules/<Module>/Specs/`, beside the pages and
+tests it is about; a suite without modules keeps `specs/`), in Lirenet's format
 (`Lirenet/docs/spec-format.md`: read it first), `Status: draft`, passing `lirenet check`. A person
 accepts it; you never do, unless the person has said in so many words that you decide for them.
 
@@ -36,7 +37,7 @@ accepts it; you never do, unless the person has said in so many words that you d
 5. **Unclear points are open questions**, each with `Proposal:`. Behaviour that looks like a bug
    (a date in UTC, "Clear filters" keeping the search) is a question for the owner, not a rule.
 6. **Not in this journey**: neighbouring journeys and features you saw and left out.
-7. `lirenet check specs/` until it passes. Then set the module in `.testing/100-Loops.md` to
+7. `lirenet check <the spec>` until it passes. Then set the module in `.testing/100-Loops.md` to
    `1 Spec, waiting: 👤 accept B7.XXX.01 (N open questions)`.
 
 **A form or a list the journey touches gets its page object first**, with a member per field and per column
