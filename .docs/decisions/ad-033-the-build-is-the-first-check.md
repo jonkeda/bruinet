@@ -2,7 +2,8 @@
 
 Every Bruinet project builds with the SDK's analyzers at `latest-recommended` and Meziantou's analyzers,
 all as errors. `.editorconfig`'s style and naming rules are suggestions, and only whitespace is checked (below). `Quality.props` turns them on; the root's
-and `src/`'s `Directory.Build.props` import it. Frainet, Lirenet and Gaminet stand alone and are left out.
+and `src/`'s `Directory.Build.props` import it. Since 2026-11-18 that is every module's projects: Lirenet, Frainet and Gaminet no
+longer stand alone, they are Bruinet's Spec, Develop and Migrate.
 
 | Decision | What holds |
 | --- | --- |
