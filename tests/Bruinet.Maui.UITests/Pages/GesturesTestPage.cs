@@ -70,6 +70,9 @@ public class GesturesTestPage : PageObjectBase<GesturesTestPage>
         /// <summary>Answers <c>LongPress</c> through the app's sink.</summary>
         public const string LongPress = "GestureLongPressTarget";
 
+        /// <summary>Answers Tap and LongPress through the attached platform behavior.</summary>
+        public const string TouchBehavior = "GestureTouchBehaviorTarget";
+
         /// <summary>Answers <c>Pan</c> through the app's sink.</summary>
         public const string Sink = "GestureSinkTarget";
 
