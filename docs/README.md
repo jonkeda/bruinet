@@ -45,8 +45,10 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
 - [Test Writing](guides/test-writing.md)
 - [BDD Suite Guide](guides/bdd-suite-guide.md) - project layout, `bdd.config.md`,
   scenario file shape
-- [Runnable Specs](guides/runnable-specs.md) - a Lirenet spec run as tests: the `Specs` row, chapters, control names
+- [Runnable Specs](guides/runnable-specs.md) - a spec run as tests: the `Specs` row, chapters, control names
   (`[BddControl]`) and extension verbs (`[BddVerbs]`) that make its steps bind
+- [The Spec Format](spec/spec-format.md) - how a spec (`*.spec.md`) is written: header, sections, rules with
+  ids, examples; what `bruinet spec check` and `bruinet spec trace` read
 - [Step Definitions And Flows](guides/step-definitions.md) - the step vocabulary and how to
   extend it
 - [Features Below The UI](guides/features-below-the-ui.md) - the `service` head: when a scenario

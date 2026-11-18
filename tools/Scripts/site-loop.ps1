@@ -12,11 +12,11 @@
 
     The gates, in order (the proposal's section 5):
 
-      1 Spec          <Spec>.spec.md exists (in its module's Specs folder, or the suite's specs/), passes lirenet check, and its Status is accepted   👤 accepts
+      1 Spec          <Spec>.spec.md exists (in its module's Specs folder, or the suite's specs/), passes bruinet spec check, and its Status is accepted   👤 accepts
       4 Page objects  the suite builds
-      5 Scenarios     lirenet trace reaches every rule of the spec from Modules/<Module>
+      5 Scenarios     bruinet spec trace reaches every rule of the spec from Modules/<Module>
                       and, for runnable specs, every step binds (--filter Category=Bind: no browser, once per loop)
-      6 Run           the spec's own tests, -Runs times in a row, every rule Passing (lirenet trace --results): a runnable
+      6 Run           the spec's own tests, -Runs times in a row, every rule Passing (bruinet spec trace --results): a runnable
                       spec's examples (--filter Spec=<spec>), otherwise the module's tests (--filter Module=<Module>).
                       A module's code tests beside its runnable specs run once per loop, not once per spec per run.
 
@@ -94,11 +94,11 @@ $SuiteConfig = @('bdd.config.md', 'uat.config.md') | ForEach-Object { Join-Path 
 $RunsSpecs = $SuiteConfig -and (Select-String -Path $SuiteConfig -Pattern '^\|\s*Specs\s*\|' -Quiet)
 $ProjectText = Get-Content (Get-ChildItem $TestProject.FullName -Filter *.csproj | Select-Object -First 1).FullName -Raw
 
-# Lirenet is built once and run from its output, not through dotnet run per call.
-$LirenetProject = Join-Path $Bruinet 'Lirenet/src/Lirenet.Cli/Lirenet.Cli.csproj'
-dotnet build $LirenetProject -c Release -v:q -nologo | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "Lirenet did not build: $LirenetProject" }
-$Lirenet = Get-Item (dotnet msbuild $LirenetProject -getProperty:TargetPath -p:Configuration=Release).Trim()
+# bruinet is built once and run from its output (bruinet spec check, bruinet spec trace), not through dotnet run per call.
+$CliProject = Join-Path $Bruinet 'tools/Bruinet.Cli/Bruinet.Cli.csproj'
+dotnet build $CliProject -c Release -v:q -nologo -p:BruinetRecorders=false | Out-Null
+if ($LASTEXITCODE -ne 0) { throw "bruinet did not build: $CliProject" }
+$Cli = Get-Item (dotnet msbuild $CliProject -getProperty:TargetPath -p:Configuration=Release).Trim()
 
 function Invoke-Gate([string]$Name, [scriptblock]$Command) {
     $started = Get-Date
@@ -231,12 +231,12 @@ foreach ($row in $rows) {
     $Runnable = if ($runsThis) { '--runnable' } else { $null }  # a $null argument is left out
 
     # 1 Spec
-    $gate = Invoke-Gate '1 Spec: lirenet check' { if (Test-Path $specPath) { dotnet $Lirenet.FullName check $specPath } else { "no $specPath"; $global:LASTEXITCODE = 1 } }
+    $gate = Invoke-Gate '1 Spec: bruinet spec check' { if (Test-Path $specPath) { dotnet $Cli.FullName spec check $specPath } else { "no $specPath"; $global:LASTEXITCODE = 1 } }
     for ($try = 0; -not $gate.Passed -and $try -lt $Attempts -and (Invoke-Agent 'spec-from-app' $row.Module $row.Spec $gate); $try++) {
-        $gate = Invoke-Gate '1 Spec: lirenet check' { dotnet $Lirenet.FullName check $specPath }
+        $gate = Invoke-Gate '1 Spec: bruinet spec check' { dotnet $Cli.FullName spec check $specPath }
     }
     $gates += $gate
-    if (-not $gate.Passed) { $row.Stage = '1 Spec'; $row.State = 'stuck'; $row.Waiting = 'lirenet check'; $stuck++ }
+    if (-not $gate.Passed) { $row.Stage = '1 Spec'; $row.State = 'stuck'; $row.Waiting = 'bruinet spec check'; $stuck++ }
     elseif (-not (Select-String -Path $specPath -Pattern '^\| Status \| accepted' -Quiet)) {
         $questions = (Select-String -Path $specPath -Pattern '^- .*Proposal:').Count
         $row.Stage = '1 Spec'; $row.State = 'waiting'; $row.Waiting = "👤 accept $($row.Spec) ($questions open questions)"
@@ -248,10 +248,10 @@ foreach ($row in $rows) {
         if (-not $build.Passed) { $row.Stage = '4 Page objects'; $row.State = 'stuck'; $row.Waiting = 'build'; $stuck++ }
         else {
             # 5 Scenarios
-            $gate = Invoke-Gate '5 Scenarios: lirenet trace' { if (Test-Path $modulePath) { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
+            $gate = Invoke-Gate '5 Scenarios: bruinet spec trace' { if (Test-Path $modulePath) { dotnet $Cli.FullName spec trace $specPath $modulePath $Runnable } else { "no $modulePath"; $global:LASTEXITCODE = 1 } }
             for ($try = 0; -not $gate.Passed -and $try -lt $Attempts -and (Invoke-Agent 'scenario-from-spec' $row.Module $row.Spec $gate); $try++) {
                 $build = Invoke-Gate '4 Page objects: build' { dotnet build $Solution.FullName -v:q -nologo }
-                $gate = Invoke-Gate '5 Scenarios: lirenet trace' { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable }
+                $gate = Invoke-Gate '5 Scenarios: bruinet spec trace' { dotnet $Cli.FullName spec trace $specPath $modulePath $Runnable }
             }
             $gates += $gate
             # Every step binds, checked once per loop with no browser opened: a suite's test with the trait Category=Bind.
@@ -263,7 +263,7 @@ foreach ($row in $rows) {
                 }
                 $gates += $bind
             }
-            if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'lirenet trace'; $stuck++ }
+            if (-not $gate.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'bruinet spec trace'; $stuck++ }
             elseif ($runsThis -and -not $bind.Passed) { $row.Stage = '5 Scenarios'; $row.State = 'stuck'; $row.Waiting = 'a step does not bind'; $stuck++ }
             else {
                 # 6 Run. A runnable spec's own examples, -Runs times in a row; the module's code tests beside it once
@@ -299,7 +299,7 @@ foreach ($row in $rows) {
                 for ($run = 1; $run -le $Runs; $run++) {
                     $results = Join-Path $RunDir "$($row.Spec)-$run"
                     $test = if ($sideBySide.ContainsKey($run)) { $sideBySide[$run] } else { Invoke-Gate "6 Run $run/${Runs}: dotnet test" { dotnet test $TestProject.FullName --no-build -nologo --filter $filter --logger trx --results-directory $results } }
-                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Lirenet.FullName trace $specPath $modulePath $Runnable --results $results }
+                    $gate = Invoke-Gate "6 Run $run/${Runs}: every rule passing" { dotnet $Cli.FullName spec trace $specPath $modulePath $Runnable --results $results }
                     $gate.Seconds += $test.Seconds
                     $gate | Add-Member Summary (($test.Output -split "`n" | Where-Object { $_ -match '(Passed|Failed)!' }) -join ' ')
                     $gates += $gate

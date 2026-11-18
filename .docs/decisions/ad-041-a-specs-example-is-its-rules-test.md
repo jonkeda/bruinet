@@ -1,6 +1,6 @@
 # AD-041: A Spec's Example Is Its Rule's Test
 
-**Decided:** a Lirenet spec runs as tests on the BDD engine: each example is a scenario named and tagged with its rule
+**Decided:** a spec runs as tests on the BDD engine: each example is a scenario named and tagged with its rule
 (`B7.INV.01.R1 …`, `@B7.INV.01.R1`, traits `Rule` and `Spec`), with the spec's Background and its chapter's steps in
 front. A rule is checked once: by its example, or by a C# test with its `Rule` trait where an example says it badly.
 A step reaches a control through the vocabulary: a control's verbs, a control name (`[BddControl("the filter above
@@ -18,5 +18,5 @@ Bouw7's B7.INV.01 runs from its spec alone, green on acc.
 - a phrase per page for a verb that a type or a component could declare once;
 - resolving a step to a control by a model at run time.
 
-**Broken when:** `lirenet trace --runnable` reaches a rule twice; a spec names code; a suite has the same phrase on
+**Broken when:** `bruinet spec trace --runnable` reaches a rule twice; a spec names code; a suite has the same phrase on
 several page objects that one extension verb or control name would cover.

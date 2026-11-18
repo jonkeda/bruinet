@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace Bruinet.Spec;
 
 /// <summary>
-/// Checks a spec against the format in <c>docs/spec-format.md</c>, without a model: what is there,
+/// Checks a spec against the format in <c>docs/spec/spec-format.md</c>, without a model: what is there,
 /// in which order, and what a spec never holds.
 /// </summary>
 public static partial class SpecCheck

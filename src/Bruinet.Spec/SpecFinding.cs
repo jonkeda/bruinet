@@ -1,7 +1,7 @@
 namespace Bruinet.Spec;
 
 /// <summary>
-/// One thing a spec breaks of the format (<c>docs/spec-format.md</c>), at the line it is on.
+/// One thing a spec breaks of the format (<c>docs/spec/spec-format.md</c>), at the line it is on.
 /// </summary>
 /// <param name="Line">The 1-based line, or 0 when it is about the whole spec.</param>
 /// <param name="Code">A short stable name for the kind of finding, such as <c>example-missing</c>.</param>

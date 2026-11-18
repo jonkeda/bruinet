@@ -1,6 +1,6 @@
 # Plan: one product, Bruinet, in four modules
 
-Status: **in progress**: steps 0, 1 and 3 done (2026-11-18). Date: 2026-11-18. Carries out the decision in [one-or-four](one-or-four.md):
+Status: **in progress**: steps 0 to 3 done (2026-11-18). Date: 2026-11-18. Carries out the decision in [one-or-four](one-or-four.md):
 Lirenet, Frainet and Gaminet become the modules **Spec**, **Develop** and **Migrate** of Bruinet, beside
 **Test** (what Bruinet is today). What goes in each module: [what-goes-where](../parts/what-goes-where.md).
 
@@ -171,7 +171,8 @@ is gone.
 | 0 | Done | 31 specs: `check` passes all; `trace` with and without `--runnable`; 40 tests |
 | 1 | Done | `src/Bruinet.Spec`, `tests/Bruinet.Spec.Tests`, solution folder `7 Spec`, in `coverage.ps1`. Bruinet's analyzers raised only the undeclared public API (59 lines in `PublicAPI.Unshipped.txt`). Check, trace and tests identical to step 0. `Lirenet.Cli` still builds, on the moved library |
 | 3 | Done | `tests/Bruinet.Core.Tests/ModuleTests.cs`; red on a planted `Bruinet.Spec → Bruinet.Core`, green without. The exemption moves to step 5 |
-| 2, 4–8 | Open | |
+| 2 | Done | `tools/Bruinet.Cli/Spec/SpecCommands.cs`, tests in `tests/Bruinet.Cli.Tests/Spec`. Check and trace identical to step 0 on all 31 specs; `trace --runnable --results` identical to the old `lirenet` on all 73 saved Bouw7 runs (with real passing states). `site-loop.ps1` builds and calls `bruinet`; it was not run end to end, since that runs Bouw7's tests on acc and rewrites its loop file. Done early, from step 6: `docs/spec/spec-format.md` (the guide's rows link to it) and the old README folded into `src/Bruinet.Spec/README.md`. Gone: `Lirenet.Cli`, `Frainet.Cli`, and both folders' solutions and build files; left: `Lirenet/.my`, `Frainet/.my`, `Frainet/README.md` |
+| 4–8 | Open | |
 
 Found on the way, not part of this plan: three `SolutionTests` fail before and after step 1. The iOS sample is not in
 `Bruinet.sln`, the iOS test projects are in no script, and `MediaElement.tpl.cs:42` names a platform.

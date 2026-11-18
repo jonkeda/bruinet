@@ -44,7 +44,7 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
 - [scrape-pages](.github/skills/scrape-pages/SKILL.md) - make Html or Blazor page objects and
   controls from an app's pages recorded with the Scraper (MCP `scrape_start`,
   `scrape_detect_patterns`, `scrape_write_file`, `scrape_build`).
-- [spec-from-app](.github/skills/spec-from-app/SKILL.md) - draft a Lirenet spec from a running app,
+- [spec-from-app](.github/skills/spec-from-app/SKILL.md) - draft a spec from a running app,
   each example checked on the app (site loop stage 1).
 - [scenario-from-spec](.github/skills/scenario-from-spec/SKILL.md) - tests from an accepted spec, one
   per example, tagged with its rule (stage 5).

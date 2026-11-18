@@ -34,7 +34,7 @@ internal static class BruinetCommand
 {
     public static RootCommand Build(CliIo io)
     {
-        var root = new RootCommand("Bruinet's command line: the Scraper, test data and scenarios, control generation, and the servers the IDEs and agents start.")
+        var root = new RootCommand("Bruinet's command line: the Scraper, test data and scenarios, spec files, control generation, and the servers the IDEs and agents start.")
         {
             ScrapeCommands.Build(io),
             DataCommands.Build(io),
@@ -42,6 +42,7 @@ internal static class BruinetCommand
             SelectionCommands.Build(io),
             Friction.FrictionCommands.Build(io),
             Suite.SuiteCommands.Build(io),
+            Spec.SpecCommands.Build(io),
             Sql.SqlCommands.Build(io),
             Http.HttpCommands.Build(io),
             Scenario.VoiceCommand.Build(io),

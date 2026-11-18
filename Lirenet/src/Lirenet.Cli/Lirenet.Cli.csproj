@@ -1,9 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <AssemblyName>lirenet</AssemblyName>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../../src/Bruinet.Spec/Bruinet.Spec.csproj" />
-  </ItemGroup>
-</Project>

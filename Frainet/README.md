@@ -6,20 +6,12 @@ something other than a person tells it whether the work meets it. Frainet is the
 loops, and what runs the agents in them. Frainet lives in Bruinet's repository for now and may
 become its own later.
 
-## The four parts
+## Now Bruinet Develop
 
-| Part | Does |
-| --- | --- |
-| **Bruinet** | Tests: runs the scenarios and the specs' examples |
-| **Lirenet** ([../Lirenet](../Lirenet/README.md)) | Specs: the format, `lirenet check`, `lirenet trace` |
-| **Gaminet** ([../Gaminet](../Gaminet/README.md)) | Migration (the layout and an empty tool; not built yet) |
-| **Frainet** | The factory: the loops that use the other three |
-
-The spec code started here and moved to Lirenet. For one release `frainet check` and
-`frainet trace` still work: they run `lirenet` with the same arguments, give its output and its
-exit code, and say on the error stream that the command moved. Frainet reaches Lirenet as a
-command, never as code. It finds `lirenet.dll` beside itself, in `../Lirenet` (built with
-Frainet's own build), or where the `LIRENET` variable says.
+Bruinet is one product in four modules: Test, Spec (was Lirenet), Develop (was Frainet) and Migrate (was Gaminet);
+see `.my/structure/one-or-four.md`. Develop has no code yet: the spec code that started here is the Spec module
+(`src/Bruinet.Spec`, `bruinet spec check`, `bruinet spec trace`), and `frainet` is gone. These notes move to
+`.my/develop/`.
 
 ## The idea behind it
 

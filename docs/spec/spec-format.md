@@ -2,7 +2,7 @@
 
 A spec says what one journey of a product must do, so that it can be built and checked without
 anyone knowing the code. It is written as if the code did not exist yet, even when it is worked out
-from an app that runs. The example is [TOD.02 Create a todo](../specs/todo/TOD.02.spec.md).
+from an app that runs. The example is [TOD.02 Create a todo](../../samples/Todo/specs/TOD.02.spec.md).
 
 ## The file
 
@@ -65,14 +65,14 @@ section and becomes a rule, an example or a choice. A spec is `accepted` only wi
 
 ## The check
 
-`lirenet check <spec or folder>` checks all of the above that can be checked without a model: the
+`bruinet spec check <spec or folder>` checks all of the above that can be checked without a model: the
 title and table, the sections and their order, the rule ids, a sentence per rule, an example per
 rule with a paragraph and Given, When and Then in order, a proposal per open question, and the
 words below. It names each finding with its line.
 
 ## The trace
 
-`lirenet trace <spec> <tests folder>... [--runnable]` reads the test sources as text, without building or running
+`bruinet spec trace <spec> <tests folder>... [--runnable]` reads the test sources as text, without building or running
 them, and lists each rule with the tests that name it. A C# test names a rule with
 `[Trait("Rule", "TOD.02.R3")]`, a scenario with the tag `@TOD.02.R3`. It fails on a rule no test
 names, and on a test naming a rule the spec does not have. Naming a rule in a test is the builder's

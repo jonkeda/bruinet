@@ -1,13 +1,13 @@
 ---
 name: spec-from-app
-description: Draft a Lirenet spec for one journey of a running app - from its recordings and the app itself, in Lirenet's format, with every unclear point as an open question with a proposal - and check every example on the app before a person accepts it. Use when asked to write, draft or reverse-engineer a spec, rules or acceptance criteria for an existing app or module, or for loop stage 1 (Spec).
+description: Draft a spec for one journey of a running app - from its recordings and the app itself, in the spec format, with every unclear point as an open question with a proposal - and check every example on the app before a person accepts it. Use when asked to write, draft or reverse-engineer a spec, rules or acceptance criteria for an existing app or module, or for loop stage 1 (Spec).
 ---
 
 # A spec from a running app
 
 Stage 1 of the site loop. The output is `<journey id>.spec.md` in its module's `Specs` folder (`Modules/<Module>/Specs/`, beside the pages and
-tests it is about; a suite without modules keeps `specs/`), in Lirenet's format
-(`Lirenet/docs/spec-format.md`: read it first), `Status: draft`, passing `lirenet check`. A person
+tests it is about; a suite without modules keeps `specs/`), in the spec format
+(`docs/spec/spec-format.md`: read it first), `Status: draft`, passing `bruinet spec check`. A person
 accepts it; you never do, unless the person has said in so many words that you decide for them.
 
 ## Inputs
@@ -37,7 +37,7 @@ accepts it; you never do, unless the person has said in so many words that you d
 5. **Unclear points are open questions**, each with `Proposal:`. Behaviour that looks like a bug
    (a date in UTC, "Clear filters" keeping the search) is a question for the owner, not a rule.
 6. **Not in this journey**: neighbouring journeys and features you saw and left out.
-7. `lirenet check <the spec>` until it passes. Then set the module in `.testing/100-Loops.md` to
+7. `bruinet spec check <the spec>` until it passes. Then set the module in `.testing/100-Loops.md` to
    `1 Spec, waiting: 👤 accept B7.XXX.01 (N open questions)`.
 
 **A form or a list the journey touches gets its page object first**, with a member per field and per column
@@ -85,7 +85,7 @@ same. A page only another account sees: `--as Reader`. A sign-in that ran out is
 Journeys of one module that only read (lists, tabs, a page at a glance) are made together, not one after another:
 
 1. Every look for all of them first, one command each.
-2. All their specs. Run `lirenet check` on each before anything is built: it costs nothing and names what is wrong.
+2. All their specs. Run `bruinet spec check` on each before anything is built: it costs nothing and names what is wrong.
 3. Their pages and steps, one build, and the bind test (`--filter Category=Bind`).
 4. One run of all their examples (`--filter "Spec=<id>|Spec=<id>"`): the failures of all of them in one run.
 5. A gate per spec (`scenario-from-spec`), with `-AtOnce`.
