@@ -773,8 +773,6 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
     /// <summary>The dialog on screen, or null.</summary>
     internal IMauiElement? TryFindActiveDialogRoot()
     {
-        var popupCondition = ConditionFactory.ByControlType(ControlType.Window)
-            .And(ConditionFactory.ByClassName("Popup"));
         var contentDialogCondition = ConditionFactory.ByClassName("ContentDialog");
         var buttonCondition = ConditionFactory.ByControlType(ControlType.Button);
 
@@ -783,8 +781,7 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
         // top-level windows instead costs about 8 s a call — it walks the desktop and filters by
         // process, so it grows with whatever else the machine has open — against about 15 ms
         // here.
-        var inRootWindow = TryFindDialogRoot(
-            RootElement, popupCondition, contentDialogCondition, buttonCondition);
+        var inRootWindow = TryFindDialogRoot(RootElement, contentDialogCondition, buttonCondition);
         if (inRootWindow != null && !ReferenceEquals(inRootWindow, RootElement))
         {
             return new FlaUIMauiElement(inRootWindow, this);
@@ -795,16 +792,21 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
 
     private AutomationElement? TryFindDialogRoot(
         AutomationElement window,
-        ConditionBase popupCondition,
         ConditionBase contentDialogCondition,
         ConditionBase buttonCondition)
     {
         try
         {
-            var popup = window.FindAllDescendants(popupCondition)
-                .LastOrDefault(candidate =>
-                    !candidate.Properties.IsOffscreen.ValueOrDefault
-                    && candidate.FindFirstDescendant(buttonCondition) != null);
+            // A Mopups sheet is a Popup with buttons too. An alert raised over it is the popup whose
+            // own children are the ContentDialog template's buttons, wherever the tree lists it.
+            var popups = FindOpenPopups(window)
+                .Where(candidate => !candidate.Properties.IsOffscreen.ValueOrDefault)
+                .ToList();
+            var dialogButtonCondition = ConditionFactory.ByAutomationId("PrimaryButton")
+                .Or(ConditionFactory.ByAutomationId("SecondaryButton"))
+                .Or(ConditionFactory.ByAutomationId("CloseButton"));
+            var popup = popups.LastOrDefault(candidate => HoldsDialogButtons(candidate, dialogButtonCondition))
+                ?? popups.LastOrDefault(candidate => candidate.FindFirstDescendant(buttonCondition) != null);
 
             var dialog = popup
                 ?? window.FindFirst(TreeScope.Element, contentDialogCondition)
@@ -821,6 +823,49 @@ internal sealed class FlaUIMauiDriver : IMauiDriver, IDisposable
             return null;
         }
     }
+
+    // WinUI lists open popups three levels below the window (window, DesktopChildSiteBridge,
+    // input site). One level of slack covers a host that adds a layer.
+    private const int PopupSearchDepth = 4;
+
+    // Popups are collected without walking into one or into web content. A full descendant
+    // search reached into a WebView2 sheet's page, took seconds a call, listed the sheet many
+    // times over and, while it ran, missed the dialog raised above the sheet.
+    private List<AutomationElement> FindOpenPopups(AutomationElement window)
+    {
+        var walker = Automation.TreeWalkerFactory.GetControlViewWalker();
+        var found = new List<AutomationElement>();
+        var pending = new Queue<(AutomationElement Element, int Depth)>();
+        pending.Enqueue((window, 0));
+        while (pending.Count > 0)
+        {
+            var (parent, depth) = pending.Dequeue();
+            for (var child = walker.GetFirstChild(parent); child != null; child = walker.GetNextSibling(child))
+            {
+                if (child.Properties.ControlType.ValueOrDefault == ControlType.Window
+                    && child.Properties.ClassName.ValueOrDefault == "Popup")
+                {
+                    found.Add(child);
+                    continue;
+                }
+
+                if (depth + 1 < PopupSearchDepth && !IsWebContent(child))
+                    pending.Enqueue((child, depth + 1));
+            }
+        }
+
+        return found;
+    }
+
+    private static bool IsWebContent(AutomationElement element)
+        => element.Properties.ControlType.ValueOrDefault == ControlType.Document
+           || element.Properties.FrameworkId.ValueOrDefault == "Chrome";
+
+    // The template's buttons sit one level down in the control view and can sit a level deeper in
+    // the raw view; a deeper walk would reach into the sheet's content, which is slow.
+    private static bool HoldsDialogButtons(AutomationElement popup, ConditionBase dialogButtonCondition)
+        => popup.FindFirstChild(dialogButtonCondition) != null
+           || popup.FindAllChildren().Any(child => child.FindFirstChild(dialogButtonCondition) != null);
 
     #endregion
 
