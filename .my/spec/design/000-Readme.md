@@ -39,6 +39,7 @@ fails halfway?" is a scenario. One spec may use several styles, each for its own
 | [310-Screens.md](310-Screens.md) | Which source format for a screen: ASCII, Wireframe (jonkeda/Wireframes), HTML, or something else |
 | [320-Wireframe-review.md](320-Wireframe-review.md) | Review of jonkeda/Wireframes as the source of screens: what fits, what loses content, what to fix |
 | [330-Salt-vs-Wireframe.md](330-Salt-vs-Wireframe.md) | PlantUML Salt set beside Wireframe on the eight needs: Salt draws a screen, Wireframe describes one |
+| [510-Todo-choice.md](510-Todo-choice.md) | The Todo sample as a whole: the twelve styles I would use, the seven I would not, per journey, and where the files would live |
 | [automation/](automation/000-Readme.md) | How each style becomes tests, the simplest way: table checks, spec scenarios, spec-fed unit tests, one document per style |
 | [400-Sentences.md](400-Sentences.md) | Checklist, one-line rule (EARS), Gherkin scenario, and a short note on what prose is still for |
 | [500-Mixed.md](500-Mixed.md) | Two sketches of whole specs in mixed styles (B7.MST.02 and TOD.02), with line counts against today |
