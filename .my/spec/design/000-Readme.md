@@ -3,6 +3,10 @@
 Status: **proposals**, for discussion. Date: 2026-11-18. No style here is designed yet: each says what
 it is for, shows a few lines so the idea is clear, and leaves the exact format for later.
 
+**Names since this was written** (2026-11-18): Lirenet is Bruinet's **Spec** module, Frainet **Develop**, Gaminet
+**Migrate** ([one-or-four](../../structure/one-or-four.md)); `lirenet check` and `lirenet trace` are
+`bruinet spec check` and `bruinet spec trace`. The text below keeps the names it was written with.
+
 ## Why
 
 Today a Lirenet spec has one shape for everything: a rule as a sentence, and Given / When / Then
@@ -35,6 +39,7 @@ fails halfway?" is a scenario. One spec may use several styles, each for its own
 | [310-Screens.md](310-Screens.md) | Which source format for a screen: ASCII, Wireframe (jonkeda/Wireframes), HTML, or something else |
 | [320-Wireframe-review.md](320-Wireframe-review.md) | Review of jonkeda/Wireframes as the source of screens: what fits, what loses content, what to fix |
 | [330-Salt-vs-Wireframe.md](330-Salt-vs-Wireframe.md) | PlantUML Salt set beside Wireframe on the eight needs: Salt draws a screen, Wireframe describes one |
+| [automation/](automation/000-Readme.md) | How each style becomes tests, the simplest way: table checks, spec scenarios, spec-fed unit tests, one document per style |
 | [400-Sentences.md](400-Sentences.md) | Checklist, one-line rule (EARS), Gherkin scenario, and a short note on what prose is still for |
 | [500-Mixed.md](500-Mixed.md) | Two sketches of whole specs in mixed styles (B7.MST.02 and TOD.02), with line counts against today |
 

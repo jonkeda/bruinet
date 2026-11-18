@@ -8,6 +8,18 @@ Around the framework are the tools a team needs to live with it: language server
 VS Code, a command line and an MCP server for agents, a Scraper that drafts page objects from a running app, SQL replay so a UI test
 needs no database, test selection from a change, and narrated video recordings of scenarios with a voice-over.
 
+## Four modules
+
+Bruinet is one product in four modules, in this one repository and one release. References between them go one way
+(Test and Spec at the base), so a team takes only the packages it needs.
+
+| Module | Does | Packages and commands |
+| --- | --- | --- |
+| **Test** | Tests an app through its UI and below it: everything on this page | `Bruinet.Core`, `Bruinet.Html`, `Bruinet.Maui`, …; `bruinet scrape`, `bruinet suite`, … |
+| **Spec** | Specs (`*.spec.md`): the format, its check, and every rule traced to the tests that prove it. Usable without Test | `Bruinet.Spec.Format`, `Bruinet.Spec`; `bruinet spec check`, `bruinet spec trace` ([the format](docs/spec/spec-format.md)) |
+| **Develop** | The loops that do the work with agents and have the other modules judge it. No code yet | `tools/Scripts/site-loop.ps1`, the `friction-log` and `improvement-review` skills |
+| **Migrate** | Converting a product to another architecture a unit at a time, with evidence per unit. No code yet | none yet |
+
 ## At a glance
 
 | You want to | Bruinet gives you |

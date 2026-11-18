@@ -1,6 +1,6 @@
 # Plan: one product, Bruinet, in four modules
 
-Status: **in progress**: steps 0 to 5 done (2026-11-18). Date: 2026-11-18. Carries out the decision in [one-or-four](one-or-four.md):
+Status: **in progress**: steps 0 to 6 done (2026-11-18). Date: 2026-11-18. Carries out the decision in [one-or-four](one-or-four.md):
 Lirenet, Frainet and Gaminet become the modules **Spec**, **Develop** and **Migrate** of Bruinet, beside
 **Test** (what Bruinet is today). What goes in each module: [what-goes-where](../parts/what-goes-where.md).
 
@@ -174,7 +174,8 @@ is gone.
 | 2 | Done | `tools/Bruinet.Cli/Spec/SpecCommands.cs`, tests in `tests/Bruinet.Cli.Tests/Spec`. Check and trace identical to step 0 on all 31 specs; `trace --runnable --results` identical to the old `lirenet` on all 73 saved Bouw7 runs (with real passing states). `site-loop.ps1` builds and calls `bruinet`; it was not run end to end, since that runs Bouw7's tests on acc and rewrites its loop file. Done early, from step 6: `docs/spec/spec-format.md` (the guide's rows link to it) and the old README folded into `src/Bruinet.Spec/README.md`. Gone: `Lirenet.Cli`, `Frainet.Cli`, and both folders' solutions and build files; left: `Lirenet/.my`, `Frainet/.my`, `Frainet/README.md` |
 | 4 | Done | `src/Bruinet.Spec.Format`: `SpecReader.Read` gives a `SpecDocument` (title, header, sections, rules table, chapters and examples, each with its line). `SpecCheck`, `RuleTrace.SpecAsSource` and `BddSpecReader` read through it; `Bruinet.Bdd` references it, the only reference from Test into Spec. Check, trace, `--results` on 73 runs, and the runner's 181 scenarios of the 31 specs are identical. Where the two old readers differed, the format decides, pinned in `SpecReaderTests`: the title is the first line; `Chapter:` as written; a `####` example only in a chapter; a heading inside a fence (`` ``` `` or `~~~`) is text. No spec in Bouw7 or Todo met any of these |
 | 5 | Done | `Frainet/.my` is `.my/develop/`, Gaminet's notes `.my/migrate/`, each with a README saying what the module is and that it has no code yet. `Frainet/` and `Gaminet/` are gone; the `SeparateProducts` exemption, the `Quality.props` remark and AD-033's line are updated. No link points into the old folders |
-| 6–8 | Open | |
+| 6 | Done | `Lirenet/.my/design` is `.my/spec/design/` (with a names note; the other session's uncommitted edits to 330 moved with it and stay uncommitted), the automation documents committed with it. The root README names the four modules first; `AGENTS.md` marks the Develop skills; the packages' Product is Bruinet. The old names remain only in `.my/`, `CHANGELOG.md` and AD-033's dated line |
+| 7–8 | Open | |
 
 Found on the way, not part of this plan: three `SolutionTests` fail before and after step 1. The iOS sample is not in
 `Bruinet.sln`, the iOS test projects are in no script, and `MediaElement.tpl.cs:42` names a platform.

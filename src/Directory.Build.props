@@ -26,7 +26,7 @@
     <!-- Package metadata -->
     <Authors>Bruinet Contributors</Authors>
     <Company>Bruinet</Company>
-    <Product>Bruinet UI Test Framework</Product>
+    <Product>Bruinet</Product>
     <Copyright>Copyright © 2024-$([System.DateTime]::Now.Year) Bruinet Contributors</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/exact-mobile-apps/test-tooling</PackageProjectUrl>
