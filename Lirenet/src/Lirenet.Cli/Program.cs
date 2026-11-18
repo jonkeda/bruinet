@@ -1,4 +1,4 @@
-using Lirenet.Specs;
+using Bruinet.Spec;
 
 // lirenet check <spec or folder>...: every *.spec.md checked against docs/spec-format.md; exit 1 on a finding.
 // lirenet trace <spec> <tests folder>... [--results <trx or folder>...]: every rule of the spec reached by a test; with

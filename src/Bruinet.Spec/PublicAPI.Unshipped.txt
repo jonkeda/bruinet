@@ -1,0 +1,59 @@
+#nullable enable
+Bruinet.Spec.RuleReach
+Bruinet.Spec.RuleReach.Container.get -> string?
+Bruinet.Spec.RuleReach.Container.init -> void
+Bruinet.Spec.RuleReach.File.get -> string!
+Bruinet.Spec.RuleReach.File.init -> void
+Bruinet.Spec.RuleReach.Line.get -> int
+Bruinet.Spec.RuleReach.Line.init -> void
+Bruinet.Spec.RuleReach.Name.get -> string!
+Bruinet.Spec.RuleReach.Name.init -> void
+Bruinet.Spec.RuleReach.Rule.get -> string!
+Bruinet.Spec.RuleReach.Rule.init -> void
+Bruinet.Spec.RuleReach.RuleReach(string! Rule, string! Name, string! File, int Line, string? Container = null) -> void
+Bruinet.Spec.RuleResults
+Bruinet.Spec.RuleState
+Bruinet.Spec.RuleState.Failing = 2 -> Bruinet.Spec.RuleState
+Bruinet.Spec.RuleState.NotReached = 0 -> Bruinet.Spec.RuleState
+Bruinet.Spec.RuleState.NotRun = 1 -> Bruinet.Spec.RuleState
+Bruinet.Spec.RuleState.Passing = 3 -> Bruinet.Spec.RuleState
+Bruinet.Spec.RuleTrace
+Bruinet.Spec.RuleTraceResult
+Bruinet.Spec.RuleTraceResult.Findings.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.SpecFinding!>!
+Bruinet.Spec.RuleTraceResult.Findings.init -> void
+Bruinet.Spec.RuleTraceResult.Rules.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.RuleReach!>!>!
+Bruinet.Spec.RuleTraceResult.Rules.init -> void
+Bruinet.Spec.RuleTraceResult.RuleTraceResult(System.Collections.Generic.IReadOnlyDictionary<string!, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.RuleReach!>!>! Rules, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.SpecFinding!>! Findings) -> void
+Bruinet.Spec.SpecCheck
+Bruinet.Spec.SpecFinding
+Bruinet.Spec.SpecFinding.Code.get -> string!
+Bruinet.Spec.SpecFinding.Code.init -> void
+Bruinet.Spec.SpecFinding.Line.get -> int
+Bruinet.Spec.SpecFinding.Line.init -> void
+Bruinet.Spec.SpecFinding.Message.get -> string!
+Bruinet.Spec.SpecFinding.Message.init -> void
+Bruinet.Spec.SpecFinding.SpecFinding(int Line, string! Code, string! Message) -> void
+Bruinet.Spec.TestOutcome
+Bruinet.Spec.TestOutcome.Name.get -> string!
+Bruinet.Spec.TestOutcome.Name.init -> void
+Bruinet.Spec.TestOutcome.Outcome.get -> string!
+Bruinet.Spec.TestOutcome.Outcome.init -> void
+Bruinet.Spec.TestOutcome.Passed.get -> bool
+Bruinet.Spec.TestOutcome.TestOutcome(string! Name, string! Outcome) -> void
+override Bruinet.Spec.SpecFinding.ToString() -> string!
+static Bruinet.Spec.RuleResults.Findings(System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Spec.RuleState>! states) -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.SpecFinding!>!
+static Bruinet.Spec.RuleResults.ParseTrx(string! trx) -> System.Collections.Generic.IEnumerable<Bruinet.Spec.TestOutcome!>!
+static Bruinet.Spec.RuleResults.ReadTrx(System.Collections.Generic.IEnumerable<string!>! paths) -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.TestOutcome!>!
+static Bruinet.Spec.RuleResults.States(Bruinet.Spec.RuleTraceResult! trace, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.TestOutcome!>! outcomes) -> System.Collections.Generic.IReadOnlyDictionary<string!, Bruinet.Spec.RuleState>!
+static Bruinet.Spec.RuleTrace.SpecAsSource(string! spec) -> string!
+static Bruinet.Spec.RuleTrace.Trace(string! spec, System.Collections.Generic.IEnumerable<(string! File, string! Text)>! sources) -> Bruinet.Spec.RuleTraceResult!
+static Bruinet.Spec.RuleTrace.TraceFile(string! specPath, System.Collections.Generic.IEnumerable<string!>! testFolders) -> Bruinet.Spec.RuleTraceResult!
+static Bruinet.Spec.RuleTrace.TraceFile(string! specPath, System.Collections.Generic.IEnumerable<string!>! testFolders, bool runnable) -> Bruinet.Spec.RuleTraceResult!
+static Bruinet.Spec.SpecCheck.Check(string! text) -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.SpecFinding!>!
+static Bruinet.Spec.SpecCheck.CheckFile(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.SpecFinding!>!
+static Bruinet.Spec.SpecCheck.JourneyId(string! text) -> string?
+static Bruinet.Spec.SpecCheck.RuleIds(string! text) -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Spec.SpecCheck.HeaderFields -> string![]!
+static readonly Bruinet.Spec.SpecCheck.RequiredSections -> string![]!
+static readonly Bruinet.Spec.SpecCheck.Sections -> string![]!
+static readonly Bruinet.Spec.SpecCheck.VagueWords -> string![]!

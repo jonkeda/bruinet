@@ -74,6 +74,7 @@ param(
         'Bruinet.Logging.Tests',
         'Bruinet.Mocking.Http.Tests',
         'Bruinet.Traits.Tests',
+        'Bruinet.Spec.Tests',
         'MauiHeadless.Tests',
         'MauiHeadless.Tests.MSTest',
         'MauiHeadless.Tests.NUnit',

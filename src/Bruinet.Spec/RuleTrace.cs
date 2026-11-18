@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Lirenet.Specs;
+namespace Bruinet.Spec;
 
 /// <summary>A test or scenario that names a rule.</summary>
 /// <param name="Rule">The rule's id, such as <c>TOD.02.R3</c>.</param>

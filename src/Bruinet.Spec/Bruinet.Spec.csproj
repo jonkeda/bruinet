@@ -1,2 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);specs;requirements</PackageTags>
+    <RootNamespace>Bruinet.Spec</RootNamespace>
+    <Description>Bruinet Spec: checks spec files (*.spec.md) against the format, and traces every rule of a spec to the tests and test results that prove it.</Description>
+    <PackageId>Bruinet.Spec</PackageId>
+  </PropertyGroup>
+
 </Project>

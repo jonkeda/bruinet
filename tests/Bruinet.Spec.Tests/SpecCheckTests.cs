@@ -1,6 +1,6 @@
-using Lirenet.Specs;
+using Bruinet.Spec;
 
-namespace Lirenet.Specs.Tests;
+namespace Bruinet.Spec.Tests;
 
 /// <summary>
 /// The spec check on the real specs, and on broken copies of TOD.02: each copy breaks one thing the

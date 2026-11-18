@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace Lirenet.Specs;
+namespace Bruinet.Spec;
 
 /// <summary>What a test run says about one rule (F1): named by a test is not proven.</summary>
 public enum RuleState

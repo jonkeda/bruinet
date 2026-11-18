@@ -4,6 +4,6 @@
     <AssemblyName>lirenet</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lirenet.Specs\Lirenet.Specs.csproj" />
+    <ProjectReference Include="../../../src/Bruinet.Spec/Bruinet.Spec.csproj" />
   </ItemGroup>
 </Project>

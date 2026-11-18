@@ -1,16 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <IsPackable>false</IsPackable>
+    <RootNamespace>Bruinet.Spec.Tests</RootNamespace>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio" />
+    <ProjectReference Include="..\..\src\Bruinet.Spec\Bruinet.Spec.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Using Include="Xunit" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Lirenet.Specs\Lirenet.Specs.csproj" />
-  </ItemGroup>
+
 </Project>
