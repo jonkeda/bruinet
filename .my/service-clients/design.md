@@ -1,6 +1,6 @@
 # Service clients for test data (B18): design
 
-Status: design, nothing built. Asked by the Bouw7 proposal (BruinetB7, `.my/Planning/bouw7-proposal.md`,
+Status: design, nothing built. Asked by the Bouw7 proposal (`.my/Planning/bouw7-proposal.md`,
 section 8.5). Written in phase 4; the open points at the end need Bouw7's API spec and an owner.
 
 ## The need

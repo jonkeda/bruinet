@@ -34,7 +34,7 @@ Departments page
 | TOD.02.R9 | When a new todo is saved, the app shall keep it on the device and show "Local only" until the next sync. |
 | TOD.02.R4 | If a save is refused, then the app shall keep nothing and leave the form open with what was typed. |
 
-- The rule format of the [EARS proposal](../../../../.my/ears/ears-proposal.md): one sentence, one
+- The rule format of the [EARS proposal](../../ears/ears-proposal.md): one sentence, one
   response, checkable by keyword.
 - **The right home for what tables cannot hold:** dependencies between fields, timing, what is
   kept and what is lost.

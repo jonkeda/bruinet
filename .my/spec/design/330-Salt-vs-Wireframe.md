@@ -6,16 +6,18 @@ reviewed and hardened Wireframe. This document sets the two side by side on the 
 
 | | |
 | --- | --- |
-| Salt | Read from PlantUML's own pages: `plantuml.com/salt`, `/command-line`, `/faq-install`. **Not run here**: Java 17 is on this machine, `plantuml.jar` is not, and I did not download it |
+| Salt | Read from PlantUML's own pages (`plantuml.com/salt`, `/command-line`, `/download`, `/license`, `/starting`, `/graphviz-dot`, `/ascii-art`), its README on GitHub and GitLab's PlantUML page. **Not run here**: Java 17 is on this machine, `plantuml.jar` is not, and I did not download it |
 | Wireframe | The submodule `wireframes/` at `299f0ab` (the review's fixes). The example below was run through `wire parse` and gave the tree shown |
-| Not verified | PlantUML's licence, its latest release, and its JavaScript build: those pages could not be fetched. What is said about them is from memory and marked so |
+| Not verified | Anything about how Salt behaves when run: its error messages, whether its output is the same every time, whether the text formats and the JavaScript build draw Salt. The pages do not say |
 
 ## 1. In short
 
-**Salt draws a screen; Wireframe describes one.** Salt is a table of cells with a few widget
-shapes in them. It has no ids, no attributes, no required mark, no link from a button to a screen,
-and no way to give the tree to another tool. Wireframe has all five, and after the review it also
-reports what it cannot read instead of dropping it.
+**Both draw a screen; only Wireframe also describes it.** Each renders its text to a picture:
+Salt to PNG or SVG through PlantUML, Wireframe to SVG through `wire` (section 2 shows the result).
+The difference is what else the text holds. Salt is a table of cells with a few widget shapes in
+them. It has no ids, no attributes, no required mark, no link from a button to a screen, and no
+way to give the tree to another tool. Wireframe has all five, and after the review it also reports
+what it cannot read instead of dropping it.
 
 For Lirenet that settles it: **Salt meets the picture half of the need and none of the facts half**
 (310, "What I think"). It would be an ASCII sketch with a better renderer. What Salt has and
@@ -64,6 +66,15 @@ wireframe
 /wireframe
 ```
 
+Drawn by `wire <file> -o 330-department-form.svg`, clean theme:
+
+![The department form, drawn by Wireframe](330-department-form.svg)
+
+The label sits above the field, the required mark is in it, and the main button is filled. In the
+SVG each control is a group with an ARIA role and name (`role="textbox" aria-label="Name"
+aria-required="true"`), so even the picture says what its parts are. The picture fits its
+content, here 344 by 176, unless `-w` or `-h` says otherwise.
+
 What each one holds:
 
 | Fact | Salt | Wireframe (`wire parse`) |
@@ -109,9 +120,9 @@ has one meaning and no room for a second fact.
 | --- | :---: | :---: | --- |
 | N1 Says what each element is | ◐ | ● | Salt knows about ten shapes, and a label is just text beside a field |
 | N2 Carries the spec's facts | ○ | ● | No ids, attributes, required, limits, messages or targets in Salt |
-| N3 Reads as a screen | ● | ● | Both render one. Salt also reads half-way as raw text; Wireframe needs the preview or the SVG |
+| N3 Reads as a screen | ● | ● | Both draw one: Salt to PNG or SVG, Wireframe to SVG. Salt's raw text also reads half-way as a screen; Wireframe's reads as a list until it is drawn |
 | N4 Text in git, good diffs | ◐ | ● | Both are text. Salt's field widths and cell alignment are spaces, so a longer label can touch other lines |
-| N5 Renders where people look | ◐ | ◐ | Neither on GitHub. Salt: VS Code extensions, JetBrains, GitLab with a PlantUML server (from memory). Wireframe: its own VS Code extension. Both need a committed SVG for GitHub |
+| N5 Renders where people look | ◐ | ◐ | Neither on GitHub. Salt: editor extensions, and GitLab (GitLab.com renders `plantuml` blocks as it is; a self-managed GitLab needs a PlantUML server). Wireframe: its own VS Code extension. Both need a committed SVG for GitHub |
 | N6 Agents, drafted from the app | ◐ | ● | Agents know Salt well from public examples. But the Scraper's facts (kind, label, required, choices) have nowhere to go in Salt except the picture |
 | N7 Lirenet reads it, in .NET | ○ | ◐ | Salt: no tree comes out of PlantUML (`--preproc` is source text, `--check-syntax` a yes or no), so Lirenet would write its own Salt parser to learn only shapes. Wireframe: `wire parse` gives JSON; a C# reader is still to write |
 | N8 Small to learn and keep | ● | ◐ | Salt is one page of documentation and is kept by others. Wireframe is ours to keep: 12,700 lines, one author |
@@ -120,18 +131,18 @@ has one meaning and no room for a second fact.
 
 | | Salt | Wireframe |
 | --- | --- | --- |
-| Runtime | Java and `plantuml.jar` (about 20 MB, from memory). Salt needs no Graphviz, as far as I know; the install page does not say | Node; the packages on npm |
-| Output | PNG, SVG, PDF, EPS, LaTeX, and ASCII art (`--txt`, `--utxt`; whether Salt supports the text formats was not checked) | SVG; four themes |
+| Runtime | Java (11 recommended, a Java 8 build exists) and `plantuml.jar`. Salt needs no Graphviz: it is not among the diagram types that do | Node; the packages on npm |
+| Output | PNG, SVG, PDF, EPS, LaTeX. ASCII art (`--txt`, `--utxt`) is documented for sequence diagrams only; for Salt it is unknown | SVG, with ARIA roles and names on the controls; four themes |
 | Machine-readable tree | No | Yes: `wire parse <file>`, and `parse()` in `wireframe-core` |
 | A gate in CI | `--check-syntax`, `--stop-on-error` | Non-zero exit on errors, `file:line:col` messages (since the review) |
 | Error quality | Not tested here | Line and column on every error; an unknown closing keyword is reported and parsing goes on |
 | Same input, same output | Not tested here | Checked: byte-identical SVG |
 | Editor | Mature extensions for VS Code and JetBrains, online servers | Own VS Code extension: preview, IntelliSense, diagnostics. Not verified in VS Code itself after the fixes |
-| Without the runtime | A JavaScript build of PlantUML exists (from memory, status not verified) | The parser is TypeScript; runs in a browser |
-| Maturity | Many years old, widely used, documented; its skinparam and style sections are marked "FIXME" and some settings do not apply to Salt | Version 0.0.7; 485 tests; reviewed once, by us |
+| Without the runtime | A JavaScript build exists: a TeaVM target in PlantUML's own build, and `plantuml/plantuml.js` (MIT). Neither says whether it draws Salt | The parser is TypeScript; runs in a browser |
+| Maturity | Current release v1.2026.10; many years old, widely used, documented; its skinparam and style sections are marked "FIXME" and some settings do not apply to Salt | Version 0.0.7; 485 tests; reviewed once, by us |
 | Who keeps it | The PlantUML project | You. Quiet from May to November 2026 (320, question R6) |
 | Can we extend it | Not in practice: a Java project with its own roadmap, and a grammar of symbols with no room for attributes | Yes, and the review already did (`label=`, `parse`, strict errors) |
-| Licence | GPL by default, with builds under other licences (from memory, not verified) | MIT |
+| Licence | GPL by default; builds under LGPL, Apache 2.0, EPL 2.0, BSD and MIT are offered too | MIT |
 
 ## 6. What Salt does better, and what to take from it
 
@@ -145,8 +156,9 @@ has one meaning and no room for a second fact.
 3. **Screens inside a flow.** `{{salt}}` in an activity diagram shows each step's screen in the
    flow itself. Lirenet could give the same from the `@Target` links: a generated flow with each
    screen's SVG in its node.
-4. **ASCII output.** If PlantUML's text output works for Salt, a screen can be pasted into a chat
-   or a terminal. A text renderer for Wireframe would serve agents the same way.
+4. **ASCII output, perhaps.** PlantUML has text output, documented for sequence diagrams only. If
+   it draws Salt too, a screen can be pasted into a chat or a terminal. A text renderer for
+   Wireframe would serve agents the same way.
 5. **Agents already know it.** No instruction file needed. Wireframe needs its language reference
    in the agent's context every time.
 
