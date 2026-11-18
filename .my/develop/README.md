@@ -5,7 +5,7 @@ the other modules judge it, and learn from what it cost. It was called Frainet. 
 over a site's modules is `tools/Scripts/site-loop.ps1`, and the skills about the work are `friction-log` and
 `improvement-review`. It gets `Bruinet.Develop` and a `bruinet develop` command when a case of the small-steps
 proposal needs one, not before. Develop judges nothing itself: it calls `bruinet spec check`, `bruinet spec trace`
-and the tests, and records their verdict ([what-goes-where](../parts/what-goes-where.md)).
+and the tests, and records their verdict ([AD-044](../../.docs/decisions/ad-044-one-product-four-modules.md)).
 
 Every loop turns plan, build, deploy and feedback, and the build of one loop is many turns of the loop inside it:
 tasks in a capability, capabilities in a module. A loop goes dark when its feedback is an exact check. The specs loop

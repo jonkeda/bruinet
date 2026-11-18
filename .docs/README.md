@@ -61,6 +61,7 @@ How this differs from the other trees:
 - [AD-040: BDD is the format and engine, UAT is a test level](decisions/ad-040-bdd-is-the-format-uat-is-a-test-level.md)
 - [AD-041: A spec's example is its rule's test](decisions/ad-041-a-specs-example-is-its-rules-test.md)
 - [AD-042: Native iOS mirrors native Android](decisions/ad-042-native-ios-mirrors-native-android.md)
+- [AD-044: One product, four modules](decisions/ad-044-one-product-four-modules.md)
 
 ## Contracts
 

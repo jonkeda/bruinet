@@ -75,3 +75,6 @@ The short list that must not be broken. Each links the decision that explains it
   reviewed before it goes in. [AD-031](decisions/ad-031-a-replayed-test-answers-from-the-database-it-recorded.md)
 - **The generator output is not hand-edited.** `.gen.cs` mirrors `.tpl.cs` through
   `Bruinet.Generator`. [control-object](contracts/control-object.md)
+- **References between modules point one way.** Spec references only Spec, Test reaches Spec only through
+  `Bruinet.Spec.Format`, nothing below references Develop or Migrate; a spec is read only by `SpecReader`.
+  [AD-044](decisions/ad-044-one-product-four-modules.md)

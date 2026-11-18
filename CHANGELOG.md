@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Bruinet is one product in four modules**: Test (what Bruinet was), Spec (was Lirenet), Develop (was Frainet) and
+  Migrate (was Gaminet), in one solution, one build and one release; references between them point one way
+  (`ModuleTests`). The root README names them first.
+- **Bruinet.Spec** and **Bruinet.Spec.Format**: the spec module's packages. `Bruinet.Spec.Format` reads a spec into a
+  model (`SpecReader.Read`: title, header, sections, rules table, chapters and examples, each with its line) and
+  depends on nothing; `Bruinet.Spec` checks a spec against the format and traces its rules to tests and results. The
+  check, the trace and `Bruinet.Bdd`'s spec runner read specs through the one reader now
+  ([the format](docs/spec/spec-format.md)).
+- **bruinet spec check** and **bruinet spec trace**: what `lirenet check` and `lirenet trace` did, with the same
+  arguments, output and exit codes.
 - **bruinet scrape places**: one list of an app's places (pages, tabs, dialogs, menus, buttons that only call the back
   end), kept between runs in the suite's `.testing/175-Places.json` with `175-Places.md` beside it. `seed` adds the
   map's addresses, the suite's page objects' and the recordings' pages; `routes` reads the route tables in the scripts
@@ -250,12 +260,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Bouw7's notification socket carried a signed sign-in token in its path.
 
 ### Removed
+- **Breaking:** the `lirenet` and `frainet` commands: use `bruinet spec check` and `bruinet spec trace`. The `gaminet`
+  command, and the `Lirenet/`, `Frainet/` and `Gaminet/` folders with their own solutions and build settings; their
+  notes are `.my/spec/`, `.my/develop/` and `.my/migrate/`, the format is `docs/spec/spec-format.md`.
+- **Breaking:** the namespace `Lirenet.Specs` is `Bruinet.Spec`.
 - **Breaking:** `WaitTextEquals` on every stack: `ITextControlObject<TScope>` declares `WaitText`, which did the same.
 - **Breaking:** `WaitHelper` is internal; the three empty `Placeholder` classes in Core are gone (review proposal 2).
 - **Breaking:** `Bruinet.Core.Legacy`, the first model's interfaces and waits: every stack is on the call model (AD-029
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- The spec runner (`BddSpecReader`) reads a spec by the format: the title is the first line, a chapter is
+  `### Chapter:` as written, a `####` example is one only in a chapter, and a heading inside a fenced block is text.
+  No spec of Bouw7's or Todo's changed what it runs.
 - **Lirenet, the spec tool, is a folder of its own** (`Lirenet/`, beside `Frainet/`): the spec format, `check` and
   `trace` moved there from Frainet, as `Lirenet.Specs` and the `lirenet` command, with their tests and
   `docs/spec-format.md`. Output and exit codes are the same. `frainet check` and `frainet trace` stay one release: they

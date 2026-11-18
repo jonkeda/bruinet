@@ -4,7 +4,7 @@ Status: **proposals**, for discussion. Date: 2026-11-18. No style here is design
 it is for, shows a few lines so the idea is clear, and leaves the exact format for later.
 
 **Names since this was written** (2026-11-18): Lirenet is Bruinet's **Spec** module, Frainet **Develop**, Gaminet
-**Migrate** ([one-or-four](../../structure/one-or-four.md)); `lirenet check` and `lirenet trace` are
+**Migrate** ([AD-044](../../../.docs/decisions/ad-044-one-product-four-modules.md)); `lirenet check` and `lirenet trace` are
 `bruinet spec check` and `bruinet spec trace`. The text below keeps the names it was written with.
 
 ## Why

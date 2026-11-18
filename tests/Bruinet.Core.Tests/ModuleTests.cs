@@ -3,7 +3,7 @@ using System.Xml.Linq;
 namespace Bruinet.Core.Tests;
 
 /// <summary>
-/// Bruinet is one product in four modules: Test, Spec, Develop and Migrate (.my/structure/one-or-four.md). A module is
+/// Bruinet is one product in four modules: Test, Spec, Develop and Migrate (AD-044). A module is
 /// known by its projects' names under src/: <c>Bruinet.Spec*</c>, <c>Bruinet.Develop*</c>, <c>Bruinet.Migrate*</c>, and
 /// every other project is Test. References between modules point one way, so the code has no cycle and Spec can be
 /// taken without Test's drivers.

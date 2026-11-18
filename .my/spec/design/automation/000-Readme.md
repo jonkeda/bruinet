@@ -7,7 +7,7 @@ and, where it is simpler, plain unit or integration tests. Nothing here is built
 today is said so, with the file or guide it is in.
 
 **Names since this was written** (2026-11-18): Lirenet is Bruinet's **Spec** module, Frainet **Develop**, Gaminet
-**Migrate** ([one-or-four](../../../structure/one-or-four.md)); `lirenet check` and `lirenet trace` are
+**Migrate** ([AD-044](../../../../.docs/decisions/ad-044-one-product-four-modules.md)); `lirenet check` and `lirenet trace` are
 `bruinet spec check` and `bruinet spec trace`. The text below keeps the names it was written with.
 
 ## What exists already
