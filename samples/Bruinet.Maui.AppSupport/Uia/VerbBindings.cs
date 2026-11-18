@@ -103,15 +103,14 @@ internal static class VerbBindings
     /// ever chosen and neither is run to find out, this is still a resolution.
     /// </para>
     /// <para>
-    /// <b>Three verbs bind to nothing at all.</b> <c>Pan</c> and <c>Pinch</c> need
+    /// <b>Two verbs bind to nothing at all.</b> <c>Pan</c> and <c>Pinch</c> need
     /// <c>SendPan</c> and <c>SendPinch</c>, which are internal in MAUI 10 - and reflecting into
     /// them would turn every MAUI upgrade into a runtime failure found by a test rather than a
-    /// build failure found by a compiler. <c>LongPress</c> is worse off still: MAUI has no
-    /// long-press recognizer, and the nearest thing,
-    /// <c>PointerGestureRecognizer.PointerPressedCommand</c>, means something else. Pressing is
-    /// not holding; an app that starts a timer on press and cancels it on release would never
-    /// see a long press, and a test asking for one would be told it got one. All three are
-    /// reachable through a sink, by name, and through nothing else.
+    /// build failure found by a compiler. MAUI has no long-press recognizer, but a platform
+    /// behavior such as CommunityToolkit's <c>TouchBehavior</c> can expose a
+    /// <c>LongPressCommand</c>. That command is resolved on demand because recycled rows may
+    /// finish binding after the element is published. App-owned long-press logic with no
+    /// behavior command still needs a sink.
     /// </para>
     /// </remarks>
     /// <param name="element">The element being published.</param>
@@ -126,17 +125,7 @@ internal static class VerbBindings
         {
             case BruinetVerb.Tap:
             case BruinetVerb.DoubleTap:
-                {
-                    var taps = verb == BruinetVerb.Tap ? 1 : 2;
-                    var command = TapCommand(element, taps);
-                    if (command is null)
-                    {
-                        reason = $"no TapGestureRecognizer with NumberOfTapsRequired={taps} and a Command";
-                        return null;
-                    }
-
-                    return Commanded(verb, command);
-                }
+                return TapBinding(element, verb, out reason);
 
             case BruinetVerb.SwipeLeft:
             case BruinetVerb.SwipeRight:
@@ -202,8 +191,7 @@ internal static class VerbBindings
                 }
 
             case BruinetVerb.LongPress:
-                reason = "MAUI has no long-press gesture recognizer; attach a sink that names LongPress";
-                return null;
+                return LongPressBinding(element, verb, out reason);
 
             case BruinetVerb.Pan:
             case BruinetVerb.Pinch:
@@ -286,6 +274,96 @@ internal static class VerbBindings
                     ? null
                     : new CommandBinding(recognizer.Command, recognizer.CommandParameter))
                 .FirstOrDefault(found => found is not null);
+
+    private static VerbBinding? TapBinding(
+        VisualElement element,
+        BruinetVerb verb,
+        out string reason)
+    {
+        var taps = verb == BruinetVerb.Tap ? 1 : 2;
+        var command = TapCommand(element, taps);
+        if (command is not null)
+        {
+            reason = string.Empty;
+            return Commanded(verb, command);
+        }
+        if (verb == BruinetVerb.Tap &&
+            PlatformBehaviorBinding(element, verb, "Command", "CommandParameter", out reason) is { } behavior)
+            return behavior;
+
+        reason = verb == BruinetVerb.Tap
+            ? "no one-tap recognizer or platform behavior with a Command"
+            : $"no TapGestureRecognizer with NumberOfTapsRequired={taps} and a Command";
+        return null;
+    }
+
+    private static VerbBinding? LongPressBinding(
+        VisualElement element,
+        BruinetVerb verb,
+        out string reason)
+    {
+        return PlatformBehaviorBinding(
+            element,
+            verb,
+            "LongPressCommand",
+            "LongPressCommandParameter",
+            out reason);
+    }
+
+    private static VerbBinding? PlatformBehaviorBinding(
+        VisualElement element,
+        BruinetVerb verb,
+        string commandProperty,
+        string parameterProperty,
+        out string reason)
+    {
+        foreach (var behavior in element.Behaviors.Where(IsPlatformBehavior))
+        {
+            var type = behavior.GetType();
+            var command = type.GetProperty(commandProperty);
+            if (command is null || !typeof(ICommand).IsAssignableFrom(command.PropertyType))
+                continue;
+
+            var target = new WeakReference<VisualElement>(element);
+            reason = string.Empty;
+            return new VerbBinding(verb, (_, _, _) =>
+            {
+                if (!target.TryGetTarget(out var live))
+                    return HResults.UIA_E_ELEMENTNOTAVAILABLE;
+
+                var currentBehavior = live.Behaviors
+                    .Where(IsPlatformBehavior)
+                    .FirstOrDefault(candidate =>
+                        candidate.GetType().GetProperty(commandProperty)?.GetValue(candidate) is ICommand);
+                if (currentBehavior is null)
+                    return HResults.BRUINET_E_DECLINED;
+
+                var currentType = currentBehavior.GetType();
+                var current = (ICommand)currentType.GetProperty(commandProperty)!.GetValue(currentBehavior)!;
+                var argument = currentType.GetProperty(parameterProperty)?.GetValue(currentBehavior);
+                if (!current.CanExecute(argument))
+                    return HResults.BRUINET_E_DECLINED;
+
+                current.Execute(argument);
+                return HResults.S_OK;
+            });
+        }
+
+        reason = $"no platform behavior exposes {commandProperty}; attach a sink for app-owned behavior";
+        return null;
+    }
+
+    private static bool IsPlatformBehavior(Behavior behavior)
+    {
+        for (var type = behavior.GetType(); type is not null; type = type.BaseType)
+        {
+            if (type.IsGenericType &&
+                type.GetGenericTypeDefinition() == typeof(PlatformBehavior<,>))
+                return true;
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// The swipe recognizer covering this direction, if the element has one with a command.

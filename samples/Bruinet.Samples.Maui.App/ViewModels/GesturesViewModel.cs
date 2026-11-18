@@ -46,6 +46,7 @@ public class GesturesViewModel : ParentViewModel
         Sink = new GestureVerbSink(this);
 
         TapCommand = new RelayCommand(() => TapStatus = $"Tapped x{++_tapCount}");
+        LongPressCommand = new RelayCommand(() => LongPressStatus = "Long-pressed");
         DoubleTapCommand = new RelayCommand(() => DoubleTapStatus = $"Double-tapped x{++_doubleTapCount}");
         SwipeCommand = new RelayCommand<string>(direction => SwipeStatus = $"Swiped {direction}");
         NoDeclarationCommand = new RelayCommand(() => NoDeclarationStatus = "Reached");
@@ -64,6 +65,9 @@ public class GesturesViewModel : ParentViewModel
 
     /// <summary>Raised by a single-tap recognizer.</summary>
     public ICommand TapCommand { get; }
+
+    /// <summary>Raised by a platform behavior's long press.</summary>
+    public ICommand LongPressCommand { get; }
 
     /// <summary>Raised by a two-tap recognizer.</summary>
     public ICommand DoubleTapCommand { get; }

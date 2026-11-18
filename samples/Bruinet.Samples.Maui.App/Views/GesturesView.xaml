@@ -113,6 +113,17 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Platform behavior: one target exposes the toolkit's normal and long-press commands. -->
+            <Border x:Name="TouchBehaviorTarget"
+                    AutomationId="GestureTouchBehaviorTarget"
+                    uia:GestureAutomation.Verbs="Tap,LongPress"
+                    Padding="15"
+                    BackgroundColor="{AppThemeBinding Light=#FFF4E5, Dark=#4A3A22}">
+                <Label Text="TouchBehavior target"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+            </Border>
+
             <!--
                 Pan: SendPan is internal in MAUI 10 and nothing here reflects into MAUI
                 internals, so this is the other verb only the app can answer. It carries

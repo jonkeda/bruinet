@@ -112,6 +112,28 @@ public class GestureVerbTests
         return Task.CompletedTask;
     }
 
+    [WindowsOnlyFact(
+        Timeout = TestConstants.DefaultTestTimeoutMs,
+        Device = "MauiHeadless removes the platform behavior before the gesture can be delivered")]
+    public Task Tap_ReachesThePlatformBehaviorCommand()
+    {
+        Driver.PerformGesture(GesturesTestPage.Targets.TouchBehavior, MauiGesture.Tap);
+
+        Assert.Equal("Tapped x1", _page.TapStatus.GetText());
+        return Task.CompletedTask;
+    }
+
+    [WindowsOnlyFact(
+        Timeout = TestConstants.DefaultTestTimeoutMs,
+        Device = "MauiHeadless removes the platform behavior before the gesture can be delivered")]
+    public Task LongPress_ReachesThePlatformBehaviorCommand()
+    {
+        Driver.PerformGesture(GesturesTestPage.Targets.TouchBehavior, MauiGesture.LongPress);
+
+        Assert.Equal("Long-pressed", _page.LongPressStatus.GetText());
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// A sink-owned verb carries its arguments through unchanged.
     /// </summary>
