@@ -1,5 +1,5 @@
 using System.Text;
-using System.Text.RegularExpressions;
+using Bruinet.Spec.Format;
 
 namespace Bruinet.Bdd;
 
@@ -8,9 +8,10 @@ namespace Bruinet.Bdd;
 /// (<c>B7.CON.01.R4 Part of a name is enough</c>, <c>@B7.CON.01.R4</c>). The spec's <c>## Background</c> goes before every
 /// example; a chapter's (<c>### Chapter: …</c>) Given and When go before each of its examples (<c>#### R4 …</c>).
 /// Everything else in a spec is for its readers and the spec check. The text is rewritten line for line into the feature
-/// grammar, so every step keeps its line, and then read by <see cref="BddMarkdownParser"/>.
+/// grammar, so every step keeps its line, and then read by <see cref="BddMarkdownParser"/>. Where the title, the
+/// chapters and the examples are comes from the format's one reader, <see cref="SpecReader"/>.
 /// </summary>
-public static partial class BddSpecReader
+public static class BddSpecReader
 {
     /// <summary>The tag every scenario read from a spec carries, besides its rule's id.</summary>
     public const string SpecTag = "spec";
@@ -23,12 +24,11 @@ public static partial class BddSpecReader
 
     /// <summary>Whether a file is a spec, by its name.</summary>
     /// <param name="filePath">A file path or name.</param>
-    public static bool IsSpecFile(string? filePath) =>
-        filePath is not null && filePath.EndsWith(BddFileFormat.SpecExtension, StringComparison.OrdinalIgnoreCase);
+    public static bool IsSpecFile(string? filePath) => SpecReader.IsSpecFile(filePath);
 
     /// <summary>Whether a text is a spec, by its title.</summary>
     /// <param name="markdown">The file's text.</param>
-    public static bool IsSpec(string markdown) => SpecTitle().IsMatch(markdown);
+    public static bool IsSpec(string markdown) => SpecReader.Read(markdown).JourneyId is not null;
 
     /// <summary>Reads a spec as a feature.</summary>
     /// <param name="markdown">The spec's text.</param>
@@ -47,70 +47,41 @@ public static partial class BddSpecReader
     /// </summary>
     internal static (string Feature, IReadOnlyList<string> Chapters) ToFeature(string markdown)
     {
+        var spec = SpecReader.Read(markdown);
         var lines = markdown.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
-        var id = string.Empty;
-        var inExamples = false;
-        var inFence = false;
         List<string> chapters = [];
 
-        for (var i = 0; i < lines.Length; i++)
+        if (spec.Section("Examples") is { } examples)
         {
-            var line = lines[i];
-            if (line.TrimStart().StartsWith("```", StringComparison.Ordinal) || line.TrimStart().StartsWith("~~~", StringComparison.Ordinal))
+            lines[examples.Line - 1] = string.Empty;
+        }
+
+        if (spec.JourneyId is not { } id)
+        {
+            return (string.Join('\n', lines), chapters);
+        }
+
+        lines[0] = ("# Feature: " + id + spec.TitleRest).TrimEnd();
+        foreach (var block in spec.Blocks)
+        {
+            if (block is SpecChapter chapter)
             {
-                inFence = !inFence;
-                continue;
+                var name = "Chapter: " + chapter.Name;
+                chapters.Add(name);
+                lines[chapter.Line - 1] = "## Scenario: " + name;
+                Tag(lines, chapter.Line - 1, "@chapter");
             }
 
-            if (inFence)
+            foreach (var example in block is SpecChapter of ? of.Examples : [(SpecExample)block])
             {
-                continue;
-            }
-
-            if (SpecTitle().Match(line) is { Success: true } title)
-            {
-                id = title.Groups["id"].Value;
-                lines[i] = ("# Feature: " + id + title.Groups["rest"].Value).TrimEnd();
-                continue;
-            }
-
-            if (Heading().Match(line) is not { Success: true } heading)
-            {
-                continue;
-            }
-
-            var level = heading.Groups["hashes"].Value.Length;
-            var text = heading.Groups["text"].Value.Trim();
-            if (level == 2)
-            {
-                inExamples = text.Equals("Examples", StringComparison.OrdinalIgnoreCase);
-                if (inExamples)
+                if (example.RuleNumber is not { } number)
                 {
-                    lines[i] = string.Empty;
+                    continue;
                 }
 
-                continue;
-            }
-
-            if (!inExamples || id.Length == 0)
-            {
-                continue;
-            }
-
-            if (level == 3 && ChapterHeading().Match(text) is { Success: true } chapter)
-            {
-                var name = "Chapter: " + chapter.Groups["name"].Value.Trim();
-                chapters.Add(name);
-                lines[i] = "## Scenario: " + name;
-                Tag(lines, i, "@chapter");
-                continue;
-            }
-
-            if (level is 3 or 4 && RuleHeading().Match(text) is { Success: true } rule)
-            {
-                var ruleId = $"{id}.R{rule.Groups["number"].Value}";
-                lines[i] = $"## Scenario: {ruleId} {rule.Groups["name"].Value.Trim()}".TrimEnd();
-                Tag(lines, i, level == 3 ? $"@{ruleId} @{SpecTag} @{OutsideChapterTag}" : $"@{ruleId} @{SpecTag}");
+                var ruleId = $"{id}.R{number}";
+                lines[example.Line - 1] = $"## Scenario: {ruleId} {example.Name}".TrimEnd();
+                Tag(lines, example.Line - 1, example.ChapterName is null ? $"@{ruleId} @{SpecTag} @{OutsideChapterTag}" : $"@{ruleId} @{SpecTag}");
             }
         }
 
@@ -176,16 +147,4 @@ public static partial class BddSpecReader
 
         return key.ToString();
     }
-
-    [GeneratedRegex(@"^#\s+Spec:\s+(?<id>[A-Z][A-Z0-9]*(?:\.[A-Z][A-Z0-9]*)*\.\d+)(?<rest>.*)$", RegexOptions.Multiline)]
-    private static partial Regex SpecTitle();
-
-    [GeneratedRegex(@"^(?<hashes>#{2,4})\s+(?<text>.+?)\s*$")]
-    private static partial Regex Heading();
-
-    [GeneratedRegex(@"^Chapter:\s*(?<name>.+)$", RegexOptions.IgnoreCase)]
-    private static partial Regex ChapterHeading();
-
-    [GeneratedRegex(@"^R(?<number>\d+)\b\s*(?<name>.*)$")]
-    private static partial Regex RuleHeading();
 }

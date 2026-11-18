@@ -7,4 +7,8 @@
     <PackageId>Bruinet.Spec</PackageId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.Spec.Format\Bruinet.Spec.Format.csproj" />
+  </ItemGroup>
+
 </Project>

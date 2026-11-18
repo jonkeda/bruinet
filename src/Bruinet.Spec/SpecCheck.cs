@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Bruinet.Spec.Format;
 
 namespace Bruinet.Spec;
 
@@ -31,9 +32,9 @@ public static partial class SpecCheck
     {
         var lines = text.ReplaceLineEndings("\n").Split('\n');
         var findings = new List<SpecFinding>();
-        var spec = Read(lines);
+        var spec = SpecReader.Read(text);
 
-        CheckTitle(spec, findings);
+        CheckTitle(lines, findings);
         CheckHeader(spec, findings);
         CheckSections(spec, findings);
         var rules = CheckRules(spec, findings);
@@ -45,28 +46,23 @@ public static partial class SpecCheck
     }
 
     /// <summary>The journey id from a spec's title, such as <c>TOD.02</c>; <c>null</c> without one.</summary>
-    public static string? JourneyId(string text) => Read(text.ReplaceLineEndings("\n").Split('\n')).JourneyId;
+    public static string? JourneyId(string text) => SpecReader.Read(text).JourneyId;
 
     /// <summary>The ids in a spec's rules table, in their order, such as <c>TOD.02.R1</c>.</summary>
-    public static IReadOnlyList<string> RuleIds(string text)
-    {
-        var spec = Read(text.ReplaceLineEndings("\n").Split('\n'));
-        return spec.Section("Rules") is { } rules
-            ? TableRows(rules.Body).Skip(1).Select(row => row.Cells[0]).Where(id => id.Length > 0).ToList()
-            : [];
-    }
+    public static IReadOnlyList<string> RuleIds(string text) => SpecReader.Read(text).RuleIds;
 
-    private static void CheckTitle(Spec spec, List<SpecFinding> findings)
+    // The reader takes a title as it comes; the format asks for exactly this.
+    private static void CheckTitle(string[] lines, List<SpecFinding> findings)
     {
-        if (spec.JourneyId is null)
+        if (!TitleLine().IsMatch(lines.FirstOrDefault() ?? string.Empty))
         {
             findings.Add(new(1, "title", "The first line is \"# Spec: <journey id> <journey name>\", such as \"# Spec: TOD.02 Create a todo\"."));
         }
     }
 
-    private static void CheckHeader(Spec spec, List<SpecFinding> findings)
+    private static void CheckHeader(SpecDocument spec, List<SpecFinding> findings)
     {
-        var fields = TableRows(spec.Header)
+        var fields = SpecReader.TableRows(spec.Header)
             .Where(row => row.Cells.Count >= 2)
             .GroupBy(row => row.Cells[0])
             .ToDictionary(group => group.Key, group => group.First());
@@ -99,7 +95,7 @@ public static partial class SpecCheck
             && DateOnly.TryParseExact(value["accepted ".Length..], "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
     }
 
-    private static void CheckSections(Spec spec, List<SpecFinding> findings)
+    private static void CheckSections(SpecDocument spec, List<SpecFinding> findings)
     {
         var last = -1;
         foreach (var section in spec.Sections)
@@ -130,7 +126,7 @@ public static partial class SpecCheck
         }
     }
 
-    private static Dictionary<int, int> CheckRules(Spec spec, List<SpecFinding> findings)
+    private static Dictionary<int, int> CheckRules(SpecDocument spec, List<SpecFinding> findings)
     {
         var rules = new Dictionary<int, int>();
         if (spec.Section("Rules") is not { } section)
@@ -138,7 +134,7 @@ public static partial class SpecCheck
             return rules;
         }
 
-        var rows = TableRows(section.Body).ToList();
+        var rows = section.Rows();
         if (rows.Count == 0 || rows[0].Cells is not ["Id", "Rule"])
         {
             findings.Add(new(section.Line, "rules-table", "The rules are a table with the columns Id and Rule."));
@@ -175,47 +171,42 @@ public static partial class SpecCheck
         return rules;
     }
 
-    private static void CheckExamples(Spec spec, Dictionary<int, int> rules, List<SpecFinding> findings)
+    private static void CheckExamples(SpecDocument spec, Dictionary<int, int> rules, List<SpecFinding> findings)
     {
-        if (spec.Section("Examples") is not { } section)
+        if (spec.Section("Examples") is null)
         {
             return;
         }
 
         // The Background's steps go before every example, a chapter's before each of its own (runnable specs).
         var background = spec.Section("Background") is { } given ? GherkinSteps(given.Body) : [];
-        List<Section> examples = [];
-        foreach (var sub in Subsections(section, "### "))
+        foreach (var block in spec.Blocks)
         {
-            if (ChapterHeading().IsMatch(sub.Name))
+            if (block is SpecChapter chapter)
             {
-                var chapter = Subsections(sub, "#### ").ToList();
-                var preamble = sub.Body.TakeWhile(line => !line.Text.StartsWith("#### ", StringComparison.Ordinal)).ToList();
-                var steps = GherkinSteps(preamble);
+                var steps = GherkinSteps(chapter.Preamble);
                 if (steps.Count == 0 || steps.Any(step => step.Text.TrimStart().StartsWith("Then ", StringComparison.Ordinal)))
                 {
-                    findings.Add(new(sub.Line, "chapter-steps", $"\"### {sub.Name}\" has a ```gherkin block of Given and When steps, no Then."));
+                    findings.Add(new(chapter.Line, "chapter-steps", $"\"### {chapter.Heading}\" has a ```gherkin block of Given and When steps, no Then."));
                 }
 
-                foreach (var example in chapter)
+                foreach (var example in chapter.Examples)
                 {
                     CheckOne(example, "####", [.. background, .. steps]);
                 }
 
-                examples.AddRange(chapter);
                 continue;
             }
 
-            CheckOne(sub, "###", background);
-            examples.Add(sub);
+            CheckOne((SpecExample)block, "###", background);
         }
 
-        void CheckOne(Section example, string level, List<SpecLine> prefix)
+        void CheckOne(SpecExample example, string level, List<SpecLine> prefix)
         {
-            var match = ExampleHeading().Match(example.Name);
+            var match = ExampleHeading().Match(example.Heading);
             if (!match.Success)
             {
-                findings.Add(new(example.Line, "example-heading", $"\"{level} {example.Name}\" is not an example's heading; they are \"### R<number> <short name>\", or \"#### R<number> <short name>\" in a \"### Chapter: <name>\"."));
+                findings.Add(new(example.Line, "example-heading", $"\"{level} {example.Heading}\" is not an example's heading; they are \"### R<number> <short name>\", or \"#### R<number> <short name>\" in a \"### Chapter: <name>\"."));
                 return;
             }
 
@@ -228,8 +219,8 @@ public static partial class SpecCheck
             CheckExample(example, number, findings, prefix);
         }
 
-        var shown = examples
-            .Select(example => ExampleHeading().Match(example.Name))
+        var shown = spec.Examples
+            .Select(example => ExampleHeading().Match(example.Heading))
             .Where(match => match.Success)
             .Select(match => int.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture))
             .ToHashSet();
@@ -240,23 +231,24 @@ public static partial class SpecCheck
         }
     }
 
-    private static void CheckExample(Section example, int number, List<SpecFinding> findings, List<SpecLine> prefix)
+    private static void CheckExample(SpecExample example, int number, List<SpecFinding> findings, List<SpecLine> prefix)
     {
-        var fence = example.Body.FindIndex(line => line.Text.StartsWith("```", StringComparison.Ordinal));
-        var why = example.Body.Take(fence < 0 ? example.Body.Count : fence).Any(line => !string.IsNullOrWhiteSpace(line.Text));
+        var body = example.Body.ToList();
+        var fence = body.FindIndex(line => line.Text.StartsWith("```", StringComparison.Ordinal));
+        var why = body.Take(fence < 0 ? body.Count : fence).Any(line => !string.IsNullOrWhiteSpace(line.Text));
 
         if (!why)
         {
             findings.Add(new(example.Line, "example-why", $"R{number}'s example starts with a short paragraph on why the rule is there."));
         }
 
-        if (fence < 0 || example.Body[fence].Text.Trim() != "```gherkin")
+        if (fence < 0 || body[fence].Text.Trim() != "```gherkin")
         {
             findings.Add(new(example.Line, "example-gherkin", $"R{number}'s example has a ```gherkin block."));
             return;
         }
 
-        var steps = example.Body.Skip(fence + 1).TakeWhile(line => !line.Text.StartsWith("```", StringComparison.Ordinal)).ToList();
+        var steps = body.Skip(fence + 1).TakeWhile(line => !line.Text.StartsWith("```", StringComparison.Ordinal)).ToList();
         foreach (var scenario in SplitOnBlankLines(steps))
         {
             CheckScenario([.. prefix, .. scenario], number, findings);
@@ -310,7 +302,7 @@ public static partial class SpecCheck
         }
     }
 
-    private static void CheckOpenQuestions(Spec spec, List<SpecFinding> findings)
+    private static void CheckOpenQuestions(SpecDocument spec, List<SpecFinding> findings)
     {
         if (spec.Section("Open questions") is not { } section)
         {
@@ -322,7 +314,7 @@ public static partial class SpecCheck
             findings.Add(new(question.Number, "question-proposal", "Each open question has \"Proposal:\" with an answer and why."));
         }
 
-        var status = TableRows(spec.Header).FirstOrDefault(row => row.Cells is ["Status", ..]);
+        var status = SpecReader.TableRows(spec.Header).FirstOrDefault(row => row.Cells is ["Status", ..]);
         if (status is not null && status.Cells[1].StartsWith("accepted", StringComparison.Ordinal) && Bullets(section.Body).Any())
         {
             findings.Add(new(status.Line, "accepted-open", "A spec is accepted only with no open questions left."));
@@ -361,75 +353,12 @@ public static partial class SpecCheck
     private static Regex VagueWord(string word) =>
         new($@"(?<![\w-]){Regex.Escape(word)}(?![\w-])", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-    private static Spec Read(string[] lines)
-    {
-        var title = TitleLine().Match(lines.FirstOrDefault() ?? string.Empty);
-        var header = new List<SpecLine>();
-        var sections = new List<Section>();
-        var inFence = false;
-
-        for (var i = 1; i < lines.Length; i++)
-        {
-            var line = new SpecLine(i + 1, lines[i]);
-            if (line.Text.StartsWith("```", StringComparison.Ordinal))
-            {
-                inFence = !inFence;
-            }
-
-            if (!inFence && line.Text.StartsWith("## ", StringComparison.Ordinal))
-            {
-                sections.Add(new(line.Number, line.Text[3..].Trim(), []));
-            }
-            else if (sections.Count == 0)
-            {
-                header.Add(line);
-            }
-            else
-            {
-                sections[^1].Body.Add(line);
-            }
-        }
-
-        return new(title.Success ? title.Groups[1].Value : null, header, sections);
-    }
-
     // The steps of a body's first ```gherkin block.
-    private static List<SpecLine> GherkinSteps(List<SpecLine> body)
+    private static List<SpecLine> GherkinSteps(IReadOnlyList<SpecLine> body)
     {
-        var fence = body.FindIndex(line => line.Text.Trim() == "```gherkin");
+        var fence = body.ToList().FindIndex(line => line.Text.Trim() == "```gherkin");
         return fence < 0 ? [] : [.. body.Skip(fence + 1).TakeWhile(line => !line.Text.StartsWith("```", StringComparison.Ordinal)).Where(line => !string.IsNullOrWhiteSpace(line.Text))];
     }
-
-    private static IEnumerable<Section> Subsections(Section section, string level)
-    {
-        Section? current = null;
-        foreach (var line in section.Body)
-        {
-            if (line.Text.StartsWith(level, StringComparison.Ordinal))
-            {
-                if (current is not null)
-                {
-                    yield return current;
-                }
-
-                current = new(line.Number, line.Text[level.Length..].Trim(), []);
-            }
-            else
-            {
-                current?.Body.Add(line);
-            }
-        }
-
-        if (current is not null)
-        {
-            yield return current;
-        }
-    }
-
-    private static IEnumerable<Row> TableRows(IEnumerable<SpecLine> lines) => lines
-        .Where(line => line.Text.TrimStart().StartsWith('|'))
-        .Select(line => new Row(line.Number, line.Text.Trim().Trim('|').Split('|').Select(cell => cell.Trim()).ToList()))
-        .Where(row => !row.Cells.All(cell => cell.Length > 0 && cell.All(c => c is '-' or ':')));
 
     private static IEnumerable<SpecLine> Bullets(IEnumerable<SpecLine> lines) =>
         lines.Where(line => line.Text.StartsWith("- ", StringComparison.Ordinal));
@@ -466,9 +395,6 @@ public static partial class SpecCheck
     [GeneratedRegex(@"^R(\d+) \S")]
     private static partial Regex ExampleHeading();
 
-    [GeneratedRegex(@"^Chapter:\s*\S")]
-    private static partial Regex ChapterHeading();
-
     // What the screen says ("Amount (excl. VAT)", "Save and create another. Now") is not the rule's own sentence.
     [GeneratedRegex(@"\([^()]*\)|""[^""]*""")]
     private static partial Regex Quoted();
@@ -482,15 +408,4 @@ public static partial class SpecCheck
 
     [GeneratedRegex(@"\b[A-Z][a-z]+[A-Z][A-Za-z]*\b|\b\w+\(\)|\b\w+_\w+\b|\b[\w-]+\.(cs|json|xaml|razor|sql|csproj)\b")]
     private static partial Regex CodeName();
-
-    private sealed record SpecLine(int Number, string Text);
-
-    private sealed record Row(int Line, List<string> Cells);
-
-    private sealed record Section(int Line, string Name, List<SpecLine> Body);
-
-    private sealed record Spec(string? JourneyId, List<SpecLine> Header, List<Section> Sections)
-    {
-        public Section? Section(string name) => Sections.FirstOrDefault(section => section.Name == name);
-    }
 }

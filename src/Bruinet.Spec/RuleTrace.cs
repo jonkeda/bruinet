@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Bruinet.Spec.Format;
 
 namespace Bruinet.Spec;
 
@@ -47,28 +48,24 @@ public static partial class RuleTrace
     /// </summary>
     public static string SpecAsSource(string spec)
     {
-        var journey = SpecCheck.JourneyId(spec);
+        var read = SpecReader.Read(spec);
         var lines = spec.ReplaceLineEndings("\n").Split('\n');
-        for (var i = 0; i < lines.Length; i++)
+        foreach (var example in read.Examples.Where(example => example.RuleNumber is not null))
         {
-            if (ExampleHeading().Match(lines[i]) is { Success: true } heading)
-            {
-                // The tag, then the name the test case starts with: the rule's id and a space, so R1 is not R10.
-                lines[i] = $"@{journey}.R{heading.Groups[1].Value}\n## Scenario: {journey}.R{heading.Groups[1].Value} ";
-            }
+            // The tag, then the name the test case starts with: the rule's id and a space, so R1 is not R10.
+            var id = $"{read.JourneyId}.R{example.RuleNumber}";
+            lines[example.Line - 1] = $"@{id}\n## Scenario: {id} ";
         }
 
         return string.Join('\n', lines);
     }
 
-    [GeneratedRegex(@"^#{3,4}\s+R(\d+)\b")]
-    private static partial Regex ExampleHeading();
-
     /// <summary>Traces a spec's rules through test sources given as (file, text).</summary>
     public static RuleTraceResult Trace(string spec, IEnumerable<(string File, string Text)> sources)
     {
-        var journey = SpecCheck.JourneyId(spec);
-        var rules = SpecCheck.RuleIds(spec);
+        var read = SpecReader.Read(spec);
+        var journey = read.JourneyId;
+        var rules = read.RuleIds;
         var prefix = journey + ".R";
         var reaches = sources
             .SelectMany(source => Reaches(source.File, source.Text))

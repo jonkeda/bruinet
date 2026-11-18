@@ -12,6 +12,8 @@
     <PackageReference Include="Markdig" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
+    <!-- The spec format's one reader: the only reference from Test into Spec (ModuleTests). -->
+    <ProjectReference Include="..\Bruinet.Spec.Format\Bruinet.Spec.Format.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,67 @@
+#nullable enable
+Bruinet.Spec.Format.SpecBlock
+Bruinet.Spec.Format.SpecBlock.Body.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>!
+Bruinet.Spec.Format.SpecBlock.Body.init -> void
+Bruinet.Spec.Format.SpecBlock.Heading.get -> string!
+Bruinet.Spec.Format.SpecBlock.Heading.init -> void
+Bruinet.Spec.Format.SpecBlock.Line.get -> int
+Bruinet.Spec.Format.SpecBlock.Line.init -> void
+Bruinet.Spec.Format.SpecBlock.SpecBlock(int Line, string! Heading, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Body) -> void
+Bruinet.Spec.Format.SpecChapter
+Bruinet.Spec.Format.SpecChapter.Examples.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecExample!>!
+Bruinet.Spec.Format.SpecChapter.Examples.init -> void
+Bruinet.Spec.Format.SpecChapter.Name.get -> string!
+Bruinet.Spec.Format.SpecChapter.Name.init -> void
+Bruinet.Spec.Format.SpecChapter.Preamble.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>!
+Bruinet.Spec.Format.SpecChapter.Preamble.init -> void
+Bruinet.Spec.Format.SpecChapter.SpecChapter(int Line, string! Heading, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Body, string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Preamble, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecExample!>! Examples) -> void
+Bruinet.Spec.Format.SpecDocument
+Bruinet.Spec.Format.SpecDocument.Blocks.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecBlock!>!
+Bruinet.Spec.Format.SpecDocument.Blocks.init -> void
+Bruinet.Spec.Format.SpecDocument.Chapters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecChapter!>!
+Bruinet.Spec.Format.SpecDocument.Examples.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecExample!>!
+Bruinet.Spec.Format.SpecDocument.Header.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>!
+Bruinet.Spec.Format.SpecDocument.Header.init -> void
+Bruinet.Spec.Format.SpecDocument.JourneyId.get -> string?
+Bruinet.Spec.Format.SpecDocument.JourneyId.init -> void
+Bruinet.Spec.Format.SpecDocument.RuleIds.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Spec.Format.SpecDocument.Section(string! name) -> Bruinet.Spec.Format.SpecSection?
+Bruinet.Spec.Format.SpecDocument.Sections.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecSection!>!
+Bruinet.Spec.Format.SpecDocument.Sections.init -> void
+Bruinet.Spec.Format.SpecDocument.SpecDocument(string? JourneyId, string! TitleRest, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Header, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecSection!>! Sections, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecBlock!>! Blocks) -> void
+Bruinet.Spec.Format.SpecDocument.TitleRest.get -> string!
+Bruinet.Spec.Format.SpecDocument.TitleRest.init -> void
+Bruinet.Spec.Format.SpecExample
+Bruinet.Spec.Format.SpecExample.ChapterName.get -> string?
+Bruinet.Spec.Format.SpecExample.ChapterName.init -> void
+Bruinet.Spec.Format.SpecExample.Name.get -> string!
+Bruinet.Spec.Format.SpecExample.Name.init -> void
+Bruinet.Spec.Format.SpecExample.RuleNumber.get -> int?
+Bruinet.Spec.Format.SpecExample.RuleNumber.init -> void
+Bruinet.Spec.Format.SpecExample.SpecExample(int Line, string! Heading, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Body, int? RuleNumber, string! Name, string? ChapterName) -> void
+Bruinet.Spec.Format.SpecLine
+Bruinet.Spec.Format.SpecLine.Number.get -> int
+Bruinet.Spec.Format.SpecLine.Number.init -> void
+Bruinet.Spec.Format.SpecLine.SpecLine(int Number, string! Text) -> void
+Bruinet.Spec.Format.SpecLine.Text.get -> string!
+Bruinet.Spec.Format.SpecLine.Text.init -> void
+Bruinet.Spec.Format.SpecReader
+Bruinet.Spec.Format.SpecRow
+Bruinet.Spec.Format.SpecRow.Cells.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Spec.Format.SpecRow.Cells.init -> void
+Bruinet.Spec.Format.SpecRow.Line.get -> int
+Bruinet.Spec.Format.SpecRow.Line.init -> void
+Bruinet.Spec.Format.SpecRow.SpecRow(int Line, System.Collections.Generic.IReadOnlyList<string!>! Cells) -> void
+Bruinet.Spec.Format.SpecSection
+Bruinet.Spec.Format.SpecSection.Body.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>!
+Bruinet.Spec.Format.SpecSection.Body.init -> void
+Bruinet.Spec.Format.SpecSection.Line.get -> int
+Bruinet.Spec.Format.SpecSection.Line.init -> void
+Bruinet.Spec.Format.SpecSection.Name.get -> string!
+Bruinet.Spec.Format.SpecSection.Name.init -> void
+Bruinet.Spec.Format.SpecSection.Rows() -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecRow!>!
+Bruinet.Spec.Format.SpecSection.SpecSection(int Line, string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecLine!>! Body) -> void
+const Bruinet.Spec.Format.SpecReader.Extension = ".spec.md" -> string!
+static Bruinet.Spec.Format.SpecReader.IsSpecFile(string? path) -> bool
+static Bruinet.Spec.Format.SpecReader.Read(string! text) -> Bruinet.Spec.Format.SpecDocument!
+static Bruinet.Spec.Format.SpecReader.TableRows(System.Collections.Generic.IEnumerable<Bruinet.Spec.Format.SpecLine!>! lines) -> System.Collections.Generic.IReadOnlyList<Bruinet.Spec.Format.SpecRow!>!

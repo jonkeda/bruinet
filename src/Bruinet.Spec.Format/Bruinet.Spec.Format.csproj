@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);specs;requirements;markdown</PackageTags>
+    <RootNamespace>Bruinet.Spec.Format</RootNamespace>
+    <Description>Bruinet Spec's format: reads a spec file (*.spec.md) into a model - title, header, sections, the rules table, examples and chapters - with no checks and no dependencies.</Description>
+    <PackageId>Bruinet.Spec.Format</PackageId>
+  </PropertyGroup>
+
+</Project>
