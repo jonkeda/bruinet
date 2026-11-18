@@ -69,6 +69,18 @@ public sealed record ExploreSettings
     /// <summary>Elements clicked whatever the danger words say.</summary>
     public IReadOnlyList<ElementMatch> AlwaysClick { get; init; } = [];
 
+    /// <summary>
+    /// What is the same on every page (the menu bar, the footer), by selector: the walk presses it and what is in it
+    /// on the first page only.
+    /// </summary>
+    public IReadOnlyList<string> WalkOnce { get; init; } = [];
+
+    /// <summary>
+    /// What the walk presses although <see cref="NeverClick"/> names it, by selector: the walk holds a write back where
+    /// Explore does not, so it may press a row's buttons that Explore must leave.
+    /// </summary>
+    public IReadOnlyList<string> WalkPresses { get; init; } = [];
+
     /// <summary>URLs (a path, or a full URL) never visited; a path matches itself and below.</summary>
     public IReadOnlyList<string> NeverVisit { get; init; } = [];
 
@@ -124,6 +136,10 @@ public sealed record ExploreSettings
             settings = settings with { NeverClick = Column(never, "Match").Select((m, i) => ElementMatch.Parse(m, never.Rows[i].LineNumber)).ToArray() };
         if (sections.TryGetValue("Always click", out var always))
             settings = settings with { AlwaysClick = Column(always, "Match").Select((m, i) => ElementMatch.Parse(m, always.Rows[i].LineNumber)).ToArray() };
+        if (sections.TryGetValue("Walk once", out var once))
+            settings = settings with { WalkOnce = Column(once, "Selector") };
+        if (sections.TryGetValue("Walk presses", out var presses))
+            settings = settings with { WalkPresses = Column(presses, "Selector") };
         if (sections.TryGetValue("Never visit", out var visit))
             settings = settings with { NeverVisit = Column(visit, "Url") };
         if (sections.TryGetValue("Allow requests", out var allow))

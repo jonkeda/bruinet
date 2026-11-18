@@ -27,7 +27,7 @@ public static partial class PageKey
 
     private static string Normalize(string path)
     {
-        var segments = path.Split('/').Select(s => Id().IsMatch(s) ? "{id}" : Uri.UnescapeDataString(s));
+        var segments = path.Split('/').Select(s => Id().IsMatch(s) && !Name().IsMatch(s) ? "{id}" : Uri.UnescapeDataString(s));
         var normalized = string.Join('/', segments).TrimEnd('/');
         return normalized.Length == 0 ? "/" : normalized;
     }
@@ -35,4 +35,8 @@ public static partial class PageKey
     // A number, a GUID, or a long hex or base64-like token.
     [GeneratedRegex(@"^(\d+|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}|[0-9a-fA-F]{16,}|[A-Za-z0-9_-]{24,})$")]
     private static partial Regex Id();
+
+    // Words in small letters with hyphens between them: a page's name however long (property-asset-management), not a token.
+    [GeneratedRegex(@"^[a-z]+(-[a-z]+)+$")]
+    private static partial Regex Name();
 }

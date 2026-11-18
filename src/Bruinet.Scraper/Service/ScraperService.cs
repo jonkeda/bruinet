@@ -193,6 +193,12 @@ public sealed partial class ScraperService : IAsyncDisposable
             result = await new Explorer(project, source, settings, run, new ExploreIo(ExploreCaptureAsync, ExploreSaveAsync))
                 .RunAsync(start, exploring.Token).ConfigureAwait(false);
         }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            // A run that breaks still says what it did: its captures are kept, and the report says where it stopped.
+            var kept = recording.Session.Events.Count(x => x.Kind == RecordingEvent.PageKind);
+            result = new ExploreResult(ExploreStop.Error, $"{e.GetType().Name}: {e.Message}", options.DryRun, settings, [], [], [], [], [], [$"The run ended in an error after {kept} captures; they are kept in the session."], 0, TimeSpan.Zero);
+        }
         finally
         {
             _exploring = null;

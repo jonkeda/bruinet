@@ -10,7 +10,7 @@ namespace Bruinet.Scraper.Html;
 /// The Html source: a Chromium started through Playwright, with the project's own profile so a login
 /// lasts. Each frame, cross-origin ones too, is captured on its own and hung under its <c>iframe</c>.
 /// </summary>
-public sealed class PlaywrightScrapeSource : IExploreSource
+public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
 {
     /// <summary>How long the page must be unchanged to count as settled.</summary>
     public static readonly TimeSpan Quiet = TimeSpan.FromMilliseconds(500);
@@ -435,6 +435,9 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             await _context.UnrouteAsync("**/*", RouteAsync).ConfigureAwait(false);
     }
 
+    /// <summary>Why the last <see cref="GoToAsync"/> did not open its page; null when it did.</summary>
+    public string? LastOpenProblem { get; private set; }
+
     /// <inheritdoc/>
     public async Task<bool> GoToAsync(string url, CancellationToken cancellationToken = default)
     {
@@ -447,11 +450,29 @@ public sealed class PlaywrightScrapeSource : IExploreSource
             await page.GotoAsync(url, Opening).ConfigureAwait(false);
             if (stays)
                 await page.ReloadAsync(new() { WaitUntil = WaitUntilState.DOMContentLoaded }).ConfigureAwait(false);
+            LastOpenProblem = null;
             return true;
+        }
+        catch (PlaywrightException e) when (e.Message.Contains("interrupted by another navigation", StringComparison.Ordinal))
+        {
+            // The page sent itself on (to its own hash route, to where a redirect leads): it opened, elsewhere.
+            try
+            {
+                await Started().WaitForLoadStateAsync(LoadState.DOMContentLoaded).ConfigureAwait(false);
+                LastOpenProblem = null;
+                return true;
+            }
+            catch (Exception again) when (again is PlaywrightException or TimeoutException)
+            {
+                LastOpenProblem = again.Message.Split((char)10)[0].Trim();
+                return false;
+            }
         }
         catch (Exception e) when (e is PlaywrightException or TimeoutException)
         {
-            return false; // blocked by a guard, or the site did not answer
+            // Blocked by a guard, or the site did not answer: the first line says which.
+            LastOpenProblem = e.Message.Split((char)10)[0].Trim();
+            return false;
         }
     }
 
@@ -524,9 +545,37 @@ public sealed class PlaywrightScrapeSource : IExploreSource
         return calls;
     }
 
+    private readonly System.Collections.Concurrent.ConcurrentQueue<string> _scripts = new();
+
+    /// <inheritdoc/>
+    public IReadOnlyList<string> TakeScripts()
+    {
+        var scripts = new List<string>();
+        while (_scripts.TryDequeue(out var script))
+            scripts.Add(script);
+        return scripts;
+    }
+
+    /// <inheritdoc/>
+    public async Task<string?> ReadTextAsync(string url, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            // With the browser's own session, so a script only a signed-in person gets is read as that person.
+            var response = await _context!.APIRequest.GetAsync(url).ConfigureAwait(false);
+            return response.Ok ? await response.TextAsync().ConfigureAwait(false) : null;
+        }
+        catch (Exception e) when (e is PlaywrightException or TimeoutException)
+        {
+            return null;
+        }
+    }
+
     private void OnResponse(object? sender, IResponse response)
     {
         var request = response.Request;
+        if (request.ResourceType is "script" && response.Status is >= 200 and < 300)
+            _scripts.Enqueue(request.Url);
         if (request.ResourceType is "xhr" or "fetch")
             _calls.Enqueue(Bruinet.Scraper.Service.PageCall.Of(request.Method, request.Url, response.Status, request.Method is "GET" or "HEAD" or "OPTIONS" ? null : request.PostData));
     }
@@ -537,10 +586,70 @@ public sealed class PlaywrightScrapeSource : IExploreSource
     private async Task RouteAsync(IRoute route)
     {
         var request = route.Request;
-        if (_guard?.Check(request.Method, request.Url, request.IsNavigationRequest && IsMainFrame(request)) is not null)
+        if (_guard?.Check(request.Method, request.Url, request.IsNavigationRequest && IsMainFrame(request), request.Method is "GET" or "HEAD" or "OPTIONS" ? null : request.PostData) is not null)
             await route.AbortAsync("blockedbyclient").ConfigureAwait(false);
+        else if (request.Method == "GET" && request.ResourceType is "script" or "stylesheet" or "font")
+            await FromKeptAsync(route).ConfigureAwait(false);
         else
             await route.ContinueAsync().ConfigureAwait(false);
+    }
+
+    // While requests are routed the browser keeps no cache of its own, so every page would fetch the app's scripts
+    // again (megabytes each time, and a slow environment then opens no page in time). What does not change within a
+    // run is kept here and answered from here the next time.
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<string, Lazy<Task<(Dictionary<string, string> Headers, byte[] Body)?>>> _kept = new(StringComparer.Ordinal);
+    private long _keptBytes;
+
+    /// <summary>The most the source keeps of an app's scripts, styles and fonts while it is guarded.</summary>
+    public const long KeptLimit = 400L * 1024 * 1024;
+
+    private async Task FromKeptAsync(IRoute route)
+    {
+        var url = route.Request.Url;
+        try
+        {
+            // Fetched beside the page, with the browser's session: a page that gives up waiting does not stop the
+            // fetch, so the next try finds the script here.
+            var kept = await _kept.GetOrAdd(url, address => new Lazy<Task<(Dictionary<string, string> Headers, byte[] Body)?>>(() => FetchAsync(address))).Value.ConfigureAwait(false);
+            if (kept is { } found)
+            {
+                await route.FulfillAsync(new() { Status = 200, Headers = found.Headers, BodyBytes = found.Body }).ConfigureAwait(false);
+                return;
+            }
+
+            _kept.TryRemove(url, out _);
+            await route.ContinueAsync().ConfigureAwait(false);
+        }
+        catch (Exception e) when (e is PlaywrightException or TimeoutException)
+        {
+            // The page went elsewhere meanwhile: the request is over.
+        }
+    }
+
+    // A script, a style or a font as the site answers it; null when it did not answer with it, or it is too much to keep.
+    private async Task<(Dictionary<string, string> Headers, byte[] Body)?> FetchAsync(string url)
+    {
+        try
+        {
+            var response = await _context!.APIRequest.GetAsync(url, new() { Timeout = 180_000 }).ConfigureAwait(false);
+            if (response.Status != 200)
+                return null;
+            var body = await response.BodyAsync().ConfigureAwait(false);
+            if (Interlocked.Add(ref _keptBytes, body.Length) > KeptLimit)
+            {
+                Interlocked.Add(ref _keptBytes, -body.Length);
+                return null;
+            }
+
+            // The body is as the site means it, unpacked: what says how it was packed and how long it was no longer holds.
+            var headers = response.Headers.Where(header => header.Key.ToLowerInvariant() is not ("content-encoding" or "content-length" or "transfer-encoding"))
+                .ToDictionary(header => header.Key, header => header.Value, StringComparer.OrdinalIgnoreCase);
+            return (headers, body);
+        }
+        catch (Exception e) when (e is PlaywrightException or TimeoutException)
+        {
+            return null;
+        }
     }
 
     private bool IsMainFrame(IRequest request)

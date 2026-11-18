@@ -66,7 +66,7 @@ internal static class PagesChecklist
         text.Append(Invariant($"| Fields, buttons, tabs with a name | {pages.Pages.Sum(page => page.Fields)}, {pages.Pages.Sum(page => page.Buttons)}, {pages.Pages.Sum(page => page.Tabs)} |\n"));
         text.Append(Invariant($"| Lists with a typed row | {pages.Pages.Sum(page => page.Rows.Count)} |\n"));
         if (pages.MapRows > 0)
-            text.Append(Invariant($"| Addresses in the map | {pages.MapRows}, of which {pages.Unmade.Count} without a page |\n"));
+            text.Append(Invariant($"| Addresses in {pages.AddressesFrom} | {pages.MapRows}, of which {pages.Unmade.Count} without a page |\n"));
 
         text.Append("\n## Pages\n\n").Append(Header).Append('\n');
         text.Append("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n");
@@ -91,14 +91,14 @@ internal static class PagesChecklist
 
         if (pages.MapRows > 0)
         {
-            text.Append("\n## In the map, without a page\n\n");
+            text.Append(Invariant($"\n## In {pages.AddressesFrom}, without a page\n\n"));
             if (pages.Unmade.Count == 0)
             {
-                text.Append("None: every address of the map has a page.\n");
+                text.Append(Invariant($"None: every address of {pages.AddressesFrom} has a page.\n"));
             }
             else
             {
-                text.Append("| Address | Where the map has it |\n| --- | --- |\n");
+                text.Append(Invariant($"| Address | Where {pages.AddressesFrom} has it |\n| --- | --- |\n"));
                 foreach (var address in pages.Unmade)
                     text.Append(Invariant($"| `{address.Address}` | {Cell(address.Row)} |\n"));
             }

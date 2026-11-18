@@ -20,6 +20,12 @@ public sealed record ScraperConfig
     /// <summary>Where a recording starts.</summary>
     public string StartUrl { get; init; } = "";
 
+    /// <summary>
+    /// What kind of environment the start URL is: it sets how much the walk of <c>bruinet scrape places</c> may press.
+    /// The careful one, production, unless the config says otherwise.
+    /// </summary>
+    public AppEnvironment Environment { get; init; } = AppEnvironment.Production;
+
     /// <summary>Other addresses of the same app (another country's host). A page elsewhere, such as a sign-in provider's, is not the app's.</summary>
     public IReadOnlyList<string> Aliases { get; init; } = [];
 
@@ -101,12 +107,13 @@ public sealed record ScraperConfig
                 {
                     "Platform" => config with { Platform = PlatformName(value, row.LineNumber) },
                     "StartUrl" => config with { StartUrl = value },
+                    "Environment" => config with { Environment = EnvironmentName(value, row.LineNumber) },
                     "Namespace" => config with { Namespace = value },
                     "Pages" => config with { PagesFolder = value },
                     "Controls" => config with { ControlsFolder = value },
                     "Screenshots" => config with { Screenshots = Bool(value, row.LineNumber) },
                     "Privacy" => config with { Privacy = Bool(value, row.LineNumber) },
-                    var other => throw new FormatException($"Line {row.LineNumber}: '{other}' is not a field of ## App (Platform, StartUrl, Namespace, Pages, Controls, Screenshots, Privacy)."),
+                    var other => throw new FormatException($"Line {row.LineNumber}: '{other}' is not a field of ## App (Platform, StartUrl, Environment, Namespace, Pages, Controls, Screenshots, Privacy)."),
                 };
             }
         }
@@ -155,6 +162,14 @@ public sealed record ScraperConfig
 
     /// <summary>Reads a config file.</summary>
     public static ScraperConfig Read(string path) => Parse(File.ReadAllText(path));
+
+    private static AppEnvironment EnvironmentName(string value, int line) => value.ToLowerInvariant() switch
+    {
+        "production" => AppEnvironment.Production,
+        "acceptance" => AppEnvironment.Acceptance,
+        "local" => AppEnvironment.Local,
+        _ => throw new FormatException($"Line {line}: Environment is production, acceptance or local, not '{value}'."),
+    };
 
     private static string PlatformName(string value, int line) => value.ToLowerInvariant() switch
     {
@@ -247,3 +262,16 @@ public enum TestTarget
 
 /// <summary>Text that is masked in a snapshot: every match of <paramref name="Pattern"/> becomes <paramref name="Replacement"/>.</summary>
 public sealed record TextMask(Regex Pattern, string Replacement);
+
+/// <summary>What kind of environment an app's start URL is.</summary>
+public enum AppEnvironment
+{
+    /// <summary>People's real data: only what is known to show more is pressed, and nothing is written.</summary>
+    Production,
+
+    /// <summary>A shared test environment: everything is pressed but what sends, pays or signs out; a write lands only on a record the walk owns.</summary>
+    Acceptance,
+
+    /// <summary>A throwaway environment on this machine: as acceptance.</summary>
+    Local,
+}

@@ -22,13 +22,31 @@ public sealed class RequestGuard(ExploreSettings settings)
     /// <summary>The websockets the page opened (guard 3: what this guard cannot see), in order.</summary>
     public IReadOnlyList<string> WebSockets => _webSockets.ToArray();
 
+    /// <summary>
+    /// While true, a request that would write is held back (see <see cref="HeldReason"/>): the walk presses a button on
+    /// a record that is not its own, sees what the button would do, and changes nothing.
+    /// </summary>
+    public bool HoldWrites { get; set; }
+
+    /// <summary>
+    /// While true, a POST is taken for a read and its address remembered: a page that opens and nothing pressed yet.
+    /// Such a POST goes through later while writes are held.
+    /// </summary>
+    public bool Learning { get; set; }
+
+    private readonly ConcurrentDictionary<string, bool> _readPosts = new(StringComparer.Ordinal);
+
+    /// <summary>What a held request's reason starts with.</summary>
+    public const string HeldReason = "held";
+
     /// <summary>Why a request is blocked, or null when it goes through; a blocked one is kept in <see cref="Blocked"/>.</summary>
     /// <param name="method">The request's method.</param>
     /// <param name="url">The request's address.</param>
     /// <param name="navigatesPage">True for a navigation of the page itself (not a frame, not a fetch).</param>
-    public string? Check(string method, string url, bool navigatesPage)
+    /// <param name="body">What the request sends, when it sends something: read to tell a query from a change, never kept.</param>
+    public string? Check(string method, string url, bool navigatesPage, string? body = null)
     {
-        var reason = Why(method, url, navigatesPage);
+        var reason = Why(method, url, navigatesPage) ?? Held(method, url, body);
         if (reason is not null)
             _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), WithoutSecrets(url), reason));
         return reason;
@@ -82,6 +100,56 @@ public sealed class RequestGuard(ExploreSettings settings)
             return null;
         return $"{upper} is blocked (BlockMethods)";
     }
+
+    // More words that say so in an address, and are no danger on a button (a button's call is held by its method).
+    private static readonly string[] WritingGetWords = ["duplicate", "copy", "clone", "toggle", "activate", "restore", "cancel", "finish", "complete", "lock", "unlock", "assign", "book", "process", "execute", "generate", "mark"];
+
+    // The words in an address that say a GET changes something: an old app deletes and sends by a link.
+    private static readonly string[] WritingGet = ["delete", "send"];
+
+    // While writes are held: a PUT, PATCH or DELETE; a POST that is not known as a read; a GET whose path says it changes something.
+    private string? Held(string method, string url, string? body)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+            return null;
+        var upper = method.ToUpperInvariant();
+        if (upper == "POST" && Learning)
+        {
+            _readPosts[PostKey(uri)] = true;
+            return null;
+        }
+        if (!HoldWrites)
+            return null;
+        switch (upper)
+        {
+            case "PUT" or "PATCH" or "DELETE":
+                return $"{HeldReason}: {upper} would write to a record that is not the walk's";
+            case "POST":
+                if (IsNegotiate(uri))
+                    return null;
+                // GraphQL sends reads and writes to one address: what it sends says which.
+                if (body is not null && GraphQl().Match(body) is { Success: true } graph)
+                    return graph.Groups[1].Value == "mutation" ? $"{HeldReason}: a GraphQL mutation would write to a record that is not the walk's" : null;
+                return _readPosts.ContainsKey(PostKey(uri)) ? null : $"{HeldReason}: POST would write to a record that is not the walk's";
+            case "GET":
+                // What an address says after its first part: /purchase-invoice is a page, /invoice/send-reminder an act.
+                var path = Uri.UnescapeDataString(uri.AbsolutePath);
+                var slash = path.IndexOf('/', 1);
+                var act = slash < 0 ? "" : path[slash..];
+                var word = DangerWords.Find([path], category => category == "sign-out")?.Word
+                    ?? DangerWords.Find([act], category => WritingGet.Contains(category, StringComparer.Ordinal))?.Word
+                    ?? WritingGetWords.FirstOrDefault(writing => DangerWords.Contains(act, writing));
+                return word is null ? null : $"{HeldReason}: a GET whose address says '{word}'";
+            default:
+                return null;
+        }
+    }
+
+    private static string PostKey(Uri uri) => uri.Authority + Projects.PageKey.Of(uri.GetLeftPart(UriPartial.Path));
+
+    private static System.Text.RegularExpressions.Regex GraphQl() => GraphQlPattern;
+
+    private static readonly System.Text.RegularExpressions.Regex GraphQlPattern = new(@"""query""\s*:\s*""(?:\s|\\[nrt])*(query|mutation|subscription|\{)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
     private static bool IsNegotiate(Uri uri) =>
         uri.AbsolutePath.EndsWith("/negotiate", StringComparison.OrdinalIgnoreCase)

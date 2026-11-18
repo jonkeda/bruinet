@@ -56,6 +56,7 @@ controls):
 | --- | --- |
 | Platform | blazor |
 | StartUrl | http://localhost:5180/ |
+| Environment | production |
 | Namespace | MyApp.UITests.PageObjects |
 | Pages | PageObjects |
 | Controls | PageObjects/Controls |
@@ -302,6 +303,59 @@ made by hand is not drafted. A draft that does not build is put back and reporte
 that drops a member your part uses. Controls are not drafted: Draft lists the parts that repeat,
 and **Improve with the agent** makes them. **Verify** opens each page in the running app and finds
 every member's locator: once, several times, or not at all.
+
+## The places of an app
+
+Explore records pages to draft page objects from. It does not answer "which pages does the app have": its budget is
+per run, and nothing adds its runs up. `bruinet scrape places` keeps one list of an app's **places**, in the suite's
+`.testing/175-Places.json`, with a document a person reads beside it (`175-Places.md`). A place is what a page object
+would be written for (a page, a tab, a dialog, a menu, a part a press shows), or a button that only calls the back end
+(an action). The list holds how a place is built (labels, buttons, columns, calls) and never what a record says.
+
+| Call | Does |
+| --- | --- |
+| `bruinet scrape places` | Prints the list; `--write` writes the document, `--json` the list itself |
+| `bruinet scrape places seed` | Adds what is known without opening the app: the addresses a map names in backticks (`--map`, default `.testing/170-Map.md`), the addresses of the suite's page objects, the pages the recordings captured |
+| `bruinet scrape places routes` | Opens each page of the list and reads the scripts only it loads, as text: a single-page app's route table survives in what it serves (`path:"/view/:id",component:…`). Each route is a known page; one with a parameter has no address until a record's own is found |
+| `bruinet scrape places walk` | Opens each page that is known and not yet opened (the frontier), reads it, and presses what a person can press, each once |
+| `bruinet scrape places add --from-run <file>` | Adds what tests found when they saved forms through their page objects |
+
+The list is saved after every page, so a walk that stops loses one page and the next walk goes on. A page that did not
+open comes once more at the end of the run, and is refused after three runs.
+
+**What the walk presses** follows `Environment` in `## App`:
+
+| | `production` (the default) | `acceptance`, `local` |
+| --- | --- | --- |
+| Links | Never pressed: where they go is put on the frontier | The same |
+| Tabs, menus, expanders, what opens a dialog | Pressed | Pressed |
+| Any other button, a row's buttons | Not pressed | Pressed, on the first row of a table only |
+| What a danger word that is on forbids (send, pay, sign out) | Not pressed | Not pressed |
+| A form's save | Not pressed | Not pressed: a test saves it through its page object |
+
+It does not sort, page or close, and presses at most `--max-presses` on a page (25) and `--max-depth` deep into what a
+press opened (2: a dialog's own buttons). What is the same on every page is named in `## Walk once` (a selector per
+row: the menu bar) and pressed on the first page only; a `nav`, `header` or `footer` is that by itself. `## Walk
+presses` names what the walk presses although `Never click` names it, because the walk holds writes back where Explore
+does not.
+
+**A write is held back** on every record that is not the walk's own: a PUT, PATCH or DELETE; a POST whose address the
+page did not ask while it opened (a GraphQL call by what it sends: a query goes, a mutation is held); a GET whose
+address says, after its first part, that it deletes or sends. The press is made, what it would do is written down as
+the place's calls (`DELETE /api/order/{id} (held)`), and nothing changes. `--own <address>` names a record a test made
+(its name carries the run marker): on its pages writes go through. `--as <account>` walks as another account, every
+write held back unless `--may-write`. `--links-and-tabs` presses nothing else.
+
+**A form** is read and marked `form, not saved`. A test then saves it through its page object: empty first (what the
+form says is required), then filled in with the run marker in every name, and writes a line of JSON per form (`place`,
+`required`, `landed`, `record`, `note`). `places add --from-run` marks the form saved, makes where the save landed a
+page, and prints the records' addresses for `walk --own`.
+
+`bruinet suite pages` holds the suite's page objects against the list when the suite has one: every page of it
+without a page object is listed.
+
+While requests are guarded the browser keeps no cache, so each page would fetch the app's scripts again. The Scraper
+keeps scripts, styles and fonts itself for the length of a run and answers them from there.
 
 ## Generate
 

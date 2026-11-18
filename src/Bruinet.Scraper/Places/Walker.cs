@@ -1,0 +1,611 @@
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using Bruinet.Scraper.Explore;
+using Bruinet.Scraper.Projects;
+using Bruinet.Scraper.Service;
+using Bruinet.Scraper.Snapshots;
+
+namespace Bruinet.Scraper.Places;
+
+/// <summary>How one walk goes, besides the project's settings.</summary>
+public sealed record WalkOptions
+{
+    /// <summary>The account walked as, as the list names it.</summary>
+    public string Account { get; init; } = "";
+
+    /// <summary>The longest the walk takes.</summary>
+    public int MaxMinutes { get; init; } = 20;
+
+    /// <summary>The most pages it opens; null for no limit.</summary>
+    public int? MaxPlaces { get; init; }
+
+    /// <summary>The most presses on one page, the presses in what a press opened counted in.</summary>
+    public int MaxPresses { get; init; } = 25;
+
+    /// <summary>How deep it presses into what a press opened: 2 is a dialog's own buttons, and no further.</summary>
+    public int MaxDepth { get; init; } = 2;
+
+    /// <summary>Only pages whose key starts with this; null for all.</summary>
+    public string? Only { get; init; }
+
+    /// <summary>Opens pages that were seen before too.</summary>
+    public bool Again { get; init; }
+
+    /// <summary>
+    /// The addresses of records the walk owns (a test made them, their names carry the run marker): on a page whose
+    /// address starts with one, a press's writes go through. Anywhere else they are held back.
+    /// </summary>
+    public IReadOnlyList<string> Own { get; init; } = [];
+
+    /// <summary>Holds every write back, on an owned record too: an account that may not write.</summary>
+    public bool HoldAll { get; init; }
+
+    /// <summary>Follows links and tabs only: nothing else is pressed.</summary>
+    public bool LinksAndTabs { get; init; }
+
+    /// <summary>Today, as the list writes a day.</summary>
+    public string Today { get; init; } = DateTime.Today.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>Told what the walk is doing.</summary>
+    public IProgress<string>? Progress { get; init; }
+}
+
+/// <summary>Why a walk stopped.</summary>
+public enum WalkStop
+{
+    /// <summary>The frontier is empty: every known page with an address was opened.</summary>
+    Done,
+
+    /// <summary>The time was used.</summary>
+    MaxMinutes,
+
+    /// <summary>The number of pages was used.</summary>
+    MaxPlaces,
+
+    /// <summary>A sign-in page came.</summary>
+    SignIn,
+
+    /// <summary>A person stopped it.</summary>
+    Stopped,
+}
+
+/// <summary>What a walk did.</summary>
+/// <param name="Stop">Why it stopped.</param>
+/// <param name="Opened">The pages it opened.</param>
+/// <param name="Found">The places it added to the list.</param>
+/// <param name="Presses">The presses it made.</param>
+/// <param name="Held">The writes it held back.</param>
+/// <param name="Left">The pages still on the frontier.</param>
+/// <param name="Notes">What went wrong on the way.</param>
+public sealed record WalkResult(WalkStop Stop, int Opened, int Found, int Presses, int Held, int Left, IReadOnlyList<string> Notes);
+
+/// <summary>
+/// Walks an app for its places: opens each page on the list's frontier, reads it, and presses everything a person can
+/// press, each once, to see what it leads to: another page, a dialog, a menu, a tab, or a call to the back end. How
+/// much it presses follows the project's <see cref="AppEnvironment"/>; a write lands only on a record the walk owns
+/// and is held back anywhere else (<see cref="RequestGuard.HoldWrites"/>). It fills in no form and saves nothing.
+/// </summary>
+public sealed partial class Walker(ScrapeProject project, IExploreSource source, IPageCalls calls, RequestGuard guard, WalkOptions options, Func<CancellationToken, Task<ScrapeSnapshot>> capture, Action<PlacesList> save)
+{
+    private static readonly string[] SaveWords = ["save", "submit", "apply", "ok", "opslaan", "toepassen", "bewaren", "speichern", "ubernehmen", "enregistrer", "valider", "create", "aanmaken", "add", "toevoegen", "erstellen", "hinzufugen", "creer", "ajouter"];
+    private static readonly string[] DeleteWords = DangerWords.ByCategory["delete"].Concat(DangerWords.ByCategory["approve"]).ToArray();
+    private static readonly TimeSpan PageLimit = TimeSpan.FromMinutes(4);
+
+    private readonly ExploreSettings _settings = project.Config.Explore;
+    private readonly bool _careful = project.Config.Environment == AppEnvironment.Production;
+    private readonly Stopwatch _clock = new();
+    private readonly List<string> _notes = [];
+    private readonly List<string> _downloads = [];
+    private readonly HashSet<string> _tried = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _notOpened = new(StringComparer.Ordinal);
+    private readonly HashSet<string> _triedAgain = new(StringComparer.Ordinal);
+    private int _nativeDialogs;
+    private int _opened;
+    private int _found;
+    private int _presses;
+    private int _held;
+    private bool _chromeDone;
+    private bool _signIn;
+
+    /// <summary>Walks the list's frontier; the list is saved after every page.</summary>
+    public async Task<WalkResult> RunAsync(PlacesList list, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        _clock.Start();
+        // What is the same on every page was pressed when an earlier walk read a page.
+        _chromeDone = list.Places.Any(place => place.Kind == PlaceKind.Page && place.State != PlaceState.Known && place.Sources.Contains(PlacesSeeds.Walk));
+        source.Downloaded += OnDownloaded;
+        source.DialogDismissed += OnDialog;
+        guard.HoldWrites = true;
+        var stop = WalkStop.Done;
+        try
+        {
+            while (Next(list) is { } place)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (_clock.Elapsed >= TimeSpan.FromMinutes(options.MaxMinutes))
+                { stop = WalkStop.MaxMinutes; break; }
+                if (options.MaxPlaces is { } most && _opened >= most)
+                { stop = WalkStop.MaxPlaces; break; }
+
+                _tried.Add(place.Key);
+                await PageAsync(list, place, cancellationToken).ConfigureAwait(false);
+                save(list);
+                if (_signIn)
+                { stop = WalkStop.SignIn; break; }
+            }
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            stop = WalkStop.Stopped;
+        }
+        finally
+        {
+            source.Downloaded -= OnDownloaded;
+            source.DialogDismissed -= OnDialog;
+            save(list);
+        }
+
+        return new WalkResult(stop, _opened, _found, _presses, _held, list.Frontier.Count(Wanted), _notes);
+    }
+
+    // The next page to open; when none is left, a page that did not open comes once more: the environment may answer now.
+    private Place? Next(PlacesList list)
+    {
+        var next = list.Places.FirstOrDefault(place => !_tried.Contains(place.Key) && Wanted(place)
+            && (place.OnFrontier || (options.Again && place.Kind == PlaceKind.Page && place.Address is not null && place.State != PlaceState.Refused)));
+        return next ?? list.Places.FirstOrDefault(place => _notOpened.Contains(place.Key) && _triedAgain.Add(place.Key) && place.OnFrontier);
+    }
+
+    private bool Wanted(Place place) => options.Only is not { Length: > 0 } only || place.Key.StartsWith(only, StringComparison.OrdinalIgnoreCase);
+
+    // Opens one page, reads it, and presses what is on it.
+    private async Task PageAsync(PlacesList list, Place place, CancellationToken cancellationToken)
+    {
+        var address = Address(place.Address!);
+        Say($"opening {place.Key}");
+        var snapshot = await OpenAsync(address, cancellationToken).ConfigureAwait(false);
+        if (snapshot is null)
+        {
+            var tries = place.Tries + 1;
+            list.Set(place with { Tries = tries, State = tries >= 3 ? PlaceState.Refused : place.State, Note = tries >= 3 ? "did not open, three times" : place.Note });
+            _notOpened.Add(place.Key);
+            _notes.Add($"{place.Key} did not open (try {tries}){((source as Html.PlaywrightScrapeSource)?.LastOpenProblem is { } why ? ": " + why : "")}.");
+            return;
+        }
+
+        _opened++;
+        var seen = new Place { Key = place.Key, Kind = PlaceKind.Page, Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today };
+        if (IsSignIn(snapshot))
+        {
+            _signIn = true;
+            _opened--;
+            return;
+        }
+
+        if (!project.IsOwnPage(snapshot.Location))
+        {
+            list.Add(seen with { State = PlaceState.Refused, Note = $"leaves the app for {new Uri(snapshot.Location).Authority}" });
+            return;
+        }
+
+        var landed = PlacesList.KeyAndPath(snapshot.Location).Key;
+        if (landed != place.Key)
+        {
+            // The address leads elsewhere: that page is a place of its own, opened in its turn.
+            list.Add(seen with { State = PlaceState.Seen, Note = $"lands on {landed}" });
+            Found(list, PlacesSeeds.Opened(snapshot.Location, PlacesSeeds.Walk, $"where {place.Key} lands"));
+            return;
+        }
+
+        var facts = PageFacts.Of(snapshot);
+        if (facts.Headings.FirstOrDefault(heading => Refusal().IsMatch(heading)) is { } refusal)
+        {
+            list.Add(seen with { State = PlaceState.Refused, Note = $"the app answered: {Place.Clean(refusal)}" });
+            return;
+        }
+
+        var page = Read(seen, facts, place.Key.Contains("{id}", StringComparison.Ordinal), isDialog: false);
+        var budget = new Budget(options.MaxPresses, Stopwatch.StartNew());
+        var notPressed = new List<string>();
+        await PressAllAsync(list, page, address, [], snapshot, 0, new HashSet<string>(StringComparer.Ordinal), budget, notPressed, inForm: page.State == PlaceState.FormNotSaved, cancellationToken).ConfigureAwait(false);
+        list.Add(page with { NotPressed = [.. notPressed.Distinct(StringComparer.Ordinal).Take(12)], Note = budget.Left <= 0 ? $"more than {options.MaxPresses} to press: not all were" : null });
+        _chromeDone = true;
+    }
+
+    // Presses each candidate of a state once, and what each opened in its turn.
+    private async Task PressAllAsync(PlacesList list, Place parent, string address, IReadOnlyList<NodeRef> prefix, ScrapeSnapshot snapshot, int depth, IReadOnlySet<string> known, Budget budget, List<string> notPressed, bool inForm, CancellationToken cancellationToken)
+    {
+        var pageKey = PlacesList.KeyAndPath(address).Key;
+        var candidates = await CandidatesAsync(list, pageKey, snapshot, known, notPressed, inForm, cancellationToken).ConfigureAwait(false);
+        var hold = options.HoldAll || !options.Own.Any(own => address.Contains(own, StringComparison.OrdinalIgnoreCase));
+        var dirty = false;
+        foreach (var candidate in candidates)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (budget.Left <= 0 || budget.Clock.Elapsed > PageLimit || _signIn)
+                return;
+            if (dirty)
+            {
+                if (await ReachAsync(address, prefix, cancellationToken).ConfigureAwait(false) is not { } again)
+                    return;
+                snapshot = again;
+                dirty = false;
+            }
+
+            _ = calls.TakeCalls();
+            var blockedBefore = guard.Blocked.Count;
+            guard.HoldWrites = hold;
+            if (await PressAsync(candidate, snapshot, address, prefix, cancellationToken).ConfigureAwait(false) is not { } pressed)
+            {
+                guard.HoldWrites = true;
+                dirty = true;
+                continue;
+            }
+
+            budget.Left--;
+            _presses++;
+            snapshot = pressed.Snapshot;
+            var node = pressed.Node;
+            var before = pressed.Before;
+
+            await PauseAsync(cancellationToken).ConfigureAwait(false);
+            var after = await MovingPage.ReadAsync(capture, PauseAsync, cancellationToken).ConfigureAwait(false);
+            guard.HoldWrites = true;
+            var made = calls.TakeCalls();
+            var held = guard.Blocked.Skip(blockedBefore).Where(blocked => blocked.Reason.StartsWith(RequestGuard.HeldReason, StringComparison.Ordinal)).ToList();
+            _held += held.Count;
+            if (after is null)
+            { dirty = true; continue; }
+            if (IsSignIn(after))
+            { _signIn = true; return; }
+
+            var via = $"'{candidate.Label}' on {parent.Key}";
+            var writes = CallTexts(made, held, all: false);
+            if (_downloads.Count > 0)
+            {
+                _downloads.Clear();
+                Found(list, new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = PlaceKind.Action, State = PlaceState.Seen, Parent = pageKey, Via = via, Calls = writes, Note = "starts a download", Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today });
+                dirty = true;
+                continue;
+            }
+
+            if (!project.IsOwnPage(after.Location))
+            {
+                notPressed.Add($"{candidate.Label} (leaves the app)");
+                dirty = true;
+                continue;
+            }
+
+            var landed = PlacesList.KeyAndPath(after.Location).Key;
+            if (landed != pageKey)
+            {
+                Found(list, PlacesSeeds.Opened(after.Location, PlacesSeeds.Walk, via) with { Calls = writes });
+                dirty = true;
+                continue;
+            }
+
+            var afterRefs = NodeRef.Of(after);
+            var shown = Visible(after, afterRefs);
+            var fresh = afterRefs.Values.Where(r => after[r.Number].Bounds is not null && !before.Contains(r.Key)).Select(r => after[r.Number]).ToList();
+            var facts = PageFacts.Of(after);
+            var kind = Kind(snapshot, after, candidate, facts, fresh, made.Count + held.Count);
+            if (kind is null)
+            {
+                dirty = held.Count > 0;
+                continue;
+            }
+
+            var child = new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = kind.Value, Parent = pageKey, Via = via, Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today };
+            if (kind == PlaceKind.Action)
+            {
+                Found(list, child with { State = PlaceState.Seen, Calls = CallTexts(made, held, all: true) });
+                dirty = held.Count > 0;
+                continue;
+            }
+
+            child = Read(child, facts, candidate.InRow || pageKey.Contains("{id}", StringComparison.Ordinal), isDialog: kind is PlaceKind.Dialog) with { Calls = writes };
+            var childNotPressed = new List<string>();
+            if (depth + 1 < options.MaxDepth && !options.LinksAndTabs)
+                await PressAllAsync(list, child, address, [.. prefix, node with { Label = candidate.Label }], after, depth + 1, before, budget, childNotPressed, inForm: child.State == PlaceState.FormNotSaved, cancellationToken).ConfigureAwait(false);
+            Found(list, child with { NotPressed = [.. childNotPressed.Distinct(StringComparer.Ordinal).Take(12)] });
+            // A tab leaves the page as a person would go on from it; a dialog or a menu covers it.
+            dirty = kind != PlaceKind.Tab || depth + 1 < options.MaxDepth || held.Count > 0;
+            if (!dirty)
+                snapshot = after;
+        }
+    }
+
+    // Presses a candidate in a state; when it is covered or moved by what an earlier press showed, once more on the page as it opens.
+    private async Task<(ScrapeSnapshot Snapshot, NodeRef Node, HashSet<string> Before)?> PressAsync(Candidate candidate, ScrapeSnapshot snapshot, string address, IReadOnlyList<NodeRef> prefix, CancellationToken cancellationToken)
+    {
+        for (var attempt = 0; attempt < 2; attempt++)
+        {
+            var refs = NodeRef.Of(snapshot);
+            var node = refs.Values.FirstOrDefault(r => r.Key == candidate.Key);
+            if (node is null)
+                return null;
+            var before = Visible(snapshot, refs);
+            if (await source.ClickAsync(node.Number, cancellationToken).ConfigureAwait(false) is null)
+                return (snapshot, node, before);
+            if (attempt == 1 || await ReachAsync(address, prefix, cancellationToken).ConfigureAwait(false) is not { } again)
+                return null;
+            snapshot = again;
+        }
+
+        return null;
+    }
+
+    // What a press led to, by what the page shows after it that it did not before; null when nothing.
+    private static PlaceKind? Kind(ScrapeSnapshot before, ScrapeSnapshot after, Candidate candidate, PageFacts facts, List<ScrapeNode> fresh, int callCount)
+    {
+        if (facts.Dialog is not null && fresh.Any(node => node.Role == "dialog" || node.Type == "dialog" || Classes(node).Contains("v-dialog")) || (facts.Dialog is not null && PageFacts.Of(before).Dialog is null))
+            return PlaceKind.Dialog;
+        if (fresh.Any(node => node.Role is "menu" or "listbox" || Classes(node).Contains("menuable__content__active")))
+            return PlaceKind.Menu;
+        if (candidate.IsTab)
+            return fresh.Count > 0 || callCount > 0 ? PlaceKind.Tab : null;
+        if (fresh.Count >= 4)
+            return PlaceKind.Part;
+        return callCount > 0 ? PlaceKind.Action : null;
+    }
+
+    // What may be pressed in a state, in the order of the page, what deletes last. Links are not pressed: where they go is put on the frontier.
+    private async Task<List<Candidate>> CandidatesAsync(PlacesList list, string pageKey, ScrapeSnapshot snapshot, IReadOnlySet<string> known, List<string> notPressed, bool inForm, CancellationToken cancellationToken)
+    {
+        var never = new HashSet<int>(await MatchAsync(_settings.NeverClick.Where(match => match.Kind == "selector").Select(match => match.Value), cancellationToken).ConfigureAwait(false));
+        if (!_careful)
+            never.ExceptWith(await MatchAsync(_settings.WalkPresses, cancellationToken).ConfigureAwait(false));
+        var context = new JudgeContext(_settings, uri => project.IsOwnPage(uri.AbsoluteUri))
+        {
+            NeverNodes = never,
+            AlwaysNodes = await MatchAsync(_settings.AlwaysClick.Where(match => match.Kind == "selector").Select(match => match.Value), cancellationToken).ConfigureAwait(false),
+        };
+        var chrome = await MatchAsync(_settings.WalkOnce, cancellationToken).ConfigureAwait(false);
+        var refs = NodeRef.Of(snapshot);
+        var firstRow = new Dictionary<int, int>();
+        var perSignature = new Dictionary<string, int>(StringComparer.Ordinal);
+        var found = new List<Candidate>();
+        foreach (var judgement in ClickJudge.Judge(snapshot, context))
+        {
+            var node = snapshot[judgement.Node];
+            if (judgement.Action == JudgedAction.Visit)
+            {
+                if (judgement.Verdict == Verdict.Safe && judgement.Url is { } url)
+                    Found(list, PlacesList.Known(url, PlacesSeeds.Walk, $"a link on {pageKey}") with { Address = PlacesList.KeyAndPath(url).Path });
+                continue;
+            }
+
+            var target = refs[judgement.Node];
+            if (node.Bounds is not { Width: > 0, Height: > 0 } || node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" || known.Contains(target.Key))
+                continue;
+            if (_chromeDone && IsChrome(snapshot, node, chrome))
+                continue;
+            var label = Label(snapshot, node, judgement.Label);
+            var isTab = node.Role == "tab" || Classes(node).Contains("v-tab");
+            if (judgement.Reason is "sorts a table" or "a pager" or "closes" || (options.LinksAndTabs && !isTab))
+                continue;
+            if (WhyNot(judgement, label, inForm) is { } why)
+            {
+                notPressed.Add($"{label} ({why})");
+                continue;
+            }
+
+            // One row stands for all rows of its table.
+            var inRow = false;
+            if (RowOf(snapshot, node) is { } row)
+            {
+                inRow = true;
+                if (!firstRow.TryAdd(row.Table, row.Row) && firstRow[row.Table] != row.Row)
+                    continue;
+            }
+
+            var signature = target.Key[..target.Key.LastIndexOf('#')];
+            if ((perSignature[signature] = perSignature.GetValueOrDefault(signature) + 1) > 2)
+                continue;
+            // Two things of one name on a page are two places: the second says which it is.
+            var name = found.Count(other => other.Label == label || other.Label.StartsWith(label + " (", StringComparison.Ordinal)) is var same and > 0 ? $"{label} ({same + 1}nd of that name)" : label;
+            found.Add(new Candidate(target.Key, name, isTab, inRow, DeleteWords.Any(word => DangerWords.Contains(label, word))));
+        }
+
+        return [.. found.OrderBy(candidate => candidate.Deletes)];
+    }
+
+    // Why a button is not pressed, or null when it is.
+    private string? WhyNot(Judgement judgement, string label, bool inForm)
+    {
+        if (judgement.Verdict == Verdict.Unsafe && judgement.Reason != "submits a form")
+            return judgement.Reason;
+        if (_careful && judgement.Verdict != Verdict.Safe)
+            return "production: only what is known to show more";
+        // A form is saved by a test, through its page object: the walk reads it and leaves it.
+        return judgement.Reason == "submits a form" || (inForm && SaveWords.Any(word => DangerWords.Contains(label, word))) ? "a save: by a page object" : null;
+    }
+
+    // The place as the page's facts fill it in. A record's own page keeps no heading and no title: they are the record's name.
+    private static Place Read(Place place, PageFacts facts, bool ofRecord, bool isDialog)
+    {
+        var fields = facts.Fields.Select(field => $"{field.Label} ({field.Kind}{(field.Required ? ", required" : "")}{(field.Disabled ? ", disabled" : "")})").ToArray();
+        var open = facts.Fields.Count(field => !field.Disabled);
+        var saves = facts.Buttons.Any(button => SaveWords.Any(word => DangerWords.Contains(button, word)));
+        var form = saves && (isDialog ? open >= 1 : open >= 2 && facts.Columns.Count == 0);
+        return place with
+        {
+            State = form ? PlaceState.FormNotSaved : PlaceState.Seen,
+            Title = ofRecord || facts.Title.Length == 0 ? null : facts.Title,
+            Heading = ofRecord ? null : facts.Headings.Select(Place.Clean).FirstOrDefault(heading => heading.Length > 0),
+            Fields = fields,
+            Buttons = [.. facts.Buttons.Select(Place.Clean).Where(button => button.Length > 0).Distinct(StringComparer.Ordinal).Take(40)],
+            Tabs = [.. facts.Tabs.Select(tab => Place.Clean(tab.TrimEnd('*', ' '))).Where(tab => tab.Length > 0).Distinct(StringComparer.Ordinal)],
+            Columns = [.. facts.Columns.Select(Place.Clean).Where(column => column.Length > 0).Distinct(StringComparer.Ordinal).Take(40)],
+        };
+    }
+
+    // The calls a press made, as the list holds them: a writing call always, a reading one for a button that does nothing else.
+    private string[] CallTexts(IReadOnlyList<PageCall> made, IReadOnlyList<BlockedRequest> held, bool all)
+    {
+        var texts = held.Select(blocked => $"{blocked.Method} {CallKey(blocked.Url)} (held)")
+            .Concat(made.Where(call => all || call.Method is not ("GET" or "HEAD" or "OPTIONS")).Select(call => $"{call.Method} {CallKey(call.Url)}{(call.Status >= 400 ? $" -> {call.Status}" : "")}"));
+        return [.. texts.Distinct(StringComparer.Ordinal).Take(8)];
+    }
+
+    // An address of a call without its ids and its query; its host when it is not the app's own.
+    private string CallKey(string url)
+    {
+        if (!Uri.TryCreate(url.TrimEnd('…'), UriKind.Absolute, out var uri))
+            return url;
+        var key = PageKey.Of(uri.GetLeftPart(UriPartial.Path));
+        return project.IsOwnPage(uri.AbsoluteUri) ? key : uri.Host + key;
+    }
+
+    private async Task<ScrapeSnapshot?> OpenAsync(string address, CancellationToken cancellationToken)
+    {
+        // What a page asks for while it opens is a read: a POST among it is remembered as one.
+        guard.Learning = true;
+        try
+        {
+            _ = calls.TakeCalls();
+            // A shared environment stops answering for a while: once more before the page is given up.
+            if (!await source.GoToAsync(address, cancellationToken).ConfigureAwait(false) && !await source.GoToAsync(address, cancellationToken).ConfigureAwait(false))
+                return null;
+            await PauseAsync(cancellationToken).ConfigureAwait(false);
+            return await MovingPage.ReadAsync(capture, PauseAsync, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            guard.Learning = false;
+        }
+    }
+
+    // The page as it opens, and the presses that led to a state made again.
+    private async Task<ScrapeSnapshot?> ReachAsync(string address, IReadOnlyList<NodeRef> prefix, CancellationToken cancellationToken)
+    {
+        var snapshot = await OpenAsync(address, cancellationToken).ConfigureAwait(false);
+        foreach (var press in prefix)
+        {
+            if (snapshot is null)
+                return null;
+            var node = NodeRef.Of(snapshot).Values.FirstOrDefault(r => r.Key == press.Key);
+            if (node is null || await source.ClickAsync(node.Number, cancellationToken).ConfigureAwait(false) is not null)
+                return null;
+            await PauseAsync(cancellationToken).ConfigureAwait(false);
+            snapshot = await MovingPage.ReadAsync(capture, PauseAsync, cancellationToken).ConfigureAwait(false);
+        }
+
+        if (snapshot is not null && IsSignIn(snapshot))
+        {
+            _signIn = true;
+            return null;
+        }
+
+        return snapshot;
+    }
+
+    private void Found(PlacesList list, Place place)
+    {
+        if (list.Add(place))
+        {
+            _found++;
+            Say($"found {place.Key} ({place.Kind.ToString().ToLowerInvariant()})");
+        }
+    }
+
+    private string Address(string path) => new Uri(new Uri(project.Config.StartUrl), path).AbsoluteUri;
+
+    private bool IsSignIn(ScrapeSnapshot snapshot)
+    {
+        var password = snapshot.Nodes.Any(node => node.Type == "input" && node.Attribute("type") == "password" && node.Bounds is not null);
+        return password && (!project.IsOwnPage(snapshot.Location) || (_settings.LoginUrl.Length > 0 && snapshot.Location.Contains(_settings.LoginUrl, StringComparison.OrdinalIgnoreCase)))
+            || (_settings.LoginUrl.Length > 0 && Uri.TryCreate(_settings.LoginUrl, UriKind.Absolute, out var login) && snapshot.Location.StartsWith(login.GetLeftPart(UriPartial.Path), StringComparison.OrdinalIgnoreCase));
+    }
+
+    private async Task<IReadOnlySet<int>> MatchAsync(IEnumerable<string> selectors, CancellationToken cancellationToken)
+    {
+        var nodes = new HashSet<int>();
+        foreach (var selector in selectors)
+            nodes.UnionWith(await source.MatchAsync(selector, cancellationToken).ConfigureAwait(false));
+        return nodes;
+    }
+
+    // What is the same on every page: what the config names (and what is in it), a nav, a header, a footer.
+    private static bool IsChrome(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlySet<int> named)
+    {
+        for (var n = node.Number; n != 0; n = snapshot[n].Parent)
+        {
+            var at = snapshot[n];
+            if (named.Contains(n) || at.Type is "nav" or "header" or "footer" || at.Role is "navigation" or "banner" or "contentinfo")
+                return true;
+        }
+
+        return false;
+    }
+
+    // The row of a table an element is in, and its table: a body's row, not a header's.
+    private static (int Table, int Row)? RowOf(ScrapeSnapshot snapshot, ScrapeNode node)
+    {
+        int? row = null;
+        for (var n = node.Parent; n != 0; n = snapshot[n].Parent)
+        {
+            var at = snapshot[n];
+            if (at.Type == "thead" || at.Role == "columnheader")
+                return null;
+            if (row is null && (at.Type == "tr" || at.Role == "row"))
+                row = n;
+            else if (row is not null && (at.Type == "table" || at.Role is "table" or "grid" or "treegrid"))
+                return (n, row.Value);
+        }
+
+        return row is { } alone ? (snapshot[alone].Parent, alone) : null;
+    }
+
+    // What a button says; for one that only shows an icon, the icon's name.
+    private static string Label(ScrapeSnapshot snapshot, ScrapeNode node, string judged)
+    {
+        var said = Place.Clean(judged.Trim().Trim((char)0x200B));
+        if (said.Length > 0 && said != node.Type)
+            return said;
+        var below = Below(snapshot, node, 5).ToList();
+        var icon = below.SelectMany(Classes).FirstOrDefault(c => c.StartsWith("fa-", StringComparison.Ordinal) || c.StartsWith("mdi-", StringComparison.Ordinal));
+        if (icon is not null)
+            return icon;
+        // A field that opens a list says what it is in its label or its placeholder, not in itself.
+        var named = below.Select(at => at.Attribute("aria-label") ?? at.Attribute("placeholder") ?? at.Attribute("title") ?? at.Name ?? at.Text)
+            .Select(text => text is null ? "" : Place.Clean(text)).FirstOrDefault(text => text.Length > 0);
+        return named ?? node.Attribute("data-cy") ?? node.Attribute("data-testid") ?? node.Attribute("id") ?? node.Type;
+    }
+
+    private static IEnumerable<ScrapeNode> Below(ScrapeSnapshot snapshot, ScrapeNode node, int depth)
+    {
+        yield return node;
+        if (depth == 0)
+            yield break;
+        foreach (var child in snapshot.ChildrenOf(node.Number))
+            foreach (var below in Below(snapshot, child, depth - 1))
+                yield return below;
+    }
+
+    private static string[] Classes(ScrapeNode node) => node.Attribute("class")?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
+
+    private static HashSet<string> Visible(ScrapeSnapshot snapshot, IReadOnlyDictionary<int, NodeRef> refs) =>
+        refs.Values.Where(r => snapshot[r.Number].Bounds is not null).Select(r => r.Key).ToHashSet(StringComparer.Ordinal);
+
+    private Task PauseAsync(CancellationToken cancellationToken) => Task.Delay(_settings.DelayMs, cancellationToken);
+
+    private void Say(string doing) => options.Progress?.Report(doing);
+
+    private void OnDownloaded(object? sender, string file) => _downloads.Add(file);
+
+    private void OnDialog(object? sender, string message) => _nativeDialogs++;
+
+    [GeneratedRegex(@"^(40[134]|500)\b|\bForbidden\b|\bNot Found\b|\bInternal Server Error\b", RegexOptions.IgnoreCase)]
+    private static partial Regex Refusal();
+
+    private sealed record Candidate(string Key, string Label, bool IsTab, bool InRow, bool Deletes);
+
+    private sealed class Budget(int left, Stopwatch clock)
+    {
+        public int Left { get; set; } = left;
+
+        public Stopwatch Clock { get; } = clock;
+    }
+}

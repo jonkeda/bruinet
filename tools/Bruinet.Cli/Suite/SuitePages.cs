@@ -48,6 +48,9 @@ internal sealed record MapAddress(string Address, string Row);
 /// <param name="MapRows">How many rows of the map have an address.</param>
 internal sealed record SuitePages(IReadOnlyList<PageFacts> Pages, IReadOnlyList<MapAddress> Unmade, int MapRows)
 {
+    /// <summary>What the addresses were read from, as the checklist names it: the map, or the list of places.</summary>
+    public string AddressesFrom { get; init; } = "the map";
+
     private const int PartDepth = 4;
 
     // Bruinet's plain controls carry no [BddKind] yet: known by name.
@@ -65,7 +68,8 @@ internal sealed record SuitePages(IReadOnlyList<PageFacts> Pages, IReadOnlyList<
     /// <summary>Reads a suite's pages from its folder.</summary>
     /// <param name="suite">The suite's folder: every project under it is read.</param>
     /// <param name="map">A Markdown file whose tables hold the app's addresses in backticks; null for none.</param>
-    public static SuitePages Read(string suite, string? map)
+    /// <param name="mapText">The map's own text, in place of the file's; null to read the file.</param>
+    public static SuitePages Read(string suite, string? map, string? mapText = null)
     {
         var files = Directory.EnumerateFiles(suite, "*", SearchOption.AllDirectories)
             .Select(file => (Path: Path.GetRelativePath(suite, file).Replace('\\', '/'), Full: file))
@@ -89,7 +93,7 @@ internal sealed record SuitePages(IReadOnlyList<PageFacts> Pages, IReadOnlyList<
             }
         }
 
-        return From(source, specs, tests, map is null ? null : File.ReadAllText(map));
+        return From(source, specs, tests, mapText ?? (map is null ? null : File.ReadAllText(map)));
     }
 
     /// <summary>The pages of a suite's source.</summary>

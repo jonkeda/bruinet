@@ -75,6 +75,8 @@ public static class ScraperConfigWriter
         ["Never click"] = ["Match"],
         ["Always click"] = ["Match"],
         ["Never visit"] = ["Url"],
+        ["Walk once"] = ["Selector"],
+        ["Walk presses"] = ["Selector"],
         ["Allow requests"] = ["Method", "Url"],
         ["Components"] = ["Match", "Kind", "Name"],
     };

@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **bruinet scrape places**: one list of an app's places (pages, tabs, dialogs, menus, buttons that only call the back
+  end), kept between runs in the suite's `.testing/175-Places.json` with `175-Places.md` beside it. `seed` adds the
+  map's addresses, the suite's page objects' and the recordings' pages; `routes` reads the route tables in the scripts
+  the app serves; `walk` opens each page not yet opened and presses what a person can press, each once, and writes down
+  what each led to; `add --from-run` adds the forms tests saved through their page objects. How much the walk presses
+  follows the new `Environment` in `## App` (`production`, the default: only what is known to show more; `acceptance`,
+  `local`: every button but what a danger word forbids). A write is held back on every record that is not the walk's
+  own (`--own`): the press is made, the call it would make is written down, nothing changes. New config sections
+  `## Walk once` and `## Walk presses`. `bruinet suite pages` holds the page objects against the list
+  ([guide](docs/guides/scraper.md#the-places-of-an-app)).
 - **bruinet suite pages**: a suite's page checklist, read from its source without a build. A row per page object with
   its kind (list, form, view), its named fields, buttons, tabs and typed rows, the specs and tests that visit it, and
   its gaps (a member by a text, a table without a typed row, nothing named, nothing that visits it); under it the
@@ -198,6 +208,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   clip, so a person can see which hash-named clip says what. `ClipLibrary.Lines` lists the lines a voice was asked for.
 
 ### Fixed
+- The Scraper read a long page name as an id: an address part of 24 or more letters counted as a token, so
+  `/property-asset-management` and `/report-capacity-planning` were both the page `/{id}`. Words in small letters with
+  hyphens between them are a name now, however long.
+- While the Scraper guards requests (Explore, a look, the walk) the browser keeps no cache, so every page fetched the
+  app's scripts again: megabytes per page, and on a slow environment a page did not open in time ("The page did not
+  open"). The Scraper keeps scripts, styles and fonts itself for a run and answers them from there, fetched beside the
+  page so a page that gave up waiting finds them the next time.
+- A page that sends itself on while it opens (to its own hash route) counted as not opened ("interrupted by another
+  navigation"). It opened: the Scraper waits for where it went.
+- An exploration that ended in an error wrote no `explore.md`. It writes one now, with the error and how many
+  captures were kept.
 - A page found by a module scan (`[TestModuleScan]`) took its name from its type and left out its `[BddPage]`: a
   `ContactPage` marked `[BddPage("Contacts")]` was still "the Contact page". The scan reads `[BddPage]` now.
 - An extension verb with two values or more (`{control} counts {count} in the card {card}`) got only one of them: each

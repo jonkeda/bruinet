@@ -13,11 +13,11 @@ namespace Bruinet.Cli.Scrape;
 /// <c>bruinet scrape</c>: the Scraper for a person, the loop and CI, through the service the views and MCP use.
 /// Exit 0 when it ran within its guards, 1 when a guard stopped it or a check failed, 2 when it could not run.
 /// </summary>
-internal static class ScrapeCommands
+internal static partial class ScrapeCommands
 {
     public static Command Build(CliIo io) => new("scrape", "The Scraper: record or explore an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
-        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Look(io), Resolve(io), DraftTest(io), Config(io), InstallBrowser(io),
+        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Look(io), Resolve(io), DraftTest(io), Config(io), Places(io), InstallBrowser(io),
     };
 
     private static Command New(CliIo io)
