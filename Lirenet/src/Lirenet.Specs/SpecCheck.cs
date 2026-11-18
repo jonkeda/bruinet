@@ -271,6 +271,12 @@ public static partial class SpecCheck
 
         foreach (var step in steps)
         {
+            // A step's table: its rows belong to the step above them.
+            if (step.Text.TrimStart().StartsWith('|') && (at >= 0 || seen.Count > 0))
+            {
+                continue;
+            }
+
             var keyword = step.Text.Trim().Split(' ', 2)[0];
             if (keyword is "And" or "But")
             {

@@ -39,6 +39,27 @@ public sealed class BddControlAttribute : Attribute
 }
 
 /// <summary>
+/// The word for a kind of control, on its type: <c>[BddKind("field")]</c> on a form's row, <c>[BddKind("tab")]</c> on a
+/// tab. A step may then name a control of that kind by its name alone (<c>Name</c>) or with the kind before or after it
+/// (<c>the field Name</c>, <c>the Name field</c>); a property of that type needs no <c>[BddControl]</c>, its name is its
+/// member's (<c>HourlyRate</c> is <c>Hourly rate</c>). The kind is also how a step tells two controls of one name
+/// apart (<c>the tab Financial</c>, <c>the part Financial</c>).
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, Inherited = true)]
+public sealed class BddKindAttribute : Attribute
+{
+    /// <param name="kind">The kind's word in a step, such as <c>field</c>.</param>
+    public BddKindAttribute(string kind)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(kind);
+        Kind = kind.Trim();
+    }
+
+    /// <summary>The kind's word in a step.</summary>
+    public string Kind { get; }
+}
+
+/// <summary>
 /// On a page's control property: tapping the control always goes to this page, so the binder knows the page after it
 /// without an <c>I should be on ...</c> step.
 /// </summary>

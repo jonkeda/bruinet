@@ -45,3 +45,7 @@ Bruinet.Bdd.StepNames
 static Bruinet.Bdd.BddNamespaceAttribute.Of(System.Type! type) -> string?
 static Bruinet.Bdd.StepNames.FromIdentifier(string! identifier) -> string!
 static Bruinet.Bdd.StepNames.HasKnownSuffix(string! identifier) -> bool
+Bruinet.Bdd.BddKindAttribute
+Bruinet.Bdd.BddKindAttribute.BddKindAttribute(string! kind) -> void
+Bruinet.Bdd.BddKindAttribute.Kind.get -> string!
+static Bruinet.Bdd.StepNames.LabelFromMember(string! identifier) -> string!

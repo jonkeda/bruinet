@@ -43,6 +43,38 @@ public static class StepNames
     }
 
     /// <summary>Whether the identifier ends in a suffix a step leaves out.</summary>
+    /// <summary>
+    /// A member's name as the words of a label: <c>HourlyRate</c> is <c>Hourly rate</c>, <c>VATNumber</c> is
+    /// <c>Vat number</c>. It is how a control of a kind (<see cref="BddKindAttribute"/>) is named when it declares no
+    /// name, and how a page object can find a row by the label its member is named after.
+    /// </summary>
+    /// <param name="identifier">The member's name.</param>
+    public static string LabelFromMember(string identifier)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(identifier);
+        StringBuilder words = new();
+        for (var i = 0; i < identifier.Length; i++)
+        {
+            var character = identifier[i];
+            if (character is '_' or '-')
+            {
+                words.Append(' ');
+                continue;
+            }
+
+            var startsWord = i > 0 && char.IsUpper(character) && (!char.IsUpper(identifier[i - 1]) || (i + 1 < identifier.Length && char.IsLower(identifier[i + 1])));
+            var startsNumber = i > 0 && char.IsDigit(character) && !char.IsDigit(identifier[i - 1]);
+            if (startsWord || startsNumber)
+            {
+                words.Append(' ');
+            }
+
+            words.Append(i == 0 ? char.ToUpperInvariant(character) : char.ToLowerInvariant(character));
+        }
+
+        return words.ToString().Trim();
+    }
+
     public static bool HasKnownSuffix(string identifier)
     {
         var withoutGeneric = identifier.Split('`')[0];

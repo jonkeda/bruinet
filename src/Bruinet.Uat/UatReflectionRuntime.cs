@@ -257,13 +257,16 @@ public sealed class UatReflectionRuntime
     // The [BddControl] names of a page and its components, read once per page type.
     private readonly Dictionary<Type, IReadOnlyList<BddControlNames.Named>> _controlNames = [];
 
+    // The suite's page types, so a page another page can give is not read as a part of it.
+    private HashSet<Type>? _pageTypes;
+
     private IReadOnlyList<BddControlNames.Named> NamesOf(UatRuntimePage page)
     {
         lock (_controlNames)
         {
             if (!_controlNames.TryGetValue(page.PageType, out var names))
             {
-                names = BddControlNames.Of(page.PageType, page.Controls.Select(control => control.Property));
+                names = BddControlNames.Of(page.PageType, page.Controls.Select(control => control.Property), _pageTypes ??= _pages.Values.Select(each => each.PageType).ToHashSet());
                 _controlNames[page.PageType] = names;
             }
 
@@ -807,10 +810,13 @@ public sealed class UatReflectionRuntime
 
     // A step may put "the" before a control's name: "the dialog should ask ..." finds Dialog.
     private static UatRuntimeControl? FindControl(UatRuntimePage page, string name)
-        => page.Controls.FirstOrDefault(control => control.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+        => Only(page.Controls.Where(control => control.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
            ?? (name.StartsWith("the ", StringComparison.OrdinalIgnoreCase)
-               ? page.Controls.FirstOrDefault(control => control.Name.Equals(name[4..].TrimStart(), StringComparison.OrdinalIgnoreCase))
+               ? Only(page.Controls.Where(control => control.Name.Equals(name[4..].TrimStart(), StringComparison.OrdinalIgnoreCase)))
                : null);
+
+    // Two controls of one name are not picked between: the step says which, by its kind or its part.
+    private static UatRuntimeControl? Only(IEnumerable<UatRuntimeControl> named) => named.Take(2).ToList() is [var only] ? only : null;
 
     private bool TryGetCurrentPage(
         BddExecutionContext context,

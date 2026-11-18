@@ -44,6 +44,19 @@ accepts it; you never do, unless the person has said in so many words that you d
 (`html-ui-test`, "Members have names"). The spec's "the field ..." and "the column ..." are then looked up in it, and
 the bind check says when one is not there.
 
+**How a step names a control.** By what the page calls it: `Name`, `Hourly rate`, `Create`. Add the kind's word only
+where the sentence reads better with it or two things share a name (`the Create button`, `the tab Financial`). Say
+where a field is (`Sales price in Financial`) only when the bind check asks for it. A form that is filled in with
+more than two fields takes one step and a table, where the suite has that step:
+
+```gherkin
+When I fill in the form with:
+  | Field        | Value  |
+  | ------------ | ------ |
+  | Contact Type | Client |
+  | Hourly rate  | 45     |
+```
+
 ## Accepting
 
 The owner accepts by setting `Status: accepted <date>`; open questions must be gone by then: each

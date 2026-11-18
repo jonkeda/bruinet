@@ -489,6 +489,17 @@ story):
   it returns, the placeholders being its parameters. A step's `{control}` is first a control the page exposes by name,
   then one of these; every verb of the returned type works on it. Two components that match the same words are
   ambiguous (`BDDB002`).
+- **A kind**: `[BddKind("field")]` on a control's type. A property of that type needs no `[BddControl]`: its name is
+  its member's (`HourlyRate` is `Hourly rate`), and `[BddControl("CoC no.")]` gives a name a member cannot. A step may
+  say the name alone, or with the kind's word before or after it: `Hourly rate`, `the field Hourly rate`,
+  `the Hourly rate field`. The kind is also what tells two controls of one name apart (`the tab Prices`,
+  `the part Prices`).
+- **A place, only when it is needed**: a page's parts are looked in to four levels (a tab, a section, a row), so a name
+  that is on the page once needs no place. A name that is on it twice is said with a part it is in, in words made from
+  that part's name: `Sales price in Financial`, `Sales price under the section Financial`. Said bare, it is refused
+  at bind time, and the message offers each way. Another page a page can give is not a part of it.
+- Declared words keep meaning what they meant: a `[BddControl]` phrase as written is tried first, then names with a
+  kind and members' names, then a name with a place.
 - **An extension verb**: a static method in a class marked `[BddVerbs]`, the control first (`this`). It is a control
   verb of that type and of every type derived from it, generic ones included (`this TableControl<TScope> table`), and a
   property of such a type is a control of its page.

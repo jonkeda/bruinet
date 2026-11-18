@@ -117,6 +117,15 @@ public sealed class SpecCheckTests
         Assert.Equal(8, Assert.Single(findings).Line);
     }
 
+    [Fact]
+    public void A_step_may_have_a_table_under_it()
+    {
+        var withTable = Tod02.Replace("When I type \"B\" in the title", "When I type \"B\" in the title\n  | Field | Value |\n  | ----- | ----- |\n  | Title | B     |");
+
+        Assert.NotEqual(Tod02, withTable);
+        Assert.Empty(SpecCheck.Check(withTable));
+    }
+
     private static string FindRoot()
     {
         for (var dir = new DirectoryInfo(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)

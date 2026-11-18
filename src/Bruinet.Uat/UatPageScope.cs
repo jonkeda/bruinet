@@ -14,13 +14,16 @@ internal static class UatPageScope
 
     /// <summary>A control of the page by its UAT name; a step may put "the" before the name.</summary>
     public static UatControlModel? FindControl(UatPageModel page, string name)
-        => page.Controls.FirstOrDefault(control => control.Name.Equals(name, StringComparison.OrdinalIgnoreCase))
+        => Only(page.Controls.Where(control => control.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
            ?? (name.StartsWith("the ", StringComparison.OrdinalIgnoreCase)
-               ? page.Controls.FirstOrDefault(control => control.Name.Equals(name[4..].TrimStart(), StringComparison.OrdinalIgnoreCase))
+               ? Only(page.Controls.Where(control => control.Name.Equals(name[4..].TrimStart(), StringComparison.OrdinalIgnoreCase)))
                : null)
            ?? (BddControlNames.Match(page.ControlNames, name, out _, out _) is { } named
                ? new UatControlModel(name, named.ControlType, null) { MemberName = named.Member.Name }
                : null);
+
+    // Two controls of one name are not picked between: the step says which, by its kind or its part.
+    private static UatControlModel? Only(IEnumerable<UatControlModel> named) => named.Take(2).ToList() is [var only] ? only : null;
 
     /// <summary>
     /// The control of <paramref name="page"/> the matched step runs on, or why there is none.
@@ -38,7 +41,7 @@ internal static class UatPageScope
                 BddControlNames.Match(page.ControlNames, name, out _, out var several);
                 problem = several is not null
                     ? $"on the {page.Name} page {several}"
-                    : $"the {page.Name} page has no control '{name}'. Its controls are {string.Join(", ", page.Controls.Select(c => c.Name).Concat(page.ControlNames.Select(n => n.Phrase)).Order(StringComparer.OrdinalIgnoreCase))}.";
+                    : $"the {page.Name} page has no control '{name}'. Its controls are {string.Join(", ", page.Controls.Select(c => c.Name).Concat(BddControlNames.Listed(page.ControlNames)).Distinct(StringComparer.OrdinalIgnoreCase).Order(StringComparer.OrdinalIgnoreCase))}.";
                 return null;
             }
 

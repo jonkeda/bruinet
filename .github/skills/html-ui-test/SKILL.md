@@ -70,6 +70,10 @@ page calls it and typed as the control it is. Whoever writes the next test reads
   fields from it, the editor completes nothing, and a misspelt name fails only in a browser.
 - **A member says its kind.** `SelectRow ContactType`, `TextRow Name`: not a row on which the caller picks `.Text` or
   `.Select`.
+- **The label is said once.** A control type that says its kind (`[BddKind("field")]`) names its members: `HourlyRate`
+  is "Hourly rate" in a step, and the same words find its row. `[BddControl("CoC no.")]` only for a label a member's
+  name cannot give. Never the kind or the place in a name (`"the field Hourly rate under Financial"`): the type has
+  the kind, and the page object has the place.
 - **A label that is on the page twice** (a "Sales price" in two sections) is two members, each on its own part.
 - **A row of a list** is a row object with a member per column and its own actions (the next section, Rows).
 - A page with more members than a person types is **drafted** from the app (`scrape-pages`), not shortened to one
