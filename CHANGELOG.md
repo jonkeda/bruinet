@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   follows the new `Environment` in `## App` (`production`, the default: only what is known to show more; `acceptance`,
   `local`: every button but what a danger word forbids). A write is held back on every record that is not the walk's
   own (`--own`): the press is made, the call it would make is written down, nothing changes. New config sections
-  `## Walk once` and `## Walk presses`. `bruinet suite pages` holds the page objects against the list
+  `## Walk once` and `## Walk presses`. A page another account opened or was refused is walked again as the next
+  account (`--as`), and the list says who saw it and who was refused. `bruinet suite pages` holds the page objects
+  against the list
   ([guide](docs/guides/scraper.md#the-places-of-an-app)).
 - **bruinet suite pages**: a suite's page checklist, read from its source without a build. A row per page object with
   its kind (list, form, view), its named fields, buttons, tabs and typed rows, the specs and tests that visit it, and
@@ -221,10 +223,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The Scraper read a long page name as an id: an address part of 24 or more letters counted as a token, so
   `/property-asset-management` and `/report-capacity-planning` were both the page `/{id}`. Words in small letters with
   hyphens between them are a name now, however long.
-- While the Scraper guards requests (Explore, a look, the walk) the browser keeps no cache, so every page fetched the
-  app's scripts again: megabytes per page, and on a slow environment a page did not open in time ("The page did not
-  open"). The Scraper keeps scripts, styles and fonts itself for a run and answers them from there, fetched beside the
-  page so a page that gave up waiting finds them the next time.
+- A browser whose requests are routed keeps no cache. That is the Scraper while it guards requests (Explore, a look,
+  the walk) and every UI suite that sets `AllowedHosts`: each page a test opened fetched the app's scripts again,
+  megabytes per page, and on a slow environment no page loaded in time ("The page did not open", "Timeout 30000ms
+  exceeded"). Both keep scripts, styles and fonts themselves now: for the run, and on disk between runs
+  (`%TEMP%/bruinet-kept-assets`) when the site gives an asset a version (`ETag`), which is asked for first with a
+  HEAD request. An asset is fetched beside the page, so a page that gave up waiting finds it the next time.
+  `BRUINET_KEPT_ASSETS=off` keeps none on disk.
 - A page that sends itself on while it opens (to its own hash route) counted as not opened ("interrupted by another
   navigation"). It opened: the Scraper waits for where it went.
 - An exploration that ended in an error wrote no `explore.md`. It writes one now, with the error and how many

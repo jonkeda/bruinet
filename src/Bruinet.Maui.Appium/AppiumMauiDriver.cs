@@ -99,7 +99,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
     /// Whether finds bring each element's facts with them: iOS, whose session asks WebDriverAgent
     /// for them (<c>elementResponseAttributes</c>). There a read is a request of 90 ms or more, and
     /// the facts cost about a tenth of that per element. UiAutomator2 reads in about 12 ms, so the
-    /// facts would cost Android about what they save (.my/performance, step 7).
+    /// facts would cost Android about what they save.
     /// </summary>
     internal bool FindsWithFacts => _appium.FindsWithFacts;
 
@@ -964,7 +964,7 @@ internal sealed class AppiumMauiDriver : IMauiDriver, IDisposable, Bruinet.Core.
     /// </summary>
     /// <remarks>
     /// Not XCUITest's <c>mobile: scroll</c>, which waits for the page to settle and took 7.5 s a
-    /// page, against 1.7 s for the swipe (.my/performance, step 8). A swipe does not say whether the scroller moved, so the visible
+    /// page, against 1.7 s for the swipe. A swipe does not say whether the scroller moved, so the visible
     /// rows' names and positions are compared before and after: unchanged means that end is
     /// reached. Without a container, the tallest scroller on screen is taken, not the first: a
     /// project page's first is its horizontal tab strip.

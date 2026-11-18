@@ -130,7 +130,10 @@ public sealed class RequestGuard(ExploreSettings settings)
                 // GraphQL sends reads and writes to one address: what it sends says which.
                 if (body is not null && GraphQl().Match(body) is { Success: true } graph)
                     return graph.Groups[1].Value == "mutation" ? $"{HeldReason}: a GraphQL mutation would write to a record that is not the walk's" : null;
-                return _readPosts.ContainsKey(PostKey(uri)) ? null : $"{HeldReason}: POST would write to a record that is not the walk's";
+                // An address that says it reads (search, get-calendar-data, match-criteria) is one, as a POST too.
+                if (_readPosts.ContainsKey(PostKey(uri)) || ReadingPost().IsMatch(uri.AbsolutePath))
+                    return null;
+                return $"{HeldReason}: POST would write to a record that is not the walk's";
             case "GET":
                 // What an address says after its first part: /purchase-invoice is a page, /invoice/send-reminder an act.
                 var path = Uri.UnescapeDataString(uri.AbsolutePath);
@@ -148,6 +151,10 @@ public sealed class RequestGuard(ExploreSettings settings)
     private static string PostKey(Uri uri) => uri.Authority + Projects.PageKey.Of(uri.GetLeftPart(UriPartial.Path));
 
     private static System.Text.RegularExpressions.Regex GraphQl() => GraphQlPattern;
+
+    private static System.Text.RegularExpressions.Regex ReadingPost() => ReadingPostPattern;
+
+    private static readonly System.Text.RegularExpressions.Regex ReadingPostPattern = new(@"/(search|query|filter|list|find|lookup|count|match|get|fetch|load|validate|check|preview|calculate|export)(-[a-z-]+)?/?$", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
 
     private static readonly System.Text.RegularExpressions.Regex GraphQlPattern = new(@"""query""\s*:\s*""(?:\s|\\[nrt])*(query|mutation|subscription|\{)", System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 

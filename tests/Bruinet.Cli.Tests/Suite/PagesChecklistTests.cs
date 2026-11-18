@@ -165,6 +165,42 @@ public sealed class PagesChecklistTests
         }
     }
 
+    [Fact]
+    public async Task With_a_list_of_places_the_pages_are_held_against_it_and_not_against_the_map()
+    {
+        var suite = Directory.CreateTempSubdirectory("bruinet-pages").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(suite, ".testing"));
+            Directory.CreateDirectory(Path.Combine(suite, "Shop", "Modules", "Orders", "Pages"));
+            File.WriteAllText(Path.Combine(suite, "Shop", "Shared.cs"), Shared);
+            File.WriteAllText(Path.Combine(suite, "Shop", "Modules", "Orders", "Pages", "OrdersPages.cs"), Orders);
+            var places = new Bruinet.Scraper.Places.PlacesList();
+            places.Add(Bruinet.Scraper.Places.PlacesList.Known("/order#/", "map"));
+            places.Add(Bruinet.Scraper.Places.PlacesList.Known("/order#/view/{id}", "code"));
+            places.Add(new Bruinet.Scraper.Places.Place { Key = "/order#/create", State = Bruinet.Scraper.Places.PlaceState.FormNotSaved, Sources = ["walk"] });
+            // A dialog is no page, and a page that was refused is none to make.
+            places.Add(new Bruinet.Scraper.Places.Place { Key = "/order › + Order", Kind = Bruinet.Scraper.Places.PlaceKind.Dialog, State = Bruinet.Scraper.Places.PlaceState.Seen, Sources = ["walk"] });
+            places.Add(new Bruinet.Scraper.Places.Place { Key = "/admin", State = Bruinet.Scraper.Places.PlaceState.Refused, Sources = ["map"] });
+            places.Save(Path.Combine(suite, ".testing", Bruinet.Scraper.Places.PlacesList.FileName));
+
+            Assert.Equal(0, await Run(suite, "suite", "pages", "--write"));
+
+            var written = File.ReadAllText(Path.Combine(suite, ".testing", PagesChecklist.FileName));
+            Assert.Contains("| Addresses in the list of places | 3, of which 2 without a page |", written, StringComparison.Ordinal);
+            Assert.Contains("## In the list of places, without a page", written, StringComparison.Ordinal);
+            Assert.Contains("| `/order#/view/{id}` | not opened: no address, from code |", written, StringComparison.Ordinal);
+            Assert.Contains("| `/order#/create` | a form, not saved, from walk |", written, StringComparison.Ordinal);
+            Assert.DoesNotContain("`/admin`", written, StringComparison.Ordinal);
+            Assert.DoesNotContain("+ Order", written, StringComparison.Ordinal);
+            Assert.Equal(0, await Run(suite, "suite", "pages", "--check"));
+        }
+        finally
+        {
+            Directory.Delete(suite, recursive: true);
+        }
+    }
+
     private static Task<int> Run(string folder, params string[] args)
         => BruinetCommand.RunAsync(args, new CliIo(TextReader.Null, TextWriter.Null, TextWriter.Null, folder, Interactive: false));
 }

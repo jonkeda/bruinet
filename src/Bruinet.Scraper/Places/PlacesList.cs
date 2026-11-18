@@ -51,7 +51,21 @@ public sealed class PlacesList
     public void Save(string path)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        File.WriteAllText(path, ToJson());
+        var text = ToJson();
+
+        // An editor or a search index holds the file for a moment: an hour's walk does not end on that.
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                File.WriteAllText(path, text);
+                return;
+            }
+            catch (IOException) when (attempt < 20)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(500));
+            }
+        }
     }
 
     /// <summary>
@@ -65,8 +79,15 @@ public sealed class PlacesList
         ArgumentNullException.ThrowIfNull(found);
         if (!_places.TryGetValue(found.Key, out var held))
         {
-            _places[found.Key] = found with { Accounts = Sorted(found.Accounts), Sources = Sorted(found.Sources) };
+            _places[found.Key] = found with { Accounts = Sorted(found.Accounts), RefusedTo = Sorted(found.RefusedTo), Sources = Sorted(found.Sources) };
             return true;
+        }
+
+        // Refused to one account, a place another account saw stays as it was seen: only who was refused is added.
+        if (found.State == PlaceState.Refused && held.State is not (PlaceState.Known or PlaceState.Refused))
+        {
+            _places[found.Key] = held with { RefusedTo = Sorted(held.RefusedTo.Concat(found.RefusedTo)) };
+            return false;
         }
 
         var read = found.State != PlaceState.Known;
@@ -86,6 +107,7 @@ public sealed class PlacesList
             Calls = Sorted(held.Calls.Concat(found.Calls)),
             NotPressed = read ? found.NotPressed : held.NotPressed,
             Accounts = Sorted(held.Accounts.Concat(found.Accounts)),
+            RefusedTo = Sorted(held.RefusedTo.Concat(found.RefusedTo)),
             Sources = Sorted(held.Sources.Concat(found.Sources)),
             Seen = found.Seen ?? held.Seen,
             Tries = read ? found.Tries : held.Tries,

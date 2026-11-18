@@ -75,6 +75,37 @@ public sealed class PlacesListTests
     }
 
     [Fact]
+    public void A_page_refused_to_one_account_stays_as_another_account_saw_it()
+    {
+        var list = new PlacesList();
+        list.Add(new Place { Key = "/vat", State = PlaceState.Seen, Heading = "VAT rates", Columns = ["Rate"], Accounts = ["Reader"], Sources = ["walk"] });
+
+        list.Add(new Place { Key = "/vat", State = PlaceState.Refused, RefusedTo = ["Creator"], Note = "the app answered: 403", Sources = ["walk"] });
+
+        var place = list["/vat"]!;
+        Assert.Equal(PlaceState.Seen, place.State);
+        Assert.Equal("VAT rates", place.Heading);
+        Assert.Null(place.Note);
+        Assert.Equal(["Reader"], place.Accounts);
+        Assert.Equal(["Creator"], place.RefusedTo);
+    }
+
+    [Fact]
+    public void A_page_refused_to_one_account_and_seen_by_the_next_is_seen()
+    {
+        var list = new PlacesList();
+        list.Add(PlacesList.Known("/vat", "map"));
+        list.Add(new Place { Key = "/vat", State = PlaceState.Refused, RefusedTo = ["Creator"], Note = "the app answered: 403", Sources = ["walk"] });
+
+        list.Add(new Place { Key = "/vat", State = PlaceState.Seen, Heading = "VAT rates", Accounts = ["Reader"], Sources = ["walk"] });
+
+        var place = list["/vat"]!;
+        Assert.Equal(PlaceState.Seen, place.State);
+        Assert.Equal(["Reader"], place.Accounts);
+        Assert.Equal(["Creator"], place.RefusedTo);
+    }
+
+    [Fact]
     public void A_list_is_read_back_as_it_was_written()
     {
         var file = Path.Combine(Path.GetTempPath(), "bruinet-places-" + Guid.NewGuid().ToString("N") + ".json");

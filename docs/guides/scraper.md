@@ -314,10 +314,10 @@ would be written for (a page, a tab, a dialog, a menu, a part a press shows), or
 
 | Call | Does |
 | --- | --- |
-| `bruinet scrape places` | Prints the list; `--write` writes the document, `--json` the list itself |
+| `bruinet scrape places show` | Prints the list; `--write` writes the document, `--json` the list itself |
 | `bruinet scrape places seed` | Adds what is known without opening the app: the addresses a map names in backticks (`--map`, default `.testing/170-Map.md`), the addresses of the suite's page objects, the pages the recordings captured |
 | `bruinet scrape places routes` | Opens each page of the list and reads the scripts only it loads, as text: a single-page app's route table survives in what it serves (`path:"/view/:id",component:…`). Each route is a known page; one with a parameter has no address until a record's own is found |
-| `bruinet scrape places walk` | Opens each page that is known and not yet opened (the frontier), reads it, and presses what a person can press, each once |
+| `bruinet scrape places walk` | Opens each page that is known and not yet opened (the frontier), reads it, and presses what a person can press, each once. `--own <address>` opens a record the walk owns at its own address first |
 | `bruinet scrape places add --from-run <file>` | Adds what tests found when they saved forms through their page objects |
 
 The list is saved after every page, so a walk that stops loses one page and the next walk goes on. A page that did not
@@ -355,7 +355,13 @@ page, and prints the records' addresses for `walk --own`.
 without a page object is listed.
 
 While requests are guarded the browser keeps no cache, so each page would fetch the app's scripts again. The Scraper
-keeps scripts, styles and fonts itself for the length of a run and answers them from there.
+keeps scripts, styles and fonts itself: for the length of a run, and on disk between runs
+(`%TEMP%/bruinet-kept-assets`, shared with the UI suites' browser) when the site gives an asset a version, which is
+asked for first. `BRUINET_KEPT_ASSETS=off` keeps none on disk.
+
+What a walk as one account opened, the walk as another account opens again: the list says per page who saw it and
+who the app refused. A record's own page that opens by pressing its row is reached by pressing the first row of each
+table once.
 
 ## Generate
 

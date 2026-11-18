@@ -120,6 +120,16 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         var stop = WalkStop.Done;
         try
         {
+            // The records the walk owns are opened at their own addresses, whatever the list holds of their pages:
+            // a page that was seen on someone else's record is walked again on the walk's own, with its writes let through.
+            foreach (var own in options.HoldAll ? [] : options.Own)
+            {
+                var (key, path) = PlacesList.KeyAndPath(own);
+                _tried.Add(key);
+                await PageAsync(list, (list[key] ?? PlacesList.Known(own, PlacesSeeds.Run)) with { Address = path }, cancellationToken).ConfigureAwait(false);
+                save(list);
+            }
+
             while (Next(list) is { } place)
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -152,9 +162,30 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     // The next page to open; when none is left, a page that did not open comes once more: the environment may answer now.
     private Place? Next(PlacesList list)
     {
-        var next = list.Places.FirstOrDefault(place => !_tried.Contains(place.Key) && Wanted(place)
-            && (place.OnFrontier || (options.Again && place.Kind == PlaceKind.Page && place.Address is not null && place.State != PlaceState.Refused)));
+        var next = list.Places.FirstOrDefault(place => !_tried.Contains(place.Key) && Wanted(place) && (place.OnFrontier || ToOpenAs(place)));
         return next ?? list.Places.FirstOrDefault(place => _notOpened.Contains(place.Key) && _triedAgain.Add(place.Key) && place.OnFrontier);
+    }
+
+    // A page another account opened, or was refused, is this account's to open too: what an account sees follows its
+    // rights and its organization. Asked for again, every page that opens is.
+    private bool ToOpenAs(Place place)
+    {
+        if (place.Kind != PlaceKind.Page || place.Address is null || place.State == PlaceState.Known)
+            return false;
+        var mine = place.Accounts.Contains(options.Account, StringComparer.Ordinal) || place.RefusedTo.Contains(options.Account, StringComparer.Ordinal);
+        if (place.State == PlaceState.Refused)
+            return !mine && place.RefusedTo.Count > 0;
+        return options.Again || !mine;
+    }
+
+    // The address is a record the walk owns: that record's address itself, or a page under it. Never another record
+    // whose address only starts the same (/department/94 is not /department/940).
+    private bool IsOwn(string address)
+    {
+        var path = PlacesList.KeyAndPath(address).Path;
+        return options.Own.Select(own => PlacesList.KeyAndPath(own).Path).Any(own =>
+            path.Equals(own, StringComparison.OrdinalIgnoreCase)
+            || (path.StartsWith(own, StringComparison.OrdinalIgnoreCase) && path[own.Length] is '/' or '?' or '#' or '&'));
     }
 
     private bool Wanted(Place place) => options.Only is not { Length: > 0 } only || place.Key.StartsWith(only, StringComparison.OrdinalIgnoreCase);
@@ -168,6 +199,12 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         if (snapshot is null)
         {
             var tries = place.Tries + 1;
+            if ((source as Html.PlaywrightScrapeSource)?.LastOpenProblem?.Contains("Download is starting", StringComparison.Ordinal) == true)
+            {
+                list.Set(place with { State = PlaceState.Refused, Note = "a download, not a page" });
+                return;
+            }
+
             list.Set(place with { Tries = tries, State = tries >= 3 ? PlaceState.Refused : place.State, Note = tries >= 3 ? "did not open, three times" : place.Note });
             _notOpened.Add(place.Key);
             _notes.Add($"{place.Key} did not open (try {tries}){((source as Html.PlaywrightScrapeSource)?.LastOpenProblem is { } why ? ": " + why : "")}.");
@@ -185,7 +222,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
         if (!project.IsOwnPage(snapshot.Location))
         {
-            list.Add(seen with { State = PlaceState.Refused, Note = $"leaves the app for {new Uri(snapshot.Location).Authority}" });
+            list.Add(seen with { State = PlaceState.Refused, Accounts = [], RefusedTo = [options.Account], Note = $"leaves the app for {new Uri(snapshot.Location).Authority}" });
             return;
         }
 
@@ -201,7 +238,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         var facts = PageFacts.Of(snapshot);
         if (facts.Headings.FirstOrDefault(heading => Refusal().IsMatch(heading)) is { } refusal)
         {
-            list.Add(seen with { State = PlaceState.Refused, Note = $"the app answered: {Place.Clean(refusal)}" });
+            list.Add(seen with { State = PlaceState.Refused, Accounts = [], RefusedTo = [options.Account], Note = $"the app answered: {Place.Clean(refusal)}" });
             return;
         }
 
@@ -218,8 +255,9 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     {
         var pageKey = PlacesList.KeyAndPath(address).Key;
         var candidates = await CandidatesAsync(list, pageKey, snapshot, known, notPressed, inForm, cancellationToken).ConfigureAwait(false);
-        var hold = options.HoldAll || !options.Own.Any(own => address.Contains(own, StringComparison.OrdinalIgnoreCase));
+        var hold = options.HoldAll || !IsOwn(address);
         var dirty = false;
+        var dull = 0;
         foreach (var candidate in candidates)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -262,34 +300,38 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
             var via = $"'{candidate.Label}' on {parent.Key}";
             var writes = CallTexts(made, held, all: false);
-            if (_downloads.Count > 0)
+            if (LeftThePage(list, parent, pageKey, candidate, after, via, writes, notPressed))
             {
-                _downloads.Clear();
-                Found(list, new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = PlaceKind.Action, State = PlaceState.Seen, Parent = pageKey, Via = via, Calls = writes, Note = "starts a download", Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today });
-                dirty = true;
-                continue;
-            }
-
-            if (!project.IsOwnPage(after.Location))
-            {
-                notPressed.Add($"{candidate.Label} (leaves the app)");
-                dirty = true;
-                continue;
-            }
-
-            var landed = PlacesList.KeyAndPath(after.Location).Key;
-            if (landed != pageKey)
-            {
-                Found(list, PlacesSeeds.Opened(after.Location, PlacesSeeds.Walk, via) with { Calls = writes });
                 dirty = true;
                 continue;
             }
 
             var afterRefs = NodeRef.Of(after);
-            var shown = Visible(after, afterRefs);
             var fresh = afterRefs.Values.Where(r => after[r.Number].Bounds is not null && !before.Contains(r.Key)).Select(r => after[r.Number]).ToList();
             var facts = PageFacts.Of(after);
             var kind = Kind(snapshot, after, candidate, facts, fresh, made.Count + held.Count);
+            // In a menu, a line that only changes the page is a setting (a list's column chooser): it is no
+            // place, and after two in a row the rest of the lines are taken to be the same.
+            if (depth > 0 && kind is null or PlaceKind.Part)
+            {
+                // In a dialog it is a button like any other that showed nothing new; in a menu, a line of settings.
+                if (parent.Kind != PlaceKind.Menu)
+                {
+                    dirty = true;
+                    continue;
+                }
+
+                if (++dull >= 2)
+                {
+                    notPressed.Add("the rest of its lines (two in a row only changed the page)");
+                    return;
+                }
+
+                dirty = true;
+                continue;
+            }
+
+            dull = 0;
             if (kind is null)
             {
                 dirty = held.Count > 0;
@@ -304,7 +346,14 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
                 continue;
             }
 
-            child = Read(child, facts, candidate.InRow || pageKey.Contains("{id}", StringComparison.Ordinal), isDialog: kind is PlaceKind.Dialog) with { Calls = writes };
+            // A dialog, a menu and a tab are read as what the page shows then; a part is only known to be there.
+            child = kind switch
+            {
+                PlaceKind.Part => child with { State = PlaceState.Seen, Calls = writes },
+                // A menu is its lines: what the page under it shows is the page's.
+                PlaceKind.Menu => child with { State = PlaceState.Seen, Calls = writes, Buttons = [.. facts.Options.Select(Place.Clean).Where(line => line.Length > 0 && line.Split(' ').Length <= 8).Distinct(StringComparer.Ordinal).Take(40)] },
+                _ => Read(child, facts, ofRecord: true, isDialog: kind is PlaceKind.Dialog) with { Calls = writes },
+            };
             var childNotPressed = new List<string>();
             if (depth + 1 < options.MaxDepth && !options.LinksAndTabs)
                 await PressAllAsync(list, child, address, [.. prefix, node with { Label = candidate.Label }], after, depth + 1, before, budget, childNotPressed, inForm: child.State == PlaceState.FormNotSaved, cancellationToken).ConfigureAwait(false);
@@ -334,6 +383,28 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         }
 
         return null;
+    }
+
+    // What a press did that left the page as it was read: a download, another site, another page. True when it did.
+    private bool LeftThePage(PlacesList list, Place parent, string pageKey, Candidate candidate, ScrapeSnapshot after, string via, string[] writes, List<string> notPressed)
+    {
+        if (_downloads.Count > 0)
+        {
+            _downloads.Clear();
+            Found(list, new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = PlaceKind.Action, State = PlaceState.Seen, Parent = pageKey, Via = via, Calls = writes, Note = "starts a download", Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today });
+            return true;
+        }
+
+        if (!project.IsOwnPage(after.Location))
+        {
+            notPressed.Add($"{candidate.Label} (leaves the app)");
+            return true;
+        }
+
+        if (PlacesList.KeyAndPath(after.Location).Key == pageKey)
+            return false;
+        Found(list, PlacesSeeds.Opened(after.Location, PlacesSeeds.Walk, via) with { Calls = writes });
+        return true;
     }
 
     // What a press led to, by what the page shows after it that it did not before; null when nothing.
@@ -377,13 +448,12 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             }
 
             var target = refs[judgement.Node];
-            if (node.Bounds is not { Width: > 0, Height: > 0 } || node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" || known.Contains(target.Key))
-                continue;
-            if (_chromeDone && IsChrome(snapshot, node, chrome))
+            if (known.Contains(target.Key) || !CanBePressed(snapshot, node) || (_chromeDone && IsChrome(snapshot, node, chrome)))
                 continue;
             var label = Label(snapshot, node, judgement.Label);
             var isTab = node.Role == "tab" || Classes(node).Contains("v-tab");
-            if (judgement.Reason is "sorts a table" or "a pager" or "closes" || (options.LinksAndTabs && !isTab))
+            // A cross closes what is open or empties a field: it leads nowhere.
+            if (judgement.Reason is "sorts a table" or "a pager" or "closes" || label is "fa-close" or "fa-xmark" or "fa-times" or "mdi-close" or "mdi-close-circle" || (options.LinksAndTabs && !isTab))
                 continue;
             if (WhyNot(judgement, label, inForm) is { } why)
             {
@@ -408,7 +478,28 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             found.Add(new Candidate(target.Key, name, isTab, inRow, DeleteWords.Any(word => DangerWords.Contains(label, word))));
         }
 
+        if (!_careful && !options.LinksAndTabs)
+            found.AddRange(FirstRows(snapshot, refs, known));
         return [.. found.OrderBy(candidate => candidate.Deletes)];
+    }
+
+    // A row that opens its record when it is pressed says so nowhere. So the first row of each table is pressed once,
+    // on a cell with a text and no field in it, unless the row has a link: where that goes is known already.
+    private static IEnumerable<Candidate> FirstRows(ScrapeSnapshot snapshot, IReadOnlyDictionary<int, NodeRef> refs, IReadOnlySet<string> known)
+    {
+        var tables = new HashSet<int>();
+        foreach (var row in snapshot.Nodes.Where(node => node.Type == "tr" && node.Bounds is { Width: > 0, Height: > 0 }))
+        {
+            var cells = snapshot.ChildrenOf(row.Number).Where(cell => cell.Type == "td" && cell.Bounds is { Width: > 0, Height: > 0 }).ToList();
+            if (cells.Count == 0 || RowOf(snapshot, cells[0]) is not { } at || !tables.Add(at.Table))
+                continue;
+            if (Below(snapshot, row, 5).Any(node => node.Type == "a" && node.Attribute("href") is { Length: > 0 }))
+                continue;
+            var cell = cells.FirstOrDefault(each => snapshot.TextWithin(each) is { Length: > 0 } && !Below(snapshot, each, 4).Any(node => IsField(node) || IsTick(node) || node.Type == "button"));
+            if (cell is null || known.Contains(refs[cell.Number].Key))
+                continue;
+            yield return new Candidate(refs[cell.Number].Key, tables.Count == 1 ? "the first row" : $"the first row ({tables.Count}nd table)", IsTab: false, InRow: true, Deletes: false);
+        }
     }
 
     // Why a button is not pressed, or null when it is.
@@ -540,6 +631,33 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         return false;
     }
 
+    // On the screen, not off, and a button: a field is read, not pressed (a box that is ticked, a choice of a list, a
+    // field that opens its list, a line of a menu with a box in it), and an editor's own buttons lead nowhere.
+    private static bool CanBePressed(ScrapeSnapshot snapshot, ScrapeNode node) =>
+        node.Bounds is { Width: > 0, Height: > 0 } && !node.Attributes.ContainsKey("disabled") && node.Attribute("aria-disabled") != "true"
+        && !IsField(node) && !Below(snapshot, node, 3).Skip(1).Any(IsTick) && !InToolbar(snapshot, node);
+
+    private static bool IsField(ScrapeNode node) =>
+        node.Type is "input" or "select" or "textarea" or "option"
+        || node.Role is "checkbox" or "switch" or "radio" or "option" or "menuitemcheckbox" or "menuitemradio" or "combobox" or "listbox" or "textbox"
+        || node.Attribute("aria-haspopup") == "listbox";
+
+    // A line of a menu with a box to tick in it (a list's column chooser) is a field too.
+    private static bool IsTick(ScrapeNode node) =>
+        node.Role is "checkbox" or "switch" or "radio" || (node.Type == "input" && node.Attribute("type") is "checkbox" or "radio");
+
+    // A text editor's own buttons (bold, italic) change the text in it, and lead nowhere.
+    private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node)
+    {
+        for (var n = node.Number; n != 0; n = snapshot[n].Parent)
+        {
+            if (snapshot[n].Role == "toolbar" || Classes(snapshot[n]).Any(name => name is "ck-toolbar" or "ck-editor" or "ql-toolbar" or "tox-toolbar"))
+                return true;
+        }
+
+        return false;
+    }
+
     // The row of a table an element is in, and its table: a body's row, not a header's.
     private static (int Table, int Row)? RowOf(ScrapeSnapshot snapshot, ScrapeNode node)
     {
@@ -562,10 +680,13 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     private static string Label(ScrapeSnapshot snapshot, ScrapeNode node, string judged)
     {
         var said = Place.Clean(judged.Trim().Trim((char)0x200B));
+        // A button's name is a few words. A longer text is what a record says (a note in a calendar, a card's first line): the list keeps none of it.
+        if (said.Split(' ').Length > 7)
+            return "a long text";
         if (said.Length > 0 && said != node.Type)
             return said;
         var below = Below(snapshot, node, 5).ToList();
-        var icon = below.SelectMany(Classes).FirstOrDefault(c => c.StartsWith("fa-", StringComparison.Ordinal) || c.StartsWith("mdi-", StringComparison.Ordinal));
+        var icon = below.SelectMany(Classes).FirstOrDefault(IsIconName);
         if (icon is not null)
             return icon;
         // A field that opens a list says what it is in its label or its placeholder, not in itself.
@@ -573,6 +694,17 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             .Select(text => text is null ? "" : Place.Clean(text)).FirstOrDefault(text => text.Length > 0);
         return named ?? node.Attribute("data-cy") ?? node.Attribute("data-testid") ?? node.Attribute("id") ?? node.Type;
     }
+
+    // An icon's own name among its classes (fa-pen, mdi-delete): not the classes that only say how it is drawn.
+    private static bool IsIconName(string name)
+    {
+        if (name.StartsWith("mdi-", StringComparison.Ordinal))
+            return !IconStyle().IsMatch(name[4..]);
+        return name.StartsWith("fa-", StringComparison.Ordinal) && !IconStyle().IsMatch(name[3..]);
+    }
+
+    [GeneratedRegex(@"^(solid|regular|light|thin|duotone|brands|sharp|fw|xs|sm|lg|xl|2xs|2xl|\d+x|\d+px|rotate.*|flip.*|spin.*|pulse|beat.*|fade|bounce|shake|border|pull-.*|stack.*|inverse|li|ul|swap-opacity|light|dark)$")]
+    private static partial Regex IconStyle();
 
     private static IEnumerable<ScrapeNode> Below(ScrapeSnapshot snapshot, ScrapeNode node, int depth)
     {
@@ -597,7 +729,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
     private void OnDialog(object? sender, string message) => _nativeDialogs++;
 
-    [GeneratedRegex(@"^(40[134]|500)\b|\bForbidden\b|\bNot Found\b|\bInternal Server Error\b", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"^(40[134]|500)\b|\bForbidden\b|\bNot Found\b|\bInternal Server Error\b|could not be executed|access denied|not allowed|no access|no permission|geen toegang|niet toegestaan", RegexOptions.IgnoreCase)]
     private static partial Regex Refusal();
 
     private sealed record Candidate(string Key, string Label, bool IsTab, bool InRow, bool Deletes);

@@ -96,6 +96,9 @@ public sealed record Place
     /// <summary>The accounts that saw it.</summary>
     public IReadOnlyList<string> Accounts { get; init; } = [];
 
+    /// <summary>The accounts the app refused it to: who has no access to it.</summary>
+    public IReadOnlyList<string> RefusedTo { get; init; } = [];
+
     /// <summary>Where it is known from: the map, the suite, a recording, the code, the walk, a test's run.</summary>
     public IReadOnlyList<string> Sources { get; init; } = [];
 

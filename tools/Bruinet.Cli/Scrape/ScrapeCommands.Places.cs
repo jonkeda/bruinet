@@ -12,14 +12,18 @@ internal static partial class ScrapeCommands
     private static Option<string?> ListFile() =>
         new("--list") { Description = $"The list's file. Default: .testing/{PlacesList.FileName} of the suite the project is in." };
 
-    private static Command Places(CliIo io)
+    private static Command Places(CliIo io) => new("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: show the list, or fill it with seed, routes, walk and add.")
+    {
+        PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io),
+    };
+
+    private static Command PlacesShow(CliIo io)
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
         var write = new Option<bool>("--write") { Description = $"Write the list as a document, {PlacesDocument.FileName} beside it." };
-        var command = new Command("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: print the list, or fill it with seed, routes, walk and add.")
+        var command = new Command("show", "Print the list of the app's places as a document, or write it.")
         {
             project, solution, list, write, json,
-            PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io),
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -207,6 +211,6 @@ internal static partial class ScrapeCommands
     // What the walk is doing, a line each, as it happens.
     private sealed class Said(TextWriter errors) : IProgress<string>
     {
-        public void Report(string doing) => errors.WriteLine(doing);
+        public void Report(string doing) => errors.WriteLine(string.Create(CultureInfo.InvariantCulture, $"{DateTime.Now:HH:mm:ss} {doing}"));
     }
 }

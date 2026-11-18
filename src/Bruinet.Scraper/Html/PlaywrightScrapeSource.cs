@@ -119,6 +119,13 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         // With a handler, Playwright no longer dismisses a dialog itself: a confirm is always answered no.
         _page.Dialog += (_, dialog) =>
         {
+            // "Leave site?" of a page that was changed: answered no, the page would never be left again.
+            if (dialog.Type == "beforeunload")
+            {
+                _ = dialog.AcceptAsync();
+                return;
+            }
+
             Enqueue(_page.MainFrame, JsonSerializer.Serialize(new { kind = ScrapeActionKind.Dialog, value = dialog.Message, accepted = false }));
             DialogDismissed?.Invoke(this, dialog.Message);
             _ = dialog.DismissAsync();
@@ -561,6 +568,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     {
         try
         {
+            if (_kept.TryGetValue(url, out var kept) && await kept.Value.ConfigureAwait(false) is { } found)
+                return System.Text.Encoding.UTF8.GetString(found.Body);
             // With the browser's own session, so a script only a signed-in person gets is read as that person.
             var response = await _context!.APIRequest.GetAsync(url).ConfigureAwait(false);
             return response.Ok ? await response.TextAsync().ConfigureAwait(false) : null;
@@ -574,7 +583,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     private void OnResponse(object? sender, IResponse response)
     {
         var request = response.Request;
-        if (request.ResourceType is "script" && response.Status is >= 200 and < 300)
+        // Guarded, a script is answered from what is kept, and noted there.
+        if (_guard is null && request.ResourceType is "script" && response.Status is >= 200 and < 300)
             _scripts.Enqueue(request.Url);
         if (request.ResourceType is "xhr" or "fetch")
             _calls.Enqueue(Bruinet.Scraper.Service.PageCall.Of(request.Method, request.Url, response.Status, request.Method is "GET" or "HEAD" or "OPTIONS" ? null : request.PostData));
@@ -613,6 +623,8 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
             var kept = await _kept.GetOrAdd(url, address => new Lazy<Task<(Dictionary<string, string> Headers, byte[] Body)?>>(() => FetchAsync(address))).Value.ConfigureAwait(false);
             if (kept is { } found)
             {
+                if (route.Request.ResourceType == "script")
+                    _scripts.Enqueue(url);
                 await route.FulfillAsync(new() { Status = 200, Headers = found.Headers, BodyBytes = found.Body }).ConfigureAwait(false);
                 return;
             }
@@ -631,6 +643,17 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     {
         try
         {
+            // What an earlier run kept on disk holds when the site still gives the address the same version: a few bytes to ask.
+            if (KeptOnDisk.Read(url) is { } onDisk)
+            {
+                var now = await _context!.APIRequest.HeadAsync(url, new() { Timeout = 30_000 }).ConfigureAwait(false);
+                if (now.Status == 200 && now.Headers.TryGetValue("etag", out var etag) && etag == onDisk.ETag)
+                {
+                    Interlocked.Add(ref _keptBytes, onDisk.Body.Length);
+                    return (onDisk.Headers, onDisk.Body);
+                }
+            }
+
             var response = await _context!.APIRequest.GetAsync(url, new() { Timeout = 180_000 }).ConfigureAwait(false);
             if (response.Status != 200)
                 return null;
@@ -644,6 +667,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
             // The body is as the site means it, unpacked: what says how it was packed and how long it was no longer holds.
             var headers = response.Headers.Where(header => header.Key.ToLowerInvariant() is not ("content-encoding" or "content-length" or "transfer-encoding"))
                 .ToDictionary(header => header.Key, header => header.Value, StringComparer.OrdinalIgnoreCase);
+            KeptOnDisk.Write(url, headers, body);
             return (headers, body);
         }
         catch (Exception e) when (e is PlaywrightException or TimeoutException)

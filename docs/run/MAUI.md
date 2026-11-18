@@ -95,8 +95,10 @@ gesture sinks) work on this runner too. On Windows the runner launches the app a
 Android and the iOS simulator it installs and launches it. To attach to an app you started yourself, set
 `BRUINET_DEVFLOW_PORT` to its agent's port (on Android, forward it first: `adb forward tcp:9223 tcp:9223`). The input is semantic (a tap invokes, typing sets the text), so the FlaUI and Appium heads stay
 the judge at a gate. `Tests\Background` and `Tests\Diagnostics` test the FlaUI driver itself, and a
-`[WindowsOnlyFact]` about the bridge or the accessibility tree skips on this runner. What it cannot do:
-[.my/devflow-runner/design.md](../../.my/devflow-runner/design.md#what-it-cannot-do).
+`[WindowsOnlyFact]` about the bridge or the accessibility tree skips on this runner. What it cannot do: select a list row that
+has no tap of its own (the agent has no select action; the bridge's `SelectIndex` serves pickers only), and scroll a
+ScrollView inside another to an exact position (the inner one reaches its top and its end exactly, a position between
+as near as its children allow).
 
 ## Appium Setup
 

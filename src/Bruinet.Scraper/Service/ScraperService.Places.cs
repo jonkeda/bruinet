@@ -99,13 +99,19 @@ public sealed partial class ScraperService
             // Nothing is pressed here: what a page asks for while it opens is a read.
             guard.Learning = true;
             var opened = 0;
+            string? last = null;
             var again = new List<string>();
             // A page that did not open comes once more at the end: the first pages of a run wait for the app's scripts.
             for (var at = 0; at < pages.Count + again.Count; at++)
             {
                 var page = at < pages.Count ? pages[at] : again[at - pages.Count];
                 cancellationToken.ThrowIfCancellationRequested();
-                _ = source.TakeScripts();
+                // What a page asked for after its turn was over is still its own.
+                if (last is not null)
+                    Loaded(loadedBy, last, source.TakeScripts().Where(project.IsOwnPage));
+                else
+                    _ = source.TakeScripts();
+                last = null;
                 progress?.Report($"opening {page}");
                 var address = new Uri(new Uri(project.Config.StartUrl), page).AbsoluteUri;
                 // A shared environment stops answering for a while: once more before the page is given up.
@@ -121,12 +127,14 @@ public sealed partial class ScraperService
                 if (!project.IsOwnPage(source.Location) || (project.Config.Explore.LoginUrl.Length > 0 && source.Location.Contains(project.Config.Explore.LoginUrl, StringComparison.OrdinalIgnoreCase)))
                     return new RoutesRead(opened, 0, 0, 0, $"A sign-in page came ({source.Location}): the saved sign-in ran out. Run a test that signs in, then read the routes again.");
                 opened++;
-                foreach (var script in source.TakeScripts().Where(project.IsOwnPage).Distinct(StringComparer.Ordinal))
-                {
-                    if (!loadedBy.TryGetValue(script, out var by))
-                        loadedBy[script] = by = [];
-                    by.Add(page);
-                }
+                Loaded(loadedBy, page, source.TakeScripts().Where(project.IsOwnPage));
+                last = page;
+            }
+
+            if (last is not null)
+            {
+                await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
+                Loaded(loadedBy, last, source.TakeScripts().Where(project.IsOwnPage));
             }
 
             // What every page loads (the framework, the shared parts) holds no page's routes.
@@ -149,6 +157,17 @@ public sealed partial class ScraperService
             }
 
             return new RoutesRead(opened, read, routes, fresh, null);
+        }
+    }
+
+    private static void Loaded(Dictionary<string, List<string>> loadedBy, string page, IEnumerable<string> scripts)
+    {
+        foreach (var script in scripts.Distinct(StringComparer.Ordinal))
+        {
+            if (!loadedBy.TryGetValue(script, out var by))
+                loadedBy[script] = by = [];
+            if (!by.Contains(page, StringComparer.Ordinal))
+                by.Add(page);
         }
     }
 

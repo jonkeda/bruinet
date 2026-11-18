@@ -10,7 +10,7 @@ using Bruinet.Maui.Interfaces;
 namespace Bruinet.Maui.DevFlow;
 
 /// <summary>
-/// Bruinet's MAUI driver over the MauiDevFlow agent the app carries (.my/devflow-runner/design.md):
+/// Bruinet's MAUI driver over the MauiDevFlow agent the app carries (AD-037):
 /// lookup in the app's own visual tree, actions as the agent performs them (a tap invokes, a fill
 /// sets the text), navigation through Shell and the navigation stack. The same page objects and
 /// controls that drive the app through FlaUI and Appium drive it here.

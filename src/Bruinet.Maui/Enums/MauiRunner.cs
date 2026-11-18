@@ -2,7 +2,7 @@ namespace Bruinet.Maui.Enums;
 
 /// <summary>
 /// What drives the built app on a device: the platform's own runner, or MauiDevFlow's agent inside
-/// the app (<c>Bruinet.Maui.DevFlow</c>, .my/devflow-runner/design.md).
+/// the app (<c>Bruinet.Maui.DevFlow</c>, AD-037).
 /// </summary>
 public enum MauiRunner
 {

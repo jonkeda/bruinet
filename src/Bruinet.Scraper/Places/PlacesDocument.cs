@@ -17,7 +17,7 @@ public static class PlacesDocument
         var md = new StringBuilder();
         md.Append("# The places of the app\n\n");
         md.Append("Every place the app is known to have: what the map, the suite, the recordings, the app's own code and the walk\n");
-        md.Append("found, added up. Written by `bruinet scrape places --write` from `").Append(PlacesList.FileName).Append("` beside it; do not edit it by hand.\n");
+        md.Append("found, added up. Written by `bruinet scrape places show --write` from `").Append(PlacesList.FileName).Append("` beside it; do not edit it by hand.\n");
         md.Append("A place is what a page object would be written for (a page, a tab, a dialog, a menu), or a button that only\n");
         md.Append("calls the back end (an action). It holds how a place is built and never what a record says.\n\n");
 
@@ -32,12 +32,12 @@ public static class PlacesDocument
         md.Append(CultureInfo.InvariantCulture, $"| Refused | {places.Count(place => place.State == PlaceState.Refused)} |\n");
 
         md.Append("\n## The places\n\n");
-        md.Append("| Place | Kind | State | Size | Calls | Seen by | From | Note |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n");
+        md.Append("| Place | Kind | State | Size | Calls | Seen by | Refused to | From | Note |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n");
         foreach (var place in places)
         {
             md.Append("| `").Append(Cell(place.Key)).Append("` | ").Append(Name(place.Kind)).Append(" | ").Append(State(place)).Append(" | ")
                 .Append(Size(place)).Append(" | ").Append(Cell(string.Join("; ", place.Calls))).Append(" | ")
-                .Append(Cell(string.Join(", ", place.Accounts))).Append(" | ").Append(Cell(string.Join(", ", place.Sources))).Append(" | ")
+                .Append(Cell(string.Join(", ", place.Accounts))).Append(" | ").Append(Cell(string.Join(", ", place.RefusedTo))).Append(" | ").Append(Cell(string.Join(", ", place.Sources))).Append(" | ")
                 .Append(Cell(Note(place))).Append(" |\n");
         }
 

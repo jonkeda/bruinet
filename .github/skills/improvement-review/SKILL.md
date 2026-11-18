@@ -50,7 +50,8 @@ not memory:
 | The runs' `test-timings.md` | The slowest tests and classes, and those marked slower |
 | `400-FrictionLog.md` | Rows since the last review grouped by the change they ask for; rows open longer than one review; a row marked Done whose symptom came back; rows about leftovers and clean-up |
 | `200-Tasklist.md` | Minutes and failed runs per journey; a person's checkpoint open for longer than one review |
-| `180-Pages.md` (`bruinet suite pages`) | The counts for ease of use and reach, not a search written for the occasion: pages with a gap (a member by a text, a table without a typed row, nothing named, nothing that visits it), the map's addresses without a page, and what a person wrote as owed |
+| `180-Pages.md` (`bruinet suite pages`) | The counts for ease of use and reach, not a search written for the occasion: pages with a gap (a member by a text, a table without a typed row, nothing named, nothing that visits it), the places without a page, and what a person wrote as owed |
+| `175-Places.md` (`bruinet scrape places show`) | Reach against the app itself: places still to open, places known from the code with no address, forms not saved |
 | **The newest page objects, controls and steps** | Members by a text for fixed structure; a kind left to the caller; the same step written again for another kind of record; a name nobody would guess |
 | The work itself | A command, a probe, a script or an edit done by hand more than twice; code written by hand that a draft could have made |
 | The skills and `AGENTS.md` | A lesson a skill already holds and the work did not follow; a lesson no skill holds yet |

@@ -7,7 +7,7 @@ namespace Bruinet.Maui.Tests;
 
 /// <summary>
 /// The DevFlow runner over a fake agent: which elements a lookup finds in the agent's tree, what an
-/// action asks of the agent, and how the runner is chosen (.my/devflow-runner/design.md).
+/// action asks of the agent, and how the runner is chosen (AD-037).
 /// </summary>
 public class DevFlowRunnerTests
 {

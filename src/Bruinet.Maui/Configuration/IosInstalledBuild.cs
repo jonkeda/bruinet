@@ -13,8 +13,8 @@ namespace Bruinet.Maui.Configuration;
 /// <remarks>
 /// <para>
 /// Without <c>noReset</c>, XCUITest removes the app and installs it at every session start: about
-/// 5 s a class on an iPhone 17 simulator, which is a quarter of the session start
-/// (.my/performance). The <c>.app</c>'s fingerprint and the installed bundle's container are
+/// 5 s a class on an iPhone 17 simulator, which is a quarter of the session start.
+/// The <c>.app</c>'s fingerprint and the installed bundle's container are
 /// recorded on the host after an install; a session whose <c>.app</c> and container still match
 /// both starts with <c>noReset</c>.
 /// </para>

@@ -95,6 +95,8 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
         if (options.AllowedHosts is { } allowed)
         {
             await GuardHostsAsync(browserContext, page, allowed, refused).ConfigureAwait(false);
+            // A routed context keeps no cache: the app's scripts are kept for it (KeptAssets says why).
+            await KeptAssets.KeepAsync(browserContext, allowed).ConfigureAwait(false);
         }
 
         if (!string.IsNullOrWhiteSpace(options.BaseUrl))

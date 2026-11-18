@@ -49,6 +49,10 @@ running instead. The Todo web head has its own UI tests:
 `dotnet test samples\Todo\tests\Bruinet.Samples.Todo.Web.UITests` (hermetic; add
 `BRUINET_UAT_LIVE_API=1` for the live tier).
 
+A suite that sets `AllowedHosts` routes its browser's requests, and a routed browser keeps no cache. Bruinet keeps the
+app's scripts, styles and fonts for it: in the run, and in `%TEMP%/bruinet-kept-assets` between runs when the site
+gives an asset an `ETag` (asked for first, with a HEAD request). `BRUINET_KEPT_ASSETS=off` keeps none on disk.
+
 ## UAT
 
 ```powershell
