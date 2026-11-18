@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **bruinet suite pages**: a suite's page checklist, read from its source without a build. A row per page object with
+  its kind (list, form, view), its named fields, buttons, tabs and typed rows, the specs and tests that visit it, and
+  its gaps (a member by a text, a table without a typed row, nothing named, nothing that visits it); under it the
+  addresses of the suite's map that have no page. `--write` writes `.testing/180-Pages.md` and keeps the one column a
+  person writes (Owed); `--check` exits 1 when that document is not what the source says now; `--json` for a script.
 - **Bruinet.NativeIos**: native iOS apps (UIKit) through Appium and XCUITest, in native Android's shape (AD-042): page
   objects, generated controls with UIKit's names (`TextField`, `SegmentedControl`, `TableView`), Springboard's
   permission prompt (`PermissionAlert`), collections keyed by a row's text, evidence and simulator recording

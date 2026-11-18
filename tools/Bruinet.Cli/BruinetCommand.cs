@@ -41,6 +41,7 @@ internal static class BruinetCommand
             ScenarioCommands.Build(io),
             SelectionCommands.Build(io),
             Friction.FrictionCommands.Build(io),
+            Suite.SuiteCommands.Build(io),
             Sql.SqlCommands.Build(io),
             Http.HttpCommands.Build(io),
             Scenario.VoiceCommand.Build(io),

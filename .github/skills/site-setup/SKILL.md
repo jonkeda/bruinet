@@ -23,6 +23,7 @@ The shape is Bouw7's (`BruinetB7/Bouw7/`); copy its structure, not its content.
 5. **Docs**: `AGENTS.md` (Never, Where code goes, Running) and `.testing/` with `000-Readme.md`,
    `100-Loops.md` (one row per module), `150-Structure.md`, `200-Tasklist.md`, `300-Environment.md`,
    `400-FrictionLog.md`, `600-Improvements.md` (its `Every` row and an empty Reviews table: the
-   `improvement-review` skill), `decisions/`.
+   `improvement-review` skill), `decisions/`. Once the suite has its first pages: `180-Pages.md`, the page checklist,
+   written by `bruinet suite pages --write` and written again after a page is added or changed.
 6. **Gate**: a test opens the start page signed in as the reading account, locally. Then the
    site loop (`tools/Scripts/site-loop.ps1`) takes over per module.
