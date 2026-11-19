@@ -288,6 +288,13 @@ public static partial class ScrapeCommands
                 LinksAndTabs = parsed.GetValue(linksAndTabs),
                 Progress = new Said(io.Error),
             };
+            // The setup's first answer: on an environment that is not safe to write on, nothing but links and tabs, and every write held back.
+            if (Bruinet.Scraper.Factory.FactorySetup.Read(service.Project(name).Home) is { Writes: Bruinet.Scraper.Factory.WritesAllowed.ReadOnly } && File.Exists(Path.Combine(service.Project(name).Home, Bruinet.Scraper.Factory.FactorySetup.FileName)))
+            {
+                options = options with { LinksAndTabs = true, HoldAll = true };
+                await io.Error.WriteLineAsync($"{Bruinet.Scraper.Factory.FactorySetup.FileName} says Writes read-only: links and tabs only, every write held back.").ConfigureAwait(false);
+            }
+
             var config = service.Project(name).Config;
             await io.Error.WriteLineAsync($"Walk {service.Project(name).Name} as {(account is { Length: > 0 } ? account : "the project's own account")}: Environment {config.Environment.ToString().ToLowerInvariant()}, {(options.LinksAndTabs ? "links and tabs only" : config.Environment == Bruinet.Scraper.Projects.AppEnvironment.Production ? "only what is known to show more is pressed" : "every button is pressed but what the config forbids")}; writes {(options.HoldAll || options.Own.Count == 0 ? "all held back" : $"held back but on {string.Join(", ", options.Own)}")}; {options.MaxMinutes} min.").ConfigureAwait(false);
             var result = await service.WalkPlacesAsync(name, file, options, account, !parsed.GetValue(headless) && io.Interactive, cancellationToken).ConfigureAwait(false);
