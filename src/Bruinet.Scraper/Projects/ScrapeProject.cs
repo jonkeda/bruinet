@@ -81,6 +81,18 @@ public sealed partial class ScrapeProject
 
     private IReadOnlyList<ControlSign>? _signs;
 
+    /// <summary>
+    /// How a tab, an open menu, a dialog, a toolbar, a title and an icon show themselves on this app's pages beyond
+    /// their roles: each control library's <c>## Place signs</c>, in the order of <c>## Control libraries</c>, then the
+    /// project's own.
+    /// </summary>
+    public PlaceSigns PlaceSigns => _placeSigns ??= Config.ControlLibraries.Where(library => library.Signs.Length > 0)
+        .Select(library => PlaceSigns.ReadFile(Path.GetFullPath(Path.Combine(Home, library.Signs))))
+        .Aggregate(PlaceSigns.None, (all, each) => all.With(each))
+        .With(Config.PlaceSigns);
+
+    private PlaceSigns? _placeSigns;
+
     /// <summary>Where its recordings are.</summary>
     public string RecordingsFolder => Path.Combine(Home, RecordingsFolderName);
 

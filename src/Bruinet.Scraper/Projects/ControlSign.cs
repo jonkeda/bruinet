@@ -84,7 +84,7 @@ public sealed record ControlSign(string Control, string Sign, bool Made, string 
 
     /// <summary>Reads a library's file of signs: every table in it with a Control and a Sign column.</summary>
     public static IReadOnlyList<ControlSign> ReadFile(string path, string library)
-        => [.. MarkdownTables.ReadSections(File.ReadAllText(path)).Values.SelectMany(section => Read(section.Rows.Where(row => row.Cells.ContainsKey("Sign")), library))];
+        => [.. MarkdownTables.ReadSections(File.ReadAllText(path)).Where(section => section.Key != PlaceSigns.Section).SelectMany(section => Read(section.Value.Rows.Where(row => row.Cells.ContainsKey("Sign")), library))];
 
     /// <summary>
     /// The first sign an element shows, on itself or on an element around it within <see cref="Reach"/>; null when

@@ -69,13 +69,20 @@ public sealed record Place
     /// <summary>How it was reached: from which place, by which press.</summary>
     public string? Via { get; init; }
 
+    /// <summary>
+    /// What kind of press reached it, as the walk saw the element it pressed (a row's button, a tab);
+    /// <see cref="OpenerKind.Unknown"/> for a place found before the walk kept this. Read it through
+    /// <see cref="PlaceOpener.Of"/>, which also reads what the key and <see cref="Via"/> say.
+    /// </summary>
+    public OpenerKind Opener { get; init; }
+
     /// <summary>The browser tab's title.</summary>
     public string? Title { get; init; }
 
     /// <summary>Its first heading; left out for a record's own page, where the heading is the record's name.</summary>
     public string? Heading { get; init; }
 
-    /// <summary>Its fields, each as its label and kind (<c>Name (text, required)</c>).</summary>
+    /// <summary>Its fields, each as its label and kind (<c>Name (text, required)</c>): <see cref="PlaceField"/> reads a line.</summary>
     public IReadOnlyList<string> Fields { get; init; } = [];
 
     /// <summary>What its buttons say.</summary>

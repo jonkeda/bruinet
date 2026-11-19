@@ -98,6 +98,7 @@ public sealed class PlacesList
             Address = held.Address ?? found.Address,
             Parent = held.Parent ?? found.Parent,
             Via = held.Via ?? found.Via,
+            Opener = found.Opener != OpenerKind.Unknown ? found.Opener : held.Opener,
             Title = Text(read, found.Title, held.Title),
             Heading = Text(read, found.Heading, held.Heading),
             Fields = Read(read, found.Fields, held.Fields),

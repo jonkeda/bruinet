@@ -241,7 +241,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             return;
         }
 
-        var facts = PageFacts.Of(snapshot, project.ControlSigns);
+        var facts = PageFacts.Of(snapshot, project.ControlSigns, project.PlaceSigns);
         if (facts.Headings.FirstOrDefault(heading => Refusal().IsMatch(heading)) is { } refusal)
         {
             list.Add(seen with { State = PlaceState.Refused, Accounts = [], RefusedTo = [options.Account], Note = $"the app answered: {Place.Clean(refusal)}" });
@@ -314,7 +314,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
             var afterRefs = NodeRef.Of(after);
             var fresh = afterRefs.Values.Where(r => after[r.Number].Bounds is not null && !before.Contains(r.Key)).Select(r => after[r.Number]).ToList();
-            var facts = PageFacts.Of(after, project.ControlSigns);
+            var facts = PageFacts.Of(after, project.ControlSigns, project.PlaceSigns);
             var kind = Kind(snapshot, after, candidate, facts, fresh, made.Count + held.Count);
             // In a menu, a line that only changes the page is a setting (a list's column chooser): it is no
             // place, and after two in a row the rest of the lines are taken to be the same.
@@ -344,7 +344,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
                 continue;
             }
 
-            var child = new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = kind.Value, Parent = pageKey, Via = via, Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today };
+            var child = new Place { Key = Place.PartKey(parent.Key, candidate.Label), Kind = kind.Value, Parent = pageKey, Via = via, Opener = PlaceOpener.KindOf(candidate.Label, candidate.IsTab, candidate.InRow), Accounts = [options.Account], Sources = [PlacesSeeds.Walk], Seen = options.Today };
             if (kind == PlaceKind.Action)
             {
                 Found(list, child with { State = PlaceState.Seen, Calls = CallTexts(made, held, all: true) });
@@ -415,11 +415,11 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     }
 
     // What a press led to, by what the page shows after it that it did not before; null when nothing.
-    private static PlaceKind? Kind(ScrapeSnapshot before, ScrapeSnapshot after, Candidate candidate, PageFacts facts, List<ScrapeNode> fresh, int callCount)
+    private PlaceKind? Kind(ScrapeSnapshot before, ScrapeSnapshot after, Candidate candidate, PageFacts facts, List<ScrapeNode> fresh, int callCount)
     {
-        if (facts.Dialog is not null && fresh.Any(node => node.Role == "dialog" || node.Type == "dialog" || Classes(node).Contains("v-dialog")) || (facts.Dialog is not null && PageFacts.Of(before).Dialog is null))
+        if (facts.Dialog is not null && fresh.Any(project.PlaceSigns.IsDialog) || (facts.Dialog is not null && PageFacts.Of(before).Dialog is null))
             return PlaceKind.Dialog;
-        if (fresh.Any(node => node.Role is "menu" or "listbox" || Classes(node).Contains("menuable__content__active")))
+        if (fresh.Any(project.PlaceSigns.IsOpenMenu))
             return PlaceKind.Menu;
         if (candidate.IsTab)
             return fresh.Count > 0 || callCount > 0 ? PlaceKind.Tab : null;
@@ -459,9 +459,9 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             if (known.Contains(target.Key) || !CanBePressed(snapshot, node) || InAButton(snapshot, node) || (_chromeDone && IsChrome(snapshot, node, chrome)))
                 continue;
             var label = Label(snapshot, node, judgement.Label);
-            var isTab = node.Role == "tab" || Classes(node).Contains("v-tab");
+            var isTab = project.PlaceSigns.IsTab(node);
             // A cross closes what is open or empties a field: it leads nowhere.
-            if (judgement.Reason is "sorts a table" or "a pager" or "closes" || label is "fa-close" or "fa-xmark" or "fa-times" or "mdi-close" or "mdi-close-circle" || (options.LinksAndTabs && !isTab))
+            if (judgement.Reason is "sorts a table" or "a pager" or "closes" || project.PlaceSigns.IsClose(label) || (options.LinksAndTabs && !isTab))
                 continue;
             if (WhyNot(judgement, label, inForm) is { } why)
             {
@@ -611,7 +611,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         dialog.Fields.Count == 0 ? null : list.Places.FirstOrDefault(other => other.Kind == PlaceKind.Dialog && other.Parent == dialog.Parent && other.Key != dialog.Key && other.SameAs is null
             && other.Fields.Select(FieldLabel).SequenceEqual(dialog.Fields.Select(FieldLabel), StringComparer.Ordinal))?.Key;
 
-    private static string FieldLabel(string field) => field.LastIndexOf(" (", StringComparison.Ordinal) is var at and > 0 ? field[..at] : field;
+    private static string FieldLabel(string field) => PlaceField.Parse(field).Label;
 
     private void Found(PlacesList list, Place place)
     {
@@ -654,7 +654,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
     // On the screen, not off, and a button: a field is read, not pressed (a box that is ticked, a choice of a list, a
     // field that opens its list, a line of a menu with a box in it), and an editor's own buttons lead nowhere.
-    private static bool CanBePressed(ScrapeSnapshot snapshot, ScrapeNode node) =>
+    private bool CanBePressed(ScrapeSnapshot snapshot, ScrapeNode node) =>
         node.Bounds is { Width: > 0, Height: > 0 } && !node.Attributes.ContainsKey("disabled") && node.Attribute("aria-disabled") != "true"
         && !IsField(node) && !Below(snapshot, node, 3).Skip(1).Any(IsTick) && !InToolbar(snapshot, node);
 
@@ -680,11 +680,11 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         node.Role is "checkbox" or "switch" or "radio" || (node.Type == "input" && node.Attribute("type") is "checkbox" or "radio");
 
     // A text editor's own buttons (bold, italic) change the text in it, and lead nowhere.
-    private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node)
+    private bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node)
     {
         for (var n = node.Number; n != 0; n = snapshot[n].Parent)
         {
-            if (snapshot[n].Role == "toolbar" || Classes(snapshot[n]).Any(name => name is "ck-toolbar" or "ck-editor" or "ql-toolbar" or "tox-toolbar"))
+            if (project.PlaceSigns.IsToolbar(snapshot[n]))
                 return true;
         }
 
@@ -710,7 +710,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     }
 
     // What a button says; for one that only shows an icon, the icon's name.
-    private static string Label(ScrapeSnapshot snapshot, ScrapeNode node, string judged)
+    private string Label(ScrapeSnapshot snapshot, ScrapeNode node, string judged)
     {
         var said = Place.Clean(judged.Trim().Trim((char)0x200B));
         // A button's name is a few words. A longer text is what a record says (a note in a calendar, a card's first line): the list keeps none of it.
@@ -724,7 +724,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             .Select(text => text is null ? "" : Place.Clean(text)).FirstOrDefault(text => text.Length > 0 && text.Split(' ').Length <= 7);
         if (told is not null)
             return told;
-        var icon = below.SelectMany(Classes).FirstOrDefault(IsIconName);
+        var icon = below.SelectMany(Classes).FirstOrDefault(project.PlaceSigns.IsIconName);
         if (icon is not null)
             return RowOf(snapshot, node) is null && CardTitle(snapshot, node) is { } card ? $"{card}: {icon}" : icon;
         // A field that opens a list says what it is in its label or its placeholder, not in itself.
@@ -735,12 +735,12 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
     // The title of the card a button is in, when it is in the card's title bar: two pens on one page are the pens of
     // two cards, and each is named after its own. A title is a few words; a longer text is what a record says.
-    private static string? CardTitle(ScrapeSnapshot snapshot, ScrapeNode node)
+    private string? CardTitle(ScrapeSnapshot snapshot, ScrapeNode node)
     {
         var level = 0;
         for (var at = node.Parent; at != 0 && level < 6; at = snapshot[at].Parent, level++)
         {
-            if (!Classes(snapshot[at]).Any(name => name.EndsWith("card__title", StringComparison.Ordinal) || name.EndsWith("card-header", StringComparison.Ordinal)))
+            if (!project.PlaceSigns.IsTitle(snapshot[at]))
                 continue;
             var title = Below(snapshot, snapshot[at], 2).Where(each => each.Number < node.Number && each.Text is { Length: > 0 }).Select(each => Place.Clean(each.Text!)).FirstOrDefault(text => text.Length > 0);
             return title is not null && title.Split(' ').Length <= 5 ? title : null;
@@ -748,17 +748,6 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
         return null;
     }
-
-    // An icon's own name among its classes (fa-pen, mdi-delete): not the classes that only say how it is drawn.
-    private static bool IsIconName(string name)
-    {
-        if (name.StartsWith("mdi-", StringComparison.Ordinal))
-            return !IconStyle().IsMatch(name[4..]);
-        return name.StartsWith("fa-", StringComparison.Ordinal) && !IconStyle().IsMatch(name[3..]);
-    }
-
-    [GeneratedRegex(@"^(solid|regular|light|thin|duotone|brands|sharp|fw|xs|sm|lg|xl|2xs|2xl|\d+x|\d+px|rotate.*|flip.*|spin.*|pulse|beat.*|fade|bounce|shake|border|pull-.*|stack.*|inverse|li|ul|swap-opacity|light|dark)$")]
-    private static partial Regex IconStyle();
 
     private static IEnumerable<ScrapeNode> Below(ScrapeSnapshot snapshot, ScrapeNode node, int depth)
     {

@@ -109,6 +109,15 @@ controls):
 - `Privacy` in `## App` (default `false`): the Scraper runs on dev, test and acceptance environments, whose data is
   test data, so by default only the masks listed apply. With `true`, an e-mail address is masked too (`{e-mail}`),
   and an element whose text is masked is not drafted. Sign-in tokens in reports are kept out either way.
+- `Place signs` (optional, columns `What`, `Sign`): how the parts of a page show themselves beyond the roles the
+  platform gives. The Scraper itself knows only the roles (`role=tab`, `role=dialog`, `role=menu`, `role=toolbar`);
+  what a UI library or the app calls a tab, an open menu, a dialog, a toolbar, the title of a part and an icon is
+  a row. A control library's signs file has the same section for the library's own; the project's rows are added
+  to them. `What` is one of `tab`, `open menu`, `dialog`, `toolbar`, `icon` (class names, several separated by
+  commas), `title` (the end of a class name: `card__title`), `icon name` (the start of a class that names an
+  icon: `fa-`), `icon style` (a regular expression for what follows that start and only says how the icon is
+  drawn: `solid`, `\d+x`) and `closes` (an icon that closes what is open: `fa-xmark`). Without a row for it, a
+  library's tab is a button like any other and a button that shows only an icon has no name.
 - `Components` (optional, columns `Match`, `Kind`, `Name`): elements the Scraper cannot tell by itself, named by you. `Match` is `selector: …` or `text: …`; `Kind` is `collection`, `component` or what a test does with it (`text`, `selector`, `toggle`, `range`, `date`, `clickable`, `readable`). They win over its own reading: step 5 offers them by that name, and their brief says so.
 
 `tests/Bruinet.Blazor.UITests` is an example: its config, its `Recordings/`, and
@@ -291,6 +300,9 @@ would be written for (a page, a tab, a dialog, a menu, a part a press shows), or
 | `bruinet scrape places routes` | Opens each page of the list and reads the scripts only it loads, as text: a single-page app's route table survives in what it serves (`path:"/view/:id",component:…`). Each route is a known page; one with a parameter has no address until a record's own is found |
 | `bruinet scrape places walk` | Opens each page that is known and not yet opened (the frontier), reads it, and presses what a person can press, each once. `--own <address>` opens a record the walk owns at its own address first |
 | `bruinet scrape places add --from-run <file>` | Adds what tests found when they saved forms through their page objects |
+| `bruinet scrape factory status` | Says what is left, by group: the pages that open and have no class, the dialog forms no class was drafted from, the pages of one record (each needs a record first), the fields no made control stands for and the forms no test saved. A place also says how it is reached (a tab, an add button, a row's button, a row): the walk keeps that from the element it pressed, and a place found before it did reads as a plain button until its page is walked again |
+| `bruinet scrape factory replay` | The measure of a change to a sign, a holder, a template or the reader: every kept place is read again and every class drafted from one is drafted again, in memory, and what differs from the list and the suite is said. Seconds for hundreds of places, and no browser. A class that differs is stale (a template changed after it was drafted) or the change at hand did it: draft it again (`places draft <place> --name <Class> --write`) or take the change back |
+| `bruinet scrape factory bench` | The examples: under `## Examples` in the config, a place and the class a person wrote for it (columns `Place`, `Class`, and `Kind` with `row` for a list's row). A label the example names that the capture shows and the reading does not give counts against the Scraper; a label the place shows and the example lacks does not |
 
 The list is saved after every page, so a walk that stops loses one page and the next walk goes on. A page that did not
 open comes once more at the end of the run, and is refused after three runs.

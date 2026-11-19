@@ -24,7 +24,7 @@ public sealed record PageField(string Label, string Kind, bool Required, bool Di
 
     /// <summary>The field as a list of places holds it: <c>Name (text, VTextField, required)</c>; a control to make is marked <c>VFileInput?</c>.</summary>
     public string ToListText() =>
-        $"{Label} ({Kind}{(Control is null ? "" : ", " + Control + (ControlMade ? "" : "?"))}{(Required ? ", required" : "")}{(Disabled ? ", disabled" : "")}{(InTable ? ", in a table" : Holder is null ? "" : ", in a " + Holder)})";
+        new Places.PlaceField(Label, Kind) { Control = Control, ControlMade = ControlMade, Required = Required, Disabled = Disabled, InTable = InTable, Holder = Holder }.ToText();
 }
 
 /// <summary>
@@ -81,15 +81,17 @@ public sealed record PageFacts
     /// <summary>The facts of a capture.</summary>
     /// <param name="snapshot">The capture.</param>
     /// <param name="signs">How controls are recognized (<see cref="ScrapeProject.ControlSigns"/>); none when left out.</param>
-    public static PageFacts Of(ScrapeSnapshot snapshot, IReadOnlyList<ControlSign>? signs = null)
+    /// <param name="places">How a tab, an open menu, a toolbar and an icon show themselves beyond their roles (<see cref="ScrapeProject.PlaceSigns"/>); the roles alone when left out.</param>
+    public static PageFacts Of(ScrapeSnapshot snapshot, IReadOnlyList<ControlSign>? signs = null, PlaceSigns? places = null)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
+        places ??= PlaceSigns.None;
         var shown = Shown(snapshot);
 
         // An open dialog covers the page: what a person can read and press is the dialog's.
         var dialog = shown.LastOrDefault(node => node.Role == "dialog" || node.Type == "dialog");
         // A list or a calendar the dialog opened is drawn beside it, not in it: it is the dialog's too.
-        var beside = dialog is null ? [] : shown.Where(node => IsPopup(node) && !Within(snapshot, node, dialog.Number)).Select(node => node.Number).ToList();
+        var beside = dialog is null ? [] : shown.Where(node => places.IsOpenMenu(node) && !Within(snapshot, node, dialog.Number)).Select(node => node.Number).ToList();
         var scope = dialog is null ? shown : [.. shown.Where(node => Within(snapshot, node, dialog.Number) || beside.Any(popup => Within(snapshot, node, popup)))];
 
         string Text(ScrapeNode node) => Clean(node.Text is { Length: > 0 } own ? own : node.Name ?? snapshot.TextWithin(node) ?? string.Empty);
@@ -103,9 +105,9 @@ public sealed record PageFacts
             Dialog = dialog is null ? null : Shorten(Clean(string.Join(' ', scope.Select(node => node.Text).Where(text => text is { Length: > 0 }).Take(12))), 160),
             Headings = Texts(scope.Where(node => node.Type is "h1" or "h2" or "h3" || node.Role == "heading"), Text),
             // A text editor's own buttons (bold, italic) are the editor's, not the page's.
-            Buttons = Texts(scope.Where(node => IsButton(node) && !InToolbar(snapshot, node)), node => Text(node) + (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" ? " (disabled)" : string.Empty)),
-            Tabs = Texts(scope.Where(node => node.Role == "tab" || Classes(node).Contains("v-tab")), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
-            Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope, signs ?? [], marked)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
+            Buttons = Texts(scope.Where(node => IsButton(node) && !InToolbar(snapshot, node, places)), node => Text(node) + (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" ? " (disabled)" : string.Empty)),
+            Tabs = Texts(scope.Where(places.IsTab), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
+            Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope, signs ?? [], places, marked)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
             MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
             Messages = Texts(scope.Where(IsMessage), Text),
             Columns = Texts(scope.Where(node => node.Type == "th" || node.Role == "columnheader"), Text),
@@ -118,14 +120,10 @@ public sealed record PageFacts
         };
     }
 
-    // An open menu, list or calendar: by its role, or as Vuetify marks the one that is open.
-    private static bool IsPopup(ScrapeNode node)
-        => node.Role is "menu" or "listbox" || Classes(node).Contains("menuable__content__active");
-
-    private static PageField Field(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ScrapeNode> shown, IReadOnlyList<ControlSign> signs, HashSet<string> marked)
+    private static PageField Field(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ScrapeNode> shown, IReadOnlyList<ControlSign> signs, PlaceSigns places, HashSet<string> marked)
     {
         var sign = ControlSign.At(signs, snapshot, node);
-        var label = Clean(LabelOf(snapshot, node, shown, sign?.Root.Number ?? 0));
+        var label = Clean(LabelOf(snapshot, node, shown, sign?.Root.Number ?? 0, places));
         var kind = node.Role == "combobox" ? "combobox" : node.Type == "input" ? node.Attribute("type") ?? "text" : node.Type;
         var required = node.Attributes.ContainsKey("required") || node.Attribute("aria-required") == "true" || label.EndsWith('*') || marked.Contains(label.TrimEnd('*', ' '));
         return new PageField(label.TrimEnd('*', ' '), kind, required, node.Attributes.ContainsKey("disabled")) { Control = sign?.Sign.Control, ControlMade = sign?.Sign.Made ?? true, InTable = InATable(snapshot, node), Holder = ControlSign.HolderOf(signs, snapshot, node)?.Control };
@@ -150,11 +148,12 @@ public sealed record PageFacts
     /// <param name="field">The field.</param>
     /// <param name="shown">The elements on the screen.</param>
     /// <param name="control">The element the field's control starts at, when a sign showed it; 0 when not known.</param>
-    internal static string LabelOf(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown, int control = 0)
+    /// <param name="places">How an icon shows itself beyond its tag; the tag alone when left out.</param>
+    internal static string LabelOf(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown, int control = 0, PlaceSigns? places = null)
     {
         var placeholder = field.Attribute("placeholder");
         var named = field.Name is { Length: > 0 } name && !string.Equals(name, placeholder, StringComparison.Ordinal) ? name : null;
-        return Clean(named ?? LabelBeside(snapshot, field, shown, control) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
+        return Clean(named ?? LabelBeside(snapshot, field, shown, control, places ?? PlaceSigns.None) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
     }
 
     /// <summary>The elements of a capture that are on the screen.</summary>
@@ -163,7 +162,7 @@ public sealed record PageFacts
 
     // A field with no name of its own is named by the text beside it: the first text before the field in the smallest
     // part of the page that holds this field and no other (a form's row).
-    private static string? LabelBeside(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown, int control)
+    private static string? LabelBeside(ScrapeSnapshot snapshot, ScrapeNode field, IReadOnlyList<ScrapeNode> shown, int control, PlaceSigns places)
     {
         // What lies in the field's own control is the control's (a select's chosen value, a chip), not its label,
         // unless it is a label element: a library may draw the label inside.
@@ -177,7 +176,7 @@ public sealed record PageFacts
             var inPart = shown.Where(node => node.Number != part && Within(snapshot, node, part)).ToList();
             // A field inside this one, or around it (a combobox and its input), is the same field.
             var others = inPart.Where(node => IsField(node) && node.Number != field.Number && !Within(snapshot, node, field.Number) && !Within(snapshot, field, node.Number)).ToList();
-            var text = inPart.FirstOrDefault(node => node.Number < field.Number && node.Text is { Length: > 0 } && Clean(node.Text).Length > 0 && !IsIcon(node) && !Own(node));
+            var text = inPart.FirstOrDefault(node => node.Number < field.Number && node.Text is { Length: > 0 } && Clean(node.Text).Length > 0 && !places.IsIcon(node) && !Own(node));
             if (others.Count == 0)
             {
                 if (text is not null)
@@ -203,19 +202,16 @@ public sealed record PageFacts
         return null;
     }
 
-    private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node)
+    private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
     {
         for (var at = node.Number; at > 0; at = snapshot[at].Parent)
         {
-            if (snapshot[at].Role == "toolbar" || Classes(snapshot[at]).Any(name => name is "ck-toolbar" or "ck-editor" or "ql-toolbar" or "tox-toolbar"))
+            if (places.IsToolbar(snapshot[at]))
                 return true;
         }
 
         return false;
     }
-
-    // An icon written as a word (Material's "event", "access_time") is no label.
-    private static bool IsIcon(ScrapeNode node) => node.Type == "i" || Classes(node).Any(name => name is "material-icons" or "v-icon");
 
     // A row is a tr with cells (a header's row has th, and is the columns). The count first, then the first rows.
     private static IReadOnlyList<string> RowsOf(ScrapeSnapshot snapshot, IReadOnlyList<ScrapeNode> scope)

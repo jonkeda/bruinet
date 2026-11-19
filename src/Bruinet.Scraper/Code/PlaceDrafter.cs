@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using Bruinet.Scraper.Explore;
 using Bruinet.Scraper.Places;
+using Bruinet.Scraper.Projects;
 
 namespace Bruinet.Scraper.Code;
 
@@ -39,20 +40,20 @@ public static class PlaceDrafter
     ];
 
     /// <summary>The line a draft starts with: the place it was made from, the capture, and a hash of what it holds (<see cref="Shape"/>).</summary>
-    public static ScrapedHeader Header(Place place, PlaceDraftKind kind)
+    public static ScrapedHeader Header(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
-        return new ScrapedHeader { Page = place.Key, Variant = kind.ToString().ToLowerInvariant(), From = place.Snapshot, Hash = Shape(place, kind) };
+        return new ScrapedHeader { Page = place.Key, Variant = kind.ToString().ToLowerInvariant(), From = place.Snapshot, Hash = Shape(place, kind, signs) };
     }
 
     /// <summary>
     /// A short hash of what a draft is made from: a form's fields with their controls and its buttons, or a list's
     /// columns. The same place read later with another hash has changed under its class.
     /// </summary>
-    public static string Shape(Place place, PlaceDraftKind kind)
+    public static string Shape(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
-        var parts = kind == PlaceDraftKind.Row ? place.Columns : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => $"{field.Label}|{field.Control}"), "|", .. Buttons(place)];
+        var parts = kind == PlaceDraftKind.Row ? place.Columns : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => $"{field.Label}|{field.Control}"), "|", .. Buttons(place, signs)];
         return Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(string.Join('\n', parts))))[..8];
     }
 
@@ -63,7 +64,8 @@ public static class PlaceDrafter
     /// <param name="namespace">Its namespace.</param>
     /// <param name="pageClass">For a dialog: the class of the page it is on.</param>
     /// <param name="opens">For a page: what opens on it by a card's own button (<c>Avatar: fa-pen</c>), each given an opener when the templates have an <c>Opener member</c>.</param>
-    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null)
+    /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
+    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -99,14 +101,14 @@ public static class PlaceDrafter
             code.Add(required + Fill(template, className, pageClass, name, label));
         }
 
-        foreach (var button in Buttons(place))
+        foreach (var button in Buttons(place, signs))
         {
             var name = Unique(Identifier(button), used);
             members.Add((name, button));
             code.Add(Fill(templates.Block("Button member"), className, pageClass, name, button));
         }
 
-        PageMembers(place, templates, className, pageClass, opens, used, members, code);
+        PageMembers(place, templates, className, pageClass, opens, used, members, code, signs);
 
         var summary = dialog
             ? $"The form \"{Xml(Label(place))}\" opens on {Xml(place.Parent ?? "")}: drafted from the list of places. Rename and prune; what is yours goes in the other part."
@@ -115,7 +117,7 @@ public static class PlaceDrafter
         if (notDrafted.Count > 0)
             body += (body.Length > 0 ? "\n\n" : "") + "    // Not drafted:\n" + string.Join('\n', notDrafted.Select(line => "    // " + line));
         var text = templates.Block(dialog ? "Dialog" : "Form page")
-            .Replace("{Header}", Header(place, PlaceDraftKind.Form).ToString(), StringComparison.Ordinal)
+            .Replace("{Header}", Header(place, PlaceDraftKind.Form, signs).ToString(), StringComparison.Ordinal)
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
             .Replace("{Summary}", summary, StringComparison.Ordinal)
             .Replace("{Address}", place.Key, StringComparison.Ordinal)
@@ -126,7 +128,7 @@ public static class PlaceDrafter
     }
 
     // A page's tabs, and the buttons its cards carry that open a dialog: both are the page's to name.
-    private static void PageMembers(Place place, DraftTemplates templates, string className, string? pageClass, IReadOnlyList<string>? opens, HashSet<string> used, List<(string Name, string Label)> members, List<string> code)
+    private static void PageMembers(Place place, DraftTemplates templates, string className, string? pageClass, IReadOnlyList<string>? opens, HashSet<string> used, List<(string Name, string Label)> members, List<string> code, PlaceSigns? signs)
     {
         if (templates.Blocks.TryGetValue("Tab member", out var tabMember))
         {
@@ -140,7 +142,7 @@ public static class PlaceDrafter
 
         if (templates.Blocks.TryGetValue("Opener member", out var openerMember))
         {
-            foreach (var card in (opens ?? []).Select(CardOf).Where(card => card is not null).Distinct(StringComparer.Ordinal))
+            foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null).Distinct(StringComparer.Ordinal))
             {
                 var name = Unique(OpenerName(card!), used);
                 members.Add((name, card!));
@@ -150,7 +152,7 @@ public static class PlaceDrafter
     }
 
     /// <summary>Drafts a list's row: a member per column the place's table has.</summary>
-    public static PlaceDraft Row(Place place, DraftTemplates templates, string className, string @namespace)
+    public static PlaceDraft Row(Place place, DraftTemplates templates, string className, string @namespace, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -161,7 +163,7 @@ public static class PlaceDrafter
         foreach (var column in place.Columns)
         {
             // A column of buttons has no header, or an icon for one: a row's buttons are the person's to name.
-            if (column.Length == 0 || !column.Any(char.IsLetter) || column.StartsWith("fa-", StringComparison.Ordinal) || column.StartsWith("mdi-", StringComparison.Ordinal))
+            if (column.Length == 0 || !column.Any(char.IsLetter) || IsIcon(column, signs))
             {
                 notDrafted.Add($"the column '{column}': it has no name");
                 continue;
@@ -192,11 +194,12 @@ public static class PlaceDrafter
     /// <param name="formClass">The form's class.</param>
     /// <param name="pageClass">The page it is on, or is.</param>
     /// <param name="pagesNamespace">The namespace the form's and the page's classes are in.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null)
+    /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
-        var card = CardOf(Label(place));
+        var card = CardOf(Label(place), signs);
         var checks = string.Join("\n", place.Kind == PlaceKind.Page ? place.Tabs.Select(tab => $"        page.{TabName(tab)}.AssertVisible();") : []);
         var text = templates.Block(place.Kind == PlaceKind.Page ? "Form page test" : card is not null ? "Card form test" : "Form test")
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
@@ -221,7 +224,8 @@ public static class PlaceDrafter
     /// <param name="place">The place as the list holds it now.</param>
     /// <param name="code">The class's code, all its parts.</param>
     /// <param name="kind">What the class is: a form or a row.</param>
-    public static (IReadOnlyList<string> NotOnPlace, IReadOnlyList<string> NotInClass) Drift(Place place, string code, PlaceDraftKind kind)
+    /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
+    public static (IReadOnlyList<string> NotOnPlace, IReadOnlyList<string> NotInClass) Drift(Place place, string code, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(code);
@@ -230,21 +234,22 @@ public static class PlaceDrafter
             .Select(match => (match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value).Replace("\\\"", "\"", StringComparison.Ordinal)).ToHashSet(StringComparer.Ordinal);
         var shown = kind == PlaceDraftKind.Row
             ? place.Columns.Where(column => column.Any(char.IsLetter)).ToList()
-            : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => field.Label), .. Buttons(place)];
+            : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => field.Label), .. Buttons(place, signs)];
         return ([.. named.Where(label => !shown.Contains(label, StringComparer.Ordinal)).Order(StringComparer.Ordinal)], [.. shown.Where(label => !named.Contains(label)).Distinct(StringComparer.Ordinal)]);
     }
 
     /// <summary>A class's name from a place: a dialog from what opened it (<c>+ Day off</c> is <c>DayOffDialog</c>), a page from its address.</summary>
-    public static string ClassName(Place place, PlaceDraftKind kind)
+    public static string ClassName(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         if (kind == PlaceDraftKind.Row)
             return PageDrafter.ClassName(place.Key)[..^"Page".Length] + "Row";
         if (place.Kind == PlaceKind.Page)
             return PageDrafter.ClassName(place.Key);
-        // A dialog a card's own button opens is the card's: "Avatar: fa-pen" is AvatarDialog.
-        var name = Identifier((CardOf(Label(place)) ?? Label(place)).TrimStart('+', ' '));
-        return (name.Length == 0 || name.StartsWith("Fa", StringComparison.Ordinal) || name.StartsWith("Mdi", StringComparison.Ordinal) ? PageDrafter.ClassName(place.Parent ?? place.Key)[..^"Page".Length] + "Form" : name) + "Dialog";
+        // A dialog a titled part's own button opens is the part's: "Avatar: <an icon>" is AvatarDialog. One a bare icon opens is its page's form.
+        var label = CardOf(Label(place), signs) ?? Label(place);
+        var name = IsIcon(label, signs) ? "" : Identifier(label.TrimStart('+', ' '));
+        return (name.Length == 0 ? PageDrafter.ClassName(place.Parent ?? place.Key)[..^"Page".Length] + "Form" : name) + "Dialog";
     }
 
     // The module a namespace is of: the part after "Modules" (Shop.Modules.Schedule.Tests is Schedule); its last part otherwise.
@@ -256,12 +261,15 @@ public static class PlaceDrafter
     }
 
     /// <summary>The card a button belongs to, when the walk named the button after it (<c>Avatar: fa-pen</c> is <c>Avatar</c>); null otherwise.</summary>
-    public static string? CardOf(string label)
+    public static string? CardOf(string label, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(label);
         var at = label.LastIndexOf(": ", StringComparison.Ordinal);
-        return at > 0 && (label[(at + 2)..].StartsWith("fa-", StringComparison.Ordinal) || label[(at + 2)..].StartsWith("mdi-", StringComparison.Ordinal)) ? label[..at] : null;
+        return at > 0 && IsIcon(label[(at + 2)..], signs) ? label[..at] : null;
     }
+
+    // A label that is an icon's name, as the walk writes a button that shows only an icon.
+    private static bool IsIcon(string label, PlaceSigns? signs) => (signs ?? PlaceSigns.None).IconName.Any(start => label.StartsWith(start, StringComparison.Ordinal));
 
     private static string TabName(string tab) => Identifier(tab) + "Tab";
 
@@ -271,9 +279,9 @@ public static class PlaceDrafter
     private static string Label(Place place) => place.Key.Contains(" › ", StringComparison.Ordinal) ? place.Key[(place.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..] : place.Key;
 
     // A form's buttons that a test presses: named in words, on now or off, not an icon and not a pager's.
-    private static IEnumerable<string> Buttons(Place place) => place.Buttons
+    private static IEnumerable<string> Buttons(Place place, PlaceSigns? signs) => place.Buttons
         .Select(button => button.EndsWith(" (disabled)", StringComparison.Ordinal) ? button[..^" (disabled)".Length] : button)
-        .Where(button => button.Any(char.IsLetter) && !button.StartsWith('(') && button.Split(' ').Length <= 4 && !button.StartsWith("fa-", StringComparison.Ordinal) && !button.StartsWith("mdi-", StringComparison.Ordinal)
+        .Where(button => button.Any(char.IsLetter) && !button.StartsWith('(') && button.Split(' ').Length <= 4 && !IsIcon(button, signs)
             && !button.Contains("page", StringComparison.OrdinalIgnoreCase))
         .Distinct(StringComparer.Ordinal);
 

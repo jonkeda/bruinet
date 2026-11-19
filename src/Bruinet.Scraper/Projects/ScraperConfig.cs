@@ -92,6 +92,15 @@ public sealed record ScraperConfig
     /// <summary>The app's own components, as the person names them (<c>## Components</c>): these win over the Scraper's own reading.</summary>
     public IReadOnlyList<ComponentRule> Components { get; init; } = [];
 
+    /// <summary>How the app's own parts show themselves beyond their roles (<c>## Place signs</c>): added to its control libraries'.</summary>
+    public PlaceSigns PlaceSigns { get; init; } = PlaceSigns.None;
+
+    /// <summary>
+    /// The classes a person wrote that the Scraper's reading is held against (<c>## Examples</c>, columns
+    /// <c>Place</c>, <c>Class</c> and optionally <c>Kind</c>: <c>row</c> for a list's row).
+    /// </summary>
+    public IReadOnlyList<ExampleClass> Examples { get; init; } = [];
+
     /// <summary>What a test recording is drafted as, and on what (<c>## Tests</c>).</summary>
     public TestSettings Tests { get; init; } = new();
 
@@ -167,6 +176,17 @@ public sealed record ScraperConfig
         }
         if (sections.TryGetValue("Components", out var components))
             config = config with { Components = components.Rows.Select(ComponentRule.Read).ToArray() };
+        if (sections.TryGetValue(PlaceSigns.Section, out var placeSigns))
+            config = config with { PlaceSigns = PlaceSigns.Read(placeSigns.Rows) };
+        if (sections.TryGetValue("Examples", out var examples))
+        {
+            config = config with
+            {
+                Examples = examples.Rows
+                    .Select(row => new ExampleClass(Unquote(row.Cells.GetValueOrDefault("Place", "")).Trim(), Unquote(row.Cells.GetValueOrDefault("Class", "")).Trim(), string.Equals(row.Cells.GetValueOrDefault("Kind", "").Trim(), "row", StringComparison.OrdinalIgnoreCase)))
+                    .Where(example => example.Place.Length > 0 && example.Class.Length > 0).ToArray(),
+            };
+        }
         return config with { Explore = ExploreSettings.Read(sections) };
     }
 
@@ -269,3 +289,9 @@ public enum AppEnvironment
     /// <summary>A throwaway environment on this machine: as acceptance.</summary>
     Local,
 }
+
+/// <summary>One row of <c>## Examples</c>: a place of the list and the class a person wrote for it.</summary>
+/// <param name="Place">The place's key, as the list writes it.</param>
+/// <param name="Class">The class.</param>
+/// <param name="Row">True when the class is a list's row, held against the place's columns.</param>
+public sealed record ExampleClass(string Place, string Class, bool Row);

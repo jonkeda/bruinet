@@ -343,10 +343,19 @@ public static partial class ScrapeCommands
     {
         if (given is { Length: > 0 })
             return Path.GetFullPath(given, io.CurrentDirectory);
-        var scraped = service.Project(ProjectName(service, project, io));
-        if (!string.Equals(scraped.Home, scraped.Folder, StringComparison.OrdinalIgnoreCase))
-            return Path.Combine(scraped.Home, PlacesList.FileName);
-        return FindSuite(scraped.Folder) is { } suite ? Path.Combine(suite, ".testing", PlacesList.FileName) : Path.Combine(scraped.Folder, PlacesList.FileName);
+        return PlacesFileOf(service.Project(ProjectName(service, project, io)));
+    }
+
+    /// <summary>
+    /// Where a project's list of places is: in the app's own Scraper project when it has one; else in the
+    /// <c>.testing</c> folder of the suite the project is in; else in the project.
+    /// </summary>
+    public static string PlacesFileOf(Bruinet.Scraper.Projects.ScrapeProject project)
+    {
+        ArgumentNullException.ThrowIfNull(project);
+        if (!string.Equals(project.Home, project.Folder, StringComparison.OrdinalIgnoreCase))
+            return Path.Combine(project.Home, PlacesList.FileName);
+        return FindSuite(project.Folder) is { } suite ? Path.Combine(suite, ".testing", PlacesList.FileName) : Path.Combine(project.Folder, PlacesList.FileName);
     }
 
     // The suite a folder is in: the nearest folder up that has a .testing folder.

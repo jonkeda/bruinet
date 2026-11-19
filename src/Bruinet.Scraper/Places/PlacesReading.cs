@@ -47,25 +47,20 @@ public static class PlacesReading
     /// <summary>A field of the list (<c>Name (text, VTextField, required)</c>) as its label, its control and whether that is made.</summary>
     public static (string Label, string Kind, string Control, bool Recognized, bool Made) ReadField(string field)
     {
-        ArgumentNullException.ThrowIfNull(field);
-        var open = field.LastIndexOf(" (", StringComparison.Ordinal);
-        if (open < 0 || !field.EndsWith(')'))
-            return (field, "", "(unknown)", false, true);
-        var parts = field[(open + 2)..^1].Split(", ");
-        if (parts.Contains("in a table"))
-            return (field[..open], parts[0], "(a table's own)", true, true);
-        var control = parts.Skip(1).FirstOrDefault(part => part is not ("required" or "disabled") && !part.StartsWith("in a ", StringComparison.Ordinal));
-        return control is null
-            ? (field[..open], parts[0], $"({parts[0]})", false, true)
-            : (field[..open], parts[0], control.TrimEnd('?'), true, !control.EndsWith('?'));
+        var read = PlaceField.Parse(field);
+        if (read.Kind.Length == 0)
+            return (read.Label, "", "(unknown)", false, true);
+        if (read.InTable)
+            return (read.Label, read.Kind, "(a table's own)", true, true);
+        return read.Control is null
+            ? (read.Label, read.Kind, $"({read.Kind})", false, true)
+            : (read.Label, read.Kind, read.Control, true, read.ControlMade);
     }
 
     /// <summary>What holds a field of the list (<c>Landing page (text, VSelect, in a Card)</c> is in a <c>Card</c>); null when the list names none.</summary>
     public static string? HolderOf(string field)
     {
-        ArgumentNullException.ThrowIfNull(field);
-        var open = field.LastIndexOf(" (", StringComparison.Ordinal);
-        return open < 0 ? null : field[(open + 2)..].TrimEnd(')').Split(", ").FirstOrDefault(part => part.StartsWith("in a ", StringComparison.Ordinal) && part != "in a table")?["in a ".Length..];
+        return PlaceField.Parse(field).Holder;
     }
 
     /// <summary>
@@ -112,13 +107,14 @@ public static class PlacesReading
     /// with their labels and controls, and for a dialog or a menu the component it is (<see cref="Place.Component"/>).
     /// Nothing else of the place changes; a page keeps the fields the walk read when the capture shows a dialog over it.
     /// </summary>
-    public static Place Read(Place place, ScrapeSnapshot snapshot, IReadOnlyList<ControlSign> signs, IReadOnlyList<ComponentRule> rules, IReadOnlyList<CodeClass> code)
+    public static Place Read(Place place, ScrapeSnapshot snapshot, IReadOnlyList<ControlSign> signs, IReadOnlyList<ComponentRule> rules, IReadOnlyList<CodeClass> code, PlaceSigns? places = null)
     {
+        places ??= PlaceSigns.None;
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(rules);
         ArgumentNullException.ThrowIfNull(code);
-        var facts = PageFacts.Of(snapshot, signs);
+        var facts = PageFacts.Of(snapshot, signs, places);
         var read = place;
         if (place.Kind is PlaceKind.Dialog or PlaceKind.Page or PlaceKind.Tab && (place.Kind == PlaceKind.Dialog) == (facts.Dialog is not null))
         {
@@ -129,17 +125,17 @@ public static class PlacesReading
                 read = read with { Buttons = [.. facts.Buttons.Select(Place.Clean).Where(button => button.Length > 0).Distinct(StringComparer.Ordinal).Take(40)] };
         }
 
-        return place.Kind is PlaceKind.Dialog or PlaceKind.Menu ? read with { Component = Component(snapshot, place.Kind, rules, code) } : read;
+        return place.Kind is PlaceKind.Dialog or PlaceKind.Menu ? read with { Component = Component(snapshot, place.Kind, rules, code, places) } : read;
     }
 
     // What lies over the page (the open dialog, the open menu) is a component when the project names an element in it
     // (## Components), or when a class of the project was made from it.
-    private static string? Component(ScrapeSnapshot snapshot, PlaceKind kind, IReadOnlyList<ComponentRule> rules, IReadOnlyList<CodeClass> code)
+    private static string? Component(ScrapeSnapshot snapshot, PlaceKind kind, IReadOnlyList<ComponentRule> rules, IReadOnlyList<CodeClass> code, PlaceSigns places)
     {
         var shown = snapshot.Nodes.Where(node => node.Kind == ScrapeNodeKind.Element && node.Bounds is { Width: > 0, Height: > 0 }).ToList();
         var root = kind == PlaceKind.Dialog
             ? shown.LastOrDefault(node => node.Role is "dialog" or "alertdialog" || node.Type == "dialog")
-            : shown.LastOrDefault(node => node.Role is "menu" or "listbox" || (node.Attribute("class")?.Contains("menuable__content__active", StringComparison.Ordinal) ?? false));
+            : shown.LastOrDefault(places.IsOpenMenu);
         if (root is null)
             return null;
         bool Within(ScrapeNode node)

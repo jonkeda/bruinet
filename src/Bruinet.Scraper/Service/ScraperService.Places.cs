@@ -94,7 +94,7 @@ public sealed partial class ScraperService
         var changed = 0;
         foreach (var (place, snapshot) in KeptPlaces(projectName, list))
         {
-            var read = PlacesReading.Read(place, snapshot, project.ControlSigns, project.Config.Components, code);
+            var read = PlacesReading.Read(place, snapshot, project.ControlSigns, project.Config.Components, code, project.PlaceSigns);
             if (read.Component == place.Component && read.Fields.SequenceEqual(place.Fields, StringComparer.Ordinal) && read.Buttons.SequenceEqual(place.Buttons, StringComparer.Ordinal))
                 continue;
             list.Set(read);
@@ -103,6 +103,10 @@ public sealed partial class ScraperService
 
         return changed;
     }
+
+    /// <summary>What the places of a list still owe, by group, held against the suite's source (<see cref="Factory.Owed"/>).</summary>
+    public Factory.OwedReport OwedPlaces(string? projectName, PlacesList list) =>
+        Factory.Owed.Of(list, Factory.SuiteSource.Read(Project(projectName)));
 
     /// <summary>The app's own elements over the kept places, with what stands for each (<see cref="PlacesReading.Elements"/>).</summary>
     public IReadOnlyList<ElementCount> PlaceElements(string? projectName, PlacesList list)
@@ -138,7 +142,7 @@ public sealed partial class ScraperService
         {
             if (kind == PlaceDraftKind.Row)
             {
-                var row = PlaceDrafter.Row(place, templates, className ?? PlaceDrafter.ClassName(place, kind), ns);
+                var row = PlaceDrafter.Row(place, templates, className ?? PlaceDrafter.ClassName(place, kind, project.PlaceSigns), ns, project.PlaceSigns);
                 return (row, Path.Combine(project.Folder, folder, row.ClassName + PageDrafter.Extension));
             }
 
@@ -146,12 +150,12 @@ public sealed partial class ScraperService
                 ?? (place.Kind == PlaceKind.Page ? null : throw new ScraperProblem($"No page class of {project.Name} names the address {place.Parent}: draft or write that page first, or give its class."));
             // A form's test names the class that was drafted from the place, whatever it was called then.
             var formName = DraftedFrom(project, place.Key, "form")
-                ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form);
+                ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns);
             if (kind == PlaceDraftKind.FormTest)
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns), null);
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns), null);
             // What a page's cards open: the dialogs of the page that the walk named after a card.
             var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
-            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens);
+            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);
             return (form, Path.Combine(project.Folder, folder, form.ClassName + PageDrafter.Extension));
         }
         catch (FormatException e)
@@ -202,10 +206,10 @@ public sealed partial class ScraperService
                 continue;
             }
 
-            if (PlaceDrafter.Shape(place, kind) == header.Hash)
+            if (PlaceDrafter.Shape(place, kind, project.PlaceSigns) == header.Hash)
                 continue;
             var code = string.Join('\n', group.Select(each => each.File).Distinct(StringComparer.OrdinalIgnoreCase).Select(File.ReadAllText));
-            var (notOnPlace, notInClass) = PlaceDrafter.Drift(place, code, kind);
+            var (notOnPlace, notInClass) = PlaceDrafter.Drift(place, code, kind, project.PlaceSigns);
             drifts.Add(new PlaceDrift(group.Key, place.Key, notOnPlace.Count + notInClass.Count == 0 ? "read differently, though every label is named: draft it again for its new first line" : "", notOnPlace, notInClass));
         }
 

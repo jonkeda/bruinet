@@ -157,7 +157,7 @@ public sealed class PageFactsTests
             N(12, 1, "div", null, ("class", "ck ck-toolbar")),
             N(13, 12, "button", "Bold"),
             N(14, 1, "div", null, ("role", "toolbar")),
-            N(15, 14, "button", "Italic")));
+            N(15, 14, "button", "Italic")), places: new PlaceSigns { Toolbar = ["ck-toolbar"] });
 
         Assert.Equal(["Cancel", "Create"], facts.Buttons);
     }
@@ -193,7 +193,7 @@ public sealed class PageFactsTests
             N(14, 1, "div", null, ("role", "listbox")),
             N(15, 14, "div", "Esther Voorbeeld", ("role", "option")),
             N(16, 1, "div", null, ("class", "v-menu__content menuable__content__active")),
-            N(17, 16, "button", "November 2026")));
+            N(17, 16, "button", "November 2026")), places: new PlaceSigns { OpenMenu = ["menuable__content__active"] });
 
         Assert.Equal(["Cancel", "November 2026"], facts.Buttons);
         Assert.Equal(["Esther Voorbeeld"], facts.Options);

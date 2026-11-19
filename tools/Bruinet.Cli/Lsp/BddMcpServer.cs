@@ -138,6 +138,9 @@ public sealed partial class BddMcpServer : IDisposable
                 "record_video" => RecordVideo(arguments),
                 "write_review" => WriteReview(arguments),
                 "scrape_rename_page_object" => Scraper(() => RenamePageObject(arguments)),
+                "factory_status" => Scraper(() => FactoryStatus(arguments)),
+                "factory_replay" => Scraper(() => FactoryReplay(arguments)),
+                "factory_bench" => Scraper(() => FactoryBench(arguments)),
                 "scrape_list_projects" => Scraper(() => Capped("projects", _server.ScraperProjects(), arguments)),
                 "scrape_list_events" => Scraper(() => Capped("events", _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session")), arguments)),
                 "scrape_list_pages" => Scraper(() => RecordedPages(arguments)),
@@ -1634,6 +1637,38 @@ public sealed partial class BddMcpServer : IDisposable
         var (shown, more) = Cut(state.Controls.Select(control => new { control.Name, control.Kind, control.Shown, control.Value, control.Unreadable }), arguments);
         return new { state.Page, state.Reason, Controls = shown, More = more };
     }
+
+    // What the app's places still owe: the totals, and at most 'max' groups, the one that owes most first.
+    private object FactoryStatus(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var report = _server.Scraper.OwedPlaces(project, PlacesOf(project));
+        var (shown, more) = Cut(report.Groups, arguments);
+        return new { report.Places, report.Kept, report.PagesWithoutClass, report.DialogFormsNotDrafted, report.RecordPages, report.Fields, report.FieldsWithControl, report.FormsNotSaved, Groups = shown, More = more };
+    }
+
+    // What reading and drafting the kept places again gives: the counts, and at most 'max' of each list.
+    private object FactoryReplay(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var report = _server.Scraper.ReplayPlaces(project, PlacesOf(project));
+        var (fields, moreFields) = Cut(report.Fields, arguments);
+        var (changed, moreChanged) = Cut(report.Changed, arguments);
+        var (cannot, moreCannot) = Cut(report.CannotDraft, arguments);
+        return new { report.Same, report.Places, report.Classes, report.Seconds, report.ControlsGained, report.ControlsLost, Fields = fields, MoreFields = moreFields, Changed = changed, MoreChanged = moreChanged, report.WouldDraft, CannotDraft = cannot, MoreCannotDraft = moreCannot };
+    }
+
+    // The examples held against their places: the counts, and at most 'max' differences.
+    private object FactoryBench(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var report = _server.Scraper.BenchPlaces(project, PlacesOf(project));
+        var (shown, more) = Cut(report.Differences, arguments);
+        return new { report.Examples, report.Missed, Differences = shown, More = more, report.Problems };
+    }
+
+    private Bruinet.Scraper.Places.PlacesList PlacesOf(string? project) =>
+        Bruinet.Scraper.Places.PlacesList.Load(Bruinet.Scraper.Host.ScrapeCommands.PlacesFileOf(_server.Scraper.Project(project)));
 
     // A project's recorded pages: each with its newest capture and how many it has; with 'page', that page's captures (M3).
     private object RecordedPages(JsonObject arguments)

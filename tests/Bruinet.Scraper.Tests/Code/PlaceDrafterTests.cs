@@ -1,3 +1,4 @@
+using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Places;
 
@@ -57,6 +58,9 @@ public sealed class PlaceDrafterTests
         ```
         """);
 
+    // The app's icons are named by a class that starts so: a button or a column that shows only an icon is no member.
+    private static readonly PlaceSigns Signs = new() { IconName = ["fa-"] };
+
     private static readonly Place DayOff = new()
     {
         Key = "/day-off › + Day off",
@@ -71,7 +75,7 @@ public sealed class PlaceDrafterTests
     [Fact]
     public void A_form_gets_a_member_per_field_typed_by_its_control_and_one_per_button()
     {
-        var draft = PlaceDrafter.Form(DayOff, Templates, PlaceDrafter.ClassName(DayOff, PlaceDraftKind.Form), "Shop.Pages", "DaysOffPage");
+        var draft = PlaceDrafter.Form(DayOff, Templates, PlaceDrafter.ClassName(DayOff, PlaceDraftKind.Form), "Shop.Pages", "DaysOffPage", signs: Signs);
 
         Assert.Equal("DayOffDialog", draft.ClassName);
         Assert.StartsWith("// <scraped page=\"/day-off › + Day off\" variant=\"form\" from=\"2026-11-18-walk-creator/002-day-off.nodes.jsonl\" hash=\"", draft.Code, StringComparison.Ordinal);
@@ -106,7 +110,7 @@ public sealed class PlaceDrafterTests
     {
         var list = new Place { Key = "/day-off", State = PlaceState.Seen, Columns = ["Description", "Start date", "", "fa-pen"] };
 
-        var draft = PlaceDrafter.Row(list, Templates, PlaceDrafter.ClassName(list, PlaceDraftKind.Row), "Shop.Pages");
+        var draft = PlaceDrafter.Row(list, Templates, PlaceDrafter.ClassName(list, PlaceDraftKind.Row), "Shop.Pages", Signs);
 
         Assert.Equal("DayOffRow", draft.ClassName);
         Assert.Contains("    public Label<DayOffRow> StartDate => Cell(\"Start date\");", draft.Code, StringComparison.Ordinal);
