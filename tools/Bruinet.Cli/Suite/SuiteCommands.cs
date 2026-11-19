@@ -8,6 +8,17 @@ internal static class SuiteCommands
 {
     private static readonly JsonSerializerOptions Json = new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
+    // The suite's list of places: in the app's own Scraper project (a folder of the suite with a scraper.config.md) when
+    // it has one, else in the suite's .testing folder.
+    private static string PlacesOf(string suite)
+    {
+        var name = Bruinet.Scraper.Places.PlacesList.FileName;
+        return Directory.EnumerateDirectories(suite)
+            .Where(folder => File.Exists(Path.Combine(folder, Bruinet.Scraper.Projects.ScraperConfig.FileName)))
+            .Select(folder => Path.Combine(folder, name))
+            .FirstOrDefault(File.Exists) ?? Path.Combine(suite, ".testing", name);
+    }
+
     public static Command Build(CliIo io) => new("suite", "Facts about a UI test suite, read from its source: its pages and what each has and lacks.")
     {
         Pages(io),
@@ -35,7 +46,7 @@ internal static class SuiteCommands
             var mapFile = parsed.GetValue(map) is { Length: > 0 } givenMap ? Path.GetFullPath(givenMap, io.CurrentDirectory) : Path.Combine(folder, ".testing", "170-Map.md");
             if (parsed.GetValue(map) is { Length: > 0 } && !File.Exists(mapFile))
                 throw new ArgumentException($"The map {mapFile} does not exist.");
-            var placesFile = parsed.GetValue(places) is { Length: > 0 } givenPlaces ? Path.GetFullPath(givenPlaces, io.CurrentDirectory) : Path.Combine(folder, ".testing", Bruinet.Scraper.Places.PlacesList.FileName);
+            var placesFile = parsed.GetValue(places) is { Length: > 0 } givenPlaces ? Path.GetFullPath(givenPlaces, io.CurrentDirectory) : PlacesOf(folder);
             if (parsed.GetValue(places) is { Length: > 0 } && !File.Exists(placesFile))
                 throw new ArgumentException($"The list of places {placesFile} does not exist.");
             // The list of places holds the map's addresses and more: where the suite has one, and no map is asked for, it is what the pages are held against.

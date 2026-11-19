@@ -210,7 +210,7 @@ public sealed partial class ScraperService : IAsyncDisposable
     public ConfigEdit EditConfig(string? projectName, ConfigChange change, bool write = true)
     {
         var project = Project(projectName);
-        var path = Path.Combine(project.Folder, ScraperConfig.FileName);
+        var path = Path.Combine(project.Home, ScraperConfig.FileName);
         var text = File.ReadAllText(path);
         ConfigEdit edit;
         try

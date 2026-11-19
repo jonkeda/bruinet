@@ -1,4 +1,4 @@
-using Bruinet.Cli.Scrape;
+using Bruinet.Scraper.Host;
 using Xunit;
 
 namespace Bruinet.Cli.Tests.Scrape;

@@ -78,7 +78,7 @@ public sealed partial class ScraperService
     public IReadOnlyList<ConfigEdit> EditConfig(string? projectName, IReadOnlyList<ConfigChange> changes)
     {
         var project = Project(projectName);
-        var path = Path.Combine(project.Folder, ScraperConfig.FileName);
+        var path = Path.Combine(project.Home, ScraperConfig.FileName);
         var text = File.ReadAllText(path);
         var edits = new List<ConfigEdit>();
         try

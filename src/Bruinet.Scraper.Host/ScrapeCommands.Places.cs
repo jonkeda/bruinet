@@ -2,22 +2,22 @@ using System.CommandLine;
 using System.Globalization;
 using Bruinet.Scraper.Places;
 using Bruinet.Scraper.Service;
-using static Bruinet.Cli.CommonOptions;
+using static Bruinet.Scraper.Host.HostOptions;
 
-namespace Bruinet.Cli.Scrape;
+namespace Bruinet.Scraper.Host;
 
 /// <summary><c>bruinet scrape places</c>: the list of an app's places, and the walk that fills it.</summary>
-internal static partial class ScrapeCommands
+public static partial class ScrapeCommands
 {
     private static Option<string?> ListFile() =>
         new("--list") { Description = $"The list's file. Default: .testing/{PlacesList.FileName} of the suite the project is in." };
 
-    private static Command Places(CliIo io) => new("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: show the list, or fill it with seed, routes, walk and add.")
+    private static Command Places(HostIo io) => new("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: show the list, or fill it with seed, routes, walk and add.")
     {
         PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io), PlacesRead(io), PlacesFields(io), PlacesElements(io), PlacesDraft(io), PlacesDrift(io),
     };
 
-    private static Command PlacesDraft(CliIo io)
+    private static Command PlacesDraft(HostIo io)
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var place = new Argument<string>("place") { Description = "The place's key, as the list writes it (\"/day-off › + Day off\")." };
@@ -57,7 +57,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesDrift(CliIo io)
+    private static Command PlacesDrift(HostIo io)
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var check = new Option<bool>("--check") { Description = "Exit 1 when a class no longer fits its place." };
@@ -85,7 +85,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesRead(CliIo io)
+    private static Command PlacesRead(HostIo io)
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var command = new Command("read", "Read the places again from the captures the walk kept, with the control signs and components the project names now: each field's control, and the component a dialog or a menu is. Opens nothing.")
@@ -108,7 +108,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesFields(CliIo io)
+    private static Command PlacesFields(HostIo io)
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
         var command = new Command("fields", "Count the fields of the list by control: what no sign recognizes and what is still to make first.")
@@ -136,7 +136,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesElements(CliIo io)
+    private static Command PlacesElements(HostIo io)
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
         var command = new Command("elements", "Count the app's own elements (custom elements) over the kept captures, with the control or component that stands for each: what nothing stands for first.")
@@ -166,7 +166,7 @@ internal static partial class ScrapeCommands
 
     private static readonly System.Text.Json.JsonSerializerOptions PrettyJson = new() { WriteIndented = true, PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
 
-    private static Command PlacesShow(CliIo io)
+    private static Command PlacesShow(HostIo io)
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
         var write = new Option<bool>("--write") { Description = $"Write the list as a document, {PlacesDocument.FileName} beside it." };
@@ -190,7 +190,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesSeed(CliIo io)
+    private static Command PlacesSeed(HostIo io)
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var map = new Option<string[]>("--map") { Description = "A Markdown file that names the app's addresses in backticks (repeatable). Default: .testing/170-Map.md when the suite has it.", AllowMultipleArgumentsPerToken = false };
@@ -204,7 +204,7 @@ internal static partial class ScrapeCommands
             var name = ProjectName(service, parsed.GetValue(project), io);
             var file = PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io);
             var places = PlacesList.Load(file);
-            var suite = Suite.PagesChecklist.FindSuite(service.Project(name).Folder);
+            var suite = FindSuite(service.Project(name).Folder);
             var maps = parsed.GetValue(map) is { Length: > 0 } given
                 ? given.Select(path => Path.GetFullPath(path, io.CurrentDirectory)).ToArray()
                 : suite is not null && File.Exists(Path.Combine(suite, ".testing", "170-Map.md")) ? [Path.Combine(suite, ".testing", "170-Map.md")] : [];
@@ -216,8 +216,8 @@ internal static partial class ScrapeCommands
                 fromMap += PlacesSeeds.FromMarkdown(await File.ReadAllTextAsync(path, cancellationToken).ConfigureAwait(false)).Count(places.Add);
             }
 
-            var fromSuite = suite is null ? 0 : Suite.SuitePages.Read(suite, null).Pages.Where(page => page.Address is not null)
-                .Select(page => PlacesList.Known(page.Address!, PlacesSeeds.Suite)).Count(places.Add);
+            var fromSuite = suite is null || io.Services.SuiteAddresses is not { } addresses ? 0
+                : addresses(suite).Select(address => PlacesList.Known(address, PlacesSeeds.Suite)).Count(places.Add);
             var fromRecordings = service.SeedPlaces(name, places);
             places.Save(file);
             await io.Error.WriteLineAsync($"New: {fromMap} from the map, {fromSuite} from the suite's page objects, {fromRecordings} from the recordings. {places.Places.Count} places in {WriteDocument(places, file)}; {places.Frontier.Count()} still to open.").ConfigureAwait(false);
@@ -226,7 +226,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesRoutes(CliIo io)
+    private static Command PlacesRoutes(HostIo io)
     {
         var (solution, project, list, headless) = (Solution(), Project(), ListFile(), Headless());
         var asAccount = new Option<string?>("--as") { Description = "Read as this account: its saved sign-in beside the project's own. Default: the project's own." };
@@ -251,7 +251,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesWalk(CliIo io)
+    private static Command PlacesWalk(HostIo io)
     {
         var (solution, project, list, headless, json) = (Solution(), Project(), ListFile(), Headless(), Json());
         var asAccount = new Option<string?>("--as") { Description = "Walk as this account: its saved sign-in beside the project's own. Every write is held back unless --may-write. Default: the project's own." };
@@ -310,7 +310,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command PlacesAdd(CliIo io)
+    private static Command PlacesAdd(HostIo io)
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var fromRun = new Option<string>("--from-run") { Description = "A file tests wrote, a saved form as JSON per line (place, required, landed, record, note).", Required = true };
@@ -337,13 +337,28 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    // The list's file: as given, else in the .testing folder of the suite the project is in, else in the project.
-    private static string PlacesFile(ScraperService service, string? project, string? given, CliIo io)
+    // The list's file: as given; else in the app's own Scraper project when it has one; else in the .testing folder
+    // of the suite the project is in; else in the project.
+    private static string PlacesFile(ScraperService service, string? project, string? given, HostIo io)
     {
         if (given is { Length: > 0 })
             return Path.GetFullPath(given, io.CurrentDirectory);
-        var folder = service.Project(ProjectName(service, project, io)).Folder;
-        return Suite.PagesChecklist.FindSuite(folder) is { } suite ? Path.Combine(suite, ".testing", PlacesList.FileName) : Path.Combine(folder, PlacesList.FileName);
+        var scraped = service.Project(ProjectName(service, project, io));
+        if (!string.Equals(scraped.Home, scraped.Folder, StringComparison.OrdinalIgnoreCase))
+            return Path.Combine(scraped.Home, PlacesList.FileName);
+        return FindSuite(scraped.Folder) is { } suite ? Path.Combine(suite, ".testing", PlacesList.FileName) : Path.Combine(scraped.Folder, PlacesList.FileName);
+    }
+
+    // The suite a folder is in: the nearest folder up that has a .testing folder.
+    private static string? FindSuite(string from)
+    {
+        for (var folder = new DirectoryInfo(from); folder is not null; folder = folder.Parent)
+        {
+            if (Directory.Exists(Path.Combine(folder.FullName, ".testing")))
+                return folder.FullName;
+        }
+
+        return null;
     }
 
     // Writes the document beside the list, with the line ends the document has.

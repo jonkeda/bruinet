@@ -19,6 +19,31 @@ writes the `.csproj`, its `scraper.config.md` and an empty `Pages/`; add the pro
 `bruinet scrape list` shows the projects with a `scraper.config.md` under the solution's folder; `TestResults` (the
 loop's copies) and build output are left out.
 
+### The Scraper's own project for an app
+
+What the Scraper knows and keeps about an app can live in a project of its own beside the suite: `<App>.Scraper`,
+with the `scraper.config.md`, the draft templates, the recordings and the list of places. Its config names the
+suite in `## App` (`| Suite | ../<App>.UITests |`): page objects, controls and tests are still read, written and
+built there, and the project is still known by the suite's name. The suite does not reference it and runs without
+it. A path in the config (`SignInState`, a control library's `Signs`) is relative to the config's folder.
+
+The project is a small program that runs the Scraper for this app, with what only the app has added:
+
+```csharp
+using Bruinet.Scraper.Host;
+
+return await ScraperApp.RunAsync(args, app =>
+{
+    app.AddRecord(new ContactRecord());   // an IRecordKind: how a record is made, found and deleted
+    app.AddReader(new PlanBoardReader()); // an IPlaceReader: a widget no sign can describe
+});
+```
+
+It references `Bruinet.Scraper.Host`. Its arguments are those of `bruinet scrape`, from the command on
+(`dotnet run --project <App>.Scraper -- places walk --only /contact`); in the project's own folder
+`bruinet scrape …` hands the command to it. From another folder `bruinet scrape` still runs, without what the app
+added. The app's project does not generate control templates before a build: `bruinet scrape` does.
+
 By hand: add `scraper.config.md` to the UI test project the page objects go into (one project per
 app, or several for a large app; a project that references another scraped project sees its
 controls):

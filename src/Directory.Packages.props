@@ -23,6 +23,8 @@
     <PackageVersion Include="bunit" Version="2.12.5" />
     <!-- Playwright for Blazor/Html -->
     <PackageVersion Include="Microsoft.Playwright" Version="1.62.0" />
+    <!-- The Scraper host: the command line bruinet scrape and an app's own Scraper project run -->
+    <PackageVersion Include="System.CommandLine" Version="2.0.12" />
     <!-- Appium for MAUI -->
     <PackageVersion Include="Appium.WebDriver" Version="8.3.2" />
     <!-- MauiDevFlow's client (dotnet/maui-labs), preview: Bruinet.Maui.DevFlow only -->

@@ -13,15 +13,25 @@ public sealed partial class ScrapeProject
     /// <summary>The folder recordings are kept in, in the project.</summary>
     public const string RecordingsFolderName = "Recordings";
 
-    private ScrapeProject(string folder, string name, ScraperConfig config)
+    private ScrapeProject(string home, string folder, string name, ScraperConfig config)
     {
+        Home = home;
         Folder = folder;
         Name = name;
         Config = config;
     }
 
-    /// <summary>The project's folder.</summary>
+    /// <summary>
+    /// The UI test project's folder: where page objects, controls and tests are read, written and built.
+    /// </summary>
     public string Folder { get; }
+
+    /// <summary>
+    /// The Scraper's own place for this app: where <c>scraper.config.md</c>, the draft templates, the recordings
+    /// and the list of places are. <see cref="Folder"/> itself, unless the config names a <c>Suite</c>: then this
+    /// is the app's Scraper project and <see cref="Folder"/> is the suite beside it.
+    /// </summary>
+    public string Home { get; }
 
     /// <summary>The project's name: its project file's name, or the folder's when it has none.</summary>
     public string Name { get; }
@@ -54,7 +64,7 @@ public sealed partial class ScrapeProject
             : (Config.PagesFolder, Namespace);
 
     /// <summary>The saved sign-in the browser starts from (<c>SignInState</c> under <c>## Explore</c>), as a full path; null for none.</summary>
-    public string? SignInStatePath => Config.Explore.SignInState is { Length: > 0 } state ? Path.GetFullPath(Path.Combine(Folder, state)) : null;
+    public string? SignInStatePath => Config.Explore.SignInState is { Length: > 0 } state ? Path.GetFullPath(Path.Combine(Home, state)) : null;
 
     /// <summary>
     /// How controls are recognized on this app's pages: the project's own signs first, then each control library's
@@ -64,7 +74,7 @@ public sealed partial class ScrapeProject
     [
         .. Config.ControlSigns,
         .. Config.ControlLibraries.Where(library => library.Signs.Length > 0)
-            .Select(library => (Library: library, File: Path.GetFullPath(Path.Combine(Folder, library.Signs))))
+            .Select(library => (Library: library, File: Path.GetFullPath(Path.Combine(Home, library.Signs))))
             .Where(each => File.Exists(each.File))
             .SelectMany(each => ControlSign.ReadFile(each.File, each.Library.Library)),
     ];
@@ -72,7 +82,7 @@ public sealed partial class ScrapeProject
     private IReadOnlyList<ControlSign>? _signs;
 
     /// <summary>Where its recordings are.</summary>
-    public string RecordingsFolder => Path.Combine(Folder, RecordingsFolderName);
+    public string RecordingsFolder => Path.Combine(Home, RecordingsFolderName);
 
     /// <summary>Opens the project in <paramref name="folder"/>.</summary>
     /// <exception cref="FileNotFoundException">The folder has no <c>scraper.config.md</c>.</exception>
@@ -82,9 +92,14 @@ public sealed partial class ScrapeProject
         var configPath = Path.Combine(folder, ScraperConfig.FileName);
         if (!File.Exists(configPath))
             throw new FileNotFoundException($"{folder} is not a scraped project: it has no {ScraperConfig.FileName}.", configPath);
-        var projectFile = Directory.EnumerateFiles(folder, "*.csproj").OrderBy(f => f, StringComparer.Ordinal).FirstOrDefault();
-        var name = projectFile is null ? Path.GetFileName(folder) : Path.GetFileNameWithoutExtension(projectFile);
-        return new ScrapeProject(folder, name, ScraperConfig.Read(configPath));
+        var config = ScraperConfig.Read(configPath);
+        // The Scraper's own project names the suite it works on: the project is known by the suite's name.
+        var suite = config.Suite.Length == 0 ? folder : Path.GetFullPath(Path.Combine(folder, config.Suite));
+        if (!Directory.Exists(suite))
+            throw new FileNotFoundException($"{configPath} names the suite {config.Suite}, and {suite} is not there.", suite);
+        var projectFile = Directory.EnumerateFiles(suite, "*.csproj").OrderBy(f => f, StringComparer.Ordinal).FirstOrDefault();
+        var name = projectFile is null ? Path.GetFileName(suite) : Path.GetFileNameWithoutExtension(projectFile);
+        return new ScrapeProject(folder, suite, name, config);
     }
 
     /// <summary>The project that holds <paramref name="path"/> (a file or folder in it), or null.</summary>

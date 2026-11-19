@@ -4,7 +4,6 @@ using Bruinet.Bdd.Workspace;
 using Bruinet.Cli.Data;
 using Bruinet.Cli.Generate;
 using Bruinet.Cli.Scenario;
-using Bruinet.Cli.Scrape;
 using Bruinet.Cli.Selection;
 using Bruinet.Cli.Servers;
 using Bruinet.Scraper.Snapshots;
@@ -14,21 +13,6 @@ using Microsoft.Playwright;
 
 namespace Bruinet.Cli;
 
-/// <summary>Where a command reads and writes: the console, or a test's readers and writers.</summary>
-/// <param name="In">Answers to questions, and Enter after a sign-in.</param>
-/// <param name="Out">Results.</param>
-/// <param name="Error">Progress, questions and problems.</param>
-/// <param name="CurrentDirectory">Where relative paths, and the solution and project, are found from.</param>
-/// <param name="Interactive">A person is at a terminal: questions may be asked and a browser shown.</param>
-internal sealed record CliIo(TextReader In, TextWriter Out, TextWriter Error, string CurrentDirectory, bool Interactive)
-{
-    /// <summary>The Scraper's page source by platform; the default one when null.</summary>
-    public Func<string, IScrapeSource>? SourceFor { get; init; }
-
-    public static CliIo Console() =>
-        new(System.Console.In, System.Console.Out, System.Console.Error, Environment.CurrentDirectory, !System.Console.IsInputRedirected);
-}
-
 /// <summary><c>bruinet</c>: the command tree, and running one command. Exit 0 fine, 1 problems found, 2 could not run.</summary>
 internal static class BruinetCommand
 {
@@ -36,7 +20,7 @@ internal static class BruinetCommand
     {
         var root = new RootCommand("Bruinet's command line: the Scraper, test data and scenarios, spec files, control generation, and the servers the IDEs and agents start.")
         {
-            ScrapeCommands.Build(io),
+            Bruinet.Scraper.Host.ScrapeCommands.Build(io with { Services = ScraperServices(io) }),
             DataCommands.Build(io),
             ScenarioCommands.Build(io),
             SelectionCommands.Build(io),
@@ -77,51 +61,18 @@ internal static class BruinetCommand
     /// <c>BRUINET_DEBUG=1</c>.
     /// </summary>
     public static void Action(this Command command, CliIo io, Func<ParseResult, CancellationToken, Task<int>> action) =>
-        command.SetAction(async (parsed, cancellationToken) =>
-        {
-            try
-            {
-                return await action(parsed, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                await io.Error.WriteLineAsync("bruinet: stopped.").ConfigureAwait(false);
-                return Stopped;
-            }
-            catch (Exception e) when (e is PlaywrightException or TimeoutException)
-            {
-                return await CouldNotRun(io, $"the browser could not open the app: {e.Message.ReplaceLineEndings(" ")}", e).ConfigureAwait(false);
-            }
-            catch (Exception e) when (e is not OutOfMemoryException)
-            {
-                // The tool's boundary: whatever a command throws ends here as "could not run".
-                return await CouldNotRun(io, Plain(e), e).ConfigureAwait(false);
-            }
-        });
+        Bruinet.Scraper.Host.HostCommand.Action(command, io, action, e => e is Microsoft.Data.SqlClient.SqlException sql ? $"the database answered: {sql.Message}" : null);
 
     /// <summary>The exit code of a command stopped by Ctrl+C, as shells give it.</summary>
-    public const int Stopped = 130;
+    public const int Stopped = Bruinet.Scraper.Host.HostCommand.Stopped;
 
-    // A database, a file or a JSON that failed says so in a sentence; the rest say their own message.
-    private static string Plain(Exception e) => e switch
+    // What bruinet gives the Scraper's commands: its control template generator and its reading of a suite's page objects.
+    private static Bruinet.Scraper.Host.HostServices ScraperServices(CliIo io) => io.Services with
     {
-        Microsoft.Data.SqlClient.SqlException sql => $"the database answered: {sql.Message}",
-        System.Text.Json.JsonException json => $"the JSON could not be read: {json.Message}",
-        IOException file => $"a file could not be read or written: {file.Message}",
-        System.ComponentModel.Win32Exception process => $"a program could not be started: {process.Message}",
-        _ => e.Message,
+        Templates = io.Services.Templates ?? new Generate.ControlTemplates(),
+        SuiteAddresses = io.Services.SuiteAddresses
+            ?? (suite => [.. Suite.SuitePages.Read(suite, null).Pages.Where(page => page.Address is not null).Select(page => page.Address!)]),
     };
-
-    private static async Task<int> CouldNotRun(CliIo io, string message, Exception e)
-    {
-        await io.Error.WriteLineAsync($"bruinet: {message.ReplaceLineEndings(" ")}").ConfigureAwait(false);
-        if (Environment.GetEnvironmentVariable("BRUINET_DEBUG") == "1")
-        {
-            await io.Error.WriteLineAsync(e.ToString()).ConfigureAwait(false);
-        }
-
-        return 2;
-    }
 
     /// <summary>Runs a command's work that needs no awaiting.</summary>
     public static void Action(this Command command, CliIo io, Func<ParseResult, int> action) =>

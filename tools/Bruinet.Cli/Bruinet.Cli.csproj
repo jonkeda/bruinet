@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Bdd.Workspace\Bruinet.Bdd.Workspace.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Scraper\Bruinet.Scraper.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Scraper.Host\Bruinet.Scraper.Host.csproj" />
     <!-- data: Bruinet.TestData is shared with the loaded assemblies, so their definitions are the tool's ITestDataDefinition. -->
     <ProjectReference Include="..\..\src\Bruinet.TestData\Bruinet.TestData.csproj" />
     <!-- Bruinet.Uat is an Exe, which the SDK would build per platform as the tool is: built once, for none (R2-T119). -->

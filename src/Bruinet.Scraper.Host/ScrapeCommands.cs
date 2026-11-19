@@ -5,22 +5,23 @@ using Bruinet.Scraper.Explore;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Service;
-using static Bruinet.Cli.CommonOptions;
+using static Bruinet.Scraper.Host.HostOptions;
 
-namespace Bruinet.Cli.Scrape;
+namespace Bruinet.Scraper.Host;
 
 /// <summary>
 /// <c>bruinet scrape</c>: the Scraper for a person, the loop and CI, through the service MCP uses.
 /// Exit 0 when it ran within its guards, 1 when a guard stopped it or a check failed, 2 when it could not run.
 /// </summary>
-internal static partial class ScrapeCommands
+public static partial class ScrapeCommands
 {
-    public static Command Build(CliIo io) => new("scrape", "The Scraper: explore or walk an app, then draft and verify page objects (docs/guides/scraper.md).")
+    /// <summary>The <c>scrape</c> command with its subcommands.</summary>
+    public static Command Build(HostIo io) => new("scrape", "The Scraper: explore or walk an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
         New(io), List(io), Check(io), Explore(io), Draft(io), Verify(io), Find(io), Look(io), Config(io), Places(io), InstallBrowser(io),
     };
 
-    private static Command New(CliIo io)
+    private static Command New(HostIo io)
     {
         var name = new Argument<string>("name") { Description = "The project's name, and its namespace's start." };
         var url = new Option<string>("--url") { Description = "Where recording and Explore start.", Required = true };
@@ -80,7 +81,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command List(CliIo io)
+    private static Command List(HostIo io)
     {
         var (solution, json) = (Solution(), Json());
         var command = new Command("list", "The projects with a scraper.config.md.") { solution, json };
@@ -103,7 +104,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command Check(CliIo io)
+    private static Command Check(HostIo io)
     {
         var (solution, project, json) = (Solution(), Project(), Json());
         var headless = Headless();
@@ -121,7 +122,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command Explore(CliIo io)
+    private static Command Explore(HostIo io)
     {
         var (solution, project, json, yes, headless) = (Solution(), Project(), Json(), Yes(), Headless());
         var url = new Option<string[]>("--url") { Description = "Where to start. Default: the config's StartUrl. Several: a run for each, one after another, each kept within its own path unless --within says otherwise.", AllowMultipleArgumentsPerToken = false };
@@ -196,7 +197,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command Draft(CliIo io)
+    private static Command Draft(HostIo io)
     {
         var (solution, project, json) = (Solution(), Project(), Json());
         var page = new Option<string[]>("--page") { Description = "Only this recorded page (repeatable). Default: every page.", AllowMultipleArgumentsPerToken = true };
@@ -241,7 +242,7 @@ internal static partial class ScrapeCommands
             : null;
 
     // 0 when found, 1 when nothing holds the text.
-    private static Command Find(CliIo io)
+    private static Command Find(HostIo io)
     {
         var (solution, project, json) = (Solution(), Project(), Json());
         var text = new Argument<string>("text") { Description = "What to look for, in any case: a text, a placeholder, an attribute's value." };
@@ -273,7 +274,7 @@ internal static partial class ScrapeCommands
     }
 
     // 0 when the page opened and every click landed, 1 when something stopped it.
-    private static Command Look(CliIo io)
+    private static Command Look(HostIo io)
     {
         var (solution, project, json, headless) = (Solution(), Project(), Json(), Headless());
         var url = new Option<string?>("--url") { Description = "The address, full or a path on the start URL's site. Default: the config's StartUrl." };
@@ -320,7 +321,7 @@ internal static partial class ScrapeCommands
     }
 
     // 0 when every action resolved, 1 when there are gaps.
-    private static Command Verify(CliIo io)
+    private static Command Verify(HostIo io)
     {
         var (solution, project, json, headless) = (Solution(), Project(), Json(), Headless());
         var command = new Command("verify", "Look the page objects' members up in the running app.") { project, solution, headless, json };
@@ -350,7 +351,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command Config(CliIo io)
+    private static Command Config(HostIo io)
     {
         var get = new Command("get", "Print the project's scraper.config.md.");
         var (getSolution, getProject) = (Solution(), Project());
@@ -360,7 +361,7 @@ internal static partial class ScrapeCommands
         {
             await using var service = Service(io, parsed.GetValue(getSolution));
             var project = service.Project(ProjectName(service, parsed.GetValue(getProject), io));
-            await io.Out.WriteAsync(await File.ReadAllTextAsync(Path.Combine(project.Folder, ScraperConfig.FileName), cancellationToken).ConfigureAwait(false)).ConfigureAwait(false);
+            await io.Out.WriteAsync(await File.ReadAllTextAsync(Path.Combine(project.Home, ScraperConfig.FileName), cancellationToken).ConfigureAwait(false)).ConfigureAwait(false);
             return 0;
         });
 
@@ -373,7 +374,7 @@ internal static partial class ScrapeCommands
         };
     }
 
-    private static Command Change(CliIo io, string action, string description, string valuesAre)
+    private static Command Change(HostIo io, string action, string description, string valuesAre)
     {
         var section = new Argument<string>("section") { Description = "The section, as its ## heading: App, Explore, Explore hosts, Never click and so on" };
         var values = new Argument<string[]>("values") { Description = $"For {action}: {valuesAre}.", Arity = ArgumentArity.OneOrMore };
@@ -390,7 +391,7 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command InstallBrowser(CliIo io)
+    private static Command InstallBrowser(HostIo io)
     {
         var command = new Command("install-browser", "Install the Chromium the Scraper drives (once per machine).");
         command.Action(io, async (_, _) =>
@@ -401,20 +402,23 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static ScraperService Service(CliIo io, string? solution) =>
-        new(SolutionFolder(solution, io.CurrentDirectory), io.SourceFor, new Generate.ControlTemplates());
+    private static ScraperService Service(HostIo io, string? solution) =>
+        new(SolutionFolder(solution, io.CurrentDirectory), io.SourceFor, io.Services.Templates);
 
     // Not given: the project this folder is in (by its folder, so a name two projects share still picks one), else the service's own choice.
-    private static string? ProjectName(ScraperService service, string? given, CliIo io)
+    private static string? ProjectName(ScraperService service, string? given, HostIo io)
     {
         if (given is not null)
             return given;
         var here = Path.TrimEndingDirectorySeparator(Path.GetFullPath(io.CurrentDirectory)) + Path.DirectorySeparatorChar;
         var inside = service.Projects()
-            .Where(p => here.StartsWith(Path.TrimEndingDirectorySeparator(Path.GetFullPath(p.Folder)) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
-            .MaxBy(p => p.Folder.Length);
+            .Where(p => Under(here, p.Folder) || Under(here, p.Home))
+            .MaxBy(p => Under(here, p.Home) ? p.Home.Length : p.Folder.Length);
         return inside is null ? null : service.Relative(inside);
     }
+
+    private static bool Under(string here, string folder) =>
+        here.StartsWith(Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder)) + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
 
     private static Option<int?> Positive(string name, string description)
     {

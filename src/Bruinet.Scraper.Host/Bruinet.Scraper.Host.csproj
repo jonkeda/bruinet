@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <RootNamespace>Bruinet.Scraper.Host</RootNamespace>
+    <Description>The Scraper's command line as a library: what bruinet scrape runs, and what an app's own Scraper project runs with its records and readers added.</Description>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.Scraper\Bruinet.Scraper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bruinet.Cli.Tests" />
+    <InternalsVisibleTo Include="Bruinet.Scraper.Tests" />
+  </ItemGroup>
+
+</Project>

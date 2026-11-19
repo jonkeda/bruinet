@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bruinet.Scraper\Bruinet.Scraper.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Scraper.Host\Bruinet.Scraper.Host.csproj" />
     <!-- The site the Html source is tested on, served by TestSiteServer; its files come along. -->
     <ProjectReference Include="..\Bruinet.Scraper.TestSite\Bruinet.Scraper.TestSite.csproj" />
   </ItemGroup>

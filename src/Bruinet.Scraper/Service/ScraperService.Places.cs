@@ -129,7 +129,7 @@ public sealed partial class ScraperService
         ArgumentNullException.ThrowIfNull(list);
         var project = Project(projectName);
         var place = list[placeKey] ?? throw new ScraperProblem($"The list has no place '{placeKey}'.");
-        var file = Path.Combine(project.Folder, DraftTemplates.FileName);
+        var file = Path.Combine(project.Home, DraftTemplates.FileName);
         if (!File.Exists(file))
             throw new ScraperProblem($"{project.Name} has no {DraftTemplates.FileName}: how the suite writes a form, a row and a test is not known.");
         var templates = DraftTemplates.Parse(File.ReadAllText(file));

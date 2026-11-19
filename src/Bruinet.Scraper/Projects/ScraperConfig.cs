@@ -36,6 +36,12 @@ public sealed record ScraperConfig
     public string PagesFolder { get; init; } = "Pages";
 
     /// <summary>
+    /// The UI test project the page objects go into, relative to this file's folder (<c>Suite</c> under
+    /// <c>## App</c>), when the Scraper's own place is a project beside it; empty when they are one folder.
+    /// </summary>
+    public string Suite { get; init; } = "";
+
+    /// <summary>
     /// Where a page is drafted by its address (<c>## Modules</c>): the first module whose path its page key
     /// starts with; a page no module claims goes to <see cref="PagesFolder"/> in <see cref="Namespace"/>.
     /// </summary>
@@ -110,6 +116,7 @@ public sealed record ScraperConfig
                     "Environment" => config with { Environment = EnvironmentName(value, row.LineNumber) },
                     "Namespace" => config with { Namespace = value },
                     "Pages" => config with { PagesFolder = value },
+                    "Suite" => config with { Suite = value },
                     "Controls" => config with { ControlsFolder = value },
                     "Screenshots" => config with { Screenshots = Bool(value, row.LineNumber) },
                     "Privacy" => config with { Privacy = Bool(value, row.LineNumber) },

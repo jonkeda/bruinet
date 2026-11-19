@@ -461,7 +461,7 @@ public sealed class McpRunTests : IDisposable
 
             // The command line gives the same, as text.
             var output = new StringWriter();
-            var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:41", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
+            var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:41", "--solution", _solution], new CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
             Assert.Equal(0, exit);
             Assert.StartsWith("Parts: page-changed at line 45", output.ToString(), StringComparison.Ordinal);
         }
@@ -478,7 +478,7 @@ public sealed class McpRunTests : IDisposable
         Call("run_scenario", new JsonObject { ["path"] = Feature, ["line"] = 11 });
         var after = Answer(Call("diff_since_green", new JsonObject { ["path"] = Feature, ["line"] = 11 }));
         var output = new StringWriter();
-        var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:11", "--solution", _solution], new Bruinet.Cli.CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
+        var exit = await Bruinet.Cli.BruinetCommand.RunAsync(["scenario", "why", $"{Feature}:11", "--solution", _solution], new CliIo(TextReader.Null, output, TextWriter.Null, _solution, Interactive: false));
 
         Assert.False((bool)before["isError"]!);
         Assert.Contains("run it with run_scenario", Text(before), StringComparison.Ordinal);
