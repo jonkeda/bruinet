@@ -49,9 +49,71 @@ public sealed class PageFactsTests
 
         Assert.Equal(["Create contact"], facts.Headings);
         Assert.Equal(["Cancel", "Create"], facts.Buttons);
-        Assert.Equal([new PageField("Contact Type", "combobox", false, false), new PageField("Name", "text", false, false)], facts.Fields);
+        // A label the page marks as required says it for its field.
+        Assert.Equal([new PageField("Contact Type", "combobox", true, false), new PageField("Name", "text", true, false)], facts.Fields);
         Assert.Equal(["Contact Type", "Name"], facts.MarkedRequired);
         Assert.Null(facts.Dialog);
+    }
+
+    [Fact]
+    public void A_field_is_the_control_whose_sign_it_or_an_element_around_it_shows_and_the_first_sign_decides()
+    {
+        var signs = ControlSign.Read(Bruinet.Core.Utilities.MarkdownTables.ReadSections(
+            "## Signs\n\n| Control | Sign | State |\n| --- | --- | --- |\n| `VSelect` | `.v-select` | made |\n| `VFileInput` | `input[type=file]` | to make |\n| `VDateField` | `.v-text-field:has(i:text(event))` | made |\n| `VTextField` | `.v-text-field` | made |\n")["Signs"].Rows, "Vuetify");
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "div", null, ("class", "v-input v-text-field v-select")),
+            N(3, 2, "label", "Country"),
+            N(4, 2, "input", null, ("type", "text")),
+            N(5, 1, "div", null, ("class", "v-input v-text-field")),
+            N(6, 5, "label", "City"),
+            N(7, 5, "input", null, ("type", "text")),
+            N(8, 1, "div", null, ("class", "upload")),
+            N(9, 8, "label", "Logo"),
+            N(10, 8, "input", null, ("type", "file")),
+            N(11, 1, "div", null, ("class", "plain")),
+            N(12, 11, "label", "Note"),
+            N(13, 11, "textarea"),
+            // A text field with the calendar icon in it is a date.
+            N(14, 1, "div", null, ("class", "v-input v-text-field")),
+            N(15, 14, "label", "Start"),
+            N(16, 14, "input", null, ("type", "text")),
+            N(17, 14, "div"),
+            N(18, 17, "i", "event", ("class", "v-icon")),
+            // A select that has a value shows it before its input: that is the value, and the label is outside.
+            N(19, 1, "div", null, ("class", "row")),
+            N(20, 19, "span", "Status"),
+            N(21, 19, "div", null, ("class", "v-input v-text-field v-select")),
+            N(22, 21, "div", "To send", ("class", "v-select__selection")),
+            N(23, 21, "input", null, ("type", "text")));
+
+        var fields = PageFacts.Of(page, signs).Fields;
+
+        Assert.Equal(["Country (text, VSelect)", "City (text, VTextField)", "Logo (file, VFileInput?)", "Note (textarea)", "Start (text, VDateField)", "Status (text, VSelect)"], fields.Select(field => field.ToListText()));
+        // Without signs a field has no control, as before.
+        Assert.All(PageFacts.Of(page).Fields, field => Assert.Null(field.Control));
+    }
+
+    // A select's input lies many elements under its row, and a date's row holds a second input for its time.
+    [Fact]
+    public void A_field_deep_under_its_row_takes_the_row_s_label_and_a_second_field_of_the_row_is_named_after_it()
+    {
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "div", null, ("class", "row")),
+            N(3, 2, "div"), N(4, 3, "div"), N(5, 4, "span", "Employee"),
+            N(6, 2, "div"), N(7, 6, "div"), N(8, 7, "div"), N(9, 8, "div"), N(10, 9, "div"), N(11, 10, "div"), N(12, 11, "div"),
+            N(13, 12, "input", null, ("type", "text"), ("placeholder", "Select")),
+            N(14, 1, "div", null, ("class", "row")),
+            N(15, 14, "span", "Start date"),
+            // The two inputs share a wrapper; the label is one element further up.
+            N(16, 14, "div"),
+            N(17, 16, "input", null, ("type", "text")),
+            N(18, 16, "i", "event", ("class", "v-icon material-icons")),
+            N(19, 16, "div"),
+            N(20, 19, "input", null, ("type", "text"), ("placeholder", "Time")));
+
+        Assert.Equal(["Employee", "Start date", "Start date: Time"], PageFacts.Of(page).Fields.Select(field => field.Label));
     }
 
     [Fact]
@@ -64,6 +126,40 @@ public sealed class PageFactsTests
 
         Assert.Equal(["Contact Type is required"], facts.Messages);
         Assert.Equal(["Client", "Supplier"], facts.Options);
+    }
+
+    [Fact]
+    public void A_field_says_what_holds_it_when_the_project_names_its_holders()
+    {
+        var signs = ControlSign.Read(Bruinet.Core.Utilities.MarkdownTables.ReadSections(
+            "## Field holders\n\n| Holder | Sign |\n| --- | --- |\n| FormRow | .form-row |\n| Card | .v-card |\n")["Field holders"].Rows, "the suite");
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "div", null, ("class", "v-card")),
+            N(3, 2, "div", null, ("class", "form-row")),
+            N(4, 3, "span", "Name"),
+            N(5, 3, "input", null, ("type", "text")),
+            N(6, 1, "div", null, ("class", "v-card")),
+            N(7, 6, "span", "Landing page"),
+            N(8, 6, "input", null, ("type", "text")),
+            N(9, 1, "div"),
+            N(10, 9, "span", "Loose"),
+            N(11, 9, "input", null, ("type", "text")));
+
+        // The nearest holder is the field's: a row in a card is a row.
+        Assert.Equal(["Name (text, in a FormRow)", "Landing page (text, in a Card)", "Loose (text)"], PageFacts.Of(page, signs).Fields.Select(field => field.ToListText()));
+    }
+
+    [Fact]
+    public void A_text_editor_s_own_buttons_are_not_the_page_s()
+    {
+        var facts = PageFacts.Of(Form(
+            N(12, 1, "div", null, ("class", "ck ck-toolbar")),
+            N(13, 12, "button", "Bold"),
+            N(14, 1, "div", null, ("role", "toolbar")),
+            N(15, 14, "button", "Italic")));
+
+        Assert.Equal(["Cancel", "Create"], facts.Buttons);
     }
 
     [Fact]

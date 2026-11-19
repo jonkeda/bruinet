@@ -14,8 +14,157 @@ internal static partial class ScrapeCommands
 
     private static Command Places(CliIo io) => new("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: show the list, or fill it with seed, routes, walk and add.")
     {
-        PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io),
+        PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io), PlacesRead(io), PlacesFields(io), PlacesElements(io), PlacesDraft(io), PlacesDrift(io),
     };
+
+    private static Command PlacesDraft(CliIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var place = new Argument<string>("place") { Description = "The place's key, as the list writes it (\"/day-off › + Day off\")." };
+        var kind = new Option<string>("--as") { Description = "What to draft: form (a member per field and button), row (a member per column of the list), or form-test (a test that holds the form against its class, saving nothing).", DefaultValueFactory = _ => "form" };
+        var name = new Option<string?>("--name") { Description = "The class's name. Default: from the place." };
+        var page = new Option<string?>("--page") { Description = "For a dialog: the class of the page it is on. Default: the page class that names the page's address." };
+        var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.scraped.cs. A test is only printed." };
+        var command = new Command("draft", "Draft a class from a place of the list, in the suite's shape (draft-templates.md beside scraper.config.md): a form, a list's row, or the test that holds a form against its class.")
+        {
+            place, project, solution, list, kind, name, page, write,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var projectName = ProjectName(service, parsed.GetValue(project), io);
+            var places = PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io));
+            var what = parsed.GetValue(kind) switch
+            {
+                "form" => Bruinet.Scraper.Code.PlaceDraftKind.Form,
+                "row" => Bruinet.Scraper.Code.PlaceDraftKind.Row,
+                "form-test" => Bruinet.Scraper.Code.PlaceDraftKind.FormTest,
+                var other => throw new ArgumentException($"--as is form, row or form-test, not '{other}'."),
+            };
+            var (draft, file) = service.DraftPlace(projectName, places, parsed.GetValue(place)!, what, parsed.GetValue(name), parsed.GetValue(page));
+            if (parsed.GetValue(write) && file is not null)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+                await File.WriteAllTextAsync(file, draft.Code, cancellationToken).ConfigureAwait(false);
+                await io.Error.WriteLineAsync($"{draft.ClassName}: {draft.Members.Count} members written to {file}.").ConfigureAwait(false);
+            }
+            else
+                await io.Out.WriteAsync(draft.Code).ConfigureAwait(false);
+            foreach (var left in draft.NotDrafted)
+                await io.Error.WriteLineAsync($"Not drafted: {left}").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static Command PlacesDrift(CliIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var check = new Option<bool>("--check") { Description = "Exit 1 when a class no longer fits its place." };
+        var command = new Command("drift", "Hold the classes drafted from places against the list as it is now: a field or column that went, and one that came.")
+        {
+            project, solution, list, check,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var projectName = ProjectName(service, parsed.GetValue(project), io);
+            var drifts = service.PlaceDrifts(projectName, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
+            foreach (var drift in drifts)
+            {
+                await io.Out.WriteLineAsync($"{drift.Class} ({drift.Place}){(drift.Note.Length > 0 ? ": " + drift.Note : "")}").ConfigureAwait(false);
+                if (drift.NotOnPlace.Count > 0)
+                    await io.Out.WriteLineAsync($"  names, not on the place: {string.Join(", ", drift.NotOnPlace)}").ConfigureAwait(false);
+                if (drift.NotInClass.Count > 0)
+                    await io.Out.WriteLineAsync($"  on the place, not named: {string.Join(", ", drift.NotInClass)}").ConfigureAwait(false);
+            }
+
+            await io.Error.WriteLineAsync(drifts.Count == 0 ? "Every class drafted from a place fits its place." : $"{drifts.Count} classes no longer fit their place.").ConfigureAwait(false);
+            return parsed.GetValue(check) && drifts.Count > 0 ? 1 : 0;
+        });
+        return command;
+    }
+
+    private static Command PlacesRead(CliIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var command = new Command("read", "Read the places again from the captures the walk kept, with the control signs and components the project names now: each field's control, and the component a dialog or a menu is. Opens nothing.")
+        {
+            project, solution, list,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var file = PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io);
+            var places = PlacesList.Load(file);
+            var kept = service.KeptPlaces(name, places).Count;
+            var changed = service.ReadPlacesAgain(name, places);
+            places.Save(file);
+            WriteDocument(places, file);
+            await io.Error.WriteLineAsync($"{kept} of {places.Places.Count} places have a kept capture; {changed} read differently now.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static Command PlacesFields(CliIo io)
+    {
+        var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
+        var command = new Command("fields", "Count the fields of the list by control: what no sign recognizes and what is still to make first.")
+        {
+            project, solution, list, json,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var counts = PlacesReading.Fields(PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
+            if (parsed.GetValue(json))
+            {
+                await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(counts, PrettyJson)).ConfigureAwait(false);
+                return 0;
+            }
+
+            await io.Out.WriteLineAsync("| Control | State | Fields | Places | For example |").ConfigureAwait(false);
+            await io.Out.WriteLineAsync("| --- | --- | --- | --- | --- |").ConfigureAwait(false);
+            foreach (var count in counts)
+                await io.Out.WriteLineAsync($"| {count.Control} | {(!count.Recognized ? "no sign fits" : count.Made ? "made" : "to make")} | {count.Fields} | {count.Places} | {count.Example} |").ConfigureAwait(false);
+            var all = counts.Sum(count => count.Fields);
+            await io.Error.WriteLineAsync($"{all} fields: {counts.Where(count => count.Recognized && count.Made).Sum(count => count.Fields)} a made control, {counts.Where(count => count.Recognized && !count.Made).Sum(count => count.Fields)} a control to make, {counts.Where(count => !count.Recognized).Sum(count => count.Fields)} no sign fits.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static Command PlacesElements(CliIo io)
+    {
+        var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
+        var command = new Command("elements", "Count the app's own elements (custom elements) over the kept captures, with the control or component that stands for each: what nothing stands for first.")
+        {
+            project, solution, list, json,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var counts = service.PlaceElements(name, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
+            if (parsed.GetValue(json))
+            {
+                await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(counts, PrettyJson)).ConfigureAwait(false);
+                return 0;
+            }
+
+            await io.Out.WriteLineAsync("| Element | Stands for it | Times | Pages | For example |").ConfigureAwait(false);
+            await io.Out.WriteLineAsync("| --- | --- | --- | --- | --- |").ConfigureAwait(false);
+            foreach (var count in counts)
+                await io.Out.WriteLineAsync($"| {count.Tag} | {(count.CoveredBy is null ? "nothing" : count.Made ? count.CoveredBy : count.CoveredBy + " (to make)")} | {count.Times} | {count.Places} | {count.Example} |").ConfigureAwait(false);
+            await io.Error.WriteLineAsync($"{counts.Count} elements of the app's own: {counts.Count(count => count.CoveredBy is not null && count.Made)} have a control or component, {counts.Count(count => count.CoveredBy is not null && !count.Made)} one to make, {counts.Count(count => count.CoveredBy is null)} nothing.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static readonly System.Text.Json.JsonSerializerOptions PrettyJson = new() { WriteIndented = true, PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
 
     private static Command PlacesShow(CliIo io)
     {

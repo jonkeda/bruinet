@@ -1,3 +1,4 @@
+using Bruinet.Scraper.Code;
 using Bruinet.Scraper.Explore;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Places;
@@ -13,6 +14,14 @@ namespace Bruinet.Scraper.Service;
 /// <param name="New">How many of those the list did not hold.</param>
 /// <param name="Problem">What stopped it; null when nothing did.</param>
 public sealed record RoutesRead(int Pages, int Scripts, int Routes, int New, string? Problem);
+
+/// <summary>A class that no longer fits the place it was drafted from.</summary>
+/// <param name="Class">The class.</param>
+/// <param name="Place">Its place.</param>
+/// <param name="Note">What is the matter besides the two lists; empty when they say it.</param>
+/// <param name="NotOnPlace">Labels the class names that the place does not show.</param>
+/// <param name="NotInClass">What the place shows that the class does not name.</param>
+public sealed record PlaceDrift(string Class, string Place, string Note, IReadOnlyList<string> NotOnPlace, IReadOnlyList<string> NotInClass);
 
 public sealed partial class ScraperService
 {
@@ -62,12 +71,163 @@ public sealed partial class ScraperService
         };
     }
 
+    /// <summary>The places of a list whose capture the walk kept and that is still on disk, each with that capture.</summary>
+    public IReadOnlyList<(Place Place, ScrapeSnapshot Snapshot)> KeptPlaces(string? projectName, PlacesList list)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        var project = Project(projectName);
+        return [.. list.Places.Where(place => place.Snapshot is not null)
+            .Select(place => (Place: place, File: Path.Combine(project.RecordingsFolder, place.Snapshot!)))
+            .Where(each => File.Exists(each.File))
+            .Select(each => (each.Place, Recordings.SnapshotFile.Read(each.File)))];
+    }
+
+    /// <summary>
+    /// Reads each kept place again with the project's signs and components as they are now
+    /// (<see cref="PlacesReading.Read"/>): after a sign or a component was added, no walk is needed.
+    /// </summary>
+    /// <returns>How many places changed.</returns>
+    public int ReadPlacesAgain(string? projectName, PlacesList list)
+    {
+        var project = Project(projectName);
+        var code = Code.ProjectCode.Read(project);
+        var changed = 0;
+        foreach (var (place, snapshot) in KeptPlaces(projectName, list))
+        {
+            var read = PlacesReading.Read(place, snapshot, project.ControlSigns, project.Config.Components, code);
+            if (read.Component == place.Component && read.Fields.SequenceEqual(place.Fields, StringComparer.Ordinal) && read.Buttons.SequenceEqual(place.Buttons, StringComparer.Ordinal))
+                continue;
+            list.Set(read);
+            changed++;
+        }
+
+        return changed;
+    }
+
+    /// <summary>The app's own elements over the kept places, with what stands for each (<see cref="PlacesReading.Elements"/>).</summary>
+    public IReadOnlyList<ElementCount> PlaceElements(string? projectName, PlacesList list)
+    {
+        var project = Project(projectName);
+        return PlacesReading.Elements(KeptPlaces(projectName, list), project.ControlSigns, Code.ProjectCode.Read(project));
+    }
+
+    /// <summary>
+    /// Drafts a class from a place of the list, in the suite's shape (<see cref="PlaceDrafter"/>,
+    /// <c>draft-templates.md</c> beside the project's config): a form, a list's row, or the test that holds a form
+    /// against its class.
+    /// </summary>
+    /// <param name="projectName">The project.</param>
+    /// <param name="list">The list.</param>
+    /// <param name="placeKey">The place's key.</param>
+    /// <param name="kind">What to draft.</param>
+    /// <param name="className">The class's name; from the place when null.</param>
+    /// <param name="pageClass">For a dialog, the class of its page; found by the page's address in the project's pages when null.</param>
+    /// <returns>The draft, and the file it belongs in (a form and a row; null for a test, whose place is the person's).</returns>
+    /// <exception cref="ScraperProblem">The place is not in the list, the project has no templates, or a dialog's page has no class.</exception>
+    public (PlaceDraft Draft, string? File) DraftPlace(string? projectName, PlacesList list, string placeKey, PlaceDraftKind kind, string? className = null, string? pageClass = null)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        var project = Project(projectName);
+        var place = list[placeKey] ?? throw new ScraperProblem($"The list has no place '{placeKey}'.");
+        var file = Path.Combine(project.Folder, DraftTemplates.FileName);
+        if (!File.Exists(file))
+            throw new ScraperProblem($"{project.Name} has no {DraftTemplates.FileName}: how the suite writes a form, a row and a test is not known.");
+        var templates = DraftTemplates.Parse(File.ReadAllText(file));
+        var (folder, ns) = project.PagesFor(place.Parent ?? place.Key);
+        try
+        {
+            if (kind == PlaceDraftKind.Row)
+            {
+                var row = PlaceDrafter.Row(place, templates, className ?? PlaceDrafter.ClassName(place, kind), ns);
+                return (row, Path.Combine(project.Folder, folder, row.ClassName + PageDrafter.Extension));
+            }
+
+            var page = pageClass ?? (place.Kind == PlaceKind.Page ? null : PageClassAt(project, place.Parent ?? ""))
+                ?? (place.Kind == PlaceKind.Page ? null : throw new ScraperProblem($"No page class of {project.Name} names the address {place.Parent}: draft or write that page first, or give its class."));
+            // A form's test names the class that was drafted from the place, whatever it was called then.
+            var formName = DraftedFrom(project, place.Key, "form")
+                ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form);
+            if (kind == PlaceDraftKind.FormTest)
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns), null);
+            // What a page's cards open: the dialogs of the page that the walk named after a card.
+            var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
+            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens);
+            return (form, Path.Combine(project.Folder, folder, form.ClassName + PageDrafter.Extension));
+        }
+        catch (FormatException e)
+        {
+            throw new ScraperProblem(e.Message);
+        }
+    }
+
+    // The class a draft of a place was written as: the file whose first line names the place and the kind.
+    private static string? DraftedFrom(ScrapeProject project, string placeKey, string variant) =>
+        Directory.EnumerateFiles(project.Folder, "*" + PageDrafter.Extension, SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Where(file => ScrapedHeader.Find(File.ReadAllText(file)) is { } header && header.Page == placeKey && header.Variant == variant)
+            .Select(file => Path.GetFileName(file)[..^PageDrafter.Extension.Length]).FirstOrDefault();
+
+    // The page class that opens at an address: the class whose declaration, up to its body, names that address in
+    // quotes (a base that takes it, whatever the base is called). One file may hold several pages.
+    private static string? PageClassAt(ScrapeProject project, string key)
+    {
+        var addresses = new[] { key, key.TrimEnd('/', '#') }.Distinct(StringComparer.Ordinal).Select(System.Text.RegularExpressions.Regex.Escape);
+        var declaration = new System.Text.RegularExpressions.Regex("class\\s+(\\w+)[^{;]*?\"(?:" + string.Join('|', addresses) + ")\"");
+        return Directory.EnumerateFiles(project.Folder, "*.cs", SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Order(StringComparer.Ordinal)
+            .Select(file => declaration.Match(File.ReadAllText(file)))
+            .FirstOrDefault(match => match.Success)?.Groups[1].Value;
+    }
+
+    /// <summary>
+    /// The classes drafted from a place whose place reads differently now: for each, the labels it names that the
+    /// place no longer shows and what the place shows that it does not name (<see cref="PlaceDrafter.Drift"/>).
+    /// A class is held against the place its first line names (<c>// &lt;scraped page="…" variant="form" …&gt;</c>).
+    /// </summary>
+    public IReadOnlyList<PlaceDrift> PlaceDrifts(string? projectName, PlacesList list)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        var project = Project(projectName);
+        var drifts = new List<PlaceDrift>();
+        foreach (var group in ProjectCode.Read(project).Where(each => File.Exists(each.File)).GroupBy(each => each.Name.Split('<')[0], StringComparer.Ordinal))
+        {
+            var header = group.Select(each => each.Header).FirstOrDefault(each => each?.Page is not null && each.Variant is "form" or "row");
+            if (header is null)
+                continue;
+            var kind = header.Variant == "row" ? PlaceDraftKind.Row : PlaceDraftKind.Form;
+            if (list[header.Page!] is not { } place)
+            {
+                drifts.Add(new PlaceDrift(group.Key, header.Page!, "the list has no such place any more", [], []));
+                continue;
+            }
+
+            if (PlaceDrafter.Shape(place, kind) == header.Hash)
+                continue;
+            var code = string.Join('\n', group.Select(each => each.File).Distinct(StringComparer.OrdinalIgnoreCase).Select(File.ReadAllText));
+            var (notOnPlace, notInClass) = PlaceDrafter.Drift(place, code, kind);
+            drifts.Add(new PlaceDrift(group.Key, place.Key, notOnPlace.Count + notInClass.Count == 0 ? "read differently, though every label is named: draft it again for its new first line" : "", notOnPlace, notInClass));
+        }
+
+        return drifts;
+    }
+
     private async Task<WalkResult> WalkOnceAsync(ScrapeProject project, PlacesList list, string listFile, WalkOptions options, string? account, bool visible, CancellationToken cancellationToken)
     {
         var (source, guard) = await StartGuardedAsync(project, account, visible, cancellationToken).ConfigureAwait(false);
         await using (source.ConfigureAwait(false))
         {
-            var walker = new Walker(project, source, source, guard, options, source.CaptureAsync, changed => changed.Save(listFile));
+            // What the walk reads is kept as a recording session of its own, started with its first place: the
+            // patterns, the control suggestions and the drafts read a walked place as they read a recorded page.
+            RecordingSession? session = null;
+            var walker = new Walker(project, source, source, guard, options, source.CaptureAsync, changed => changed.Save(listFile))
+            {
+                Keep = (snapshot, state) =>
+                {
+                    session ??= project.StartSession($"walk-{options.Account}", DateTimeOffset.Now);
+                    return $"{session.Id}/{session.AddPage(snapshot, null, state).Snapshot}";
+                },
+            };
             return await walker.RunAsync(list, cancellationToken).ConfigureAwait(false);
         }
     }

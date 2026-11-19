@@ -47,6 +47,9 @@ public sealed record ScraperConfig
     /// </summary>
     public IReadOnlyList<ControlLibrary> ControlLibraries { get; init; } = [];
 
+    /// <summary>The project's own signs (<c>## Control signs</c>): how the app's own elements are recognized as controls. They come before the libraries'.</summary>
+    public IReadOnlyList<ControlSign> ControlSigns { get; init; } = [];
+
     /// <summary>The folder, in the project, generated controls go to.</summary>
     public string ControlsFolder { get; init; } = "Controls";
 
@@ -118,7 +121,12 @@ public sealed record ScraperConfig
             }
         }
         if (sections.TryGetValue("Control libraries", out var libraries))
-            config = config with { ControlLibraries = libraries.Rows.Select(r => new ControlLibrary(r.Cells.GetValueOrDefault("Class prefix", "").Trim(), r.Cells.GetValueOrDefault("Library", "").Trim())).Where(l => l.ClassPrefix.Length > 0 && l.Library.Length > 0).ToArray() };
+            config = config with { ControlLibraries = libraries.Rows.Select(r => new ControlLibrary(r.Cells.GetValueOrDefault("Class prefix", "").Trim(), r.Cells.GetValueOrDefault("Library", "").Trim()) { Signs = r.Cells.GetValueOrDefault("Signs", "").Trim().Trim('`') }).Where(l => l.ClassPrefix.Length > 0 && l.Library.Length > 0).ToArray() };
+        if (sections.TryGetValue("Control signs", out var signs))
+            config = config with { ControlSigns = ControlSign.Read(signs.Rows, "the suite") };
+        // What holds a field with its label (## Field holders: Holder, Sign) is kept with the signs.
+        if (sections.TryGetValue("Field holders", out var holders))
+            config = config with { ControlSigns = [.. config.ControlSigns, .. ControlSign.Read(holders.Rows, "the suite")] };
         if (sections.TryGetValue("Modules", out var modules))
             config = config with { Modules = modules.Rows.Select(Module).ToArray() };
         if (sections.TryGetValue("Aliases", out var aliases))

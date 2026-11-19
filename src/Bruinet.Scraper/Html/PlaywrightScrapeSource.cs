@@ -116,6 +116,10 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         _page.FrameNavigated += OnFrameNavigated;
         _page.Download += (_, download) => Downloaded?.Invoke(this, download.SuggestedFilename);
         _context.Response += OnResponse;
+        // What is asked for and not answered yet: a page that did not open says what it waited for.
+        _context.Request += (_, request) => _waiting[request] = DateTime.UtcNow;
+        _context.RequestFinished += (_, request) => _waiting.TryRemove(request, out DateTime _);
+        _context.RequestFailed += (_, request) => _waiting.TryRemove(request, out DateTime _);
         // With a handler, Playwright no longer dismisses a dialog itself: a confirm is always answered no.
         _page.Dialog += (_, dialog) =>
         {
@@ -445,6 +449,20 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     /// <summary>Why the last <see cref="GoToAsync"/> did not open its page; null when it did.</summary>
     public string? LastOpenProblem { get; private set; }
 
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<IRequest, DateTime> _waiting = new();
+
+    // Why a page did not open, and the requests it was still waiting for, the longest first: an address without its
+    // query, and how long it was out.
+    private string Problem(string message)
+    {
+        var now = DateTime.UtcNow;
+        var waiting = _waiting.OrderBy(pair => pair.Value).Take(3)
+            .Select(pair => Uri.TryCreate(pair.Key.Url, UriKind.Absolute, out var uri) ? $"{pair.Key.ResourceType} {uri.Host}{uri.AbsolutePath} ({(now - pair.Value).TotalSeconds:0} s)" : null)
+            .Where(text => text is not null).ToList();
+        var first = message.Split((char)10)[0].Trim();
+        return waiting.Count == 0 ? first : $"{first} Still waiting for {string.Join(", ", waiting)}{(_waiting.Count > waiting.Count ? $" and {_waiting.Count - waiting.Count} more" : "")}.";
+    }
+
     /// <inheritdoc/>
     public async Task<bool> GoToAsync(string url, CancellationToken cancellationToken = default)
     {
@@ -453,6 +471,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
             // Going to the address the page is at already, hash route included, loads nothing: what an earlier click
             // opened (a menu, a dialog) would still cover the page. Explore asks for the page as it opens, so reload.
             var page = Started();
+            _waiting.Clear();
             var stays = ClickRefusal.StaysInDocument(page.Url, url);
             await page.GotoAsync(url, Opening).ConfigureAwait(false);
             if (stays)
@@ -471,14 +490,14 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
             }
             catch (Exception again) when (again is PlaywrightException or TimeoutException)
             {
-                LastOpenProblem = again.Message.Split((char)10)[0].Trim();
+                LastOpenProblem = Problem(again.Message);
                 return false;
             }
         }
         catch (Exception e) when (e is PlaywrightException or TimeoutException)
         {
             // Blocked by a guard, or the site did not answer: the first line says which.
-            LastOpenProblem = e.Message.Split((char)10)[0].Trim();
+            LastOpenProblem = Problem(e.Message);
             return false;
         }
     }

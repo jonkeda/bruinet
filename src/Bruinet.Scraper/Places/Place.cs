@@ -102,6 +102,18 @@ public sealed record Place
     /// <summary>Where it is known from: the map, the suite, a recording, the code, the walk, a test's run.</summary>
     public IReadOnlyList<string> Sources { get; init; } = [];
 
+    /// <summary>
+    /// Where the place as the walk read it is kept: a capture of a recording session (<c>2026-11-18-walk-creator/012-day-off.nodes.jsonl</c>),
+    /// which the patterns, the control suggestions and the drafts read. Null when none was kept.
+    /// </summary>
+    public string? Snapshot { get; init; }
+
+    /// <summary>Another place of the same page that shows the same form (a row's pen opens what "+ Add" opens); null when none.</summary>
+    public string? SameAs { get; init; }
+
+    /// <summary>The component a dialog or a menu is, as the project names it or made it (<c>ColumnChooser</c>); null when none.</summary>
+    public string? Component { get; init; }
+
     /// <summary>The day it was last seen (<c>2026-11-18</c>); null when never.</summary>
     public string? Seen { get; init; }
 

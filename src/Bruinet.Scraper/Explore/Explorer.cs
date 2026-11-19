@@ -343,9 +343,13 @@ internal sealed record NodeRef(string Key, int Number, string Label)
     {
         var counts = new Dictionary<string, int>(StringComparer.Ordinal);
         var refs = new Dictionary<int, NodeRef>();
+        // What lies over the page (a dialog, a menu, a list) counts its own: a dialog's Delete is not the page's
+        // Delete, wherever in the document the dialog was drawn. A parent comes before its children.
+        var over = new string?[snapshot.Nodes.Count + 1];
         foreach (var node in snapshot.Nodes)
         {
-            var signature = string.Join('|', node.Type, node.Role, node.Name, node.Text, node.Attribute("data-testid"), node.Attribute("id"), node.Attribute("href"));
+            over[node.Number] = node.Role is "dialog" or "alertdialog" or "menu" or "listbox" ? node.Role : node.Type == "dialog" ? "dialog" : node.Parent == 0 ? null : over[node.Parent];
+            var signature = string.Join('|', node.Type, node.Role, node.Name, node.Text, node.Attribute("data-testid"), node.Attribute("id"), node.Attribute("href")) + (over[node.Number] is { } layer ? "@" + layer : "");
             var ordinal = counts[signature] = counts.GetValueOrDefault(signature) + 1;
             refs[node.Number] = new NodeRef($"{signature}#{ordinal}", node.Number, node.Name ?? snapshot.TextWithin(node) ?? node.Attribute("title") ?? node.Type);
         }

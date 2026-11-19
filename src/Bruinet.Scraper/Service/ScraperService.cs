@@ -482,7 +482,15 @@ public sealed partial class ScraperService : IAsyncDisposable
     {
         var project = Project(projectName);
         var index = project.Index();
-        var pages = index.Pages.Select(p => (p.Key, index.Read(p.Latest))).ToArray();
+        // A page as it opened, and each state of it a press showed in the same session (a dialog, a menu): the walk
+        // keeps those, and a dialog's build is a pattern like a page's.
+        var pages = index.Pages.SelectMany(p =>
+        {
+            var basis = PageDrafter.Basis(p);
+            return p.Captures.Where(c => c.Session == basis.Session && (c == basis || c.Event.Name is not null))
+                .DistinctBy(c => c.Event.Name, StringComparer.Ordinal)
+                .Select(c => (c.Event.Name is { } state ? $"{p.Key} › {state}" : p.Key, index.Read(c)));
+        }).ToArray();
         return PatternDetector.Detect(pages, ProjectCode.Read(project), max, project.Config.TestIds, project.Config.Components);
     }
 

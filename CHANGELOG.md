@@ -18,6 +18,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([the format](docs/spec/spec-format.md)).
 - **bruinet spec check** and **bruinet spec trace**: what `lirenet check` and `lirenet trace` did, with the same
   arguments, output and exit codes.
+- The walk keeps what it read: each place (a page, a dialog, a menu, a tab) as a capture in a recording session of
+  its own, named in the list (`snapshot`), so the patterns, the control suggestions and the drafts read a walked place
+  as they read a recorded page. `bruinet scrape places read` reads the kept places again with the signs the project
+  names now, opening nothing.
+- Control signs: a control library says how each of its controls is recognized on a page (`control-signs.md`, named
+  in `## Control libraries`, column `Signs`), and a project says it for its app's own elements (`## Control signs`).
+  A field of the list carries its control (`Name (text, VTextField, required)`); a control that is not made yet is
+  marked with a question mark. `## Field holders` says what holds a field with its label (a form's row, a card).
+  `bruinet scrape places fields` counts the fields by control, and `places elements` the app's own elements with what
+  stands for each.
+- `bruinet scrape places draft <place>` drafts a class from a place in the suite's own shape (`draft-templates.md`
+  beside `scraper.config.md`): a form with a member per field and button, a list's row with a member per column, or
+  the test that holds a form against its class. `places drift [--check]` holds the drafted classes against the list
+  as it is now.
+- The walk: a dialog's buttons are told apart from the page's of the same name; a page that did not open says what
+  it was still waiting for; a writing call is kept with the names of the fields it sends, never their values; a
+  button with only an icon is named by what the page says of it before its icon; a required field is read from its
+  label's mark too.
+- A field's label: looked for further up (a select's input lies many elements under its row), a row's first field
+  takes the row's label and a second is named after it (`Start date: Time`), and what lies in a field's own control
+  (a select's chosen value) is not its label. A text editor's own buttons are not the page's.
 - **bruinet scrape places**: one list of an app's places (pages, tabs, dialogs, menus, buttons that only call the back
   end), kept between runs in the suite's `.testing/175-Places.json` with `175-Places.md` beside it. `seed` adds the
   map's addresses, the suite's page objects' and the recordings' pages; `routes` reads the route tables in the scripts

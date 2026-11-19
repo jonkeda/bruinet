@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Record</title>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <!-- A record's own page as a UI library draws it: the "Delete?" question is put in the document when it is asked,
+       before the page's own Delete and over the whole page, and its yes has the same name. Only the yes reaches /api/counter/delete. -->
+  <main>
+    <h1>Record</h1>
+    <label>Name <input name="name"></label>
+    <button type="button" id="ask">Delete</button>
+  </main>
+
+  <script>
+    document.getElementById('ask').addEventListener('click', () => {
+      const question = document.createElement('div');
+      question.setAttribute('role', 'dialog');
+      question.setAttribute('aria-label', 'Delete?');
+      // It lies over the whole page, as a library's dialog does: nothing under it can be pressed.
+      question.style.cssText = 'position:fixed;inset:0;background:#fff';
+      question.innerHTML = '<p>Delete this record?</p><button type="button">Cancel</button><button type="button">Delete</button>';
+      const [no, yes] = question.querySelectorAll('button');
+      no.addEventListener('click', () => question.remove());
+      yes.addEventListener('click', () => {
+        fetch('/api/counter/delete?via=question', { method: 'DELETE' }).catch(() => {});
+        question.remove();
+      });
+      document.body.insertBefore(question, document.querySelector('main'));
+    });
+  </script>
+</body>
+</html>

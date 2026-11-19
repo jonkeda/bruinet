@@ -48,7 +48,7 @@ public sealed class RequestGuard(ExploreSettings settings)
     {
         var reason = Why(method, url, navigatesPage) ?? Held(method, url, body);
         if (reason is not null)
-            _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), WithoutSecrets(url), reason));
+            _blocked.Enqueue(new BlockedRequest(method.ToUpperInvariant(), WithoutSecrets(url), reason) { Sends = Service.PageCall.FieldsOf(body) });
         return reason;
     }
 
@@ -171,4 +171,8 @@ public sealed class RequestGuard(ExploreSettings settings)
 }
 
 /// <summary>A request the guard aborted: its method, address, and why.</summary>
-public sealed record BlockedRequest(string Method, string Url, string Reason);
+public sealed record BlockedRequest(string Method, string Url, string Reason)
+{
+    /// <summary>The names of the fields the request would have sent, without their values; empty when it sent none that can be read.</summary>
+    public IReadOnlyList<string> Sends { get; init; } = [];
+}

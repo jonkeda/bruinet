@@ -91,6 +91,12 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     private static readonly string[] DeleteWords = DangerWords.ByCategory["delete"].Concat(DangerWords.ByCategory["approve"]).ToArray();
     private static readonly TimeSpan PageLimit = TimeSpan.FromMinutes(4);
 
+    /// <summary>
+    /// Keeps a place as it was read (the capture, and for a part of a page what opened it) and says where: the
+    /// place's <see cref="Place.Snapshot"/>. Null keeps nothing.
+    /// </summary>
+    public Func<ScrapeSnapshot, string?, string?>? Keep { get; init; }
+
     private readonly ExploreSettings _settings = project.Config.Explore;
     private readonly bool _careful = project.Config.Environment == AppEnvironment.Production;
     private readonly Stopwatch _clock = new();
@@ -235,14 +241,14 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             return;
         }
 
-        var facts = PageFacts.Of(snapshot);
+        var facts = PageFacts.Of(snapshot, project.ControlSigns);
         if (facts.Headings.FirstOrDefault(heading => Refusal().IsMatch(heading)) is { } refusal)
         {
             list.Add(seen with { State = PlaceState.Refused, Accounts = [], RefusedTo = [options.Account], Note = $"the app answered: {Place.Clean(refusal)}" });
             return;
         }
 
-        var page = Read(seen, facts, place.Key.Contains("{id}", StringComparison.Ordinal), isDialog: false);
+        var page = Read(seen, facts, place.Key.Contains("{id}", StringComparison.Ordinal), isDialog: false) with { Snapshot = Keep?.Invoke(snapshot, null) };
         var budget = new Budget(options.MaxPresses, Stopwatch.StartNew());
         var notPressed = new List<string>();
         await PressAllAsync(list, page, address, [], snapshot, 0, new HashSet<string>(StringComparer.Ordinal), budget, notPressed, inForm: page.State == PlaceState.FormNotSaved, cancellationToken).ConfigureAwait(false);
@@ -308,7 +314,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
 
             var afterRefs = NodeRef.Of(after);
             var fresh = afterRefs.Values.Where(r => after[r.Number].Bounds is not null && !before.Contains(r.Key)).Select(r => after[r.Number]).ToList();
-            var facts = PageFacts.Of(after);
+            var facts = PageFacts.Of(after, project.ControlSigns);
             var kind = Kind(snapshot, after, candidate, facts, fresh, made.Count + held.Count);
             // In a menu, a line that only changes the page is a setting (a list's column chooser): it is no
             // place, and after two in a row the rest of the lines are taken to be the same.
@@ -354,6 +360,7 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
                 PlaceKind.Menu => child with { State = PlaceState.Seen, Calls = writes, Buttons = [.. facts.Options.Select(Place.Clean).Where(line => line.Length > 0 && line.Split(' ').Length <= 8).Distinct(StringComparer.Ordinal).Take(40)] },
                 _ => Read(child, facts, ofRecord: true, isDialog: kind is PlaceKind.Dialog) with { Calls = writes },
             };
+            child = Kept(list, child, after, candidate.Label);
             var childNotPressed = new List<string>();
             if (depth + 1 < options.MaxDepth && !options.LinksAndTabs)
                 await PressAllAsync(list, child, address, [.. prefix, node with { Label = candidate.Label }], after, depth + 1, before, budget, childNotPressed, inForm: child.State == PlaceState.FormNotSaved, cancellationToken).ConfigureAwait(false);
@@ -448,7 +455,8 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
             }
 
             var target = refs[judgement.Node];
-            if (known.Contains(target.Key) || !CanBePressed(snapshot, node) || (_chromeDone && IsChrome(snapshot, node, chrome)))
+            // A button drawn inside a button is the same button: the outer one is pressed.
+            if (known.Contains(target.Key) || !CanBePressed(snapshot, node) || InAButton(snapshot, node) || (_chromeDone && IsChrome(snapshot, node, chrome)))
                 continue;
             var label = Label(snapshot, node, judgement.Label);
             var isTab = node.Role == "tab" || Classes(node).Contains("v-tab");
@@ -516,10 +524,11 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     // The place as the page's facts fill it in. A record's own page keeps no heading and no title: they are the record's name.
     private static Place Read(Place place, PageFacts facts, bool ofRecord, bool isDialog)
     {
-        var fields = facts.Fields.Select(field => $"{field.Label} ({field.Kind}{(field.Required ? ", required" : "")}{(field.Disabled ? ", disabled" : "")})").ToArray();
-        var open = facts.Fields.Count(field => !field.Disabled);
+        var fields = facts.Fields.Select(field => field.ToListText()).ToArray();
+        var open = facts.Fields.Count(field => !field.Disabled && !field.InTable);
         var saves = facts.Buttons.Any(button => SaveWords.Any(word => DangerWords.Contains(button, word)));
-        var form = saves && (isDialog ? open >= 1 : open >= 2 && facts.Columns.Count == 0);
+        // A list with a search box beside it is no form; a form with a table of lines in it is one.
+        var form = saves && (isDialog ? open >= 1 : open >= 2 && (facts.Columns.Count == 0 || open >= 4));
         return place with
         {
             State = form ? PlaceState.FormNotSaved : PlaceState.Seen,
@@ -535,8 +544,10 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
     // The calls a press made, as the list holds them: a writing call always, a reading one for a button that does nothing else.
     private string[] CallTexts(IReadOnlyList<PageCall> made, IReadOnlyList<BlockedRequest> held, bool all)
     {
-        var texts = held.Select(blocked => $"{blocked.Method} {CallKey(blocked.Url)} (held)")
-            .Concat(made.Where(call => all || call.Method is not ("GET" or "HEAD" or "OPTIONS")).Select(call => $"{call.Method} {CallKey(call.Url)}{(call.Status >= 400 ? $" -> {call.Status}" : "")}"));
+        // What a writing call sends is kept as its fields' names, never their values: a form's contract with the back end.
+        static string Sends(IReadOnlyList<string> fields) => fields.Count == 0 ? "" : $" sends: {string.Join(", ", fields)}";
+        var texts = held.Select(blocked => $"{blocked.Method} {CallKey(blocked.Url)} (held){Sends(blocked.Sends)}")
+            .Concat(made.Where(call => all || call.Method is not ("GET" or "HEAD" or "OPTIONS")).Select(call => $"{call.Method} {CallKey(call.Url)}{(call.Status >= 400 ? $" -> {call.Status}" : "")}{Sends(PageCall.FieldsOf(call.Body))}"));
         return [.. texts.Distinct(StringComparer.Ordinal).Take(8)];
     }
 
@@ -592,6 +603,16 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         return snapshot;
     }
 
+    private Place Kept(PlacesList list, Place child, ScrapeSnapshot after, string label) =>
+        child with { Snapshot = Keep?.Invoke(after, label), SameAs = child.Kind == PlaceKind.Dialog ? SameForm(list, child) : null };
+
+    // A dialog of the same page with the same fields is the same form, opened another way.
+    private static string? SameForm(PlacesList list, Place dialog) =>
+        dialog.Fields.Count == 0 ? null : list.Places.FirstOrDefault(other => other.Kind == PlaceKind.Dialog && other.Parent == dialog.Parent && other.Key != dialog.Key && other.SameAs is null
+            && other.Fields.Select(FieldLabel).SequenceEqual(dialog.Fields.Select(FieldLabel), StringComparer.Ordinal))?.Key;
+
+    private static string FieldLabel(string field) => field.LastIndexOf(" (", StringComparison.Ordinal) is var at and > 0 ? field[..at] : field;
+
     private void Found(PlacesList list, Place place)
     {
         if (list.Add(place))
@@ -642,6 +663,18 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         || node.Role is "checkbox" or "switch" or "radio" or "option" or "menuitemcheckbox" or "menuitemradio" or "combobox" or "listbox" or "textbox"
         || node.Attribute("aria-haspopup") == "listbox";
 
+    private static bool InAButton(ScrapeSnapshot snapshot, ScrapeNode node)
+    {
+        var level = 0;
+        for (var at = node.Parent; at != 0 && level < 4; at = snapshot[at].Parent, level++)
+        {
+            if (snapshot[at].Type == "button" || snapshot[at].Role == "button")
+                return true;
+        }
+
+        return false;
+    }
+
     // A line of a menu with a box to tick in it (a list's column chooser) is a field too.
     private static bool IsTick(ScrapeNode node) =>
         node.Role is "checkbox" or "switch" or "radio" || (node.Type == "input" && node.Attribute("type") is "checkbox" or "radio");
@@ -686,13 +719,34 @@ public sealed partial class Walker(ScrapeProject project, IExploreSource source,
         if (said.Length > 0 && said != node.Type)
             return said;
         var below = Below(snapshot, node, 5).ToList();
+        // What the page says of a button with only an icon comes before the icon's own name.
+        var told = below.Select(at => at.Attribute("aria-label") ?? at.Attribute("title") ?? at.Attribute("data-original-title"))
+            .Select(text => text is null ? "" : Place.Clean(text)).FirstOrDefault(text => text.Length > 0 && text.Split(' ').Length <= 7);
+        if (told is not null)
+            return told;
         var icon = below.SelectMany(Classes).FirstOrDefault(IsIconName);
         if (icon is not null)
-            return icon;
+            return RowOf(snapshot, node) is null && CardTitle(snapshot, node) is { } card ? $"{card}: {icon}" : icon;
         // A field that opens a list says what it is in its label or its placeholder, not in itself.
         var named = below.Select(at => at.Attribute("aria-label") ?? at.Attribute("placeholder") ?? at.Attribute("title") ?? at.Name ?? at.Text)
             .Select(text => text is null ? "" : Place.Clean(text)).FirstOrDefault(text => text.Length > 0);
         return named ?? node.Attribute("data-cy") ?? node.Attribute("data-testid") ?? node.Attribute("id") ?? node.Type;
+    }
+
+    // The title of the card a button is in, when it is in the card's title bar: two pens on one page are the pens of
+    // two cards, and each is named after its own. A title is a few words; a longer text is what a record says.
+    private static string? CardTitle(ScrapeSnapshot snapshot, ScrapeNode node)
+    {
+        var level = 0;
+        for (var at = node.Parent; at != 0 && level < 6; at = snapshot[at].Parent, level++)
+        {
+            if (!Classes(snapshot[at]).Any(name => name.EndsWith("card__title", StringComparison.Ordinal) || name.EndsWith("card-header", StringComparison.Ordinal)))
+                continue;
+            var title = Below(snapshot, snapshot[at], 2).Where(each => each.Number < node.Number && each.Text is { Length: > 0 }).Select(each => Place.Clean(each.Text!)).FirstOrDefault(text => text.Length > 0);
+            return title is not null && title.Split(' ').Length <= 5 ? title : null;
+        }
+
+        return null;
     }
 
     // An icon's own name among its classes (fa-pen, mdi-delete): not the classes that only say how it is drawn.

@@ -56,6 +56,21 @@ public sealed partial class ScrapeProject
     /// <summary>The saved sign-in the browser starts from (<c>SignInState</c> under <c>## Explore</c>), as a full path; null for none.</summary>
     public string? SignInStatePath => Config.Explore.SignInState is { Length: > 0 } state ? Path.GetFullPath(Path.Combine(Folder, state)) : null;
 
+    /// <summary>
+    /// How controls are recognized on this app's pages: the project's own signs first, then each control library's
+    /// file of signs, in the order of <c>## Control libraries</c>. A library whose file is not there gives none.
+    /// </summary>
+    public IReadOnlyList<ControlSign> ControlSigns => _signs ??=
+    [
+        .. Config.ControlSigns,
+        .. Config.ControlLibraries.Where(library => library.Signs.Length > 0)
+            .Select(library => (Library: library, File: Path.GetFullPath(Path.Combine(Folder, library.Signs))))
+            .Where(each => File.Exists(each.File))
+            .SelectMany(each => ControlSign.ReadFile(each.File, each.Library.Library)),
+    ];
+
+    private IReadOnlyList<ControlSign>? _signs;
+
     /// <summary>Where its recordings are.</summary>
     public string RecordingsFolder => Path.Combine(Folder, RecordingsFolderName);
 
