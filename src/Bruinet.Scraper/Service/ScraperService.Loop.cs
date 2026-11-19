@@ -158,7 +158,7 @@ public sealed partial class ScraperService
     private void Draft(ScrapeProject project, PlacesList list, string group, LoopOptions options, List<string> taken, List<Written> written, List<Reason> reasons)
     {
         var suite = SuiteSource.Read(project);
-        var owed = Owed.Of(list, suite).Groups.FirstOrDefault(each => each.Group == group);
+        var owed = Owed.Of(list, suite, project.PlaceSigns).Groups.FirstOrDefault(each => each.Group == group);
         if (owed is null)
             return;
         // Pages before what opens on them: a dialog is drafted on its page's class.

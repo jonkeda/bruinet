@@ -118,6 +118,12 @@ public static class StopRules
     /// <summary>How many loops in a row may keep nothing.</summary>
     public const int KeptNothing = 2;
 
+    /// <summary>
+    /// How many minutes loops that kept nothing may take together before that stops the batch: a loop that drafts
+    /// nothing and is over in seconds wasted nothing, and its places are parked.
+    /// </summary>
+    public const double WastedMinutes = 5;
+
     /// <summary>Why the batch stops after its last loop; null when it goes on.</summary>
     /// <param name="batch">The batch's loops so far, in order.</param>
     public static string? Check(IReadOnlyList<LoopResult> batch)
@@ -131,8 +137,8 @@ public static class StopRules
             .GroupBy(reason => reason.Code, StringComparer.Ordinal).Where(group => group.Count() >= SameReason).OrderByDescending(group => group.Count()).FirstOrDefault();
         if (repeated is not null)
             return string.Create(CultureInfo.InvariantCulture, $"the reason '{repeated.Key}' came {repeated.Count()} times in this batch: it is a fault of the process, to fix at {repeated.First().FixAt} before the next group (for example {repeated.First().Place}: {repeated.First().Evidence})");
-        return batch.Count >= KeptNothing && batch.TakeLast(KeptNothing).All(loop => loop.KeptNothing)
-            ? string.Create(CultureInfo.InvariantCulture, $"{KeptNothing} loops in a row kept nothing ({string.Join(", ", batch.TakeLast(KeptNothing).Select(loop => loop.Group))})")
+        return batch.Count >= KeptNothing && batch.TakeLast(KeptNothing).All(loop => loop.KeptNothing) && batch.TakeLast(KeptNothing).Sum(loop => loop.Minutes) >= WastedMinutes
+            ? string.Create(CultureInfo.InvariantCulture, $"{KeptNothing} loops in a row kept nothing and took {batch.TakeLast(KeptNothing).Sum(loop => loop.Minutes)} minutes ({string.Join(", ", batch.TakeLast(KeptNothing).Select(loop => loop.Group))})")
             : null;
     }
 }

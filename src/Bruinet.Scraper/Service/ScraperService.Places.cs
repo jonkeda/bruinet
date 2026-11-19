@@ -106,7 +106,7 @@ public sealed partial class ScraperService
 
     /// <summary>What the places of a list still owe, by group, held against the suite's source (<see cref="Factory.Owed"/>).</summary>
     public Factory.OwedReport OwedPlaces(string? projectName, PlacesList list) =>
-        Factory.Owed.Of(list, Factory.SuiteSource.Read(Project(projectName)));
+        Factory.Owed.Of(list, Factory.SuiteSource.Read(Project(projectName)), Project(projectName).PlaceSigns);
 
     /// <summary>The app's own elements over the kept places, with what stands for each (<see cref="PlacesReading.Elements"/>).</summary>
     public IReadOnlyList<ElementCount> PlaceElements(string? projectName, PlacesList list)

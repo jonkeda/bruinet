@@ -79,9 +79,13 @@ public sealed class FactoryLoopTests : IDisposable
     [Fact]
     public void Two_loops_in_a_row_that_keep_nothing_stop_the_batch_and_a_loop_s_own_stop_does_at_once()
     {
-        var nothing = StopRules.Check([Loop("/a", 2), Loop("/b", 0, Test(ReasonCodes.LabelNotFound)), Loop("/c", 0, Test(ReasonCodes.Timeout))]);
+        var slow = new Dictionary<string, double> { ["test"] = 200 };
+        var nothing = StopRules.Check([Loop("/a", 2), Loop("/b", 0, Test(ReasonCodes.LabelNotFound)) with { Seconds = slow }, Loop("/c", 0, Test(ReasonCodes.Timeout)) with { Seconds = slow }]);
 
-        Assert.Contains("2 loops in a row kept nothing (/b, /c)", nothing, StringComparison.Ordinal);
+        Assert.Contains("2 loops in a row kept nothing and took", nothing, StringComparison.Ordinal);
+        Assert.Contains("(/b, /c)", nothing, StringComparison.Ordinal);
+        // Two loops that kept nothing and were over in a moment wasted nothing: their places are parked and the batch goes on.
+        Assert.Null(StopRules.Check([Loop("/b", 0, Test(ReasonCodes.LabelNotFound)) with { Seconds = new Dictionary<string, double> { ["draft"] = 5 } }, Loop("/c", 0, Test(ReasonCodes.NoPageClass)) with { Seconds = new Dictionary<string, double> { ["draft"] = 5 } }]));
         Assert.Equal("the suite does not build", StopRules.Check([Loop("/a", 2) with { Stop = "the suite does not build" }]));
     }
 

@@ -104,10 +104,11 @@ public static partial class ScrapeCommands
         var noWalk = new Option<bool>("--no-walk") { Description = "Do not walk: draft from the captures there are." };
         var noTest = new Option<bool>("--no-test") { Description = "Do not run the drafted tests on the app: stop after the build." };
         var dryRun = new Option<bool>("--dry-run") { Description = "Say which groups would run, and run none." };
+        var again = new Option<bool>("--again") { Description = "Take up again the places an earlier run tried and did not keep. Default: they are parked, each with its reason in the ledger, until what they wait for is there." };
         var baseline = new Option<string?>("--baseline") { Description = "Tests that must still pass after each loop, as a dotnet test filter (Module=Projects): they run before a loop writes and again at its end, and a loop that breaks one is put back whole." };
         var command = new Command("run", "Run loops of the factory: each group through walk, read, draft, build and test. What does not build or does not pass twice is put back, with a reason; the loop is written into the state and the ledger. Stops when a reason comes three times in the batch, when two loops in a row keep nothing, or when the suite does not build. Exit 1 when it stopped by a rule.")
         {
-            groups, project, solution, list, module, batch, noWalk, noTest, dryRun, baseline, headless, json,
+            groups, project, solution, list, module, batch, noWalk, noTest, dryRun, again, baseline, headless, json,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -121,14 +122,19 @@ public static partial class ScrapeCommands
             var modules = ModuleCut.Keep(ModuleCut.Of(places, scraped.Config, owed), File.Exists(modulesFile) ? ModuleCut.Parse(await File.ReadAllTextAsync(modulesFile, cancellationToken).ConfigureAwait(false)) : []);
             var setup = FactorySetup.Read(scraped.Home);
             var given = parsed.GetValue(groups) ?? [];
-            var chosen = GroupsToRun(modules, owed, setup, given, parsed.GetValue(module));
+            var state = FactoryState.Load(scraped.Home);
+            // What an earlier run tried and did not keep is parked: it waits for a fix, not for another try.
+            var taken = parsed.GetValue(again) ? new HashSet<string>(StringComparer.Ordinal) : state.Loops.SelectMany(loop => loop.Places).ToHashSet(StringComparer.Ordinal);
+            var chosen = GroupsToRun(modules, owed, setup, given, parsed.GetValue(module))
+                .Where(group => given.Contains(group, StringComparer.Ordinal) || owed.Groups.Any(each => each.Group == group && each.PagesWithoutClass.Concat(each.DialogFormsNotDrafted).Concat(each.RecordPages).Any(place => !taken.Contains(place))))
+                .ToList();
             var most = parsed.GetValue(batch) ?? 10;
             var queue = chosen.Take(most).ToList();
             if (queue.Count == 0)
             {
                 await io.Error.WriteLineAsync(given.Length == 0 && !setup.RunsAll && setup.Run.Count == 0 && parsed.GetValue(module) is null
                     ? $"Nothing runs: {FactorySetup.FileName} has no answer for Run. Say which with 'factory setup --set Run=all', name a module with --module, or give the groups."
-                    : "No group owes a page or a dialog form that can be drafted.").ConfigureAwait(false);
+                    : "No group owes a place that was not tried before. The ledger says why each parked place was not kept; --again takes them up again.").ConfigureAwait(false);
                 return 0;
             }
 
@@ -140,11 +146,9 @@ public static partial class ScrapeCommands
                 return 0;
             }
 
-            var state = FactoryState.Load(scraped.Home);
             var number = state.NextBatch;
             var ran = new List<LoopResult>();
             string? stopped = null;
-            var taken = new HashSet<string>(StringComparer.Ordinal);
             for (var at = 0; at < queue.Count; at++)
             {
                 var group = queue[at];
@@ -155,7 +159,7 @@ public static partial class ScrapeCommands
                 taken.UnionWith(loop.Places);
                 // The same group again while it has places this run did not take up.
                 if (loop.Places.Count > 0 && service.OwedPlaces(name, PlacesList.Load(file)).Groups.FirstOrDefault(each => each.Group == group) is { } still
-                    && still.PagesWithoutClass.Concat(still.DialogFormsNotDrafted).Any(place => !taken.Contains(place)))
+                    && still.PagesWithoutClass.Concat(still.DialogFormsNotDrafted).Concat(still.RecordPages).Any(place => !taken.Contains(place)))
                 {
                     queue.Insert(at + 1, group);
                 }

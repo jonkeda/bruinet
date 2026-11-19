@@ -138,7 +138,8 @@ public static partial class ReasonClassifier
         return one.Length > 240 ? one[..240] + "…" : one;
     }
 
-    [GeneratedRegex(@"does not show|not (found|shown) on|no (field|row|label) |labels? .* (missing|not)", RegexOptions.IgnoreCase)]
+    // A form's test holds the labels its class declares against the page: what is missing comes as a list that should be empty.
+    [GeneratedRegex(@"does not show|not (found|shown) on|no (field|row|label) |labels? .* (missing|not)|Collections differ\s+Expected:\s+string\[\] \[\]", RegexOptions.IgnoreCase)]
     private static partial Regex NotShown();
 
     // What a test looked for is not there: the page or the part it is of did not open as the test opens it.

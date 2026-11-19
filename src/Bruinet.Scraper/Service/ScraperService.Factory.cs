@@ -55,7 +55,7 @@ public sealed partial class ScraperService
             }
         }
 
-        var owed = Owed.Of(fresh, SuiteSource.Read(project));
+        var owed = Owed.Of(fresh, SuiteSource.Read(project), project.PlaceSigns);
         var wouldDraft = 0;
         var cannot = new List<NotDrafted>();
         foreach (var key in owed.Groups.SelectMany(group => group.PagesWithoutClass.Concat(group.DialogFormsNotDrafted)))

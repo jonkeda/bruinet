@@ -65,6 +65,9 @@ public sealed record SuiteSource(string Text, IReadOnlySet<string> DraftedFrom)
         return new SuiteSource(text.ToString(), drafted);
     }
 
+    /// <summary>True when the suite declares a class of this name.</summary>
+    public bool Declares(string className) => System.Text.RegularExpressions.Regex.IsMatch(Text, $@"\bclass\s+{System.Text.RegularExpressions.Regex.Escape(className)}\b");
+
     /// <summary>True when a class names the address in quotes, as a page that opens itself does.</summary>
     public bool Names(string address) => Text.Contains($"\"{address}\"", StringComparison.Ordinal);
 }
@@ -73,10 +76,15 @@ public sealed record SuiteSource(string Text, IReadOnlySet<string> DraftedFrom)
 public static class Owed
 {
     /// <summary>What every group of the list owes, held against the suite's source.</summary>
-    public static OwedReport Of(PlacesList list, SuiteSource suite)
+    /// <param name="list">The places.</param>
+    /// <param name="suite">The suite's source.</param>
+    /// <param name="signs">How an icon is named on the app's pages: a place's class is named from what opened it.</param>
+    public static OwedReport Of(PlacesList list, SuiteSource suite, PlaceSigns? signs = null)
     {
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(suite);
+        // A place whose class is in the suite under the name a draft would give it owes no class, whoever wrote it.
+        bool HasClass(Place place) => suite.Declares(PlaceDrafter.ClassName(place, PlaceDraftKind.Form, signs));
         var groups = new List<OwedGroup>();
         foreach (var group in list.Places.GroupBy(PlaceKinds.GroupOf, StringComparer.Ordinal))
         {
@@ -85,14 +93,14 @@ public static class Owed
                 continue;
             var keys = pages.Select(page => page.Key).ToHashSet(StringComparer.Ordinal);
             var withoutClass = pages.Where(page => page.Address is not null && !PlaceKinds.IsRecord(page) && page.State is PlaceState.Seen or PlaceState.FormNotSaved
-                    && !suite.Names(page.Key) && !suite.DraftedFrom.Contains(page.Key))
+                    && !suite.Names(page.Key) && !suite.DraftedFrom.Contains(page.Key) && !HasClass(page))
                 .Select(page => page.Key).ToList();
             var records = pages.Where(page => PlaceKinds.IsRecord(page) && page.State is PlaceState.Seen or PlaceState.FormNotSaved
                     && !suite.Names(page.Key.Contains('{', StringComparison.Ordinal) ? page.Key[..page.Key.IndexOf('{', StringComparison.Ordinal)].TrimEnd('/') : page.Key)
-                    && !suite.Names(PlaceKinds.RecordAddress(page)) && !suite.DraftedFrom.Contains(page.Key))
+                    && !suite.Names(PlaceKinds.RecordAddress(page)) && !suite.DraftedFrom.Contains(page.Key) && !HasClass(page))
                 .Select(page => page.Key).ToList();
             var forms = group.Where(place => place.Kind == PlaceKind.Dialog && place.State == PlaceState.FormNotSaved && place.SameAs is null
-                    && keys.Contains(place.Parent ?? place.Key) && !suite.DraftedFrom.Contains(place.Key))
+                    && keys.Contains(place.Parent ?? place.Key) && !suite.DraftedFrom.Contains(place.Key) && !HasClass(place))
                 .Select(place => place.Key).ToList();
             var fields = group.Where(place => place.SameAs is null).SelectMany(place => place.Fields).Select(PlaceField.Parse).ToList();
             groups.Add(new OwedGroup(
