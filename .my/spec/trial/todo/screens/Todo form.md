@@ -16,6 +16,12 @@
 | Top buttons | Cancel · **Save** |
 | Sections | Basics · Schedule · Status |
 
+## Questions the screen asks
+
+| On | Title | Text | Answers |
+| --- | --- | --- | --- |
+| Cancel, with something changed | Discard changes? | Your changes to this todo have not been saved. | Discard · Keep editing |
+
 ## Fields
 
 A new form shows each field's default and no message. A message shows under its field, after Save

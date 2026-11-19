@@ -2,7 +2,7 @@
 
 Status: **a choice**, for discussion. Date: 2026-11-18. It applies the [question map](100-Questions.md)
 to the whole Todo sample (`samples/Todo`, journeys TOD.01 to TOD.11), where [500-Mixed.md](500-Mixed.md)
-sketched one journey. Nothing is rewritten yet; today the sample has one spec,
+sketched one journey. The example specs are in [../trial/todo](../trial/todo/000-Readme.md); the sample itself has one spec,
 `samples/Todo/specs/TOD.02.spec.md`, and [journeys.md](../../../samples/Todo/journeys.md) for the rest.
 
 ## The choice
@@ -101,11 +101,14 @@ samples/Todo/specs/
 
 | # | What | Why first |
 | --- | --- | --- |
-| 1 | `screens/Todo form.md`, `app/flow.md`, and TOD.02 rewritten | The one spec that exists: old and new can be counted side by side  **Done as a trial**, beside the accepted spec: [../trial/todo](../trial/todo/000-Readme.md) |
+| 1 | `screens/Todo form.md`, `app/flow.md`, and TOD.02 rewritten | The one spec that exists: old and new can be counted side by side |
 | 2 | `app/todo.md` and TOD.05 | The Overdue theory exists, so `SpecTable` has a real first user |
 | 3 | `screens/User form.md` and TOD.11 | The biggest field table; the real test of table checks (build item 2) |
 | 4 | `app/sync.md`, TOD.07 and TOD.08 | The sequence diagram and the `If … then …` rules; no new mechanism needed |
 | 5 | The rest | By then the styles are settled |
+
+All five steps are written as example specs, beside the accepted spec and with no code yet:
+[../trial/todo](../trial/todo/000-Readme.md).
 
 ## Decided
 

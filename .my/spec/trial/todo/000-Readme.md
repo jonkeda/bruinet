@@ -1,78 +1,120 @@
-# Trial: TOD.02 in mixed styles
+# Trial: the Todo sample in mixed styles
 
-Status: **a trial**, for discussion. Date: 2026-11-18. Step 1 of the order in
-[510-Todo-choice.md](../../design/510-Todo-choice.md): the one Todo spec that exists, rewritten in
-the chosen styles, so old and new can be counted side by side.
+Status: **a trial**, for discussion. Date: 2026-11-18. The example specs of
+[510-Todo-choice.md](../../design/510-Todo-choice.md): every journey of the Todo sample, TOD.01 to
+TOD.11, written in the chosen styles. Specs only: no test, no check and no reader is built for
+them yet.
+
+## The files
 
 | File | Holds | Styles |
 | --- | --- | --- |
-| [TOD.02.spec.md](TOD.02.spec.md) | The journey: intent, twelve rules, two tables, five examples | S4 prose, S2 one-line rule, T7 example table, T4 decision table, S3 Gherkin |
-| [screens/Todo form.md](screens/Todo%20form.md) | The form, for TOD.02 and TOD.04 | P1 screen card, T1 field table |
-| [app/flow.md](app/flow.md) | The ways between all five screens | P4 flow |
+| [screens/Todos.md](screens/Todos.md) | The list page | Screen card, list table, decision table, state diagram |
+| [screens/Todo.md](screens/Todo.md) | One todo | Screen card |
+| [screens/Todo form.md](screens/Todo%20form.md) | The form, new and edit | Screen card, field table |
+| [screens/Users.md](screens/Users.md) | The users list | Screen card, list table |
+| [screens/User form.md](screens/User%20form.md) | The user's form, twelve fields | Screen card, field table |
+| [app/flow.md](app/flow.md) | The ways between the five screens | Flow |
+| [app/messages.md](app/messages.md) | Every text the app shows | Message list |
+| [app/todo.md](app/todo.md) | A todo's status, Overdue, its sync state | Two state diagrams, decision table |
+| [app/sync.md](app/sync.md) | A sync: the order, what is sent, the merge, what a failure shows | Sequence diagram, three decision tables |
+| [TOD.01](TOD.01.spec.md) See my todos | 6 rules | Two example tables |
+| [TOD.02](TOD.02.spec.md) Create a todo | 12 rules | Example table, decision table, 5 scenarios |
+| [TOD.03](TOD.03.spec.md) Read a todo | 4 rules | Example table, 1 scenario |
+| [TOD.04](TOD.04.spec.md) Edit a todo | 5 rules | Decision table, 2 scenarios, a one-line rule |
+| [TOD.05](TOD.05.spec.md) Change status | 5 rules | 2 scenarios |
+| [TOD.06](TOD.06.spec.md) Delete a todo | 5 rules | Decision table, 1 scenario, one-line rules |
+| [TOD.07](TOD.07.spec.md) Sync with the server | 15 rules | Example table of devices, 4 scenarios with named people, one-line rules |
+| [TOD.08](TOD.08.spec.md) Things go wrong | 8 rules | One-line rules (`If … then …`), 2 scenarios |
+| [TOD.09](TOD.09.spec.md) Persistence and startup | 4 rules | One-line rules, 2 scenarios |
+| [TOD.10](TOD.10.spec.md) Look and accessibility | 4 rules | Example table of screens to visit |
+| [TOD.11](TOD.11.spec.md) Manage users | 10 rules | Two decision tables, two example tables, 4 scenarios |
+
+Every journey has prose for its intent, and a rules table whose third column, "Said by", names the
+row, table or example that says the rule.
 
 ## Why it is here and not in the sample
 
 The accepted spec, `samples/Todo/specs/TOD.02.spec.md`, is not touched. It is the fixture of
 `tests/Bruinet.Spec.Tests/SpecCheckTests.cs` (nineteen broken copies are made from its exact text),
 the example of `docs/spec/spec-format.md`, and the owner accepted it on 2026-10-26. The new styles
-are not in the format yet, so a rewrite in place would fail the check and those tests. When the
-styles are designed and the check reads them, this folder moves to `samples/Todo/specs/` and is
-deleted here.
+are not in the format yet, so these files in `samples/Todo/specs/` would fail the check and that
+test. When the styles are designed and the check reads them, this folder moves to
+`samples/Todo/specs/` and is deleted here.
 
-The rule ids are the accepted spec's, R1 to R11, none retired, and one new, R12 (below): 27 tests and scenarios carry them,
-and the ids stay as they are (decided in 510, Q1).
+## Where the facts come from
+
+- **The rules** are the subtasks of `samples/Todo/journeys.md`: rule `TOD.05.R2` is subtask
+  `TOD.05.2`, for every journey but TOD.02, whose ids are the accepted spec's (R1 to R11, and R12
+  from the trial). Tests keep their `Journey` trait; nothing is renumbered (510, Q1).
+- **The limits, messages, orders and states** are read from the app's code: its rules, view
+  models and pages. **No example was run on the app**: every spec is a `draft` until that is done
+  and the owner accepts it.
+- **To check on the app first**: the Dutch and British day and time in TOD.03's table "As shown",
+  which are what those devices are expected to write, not what was seen.
 
 ## The count
 
-| | Accepted spec | Trial |
-| --- | --- | --- |
-| Lines, the journey file | 209 | 146 |
-| Lines, with the form and the flow | 209 | 219 |
-| Gherkin step lines | 73 | 24 |
-| Examples in Gherkin | 13, for 11 rules | 5, for 5 rules |
-| Rules | 11 | 12 |
-| Rules said by a table row or cell | 0 | 7 (R1, R2, R3, R6, R7, R11, R12) |
-| "Given a new todo's form" | 12 times | once, as a sentence |
-| Cases a reader can count | 13 | 9 rows as typed, 4 rows of due date, 5 examples |
+| | |
+| --- | --- |
+| Journeys | 11, with 78 rules |
+| Lines, the eleven journey files | 928 |
+| Lines, the five screens | 239 |
+| Lines, the four app files | 263 |
+| Gherkin step lines | 137, in 23 examples |
+| Screen cards · field tables · list tables | 5 · 2 · 2 |
+| Decision tables | 10 |
+| Example tables | 8 |
+| State diagrams · flow · sequence diagram · message list | 3 · 1 · 1 · 1 |
 
-## What the trial says
+For TOD.02 alone, against the accepted spec: 209 lines became 146, and 73 Gherkin step lines
+became 24. With its share of the form and the flow it is longer; those two files serve TOD.04 too.
 
-- **The journey file is under a third shorter, not half.** [500-Mixed.md](../../design/500-Mixed.md)
-  guessed half. Each rule still has its line in the rules table, and each example keeps its "why"
-  paragraph; only the Gherkin went.
-- **Counting the form and the flow, the total is longer** (219 against 209). They pay back with the
-  next journey: TOD.04 uses the same form and the same flow, and writes neither again.
-- **Two thirds of the Gherkin is gone** (73 to 24 lines), and what is left is about what happens:
-  a refused save, a message going away, no connection.
-- **The tables say more than the examples did.** The accepted spec has two title examples for R3;
-  the table has nine rows and shows the tab-and-new-line case that R2's paragraph only mentioned.
-- **A table found a gap.** Writing the due date as conditions asked: switch on, no day picked,
-  which day? The accepted spec has no rule for it. Answered on 2026-11-18: today, the day the form
-  shows. It is R12 and row 4 of the table. The accepted spec does not have R12 yet, and no test
-  names it.
-- **R11 does not sit well here.** "Shows Overdue" is TOD.05's rule; the trial keeps one row of it.
-  When TOD.05 has its Overdue table, that row points there.
+## What writing them showed
+
+- **Three tables do most of the app-wide work.** "What is sent", "The merge" and "When a sync
+  fails" in [app/sync.md](app/sync.md) say rules of TOD.06, TOD.07, TOD.08, TOD.09 and TOD.11. In
+  `journeys.md` those are single lines in five places.
+- **A journey can be nearly empty.** TOD.05 and TOD.10 are little more than a rules table that
+  points elsewhere. That is the question of the design readme: per screen for what a screen is,
+  per journey for what a person does. It works, but a reader of TOD.05 opens three files.
+- **Tables found what the sentences left out**, four times:
+  - TOD.02: the due date switch on with no day picked (now R12).
+  - TOD.04: adding only spaces to the title is not a change, so Cancel does not ask.
+  - TOD.05: Next on an overdue todo moves on from the status kept, so it still says "Overdue".
+  - TOD.11: a user On leave with a passed end date shows "On leave", not "Expired".
+- **One scenario serves three rules.** TOD.07's R11, R12 and R15 are one scenario and a table of
+  device pairs. Nothing in the format says a scenario may run once per row of a table beside it.
+- **Scenarios with named people read well** (`Daan presses Sync`, `Finn's list shows …`), and are
+  the only place where more than four steps are needed.
+- **Some rules have no simple proof in a spec.** "Kept whole or not at all", "the app and the
+  server agree on what a todo is", "judged by a person on a device": the sentence is the spec, and
+  "Said by" says "the rule itself". The trace must take a test's `Rule` trait as their proof.
 
 ## What the check says
 
-`bruinet spec check` on the trial file gives fourteen findings of four kinds. Each is something the
-format and the check must decide before a spec like this can be accepted:
+`bruinet spec check` on this folder reads the eleven journey files and gives 71 findings, of five
+kinds. The screens and app files are not specs to it: it has no form for them. Each kind is
+something the format must decide.
 
 | Finding | Count | Why | To decide |
 | --- | --- | --- | --- |
-| `rules-table` | 1 | The rules table has a third column, "Said by" | Is the column written, or does the trace fill it (500's question)? |
-| `example-unknown` | 5 | Follows from the first: the rules are not read, so no example finds its rule | Goes away with the first |
-| `section-unknown` | 1 | `## Tables` is not a section | A section for tables, or tables under Examples with the rules in their heading |
-| `code-word` | 7 | A typed value in backticks, so its spaces show: `  Buy milk  ` | Backticks allowed in a table cell for a typed value, or another way to show spaces |
+| `rules-table` | 11 | The third column, "Said by" | Is it written, or filled by the trace? |
+| `example-unknown` | 23 | Follows from the first: the rules are not read | Goes away with the first |
+| `section-unknown` | 8 | `## Tables` | A section for tables, or tables under Examples |
+| `code-word` | 20 | A typed value in backticks, so its spaces show | Backticks for a typed value in a table cell |
+| `gherkin-order` | 9 | A second When after a Then: the page shows the message, the server works again, Retry, the list | Allow it where something is seen between two actions, or ask for two examples |
 
-Not found, but true: R1, R2, R3, R6, R7, R11 and R12 have no example, which the format asks for. The
-check stops at the rules table before it gets there. And the two screen files are not specs to the
-check at all: it has no form for them yet.
+Not found, but true: the format asks for an example per rule, and most rules here have none. That
+is the point of the trial; the check stops at the rules table before it gets there.
 
 ## Questions
 
 | # | Question | Proposal |
 | --- | --- | --- |
 | Q1 | The "Said by" column: keep it? | Keep it, written by hand, checked by the tool: it names a part of the spec, never a test, and a reader finds a rule's proof without searching. |
-| Q2 | Examples start "on a new todo's form, reached as the flow says", as a sentence. Is that a Background? | Yes: a Background step the suite binds to the flow's arrow, so the sentence can be false. |
-| Q3 | Do the tests named R1, R2, R3, R6, R7 and R11 change? | No. They keep their rule ids; when table checks exist, the generated tests carry the same ids plus the row. |
+| Q2 | Examples start with a sentence: "Every example starts on Todos." Is that a Background? | Yes: a Background step the suite binds to the flow, so the sentence can be false. |
+| Q3 | May a table sit beside a scenario and run it once per row (TOD.07's "Devices")? | Yes, as an outline: the table's columns are the scenario's names. |
+| Q4 | A rule said by a table in another file (`app/sync.md`, row 4): how does a test name it? | By the rule's id; the row is in the test's name, as for a field table. |
+| Q5 | A state diagram uses names with no spaces (`InProgress`, `LocalOnly`) because Mermaid asks for it. | A table under the diagram gives each its words on the screen, as `app/todo.md` does. |
+| Q6 | Do the tests that carry TOD.02's rule ids change? | No. They keep their ids; generated tests will carry the same ids plus the row. |
