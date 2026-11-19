@@ -30,7 +30,7 @@ public sealed class McpServerTests : IDisposable
         Assert.Equal(2, lines.Count);
         Assert.Equal("bruinet", (string?)lines[0]["result"]!["serverInfo"]!["name"]);
         Assert.NotNull(lines[0]["result"]!["capabilities"]!["tools"]);
-        Assert.Contains("Scraper (page objects and tests from recordings), from scrape_list_projects:", (string?)lines[0]["result"]!["instructions"]);
+        Assert.Contains("Scraper (page objects from the pages Explore and the walk captured), from scrape_list_projects:", (string?)lines[0]["result"]!["instructions"]);
         Assert.Equal(["list_suites", "scrape_list_projects"], lines[1]["result"]!["tools"]!.AsArray().Select(tool => (string?)tool!["name"]).Where(name => name is "list_suites" or "scrape_list_projects"));
     }
 

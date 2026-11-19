@@ -139,15 +139,7 @@ public sealed partial class BddMcpServer : IDisposable
                 "write_review" => WriteReview(arguments),
                 "scrape_rename_page_object" => Scraper(() => RenamePageObject(arguments)),
                 "scrape_list_projects" => Scraper(() => Capped("projects", _server.ScraperProjects(), arguments)),
-                "scrape_next" => Scraper(() => _server.Scraper.Progress((string?)arguments["project"])),
-                "scrape_start" => Scraper(() => _server.Scraper.StartRecordingAsync((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["url"], (bool?)arguments["autoCapture"] ?? true, actions: (bool?)arguments["actions"] ?? false).GetAwaiter().GetResult()),
                 "scrape_list_events" => Scraper(() => Capped("events", _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session")), arguments)),
-                "scrape_resolve_events" => Scraper(() => ResolveEvents(arguments)),
-                "scrape_gap_brief" => Scraper(() => string.Join("\n\n---\n\n", _server.Scraper.TestBriefs((string?)arguments["project"], Required(arguments, "session"), Whole(arguments, "event", 1, int.MaxValue)))),
-                "scrape_draft_test" => Scraper(() => _server.ScraperDraftTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), (string?)arguments["target"], (string?)arguments["name"])) switch { { Problem: { } problem } => throw new ScraperProblem(problem), var drafted => drafted.Value! }),
-                "scrape_run_drafts" => Scraper(() => RunDrafts(arguments)),
-                "scrape_capture_page" => Scraper(() => (object?)_server.Scraper.CapturePageAsync((string?)arguments["name"]).GetAwaiter().GetResult() ?? new { Captured = false, Reason = "The page did not change since its last capture; give a name to capture it anyway." }),
-                "scrape_stop" => Scraper(() => (object?)_server.Scraper.StopRecordingAsync().GetAwaiter().GetResult() ?? new { Stopped = false, Reason = "No recording was in progress." }),
                 "scrape_list_pages" => Scraper(() => RecordedPages(arguments)),
                 "scrape_get_page" => Scraper(() => SnapshotOutline.Render(_server.Scraper.Snapshot((string?)arguments["project"], Required(arguments, "page"), (string?)arguments["session"], Whole(arguments, "event", 1, int.MaxValue)).Snapshot, Whole(arguments, "node", 0, int.MaxValue) ?? 0, MaxOf(arguments, 400))),
                 "scrape_find_similar" => Scraper(() => Capped("nodes", _server.Scraper.Similar((string?)arguments["project"], Required(arguments, "page"), Whole(arguments, "node", 1, int.MaxValue) ?? throw new ToolProblem("'node' is required.")), arguments)),
@@ -1641,33 +1633,6 @@ public sealed partial class BddMcpServer : IDisposable
 
         var (shown, more) = Cut(state.Controls.Select(control => new { control.Name, control.Kind, control.Shown, control.Value, control.Unreadable }), arguments);
         return new { state.Page, state.Reason, Controls = shown, More = more };
-    }
-
-    // A test recording's steps resolved, at most 'max' of them; the gaps are every unresolved one.
-    private object ResolveEvents(JsonObject arguments)
-    {
-        var test = _server.Scraper.ResolveActions((string?)arguments["project"], Required(arguments, "session"));
-        var (shown, more) = Cut(test.Steps, arguments);
-        return new { test.Session, test.Name, test.StartPage, test.StartPageObject, Steps = shown, More = more, test.Gaps };
-    }
-
-    // Each draft run once, ended after timeoutMinutes.
-    private object RunDrafts(JsonObject arguments)
-    {
-        var minutes = Whole(arguments, "timeoutMinutes", 1, 120) ?? 10;
-        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(minutes));
-        try
-        {
-            return _server.ScraperRunTest(new ScraperTestParams((string?)arguments["project"], Required(arguments, "session"), null, null), timeout.Token).GetAwaiter().GetResult() switch
-            {
-                { Problem: { } problem } => throw new ScraperProblem(problem),
-                var runs => runs.Value!,
-            };
-        }
-        catch (OperationCanceledException) when (timeout.IsCancellationRequested)
-        {
-            throw new ToolProblem($"The drafts ran longer than {minutes} minutes and were ended: give timeoutMinutes for longer.");
-        }
     }
 
     // A project's recorded pages: each with its newest capture and how many it has; with 'page', that page's captures (M3).

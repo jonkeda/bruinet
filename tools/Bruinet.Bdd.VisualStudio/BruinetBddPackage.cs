@@ -18,7 +18,6 @@ namespace Bruinet.Bdd.VisualStudio;
 [ProvideMenuResource("Menus.ctmenu", 1)]
 [ProvideToolWindow(typeof(ScenarioPreviewWindow), Style = VsDockStyle.Tabbed, Window = "{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}", Orientation = ToolWindowOrientation.Right)]
 [ProvideToolWindow(typeof(BddExplorerWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
-[ProvideToolWindow(typeof(ScraperWindow), Style = VsDockStyle.MDI)]
 [ProvideAutoLoad(PackageIds.FeatureFileContext, PackageAutoLoadFlags.BackgroundLoad)]
 [ProvideOptionPage(typeof(BddOptionsPage), "Bruinet BDD", "General", 0, 0, true)]
 // Loaded when debugging starts too, so a run debugged from Test Explorer can be stepped through.
@@ -32,7 +31,6 @@ namespace Bruinet.Bdd.VisualStudio;
 public sealed class BruinetBddPackage : AsyncPackage
 {
     private PreviewController? _controller;
-    private ScraperController? _scraper;
 
     /// <summary>The package once loaded, for CodeLens's callback, which runs outside it.</summary>
     internal static BruinetBddPackage? Instance { get; private set; }
@@ -80,7 +78,6 @@ public sealed class BruinetBddPackage : AsyncPackage
             commands.AddCommand(open);
 
             commands.AddCommand(new MenuCommand((_, _) => ShowExplorer(), new CommandID(PackageIds.CommandSet, PackageIds.ShowBddExplorer)));
-            commands.AddCommand(new MenuCommand((_, _) => ShowScraper(), new CommandID(PackageIds.CommandSet, PackageIds.ShowScraper)));
 
             var toggle = new OleMenuCommand((_, _) => ToggleStepBreakpoint(), new CommandID(PackageIds.CommandSet, PackageIds.ToggleStepBreakpoint));
             toggle.BeforeQueryStatus += (_, _) => toggle.Visible = toggle.Enabled = _controller.ActiveIsFeatureOrSteps;
@@ -99,7 +96,6 @@ public sealed class BruinetBddPackage : AsyncPackage
         ThreadHelper.ThrowIfNotOnUIThread();
         if (disposing)
         {
-            _scraper?.Dispose();
             _controller?.Dispose();
         }
 
@@ -123,8 +119,6 @@ public sealed class BruinetBddPackage : AsyncPackage
         => JoinableTaskFactory.RunAsync(() => _controller!.ToggleBreakpointAtCaretAsync()).FileAndForget("Bruinet/ToggleStepBreakpoint");
 
     private void ShowExplorer() => Show(typeof(BddExplorerWindow), "Bruinet/ShowBddExplorer");
-
-    private void ShowScraper() => Show(typeof(ScraperWindow), "Bruinet/ShowScraper");
 
     private void ShowPreview() => Show(typeof(ScenarioPreviewWindow), "Bruinet/ShowScenarioPreview");
 
@@ -157,10 +151,6 @@ public sealed class BruinetBddPackage : AsyncPackage
         {
             case BddExplorerWindow explorer:
                 await _controller.AttachExplorerAsync(explorer.Control);
-                break;
-            case ScraperWindow scraper:
-                _scraper ??= new ScraperController(this, _controller);
-                await _scraper.AttachAsync(scraper.Control);
                 break;
             case ScenarioPreviewWindow preview:
                 await _controller.AttachAsync(preview.Control);

@@ -80,7 +80,6 @@ public sealed class BruinetCommandTests : IDisposable
     [InlineData("scrape verify --headless --json")]
     [InlineData("scrape config set Explore MaxPages 20")]
     [InlineData("scrape config add \"Explore hosts\" shop.example")]
-    [InlineData("scrape record --by-hand --session first --url https://x")]
     [InlineData("data validate Features/TOD.01.feature.md --json --fix --assembly a.dll --assembly b.dll --config bdd.config.md")]
     [InlineData("data phrases --keyword When --json")]
     [InlineData("data snippet Features/TOD.01.feature.md:14")]
@@ -110,18 +109,6 @@ public sealed class BruinetCommandTests : IDisposable
         var parsed = BruinetCommand.Build(new CliIo(TextReader.Null, TextWriter.Null, TextWriter.Null, _solution, false)).Parse(line);
 
         Assert.Empty(parsed.Errors.Select(e => e.Message));
-    }
-
-    [Fact]
-    public async Task Status_from_inside_a_project_s_folder_needs_no_project_and_no_solution()
-    {
-        var pages = Directory.CreateDirectory(Path.Combine(_project, "Pages")).FullName;
-
-        var (exit, output, _) = await Run(pages, "scrape", "status");
-
-        Assert.Equal(0, exit);
-        Assert.StartsWith("Shop.UITests", output);
-        Assert.Contains("Next: Check that the Scraper can reach the app (step 2)", output);
     }
 
     [Fact]

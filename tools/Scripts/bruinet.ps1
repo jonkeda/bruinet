@@ -3,7 +3,7 @@
 # Anywhere else, install it: dotnet tool install -g Bruinet.Cli, then run bruinet.
 #
 #   pwsh tools/Scripts/bruinet.ps1 --help
-#   pwsh tools/Scripts/bruinet.ps1 scrape status --solution Scraper.Sites --project Bruinet.Html.React
+#   pwsh tools/Scripts/bruinet.ps1 scrape check --solution Scraper.Sites --project Bruinet.Html.React
 
 $project = Join-Path $PSScriptRoot '..' 'Bruinet.Cli' 'Bruinet.Cli.csproj'
 & dotnet run --project $project -v:q -- @args

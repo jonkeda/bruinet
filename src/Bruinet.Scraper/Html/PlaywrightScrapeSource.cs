@@ -23,27 +23,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
 
     private static readonly string CaptureScript = Script("capture.js");
     private static readonly string SettleScript = Script("settle.js");
-    private static readonly string HighlightScript = Script("highlight.js");
-    private static readonly string PickScript = Script("pick.js");
-    private static readonly string RecorderScript = Script("recorder.js");
-    private static readonly string ToolbarScript = Script("toolbar.js");
-
-    // What an element shows, for the checks an assert offers: its text, a field's value (never a
-    // password's), and a checkbox's or switch's state.
-    private const string FactsScript = """
-        n => {
-            const el = (window.__bruinetScrapeNodes || [])[n - 1];
-            if (!el || !el.getAttribute) return null;
-            const text = (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim().substring(0, 200);
-            const toggle = el instanceof HTMLInputElement && (el.type === 'checkbox' || el.type === 'radio');
-            let value = null;
-            if (el instanceof HTMLSelectElement) value = el.selectedOptions.length ? el.selectedOptions[0].text.trim() : '';
-            else if (el instanceof HTMLTextAreaElement || (el instanceof HTMLInputElement && !toggle && el.type !== 'password')) value = el.value;
-            const checked = toggle ? el.checked : el.hasAttribute('aria-checked') ? el.getAttribute('aria-checked') === 'true' : null;
-            return JSON.stringify({ text, value, checked });
-        }
-        """;
-
     private IPlaywright? _playwright;
     private IBrowserContext? _context;
     private IPage? _page;
@@ -53,27 +32,16 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     // Global node number of the last capture -> the frame and its local number there.
     private readonly List<(IFrame Frame, int Local)> _numbers = [];
 
-    // One capture at a time: an action is placed in the capture it was taken against.
+    // One capture at a time.
     private readonly SemaphoreSlim _captureLock = new(1, 1);
     private int _generation;
     private DateTimeOffset _capturedAt;
-
-    // Actions from every frame, placed one at a time in the order the person took them.
-    private readonly Channel<Act> _acts = Channel.CreateUnbounded<Act>(new() { SingleReader = true });
-    private Task? _pump;
-    private volatile bool _recordingActions;
 
     /// <inheritdoc/>
     public string Platform => "html";
 
     /// <inheritdoc/>
     public event EventHandler<ScrapeTransition>? Transitioned;
-
-    /// <inheritdoc/>
-    public event EventHandler<ScrapeAction>? Acted;
-
-    /// <inheritdoc/>
-    public event EventHandler<string>? Commanded;
 
     /// <inheritdoc/>
     public event EventHandler<string>? Downloaded;
@@ -130,7 +98,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
                 return;
             }
 
-            Enqueue(_page.MainFrame, JsonSerializer.Serialize(new { kind = ScrapeActionKind.Dialog, value = dialog.Message, accepted = false }));
             DialogDismissed?.Invoke(this, dialog.Message);
             _ = dialog.DismissAsync();
         };
@@ -185,59 +152,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         }
     }
 
-    /// <inheritdoc/>
-    public async Task StartActionsAsync(ScrapeActionOptions options, CancellationToken cancellationToken = default)
-    {
-        var page = Started();
-        if (_pump is null)
-        {
-            _pump = Task.Run(PumpAsync, CancellationToken.None);
-            await _context!.ExposeBindingAsync<string>("__bruinetAct", (source, json) => Enqueue(source.Frame, json)).ConfigureAwait(false);
-            var argument = new { testIds = options.TestIds, secrets = options.Secrets.Select(s => new { field = s.Field, placeholder = s.Placeholder }) };
-            await _context.AddInitScriptAsync($"({RecorderScript})({JsonSerializer.Serialize(argument)});").ConfigureAwait(false);
-            foreach (var frame in page.Frames)
-                await TryEvaluateAsync<bool>(frame, RecorderScript, argument).ConfigureAwait(false);
-            // The toolbar's buttons: on a thread of their own, so Stop can close the browser that raised it.
-            await _context.ExposeBindingAsync<string>("__bruinetCommand", (source, command) => { _ = Task.Run(() => Commanded?.Invoke(this, command)); }).ConfigureAwait(false);
-            await _context.AddInitScriptAsync($"({ToolbarScript})();").ConfigureAwait(false);
-            await TryEvaluateAsync<bool>(page.MainFrame, ToolbarScript, null).ConfigureAwait(false);
-        }
-        _recordingActions = true;
-    }
-
-    /// <inheritdoc/>
-    public void StopActions() => _recordingActions = false;
-
-    /// <inheritdoc/>
-    public async Task<ScrapeAssert?> PickAssertAsync(CancellationToken cancellationToken = default)
-    {
-        var page = Started();
-        if (await PickAsync(cancellationToken).ConfigureAwait(false) is not { } node)
-            return null;
-        var (frame, local) = _numbers[node - 1];
-        var json = await TryEvaluateAsync<string?>(frame, FactsScript, local).ConfigureAwait(false);
-        var facts = json is null ? null : JsonSerializer.Deserialize<Facts>(json, FrameCapture.Json);
-        if (facts is null)
-            return null; // the element went away while it was picked
-        string? check;
-        using (cancellationToken.Register(() => _ = TryEvaluateAsync<bool>(page.MainFrame, "() => { if (window.__bruinetChooseCancel) window.__bruinetChooseCancel(); return true; }", null)))
-            check = await TryEvaluateAsync<string?>(page.MainFrame, "f => window.__bruinetChooseCheck(f)", new { text = facts.Text, value = facts.Value, @checked = facts.Checked }).ConfigureAwait(false);
-        cancellationToken.ThrowIfCancellationRequested();
-        return check switch
-        {
-            ScrapeCheck.Page => new ScrapeAssert(page.Url, null, check, null, null),
-            ScrapeCheck.Visible => new ScrapeAssert(page.Url, node, check, null, null),
-            ScrapeCheck.Text => new ScrapeAssert(page.Url, node, check, facts.Text, null),
-            ScrapeCheck.Value => new ScrapeAssert(page.Url, node, check, facts.Value, null),
-            ScrapeCheck.Checked => new ScrapeAssert(page.Url, node, check, null, facts.Checked),
-            _ => null,
-        };
-    }
-
-    /// <inheritdoc/>
-    public Task ShowCountAsync(int actions, CancellationToken cancellationToken = default) =>
-        _page is null ? Task.CompletedTask : TryEvaluateAsync<bool>(_page.MainFrame, "n => window.__bruinetToolbarCount ? window.__bruinetToolbarCount(n) : true", actions);
-
     private async Task<ScrapeSnapshot> CaptureLockedAsync(bool settle, CancellationToken cancellationToken)
     {
         var page = Started();
@@ -266,7 +180,7 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         _numbers.Clear();
         var nodes = new List<ScrapeNode>();
         Append(page.MainFrame, main, 1, 0, frames, hosts, nodes);
-        // Two captures never share a time: an action names its capture by it.
+        // Two captures never share a time.
         var at = DateTimeOffset.UtcNow;
         _capturedAt = at > _capturedAt ? at : _capturedAt.AddTicks(1);
         return new ScrapeSnapshot
@@ -279,144 +193,9 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         };
     }
 
-    private void Enqueue(IFrame frame, string json)
-    {
-        if (_recordingActions)
-            _acts.Writer.TryWrite(new Act(frame, json, _page?.Url ?? frame.Url, DateTimeOffset.UtcNow));
-    }
-
-    private async Task PumpAsync()
-    {
-        await foreach (var act in _acts.Reader.ReadAllAsync().ConfigureAwait(false))
-        {
-            if (_recordingActions && await TryPlaceAsync(act).ConfigureAwait(false) is { } action)
-                Acted?.Invoke(this, action);
-        }
-    }
-
-    // The element's number in the capture the page had when the person acted; else in the last capture,
-    // if the element is still in it; else in a capture taken now (R2). Null when the page sent something
-    // else.
-    private async Task<ScrapeAction?> TryPlaceAsync(Act act)
-    {
-        RawAction? raw;
-        try
-        {
-            raw = JsonSerializer.Deserialize<RawAction>(act.Json, FrameCapture.Json);
-        }
-        catch (JsonException)
-        {
-            return null; // not the recorder's message
-        }
-        if (raw?.Kind is null)
-            return null;
-        var action = new ScrapeAction
-        {
-            Kind = raw.Kind,
-            At = act.At,
-            Location = act.Location,
-            Path = raw.Path,
-            Value = raw.Secret is null ? raw.Value : null,
-            Secret = raw.Secret,
-            Checked = raw.Checked,
-            Accepted = raw.Accepted,
-        };
-        if (raw.Id is not { } id)
-            return action;
-
-        await _captureLock.WaitAsync().ConfigureAwait(false);
-        try
-        {
-            var node = raw.Gen == _generation && raw.Local is { } local ? Global(act.Frame, local) : null;
-            node ??= await TryPendingNodeAsync(act.Frame, id).ConfigureAwait(false);
-            ScrapeSnapshot? capture = null;
-            if (node is null && _page is not null)
-            {
-                // Not settled: the person acted on the page as it was. One that moved on since is not its page.
-                capture = await TryCaptureLockedAsync().ConfigureAwait(false);
-                if (capture is not null && Projects.PageKey.Of(capture.Location) != Projects.PageKey.Of(act.Location))
-                    capture = null;
-                if (capture is not null)
-                    node = await TryPendingNodeAsync(act.Frame, id).ConfigureAwait(false);
-            }
-            await TryEvaluateAsync<bool>(act.Frame, "id => { delete (window.__bruinetPending || {})[id]; return true; }", id).ConfigureAwait(false);
-            return action with { Node = node, CapturedAt = node is null ? null : _capturedAt, Capture = capture };
-        }
-        finally
-        {
-            _captureLock.Release();
-        }
-    }
-
-    private async Task<int?> TryPendingNodeAsync(IFrame frame, int id) =>
-        Global(frame, await TryEvaluateAsync<int>(frame, "id => (window.__bruinetScrapeNodes || []).indexOf((window.__bruinetPending || {})[id]) + 1", id).ConfigureAwait(false));
-
-    private async Task<ScrapeSnapshot?> TryCaptureLockedAsync()
-    {
-        try
-        {
-            return await CaptureLockedAsync(settle: false, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (Exception e) when (e is InvalidOperationException or PlaywrightException)
-        {
-            return null; // navigated away while it was read, or closed: the action keeps its path
-        }
-    }
-
-    private int? Global(IFrame frame, int local)
-    {
-        if (local <= 0)
-            return null;
-        var index = _numbers.FindIndex(n => n.Frame == frame && n.Local == local);
-        return index >= 0 ? index + 1 : null;
-    }
-
     /// <inheritdoc/>
     public async Task<byte[]?> ScreenshotAsync(CancellationToken cancellationToken = default) =>
         await Started().ScreenshotAsync(new() { Type = ScreenshotType.Png }).ConfigureAwait(false);
-
-    /// <inheritdoc/>
-    public async Task HighlightAsync(int? number, CancellationToken cancellationToken = default)
-    {
-        var page = Started();
-        var target = number is { } n && n >= 1 && n <= _numbers.Count ? _numbers[n - 1] : default;
-        foreach (var frame in page.Frames)
-        {
-            var local = frame == target.Frame ? target.Local : 0;
-            await TryEvaluateAsync<bool>(frame, HighlightScript, local).ConfigureAwait(false);
-        }
-    }
-
-    /// <inheritdoc/>
-    public async Task<int?> PickAsync(CancellationToken cancellationToken = default)
-    {
-        var page = Started();
-        await HighlightAsync(null, cancellationToken).ConfigureAwait(false);
-        var frames = page.Frames.ToArray();
-        var picks = frames.Select(f => (Frame: f, Task: f.EvaluateAsync<int>(PickScript))).ToList();
-        using var registration = cancellationToken.Register(() => _ = CancelPicksAsync(frames));
-        try
-        {
-            while (picks.Count > 0)
-            {
-                var done = await Task.WhenAny(picks.Select(p => p.Task)).ConfigureAwait(false);
-                var pick = picks.First(p => p.Task == done);
-                picks.Remove(pick);
-                if (!done.IsCompletedSuccessfully)
-                    continue; // the frame went away while picking
-                if (done.Result == 0)
-                    return null;
-                var index = _numbers.FindIndex(x => x.Frame == pick.Frame && x.Local == done.Result);
-                return index >= 0 ? index + 1 : null;
-            }
-            return null;
-        }
-        finally
-        {
-            await CancelPicksAsync(frames).ConfigureAwait(false);
-            cancellationToken.ThrowIfCancellationRequested();
-        }
-    }
 
     /// <summary>
     /// Puts Explore's request and host guards on every request of the browser: a blocked one is aborted.
@@ -712,10 +491,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
-        _recordingActions = false;
-        _acts.Writer.TryComplete();
-        if (_pump is not null)
-            await _pump.ConfigureAwait(false);
         if (_context is not null)
             await _context.CloseAsync().ConfigureAwait(false);
         _playwright?.Dispose();
@@ -742,7 +517,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         if (frame != _page?.MainFrame || frame.Url == _lastLocation)
             return;
         _lastLocation = frame.Url;
-        Enqueue(frame, JsonSerializer.Serialize(new { kind = ScrapeActionKind.Navigate }));
         Transitioned?.Invoke(this, new ScrapeTransition(frame.Url));
     }
 
@@ -837,12 +611,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         }
     }
 
-    private static async Task CancelPicksAsync(IEnumerable<IFrame> frames)
-    {
-        foreach (var frame in frames)
-            await TryEvaluateAsync<bool>(frame, "() => { if (window.__bruinetPickCancel) window.__bruinetPickCancel(); return true; }", null).ConfigureAwait(false);
-    }
-
     // Adds a frame's nodes in document order, numbering them globally, and a child frame's nodes right
     // after its iframe node. Returns the next free number.
     private int Append(IFrame frame, FrameCapture capture, int next, int parent, Dictionary<IFrame, FrameCapture> frames, Dictionary<(IFrame, int), IFrame> hosts, List<ScrapeNode> nodes)
@@ -892,13 +660,6 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
     {
         public static readonly JsonSerializerOptions Json = new() { PropertyNameCaseInsensitive = true };
     }
-
-    private sealed record Act(IFrame Frame, string Json, string Location, DateTimeOffset At);
-
-    private sealed record Facts(string? Text, string? Value, bool? Checked);
-
-    // What recorder.js sends: the element's number in the frame's capture `gen`, and its id in __bruinetPending.
-    private sealed record RawAction(string? Kind, int? Id, int? Local, int? Gen, ScrapePathStep[]? Path, string? Value, string? Secret, bool? Checked, bool? Accepted);
 
     private sealed record FrameNode(int N, int P, string? Kind, string? Type, string? Role, string? Name, string? Text, int[]? Box, Dictionary<string, string>? Attr);
 }

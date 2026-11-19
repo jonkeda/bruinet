@@ -67,73 +67,10 @@ public sealed class ScraperMcpTests : IDisposable
     }
 
     [Fact]
-    public async Task The_view_reads_the_same_over_json_rpc()
-    {
-        await using var harness = await ServerHarness.StartAsync(_solution);
-
-        var projects = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/projects", new { });
-        var pages = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/pages", new { project = "Shop.UITests" });
-        var outline = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/outline", new { page = "/archive" });
-        var capture = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/capture", new { });
-        var host = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/host", new { });
-        var similar = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/similar", new { page = "/orders", node = 2 });
-        var header = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/header", new { page = "/orders" });
-
-        Assert.Contains("<title>Scraper</title>", (string?)host["html"]);
-        // The workflow: the project picker with its label and +, the next action, the steps and their panel.
-        Assert.Contains("<label for=\"sc-project\">Project</label>", (string?)host["html"]);
-        Assert.Contains("id=\"sc-new-project\"", (string?)host["html"]);
-        Assert.Contains("id=\"sc-next\"", (string?)host["html"]);
-        Assert.Contains("id=\"sc-steps\"", (string?)host["html"]);
-        Assert.Contains("id=\"sc-panel\"", (string?)host["html"]);
-        Assert.Equal(3, similar["value"]!.AsArray().Count);
-        Assert.True(similar.AsObject().ContainsKey("problem")); // sent even as null: the view tells a result by it
-        Assert.StartsWith("// <scraped page=\"/orders\"", (string?)header["value"]);
-
-        Assert.Equal("Shop.UITests", (string?)projects[0]!["name"]);
-        Assert.Equal("Shop.UITests", (string?)projects[0]!["label"]);
-        Assert.Equal(["/archive", "/orders"], pages["value"]!.AsArray().Select(page => (string?)page!["key"]));
-        Assert.Contains("#3 td \"Linus\"", (string?)outline["value"]);
-        Assert.Contains("No recording is in progress", (string?)capture["problem"]);
-    }
-
-    [Fact]
-    public async Task The_view_reads_and_edits_the_explore_settings_over_json_rpc()
-    {
-        Directory.CreateDirectory(Path.Combine(_solution, "Admin.UITests"));
-        File.WriteAllText(Path.Combine(_solution, "Admin.UITests", "Admin.UITests.csproj"), "<Project Sdk=\"Microsoft.NET.Sdk\" />");
-        await using var harness = await ServerHarness.StartAsync(_solution);
-        Task<JsonNode> Call(string method, object parameters) => harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/" + method, parameters);
-
-        var before = await Call("config", new { });
-        var said = await Call("configEdit", new { action = "set", section = "Danger words", values = new[] { "delete", "false" } });
-        var after = await Call("config", new { });
-        var summary = await Call("exploreSummary", new { dryRun = true });
-        var match = await Call("elementMatch", new { page = "/orders", node = 1 });
-        var candidates = await Call("configCandidates", new { });
-        var created = await Call("createConfig", new { folder = Path.Combine(_solution, "Admin.UITests"), startUrl = "http://localhost:5000/" });
-        var refused = await Call("explore", new { project = "Admin.UITests", url = "https://elsewhere.example/" });
-
-        Assert.Equal("safe", (string?)before["value"]!["clickPolicy"]);
-        Assert.True((bool)before["value"]!["dangerWords"]!["delete"]!);
-        Assert.Equal("Set delete to false in ## Danger words.", (string?)said["value"]);
-        Assert.False((bool)after["value"]!["dangerWords"]!["delete"]!);
-        Assert.Contains("danger words off: delete", (string?)summary["value"]);
-        Assert.Contains("shop.example: REFUSED", (string?)summary["value"]);
-        Assert.Equal("selector: [data-testid='orders']", (string?)match["value"]);
-        Assert.Equal([Path.Combine(_solution, "Admin.UITests")], candidates.AsArray().Select(c => (string?)c));
-        Assert.Equal("Admin.UITests", (string?)created["value"]);
-        Assert.True(File.Exists(Path.Combine(_solution, "Admin.UITests", ScraperConfig.FileName)));
-        // Explore starts in the background: a start that is refused comes back as its Explored change, not here.
-        Assert.True((bool)refused["value"]!);
-    }
-
-    [Fact]
     public void What_cannot_be_done_is_a_tool_error_saying_why()
     {
-        Assert.Contains("No recording is in progress", ErrorText("scrape_capture_page", []));
         Assert.Contains("No recorded page '/nope'", ErrorText("scrape_get_page", new JsonObject { ["page"] = "/nope" }));
-        Assert.Contains("'session' is required", ErrorText("scrape_start", []));
+        Assert.Contains("'session' is required", ErrorText("scrape_list_events", []));
     }
 
     [Fact]
@@ -179,45 +116,6 @@ public sealed class ScraperMcpTests : IDisposable
 
         Assert.Contains("ClickPolicy is links, safe, not-unsafe or all, not 'everything'", error);
         Assert.Equal(before, File.ReadAllText(config));
-    }
-
-    [Fact]
-    public async Task The_view_checks_and_makes_a_new_project_over_json_rpc()
-    {
-        await using var harness = await ServerHarness.StartAsync(_solution);
-        var fields = new { name = "Admin.UITests", folder = "Admin.UITests", platform = "blazor", startUrl = "https://admin.example/", testIds = new[] { "data-testid" }, references = "packages" };
-
-        var defaults = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/projectDefaults", new { name = "Admin.UITests" });
-        var wrong = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/newProjectCheck", new { name = "Shop.UITests", folder = "Shop.UITests", startUrl = "nowhere" });
-        var right = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/newProjectCheck", fields);
-        var made = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/newProject", fields);
-        var projects = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/projects", new { });
-
-        Assert.Equal(("Admin.UITests", "packages"), ((string?)defaults["value"]!["folder"], (string?)defaults["value"]!["references"]));
-        Assert.Equal(["folder", "name", "startUrl"], wrong["value"]!.AsObject().Select(p => p.Key).Order(StringComparer.Ordinal));
-        Assert.Empty(right["value"]!.AsObject());
-        Assert.Equal(Path.Combine(_solution, "Admin.UITests", "Admin.UITests.csproj"), (string?)made["value"]);
-        Assert.Contains("Bruinet.Blazor", File.ReadAllText((string)made["value"]!));
-        Assert.Contains(projects.AsArray(), p => (string?)p!["name"] == "Admin.UITests");
-    }
-
-    [Fact]
-    public async Task The_view_reads_the_workflow_over_json_rpc()
-    {
-        await using var harness = await ServerHarness.StartAsync(_solution);
-
-        var progress = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/progress", new { });
-        var checks = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/controlChecks", new { });
-        var saved = await harness.Client.InvokeWithParameterObjectAsync<JsonNode>("bruinet/scraper/configEdits", new { changes = new[] { new { action = "set", section = "Explore", values = new[] { "MaxPages", "7" } }, new { action = "add", section = "Explore hosts", values = new[] { "shop.example" } } } });
-
-        var steps = progress["value"]!["steps"]!.AsArray();
-        Assert.Equal(8, steps.Count);
-        Assert.Equal(("Project", "Done"), ((string?)steps[0]!["name"], (string?)steps[0]!["state"]));
-        Assert.Equal("Collect pages", (string?)steps[2]!["name"]);
-        Assert.NotNull(progress["value"]!["next"]);
-        Assert.Empty(checks["value"]!.AsArray());
-        Assert.Equal(2, saved["value"]!.AsArray().Count);
-        Assert.Contains("| MaxPages | 7 |", File.ReadAllText(Path.Combine(_solution, "Shop.UITests", ScraperConfig.FileName)));
     }
 
     [Fact]

@@ -11,8 +11,6 @@ internal static class PackageIds
 
     public const string BddExplorerWindow = "5d2f7c61-3e0b-4b8e-9a44-6b1f0e7c2d93";
 
-    public const string ScraperWindow = "b7e3c1d4-6a2f-4e58-9c31-2f8d5a0e7b64";
-
     // Active when a feature or step file is selected or open in the editor: the package loads then.
     public const string FeatureFileContext = "d446c026-dd42-46af-a662-6f72d0dbf00d";
 
@@ -29,8 +27,6 @@ internal static class PackageIds
     public const int StepIntoBdd = 0x0105;
 
     public const int StepOutBdd = 0x0106;
-
-    public const int ShowScraper = 0x0107;
 
     public static readonly Guid CommandSet = new(CommandSetString);
 }

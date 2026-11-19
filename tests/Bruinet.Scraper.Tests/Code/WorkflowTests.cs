@@ -108,30 +108,6 @@ public sealed class WorkflowTests : IAsyncDisposable
         Assert.Equal((3, 3), (link.Found, link.Of)); // an item's part: in every group at least once
         Assert.False(check.Parts.Single(p => p.Name == "MenuLink.Badge").Readable); // made in code: not read
         Assert.False(check.Done);
-
-        _service.AcceptControl(null, "MenuGroup");
-
-        Assert.True(Assert.Single(_service.ControlChecks(null)).Done);
-    }
-
-    [Fact]
-    public void Progress_says_what_to_do_next_from_a_new_project_on()
-    {
-        var fresh = _service.Progress(null);
-        Assert.Equal([StepState.Done, StepState.Next, StepState.Todo, StepState.Todo, StepState.Todo, StepState.Todo, StepState.Todo, StepState.Todo], fresh.Steps.Select(s => s.State));
-        Assert.Equal((2, "Check that the Scraper can reach the app"), (fresh.Next!.Step, fresh.Next.Text));
-
-        Record(Menu());
-        var recorded = _service.Progress(null);
-        Assert.Equal(StepState.Done, recorded.Steps[2].State);
-        Assert.Equal("1 page, 1 capture", recorded.Steps[2].Summary);
-        Assert.Equal(recorded.Next!.Step, recorded.Steps.First(s => s.State is StepState.Next or StepState.Attention).Step);
-
-        _service.SkipControls(null);
-        var skipped = _service.Progress(null);
-        Assert.Equal(StepState.Done, skipped.Steps[4].State);
-        Assert.Equal((6, StepState.Next), (skipped.Next!.Step, skipped.Steps[5].State));
-        Assert.StartsWith("Draft page objects for the 1 page", skipped.Next.Text);
     }
 
     [Fact]

@@ -24,10 +24,6 @@ list_affected_tests
 rename_step
 delete_results
 scrape_list_projects
-scrape_next
-scrape_start
-scrape_capture_page
-scrape_stop
 scrape_list_pages
 scrape_get_page
 scrape_find_similar
@@ -41,10 +37,6 @@ scrape_suggest_controls
 scrape_get_header
 scrape_write_file
 scrape_list_events
-scrape_resolve_events
-scrape_gap_brief
-scrape_draft_test
-scrape_run_drafts
 scrape_build
 scrape_explore
 scrape_draft_page_objects

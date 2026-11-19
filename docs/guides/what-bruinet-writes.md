@@ -21,7 +21,7 @@ the app showed or sent. This page says where each goes and what it can hold.
 
 - Record against seeded test data only, never a copy of production: recordings are committed.
 - `TestResults` is not for public upload: traces, screenshots and videos show the app's screens.
-- `BRUINET_SCRAPER_DEBUG_PORT` opens DevTools on the recording browser, which holds the person's sign-in; any local
+- `BRUINET_SCRAPER_DEBUG_PORT` opens DevTools on the Scraper's browser, which holds the person's sign-in; any local
   process can drive it while the variable is set.
 - An MCP agent that uses `scrape_write_file` and then `scrape_run_drafts` or `run_scenario` runs code it wrote, on this machine.
 - The SQL replay hook answers callers on the app's own machine, or whoever has `BRUINET_SQL_HOOK_KEY`

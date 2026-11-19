@@ -96,7 +96,7 @@ public sealed class McpToolsTests : IDisposable
         var tools = Listed().ToDictionary(tool => (string)tool["name"]!, tool => tool["annotations"]!);
 
         Assert.Equal(["delete_results"], tools.Where(tool => (bool?)tool.Value["destructiveHint"] == true).Select(tool => tool.Key));
-        Assert.Equal(["scrape_start", "scrape_explore", "scrape_check_page_objects"], tools.Where(tool => (bool)tool.Value["openWorldHint"]!).Select(tool => tool.Key));
+        Assert.Equal(["scrape_explore", "scrape_check_page_objects"], tools.Where(tool => (bool)tool.Value["openWorldHint"]!).Select(tool => tool.Key));
         Assert.Contains("list_results", tools.Where(tool => (bool)tool.Value["readOnlyHint"]!).Select(tool => tool.Key));
         Assert.DoesNotContain("step_screenshot", tools.Where(tool => (bool)tool.Value["readOnlyHint"]!).Select(tool => tool.Key));
     }
@@ -132,8 +132,6 @@ public sealed class McpToolsTests : IDisposable
             ["scrape_suggest_controls"] = new() { ["page"] = "/orders" },
             ["scrape_get_header"] = new() { ["page"] = "/orders" },
             ["scrape_list_events"] = new() { ["session"] = _session },
-            ["scrape_resolve_events"] = new() { ["session"] = _session },
-            ["scrape_gap_brief"] = new() { ["session"] = _session },
         };
         var before = Files();
 

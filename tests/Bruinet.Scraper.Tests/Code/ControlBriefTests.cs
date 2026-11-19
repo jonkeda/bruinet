@@ -217,20 +217,6 @@ public sealed class ControlBriefTests : IDisposable
     }
 
     [Fact]
-    public async Task The_agent_and_model_are_the_configs_until_the_person_chooses_their_own()
-    {
-        MakeProject("Chat.UITests", "\n## Agent\n\n| Field | Value |\n| --- | --- |\n| Agent | agent |\n| Model | gpt-4.1 |\n");
-        await using var service = new ScraperService(_root);
-
-        var configured = service.ChatChoice(null);
-        service.SetChatChoice(null, "bruinet-scraper", "");
-        var chosen = service.ChatChoice(null);
-
-        Assert.Equal(new ChatChoice("agent", "gpt-4.1"), configured);
-        Assert.Equal(new ChatChoice("bruinet-scraper", ""), chosen);
-    }
-
-    [Fact]
     public void The_controls_namespace_swaps_the_pages_folder_for_the_controls_folder()
     {
         var plain = MakeProject("Plain.UITests");

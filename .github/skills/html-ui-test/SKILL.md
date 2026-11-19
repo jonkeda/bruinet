@@ -76,7 +76,7 @@ page calls it and typed as the control it is. Whoever writes the next test reads
   the kind, and the page object has the place.
 - **A label that is on the page twice** (a "Sales price" in two sections) is two members, each on its own part.
 - **A row of a list** is a row object with a member per column and its own actions (the next section, Rows).
-- A page with more members than a person types is **drafted** from the app (`scrape-pages`), not shortened to one
+- A page with more members than a person types is **drafted** from the app (`bruinet scrape draft`, `bruinet scrape places draft`), not shortened to one
   member with a parameter.
 
 ## Rules that are Html's own

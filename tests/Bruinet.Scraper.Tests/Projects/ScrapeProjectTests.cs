@@ -135,22 +135,6 @@ public sealed class ScrapeProjectTests : IDisposable
     }
 
     [Fact]
-    public void Secrets_are_fields_with_a_placeholder_named_after_the_field_unless_given()
-    {
-        var project = ScrapeProject.Open(MakeProject("MyApp.UITests", Config + """
-
-            ## Secrets
-
-            | Field | Placeholder |
-            | --- | --- |
-            | API key | |
-            | pin-code | `{pin}` |
-            """));
-
-        Assert.Equal([new ScrapeSecret("API key", "apiKey"), new ScrapeSecret("pin-code", "pin")], project.Config.Secrets);
-    }
-
-    [Fact]
     public void A_page_is_written_into_the_session_folder_and_listed_in_recording_json()
     {
         var project = ScrapeProject.Open(MakeProject("MyApp.UITests", Config));

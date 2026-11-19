@@ -234,7 +234,7 @@ function Invoke-Scrape([string[]]$arguments) {
 
 function Invoke-Agent([string]$solution, [string]$project, [string]$logFile) {
     $minutes = if ($AgentMinutes -gt 0) { $AgentMinutes } else { 10 }
-    $prompt = "Use only the bruinet-bdd MCP tools. In the scraped project $($spec.Project), follow the scrape-pages workflow on the drafted page objects (the *.scraped.cs files): detect_patterns, and for each repeated pattern write a control with write_code; give members better names where the draft's are poor; then check_code until it passes. Do not start or stop recordings, and do not explore."
+    $prompt = "Use only the bruinet-bdd MCP tools. In the scraped project $($spec.Project), work on the drafted page objects (the *.scraped.cs files): detect_patterns, and for each repeated pattern write a control with write_code; give members better names where the draft's are poor; then check_code until it passes. Do not start or stop recordings, and do not explore."
     $mcp = @{ mcpServers = @{ 'bruinet-bdd' = @{ type = 'local'; command = 'dotnet'; args = @($server, 'mcp', '--solution', $solution); tools = @('*') } } } | ConvertTo-Json -Depth 5 -Compress
     if ($Agent -eq 'copilot') {
         $command = 'copilot'

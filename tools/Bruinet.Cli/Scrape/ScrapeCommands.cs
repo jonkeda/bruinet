@@ -10,14 +10,14 @@ using static Bruinet.Cli.CommonOptions;
 namespace Bruinet.Cli.Scrape;
 
 /// <summary>
-/// <c>bruinet scrape</c>: the Scraper for a person, the loop and CI, through the service the views and MCP use.
+/// <c>bruinet scrape</c>: the Scraper for a person, the loop and CI, through the service MCP uses.
 /// Exit 0 when it ran within its guards, 1 when a guard stopped it or a check failed, 2 when it could not run.
 /// </summary>
 internal static partial class ScrapeCommands
 {
-    public static Command Build(CliIo io) => new("scrape", "The Scraper: record or explore an app, then draft and verify page objects (docs/guides/scraper.md).")
+    public static Command Build(CliIo io) => new("scrape", "The Scraper: explore or walk an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
-        New(io), List(io), Status(io), Check(io), Explore(io), Record(io), Draft(io), Verify(io), Find(io), Look(io), Resolve(io), DraftTest(io), Config(io), Places(io), InstallBrowser(io),
+        New(io), List(io), Check(io), Explore(io), Draft(io), Verify(io), Find(io), Look(io), Config(io), Places(io), InstallBrowser(io),
     };
 
     private static Command New(CliIo io)
@@ -98,33 +98,6 @@ internal static partial class ScrapeCommands
                 await io.Error.WriteLineAsync($"No project with a {ScraperConfig.FileName} here. Make one with bruinet scrape new.").ConfigureAwait(false);
             foreach (var project in projects)
                 await io.Out.WriteLineAsync($"{service.Label(project, projects),-30} {service.Relative(project),-40} {project.Config.StartUrl}").ConfigureAwait(false);
-            return 0;
-        });
-        return command;
-    }
-
-    private static Command Status(CliIo io)
-    {
-        var (solution, project, json) = (Solution(), Project(), Json());
-        var command = new Command("status", "Where a project is in the eight steps, and what to do next.") { project, solution, json };
-        command.Action(io, async (parsed, _) =>
-        {
-            await using var service = Service(io, parsed.GetValue(solution));
-            var progress = service.Progress(ProjectName(service, parsed.GetValue(project), io));
-            if (parsed.GetValue(json))
-            {
-                await io.Out.WriteLineAsync(ToJson(progress)).ConfigureAwait(false);
-                return 0;
-            }
-
-            await io.Out.WriteLineAsync(progress.Project).ConfigureAwait(false);
-            foreach (var step in progress.Steps)
-            {
-                var mark = step.State switch { StepState.Done => "done", StepState.Next => "next", StepState.Attention => "look", _ => "" };
-                await io.Out.WriteLineAsync($"  {mark,-4} {step.Step} {step.Name,-13} {step.Summary}").ConfigureAwait(false);
-            }
-
-            await io.Out.WriteLineAsync(progress.Next is { } next ? $"Next: {next.Text} (step {next.Step})" : "Next: nothing; every step is done.").ConfigureAwait(false);
             return 0;
         });
         return command;
@@ -223,40 +196,6 @@ internal static partial class ScrapeCommands
         return command;
     }
 
-    private static Command Record(CliIo io)
-    {
-        var (solution, project) = (Solution(), Project());
-        var url = new Option<string?>("--url") { Description = "Where to start. Default: the config's StartUrl." };
-        var session = new Option<string>("--session") { Description = "The session's name.", DefaultValueFactory = _ => "recording" };
-        var byHand = new Option<bool>("--by-hand") { Description = "Capture only when asked (c and Enter), not each page the app moves to." };
-        var command = new Command("record", "Record by hand in a browser window: browse, then press Enter here to stop.") { project, solution, url, session, byHand };
-        command.Action(io, async (parsed, cancellationToken) =>
-        {
-            if (!io.Interactive)
-            {
-                await io.Error.WriteLineAsync("Recording needs a person at a terminal; use bruinet scrape explore for a run on its own.").ConfigureAwait(false);
-                return 2;
-            }
-
-            await using var service = Service(io, parsed.GetValue(solution));
-            var state = await service.StartRecordingAsync(ProjectName(service, parsed.GetValue(project), io), parsed.GetValue(session)!, parsed.GetValue(url), autoCapture: !parsed.GetValue(byHand), visible: true, cancellationToken: cancellationToken).ConfigureAwait(false);
-            await io.Error.WriteLineAsync($"Recording {state.Project} into {state.Folder}. Browse in the window; c and Enter captures this page, Enter on its own stops.").ConfigureAwait(false);
-            while (await io.In.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line && line.Trim().Length > 0)
-            {
-                if (!string.Equals(line.Trim(), "c", StringComparison.OrdinalIgnoreCase))
-                    continue;
-                var capture = await service.CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-                await io.Error.WriteLineAsync(capture is null ? "Nothing captured." : $"captured {capture.Page}").ConfigureAwait(false);
-            }
-
-            var stopped = await service.StopRecordingAsync(cancellationToken).ConfigureAwait(false);
-            await io.Out.WriteLineAsync(string.Create(CultureInfo.InvariantCulture, $"{stopped?.Captures ?? 0} captures in {stopped?.Folder ?? state.Folder}")).ConfigureAwait(false);
-            return 0;
-        });
-        return command;
-    }
-
-    // 0 when every draft is written or unchanged, 1 when one was put back.
     private static Command Draft(CliIo io)
     {
         var (solution, project, json) = (Solution(), Project(), Json());
@@ -381,71 +320,6 @@ internal static partial class ScrapeCommands
     }
 
     // 0 when every action resolved, 1 when there are gaps.
-    private static Command Resolve(CliIo io)
-    {
-        var (solution, project, json) = (Solution(), Project(), Json());
-        var session = new Argument<string>("session") { Description = "The test recording's session id (Recordings/<session>)." };
-        var command = new Command("resolve", "Resolve a test recording's actions to page-object members, verbs and catalog phrases, and list its gaps.") { session, project, solution, json };
-        command.Action(io, async (parsed, _) =>
-        {
-            await using var service = Service(io, parsed.GetValue(solution));
-            var test = service.ResolveActions(ProjectName(service, parsed.GetValue(project), io), parsed.GetValue(session)!);
-            if (parsed.GetValue(json))
-            {
-                await io.Out.WriteLineAsync(ToJson(test)).ConfigureAwait(false);
-            }
-            else
-            {
-                await io.Out.WriteLineAsync($"{test.Name} ({test.Session}), from {test.StartPage} ({test.StartPageObject ?? "no page object"})").ConfigureAwait(false);
-                foreach (var step in test.Steps)
-                {
-                    var said = step.Phrase ?? (step.Member is { } member ? $"{member}.{step.Verb}" : step.Kind);
-                    await io.Out.WriteLineAsync(string.Create(CultureInfo.InvariantCulture, $"  {step.Event,3} {(step.Gap is null ? "   " : "gap")} {said}")).ConfigureAwait(false);
-                    if (step.Gap is { } gap)
-                        await io.Out.WriteLineAsync($"          {gap.Kind}: {gap.Message}").ConfigureAwait(false);
-                }
-            }
-
-            return test.Gaps.Count > 0 ? 1 : 0;
-        });
-        return command;
-    }
-
-    // 0 when drafted with no gap, 1 when a target could not be drafted, a file was not written, or gaps are marked.
-    private static Command DraftTest(CliIo io)
-    {
-        var (solution, project, json) = (Solution(), Project(), Json());
-        var session = new Argument<string>("session") { Description = "The test recording's session id (Recordings/<session>)." };
-        var target = new Option<string?>("--target") { Description = "xunit, scenario or both. Default: the config's ## Tests Target." };
-        var name = new Option<string?>("--name") { Description = "The test's name. Default: the session's." };
-        var command = new Command("draft-test", "Draft a test recording as an xUnit test, a scenario, or both, by rules.") { session, project, solution, target, name, json };
-        command.Action(io, async (parsed, _) =>
-        {
-            await using var service = Service(io, parsed.GetValue(solution));
-            var chosen = parsed.GetValue(target) is { } text
-                ? TestSettings.ParseTarget(text) ?? throw new ScraperProblem($"--target is xunit, scenario or both, not '{text}'.")
-                : (TestTarget?)null;
-            var result = service.DraftTest(ProjectName(service, parsed.GetValue(project), io), parsed.GetValue(session)!, chosen, parsed.GetValue(name));
-            if (parsed.GetValue(json))
-            {
-                await io.Out.WriteLineAsync(ToJson(result)).ConfigureAwait(false);
-            }
-            else
-            {
-                foreach (var file in result.Files)
-                    await io.Out.WriteLineAsync($"{(file.Written ? "written" : "kept"),-8} {file.Path}{(file.Note is { } note ? $": {note}" : "")}").ConfigureAwait(false);
-                foreach (var problem in result.Problems)
-                    await io.Out.WriteLineAsync($"not drafted: {problem}").ConfigureAwait(false);
-                foreach (var gap in result.Gaps)
-                    await io.Out.WriteLineAsync($"gap, event {gap.Event}: {gap.Gap!.Message}").ConfigureAwait(false);
-            }
-
-            return result.Problems.Count > 0 || result.Gaps.Count > 0 || result.Files.Any(f => !f.Written && f.Note is { } note && !note.StartsWith("Yours", StringComparison.Ordinal)) ? 1 : 0;
-        });
-        return command;
-    }
-
-    // 0 when every member of every page object is found once, 1 otherwise.
     private static Command Verify(CliIo io)
     {
         var (solution, project, json, headless) = (Solution(), Project(), Json(), Headless());

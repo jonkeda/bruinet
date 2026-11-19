@@ -4,44 +4,20 @@ The Scraper records an app's pages into a UI test project and helps an agent (Co
 page objects and controls from them. Html and Blazor apps today. The decisions are in
 [AD-027](../../.docs/decisions/ad-027-the-scraper-records-into-the-project-and-calls-no-model.md).
 
-## The view: eight steps
+## How it is used
 
-Open it in **VS Code** with **Bruinet BDD: Open Scraper** (also on a `scraper.config.md`'s title bar),
-in **Visual Studio** with View, Other Windows, **Scraper**. It is a workflow: the steps on the left,
-each with its state (✓ done, its number to do, ! to look at) and a count, the step in the panel on
-the right with one main button, and in the header **Next:** what to do now, with **Go**.
-
-| Step | What it is for | Main button |
-| --- | --- | --- |
-| 1 Project | The UI test project the page objects go into | **New project…** (also **+** by the picker) |
-| 2 Connect | Can the Scraper reach the app, signed in, and may Explore go there | **Check the app**; then **Allow this host** or **Open the browser to sign in** when it says so |
-| 3 Collect pages | Explore's guards and budget as a form (**Save** writes the fields you changed, **Undo changes** puts them back), and the last run | **Explore** (a dry run the first time); **Record by hand** under More |
-| 4 Review | The pages and their captures (an outline per capture, highlight, Compare, Changes), what Explore skipped by reason and the requests it blocked | none: **Next** |
-| 5 Controls | **To make**: the patterns that repeat, each with a tick box and a control name; **Made**: the controls with a scraped header, checked against the recordings (each part found in how many of the pattern's occurrences) | **Make *n* controls with the agent**; per control **Review** (its code, its parts, a note, **Fix with the agent**, **Accept**). **Skip** if the page objects do without |
-| 6 Page objects | A row per page: a tick box, its class name (edit it to rename the class, its draft and your part), and whether it is drafted or changed since | **Draft *n* page objects** (the ticked ones), **Improve with the agent** |
-| 7 Verify | Each page object's members looked up in the running app | **Verify** |
-| 8 Tests | Each test recording: its steps as the scenario says them, its gaps with why, its drafts (and whether the recording changed since) | **Record a test** (the browser opens with **Assert**, **Stop** and a count); per test **Draft** (as `## Tests` says, or xUnit, scenario, both) and **Run once** (built, then `dotnet test` on the draft) |
-
-**Code**, below the steps, lists the project's page objects and controls. While a recording or
-Explore runs, a strip under the header shows its progress with **Capture**, **Pick**, **Assert** (a test recording), **Stop**,
-**Continue** (after a sign-in) and **This page…**. What the workflow remembers that the files do not
-(the last check and verify, accepted controls, skipped controls) is in the project's
-`.scraper-state.json`, which is not committed. An agent sees the same steps with
-`scrape_next`.
+From the command line (`bruinet scrape …`, [the CLI page](../run/cli.md)) and by an agent through the MCP server's
+`scrape_*` tools (below). There is no view in an IDE and no recording by hand: the Scraper moves through the app
+by itself (Explore, and the walk of an app's places), under the guards the project sets. A person signs in once,
+in the browser Explore opens, or a test saves the sign-in; the Scraper never types a credential.
 
 ## Make a project scrapeable
 
-A new project: **+** beside the Scraper's project picker. The form asks for the name, folder,
-platform, start URL and test ids, and whether Bruinet is referenced as projects (in this repository)
-or as packages. It writes the `.csproj`, its `scraper.config.md` and an empty `Pages/`, and adds the
-project to the open solution (in a solution folder, `Scraped` unless you name another). Each problem
-shows under its field before anything is written. **Add a config to an existing project instead**
-writes only the config into a test project you have. An agent does the same with
-`scrape_create_project`.
-
-The picker lists the solution's projects that have a `scraper.config.md`, and those under the
-solution's folder; `TestResults` (the loop's copies) and build output are left out. Two projects of
-one name are shown with their folders.
+A new project: `bruinet scrape new <name> --url <start>` (an agent: `scrape_create_project`). It asks for nothing
+else: the folder, platform, test ids and whether Bruinet is referenced as projects or packages are options. It
+writes the `.csproj`, its `scraper.config.md` and an empty `Pages/`; add the project to the solution yourself.
+`bruinet scrape list` shows the projects with a `scraper.config.md` under the solution's folder; `TestResults` (the
+loop's copies) and build output are left out.
 
 By hand: add `scraper.config.md` to the UI test project the page objects go into (one project per
 app, or several for a large app; a project that references another scraped project sees its
@@ -87,13 +63,6 @@ controls):
 | Pattern | Replacement |
 | --- | --- |
 | `NL\d{2}[A-Z]{4}\d{10}` | `IBAN` |
-
-## Secrets
-
-| Field | Placeholder |
-| --- | --- |
-| API key | |
-| pin-code | pin |
 ```
 
 - `Platform`: `html` or `blazor` (a Blazor project gets the `Bruinet.Blazor` controls suggested).
@@ -111,38 +80,20 @@ controls):
   `data-test`, `data-test-id`, `data-qa` and `data-cy`.
 - Web components: a capture keeps open shadow roots, and a suggested locator crosses them as Playwright's CSS
   does (a shadow tree's top elements are its host's children), so a control inside a web component is found.
-- `Masks`: text replaced before anything is written. A page capture never records what a user typed;
-  only a test recording's actions keep typed values, masked.
+- `Masks`: text replaced before anything is written. A page capture never records what a user typed.
 - `Privacy` in `## App` (default `false`): the Scraper runs on dev, test and acceptance environments, whose data is
   test data, so by default only the masks listed apply. With `true`, an e-mail address is masked too (`{e-mail}`),
-  and an element whose text is masked is not drafted. Secrets (below) and sign-in tokens in reports are kept out
-  either way.
-- `Secrets` (optional, columns `Field`, `Placeholder`): fields whose value a test recording never
-  keeps, matched by test id, `name`, `id` or label text. The value stays in the browser; the action
-  records `Placeholder` (default: the field in camel case, `apiKey`) for you to map to a setting or test
-  data. A password field is always a secret, with the placeholder `password`.
-- `Tests` (fields `Target`, `Base`): what a test recording is drafted as, `xunit`, `scenario` or
-  `both`, and the test base an xUnit draft derives from (it gives `Context` and `NavigateToPage(path)`).
-  A new config gets `Target`: `scenario` when the project has a `bdd.config.md`, otherwise `xunit`.
-  An xUnit draft goes to `Tests/Recorded/<Name>Tests.recorded.cs`, beside your part `<Name>Tests.cs`,
-  which is written once and never changed; a scenario to `Features/Recorded/<name>.feature.md`. Each
-  starts with what it was recorded from (`// <recorded session=… hash=… />`, or a `Recorded` metadata
-  row), so a draft is drafted again over itself and never over a file you made.
+  and an element whose text is masked is not drafted. Sign-in tokens in reports are kept out either way.
 - `Components` (optional, columns `Match`, `Kind`, `Name`): elements the Scraper cannot tell by itself, named by you. `Match` is `selector: …` or `text: …`; `Kind` is `collection`, `component` or what a test does with it (`text`, `selector`, `toggle`, `range`, `date`, `clickable`, `readable`). They win over its own reading: step 5 offers them by that name, and their brief says so.
 
 `tests/Bruinet.Blazor.UITests` is an example: its config, its `Recordings/`, and
 `PageObjects/UserFormPage.cs`, made from them.
 
-## Record
+## Recordings
 
-Step 3, More, **Record by hand** (or an agent's `scrape_start`) opens a Chromium window. Work in it: each page the app moves to is captured once it has
-settled (a hash route and `pushState` count as moves). **Capture** takes the page again (a dialog
-open, a tab chosen); **Pick** lets you click an element to find it in the capture; **Stop** closes
-the window. The window keeps its own login per project, under your local application data.
-
-Recordings go to `Recordings/<date>-<session>/` in the project: `recording.json` and one
-`*.nodes.jsonl` per page. Commit them: they are what the page objects were made from. The browser
-is Playwright's Chromium (`pwsh <an Html test project's output>\playwright.ps1 install chromium`).
+What Explore and the walk capture goes to `Recordings/<date>-<session>/` in the project: `recording.json` and one
+`*.nodes.jsonl` per page. Commit them: they are what the page objects were made from. The browser is Playwright's
+Chromium (`bruinet scrape install-browser`), with its own login per project, under your local application data.
 
 ## Explore and draft
 
@@ -150,18 +101,14 @@ is Playwright's Chromium (`pwsh <an Html test project's output>\playwright.ps1 i
 gone there: links to the app's own hosts, then tabs, menus, expanders, sorting, paging and dialogs
 that say they are one. It works breadth first and stops at the first limit of its budget. Its
 recording is `Recordings/<date>-explore/`, and everything else (patterns, suggestions, changes)
-works on it as on yours. **Draft page objects** then writes a page object per recorded page, with
+works on it. **Draft page objects** then writes a page object per recorded page, with
 no model.
 
-- **The view:** step 3 shows the guards and budget as a form and the summary of the run they make,
-  with **Explore** (a dry run the first time: links only, it lists what it would click), **Stop**
-  and **Continue** in the running strip. Step 4 lists what was captured, skipped and blocked, with
-  **Never click**, **Always click** or **Allow this request**. Steps 6 and 7 draft and verify.
 - **The command line** ([`bruinet`](../run/cli.md), from the solution folder or a project's own
   folder, which picks the project):
 
   ```powershell
-  bruinet scrape status
+  bruinet scrape check --project MyApp.UITests
   bruinet scrape explore --project MyApp.UITests [--dry-run] [--max-pages N] [--max-depth N] [--max-minutes N] [--headless] [--yes] [--json]
   bruinet scrape draft --project MyApp.UITests [--page /orders/{id}]
   bruinet scrape verify --project MyApp.UITests [--headless]
@@ -365,25 +312,9 @@ table once.
 
 ## Generate
 
-The view's agent buttons (step 5's **Make *n* controls** and **Fix with the agent**, step 6's **Improve with the agent**, a node's **Make a control**) send a prompt
-into Copilot Chat, in the agent and with the model chosen in the header (**Agent and model**). The
-**Bruinet scraper** agent (`.github/agents/bruinet-scraper.agent.md`) has the Bruinet tools and the
-rules; **Agent** and **Ask** get them from the `/bruinet-scrape-pages` prompt. A control is made from
-its brief (`scrape_get_control_brief`), at most five per prompt. When the IDE cannot send it, the prompt goes to
-the clipboard and the view says so. When the answer is complete, step 5 or 6 checks again by itself.
-Visual Studio sends it into the open chat session with the chosen model, in the chat window's own
-mode. Review the result in your usual diff.
-
-Your choice is kept per project in `.scraper-state.json`; `## Agent` in the config gives the default:
-
-```
-## Agent
-
-| Field | Value |
-| --- | --- |
-| Agent | bruinet-scraper |
-| Model | gpt-4.1 |
-```
+An agent makes the controls and improves the drafts through the MCP server's tools: a control from its brief
+(`scrape_get_control_brief`), written with `scrape_write_file`, until `scrape_build` passes. Review the result in
+your usual diff.
 
 Register the MCP server as in [Copilot And Other Agents](visual-studio-preview.md#copilot-and-other-agents).
 Its Scraper tools:
@@ -391,8 +322,6 @@ Its Scraper tools:
 | Tool | Gives or does |
 | --- | --- |
 | `scrape_list_projects` | the projects with a `scraper.config.md` |
-| `scrape_next` | where a project is in the workflow: each step's state and what to do next |
-| `scrape_start`, `scrape_capture_page`, `scrape_stop` | a recording (one at a time per server) |
 | `scrape_list_pages` | pages by key (path and hash route, ids as `{id}`), each page's newest capture and how many it has, the page object made for each and whether the page changed since; `page` gives one page's captures |
 | `scrape_get_page` | a capture as an outline with node numbers; a node's subtree for a large page |
 | `scrape_find_similar`, `scrape_find_text` | where a kind of node, or a text, occurs |
@@ -408,18 +337,16 @@ Its Scraper tools:
 | `scrape_update_config` | one row or field of `scraper.config.md` changed; asks first |
 | `scrape_create_project` | a new scraped project (its `.csproj`, config and `Pages/`), not yet in the solution; asks first |
 | `scrape_rename_page_object` | a page object renamed in the files that declare it; asks first |
-| `scrape_list_events`, `scrape_resolve_events`, `scrape_gap_brief` | a recorded test's events, each resolved to a page object's member, and a brief per gap |
-| `scrape_draft_test`, `scrape_run_drafts` | a recorded test drafted as an xUnit test or a scenario, and each draft run once |
+| `scrape_list_events` | a recording session's page captures, in order |
 
 Every list takes `max` (50 when left out) and says how many rows it left out as `more`. A tool that asks first acts
 on a second call with `confirm: true`.
 
 ## When the app changes
 
-Steps 3, 6 and 7 get a **!** and the header says what to do: explore or record the page again, then
-update its page object. In step 4 a page whose page object was made from an older capture is marked;
-**Changes** (or `scrape_diff_page`) lists what was added, removed and changed since, and **Update page
-object** asks the agent to change only that.
+Explore or walk the page again, then update its page object. `scrape_list_pages` marks a page whose page object
+was made from an older capture; `scrape_diff_page` lists what was added, removed and changed since.
+`bruinet scrape places drift` does the same for the classes drafted from places.
 
 ## The loop
 

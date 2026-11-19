@@ -34,9 +34,6 @@ public sealed class BddServerClient : IDisposable
     /// <summary>The server says a run wrote new results for an open file (its path).</summary>
     public event EventHandler<string>? ResultsChanged;
 
-    /// <summary>The server says the Scraper recorded, started or stopped (bruinet/scraper/changed): the change as sent.</summary>
-    public event EventHandler<JObject>? ScraperChanged;
-
     /// <summary>A Step-through run paused (bruinet/step/paused): where, as sent.</summary>
     public event EventHandler<JObject>? StepPaused;
 
@@ -171,16 +168,6 @@ public sealed class BddServerClient : IDisposable
         => (string)(await (await RpcAsync(cancellationToken).ConfigureAwait(false))
             .InvokeWithParameterObjectAsync<JObject>("bruinet/explorerHost", new { }, cancellationToken).ConfigureAwait(false))["html"]!;
 
-    /// <summary><c>bruinet/scraper/host</c>: the page the Scraper's webview loads once.</summary>
-    public async Task<string> ScraperHostAsync(CancellationToken cancellationToken)
-        => (string)(await (await RpcAsync(cancellationToken).ConfigureAwait(false))
-            .InvokeWithParameterObjectAsync<JObject>("bruinet/scraper/host", new { }, cancellationToken).ConfigureAwait(false))["html"]!;
-
-    /// <summary>A request the Scraper's page makes, as it made it; the answer as JSON.</summary>
-    public async Task<JToken?> RequestAsync(string method, JToken? parameters, CancellationToken cancellationToken)
-        => await (await RpcAsync(cancellationToken).ConfigureAwait(false))
-            .InvokeWithParameterObjectAsync<JToken?>(method, parameters ?? new JObject(), cancellationToken).ConfigureAwait(false);
-
     /// <summary><c>bruinet/explorer</c>: a view (<c>steps</c>, <c>pages</c>, <c>results</c>) of a suite.</summary>
     public async Task<JObject> ExplorerAsync(string view, string? suite, CancellationToken cancellationToken)
         => await (await RpcAsync(cancellationToken).ConfigureAwait(false))
@@ -241,7 +228,6 @@ public sealed class BddServerClient : IDisposable
             var rpc = new JsonRpc(new HeaderDelimitedMessageHandler(process.StandardInput.BaseStream, process.StandardOutput.BaseStream, formatter));
             rpc.Disconnected += (_, e) => _log($"The language server stopped: {e.Description}");
             rpc.AddLocalRpcMethod("bruinet/resultsChanged", new Action<string>(uri => ResultsChanged?.Invoke(this, new Uri(uri).LocalPath)));
-            rpc.AddLocalRpcMethod("bruinet/scraper/changed", new Action<string?, JToken?, JToken?, string?>(OnScraperChanged));
             AddWhole(rpc, "bruinet/step/paused", paused => StepPaused?.Invoke(this, paused));
             AddWhole(rpc, "bruinet/step/ended", ended => StepEnded?.Invoke(this, ended));
             AddWhole(rpc, "bruinet/run/ended", ended => RunEnded?.Invoke(this, ended));
@@ -266,10 +252,6 @@ public sealed class BddServerClient : IDisposable
     // A notification whose params object comes whole, not by parameter name.
     private static void AddWhole(JsonRpc rpc, string name, Action<JObject> handler)
         => rpc.AddLocalRpcMethod(handler.Method, handler.Target, new JsonRpcMethodAttribute(name) { UseSingleObjectParameterDeserialization = true });
-
-    // The change's fields by name; a null one is not sent, so each has a default.
-    private void OnScraperChanged(string? kind = null, JToken? recording = null, JToken? captured = null, string? message = null)
-        => ScraperChanged?.Invoke(this, new JObject { ["kind"] = kind, ["recording"] = recording, ["captured"] = captured, ["message"] = message });
 
     private void Stop()
     {

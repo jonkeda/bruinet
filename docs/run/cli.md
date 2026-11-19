@@ -36,10 +36,8 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | --- | --- | --- |
 | `bruinet scrape new <Name> --url <start>` | Makes a UI test project with a `scraper.config.md` and an empty `Pages` folder (`--platform`, `--folder`, `--test-id`, `--references`) | [Scraper](../guides/scraper.md) |
 | `bruinet scrape list` | The projects with a `scraper.config.md` | |
-| `bruinet scrape status` | The eight steps of a project and what to do next | |
 | `bruinet scrape check [--headless]` | Opens the start URL: does the app answer, signed in, on a host Explore may go to; a window when someone is at a terminal, to sign in | |
 | `bruinet scrape explore` | Explores the app by itself under the project's guards (`--dry-run`, `--max-pages`, `--max-depth`, `--max-minutes`, `--delay-ms`, `--url`) | |
-| `bruinet scrape record` | Records by hand in a browser window; `c` and Enter captures, Enter stops (`--by-hand`, `--session`, `--url`) | |
 | `bruinet scrape draft [--page <key>]…` | Drafts page objects from the recorded pages | |
 | `bruinet scrape verify` | Looks the page objects' members up in the running app | |
 | `bruinet scrape find <text>` | Finds a text, a placeholder or an attribute's value in the recorded pages, shadow roots included, with the path to each node; `--run` for one run. Exit 1 when nothing holds it | |
@@ -47,8 +45,6 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet scrape places show [--write] [--json]` | The list of the app's places (pages, tabs, dialogs, menus, buttons that only call the back end), kept in the suite's `.testing/175-Places.json`: printed as a document; `--write` writes `175-Places.md` beside it, `--json` prints the list itself | [Scraper](../guides/scraper.md#the-places-of-an-app) |
 | `bruinet scrape places seed\|routes\|walk\|add` | Fills the list. `seed [--map <file>]…` adds the map's addresses, the suite's page objects' and the recordings' pages; `routes [--as]` reads the routes the app's own scripts name; `walk [--as] [--may-write] [--own <address>]… [--only] [--again] [--links-and-tabs] [--max-minutes] [--max-places] [--max-presses] [--max-depth]` opens each page not yet opened and presses what the config's `Environment` allows, a write held back unless the record is the walk's own (exit 1 when a sign-in page stopped it); `add --from-run <file>` adds the forms tests saved through their page objects | [Scraper](../guides/scraper.md#the-places-of-an-app) |
 | `bruinet scrape places read\|fields\|elements\|draft\|drift` | Reads the list and the captures the walk kept, opening nothing. `read` reads each kept place again with the control signs and components the project names now; `fields` counts the fields by control, what no sign fits first; `elements` counts the app's own elements with what stands for each; `draft <place> [--as form\|row\|form-test] [--name] [--page] [--write]` drafts a class from a place in the suite's shape (`draft-templates.md` beside `scraper.config.md`); `drift [--check]` holds the drafted classes against the list as it is now |
-| `bruinet scrape resolve <session>` | Resolves a test recording's actions to members, verbs and catalog phrases, and lists its gaps; exit 1 with gaps | |
-| `bruinet scrape draft-test <session>` | Drafts a test recording as an xUnit test, a scenario or both (`--target`, `--name`); exit 1 when gaps are marked | |
 | `bruinet scrape config get\|set\|add\|remove` | Reads or changes `scraper.config.md`: `set Explore MaxPages 20`, `add "Explore hosts" shop.example` | |
 | `bruinet scrape install-browser` | Installs Chromium for the Scraper | |
 | `bruinet data validate [file] [--fix]` | Checks every test set and scenario, or one file; what `--fix` rewrote goes to stderr | [Test Data](../guides/test-data.md) |

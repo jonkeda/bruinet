@@ -30,13 +30,6 @@
           <CommandName>Bruinet.BddExplorer</CommandName>
         </Strings>
       </Button>
-      <Button guid="guidBruinetUatCommandSet" id="ShowScraper" priority="0x0102" type="Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Strings>
-          <ButtonText>Scraper</ButtonText>
-          <CommandName>Bruinet.Scraper</CommandName>
-        </Strings>
-      </Button>
       <Button guid="guidBruinetUatCommandSet" id="OpenScenarioPreview" priority="0x0100" type="Button">
         <Parent guid="guidBruinetUatCommandSet" id="EditorContextGroup" />
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -109,7 +102,6 @@
       <IDSymbol name="StepOverBdd" value="0x0104" />
       <IDSymbol name="StepIntoBdd" value="0x0105" />
       <IDSymbol name="StepOutBdd" value="0x0106" />
-      <IDSymbol name="ShowScraper" value="0x0107" />
       <IDSymbol name="DebugStepGroup" value="0x1030" />
     </GuidSymbol>
   </Symbols>

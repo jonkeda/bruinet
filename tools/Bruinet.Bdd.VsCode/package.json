@@ -1,7 +1,7 @@
 {
   "name": "bruinet-bdd",
   "displayName": "Bruinet BDD",
-  "description": "Bruinet feature and step files: the gate's diagnostics as you type, completion, navigation, a Scenario Preview, and running and debugging scenarios from Test Explorer, and the Scraper: record an app's pages into a UI test project for page objects.",
+  "description": "Bruinet feature and step files: the gate's diagnostics as you type, completion, navigation, a Scenario Preview, and running and debugging scenarios from Test Explorer.",
   "version": "0.1.0",
   "publisher": "bruinet",
   "license": "MIT",
@@ -15,8 +15,7 @@
   ],
   "activationEvents": [
     "workspaceContains:**/uat.config.md",
-    "workspaceContains:**/bdd.config.md",
-    "workspaceContains:**/scraper.config.md"
+    "workspaceContains:**/bdd.config.md"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -26,12 +25,6 @@
         "title": "Open Scenario Preview to the Side",
         "category": "Bruinet BDD",
         "icon": "$(open-preview)"
-      },
-      {
-        "command": "bruinetBdd.openScraper",
-        "title": "Open Scraper",
-        "category": "Bruinet BDD",
-        "icon": "$(record)"
       },
       {
         "command": "bruinetBdd.toggleStepBreakpoint",
@@ -100,11 +93,6 @@
         {
           "command": "bruinetBdd.openPreview",
           "when": "resourceFilename =~ /\\.(feature|steps|video)\\.md$/",
-          "group": "navigation"
-        },
-        {
-          "command": "bruinetBdd.openScraper",
-          "when": "resourceFilename == scraper.config.md",
           "group": "navigation"
         }
       ],

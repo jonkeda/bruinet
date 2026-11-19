@@ -7,7 +7,7 @@ and MCP servers the IDE extensions and agents start.
 ```powershell
 dotnet tool install -g Bruinet.Cli
 bruinet --help
-bruinet scrape status
+bruinet scrape list
 bruinet data validate
 ```
 

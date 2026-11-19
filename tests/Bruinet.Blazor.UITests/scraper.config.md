@@ -1,6 +1,6 @@
 # Scraper Config
 
-The Blazor sample's pages, recorded with the Scraper for page objects (the `scrape-pages` skill).
+The Blazor sample's pages, recorded with the Scraper for page objects.
 Start the sample first: `dotnet run --project samples/Bruinet.Samples.Blazor.App --urls http://localhost:5180`
 (from the Bruinet root).
 

@@ -613,13 +613,6 @@ internal sealed class PreviewController : IVsSelectionEvents, IVsUpdateSolutionE
         await RefreshAsync();
     }
 
-    /// <summary>The language server, started for the solution: the Scraper view's requests go to it.</summary>
-    internal async Task<BddServerClient> ServerAsync()
-    {
-        await EnsureServerAsync(_path);
-        return _server!;
-    }
-
     /// <summary>A line in the extension's Output pane.</summary>
     internal void Note(string line) => Log(line);
 

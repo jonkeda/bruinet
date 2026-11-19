@@ -41,9 +41,6 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
   ControlObject, container or collection.
 - [ios-ui-test](.github/skills/ios-ui-test/SKILL.md) - write native iOS UI tests, UAT scenarios
   and page objects (the gallery app on the simulator, on a Mac).
-- [scrape-pages](.github/skills/scrape-pages/SKILL.md) - make Html or Blazor page objects and
-  controls from an app's pages recorded with the Scraper (MCP `scrape_start`,
-  `scrape_detect_patterns`, `scrape_write_file`, `scrape_build`).
 - [spec-from-app](.github/skills/spec-from-app/SKILL.md) - draft a spec from a running app,
   each example checked on the app (site loop stage 1).
 - [scenario-from-spec](.github/skills/scenario-from-spec/SKILL.md) - tests from an accepted spec, one

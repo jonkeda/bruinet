@@ -4,13 +4,12 @@ using Bruinet.Scraper.Explore;
 using Bruinet.Scraper.Html;
 using Bruinet.Scraper.Projects;
 using Bruinet.Scraper.Recordings;
-using Bruinet.Scraper.Testing;
 
 namespace Bruinet.Scraper.Service;
 
 /// <summary>
-/// What the IDE view and an agent ask of the Scraper, over the scraped projects under a solution: one
-/// recording at a time, and reading what is recorded. The language server and the MCP server are thin
+/// What the command line and an agent ask of the Scraper, over the scraped projects under a solution: one
+/// recording session at a time, and reading what is recorded. The command line and the MCP server are thin
 /// adapters over it. It calls no model.
 /// </summary>
 public sealed partial class ScraperService : IAsyncDisposable
@@ -74,11 +73,10 @@ public sealed partial class ScraperService : IAsyncDisposable
     public string Relative(ScrapeProject project) => Path.GetRelativePath(_solutionDir, project.Folder).Replace('\\', '/');
 
     /// <summary>
-    /// Opens the recording browser on a project's start URL (or <paramref name="url"/>) and starts a
-    /// session. With <paramref name="autoCapture"/>, each page the app moves to is captured once it settles.
-    /// With <paramref name="actions"/>, it is a test recording: what the person does is recorded too, in order.
+    /// Opens the browser on a project's start URL (or <paramref name="url"/>) and starts a session: what
+    /// Explore runs in. With <paramref name="autoCapture"/>, each page the app moves to is captured once it settles.
     /// </summary>
-    public async Task<RecordingState> StartRecordingAsync(string? projectName, string sessionName, string? url = null, bool autoCapture = true, bool visible = true, bool actions = false, CancellationToken cancellationToken = default)
+    public async Task<RecordingState> StartRecordingAsync(string? projectName, string sessionName, string? url = null, bool autoCapture = true, bool visible = true, CancellationToken cancellationToken = default)
     {
         var project = Project(projectName);
         var start = url ?? project.Config.StartUrl;
@@ -101,18 +99,9 @@ public sealed partial class ScraperService : IAsyncDisposable
                 throw;
             }
             var session = project.StartSession(sessionName, DateTimeOffset.Now);
-            _recording = new Recording(project, session, source, autoCapture, actions);
-            if (actions)
-            {
-                // A transition is a navigate action then: its capture follows it in the same order.
-                source.Acted += OnActed;
-                source.Commanded += OnCommanded;
-                await source.StartActionsAsync(new ScrapeActionOptions(project.Config.TestIds, project.Config.Secrets), cancellationToken).ConfigureAwait(false);
-            }
-            else if (autoCapture)
-            {
+            _recording = new Recording(project, session, source, autoCapture);
+            if (autoCapture)
                 source.Transitioned += OnTransitioned;
-            }
         }
         finally
         {
@@ -180,7 +169,7 @@ public sealed partial class ScraperService : IAsyncDisposable
         var run = options with
         {
             WaitForSignIn = options.StopAtSignIn ? null : options.WaitForSignIn ?? (options.Visible ? WaitForSignInAsync : null),
-            // The view follows along through Changed; the caller's own progress too.
+            // A listener follows along through Changed; the caller's own progress too.
             Progress = new Relay(p =>
             {
                 options.Progress?.Report(p);
@@ -411,9 +400,6 @@ public sealed partial class ScraperService : IAsyncDisposable
             if (stopped is null)
                 return null;
             stopped.Source.Transitioned -= OnTransitioned;
-            stopped.Source.Acted -= OnActed;
-            stopped.Source.Commanded -= OnCommanded;
-            stopped.Source.StopActions();
             await stopped.Source.DisposeAsync().ConfigureAwait(false);
         }
         finally
@@ -422,18 +408,6 @@ public sealed partial class ScraperService : IAsyncDisposable
         }
         Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Stopped, stopped.State, null));
         return stopped.State;
-    }
-
-    /// <summary>Outlines a node of the last capture in the recording browser, or removes the outline.</summary>
-    public Task HighlightAsync(int? node, CancellationToken cancellationToken = default) =>
-        (_recording ?? throw new ScraperProblem("No recording is in progress.")).Source.HighlightAsync(node, cancellationToken);
-
-    /// <summary>Captures the page, then lets the user click a node in the recording browser; its number in that capture, or null.</summary>
-    public async Task<(RecordingEvent? Capture, int? Node)> PickAsync(CancellationToken cancellationToken = default)
-    {
-        var capture = await CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-        var recording = _recording ?? throw new ScraperProblem("No recording is in progress.");
-        return (capture ?? recording.Session.Events.LastOrDefault(), await recording.Source.PickAsync(cancellationToken).ConfigureAwait(false));
     }
 
     /// <summary>A project's recorded pages: key, newest title, how many captures, and the newest capture's session and event.</summary>
@@ -653,32 +627,8 @@ public sealed partial class ScraperService : IAsyncDisposable
             await source.StartAsync(new ScrapeStart("about:blank", project.ProfileFolder, visible) { SignInState = project.SignInStatePath }, cancellationToken).ConfigureAwait(false);
             await source.GuardAsync(new RequestGuard(project.Config.Explore)).ConfigureAwait(false);
             var result = await PageVerifier.RunAsync(project, source.Page!, () => source.CaptureAsync(cancellationToken)).ConfigureAwait(false);
-            Remember(project, result);
             return result;
         }
-    }
-
-    /// <summary>Resolves a test recording's actions to page-object members, verbs and phrases, and its gaps (<see cref="TestResolver"/>).</summary>
-    /// <exception cref="ScraperProblem">No such session.</exception>
-    public ResolvedTest ResolveActions(string? projectName, string session)
-    {
-        var project = Project(projectName);
-        return TestResolver.Resolve(project, project.Session(session) ?? throw new ScraperProblem($"{project.Name} has no recording session '{session}'."));
-    }
-
-    /// <summary>
-    /// Drafts a test recording as an xUnit test, a scenario or both (<see cref="TestDrafter"/>), into the
-    /// project, and gives what it wrote and its gaps. The target is the project's <c>## Tests</c> setting
-    /// unless one is given.
-    /// </summary>
-    /// <exception cref="ScraperProblem">No such session.</exception>
-    public DraftTestResult DraftTest(string? projectName, string session, TestTarget? target = null, string? name = null)
-    {
-        var project = Project(projectName);
-        var recorded = project.Session(session) ?? throw new ScraperProblem($"{project.Name} has no recording session '{session}'.");
-        var test = TestResolver.Resolve(project, recorded);
-        var draft = TestDrafter.Draft(project, test, new RecordedHeader(recorded.Id, recorded.Hash()), target ?? project.TestTarget, name);
-        return new DraftTestResult(target ?? project.TestTarget, TestDrafter.Write(project, draft), draft.Problems, test.Gaps);
     }
 
     /// <summary>Writes a C# file into the project, when its syntax is valid.</summary>
@@ -709,149 +659,6 @@ public sealed partial class ScraperService : IAsyncDisposable
         _ = CaptureOnTransitionAsync();
     }
 
-    /// <summary>
-    /// In a test recording: lets the person click an element in the recording browser and choose a check
-    /// (R5), after the page is captured, and records it in turn with the actions. Null when they cancel.
-    /// </summary>
-    /// <exception cref="ScraperProblem">No test recording is in progress.</exception>
-    public Task<RecordingEvent?> AssertAsync(CancellationToken cancellationToken = default)
-    {
-        var recording = _recording ?? throw new ScraperProblem("No recording is in progress: start a test recording first.");
-        if (!recording.Actions)
-            throw new ScraperProblem($"{recording.State.Session} is not a test recording: an assert goes with recorded actions.");
-        var done = new TaskCompletionSource<RecordingEvent?>(TaskCreationOptions.RunContinuationsAsynchronously);
-        recording.Then(async () =>
-        {
-            try
-            {
-                done.TrySetResult(await AssertNowAsync(recording, cancellationToken).ConfigureAwait(false));
-            }
-            catch (Exception e)
-            {
-                done.TrySetException(e);
-            }
-        });
-        return done.Task;
-    }
-
-    private async Task<RecordingEvent?> AssertNowAsync(Recording recording, CancellationToken cancellationToken)
-    {
-        var capture = await CapturePageAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-        if (await recording.Source.PickAssertAsync(cancellationToken).ConfigureAwait(false) is not { } picked)
-            return null;
-        RecordingEvent added;
-        await _gate.WaitAsync(cancellationToken).ConfigureAwait(false);
-        try
-        {
-            if (_recording != recording)
-                return null;
-            added = recording.Session.AddAction(new RecordingEvent
-            {
-                Kind = RecordingEvent.AssertKind,
-                At = DateTimeOffset.UtcNow,
-                Location = picked.Location,
-                Page = PageKey.Of(picked.Location),
-                Node = picked.Node,
-                Capture = picked.Node is null ? null : capture?.Number,
-                Check = picked.Check,
-                Value = picked.Value,
-                Checked = picked.Checked,
-            });
-        }
-        finally
-        {
-            _gate.Release();
-        }
-        Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Acted, recording.State, added));
-        await recording.Source.ShowCountAsync(recording.Session.Events.Count(e => e.IsAction), CancellationToken.None).ConfigureAwait(false);
-        return added;
-    }
-
-    // The toolbar: Assert records a check in turn; Stop ends the recording as the view's Stop does.
-    private void OnCommanded(object? sender, string command)
-    {
-        if (_recording is not { } recording)
-            return;
-        if (command == "assert")
-            recording.Then(() => AssertNowSafeAsync(recording));
-        else if (command == "stop")
-            _ = StopRecordingAsync();
-    }
-
-    private async Task AssertNowSafeAsync(Recording recording)
-    {
-        try
-        {
-            await AssertNowAsync(recording, CancellationToken.None).ConfigureAwait(false);
-        }
-        catch (Exception e) when (e is ScraperProblem or InvalidOperationException or ArgumentException or Microsoft.Playwright.PlaywrightException)
-        {
-            Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Failed, recording.State, null, e.Message));
-        }
-    }
-
-    private void OnActed(object? sender, ScrapeAction action)
-    {
-        if (_recording is { } recording)
-            recording.Then(() => SaveActionReportedAsync(recording, action));
-    }
-
-    // The top of the save queue: nothing awaits it, so a save that fails is reported here or not at all.
-    private async Task SaveActionReportedAsync(Recording recording, ScrapeAction action)
-    {
-        try
-        {
-            await SaveActionAsync(recording, action).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Failed, recording.State, null, $"The {action.Kind} action was not saved: {e.Message}"));
-        }
-    }
-
-    // The capture taken for the action first (unless the page is unchanged since its last capture), then
-    // the action in the capture its node is in. A navigation on an auto-capture recording captures after.
-    private async Task SaveActionAsync(Recording recording, ScrapeAction action)
-    {
-        RecordingEvent added;
-        await _gate.WaitAsync().ConfigureAwait(false);
-        try
-        {
-            if (_recording != recording)
-                return;
-            RecordingEvent? capture = null;
-            if (action.Capture is { } snapshot && !recording.IsUnchanged(snapshot))
-            {
-                capture = recording.Session.AddPage(snapshot);
-                recording.Remember(snapshot);
-            }
-            if (capture is null && action.Node is not null && action.CapturedAt is { } at)
-                capture = recording.Session.Events.LastOrDefault(e => e.Kind == RecordingEvent.PageKind && e.At == at);
-            added = recording.Session.AddAction(new RecordingEvent
-            {
-                Kind = action.Kind,
-                At = action.At,
-                Location = action.Location,
-                Page = PageKey.Of(action.Location),
-                Node = action.Node,
-                Capture = action.Node is null ? null : capture?.Number,
-                Path = action.Path,
-                Value = action.Secret is null ? action.Value : null,
-                Placeholder = action.Secret,
-                Checked = action.Checked,
-                Accepted = action.Accepted,
-            });
-        }
-        finally
-        {
-            _gate.Release();
-        }
-        Changed?.Invoke(this, new ScraperChange(ScraperChangeKind.Acted, recording.State, added));
-        await recording.Source.ShowCountAsync(recording.Session.Events.Count(e => e.IsAction), CancellationToken.None).ConfigureAwait(false);
-        if (action.Kind == ScrapeActionKind.Navigate && recording.AutoCapture && recording.Project.IsOwnPage(action.Location))
-            await CaptureOnTransitionAsync().ConfigureAwait(false);
-    }
-
     private async Task CaptureOnTransitionAsync()
     {
         try
@@ -865,11 +672,9 @@ public sealed partial class ScraperService : IAsyncDisposable
         }
     }
 
-    private sealed class Recording(ScrapeProject project, RecordingSession session, IScrapeSource source, bool autoCapture, bool actions)
+    private sealed class Recording(ScrapeProject project, RecordingSession session, IScrapeSource source, bool autoCapture)
     {
         private readonly Dictionary<string, string> _lastBody = new(StringComparer.Ordinal);
-        private readonly Lock _chainLock = new();
-        private Task _chain = Task.CompletedTask;
 
         public ScrapeProject Project { get; } = project;
 
@@ -877,18 +682,7 @@ public sealed partial class ScraperService : IAsyncDisposable
 
         public IScrapeSource Source { get; } = source;
 
-        public bool AutoCapture => autoCapture;
-
-        public bool Actions => actions;
-
-        public RecordingState State => new(Project.Name, Session.Id, Session.Folder, autoCapture, Session.Events.Count, actions);
-
-        // Runs after what was queued before: actions are saved in the order the source raised them.
-        public void Then(Func<Task> next)
-        {
-            lock (_chainLock)
-                _chain = _chain.ContinueWith(_ => next(), CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Default).Unwrap();
-        }
+        public RecordingState State => new(Project.Name, Session.Id, Session.Folder, autoCapture, Session.Events.Count);
 
         public bool IsUnchanged(ScrapeSnapshot snapshot) =>
             _lastBody.TryGetValue(PageKey.Of(snapshot.Location), out var body) && body == Body(snapshot);
@@ -916,12 +710,8 @@ public sealed record ControlMatch(int Node, string Line, IReadOnlyList<string> C
 /// <param name="Session">The session's id.</param>
 /// <param name="Folder">The session's folder.</param>
 /// <param name="AutoCapture">Whether each page the app moves to is captured.</param>
-/// <param name="Captures">How many events the session has: pages, and actions in a test recording.</param>
-/// <param name="Actions">Whether it is a test recording, with the person's actions.</param>
-public sealed record RecordingState(string Project, string Session, string Folder, bool AutoCapture, int Captures, bool Actions = false);
-
-/// <summary>A drafted test: the target, each file written or why not, why a target was not drafted, and the gaps marked in it.</summary>
-public sealed record DraftTestResult(TestTarget Target, IReadOnlyList<DraftWrite> Files, IReadOnlyList<string> Problems, IReadOnlyList<ResolvedStep> Gaps);
+/// <param name="Captures">How many page captures the session has.</param>
+public sealed record RecordingState(string Project, string Session, string Folder, bool AutoCapture, int Captures);
 
 /// <summary>A node found on a page: its page key, its number on the page's newest capture, and its outline line.</summary>
 public sealed record SimilarNode(string Page, int Node, string Line);
@@ -936,13 +726,10 @@ public enum ScraperChangeKind
     /// <summary>A page was captured.</summary>
     Captured,
 
-    /// <summary>The person took an action in a test recording: the change's event is the action.</summary>
-    Acted,
-
     /// <summary>A recording stopped.</summary>
     Stopped,
 
-    /// <summary>A capture on a transition, or the save of a recorded action, failed: the message says which.</summary>
+    /// <summary>A capture on a transition failed: the message says why.</summary>
     Failed,
 
     /// <summary>Explore reached a sign-in page and waits for the person to sign in and continue.</summary>
@@ -965,7 +752,7 @@ public sealed record ScraperChange(ScraperChangeKind Kind, RecordingState? Recor
     public ExploreResult? Explored { get; init; }
 }
 
-// Reports on the thread that reports: a view's progress line keeps up with the run.
+// Reports on the thread that reports: a progress line keeps up with the run.
 internal sealed class Relay(Action<ExploreProgress> report) : IProgress<ExploreProgress>
 {
     public void Report(ExploreProgress value) => report(value);

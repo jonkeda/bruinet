@@ -198,55 +198,6 @@ public sealed class PlaywrightScrapeSourceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task A_highlight_outlines_the_node_in_its_frame_and_is_not_captured()
-    {
-        await StartAsync("pages/checkout.html");
-        var snapshot = await _source.CaptureAsync();
-        var iframe = Single(snapshot, n => n.Attribute("data-testid") == "checkout-payment-frame");
-        var input = snapshot.Nodes.First(n => n.Type == "input" && IsUnder(snapshot, n, iframe.Number));
-
-        await _source.HighlightAsync(input.Number);
-
-        var frame = _source.Page!.Frames.Single(f => f.Url.EndsWith("payment-frame.html", StringComparison.Ordinal));
-        Assert.True(await frame.EvaluateAsync<bool>("() => !!document.getElementById('__bruinet_highlight')"));
-        Assert.False(await _source.Page.MainFrame.EvaluateAsync<bool>("() => !!document.getElementById('__bruinet_highlight')"));
-        var again = await _source.CaptureAsync();
-        Assert.Equal(snapshot.Nodes.Count, again.Nodes.Count);
-
-        await _source.HighlightAsync(null);
-        Assert.False(await frame.EvaluateAsync<bool>("() => !!document.getElementById('__bruinet_highlight')"));
-    }
-
-    [Fact]
-    public async Task A_pick_returns_the_clicked_node_and_the_click_does_not_reach_the_page()
-    {
-        await StartAsync("pages/spa.html#/orders/42");
-        var snapshot = await _source.CaptureAsync();
-        var button = Single(snapshot, n => n.Attribute("data-testid") == "open-dialog");
-
-        var pick = _source.PickAsync();
-        await PickingAsync();
-        await _source.Page!.ClickAsync("[data-testid=open-dialog]");
-        var picked = await pick;
-
-        Assert.Equal(button.Number, picked);
-        Assert.Equal(0, await _source.Page.EvaluateAsync<int>("() => document.querySelectorAll('[role=dialog]').length"));
-    }
-
-    [Fact]
-    public async Task A_pick_is_cancelled_by_escape()
-    {
-        await StartAsync("pages/spa.html");
-        await _source.CaptureAsync();
-
-        var pick = _source.PickAsync();
-        await PickingAsync();
-        await _source.Page!.Keyboard.PressAsync("Escape");
-
-        Assert.Null(await pick);
-    }
-
-    [Fact]
     public async Task A_capture_and_its_screenshot_are_recorded_into_a_project()
     {
         var folder = Path.Combine(_profile, "Shop.UITests");
