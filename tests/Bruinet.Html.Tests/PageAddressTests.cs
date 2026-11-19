@@ -16,6 +16,9 @@ public sealed class PageAddressTests
     [InlineData("/contact#/view/{id}", "https://app.example/contact#/update/55313", false)]
     [InlineData("/contact#/view/{id}", "https://app.example/contact#/", false)]
     [InlineData("/contact#/view/{id}", "https://app.example/project#/view/55313", false)]
+    [InlineData("/project/view?id={id}#/planning", "https://app.example/project/view?planTab=project&id=17805#/planning", true)]
+    [InlineData("/project/view?id={id}#/planning", "https://app.example/project/view?id=17805#/waste", false)]
+    [InlineData("/project/view?id={id}", "https://app.example/project/view?id=17805", true)]
     public void An_address_with_an_id_matches_any_record_of_it(string address, string location, bool expected)
         => Assert.Equal(expected, PageAddress.Matches(address, new Uri(location)));
 

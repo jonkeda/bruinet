@@ -70,11 +70,45 @@ public static class PlaceKinds
         return parts.Any(part => part.Kind == PlaceKind.Dialog) ? PlaceGroupKind.ListWithDialog : PlaceGroupKind.Nothing;
     }
 
-    /// <summary>True for the page of one record: its key holds an id's place (<c>/contact#/view/{id}</c>).</summary>
+    /// <summary>
+    /// True for the page of one record: its key holds an id's place (<c>/contact#/view/{id}</c>), or the address it was
+    /// opened at has a record's number in its query (<c>/project/view?id=17805#/planning</c>).
+    /// </summary>
     public static bool IsRecord(Place place)
     {
         ArgumentNullException.ThrowIfNull(place);
-        return place.Key.Contains('{', StringComparison.Ordinal);
+        return place.Key.Contains('{', StringComparison.Ordinal) || IdsInQuery(place.Address).Count > 0;
+    }
+
+    /// <summary>
+    /// A page's address with a placeholder where a record's id is, in its path, its hash route or its query:
+    /// <c>/contact#/view/{id}</c>, <c>/project/view?id={id}#/planning</c>. The key itself for a page that is no record's.
+    /// </summary>
+    public static string RecordAddress(Place place)
+    {
+        ArgumentNullException.ThrowIfNull(place);
+        var ids = IdsInQuery(place.Address);
+        if (ids.Count == 0)
+            return place.Key;
+        var query = "?" + string.Join('&', ids.Select(name => $"{name}={{id}}"));
+        var hash = place.Key.IndexOf('#', StringComparison.Ordinal);
+        return hash < 0 ? place.Key + query : place.Key[..hash] + query + place.Key[hash..];
+    }
+
+    // The names of an address's query parameters whose value is a number: a record's id, not a view's own setting.
+    private static List<string> IdsInQuery(string? address)
+    {
+        if (address is null)
+            return [];
+        var start = address.IndexOf('?', StringComparison.Ordinal);
+        if (start < 0)
+            return [];
+        var end = address.IndexOf('#', start);
+        var query = end < 0 ? address[(start + 1)..] : address[(start + 1)..end];
+        return [.. query.Split('&', StringSplitOptions.RemoveEmptyEntries)
+            .Select(pair => pair.Split('=', 2))
+            .Where(pair => pair.Length == 2 && pair[1].Length > 0 && pair[1].All(char.IsDigit))
+            .Select(pair => pair[0])];
     }
 
     /// <summary>

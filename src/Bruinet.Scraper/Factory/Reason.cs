@@ -51,6 +51,9 @@ public static class ReasonCodes
     /// <summary>The loop took longer than it may.</summary>
     public const string LoopTooLong = "loop-too-long";
 
+    /// <summary>A class of the name a draft would have is in the suite already: only its test is drafted, when it has none.</summary>
+    public const string ClassExists = "class-exists";
+
     /// <summary>A place shows nothing a test could check: it is listed, and no class is drafted for it.</summary>
     public const string NothingToCheck = "nothing-to-check";
 
@@ -119,7 +122,7 @@ public static partial class ReasonClassifier
         ArgumentNullException.ThrowIfNull(message);
         var (code, fix) = message switch
         {
-            _ when record => (ReasonCodes.NeedsRecord, FixPlaces.Records),
+            _ when record || message.Contains("is the page of one record", StringComparison.Ordinal) => (ReasonCodes.NeedsRecord, FixPlaces.Records),
             _ when NotShown().IsMatch(message) => (ReasonCodes.LabelNotFound, FixPlaces.Reader),
             _ when DidNotOpen().IsMatch(message) => (ReasonCodes.DidNotOpen, FixPlaces.DraftKind),
             _ when message.Contains("access", StringComparison.OrdinalIgnoreCase) && message.Contains("denied", StringComparison.OrdinalIgnoreCase) => (ReasonCodes.Refused, FixPlaces.Person),
@@ -138,6 +141,7 @@ public static partial class ReasonClassifier
     [GeneratedRegex(@"does not show|not (found|shown) on|no (field|row|label) |labels? .* (missing|not)", RegexOptions.IgnoreCase)]
     private static partial Regex NotShown();
 
-    [GeneratedRegex(@"did not open|is not (loaded|at its address|open)|could not be opened|not visible", RegexOptions.IgnoreCase)]
+    // What a test looked for is not there: the page or the part it is of did not open as the test opens it.
+    [GeneratedRegex(@"did not open|is not (loaded|at its address|open)|could not be opened|not visible|Expected Visible to be 'True'|Expected Exists to be 'True'", RegexOptions.IgnoreCase)]
     private static partial Regex DidNotOpen();
 }

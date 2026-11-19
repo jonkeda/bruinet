@@ -146,13 +146,15 @@ public sealed partial class ScraperService
                 return (row, Path.Combine(project.Folder, folder, row.ClassName + PageDrafter.Extension));
             }
 
-            var page = pageClass ?? (place.Kind == PlaceKind.Page ? null : PageClassAt(project, place.Parent ?? ""))
+            // A dialog's page: the class that names the page's address, or the one that was drafted from the page (a
+            // record's page names its address with the record's id in it, which the page's key does not have).
+            var page = pageClass ?? (place.Kind == PlaceKind.Page ? null : PageClassAt(project, place.Parent ?? "") ?? DraftedFrom(project, place.Parent ?? "", "form"))
                 ?? (place.Kind == PlaceKind.Page ? null : throw new ScraperProblem($"No page class of {project.Name} names the address {place.Parent}: draft or write that page first, or give its class."));
             // A form's test names the class that was drafted from the place, whatever it was called then.
             var formName = DraftedFrom(project, place.Key, "form")
                 ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns);
             if (kind == PlaceDraftKind.FormTest)
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns), null);
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent]), null);
             // What a page's cards open: the dialogs of the page that the walk named after a card.
             var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);

@@ -121,15 +121,7 @@ public static partial class ScrapeCommands
             var modules = ModuleCut.Keep(ModuleCut.Of(places, scraped.Config, owed), File.Exists(modulesFile) ? ModuleCut.Parse(await File.ReadAllTextAsync(modulesFile, cancellationToken).ConfigureAwait(false)) : []);
             var setup = FactorySetup.Read(scraped.Home);
             var given = parsed.GetValue(groups) ?? [];
-            // The groups that owe something, by the order of their modules; a person's choice of modules narrows it.
-            var chosen = ModuleCut.ToRun(modules)
-                .Where(each => parsed.GetValue(module) is not { } only || string.Equals(each.Name, only, StringComparison.OrdinalIgnoreCase))
-                .Where(each => given.Length > 0 || setup.RunsAll || setup.Run.Contains(each.Name, StringComparer.OrdinalIgnoreCase) || parsed.GetValue(module) is not null)
-                .SelectMany(each => each.Groups)
-                .Where(group => given.Length > 0 ? given.Contains(group, StringComparer.Ordinal) : owed.Groups.Any(each => each.Group == group && each.Count > 0))
-                .ToList();
-            foreach (var missing in given.Where(group => !chosen.Contains(group, StringComparer.Ordinal)))
-                chosen.Add(missing);
+            var chosen = GroupsToRun(modules, owed, setup, given, parsed.GetValue(module));
             var most = parsed.GetValue(batch) ?? 10;
             var queue = chosen.Take(most).ToList();
             if (queue.Count == 0)
@@ -152,10 +144,22 @@ public static partial class ScrapeCommands
             var number = state.NextBatch;
             var ran = new List<LoopResult>();
             string? stopped = null;
-            foreach (var group in queue)
+            var taken = new HashSet<string>(StringComparer.Ordinal);
+            for (var at = 0; at < queue.Count; at++)
             {
+                var group = queue[at];
                 cancellationToken.ThrowIfCancellationRequested();
-                var loop = await service.RunLoopAsync(name, file, group, new Bruinet.Scraper.Service.LoopOptions { Walk = !parsed.GetValue(noWalk), Test = !parsed.GetValue(noTest), Visible = !parsed.GetValue(headless) && io.Interactive, Batch = number, Baseline = parsed.GetValue(baseline), Progress = new Said(io.Error) }, cancellationToken).ConfigureAwait(false);
+                // A large group goes in loops of a few places: its pages are walked once, in its first loop.
+                var first = !ran.Any(each => each.Group == group);
+                var loop = await service.RunLoopAsync(name, file, group, new Bruinet.Scraper.Service.LoopOptions { Walk = first && !parsed.GetValue(noWalk), Test = !parsed.GetValue(noTest), Visible = !parsed.GetValue(headless) && io.Interactive, Batch = number, Baseline = parsed.GetValue(baseline), Skip = taken, Progress = new Said(io.Error) }, cancellationToken).ConfigureAwait(false);
+                taken.UnionWith(loop.Places);
+                // The same group again while it has places this run did not take up.
+                if (loop.Places.Count > 0 && service.OwedPlaces(name, PlacesList.Load(file)).Groups.FirstOrDefault(each => each.Group == group) is { } still
+                    && still.PagesWithoutClass.Concat(still.DialogFormsNotDrafted).Any(place => !taken.Contains(place)))
+                {
+                    queue.Insert(at + 1, group);
+                }
+
                 loop = state.Add(loop);
                 ran.Add(loop);
                 // After every loop: a run that stops loses nothing it finished.
@@ -175,6 +179,19 @@ public static partial class ScrapeCommands
             return stopped is null ? 0 : 1;
         });
         return command;
+    }
+
+    // The groups that owe something, by the order of their modules; a person's choice of modules, or of groups, narrows it.
+    private static List<string> GroupsToRun(IReadOnlyList<AppModule> modules, OwedReport owed, FactorySetup setup, string[] given, string? onlyModule)
+    {
+        var chosen = ModuleCut.ToRun(modules)
+            .Where(each => onlyModule is null || string.Equals(each.Name, onlyModule, StringComparison.OrdinalIgnoreCase))
+            .Where(each => given.Length > 0 || onlyModule is not null || setup.RunsAll || setup.Run.Contains(each.Name, StringComparer.OrdinalIgnoreCase))
+            .SelectMany(each => each.Groups)
+            .Where(group => given.Length > 0 ? given.Contains(group, StringComparer.Ordinal) : owed.Groups.Any(each => each.Group == group && each.Count > 0))
+            .ToList();
+        chosen.AddRange(given.Where(group => !chosen.Contains(group, StringComparer.Ordinal)));
+        return chosen;
     }
 
     private static Command FactoryNote(HostIo io)

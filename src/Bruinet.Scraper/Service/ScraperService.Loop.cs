@@ -29,6 +29,12 @@ public sealed record LoopOptions
     /// </summary>
     public string? Baseline { get; init; }
 
+    /// <summary>The most places one loop takes up: a small group shows a fault before it is repeated twenty times.</summary>
+    public int MaxPlaces { get; init; } = 6;
+
+    /// <summary>Places this run took up already: a loop does not take them up again.</summary>
+    public IReadOnlySet<string> Skip { get; init; } = new HashSet<string>(StringComparer.Ordinal);
+
     /// <summary>The batch the loop is in.</summary>
     public int Batch { get; init; } = 1;
 
@@ -57,6 +63,7 @@ public sealed partial class ScraperService
         var seconds = new Dictionary<string, double>(StringComparer.Ordinal);
         var reasons = new List<Reason>();
         var written = new List<Written>();
+        var taken = new List<string>();
         var walk = "";
         string? stop = null;
         var clock = Stopwatch.StartNew();
@@ -96,7 +103,7 @@ public sealed partial class ScraperService
 
         if (stop is null)
         {
-            Draft(project, list, group, written, reasons);
+            Draft(project, list, group, options, taken, written, reasons);
             Station("draft");
 
             stop = await BuildAndPutBackAsync(project, written, reasons, cancellationToken).ConfigureAwait(false);
@@ -133,6 +140,7 @@ public sealed partial class ScraperService
         {
             Batch = options.Batch,
             Group = group,
+            Places = taken,
             Started = started,
             Walk = walk,
             Drafted = [.. written.Select(Relative)],
@@ -147,13 +155,16 @@ public sealed partial class ScraperService
     }
 
     // A class and its test for each place of the group that owes one: a page first, so a dialog finds its page's class.
-    private void Draft(ScrapeProject project, PlacesList list, string group, List<Written> written, List<Reason> reasons)
+    private void Draft(ScrapeProject project, PlacesList list, string group, LoopOptions options, List<string> taken, List<Written> written, List<Reason> reasons)
     {
-        var owed = Owed.Of(list, SuiteSource.Read(project)).Groups.FirstOrDefault(each => each.Group == group);
+        var suite = SuiteSource.Read(project);
+        var owed = Owed.Of(list, suite).Groups.FirstOrDefault(each => each.Group == group);
         if (owed is null)
             return;
-        foreach (var key in owed.PagesWithoutClass.Concat(owed.DialogFormsNotDrafted))
+        // Pages before what opens on them: a dialog is drafted on its page's class.
+        foreach (var key in owed.PagesWithoutClass.Concat(RecordPagesToDraft(project, owed)).Concat(owed.DialogFormsNotDrafted).Where(key => !options.Skip.Contains(key)).Take(options.MaxPlaces))
         {
+            taken.Add(key);
             try
             {
                 var (form, file) = DraftPlace(project.Name, list, key, PlaceDraftKind.Form);
@@ -164,26 +175,38 @@ public sealed partial class ScraperService
                     continue;
                 }
 
-                if (file is null || File.Exists(file))
+                // A class of that name is the suite's already, written by a person or under another first line: it is not
+                // written a second time. Its place gets the test it lacks.
+                var exists = file is null || File.Exists(file) || Regex.IsMatch(suite.Text, $@"\bclass\s+{Regex.Escape(form.ClassName)}\b");
+                if (exists)
+                    reasons.Add(new Reason(ReasonCodes.ClassExists, "draft", key, form.ClassName, $"{form.ClassName} is in the suite already; only a test is drafted, when it has none.", FixPlaces.Person));
+                else
                 {
-                    reasons.Add(new Reason(ReasonCodes.Unknown, "draft", key, form.ClassName, $"{form.ClassName} is there already, under a first line that names another place.", FixPlaces.Person));
-                    continue;
+                    Write(file!, form.Code);
+                    written.Add(new Written(file!, key, form.ClassName, IsTest: false));
                 }
 
-                Write(file, form.Code);
-                written.Add(new Written(file, key, form.ClassName, IsTest: false));
                 var (test, _) = DraftPlace(project.Name, list, key, PlaceDraftKind.FormTest);
                 var testFile = TestFile(project, test);
                 if (File.Exists(testFile))
                     continue; // a test of that name is a person's, or an earlier loop's: it is not written over
+                if (Regex.IsMatch(suite.Text, $@"\bclass\s+{Regex.Escape(test.ClassName)}\b"))
+                    continue;
                 Write(testFile, test.Code);
-                written.Add(new Written(testFile, key, test.ClassName, IsTest: true) { Of = form.ClassName });
+                written.Add(new Written(testFile, key, test.ClassName, IsTest: true) { Of = exists ? null : form.ClassName });
             }
             catch (ScraperProblem problem)
             {
                 reasons.Add(ReasonClassifier.OfDraft(problem.Message, key));
             }
         }
+    }
+
+    // A record's page is drafted when the suite's templates say how such a page is written and opened.
+    private static IEnumerable<string> RecordPagesToDraft(ScrapeProject project, OwedGroup owed)
+    {
+        var file = Path.Combine(project.Home, DraftTemplates.FileName);
+        return File.Exists(file) && DraftTemplates.Parse(File.ReadAllText(file)).Blocks.ContainsKey(PlaceDrafter.RecordPage) ? owed.RecordPages : [];
     }
 
     // Builds the suite; a file of the loop's that does not build is put back with what names its class, until it builds.

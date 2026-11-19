@@ -87,7 +87,9 @@ public static class Owed
             var withoutClass = pages.Where(page => page.Address is not null && !PlaceKinds.IsRecord(page) && page.State is PlaceState.Seen or PlaceState.FormNotSaved
                     && !suite.Names(page.Key) && !suite.DraftedFrom.Contains(page.Key))
                 .Select(page => page.Key).ToList();
-            var records = pages.Where(page => PlaceKinds.IsRecord(page) && !suite.Names(page.Key[..page.Key.IndexOf('{', StringComparison.Ordinal)].TrimEnd('/')))
+            var records = pages.Where(page => PlaceKinds.IsRecord(page) && page.State is PlaceState.Seen or PlaceState.FormNotSaved
+                    && !suite.Names(page.Key.Contains('{', StringComparison.Ordinal) ? page.Key[..page.Key.IndexOf('{', StringComparison.Ordinal)].TrimEnd('/') : page.Key)
+                    && !suite.Names(PlaceKinds.RecordAddress(page)) && !suite.DraftedFrom.Contains(page.Key))
                 .Select(page => page.Key).ToList();
             var forms = group.Where(place => place.Kind == PlaceKind.Dialog && place.State == PlaceState.FormNotSaved && place.SameAs is null
                     && keys.Contains(place.Parent ?? place.Key) && !suite.DraftedFrom.Contains(place.Key))

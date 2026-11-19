@@ -23,6 +23,9 @@ public sealed record LoopResult
     /// <summary>What the walk said; empty when the loop did not walk.</summary>
     public string Walk { get; init; } = "";
 
+    /// <summary>The places it took up: drafted, or tried and not drafted. A place a run took up is not taken up again in that run.</summary>
+    public IReadOnlyList<string> Places { get; init; } = [];
+
     /// <summary>The classes and tests it wrote, by their files relative to the suite.</summary>
     public IReadOnlyList<string> Drafted { get; init; } = [];
 
@@ -53,7 +56,7 @@ public sealed record LoopResult
 
     /// <summary>True when the loop wrote something and kept none of it, or owed something and drafted none of it.</summary>
     [JsonIgnore]
-    public bool KeptNothing => Kept.Count == 0 && (Drafted.Count > 0 || Reasons.Any(reason => reason.Code != ReasonCodes.NothingToCheck));
+    public bool KeptNothing => Kept.Count == 0 && (Drafted.Count > 0 || Reasons.Any(reason => reason.Code is not (ReasonCodes.NothingToCheck or ReasonCodes.ClassExists)));
 }
 
 /// <summary>What the factory remembers between runs (<c>state.json</c> in the app's own Scraper place): every loop, so a run that stops goes on.</summary>
@@ -124,7 +127,7 @@ public static class StopRules
             return null;
         if (batch[^1].Stop is { } own)
             return own;
-        var repeated = batch.SelectMany(loop => loop.Reasons).Where(reason => reason.Code is not (ReasonCodes.PassedSecondTime or ReasonCodes.NothingToCheck))
+        var repeated = batch.SelectMany(loop => loop.Reasons).Where(reason => reason.Code is not (ReasonCodes.PassedSecondTime or ReasonCodes.NothingToCheck or ReasonCodes.ClassExists))
             .GroupBy(reason => reason.Code, StringComparer.Ordinal).Where(group => group.Count() >= SameReason).OrderByDescending(group => group.Count()).FirstOrDefault();
         if (repeated is not null)
             return string.Create(CultureInfo.InvariantCulture, $"the reason '{repeated.Key}' came {repeated.Count()} times in this batch: it is a fault of the process, to fix at {repeated.First().FixAt} before the next group (for example {repeated.First().Place}: {repeated.First().Evidence})");

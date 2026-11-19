@@ -30,6 +30,14 @@ internal static class PageAddress
         ArgumentNullException.ThrowIfNull(location);
         var route = location.Fragment.Split('?')[0];
         var actual = address.Contains('#', StringComparison.Ordinal) ? location.AbsolutePath + route : location.AbsolutePath;
+        // The address's own query (/project/view?id={id}#/planning) is no more part of it than the location's.
+        var query = address.IndexOf('?', StringComparison.Ordinal);
+        if (query >= 0)
+        {
+            var hash = address.IndexOf('#', query);
+            address = hash < 0 ? address[..query] : address[..query] + address[hash..];
+        }
+
         var wanted = address.TrimEnd('/').Split('/');
         var found = actual.TrimEnd('/').Split('/');
         return wanted.Length == found.Length

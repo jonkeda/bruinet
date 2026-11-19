@@ -39,6 +39,15 @@ public static class PlaceDrafter
         "AssertVisible", "AssertLoaded", "Click", "Close", "Context", "Form", "Header", "IsLoaded", "IsVisible", "Name", "Open", "Page", "Root", "Rows", "Self", "Tabs", "Url", "WaitLoaded",
     ];
 
+    /// <summary>The template of the page of one record (<c>## Record page</c>): its <c>{Address}</c> has <c>{id}</c> where the record's id is.</summary>
+    public const string RecordPage = "Record page";
+
+    /// <summary>The template of the test of a record's page (<c>## Record page test</c>).</summary>
+    public const string RecordPageTest = "Record page test";
+
+    /// <summary>The template of the test of a dialog that opens on a record's page (<c>## Record form test</c>).</summary>
+    public const string RecordFormTest = "Record form test";
+
     /// <summary>The line a draft starts with: the place it was made from, the capture, and a hash of what it holds (<see cref="Shape"/>).</summary>
     public static ScrapedHeader Header(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
@@ -116,11 +125,13 @@ public static class PlaceDrafter
         var body = string.Join("\n\n", code.Select(Indent));
         if (notDrafted.Count > 0)
             body += (body.Length > 0 ? "\n\n" : "") + "    // Not drafted:\n" + string.Join('\n', notDrafted.Select(line => "    // " + line));
-        var text = templates.Block(dialog ? "Dialog" : "Form page")
+        // A page of one record has a template of its own when the suite has one: it cannot open by its address alone.
+        var record = !dialog && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPage);
+        var text = templates.Block(dialog ? "Dialog" : record ? RecordPage : "Form page")
             .Replace("{Header}", Header(place, PlaceDraftKind.Form, signs).ToString(), StringComparison.Ordinal)
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
             .Replace("{Summary}", summary, StringComparison.Ordinal)
-            .Replace("{Address}", place.Key, StringComparison.Ordinal)
+            .Replace("{Address}", record ? PlaceKinds.RecordAddress(place) : place.Key, StringComparison.Ordinal)
             .Replace("{Members}", body, StringComparison.Ordinal)
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Page}", pageClass ?? className, StringComparison.Ordinal);
@@ -195,13 +206,16 @@ public static class PlaceDrafter
     /// <param name="pageClass">The page it is on, or is.</param>
     /// <param name="pagesNamespace">The namespace the form's and the page's classes are in.</param>
     /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null)
+    /// <param name="onPage">For a dialog: the page it opens on, so a dialog on a record's page gets the test that opens that page on a record.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
         var card = CardOf(Label(place), signs);
         var checks = string.Join("\n", place.Kind == PlaceKind.Page ? place.Tabs.Select(tab => $"        page.{TabName(tab)}.AssertVisible();") : []);
-        var text = templates.Block(place.Kind == PlaceKind.Page ? "Form page test" : card is not null ? "Card form test" : "Form test")
+        var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
+        var onRecord = place.Kind != PlaceKind.Page && onPage is not null && PlaceKinds.IsRecord(onPage) && card is null && templates.Blocks.ContainsKey(RecordFormTest);
+        var text = templates.Block(record ? RecordPageTest : place.Kind == PlaceKind.Page ? "Form page test" : onRecord ? RecordFormTest : card is not null ? "Card form test" : "Form test")
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card), StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
@@ -213,7 +227,7 @@ public static class PlaceDrafter
             .Replace("{Opener}", Label(place), StringComparison.Ordinal)
             .Replace("{Module}", Module(@namespace), StringComparison.Ordinal)
             .Replace("{PagesNamespace}", pagesNamespace ?? @namespace, StringComparison.Ordinal)
-            .Replace("{Address}", place.Key, StringComparison.Ordinal);
+            .Replace("{Address}", record ? PlaceKinds.RecordAddress(place) : place.Key, StringComparison.Ordinal);
         return new PlaceDraft(className, text.TrimEnd() + "\n", [], []);
     }
 
