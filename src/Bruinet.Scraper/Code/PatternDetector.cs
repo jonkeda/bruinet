@@ -115,7 +115,7 @@ public static class PatternDetector
                 continue;
             var shared = SharedName(found.Select(f => f.Node).ToArray(), testIds ?? HtmlAttributes.TestIds);
             // A lifted pattern is named after its root, what the person sees.
-            var parts = (lifted ? signatures[first.Page][first.Node.Number]! : signature).Split('|');
+            var parts = (lifted ? signatures[first.Page][first.Node.Number] ?? signature : signature).Split('|');
             var named = NamingClass(parts, first.Node);
             // A wrapper or layout cell with nothing that says what it is (div|||div, td.pb-4) groups unrelated
             // elements: listed, with that hint, but not offered as a control to make (3.7).

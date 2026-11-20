@@ -15,7 +15,7 @@ public sealed partial class ScraperService
         Directory.EnumerateFiles(project.Folder, "*.cs", SearchOption.AllDirectories).Order(StringComparer.Ordinal)
             .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
             .Select(file => (File: file, Header: ScrapedHeader.Find(File.ReadAllText(file))))
-            .Where(each => each.Header is { Page: not null, Variant: "form" or "row" })
+            .Where(each => each.Header is { Page: not null, Variant: "form" or "row" or "tabspart" })
             .Select(each => new DraftedFile(PageDrafter.ClassOf(each.File), each.File, each.Header!))
             .DistinctBy(each => each.Key, StringComparer.Ordinal);
 
@@ -49,7 +49,13 @@ public sealed partial class ScraperService
 
             try
             {
-                var (draft, _) = DraftPlace(project.Name, fresh, key, drafted.Header.Variant == "row" ? PlaceDraftKind.Row : PlaceDraftKind.Form, group.Key);
+                // A shared tabs part is drafted from a page of its address: any of them gives the same part.
+                var page = drafted.Header.Variant != "tabspart" ? key
+                    : fresh.Places.Where(each => each.Kind == PlaceKind.Page && each.Tabs.Count > 0 && (each.Key == key || each.Key.StartsWith(key + "#", StringComparison.Ordinal) || each.Key.StartsWith(key + "?", StringComparison.Ordinal))).Select(each => each.Key).Order(StringComparer.Ordinal).FirstOrDefault()
+                    ?? throw new ScraperProblem($"no page at {key} shows tabs any more");
+                var (draft, _) = drafted.Header.Variant == "tabspart"
+                    ? DraftPlace(project.Name, fresh, page, PlaceDraftKind.TabsPart)
+                    : DraftPlace(project.Name, fresh, key, drafted.Header.Variant == "row" ? PlaceDraftKind.Row : PlaceDraftKind.Form, group.Key);
                 var (then, today) = (Lines(File.ReadAllText(drafted.File)), Lines(draft.Code));
                 if (then == today)
                     continue;

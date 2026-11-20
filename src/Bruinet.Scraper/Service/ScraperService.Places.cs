@@ -154,17 +154,21 @@ public sealed partial class ScraperService
             var formName = DraftedFrom(project, place.Key, "form")
                 ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns, PlaceDrafter.Beside(list.Places, place));
             var (opens, under) = OpensOn(list, place);
+            var family = FamilyFor(project, list, place, templates, className, kind);
+            if (kind == PlaceDraftKind.TabsPart)
+                return TabsPartOf(project, list, place, templates, family, folder, ns);
+
             if (kind == PlaceDraftKind.SaveTest)
                 return (SaveTestOf(project, list, place, templates, className, formName, page ?? formName, ns, opens, under), null);
             if (kind == PlaceDraftKind.FormTest)
             {
                 // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
                 // A class a person wrote for the place names its members its own way: only its fields are checked.
-                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns, under).Pressed;
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed, lanes: Factory.FactorySetup.Read(project.Home).Walkers), null);
+                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns, under, family).Pressed;
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed, lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: DraftedFrom(project, place.Key, "form") is null ? null : family), null);
             }
 
-            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns, under);
+            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns, under, family);
             return Target(Path.Combine(project.Folder, folder), form);
         }
         catch (FormatException e)
@@ -186,6 +190,21 @@ public sealed partial class ScraperService
         var save = form.Members.Where(member => form.Pressed.Contains(member.Name)).Select(member => (member.Name, Label: member.Label)).LastOrDefault(member => Places.Walker.Saves(member.Label)).Name
             ?? throw new ScraperProblem($"{place.Key} shows no button that saves: no save test is drafted.");
         return PlaceDrafter.FormTest(place, templates, className ?? formName + "SaveTests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns, onPage, PlaceDrafter.Beside(list.Places, place), saveMember: save);
+    }
+
+    // The tabs the page shares with the other pages of its address are one part: only for a class the Scraper drafts,
+    // since a person's class has its own tab members.
+    // The part itself is the same whoever wrote the page it is asked through.
+    private static TabFamily? FamilyFor(ScrapeProject project, PlacesList list, Place place, DraftTemplates templates, string? className, PlaceDraftKind kind) =>
+        kind != PlaceDraftKind.TabsPart && className is null && DraftedFrom(project, place.Key, "form") is null && PageClassAt(project, place.Key) is not null ? null : PlaceDrafter.FamilyOf(place, list.Places, templates);
+
+    private static (PlaceDraft Draft, string? File) TabsPartOf(ScrapeProject project, PlacesList list, Place place, DraftTemplates templates, TabFamily? family, string folder, string ns)
+    {
+        // Whichever page of the family asks, the part's first line names the capture of the first of them.
+        if (family is not null && list[family.First] is { } first)
+            place = first;
+        var part = PlaceDrafter.TabsPart(family ?? throw new ScraperProblem($"{place.Key} shares no tabs with other pages of its address, or {DraftTemplates.FileName} has no '## {PlaceDrafter.TabsPartTemplate}'."), templates, ns, place);
+        return (part, Path.Combine(project.Folder, folder, part.ClassName + PageDrafter.Extension));
     }
 
     // What a page's cards open: the dialogs of the page that the walk named after a card. And of those, what opens

@@ -33,6 +33,21 @@ public static partial class FactoryReview
         [ReasonCodes.Unknown] = "No rule fits. Read the evidence; when it is a kind of its own, it gets a rule in the classifier.",
     };
 
+    /// <summary>The patterns that repeat and have no control, as a table: what a control would be worth making for.</summary>
+    /// <param name="toMake">The patterns, most widespread first.</param>
+    public static string Patterns(IReadOnlyList<Code.Pattern> toMake)
+    {
+        ArgumentNullException.ThrowIfNull(toMake);
+        var text = new System.Text.StringBuilder("| Pattern | Kind | Pages | Times | For example | Signature |\n| --- | --- | --- | --- | --- | --- |\n");
+        foreach (var pattern in toMake)
+        {
+            var example = pattern.Examples.Count > 0 ? pattern.Examples[0].Page : "";
+            text.Append(System.Globalization.CultureInfo.InvariantCulture, $"| {pattern.Name} | {pattern.Kind} | {pattern.Pages} | {pattern.Occurrences} | {example.Replace("|", "/", StringComparison.Ordinal)} | `{pattern.Signature.Replace("|", "\\|", StringComparison.Ordinal)}` |\n");
+        }
+
+        return text.ToString();
+    }
+
     /// <summary>The review.</summary>
     /// <param name="state">The factory's state.</param>
     /// <param name="owed">The keys of the places that still owe a class; a reason about another place is history, and left out.</param>

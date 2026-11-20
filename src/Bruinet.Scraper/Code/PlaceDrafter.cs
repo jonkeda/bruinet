@@ -18,8 +18,21 @@ public enum PlaceDraftKind
     /// <summary>A test that opens the form and checks that it shows every field its class declares; it saves nothing.</summary>
     FormTest,
 
+    /// <summary>The tabs several pages of one address share, as one part those pages have a member of.</summary>
+    TabsPart,
+
     /// <summary>A test that saves the form on a record of its own: empty, to see what it asks for, then with that filled in.</summary>
     SaveTest,
+}
+
+/// <summary>The tabs every page under one address shows: drafted once, as a part each of those pages has a member of.</summary>
+/// <param name="Path">The address the pages share, before its <c>#</c> or <c>?</c> (<c>/project/view</c>).</param>
+/// <param name="Part">The part's class.</param>
+/// <param name="Tabs">The tabs all of those pages show.</param>
+public sealed record TabFamily(string Path, string Part, IReadOnlyList<string> Tabs)
+{
+    /// <summary>The first of the family's pages, by key: the page the part's first line names the capture of.</summary>
+    public string First { get; init; } = "";
 }
 
 /// <summary>A drafted class: its name, its code, and what was left out with why.</summary>
@@ -106,6 +119,73 @@ public static class PlaceDrafter
         return Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(string.Join('\n', parts))))[..8];
     }
 
+    /// <summary>The template of the class that holds the tabs several pages share (<c>## Tabs part</c>); its tabs are written with <c>## Tabs part tab</c>, and a page's member of it with <c>## Tabs part member</c> (<c>{Part}</c> is the part's class). Without all three every page keeps its own tab members.</summary>
+    public const string TabsPartTemplate = "Tabs part";
+
+    /// <summary>The name of a page's member that is its shared tabs.</summary>
+    public const string TabsMember = "SharedTabs";
+
+    /// <summary>
+    /// The tabs a page shares with the other pages of its address: the pages of the list with the same address before
+    /// <c>#</c> or <c>?</c> that show tabs, when there are two or more and they have two or more tabs in common. Null
+    /// when the page shares none, or the suite's templates do not say how a shared part is written.
+    /// </summary>
+    public static TabFamily? FamilyOf(Place place, IEnumerable<Place> places, DraftTemplates templates)
+    {
+        ArgumentNullException.ThrowIfNull(place);
+        ArgumentNullException.ThrowIfNull(places);
+        ArgumentNullException.ThrowIfNull(templates);
+        if (place.Kind != PlaceKind.Page || place.Tabs.Count == 0 || !new[] { TabsPartTemplate, "Tabs part tab", "Tabs part member" }.All(templates.Blocks.ContainsKey))
+            return null;
+        var path = FamilyPath(place.Key);
+        var pages = places.Where(each => each.Kind == PlaceKind.Page && each.SameAs is null && each.Tabs.Count > 0 && FamilyPath(each.Key) == path).ToList();
+        if (pages.Count < 2)
+            return null;
+        // In the order the first of them shows them, so the part reads as the tab bar does.
+        var first = pages.OrderBy(each => each.Key, StringComparer.Ordinal).First();
+        var shared = first.Tabs.Where(tab => pages.All(each => each.Tabs.Contains(tab, StringComparer.Ordinal))).Distinct(StringComparer.Ordinal).ToList();
+        return shared.Count < 2 ? null : new TabFamily(path, PageDrafter.ClassName(path)[..^"Page".Length] + "Tabs", shared) { First = first.Key };
+    }
+
+    // A page's address before what says which part of it shows: its hash route, its query, and anything pressed.
+    private static string FamilyPath(string key)
+    {
+        var end = key.IndexOf(" › ", StringComparison.Ordinal);
+        var address = end < 0 ? key : key[..end];
+        var cut = address.IndexOfAny(['#', '?']);
+        return cut < 0 ? address : address[..cut];
+    }
+
+    /// <summary>Drafts the part that holds the tabs a family of pages shares.</summary>
+    /// <param name="family">The family.</param>
+    /// <param name="templates">The suite's templates.</param>
+    /// <param name="namespace">The part's namespace.</param>
+    /// <param name="from">A page of the family: the capture its first line names.</param>
+    public static PlaceDraft TabsPart(TabFamily family, DraftTemplates templates, string @namespace, Place from)
+    {
+        ArgumentNullException.ThrowIfNull(family);
+        ArgumentNullException.ThrowIfNull(templates);
+        ArgumentNullException.ThrowIfNull(from);
+        var used = new HashSet<string>(Reserved, StringComparer.Ordinal) { family.Part };
+        var members = new List<(string Name, string Label)>();
+        var code = new List<string>();
+        foreach (var tab in family.Tabs)
+        {
+            var name = Unique(TabName(tab), used, templates.Reserved);
+            members.Add((name, tab));
+            code.Add(Fill(templates.Block("Tabs part tab"), family.Part, null, name, tab));
+        }
+
+        var header = new ScrapedHeader { Page = family.Path, Variant = "tabspart", From = from.Snapshot, Hash = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(Encoding.UTF8.GetBytes(string.Join('\n', family.Tabs))))[..8] };
+        var text = templates.Block(TabsPartTemplate)
+            .Replace("{Header}", header.ToString(), StringComparison.Ordinal)
+            .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
+            .Replace("{Summary}", $"The tabs every page at {Xml(family.Path)} shows: drafted from the list of places, once for all of those pages.", StringComparison.Ordinal)
+            .Replace("{Members}", string.Join("\n\n", code.Select(Indent)), StringComparison.Ordinal)
+            .Replace("{Self}", family.Part, StringComparison.Ordinal);
+        return new PlaceDraft(family.Part, text.TrimEnd() + "\n", members, []);
+    }
+
     /// <summary>Drafts a form's class.</summary>
     /// <param name="place">The form: a dialog, or a page.</param>
     /// <param name="templates">The suite's templates.</param>
@@ -115,7 +195,8 @@ public static class PlaceDrafter
     /// <param name="opens">For a page: what opens on it by a card's own button (<c>Avatar: fa-pen</c>), each given an opener when the templates have an <c>Opener member</c>.</param>
     /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
     /// <param name="under">Of <paramref name="opens"/>, what lies under a tab or behind another press: its opener is a member, and is not there as the page opens.</param>
-    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null, PlaceSigns? signs = null, IReadOnlyCollection<string>? under = null)
+    /// <param name="family">The tabs the page shares with the other pages of its address (<see cref="FamilyOf"/>): one member for all of them, and a member of its own only for a tab the others do not show.</param>
+    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null, PlaceSigns? signs = null, IReadOnlyCollection<string>? under = null, TabFamily? family = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -127,6 +208,8 @@ public static class PlaceDrafter
         var members = new List<(string Name, string Label)>();
         var notDrafted = new List<string>();
         var code = new List<string>();
+        place = WithSharedTabs(place, family, templates, className, pageClass, used, members, code);
+
         foreach (var field in place.Fields)
         {
             var (label, kind, control, recognized, made) = PlacesReading.ReadField(field);
@@ -183,6 +266,17 @@ public static class PlaceDrafter
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Page}", pageClass ?? className, StringComparison.Ordinal);
         return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted) { Pressed = pressed };
+    }
+
+    // The shared tabs first: one member, of the part that holds them. The place is given back with only its own tabs.
+    private static Place WithSharedTabs(Place place, TabFamily? family, DraftTemplates templates, string className, string? pageClass, HashSet<string> used, List<(string Name, string Label)> members, List<string> code)
+    {
+        if (family is null)
+            return place;
+        used.Add(TabsMember);
+        members.Add((TabsMember, family.Path));
+        code.Add(Fill(templates.Block("Tabs part member"), className, pageClass, TabsMember, family.Path).Replace("{Part}", family.Part, StringComparison.Ordinal));
+        return place with { Tabs = [.. place.Tabs.Where(tab => !family.Tabs.Contains(tab, StringComparer.Ordinal))] };
     }
 
     // An opener under a tab is not on the page as it opens: its dialog's test presses it after the tab. And what a test
@@ -301,8 +395,9 @@ public static class PlaceDrafter
     /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): a card with several buttons has a member per button.</param>
     /// <param name="pressed">The members of the form's class a person presses (<see cref="PlaceDraft.Pressed"/>): the test checks that each is there, where its template has <c>{Checks}</c>.</param>
     /// <param name="saveMember">The form's member that saves: with it the draft is the save test (<see cref="RecordSaveTest"/>), not the test that only looks.</param>
+    /// <param name="family">The tabs the page shares with the other pages of its address: the test finds them through the page's member of that part.</param>
     /// <param name="lanes">How many tests of one module may run at once: a template's <c>{Lane}</c> is a number from 1 to this, the same for a class every time, so the tests that only look spread over that many groups.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1)
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1, TabFamily? family = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -312,7 +407,8 @@ public static class PlaceDrafter
             : "";
         // What the class declares beside its fields is checked too: a page's tabs, and every member a person presses.
         var scope = place.Kind == PlaceKind.Page ? "page" : "form";
-        var checks = string.Join("\n", (place.Kind == PlaceKind.Page ? place.Tabs.Select(TabName) : []).Concat(pressed ?? []).Select(member => $"        {scope}.{member}.AssertVisible();"));
+        string TabOf(string tab) => family is not null && family.Tabs.Contains(tab, StringComparer.Ordinal) ? $"{TabsMember}.{TabName(tab)}" : TabName(tab);
+        var checks = string.Join("\n", (place.Kind == PlaceKind.Page ? place.Tabs.Select(TabOf) : []).Concat((pressed ?? []).Where(member => member != TabsMember)).Select(member => $"        {scope}.{member}.AssertVisible();"));
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
         var text = templates.Block(saveMember is null ? TestTemplate(place, templates, card, signs, onPage) : RecordSaveTest)
             .Replace("{SaveMember}", saveMember ?? "", StringComparison.Ordinal)

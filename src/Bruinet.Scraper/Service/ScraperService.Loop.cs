@@ -202,6 +202,7 @@ public sealed partial class ScraperService
                     reasons.Add(new Reason(ReasonCodes.ClassExists, "draft", key, form.ClassName, $"{form.ClassName} is in the suite already; only a test is drafted, when it has none.", FixPlaces.Person));
                 else
                 {
+                    WriteTabsPart(project, list, key, written);
                     Write(file!, form.Code);
                     written.Add(new Written(file!, key, form.ClassName, IsTest: false));
                 }
@@ -221,6 +222,24 @@ public sealed partial class ScraperService
             {
                 reasons.Add(ReasonClassifier.OfDraft(problem.Message, key));
             }
+        }
+    }
+
+    // A page that shares its tabs with the other pages of its address has a member of the part that holds them: the
+    // part is written with the first of those pages, and is there for the rest.
+    private void WriteTabsPart(ScrapeProject project, PlacesList list, string pageKey, List<Written> written)
+    {
+        try
+        {
+            var (part, file) = DraftPlace(project.Name, list, pageKey, PlaceDraftKind.TabsPart);
+            if (file is null || File.Exists(file))
+                return;
+            Write(file, part.Code);
+            written.Add(new Written(file, pageKey, part.ClassName, IsTest: false));
+        }
+        catch (ScraperProblem)
+        {
+            // The page shares no tabs, or the suite has no template for such a part: it keeps its own tab members.
         }
     }
 

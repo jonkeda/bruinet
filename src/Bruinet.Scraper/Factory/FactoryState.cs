@@ -60,6 +60,40 @@ public sealed record LoopResult
 }
 
 /// <summary>What the factory remembers between runs (<c>state.json</c> in the app's own Scraper place): every loop, so a run that stops goes on.</summary>
+/// <summary>What an app's places owe, as numbers a change may not make worse.</summary>
+/// <param name="PagesWithoutClass">Pages that open and have no class.</param>
+/// <param name="DialogFormsNotDrafted">Dialog forms without a class.</param>
+/// <param name="RecordPages">Pages of one record without a class.</param>
+/// <param name="FieldsWithControl">Fields a made control stands for.</param>
+public sealed record OwedCounts(int PagesWithoutClass, int DialogFormsNotDrafted, int RecordPages, int FieldsWithControl)
+{
+    /// <summary>The counts of a report.</summary>
+    public static OwedCounts Of(OwedReport owed)
+    {
+        ArgumentNullException.ThrowIfNull(owed);
+        return new OwedCounts(owed.PagesWithoutClass, owed.DialogFormsNotDrafted, owed.RecordPages, owed.FieldsWithControl);
+    }
+
+    /// <summary>What is worse now than at <paramref name="mark"/>, each as a sentence; none when nothing is.</summary>
+    public IReadOnlyList<string> WorseThan(OwedCounts mark)
+    {
+        ArgumentNullException.ThrowIfNull(mark);
+        var worse = new List<string>();
+        void More(string what, int now, int then)
+        {
+            if (now > then)
+                worse.Add($"{what}: {now}, was {then}");
+        }
+
+        More("pages without a class", PagesWithoutClass, mark.PagesWithoutClass);
+        More("dialog forms not drafted", DialogFormsNotDrafted, mark.DialogFormsNotDrafted);
+        More("pages of one record without a class", RecordPages, mark.RecordPages);
+        if (FieldsWithControl < mark.FieldsWithControl)
+            worse.Add($"fields with a made control: {FieldsWithControl}, was {mark.FieldsWithControl}");
+        return worse;
+    }
+}
+
 public sealed class FactoryState
 {
     /// <summary>The file's name.</summary>
@@ -77,6 +111,9 @@ public sealed class FactoryState
 
     /// <summary>Lines an agent or a person added, each with the loop it is about (0 for none).</summary>
     public List<FactoryNote> Notes { get; init; } = [];
+
+    /// <summary>What the app's places owed when the last batch ended, or when a person marked a change as kept: what a later change is held against.</summary>
+    public OwedCounts? Mark { get; set; }
 
     /// <summary>The number the next batch gets.</summary>
     [JsonIgnore]

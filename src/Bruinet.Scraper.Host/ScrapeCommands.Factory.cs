@@ -11,8 +11,92 @@ public static partial class ScrapeCommands
 {
     private static Command Factory(HostIo io) => new("scraper", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
-        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io),
+        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io), FactoryPatterns(io), FactoryBrief(io), FactoryPromote(io),
     };
+
+    private static Command FactoryPromote(HostIo io)
+    {
+        var (solution, project) = (Solution(), Project());
+        var control = new Argument<string>("control") { Description = "The control whose signs move, as the app's config names it under '## Control signs'." };
+        var to = new Option<string?>("--to") { Description = "The library, as the config names it under '## Control libraries'. Default: the first that has a file of signs." };
+        var command = new Command("promote", "Move a control's signs from this app's config up to a control library's file of signs: what was learned here and holds for the library is the library's, and the next app that uses it starts with it. Replay afterwards shows nothing reads differently.")
+        {
+            control, project, solution, to,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var scraped = service.Project(ProjectName(service, parsed.GetValue(project), io));
+            var wanted = parsed.GetValue(to);
+            var library = scraped.Config.ControlLibraries.FirstOrDefault(each => each.Signs.Length > 0 && (wanted is null || string.Equals(each.Library, wanted, StringComparison.OrdinalIgnoreCase)))
+                ?? throw new Bruinet.Scraper.Service.ScraperProblem(wanted is null ? "The config names no control library with a file of signs." : $"The config names no control library '{wanted}' with a file of signs.");
+            var configFile = Path.Combine(scraped.Home, Bruinet.Scraper.Projects.ScraperConfig.FileName);
+            var libraryFile = Path.GetFullPath(Path.Combine(scraped.Home, library.Signs));
+            try
+            {
+                var (config, signs, moved) = SignMove.Move(await File.ReadAllTextAsync(configFile, cancellationToken).ConfigureAwait(false), await File.ReadAllTextAsync(libraryFile, cancellationToken).ConfigureAwait(false), parsed.GetValue(control)!);
+                await File.WriteAllTextAsync(libraryFile, signs, cancellationToken).ConfigureAwait(false);
+                await File.WriteAllTextAsync(configFile, config, cancellationToken).ConfigureAwait(false);
+                foreach (var row in moved)
+                    await io.Out.WriteLineAsync(row).ConfigureAwait(false);
+                await io.Error.WriteLineAsync($"{moved.Count} rows moved to {libraryFile}. 'scraper replay' shows whether anything reads differently.").ConfigureAwait(false);
+                return 0;
+            }
+            catch (FormatException problem)
+            {
+                throw new Bruinet.Scraper.Service.ScraperProblem(problem.Message);
+            }
+        });
+        return command;
+    }
+
+    private static Command FactoryPatterns(HostIo io)
+    {
+        var (solution, project, json) = (Solution(), Project(), Json());
+        var most = new Option<int>("--max") { Description = "How many patterns are looked at, most widespread first.", DefaultValueFactory = _ => 40 };
+        var command = new Command("patterns", "The parts the kept captures are built from that repeat and that no control stands for: what a control would be worth making for, most widespread first. 'scraper brief <signature>' writes the brief for one.")
+        {
+            project, solution, most, json,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var toMake = Bruinet.Scraper.Code.DraftRun.ControlsToMake(service.Patterns(name, parsed.GetValue(most)));
+            if (parsed.GetValue(json))
+            {
+                await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(toMake, PrettyJson)).ConfigureAwait(false);
+                return 0;
+            }
+
+            await io.Out.WriteAsync(FactoryReview.Patterns(toMake)).ConfigureAwait(false);
+            await io.Error.WriteLineAsync($"{toMake.Count} patterns repeat and have no control.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static Command FactoryBrief(HostIo io)
+    {
+        var (solution, project) = (Solution(), Project());
+        var signature = new Argument<string>("signature") { Description = "The pattern's signature, as 'scraper patterns' writes it." };
+        var called = new Option<string?>("--name") { Description = "The control's name. Default: the pattern's own." };
+        var variant = new Option<string?>("--variant") { Description = "Which variant of the pattern, when it has several." };
+        var lifted = new Option<bool>("--lifted") { Description = "The pattern is lifted to its roots." };
+        var command = new Command("brief", "Write the brief for making a control from a pattern: where to write it, what to read, its occurrences, an example, its parts and the hints. For the agent or a person who makes the control.")
+        {
+            signature, project, solution, called, variant, lifted,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var brief = service.ControlBrief(name, parsed.GetValue(signature)!, parsed.GetValue(called), parsed.GetValue(variant), parsed.GetValue(lifted));
+            await io.Out.WriteAsync(brief.Text).ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
 
     /// <summary>The file in the app's own Scraper place that lists the records the Scraper made for itself.</summary>
     public const string RecordsFile = "records.md";
@@ -86,27 +170,43 @@ public static partial class ScrapeCommands
             var name = ProjectName(service, parsed.GetValue(project), io);
             var scraped = service.Project(name);
             var owed = service.OwedPlaces(name, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
-            var file = await WriteReviewAsync(scraped.Home, FactoryState.Load(scraped.Home), owed, cancellationToken).ConfigureAwait(false);
+            var file = await WriteReviewAsync(scraped.Home, FactoryState.Load(scraped.Home), owed, cancellationToken, Bruinet.Scraper.Code.DraftRun.ControlsToMake(service.Patterns(name, 40))).ConfigureAwait(false);
             await io.Error.WriteLineAsync($"Wrote {file}.").ConfigureAwait(false);
             return 0;
         });
         return command;
     }
 
-    private static async Task<string> WriteReviewAsync(string home, FactoryState state, OwedReport owed, CancellationToken cancellationToken)
+    private const string PartsHeading = "## Parts no control stands for";
+
+    // The review, with its section on the parts no control stands for: written anew when the patterns are given (it
+    // takes a while to find them), kept as it was otherwise.
+    private static async Task<string> WriteReviewAsync(string home, FactoryState state, OwedReport owed, CancellationToken cancellationToken, IReadOnlyList<Bruinet.Scraper.Code.Pattern>? toMake = null)
     {
         var keys = owed.Groups.SelectMany(group => group.PagesWithoutClass.Concat(group.DialogFormsNotDrafted).Concat(group.RecordPages)).ToHashSet(StringComparer.Ordinal);
         var file = Path.Combine(home, FactoryReview.FileName);
-        await File.WriteAllTextAsync(file, FactoryReview.ToMarkdown(state, keys), cancellationToken).ConfigureAwait(false);
+        var parts = "";
+        if (toMake is not null)
+        {
+            parts = $"\n{PartsHeading}\n\nWhat the kept captures are built from that repeats and has no control, most widespread first ({DateTimeOffset.Now:yyyy-MM-dd}; `scraper review` finds them again). A control is worth making where tests would name the part: `scraper brief <signature>` writes its brief.\n\n{FactoryReview.Patterns(toMake)}";
+        }
+        else if (File.Exists(file) && (await File.ReadAllTextAsync(file, cancellationToken).ConfigureAwait(false)).Replace("\r\n", "\n", StringComparison.Ordinal) is var old && old.IndexOf("\n" + PartsHeading, StringComparison.Ordinal) is >= 0 and var at)
+        {
+            parts = old[at..];
+        }
+
+        await File.WriteAllTextAsync(file, FactoryReview.ToMarkdown(state, keys).TrimEnd('\n') + "\n" + parts, cancellationToken).ConfigureAwait(false);
         return file;
     }
 
     private static Command FactoryKeep(HostIo io)
     {
         var (solution, project, list, json) = (Solution(), Project(), ListFile(), Json());
+        var baseline = new Option<string?>("--baseline") { Description = "Tests that must pass with the change, as a dotnet test filter (Module=Projects): they run on the app, and one that fails refuses the change." };
+        var mark = new Option<bool>("--mark") { Description = "When the change may be kept: write what the places owe now as the mark a later change is held against." };
         var command = new Command("keep", "Judge the change in the working tree before it is kept: every changed file against what the setup's Improve answer allows, and what replaying the kept places gives with it. Changes nothing. Exit 1 when a file is outside the scope, or replay shows a field that lost its control.")
         {
-            project, solution, list, json,
+            project, solution, list, json, baseline, mark,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -117,8 +217,30 @@ public static partial class ScrapeCommands
             var setup = FactorySetup.Read(scraped.Home);
             var changed = await ChangedFilesAsync(folder, cancellationToken).ConfigureAwait(false);
             var refused = ChangeScope.Refused(setup.Improve, scraped, changed);
-            var replay = service.ReplayPlaces(name, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
-            var keep = refused.Count == 0 && replay.ControlsLost == 0;
+            var places = PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io));
+            var replay = service.ReplayPlaces(name, places);
+            // What the places owe may not get worse: held against the mark the last batch, or a person, left.
+            var state = FactoryState.Load(scraped.Home);
+            var counts = OwedCounts.Of(service.OwedPlaces(name, places));
+            var worse = state.Mark is null ? [] : counts.WorseThan(state.Mark);
+            var broken = new List<string>();
+            if (parsed.GetValue(baseline) is { Length: > 0 } filter)
+            {
+                var ran = await Bruinet.Scraper.Testing.TestRunner.RunEachAsync(Directory.EnumerateFiles(scraped.Folder, "*.csproj").First(), filter, cancellationToken).ConfigureAwait(false);
+                broken.AddRange(ran.Problem is not null ? [ran.Problem] : ran.Tests.Where(test => !test.Passed).Select(test => $"{test.Name}: {test.Message}"));
+            }
+
+            var keep = refused.Count == 0 && replay.ControlsLost == 0 && worse.Count == 0 && broken.Count == 0;
+            foreach (var line in worse)
+                await io.Out.WriteLineAsync($"worse: {line}").ConfigureAwait(false);
+            foreach (var line in broken)
+                await io.Out.WriteLineAsync($"fails: {line}").ConfigureAwait(false);
+            if (keep && parsed.GetValue(mark))
+            {
+                state.Mark = counts;
+                state.Save(scraped.Home);
+            }
+
             if (parsed.GetValue(json))
             {
                 await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(new { Keep = keep, Improve = FactorySetup.Name(setup.Improve), Changed = changed, Refused = refused, Replay = new { replay.Same, replay.ControlsGained, replay.ControlsLost, Fields = replay.Fields.Count, Classes = replay.Changed.Count, replay.WouldDraft } }, PrettyJson)).ConfigureAwait(false);
@@ -263,6 +385,9 @@ public static partial class ScrapeCommands
                     break;
             }
 
+            // What the places owe now is the mark a later change is held against (scraper keep).
+            state.Mark = OwedCounts.Of(service.OwedPlaces(name, PlacesList.Load(file)));
+            state.Save(scraped.Home);
             // The batch's brief: what is still owed, by reason.
             await WriteReviewAsync(scraped.Home, state, service.OwedPlaces(name, PlacesList.Load(file)), cancellationToken).ConfigureAwait(false);
             if (parsed.GetValue(json))

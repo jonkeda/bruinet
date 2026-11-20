@@ -57,8 +57,11 @@ public sealed record SuiteSource(string Text, IReadOnlySet<string> DraftedFrom)
             if (relative.StartsWith("bin/", StringComparison.Ordinal) || relative.StartsWith("obj/", StringComparison.Ordinal) || relative.Contains("/bin/", StringComparison.Ordinal) || relative.Contains("/obj/", StringComparison.Ordinal))
                 continue;
             var code = File.ReadAllText(file);
-            text.Append(code).Append('\n');
-            if (ScrapedHeader.Find(code)?.Page is { } page)
+            // The Scraper's first line says what a file was made from; it is no code that names an address.
+            var first = code.IndexOf('\n', StringComparison.Ordinal);
+            text.Append(first > 0 && ScrapedHeader.Find(code[..first]) is not null ? code[first..] : code).Append('\n');
+            // A shared tabs part names the address its pages share, which is no place a class was drafted from.
+            if (ScrapedHeader.Find(code) is { Page: { } page, Variant: not "tabspart" })
                 drafted.Add(page);
         }
 

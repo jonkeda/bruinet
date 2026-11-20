@@ -139,6 +139,33 @@ public sealed class PlaceDrafterTests
     }
 
     [Fact]
+    public void The_tabs_the_pages_of_one_address_share_are_one_part_and_a_page_keeps_only_its_own()
+    {
+        var templates = DraftTemplates.Parse("## Form page\n\n```csharp\n{Members}\n```\n\n## Tab member\n\n```csharp\nown {Name}\n```\n\n## Tabs part\n\n```csharp\n{Header}\nclass {Self}\n{Members}\n```\n\n## Tabs part tab\n\n```csharp\nshared {Name} is {Label}\n```\n\n## Tabs part member\n\n```csharp\n{Part} {Name} of {Label}\n```\n\n## Form page test\n\n```csharp\n{Checks}\n```\n");
+        var planning = new Place { Key = "/project/view#/planning", State = PlaceState.Seen, Tabs = ["Information", "Hours", "Per week"], Snapshot = "walk/002.nodes.jsonl" };
+        var hours = new Place { Key = "/project/view#/hours", State = PlaceState.Seen, Tabs = ["Information", "Hours"], Snapshot = "walk/001.nodes.jsonl" };
+        var alone = new Place { Key = "/kam", State = PlaceState.Seen, Tabs = ["Risks", "Problems"] };
+        Place[] places = [planning, hours, alone, new Place { Key = "/project/view#/planning › + Item", Kind = PlaceKind.Dialog, Parent = planning.Key, Tabs = ["Other"] }];
+
+        var family = PlaceDrafter.FamilyOf(planning, places, templates)!;
+        Assert.Equal(("/project/view", "ProjectViewTabs", "/project/view#/hours"), (family.Path, family.Part, family.First));
+        Assert.Equal(["Information", "Hours"], family.Tabs);
+        // A page that is the only one of its address shares nothing, and neither does a suite without the templates.
+        Assert.Null(PlaceDrafter.FamilyOf(alone, places, templates));
+        Assert.Null(PlaceDrafter.FamilyOf(planning, places, Templates));
+
+        var part = PlaceDrafter.TabsPart(family, templates, "Shop.Pages", hours);
+        Assert.StartsWith("// <scraped page=\"/project/view\" variant=\"tabspart\" from=\"walk/001.nodes.jsonl\"", part.Code, StringComparison.Ordinal);
+        Assert.Contains("class ProjectViewTabs\n    shared InformationTab is Information\n\n    shared HoursTab is Hours", part.Code, StringComparison.Ordinal);
+
+        var page = PlaceDrafter.Form(planning, templates, "ProjectViewPlanningPage", "Shop.Pages", null, signs: Signs, family: family);
+        Assert.Equal("    ProjectViewTabs SharedTabs of /project/view\n\n    own PerWeekTab\n", page.Code);
+
+        var test = PlaceDrafter.FormTest(planning, templates, "ProjectViewPlanningPageTests", "Shop.Tests", "ProjectViewPlanningPage", "ProjectViewPlanningPage", signs: Signs, family: family);
+        Assert.Equal("        page.SharedTabs.InformationTab.AssertVisible();\n        page.SharedTabs.HoursTab.AssertVisible();\n        page.PerWeekTab.AssertVisible();\n", test.Code);
+    }
+
+    [Fact]
     public void A_card_with_two_buttons_that_each_open_a_dialog_gets_a_member_and_a_class_per_button()
     {
         var templates = DraftTemplates.Parse("## Form page\n\n```csharp\n{Members}\n```\n\n## Opener member\n\n```csharp\none {Name} of {Label}\n```\n\n## Opener member by icon\n\n```csharp\n{Name} of {Label} by {Icon}\n```\n\n## Card form test\n\n```csharp\ncard {Page}.{OpenerMember}\n```\n");
