@@ -84,7 +84,7 @@ public static class Owed
         ArgumentNullException.ThrowIfNull(list);
         ArgumentNullException.ThrowIfNull(suite);
         // A place whose class is in the suite under the name a draft would give it owes no class, whoever wrote it.
-        bool HasClass(Place place) => suite.Declares(PlaceDrafter.ClassName(place, PlaceDraftKind.Form, signs));
+        bool HasClass(Place place) => suite.Declares(PlaceDrafter.ClassName(place, PlaceDraftKind.Form, signs, PlaceDrafter.Beside(list.Places, place)));
         var groups = new List<OwedGroup>();
         foreach (var group in list.Places.GroupBy(PlaceKinds.GroupOf, StringComparer.Ordinal))
         {

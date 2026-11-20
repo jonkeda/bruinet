@@ -152,9 +152,9 @@ public sealed partial class ScraperService
                 ?? (place.Kind == PlaceKind.Page ? null : throw new ScraperProblem($"No page class of {project.Name} names the address {place.Parent}: draft or write that page first, or give its class."));
             // A form's test names the class that was drafted from the place, whatever it was called then.
             var formName = DraftedFrom(project, place.Key, "form")
-                ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns);
+                ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns, PlaceDrafter.Beside(list.Places, place));
             if (kind == PlaceDraftKind.FormTest)
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent]), null);
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place)), null);
             // What a page's cards open: the dialogs of the page that the walk named after a card.
             var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);
@@ -186,11 +186,18 @@ public sealed partial class ScraperService
             return null;
         }
 
-        var merged = ClassMerge.Merge(before, draft.Code, draft.ClassName, addOnly: ScrapedHeader.Find(before)?.Page is null);
+        var own = ScrapedHeader.Find(before)?.Page is null;
+        var merged = ClassMerge.Merge(before, draft.Code, draft.ClassName, addOnly: own);
+        // A drafted class with no member the draft lacks is the draft: its order and its notes on what was left out.
+        if (!own && merged.Kept.Count == 0 && OnlyClass(before, draft.ClassName))
+            merged = merged with { Code = draft.Code };
         if (merged.Code != before)
             File.WriteAllText(file, merged.Code);
         return merged;
     }
+
+    private static bool OnlyClass(string code, string className) =>
+        System.Text.RegularExpressions.Regex.Count(code, @"\b(class|record|struct|interface)\s+\w+") == 1 && DeclaresClass(code, className);
 
     private static bool DeclaresClass(string code, string className) =>
         System.Text.RegularExpressions.Regex.IsMatch(code, $@"\bclass\s+{System.Text.RegularExpressions.Regex.Escape(className)}\b");

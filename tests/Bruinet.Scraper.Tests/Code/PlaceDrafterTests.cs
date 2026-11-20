@@ -122,6 +122,33 @@ public sealed class PlaceDrafterTests
     }
 
     [Fact]
+    public void A_card_with_two_buttons_that_each_open_a_dialog_gets_a_member_and_a_class_per_button()
+    {
+        var templates = DraftTemplates.Parse("## Form page\n\n```csharp\n{Members}\n```\n\n## Opener member\n\n```csharp\none {Name} of {Label}\n```\n\n## Opener member by icon\n\n```csharp\n{Name} of {Label} by {Icon}\n```\n\n## Card form test\n\n```csharp\ncard {Page}.{OpenerMember}\n```\n");
+        var page = new Place { Key = "/timeline", State = PlaceState.Seen };
+        var calendar = new Place { Key = "/timeline › Timeline: fa-calendar", Kind = PlaceKind.Dialog, Parent = page.Key, State = PlaceState.FormNotSaved };
+        var list = calendar with { Key = "/timeline › Timeline: fa-list" };
+        var avatar = calendar with { Key = "/timeline › Avatar: fa-pen" };
+        Place[] places = [page, calendar, list, avatar];
+        var beside = PlaceDrafter.Beside(places, calendar);
+
+        Assert.Equal(["Timeline: fa-calendar", "Timeline: fa-list", "Avatar: fa-pen"], beside);
+        Assert.Equal("TimelineCalendarDialog", PlaceDrafter.ClassName(calendar, PlaceDraftKind.Form, Signs, beside));
+        Assert.Equal("TimelineListDialog", PlaceDrafter.ClassName(list, PlaceDraftKind.Form, Signs, beside));
+        // A card with one button is named as it was, and so is a card whose page is not known.
+        Assert.Equal("AvatarDialog", PlaceDrafter.ClassName(avatar, PlaceDraftKind.Form, Signs, beside));
+        Assert.Equal("TimelineDialog", PlaceDrafter.ClassName(calendar, PlaceDraftKind.Form, Signs));
+
+        var drafted = PlaceDrafter.Form(page, templates, "TimelinePage", "Shop.Pages", null, [.. beside], Signs);
+        Assert.Contains("EditTimelineCalendar of Timeline by fa-calendar", drafted.Code, StringComparison.Ordinal);
+        Assert.Contains("EditTimelineList of Timeline by fa-list", drafted.Code, StringComparison.Ordinal);
+        Assert.Contains("one EditAvatar of Avatar", drafted.Code, StringComparison.Ordinal);
+
+        var test = PlaceDrafter.FormTest(list, templates, "TimelineListDialogTests", "Shop.Tests", "TimelineListDialog", "TimelinePage", signs: Signs, onPage: page, beside: beside);
+        Assert.Equal("card TimelinePage.EditTimelineList\n", test.Code);
+    }
+
+    [Fact]
     public void A_dialog_a_row_s_button_opens_is_named_after_its_tab_and_its_test_presses_the_first_row_s_button()
     {
         var templates = DraftTemplates.Parse("## Form test\n\n```csharp\nplain {Page}.{OpenerMember}\n```\n\n## Tab step\n\n```csharp\ntab(\"{Label}\");\n```\n\n## Row form test\n\n```csharp\nopen {Page}\n        {TabSteps}\npress {Icon} for {Form}\n```\n");

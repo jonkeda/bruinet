@@ -56,6 +56,13 @@ public static class PlaceDrafter
     public const string RowFormTest = "Row form test";
 
     /// <summary>
+    /// The template of a card's button when the card has several that each open a dialog (<c>## Opener member by icon</c>):
+    /// <c>{Label}</c> is the card's title and <c>{Icon}</c> the button's icon as the walk named it. Without it such a
+    /// card gets one member, as a card with one button does.
+    /// </summary>
+    public const string OpenerByIcon = "Opener member by icon";
+
+    /// <summary>
     /// The template of the wait for a page's list before a button of the page is pressed (<c>## List step</c>), put
     /// where a test's template says <c>{ListStep}</c> when the dialog's page shows a list: a page whose list is still
     /// loading may not answer a press yet.
@@ -176,6 +183,20 @@ public static class PlaceDrafter
         {
             foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null).Distinct(StringComparer.Ordinal))
             {
+                // A card with several buttons that each open a dialog: a member per button, told apart by its icon.
+                var icons = (opens ?? []).Where(opened => CardOf(opened, signs) == card).Select(opened => opened[(card!.Length + 2)..]).Distinct(StringComparer.Ordinal).ToList();
+                if (icons.Count > 1 && templates.Blocks.TryGetValue(OpenerByIcon, out var byIcon))
+                {
+                    foreach (var icon in icons)
+                    {
+                        var own = Unique(OpenerName(card!) + IconWord(icon, signs), used, templates.Reserved);
+                        members.Add((own, $"{card}: {icon}"));
+                        code.Add(Fill(byIcon, className, pageClass, own, card!).Replace("{Icon}", icon, StringComparison.Ordinal));
+                    }
+
+                    continue;
+                }
+
                 var name = Unique(OpenerName(card!), used, templates.Reserved);
                 members.Add((name, card!));
                 code.Add(Fill(openerMember, className, pageClass, name, card!));
@@ -228,7 +249,8 @@ public static class PlaceDrafter
     /// <param name="pagesNamespace">The namespace the form's and the page's classes are in.</param>
     /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
     /// <param name="onPage">For a dialog: the page it opens on, so a dialog on a record's page gets the test that opens that page on a record.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null)
+    /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): a card with several buttons has a member per button.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -243,7 +265,7 @@ public static class PlaceDrafter
             .Replace("        {ListStep}\n", onPage is { Columns.Count: > 0 } && templates.Blocks.TryGetValue(ListStep, out var wait) ? "        " + wait + "\n" : "", StringComparison.Ordinal)
             .Replace("{Icon}", Label(place), StringComparison.Ordinal)
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
-            .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card), StringComparison.Ordinal)
+            .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card) + (templates.Blocks.ContainsKey(OpenerByIcon) ? IconOfSeveral(place, signs, beside) : ""), StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
             .Replace("{Header}", Header(place, PlaceDraftKind.FormTest).ToString(), StringComparison.Ordinal)
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
@@ -299,7 +321,11 @@ public static class PlaceDrafter
     }
 
     /// <summary>A class's name from a place: a dialog from what opened it (<c>+ Day off</c> is <c>DayOffDialog</c>), a page from its address.</summary>
-    public static string ClassName(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
+    /// <param name="place">The place.</param>
+    /// <param name="kind">What is drafted.</param>
+    /// <param name="signs">How an icon is named on this app's pages; none when left out.</param>
+    /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): two dialogs of one card are told apart by their buttons' icons (<c>TimelineCalendarDialog</c>).</param>
+    public static string ClassName(Place place, PlaceDraftKind kind, PlaceSigns? signs = null, IReadOnlyCollection<string>? beside = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         if (kind == PlaceDraftKind.Row)
@@ -308,7 +334,7 @@ public static class PlaceDrafter
             return PageDrafter.ClassName(place.Key);
         // A dialog a titled part's own button opens is the part's: "Avatar: <an icon>" is AvatarDialog. One a bare icon opens is its page's form.
         var label = CardOf(Label(place), signs) ?? Label(place);
-        var name = IsIcon(label, signs) ? "" : Identifier(label.TrimStart('+', ' '));
+        var name = IsIcon(label, signs) ? "" : Identifier(label.TrimStart('+', ' ')) + IconOfSeveral(place, signs, beside);
         // A page has such a button under each of its tabs: the tab is in the name (EquipmentBookingsFormDialog).
         return (name.Length == 0 ? PageDrafter.ClassName(place.Parent ?? place.Key)[..^"Page".Length] + string.Concat(Between(place).Select(Identifier)) + "Form" : name) + "Dialog";
     }
@@ -345,6 +371,31 @@ public static class PlaceDrafter
     private static string TabName(string tab) => Identifier(tab) + "Tab";
 
     private static string OpenerName(string card) => "Edit" + Identifier(card);
+
+    /// <summary>What opens on a place's page, as the walk named each: the last part of the key of every dialog of that page.</summary>
+    public static IReadOnlyCollection<string> Beside(IEnumerable<Place> places, Place place)
+    {
+        ArgumentNullException.ThrowIfNull(places);
+        ArgumentNullException.ThrowIfNull(place);
+        return place.Kind != PlaceKind.Dialog || place.Parent is null ? [] : [.. places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Parent).Select(Label)];
+    }
+
+    // The icon of a card's button as a word, when the card has another button that opens a dialog too; empty otherwise.
+    private static string IconOfSeveral(Place place, PlaceSigns? signs, IReadOnlyCollection<string>? beside)
+    {
+        var label = Label(place);
+        if (beside is null || CardOf(label, signs) is not { } card)
+            return "";
+        var icon = label[(card.Length + 2)..];
+        return beside.Any(other => other != label && CardOf(other, signs) == card) ? IconWord(icon, signs) : "";
+    }
+
+    // An icon's name without what every icon's name starts with: fa-calendar is Calendar.
+    private static string IconWord(string icon, PlaceSigns? signs)
+    {
+        var start = (signs ?? PlaceSigns.None).IconName.Where(each => icon.StartsWith(each, StringComparison.Ordinal)).OrderByDescending(each => each.Length).FirstOrDefault() ?? "";
+        return Identifier(icon[start.Length..]);
+    }
 
     // What opened a part of a page: the last part of its key.
     private static string Label(Place place) => place.Key.Contains(" › ", StringComparison.Ordinal) ? place.Key[(place.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..] : place.Key;

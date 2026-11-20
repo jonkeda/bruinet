@@ -9,6 +9,16 @@ namespace Bruinet.Scraper.Service;
 // The factory's measures: what replaying the kept places gives, and the examples held against their places.
 public sealed partial class ScraperService
 {
+    private sealed record DraftedFile(string Key, string File, ScrapedHeader Header);
+
+    private static IEnumerable<DraftedFile> DraftedFiles(Bruinet.Scraper.Projects.ScrapeProject project) =>
+        Directory.EnumerateFiles(project.Folder, "*.cs", SearchOption.AllDirectories).Order(StringComparer.Ordinal)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .Select(file => (File: file, Header: ScrapedHeader.Find(File.ReadAllText(file))))
+            .Where(each => each.Header is { Page: not null, Variant: "form" or "row" })
+            .Select(each => new DraftedFile(PageDrafter.ClassOf(each.File), each.File, each.Header!))
+            .DistinctBy(each => each.Key, StringComparer.Ordinal);
+
     /// <summary>
     /// Reads every kept place again with the signs, holders and components the project names now, drafts again every
     /// class that was drafted from a place, and says what differs from the list and the suite as they are
@@ -24,11 +34,11 @@ public sealed partial class ScraperService
 
         var changed = new List<ClassChange>();
         var classes = 0;
-        foreach (var group in code.Where(each => File.Exists(each.File)).GroupBy(each => each.Name.Split('<')[0], StringComparer.Ordinal))
+        // Every file that starts with the Scraper's line for a form or a row, whatever its class is built on: a dialog
+        // on a control library's base is drafted as much as a page is.
+        foreach (var group in DraftedFiles(project))
         {
-            var drafted = group.FirstOrDefault(each => each.Header?.Page is not null && each.Header.Variant is "form" or "row");
-            if (drafted is null)
-                continue;
+            var drafted = group;
             classes++;
             var key = drafted.Header!.Page!;
             if (fresh[key] is null)

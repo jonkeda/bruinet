@@ -161,6 +161,11 @@ public sealed class ReplayTests : IAsyncLifetime
         Assert.Null(ScraperService.WriteDraft(file!, draft));
         Assert.Equal(draft.Code, File.ReadAllText(file!));
 
+        // A drafted class that has nothing of its own is written as the draft, notes and order too.
+        File.WriteAllText(file!, draft.Code.Replace("}\n", "    // Not drafted:\n    // something the last draft left out\n}\n", StringComparison.Ordinal));
+        Assert.NotNull(ScraperService.WriteDraft(file!, draft));
+        Assert.Equal(draft.Code, File.ReadAllText(file!));
+
         // A person adds a member to the drafted class: drafting again keeps it.
         File.WriteAllText(file!, draft.Code.TrimEnd()[..^1] + "\n    public int Mine => 1;\n}\n");
         var again = ScraperService.WriteDraft(file!, draft)!;
