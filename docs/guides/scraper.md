@@ -306,6 +306,7 @@ would be written for (a page, a tab, a dialog, a menu, a part a press shows), or
 | `bruinet scrape factory setup` | A person's answers about this app, asked once (the `scraper-setup` skill): `Writes` (`read-only`, `own-records`, `free`), `Run`, `Improve` (`off`, `data`, `suite`, `bruinet`: what a change kept without a person may touch), `Ask`, `Commit`, `Specs`, `Walkers`. With `Writes` `read-only` a walk follows links and tabs only and holds every write back. A question without an answer takes the careful value |
 | `bruinet scrape factory modules` | The app cut into modules without walking it, from the list as `seed` and `routes` filled it and the config's `## Modules`. In the written `modules.md` a person may change `Order` and `Do` (`yes`, `later`, `no`); the cut made again keeps both |
 | `bruinet scrape factory run` | The loop. For each group that owes something: walk its pages again, read the captures, draft a class and a test for each place that has none, build the suite, run the new tests on the app. A file that does not build, and a test that fails twice with the class it holds, are put back, each with a reason that has a code (`does-not-build`, `no-page-class`, `needs-record`, `label-not-found`, `did-not-open`, `timeout`) and where its fix belongs. It never touches a file it did not write in that loop. A batch stops by itself when one reason comes three times (a fault of the process, not of those groups), when two loops in a row keep nothing, or when the suite no longer builds. `--no-walk` drafts from the captures there are; `--dry-run` says which groups would run |
+| `bruinet scrape factory review` | `review.md`: why each place that still owes a class was not kept, the last reason per place, gathered by reason and by what the evidence has in common. Written after every batch too. The brief a fix starts from |
 | `bruinet scrape factory note` | A line in the ledger, for what a loop cannot know: what was changed between two batches, and why |
 | `bruinet scrape factory keep` | The check between an agent's change and keeping it: which changed files the setup's `Improve` answer does not allow, and what replay gives with the change (fields that gained or lost a control, classes that would be drafted differently). It changes nothing: a change it refuses is the agent's or a person's to take back. `factory run --baseline <filter>` is the other guard: the tests of that filter run before a loop writes and again at its end, and a loop after which one of them no longer passes is put back whole (`broke-a-passing-test`) |
 
@@ -351,6 +352,29 @@ asked for first. `BRUINET_KEPT_ASSETS=off` keeps none on disk.
 What a walk as one account opened, the walk as another account opens again: the list says per page who saw it and
 who the app refused. A record's own page that opens by pressing its row is reached by pressing the first row of each
 table once.
+
+### The draft templates
+
+How a place becomes a class and a test is the suite's own: `draft-templates.md` beside `scraper.config.md`. Each
+`##` section is one template, a table or the first code block under the heading. The Scraper picks the template by
+what the place is and how it opens; a template that is not there falls back to the plainer one above it.
+
+| Section | For |
+| --- | --- |
+| `Field members` | A table: the member a field gets, by its control, its kind and what holds it |
+| `Reserved names` | A table with a `Name` column: what the suite's own bases have already. A member of that name gets `Field` after it (`TitleField`), so the class builds |
+| `Button member`, `Tab member`, `Opener member` | A member per button, per tab, and per card whose own button opens a dialog |
+| `Dialog`, `Form page`, `Record page` | The class of a dialog, of a page, and of the page of one record (its `{Address}` has `{id}` where the record's id is) |
+| `Row`, `Column member` | A list's row |
+| `Form page test`, `Record page test` | The test of a page, and of a record's page (opened on a record the suite gives) |
+| `Form test` | The test of a dialog a button named in words opens: `{OpenerMember}` is that button on the page's class |
+| `Card form test` | The test of a dialog a card's own button opens |
+| `Record form test`, `Record card form test` | The same two on the page of one record |
+| `Row form test`, `Tab step` | The test of a dialog that a button in a list's row opens (a button that shows only an icon and is no card's own): no member of the page stands for it, so the test presses the button of the first row that has `{Icon}`, after a `Tab step` per tab the list is under (`{TabSteps}`). Such a dialog is named after its page and its tab (`EquipmentBookingsFormDialog`) |
+
+A template is text with places in braces: `{Self}`, `{Page}`, `{Namespace}`, `{PagesNamespace}`, `{Module}`,
+`{Header}`, `{Summary}`, `{Members}`, `{Address}`, `{Form}`, `{Opener}`, `{OpenerMember}`, `{Checks}`, `{Icon}`,
+`{TabSteps}`, and in a member `{Name}` and `{Label}`.
 
 ## Generate
 

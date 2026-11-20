@@ -123,6 +123,8 @@ public static partial class ReasonClassifier
         var (code, fix) = message switch
         {
             _ when record || message.Contains("is the page of one record", StringComparison.Ordinal) => (ReasonCodes.NeedsRecord, FixPlaces.Records),
+            // A row's button that is not there: the list has no row to press.
+            _ when message.Contains("tbody tr", StringComparison.Ordinal) => (ReasonCodes.NeedsRecord, FixPlaces.Records),
             _ when NotShown().IsMatch(message) => (ReasonCodes.LabelNotFound, FixPlaces.Reader),
             _ when DidNotOpen().IsMatch(message) => (ReasonCodes.DidNotOpen, FixPlaces.DraftKind),
             _ when message.Contains("access", StringComparison.OrdinalIgnoreCase) && message.Contains("denied", StringComparison.OrdinalIgnoreCase) => (ReasonCodes.Refused, FixPlaces.Person),

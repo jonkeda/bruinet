@@ -32,6 +32,12 @@ public sealed record DraftTemplates
     /// <summary>The code blocks by their section's heading (<c>Dialog</c>, <c>Form page</c>, <c>Button member</c>, <c>Row</c>, <c>Column member</c>, <c>Form test</c>).</summary>
     public IReadOnlyDictionary<string, string> Blocks { get; init; } = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// The names a drafted member may not have, because the suite's own base classes have them already
+    /// (<c>## Reserved names</c>, a table with a <c>Name</c> column): a field labelled so is named <c>TitleField</c>.
+    /// </summary>
+    public IReadOnlyList<string> Reserved { get; init; } = [];
+
     /// <summary>A template by its heading.</summary>
     /// <exception cref="FormatException">The file has no such section with a code block.</exception>
     public string Block(string heading) => Blocks.TryGetValue(heading, out var block)
@@ -52,6 +58,10 @@ public sealed record DraftTemplates
         ArgumentNullException.ThrowIfNull(markdown);
         var fields = MarkdownTables.ReadSections(markdown).TryGetValue("Field members", out var table)
             ? table.Rows.Select(row => new FieldMember(Cell(row, "Control"), Cell(row, "Kind"), Cell(row, "Member")) { Holder = Cell(row, "Holder") }).Where(row => row.Control.Length > 0 && row.Member.Length > 0).ToArray()
+            : [];
+
+        IReadOnlyList<string> reserved = MarkdownTables.ReadSections(markdown).TryGetValue("Reserved names", out var names)
+            ? [.. names.Rows.Select(row => Cell(row, "Name")).Where(name => name.Length > 0)]
             : [];
 
         var blocks = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -76,7 +86,7 @@ public sealed record DraftTemplates
                 block = [];
         }
 
-        return new DraftTemplates { Fields = fields, Blocks = blocks };
+        return new DraftTemplates { Fields = fields, Blocks = blocks, Reserved = reserved };
     }
 
     private static string Cell(MarkdownTableRow row, string column) => row.Cells.GetValueOrDefault(column, "").Trim().Trim('`');

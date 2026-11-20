@@ -48,6 +48,19 @@ public static class PlaceDrafter
     /// <summary>The template of the test of a dialog that opens on a record's page (<c>## Record form test</c>).</summary>
     public const string RecordFormTest = "Record form test";
 
+    /// <summary>
+    /// The template of the test of a dialog that a button in a list's row opens (<c>## Row form test</c>): the test
+    /// presses the button of the first row that has one. <c>{Icon}</c> is the button's icon as the walk named it, and
+    /// <c>{TabSteps}</c> the tabs to press first, each written with <c>## Tab step</c>.
+    /// </summary>
+    public const string RowFormTest = "Row form test";
+
+    /// <summary>The template of one tab pressed before a row's button (<c>## Tab step</c>), with <c>{Label}</c> and <c>{Page}</c>.</summary>
+    public const string TabStep = "Tab step";
+
+    /// <summary>The template of the test of a dialog a card's own button opens on a record's page (<c>## Record card form test</c>).</summary>
+    public const string RecordCardFormTest = "Record card form test";
+
     /// <summary>The line a draft starts with: the place it was made from, the capture, and a hash of what it holds (<see cref="Shape"/>).</summary>
     public static ScrapedHeader Header(Place place, PlaceDraftKind kind, PlaceSigns? signs = null)
     {
@@ -82,6 +95,7 @@ public static class PlaceDrafter
         if (dialog && string.IsNullOrEmpty(pageClass))
             throw new ArgumentException($"{place.Key} is on a page: the draft needs that page's class.", nameof(pageClass));
         var used = new HashSet<string>(Reserved, StringComparer.Ordinal) { className };
+        used.UnionWith(templates.Reserved);
         var members = new List<(string Name, string Label)>();
         var notDrafted = new List<string>();
         var code = new List<string>();
@@ -104,7 +118,7 @@ public static class PlaceDrafter
                 continue;
             }
 
-            var name = Unique(Identifier(label), used);
+            var name = Unique(Identifier(label), used, templates.Reserved);
             members.Add((name, label));
             var required = field.Contains(", required", StringComparison.Ordinal) ? "    /// <summary>Required.</summary>\n" : "";
             code.Add(required + Fill(template, className, pageClass, name, label));
@@ -112,7 +126,7 @@ public static class PlaceDrafter
 
         foreach (var button in Buttons(place, signs))
         {
-            var name = Unique(Identifier(button), used);
+            var name = Unique(Identifier(button), used, templates.Reserved);
             members.Add((name, button));
             code.Add(Fill(templates.Block("Button member"), className, pageClass, name, button));
         }
@@ -145,7 +159,7 @@ public static class PlaceDrafter
         {
             foreach (var tab in place.Tabs)
             {
-                var name = Unique(TabName(tab), used);
+                var name = Unique(TabName(tab), used, templates.Reserved);
                 members.Add((name, tab));
                 code.Add(Fill(tabMember, className, pageClass, name, tab));
             }
@@ -155,7 +169,7 @@ public static class PlaceDrafter
         {
             foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null).Distinct(StringComparer.Ordinal))
             {
-                var name = Unique(OpenerName(card!), used);
+                var name = Unique(OpenerName(card!), used, templates.Reserved);
                 members.Add((name, card!));
                 code.Add(Fill(openerMember, className, pageClass, name, card!));
             }
@@ -180,7 +194,7 @@ public static class PlaceDrafter
                 continue;
             }
 
-            var name = Unique(Identifier(column), used);
+            var name = Unique(Identifier(column), used, templates.Reserved);
             members.Add((name, column));
             code.Add(Fill(templates.Block("Column member"), className, null, name, column));
         }
@@ -212,10 +226,14 @@ public static class PlaceDrafter
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
         var card = CardOf(Label(place), signs);
+        var steps = templates.Blocks.TryGetValue(TabStep, out var step)
+            ? string.Join("\n", Between(place).Select(tab => "        " + step.Replace("{Label}", tab.Replace("\"", "\\\"", StringComparison.Ordinal), StringComparison.Ordinal)))
+            : "";
         var checks = string.Join("\n", place.Kind == PlaceKind.Page ? place.Tabs.Select(tab => $"        page.{TabName(tab)}.AssertVisible();") : []);
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
-        var onRecord = place.Kind != PlaceKind.Page && onPage is not null && PlaceKinds.IsRecord(onPage) && card is null && templates.Blocks.ContainsKey(RecordFormTest);
-        var text = templates.Block(record ? RecordPageTest : place.Kind == PlaceKind.Page ? "Form page test" : onRecord ? RecordFormTest : card is not null ? "Card form test" : "Form test")
+        var text = templates.Block(TestTemplate(place, templates, card, signs, onPage))
+            .Replace("        {TabSteps}\n", steps.Length == 0 ? "" : steps + "\n", StringComparison.Ordinal)
+            .Replace("{Icon}", Label(place), StringComparison.Ordinal)
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card), StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
@@ -229,6 +247,26 @@ public static class PlaceDrafter
             .Replace("{PagesNamespace}", pagesNamespace ?? @namespace, StringComparison.Ordinal)
             .Replace("{Address}", record ? PlaceKinds.RecordAddress(place) : place.Key, StringComparison.Ordinal);
         return new PlaceDraft(className, text.TrimEnd() + "\n", [], []);
+    }
+
+    // Which test a place gets: by what it is, what opens it, and whether its page is the page of one record.
+    private static string TestTemplate(Place place, DraftTemplates templates, string? card, PlaceSigns? signs, Place? onPage)
+    {
+        bool Has(string heading) => templates.Blocks.ContainsKey(heading);
+        if (place.Kind == PlaceKind.Page)
+            return PlaceKinds.IsRecord(place) && Has(RecordPageTest) ? RecordPageTest : "Form page test";
+        if (onPage is not null && PlaceKinds.IsRecord(onPage))
+        {
+            if (card is null && Has(RecordFormTest))
+                return RecordFormTest;
+            if (card is not null && Has(RecordCardFormTest))
+                return RecordCardFormTest;
+        }
+        // A button that shows only an icon and is no card's own is a row's: no member of the page stands for it.
+        else if (card is null && IsIcon(Label(place), signs) && Has(RowFormTest))
+            return RowFormTest;
+
+        return card is not null ? "Card form test" : "Form test";
     }
 
     /// <summary>
@@ -263,7 +301,18 @@ public static class PlaceDrafter
         // A dialog a titled part's own button opens is the part's: "Avatar: <an icon>" is AvatarDialog. One a bare icon opens is its page's form.
         var label = CardOf(Label(place), signs) ?? Label(place);
         var name = IsIcon(label, signs) ? "" : Identifier(label.TrimStart('+', ' '));
-        return (name.Length == 0 ? PageDrafter.ClassName(place.Parent ?? place.Key)[..^"Page".Length] + "Form" : name) + "Dialog";
+        // A page has such a button under each of its tabs: the tab is in the name (EquipmentBookingsFormDialog).
+        return (name.Length == 0 ? PageDrafter.ClassName(place.Parent ?? place.Key)[..^"Page".Length] + string.Concat(Between(place).Select(Identifier)) + "Form" : name) + "Dialog";
+    }
+
+    // What was pressed on a place's page before what opened the place: the parts of its key between the two.
+    private static string[] Between(Place place)
+    {
+        var parent = place.Parent ?? "";
+        if (parent.Length == 0 || !place.Key.StartsWith(parent + " › ", StringComparison.Ordinal))
+            return [];
+        var parts = place.Key[(parent.Length + 3)..].Split(" › ");
+        return parts[..^1];
     }
 
     // The module a namespace is of: the part after "Modules" (Shop.Modules.Schedule.Tests is Schedule); its last part otherwise.
@@ -316,10 +365,10 @@ public static class PlaceDrafter
         return name.Length == 0 ? "Field" : char.IsDigit(name[0]) ? "Field" + name : name;
     }
 
-    private static string Unique(string name, HashSet<string> used)
+    private static string Unique(string name, HashSet<string> used, IReadOnlyList<string> reserved)
     {
-        // A name the base has already (Name, Form) says what it is: NameField, not Name2.
-        if (Reserved.Contains(name, StringComparer.Ordinal))
+        // A name the base has already (Name, Form; the suite's own: Title) says what it is: NameField, not Name2.
+        if (Reserved.Contains(name, StringComparer.Ordinal) || reserved.Contains(name, StringComparer.Ordinal))
             name += "Field";
         var unique = name;
         for (var n = 2; !used.Add(unique); n++)

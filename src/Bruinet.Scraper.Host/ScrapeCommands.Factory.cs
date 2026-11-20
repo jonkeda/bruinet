@@ -11,8 +11,36 @@ public static partial class ScrapeCommands
 {
     private static Command Factory(HostIo io) => new("factory", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
-        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io),
+        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io),
     };
+
+    private static Command FactoryReviewCommand(HostIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var command = new Command("review", "Write review.md: why each place that still owes a class was not kept, the last reason per place, gathered by reason and by what the evidence has in common. The brief a fix starts from.")
+        {
+            project, solution, list,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var scraped = service.Project(name);
+            var owed = service.OwedPlaces(name, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
+            var file = await WriteReviewAsync(scraped.Home, FactoryState.Load(scraped.Home), owed, cancellationToken).ConfigureAwait(false);
+            await io.Error.WriteLineAsync($"Wrote {file}.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
+
+    private static async Task<string> WriteReviewAsync(string home, FactoryState state, OwedReport owed, CancellationToken cancellationToken)
+    {
+        var keys = owed.Groups.SelectMany(group => group.PagesWithoutClass.Concat(group.DialogFormsNotDrafted).Concat(group.RecordPages)).ToHashSet(StringComparer.Ordinal);
+        var file = Path.Combine(home, FactoryReview.FileName);
+        await File.WriteAllTextAsync(file, FactoryReview.ToMarkdown(state, keys), cancellationToken).ConfigureAwait(false);
+        return file;
+    }
 
     private static Command FactoryKeep(HostIo io)
     {
@@ -175,6 +203,8 @@ public static partial class ScrapeCommands
                     break;
             }
 
+            // The batch's brief: what is still owed, by reason.
+            await WriteReviewAsync(scraped.Home, state, service.OwedPlaces(name, PlacesList.Load(file)), cancellationToken).ConfigureAwait(false);
             if (parsed.GetValue(json))
                 await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(new { Batch = number, Loops = ran, Stopped = stopped }, PrettyJson)).ConfigureAwait(false);
             await io.Error.WriteLineAsync(stopped is null

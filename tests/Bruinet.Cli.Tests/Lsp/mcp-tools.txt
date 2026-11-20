@@ -46,4 +46,5 @@ scrape_create_project
 factory_status
 factory_replay
 factory_bench
+factory_review
 scrape_rename_page_object

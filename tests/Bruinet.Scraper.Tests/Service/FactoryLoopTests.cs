@@ -41,6 +41,41 @@ public sealed class FactoryLoopTests : IDisposable
     }
 
     [Fact]
+    public void A_row_s_button_that_is_not_there_says_the_list_needs_a_record()
+    {
+        var reason = ReasonClassifier.OfTest("ElementNotFoundException : Click on control (Css:.v-data-table:visible tbody tr :is(button, a):has(.fa-pen) >> nth=0)", "/a › fa-pen", "ATests");
+
+        Assert.Equal((ReasonCodes.NeedsRecord, FixPlaces.Records), (reason.Code, reason.FixAt));
+    }
+
+    [Fact]
+    public void The_review_gathers_the_last_reason_of_every_place_that_still_owes_a_class()
+    {
+        var state = new FactoryState();
+        state.Add(Loop("/a", 0,
+            new Reason(ReasonCodes.Unknown, "test", "/a › fa-pen", "AFormDialogTests", "something odd", FixPlaces.Person),
+            new Reason(ReasonCodes.DoesNotBuild, "build", "/b › fa-pen", "BFormDialogTests", "CS1061: 'BPage' does not contain a definition for 'FaPen'", FixPlaces.Templates),
+            new Reason(ReasonCodes.DoesNotBuild, "build", "/kept", "KeptPage", "CS0108: hides", FixPlaces.Templates)));
+        state.Add(Loop("/a", 0,
+            // The same place again, for another reason: the later one stands.
+            new Reason(ReasonCodes.DoesNotBuild, "build", "/a › fa-pen", "AFormDialogTests", "CS1061: 'APage' does not contain a definition for 'FaPen'", FixPlaces.Templates),
+            new Reason(ReasonCodes.Unknown, "test", "/c", "CPageTests", "nobody foresaw this", FixPlaces.Person)));
+
+        var review = FactoryReview.ToMarkdown(state, ["/a › fa-pen", "/b › fa-pen", "/c", "/never"]);
+
+        Assert.Contains("4 places owe a class: 3 with a reason, 1 never tried.", review, StringComparison.Ordinal);
+        Assert.Contains("| [does-not-build](#does-not-build) | 2 | templates |", review, StringComparison.Ordinal);
+        // Two messages that differ only in the names they quote are one shape.
+        Assert.Contains("2 of this shape: CS…: … does not contain a definition for …", review, StringComparison.Ordinal);
+        Assert.Contains("| `/a › fa-pen` | `AFormDialogTests` | 2 | CS1061: 'APage' does not contain a definition for 'FaPen' |", review, StringComparison.Ordinal);
+        // A place that owes nothing any more is history.
+        Assert.DoesNotContain("/kept", review, StringComparison.Ordinal);
+        Assert.Contains("## Never tried\n\n- `/never`", review, StringComparison.Ordinal);
+        Assert.Contains("## Waits for a person", review, StringComparison.Ordinal);
+        Assert.Contains("- `/c` (unknown): nobody foresaw this", review, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_draft_that_was_refused_and_a_file_that_does_not_build_are_reasons_too()
     {
         var noPage = ReasonClassifier.OfDraft("No page class of Shop names the address /orders: draft or write that page first, or give its class.", "/orders › + Order");

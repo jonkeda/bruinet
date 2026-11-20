@@ -127,6 +127,7 @@ public sealed class McpToolsTests : IDisposable
             ["factory_status"] = [],
             ["factory_replay"] = [],
             ["factory_bench"] = [],
+            ["factory_review"] = [],
             ["scrape_find_similar"] = new() { ["page"] = "/orders", ["node"] = 2 },
             ["scrape_find_text"] = new() { ["query"] = "grace" },
             ["scrape_get_control_brief"] = new() { ["signature"] = "tr" },

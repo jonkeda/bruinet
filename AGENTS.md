@@ -51,6 +51,8 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
   counts (speed, ease of use, trust, reach): at most five proposals, each with a measure and its price on the other
   counts (the site loop says when one is due).
 - [site-setup](.github/skills/site-setup/SKILL.md) - a suite for a new site in a container repository.
+- [scrape-app](.github/skills/scrape-app/SKILL.md) - an app to page objects and tests with the Scraper's factory:
+  run loops, read why a batch stopped, fix the reason at its source, measure the fix with replay.
 - [scraper-setup](.github/skills/scraper-setup/SKILL.md) - the Scraper's setup for one app: a person's six answers
   (`setup.md`) and the app cut into modules (`modules.md`), before it runs by itself.
 - [narrated-review](.github/skills/narrated-review/SKILL.md) - finish a feature with its

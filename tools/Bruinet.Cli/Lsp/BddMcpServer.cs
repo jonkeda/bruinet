@@ -141,6 +141,7 @@ public sealed partial class BddMcpServer : IDisposable
                 "factory_status" => Scraper(() => FactoryStatus(arguments)),
                 "factory_replay" => Scraper(() => FactoryReplay(arguments)),
                 "factory_bench" => Scraper(() => FactoryBench(arguments)),
+                "factory_review" => Scraper(() => FactoryReviewOf(arguments)),
                 "scrape_list_projects" => Scraper(() => Capped("projects", _server.ScraperProjects(), arguments)),
                 "scrape_list_events" => Scraper(() => Capped("events", _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session")), arguments)),
                 "scrape_list_pages" => Scraper(() => RecordedPages(arguments)),
@@ -1665,6 +1666,16 @@ public sealed partial class BddMcpServer : IDisposable
         var report = _server.Scraper.BenchPlaces(project, PlacesOf(project));
         var (shown, more) = Cut(report.Differences, arguments);
         return new { report.Examples, report.Missed, Differences = shown, More = more, report.Problems };
+    }
+
+    // Why each place that still owes a class was not kept: the review, as the document 'factory review' writes.
+    private object FactoryReviewOf(JsonObject arguments)
+    {
+        var project = (string?)arguments["project"];
+        var owed = _server.Scraper.OwedPlaces(project, PlacesOf(project));
+        var keys = owed.Groups.SelectMany(group => group.PagesWithoutClass.Concat(group.DialogFormsNotDrafted).Concat(group.RecordPages)).ToHashSet(StringComparer.Ordinal);
+        var state = Bruinet.Scraper.Factory.FactoryState.Load(_server.Scraper.Project(project).Home);
+        return new { Owed = keys.Count, Loops = state.Loops.Count, Review = Bruinet.Scraper.Factory.FactoryReview.ToMarkdown(state, keys) };
     }
 
     private Bruinet.Scraper.Places.PlacesList PlacesOf(string? project) =>

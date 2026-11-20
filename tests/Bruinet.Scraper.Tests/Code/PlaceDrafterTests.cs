@@ -94,6 +94,52 @@ public sealed class PlaceDrafterTests
     }
 
     [Fact]
+    public void A_name_the_suite_s_own_base_has_is_not_given_to_a_member()
+    {
+        // The suite says which names its bases have: a table of the templates.
+        var templates = Templates with { Reserved = DraftTemplates.Parse("## Reserved names\n\n| Name |\n| --- |\n| `Title` |\n| `Create` |\n").Reserved };
+        var complaint = DayOff with { Fields = ["Title (text, VTextField, required)", "Days (number, VTextField)"] };
+
+        var draft = PlaceDrafter.Form(complaint, templates, "ComplaintDialog", "Shop.Pages", "DaysOffPage", signs: Signs);
+
+        Assert.Contains("public TextRow<ComplaintDialog> TitleField => new(this, \"Title\");", draft.Code, StringComparison.Ordinal);
+        Assert.Contains("public Button<ComplaintDialog> CreateField => new(this, \"Create\");", draft.Code, StringComparison.Ordinal);
+        Assert.DoesNotContain(" Title =>", draft.Code, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_card_s_dialog_on_a_record_s_page_gets_the_test_that_opens_the_page_on_a_record()
+    {
+        var templates = DraftTemplates.Parse("## Card form test\n\n```csharp\ncard {Page}.{OpenerMember}\n```\n\n## Record card form test\n\n```csharp\nrecord card {Page}.{OpenerMember}\n```\n");
+        var page = new Place { Key = "/project/view?id={id}#/timeline", State = PlaceState.Seen };
+        var dialog = new Place { Key = "/project/view?id={id}#/timeline › Timeline: fa-calendar", Kind = PlaceKind.Dialog, Parent = page.Key, State = PlaceState.FormNotSaved };
+
+        var onRecord = PlaceDrafter.FormTest(dialog, templates, "TimelineDialogTests", "Shop.Tests", "TimelineDialog", "TimelinePage", signs: Signs, onPage: page);
+        var onPlain = PlaceDrafter.FormTest(dialog, templates, "TimelineDialogTests", "Shop.Tests", "TimelineDialog", "TimelinePage", signs: Signs, onPage: page with { Key = "/timeline" });
+
+        Assert.Equal("record card TimelinePage.EditTimeline\n", onRecord.Code);
+        Assert.Equal("card TimelinePage.EditTimeline\n", onPlain.Code);
+    }
+
+    [Fact]
+    public void A_dialog_a_row_s_button_opens_is_named_after_its_tab_and_its_test_presses_the_first_row_s_button()
+    {
+        var templates = DraftTemplates.Parse("## Form test\n\n```csharp\nplain {Page}.{OpenerMember}\n```\n\n## Tab step\n\n```csharp\ntab(\"{Label}\");\n```\n\n## Row form test\n\n```csharp\nopen {Page}\n        {TabSteps}\npress {Icon} for {Form}\n```\n");
+        var onTab = new Place { Key = "/equipment › Bookings › fa-pen", Kind = PlaceKind.Dialog, Parent = "/equipment", State = PlaceState.FormNotSaved };
+        var onPage = onTab with { Key = "/equipment › fa-pen" };
+
+        Assert.Equal("EquipmentBookingsFormDialog", PlaceDrafter.ClassName(onTab, PlaceDraftKind.Form, Signs));
+        Assert.Equal("EquipmentFormDialog", PlaceDrafter.ClassName(onPage, PlaceDraftKind.Form, Signs));
+        Assert.Equal("open EquipmentPage\n        tab(\"Bookings\");\npress fa-pen for EquipmentBookingsFormDialog\n",
+            PlaceDrafter.FormTest(onTab, templates, "T", "Shop.Tests", "EquipmentBookingsFormDialog", "EquipmentPage", signs: Signs).Code);
+        Assert.Equal("open EquipmentPage\npress fa-pen for EquipmentFormDialog\n",
+            PlaceDrafter.FormTest(onPage, templates, "T", "Shop.Tests", "EquipmentFormDialog", "EquipmentPage", signs: Signs).Code);
+        // A button named in words is a member of its page, as before.
+        Assert.Equal("plain EquipmentPage.AddEquipment\n",
+            PlaceDrafter.FormTest(onTab with { Key = "/equipment › + Equipment" }, templates, "T", "Shop.Tests", "EquipmentDialog", "EquipmentPage", signs: Signs).Code);
+    }
+
+    [Fact]
     public void A_member_that_finds_its_field_through_a_holder_is_only_given_to_a_field_in_that_holder()
     {
         var templates = DraftTemplates.Parse("## Field members\n\n| Control | Kind | Holder | Member |\n| --- | --- | --- | --- |\n| VSelect | | FormRow | `public SelectRow<{Self}> {Name} => new(this, \"{Label}\");` |\n\n## Button member\n\n```csharp\nB\n```\n\n## Form page\n\n```csharp\n{Members}\n```\n");
