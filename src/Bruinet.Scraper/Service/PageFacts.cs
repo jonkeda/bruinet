@@ -105,7 +105,8 @@ public sealed record PageFacts
             Dialog = dialog is null ? null : Shorten(Clean(string.Join(' ', scope.Select(node => node.Text).Where(text => text is { Length: > 0 }).Take(12))), 160),
             Headings = Texts(scope.Where(node => node.Type is "h1" or "h2" or "h3" || node.Role == "heading"), Text),
             // A text editor's own buttons (bold, italic) are the editor's, not the page's.
-            Buttons = Texts(scope.Where(node => IsButton(node) && !InToolbar(snapshot, node, places)), node => Text(node) + (node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" ? " (disabled)" : string.Empty)),
+            // So are a field's own (the cross that clears a select): they lie inside a control a sign names.
+            Buttons = Texts(scope.Where(node => IsButton(node) && !InToolbar(snapshot, node, places) && !InControl(snapshot, node, signs)), node => Text(node) + Mark(snapshot, node, places)),
             Tabs = Texts(scope.Where(places.IsTab), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
             Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope, signs ?? [], places, marked)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
             MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
@@ -201,6 +202,30 @@ public sealed record PageFacts
 
         return null;
     }
+
+    /// <summary>What follows the name of a button that is the header of a section of a form.</summary>
+    public const string SectionMark = " (section)";
+
+    // What a button's name is followed by: that it is off, or that it is the header of a section.
+    private static string Mark(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
+        => places.IsSection(node) ? SectionMark
+            : OnlyAnIcon(snapshot, node, places) ? IconMark
+            : node.Attributes.ContainsKey("disabled") || node.Attribute("aria-disabled") == "true" ? " (disabled)" : string.Empty;
+
+    /// <summary>What follows the name of a button that shows nothing but an icon written as a word (<c>arrow_back</c>): the word is the icon's, not a label.</summary>
+    public const string IconMark = " (icon)";
+
+    // The button says nothing itself, and every text in it is an icon's.
+    private static bool OnlyAnIcon(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
+    {
+        if (node.Text is { Length: > 0 } || node.Name is { Length: > 0 })
+            return false;
+        var texts = snapshot.Nodes.Where(below => below.Number != node.Number && below.Text is { Length: > 0 } && Within(snapshot, below, node.Number)).ToList();
+        return texts.Count > 0 && texts.All(places.IsIcon);
+    }
+
+    private static bool InControl(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ControlSign>? signs)
+        => signs is { Count: > 0 } && ControlSign.At(signs, snapshot, node) is { Sign.IsHolder: false };
 
     private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
     {

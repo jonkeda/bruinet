@@ -193,7 +193,7 @@ public sealed partial class ScraperService
                 if (Regex.IsMatch(suite.Text, $@"\bclass\s+{Regex.Escape(test.ClassName)}\b"))
                     continue;
                 if (list[key]?.Parent is { } parent && GivePageWhatTheTestNames(project, list, parent, test.Code, key) is { } given)
-                    written.Add(new Written(given.File, parent, given.Class, IsTest: false) { Before = given.Before });
+                    written.Add(new Written(given.File, parent, given.Class, IsTest: false) { Before = given.Before, For = test.ClassName });
                 Write(testFile, test.Code);
                 written.Add(new Written(testFile, key, test.ClassName, IsTest: true) { Of = exists ? null : form.ClassName });
             }
@@ -345,7 +345,7 @@ public sealed partial class ScraperService
         file.PutBack = true;
         Remove(file);
         reasons.Add(reason);
-        foreach (var other in written.Where(each => !each.PutBack && (each.Of == file.Class || file.Of == each.Class)).ToList())
+        foreach (var other in written.Where(each => !each.PutBack && (each.Of == file.Class || file.Of == each.Class || each.For == file.Class)).ToList())
         {
             other.PutBack = true;
             Remove(other);
@@ -420,6 +420,9 @@ public sealed partial class ScraperService
         public string? Of { get; init; }
 
         public string? Before { get; init; }
+
+        // For what was added to a class that was there: the test it was added for. When that test goes, so does the addition.
+        public string? For { get; init; }
 
         public bool PutBack { get; set; }
     }

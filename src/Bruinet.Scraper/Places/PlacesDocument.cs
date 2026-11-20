@@ -91,6 +91,8 @@ public static class PlacesDocument
             notes.Add(note);
         if (place.NotPressed.Count > 0)
             notes.Add($"not pressed: {string.Join(", ", place.NotPressed)}");
+        if (place.NotShown.Count > 0)
+            notes.Add($"not found by a test: {string.Join(", ", place.NotShown)}");
         return string.Join(". ", notes);
     }
 

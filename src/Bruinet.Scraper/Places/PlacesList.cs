@@ -107,6 +107,7 @@ public sealed class PlacesList
             Columns = Read(read, found.Columns, held.Columns),
             Calls = Sorted(held.Calls.Concat(found.Calls)),
             NotPressed = read ? found.NotPressed : held.NotPressed,
+            NotShown = held.NotShown.Count > 0 ? held.NotShown : found.NotShown,
             Accounts = Sorted(held.Accounts.Concat(found.Accounts)),
             RefusedTo = Sorted(held.RefusedTo.Concat(found.RefusedTo)),
             Sources = Sorted(held.Sources.Concat(found.Sources)),

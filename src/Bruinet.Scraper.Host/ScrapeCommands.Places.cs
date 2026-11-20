@@ -14,8 +14,35 @@ public static partial class ScrapeCommands
 
     private static Command Places(HostIo io) => new("places", "The places of the app (pages, tabs, dialogs, menus, buttons that only call the back end), kept between runs: show the list, or fill it with seed, routes, walk and add.")
     {
-        PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io), PlacesRead(io), PlacesFields(io), PlacesElements(io), PlacesDraft(io), PlacesDrift(io),
+        PlacesShow(io), PlacesSeed(io), PlacesRoutes(io), PlacesWalk(io), PlacesAdd(io), PlacesRead(io), PlacesFields(io), PlacesElements(io), PlacesDraft(io), PlacesDrift(io), PlacesNotShown(io),
     };
+
+    private static Command PlacesNotShown(HostIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var place = new Argument<string>("place") { Description = "The place's key, as the list writes it." };
+        var labels = new Argument<string[]>("labels") { Description = "The buttons, sections or cards a test did not find on the app as the place opens, as the list names them.", Arity = ArgumentArity.ZeroOrMore };
+        var clear = new Option<bool>("--clear") { Description = "Take every such label off the place again." };
+        var command = new Command("not-shown", "Record on a place what a drafted test did not find on the app: a draft of the place leaves it out and says so. The record stays through a new reading.")
+        {
+            place, labels, project, solution, list, clear,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var file = PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io);
+            var places = PlacesList.Load(file);
+            var key = parsed.GetValue(place)!;
+            if (places[key] is not { } found)
+                throw new Bruinet.Scraper.Service.ScraperProblem($"The list has no place '{key}'.");
+            string[] now = parsed.GetValue(clear) ? [] : [.. found.NotShown.Concat(parsed.GetValue(labels) ?? []).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal)];
+            places.Set(found with { NotShown = now });
+            places.Save(file);
+            await io.Error.WriteLineAsync(now.Length == 0 ? $"{key}: nothing is left out." : $"{key}: a draft leaves out {string.Join(", ", now)}.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
 
     private static Command PlacesDraft(HostIo io)
     {
@@ -25,9 +52,10 @@ public static partial class ScrapeCommands
         var name = new Option<string?>("--name") { Description = "The class's name. Default: from the place." };
         var page = new Option<string?>("--page") { Description = "For a dialog: the class of the page it is on. Default: the page class that names the page's address." };
         var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.cs. A class that is there is merged into: a drafted one gets the draft's members, a person's is only added to. A test is written over the test the Scraper drafted before, and not over a person's." };
+        var replace = new Option<bool>("--replace") { Description = "With --write: write the draft over the class the Scraper drafted before, as it is. A member the place no longer gives goes. Not for a class a person added to." };
         var command = new Command("draft", "Draft a class from a place of the list, in the suite's shape (draft-templates.md beside scraper.config.md): a form, a list's row, or the test that holds a form against its class.")
         {
-            place, project, solution, list, kind, name, page, write,
+            place, project, solution, list, kind, name, page, write, replace,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -42,7 +70,12 @@ public static partial class ScrapeCommands
                 var other => throw new ArgumentException($"--as is form, row or form-test, not '{other}'."),
             };
             var (draft, file) = service.DraftPlace(projectName, places, parsed.GetValue(place)!, what, parsed.GetValue(name), parsed.GetValue(page));
-            if (parsed.GetValue(write) && file is not null)
+            if (parsed.GetValue(write) && parsed.GetValue(replace) && file is not null && File.Exists(file) && Bruinet.Scraper.Code.ScrapedHeader.Find(await File.ReadAllTextAsync(file, cancellationToken).ConfigureAwait(false))?.Page is not null)
+            {
+                await File.WriteAllTextAsync(file, draft.Code, cancellationToken).ConfigureAwait(false);
+                await io.Error.WriteLineAsync($"{draft.ClassName}: written over {file}.").ConfigureAwait(false);
+            }
+            else if (parsed.GetValue(write) && file is not null)
             {
                 var merged = Bruinet.Scraper.Service.ScraperService.WriteDraft(file, draft);
                 await io.Error.WriteLineAsync(merged is null

@@ -153,23 +153,34 @@ public sealed partial class ScraperService
             // A form's test names the class that was drafted from the place, whatever it was called then.
             var formName = DraftedFrom(project, place.Key, "form")
                 ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns, PlaceDrafter.Beside(list.Places, place));
-            // What a page's cards open: the dialogs of the page that the walk named after a card.
-            var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
+            var (opens, under) = OpensOn(list, place);
             if (kind == PlaceDraftKind.FormTest)
             {
                 // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
                 // A class a person wrote for the place names its members its own way: only its fields are checked.
-                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns).Pressed;
+                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns, under).Pressed;
                 return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed), null);
             }
 
-            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);
+            var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns, under);
             return Target(Path.Combine(project.Folder, folder), form);
         }
         catch (FormatException e)
         {
             throw new ScraperProblem(e.Message);
         }
+    }
+
+    // What a page's cards open: the dialogs of the page that the walk named after a card. And of those, what opens
+    // after a tab or another press: its key has something between the page and the opener.
+    private static (List<string>? Opens, List<string>? Under) OpensOn(PlacesList list, Place place)
+    {
+        if (place.Kind != PlaceKind.Page)
+            return (null, null);
+        static string Last(Place each) => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..];
+        var dialogs = list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).ToList();
+        var depth = place.Key.Count(letter => letter == '›') + 1;
+        return ([.. dialogs.Select(Last)], [.. dialogs.Where(each => each.Key.Count(letter => letter == '›') > depth).Select(Last)]);
     }
 
     /// <summary>

@@ -36,6 +36,12 @@ public sealed record PlaceSigns
     /// <summary>Classes of a toolbar: its buttons are the toolbar's, not the page's.</summary>
     public IReadOnlyList<string> Toolbar { get; init; } = [];
 
+    /// <summary>Classes of the header of a part of a form that folds: it is pressed like a button, and is the name of a section.</summary>
+    public IReadOnlyList<string> SectionHeader { get; init; } = [];
+
+    /// <summary>True when the element is the header of a section that folds.</summary>
+    public bool IsSection(ScrapeNode node) => Has(node, SectionHeader);
+
     /// <summary>Ends of the class of a titled part's title bar.</summary>
     public IReadOnlyList<string> Title { get; init; } = [];
 
@@ -94,6 +100,7 @@ public sealed record PlaceSigns
             IconName = [.. IconName, .. other.IconName],
             IconStyle = [.. IconStyle, .. other.IconStyle],
             Closes = [.. Closes, .. other.Closes],
+            SectionHeader = [.. SectionHeader, .. other.SectionHeader],
         };
     }
 
@@ -115,11 +122,12 @@ public sealed record PlaceSigns
                 "dialog" => signs with { Dialog = [.. signs.Dialog, .. values] },
                 "toolbar" => signs with { Toolbar = [.. signs.Toolbar, .. values] },
                 "title" => signs with { Title = [.. signs.Title, .. values] },
+                "section" => signs with { SectionHeader = [.. signs.SectionHeader, .. values] },
                 "icon" => signs with { Icon = [.. signs.Icon, .. values] },
                 "icon name" => signs with { IconName = [.. signs.IconName, .. values] },
                 "icon style" => signs with { IconStyle = [.. signs.IconStyle, .. values.Select(value => Checked(value, row.LineNumber))] },
                 "closes" => signs with { Closes = [.. signs.Closes, .. values] },
-                _ => throw new FormatException($"Line {row.LineNumber}: '{what}' is not a place sign (tab, open menu, dialog, toolbar, title, icon, icon name, icon style, closes)."),
+                _ => throw new FormatException($"Line {row.LineNumber}: '{what}' is not a place sign (tab, open menu, dialog, toolbar, title, section, icon, icon name, icon style, closes)."),
             };
         }
 
@@ -139,6 +147,7 @@ public sealed record PlaceSigns
     private PlaceSigns(PlaceSigns other)
     {
         Tab = other.Tab;
+        SectionHeader = other.SectionHeader;
         OpenMenu = other.OpenMenu;
         Dialog = other.Dialog;
         Toolbar = other.Toolbar;

@@ -105,7 +105,8 @@ public static class PlaceDrafter
     /// <param name="pageClass">For a dialog: the class of the page it is on.</param>
     /// <param name="opens">For a page: what opens on it by a card's own button (<c>Avatar: fa-pen</c>), each given an opener when the templates have an <c>Opener member</c>.</param>
     /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
-    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null, PlaceSigns? signs = null)
+    /// <param name="under">Of <paramref name="opens"/>, what lies under a tab or behind another press: its opener is a member, and is not there as the page opens.</param>
+    public static PlaceDraft Form(Place place, DraftTemplates templates, string className, string @namespace, string? pageClass, IReadOnlyList<string>? opens = null, PlaceSigns? signs = null, IReadOnlyCollection<string>? under = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -150,8 +151,11 @@ public static class PlaceDrafter
             code.Add(Fill(templates.Block("Button member"), className, pageClass, name, button));
         }
 
+        SectionMembers(place, templates, className, pageClass, used, members, code, notDrafted);
+
         // What a person presses: the buttons, and the openers of the page's cards (its tabs lie between the two).
         List<string> pressed = [.. members.Skip(buttons).Select(member => member.Name), .. PageMembers(place, templates, className, pageClass, opens, used, members, code, signs)];
+        LeaveOutWhatIsNotThere(place, under, signs, pressed, members, notDrafted);
 
         var summary = dialog
             ? $"The form \"{Xml(Label(place))}\" opens on {Xml(place.Parent ?? "")}: drafted from the list of places."
@@ -172,6 +176,32 @@ public static class PlaceDrafter
         return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted) { Pressed = pressed };
     }
 
+    // An opener under a tab is not on the page as it opens: its dialog's test presses it after the tab. And what a test
+    // did not find on the app is said, not drafted.
+    private static void LeaveOutWhatIsNotThere(Place place, IReadOnlyCollection<string>? under, PlaceSigns? signs, List<string> pressed, List<(string Name, string Label)> members, List<string> notDrafted)
+    {
+        var later = (under ?? []).SelectMany(label => new[] { label, CardOf(label, signs) ?? label }).ToHashSet(StringComparer.Ordinal);
+        pressed.RemoveAll(name => later.Contains(members.First(member => member.Name == name).Label));
+        notDrafted.AddRange(place.NotShown.Select(label => $"{label}: a test did not find it on the app as the place opens"));
+    }
+
+    // A part of the form that folds is named by its header: a member of its own kind, when the suite has one.
+    private static void SectionMembers(Place place, DraftTemplates templates, string className, string? pageClass, HashSet<string> used, List<(string Name, string Label)> members, List<string> code, List<string> notDrafted)
+    {
+        foreach (var section in Sections(place))
+        {
+            if (!templates.Blocks.TryGetValue(SectionMember, out var sectionMember))
+            {
+                notDrafted.Add($"{section} (section): the templates have no '{SectionMember}'");
+                continue;
+            }
+
+            var name = Unique(Identifier(section) + "Section", used, templates.Reserved);
+            members.Add((name, section));
+            code.Add(Fill(sectionMember, className, pageClass, name, section));
+        }
+    }
+
     // A page's tabs, and the buttons its cards carry that open a dialog: both are the page's to name.
     // Returns the names of the openers.
     private static List<string> PageMembers(Place place, DraftTemplates templates, string className, string? pageClass, IReadOnlyList<string>? opens, HashSet<string> used, List<(string Name, string Label)> members, List<string> code, PlaceSigns? signs)
@@ -189,7 +219,7 @@ public static class PlaceDrafter
         var openers = members.Count;
         if (templates.Blocks.TryGetValue("Opener member", out var openerMember))
         {
-            foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null).Distinct(StringComparer.Ordinal))
+            foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null && !place.NotShown.Contains(card, StringComparer.Ordinal)).Distinct(StringComparer.Ordinal))
             {
                 // A card with several buttons that each open a dialog: a member per button, told apart by its icon.
                 var icons = (opens ?? []).Where(opened => CardOf(opened, signs) == card).Select(opened => opened[(card!.Length + 2)..]).Distinct(StringComparer.Ordinal).ToList();
@@ -330,7 +360,7 @@ public static class PlaceDrafter
             .Select(match => (match.Groups[1].Success ? match.Groups[1].Value : match.Groups[2].Value).Replace("\\\"", "\"", StringComparison.Ordinal)).ToHashSet(StringComparer.Ordinal);
         var shown = kind == PlaceDraftKind.Row
             ? place.Columns.Where(column => column.Any(char.IsLetter)).ToList()
-            : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => field.Label), .. Buttons(place, signs)];
+            : [.. place.Fields.Select(PlacesReading.ReadField).Where(field => field.Control != "(a table's own)").Select(field => field.Label), .. Buttons(place, signs), .. Sections(place)];
         return ([.. named.Where(label => !shown.Contains(label, StringComparer.Ordinal)).Order(StringComparer.Ordinal)], [.. shown.Where(label => !named.Contains(label)).Distinct(StringComparer.Ordinal)]);
     }
 
@@ -414,11 +444,27 @@ public static class PlaceDrafter
     // What opened a part of a page: the last part of its key.
     private static string Label(Place place) => place.Key.Contains(" › ", StringComparison.Ordinal) ? place.Key[(place.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..] : place.Key;
 
+    /// <summary>The template of a member for a section of a form that folds (<c>## Section member</c>), with <c>{Label}</c> the section's header.</summary>
+    public const string SectionMember = "Section member";
+
+    // The headers of the form's sections, as the reading marked them among the buttons.
+    private static IEnumerable<string> Sections(Place place) => place.Buttons
+        .Where(button => button.EndsWith(Service.PageFacts.SectionMark, StringComparison.Ordinal))
+        .Select(button => WithoutCount(button[..^Service.PageFacts.SectionMark.Length])).Where(section => section.Any(char.IsLetter) && !place.NotShown.Contains(section, StringComparer.Ordinal)).Distinct(StringComparer.Ordinal);
+
+    // A header may end in how many it holds now (Risks (4)): the number is today's, the name is the section's.
+    private static string WithoutCount(string header)
+    {
+        var at = header.LastIndexOf(" (", StringComparison.Ordinal);
+        return at > 0 && header.EndsWith(')') && header.Length - at > 3 && header[(at + 2)..^1].All(char.IsAsciiDigit) ? header[..at] : header;
+    }
+
     // A form's buttons that a test presses: named in words, on now or off, not an icon and not a pager's.
     private static IEnumerable<string> Buttons(Place place, PlaceSigns? signs) => place.Buttons
+        .Where(button => !button.EndsWith(Service.PageFacts.SectionMark, StringComparison.Ordinal) && !button.EndsWith(Service.PageFacts.IconMark, StringComparison.Ordinal))
         .Select(button => button.EndsWith(" (disabled)", StringComparison.Ordinal) ? button[..^" (disabled)".Length] : button)
         .Where(button => button.Any(char.IsLetter) && !button.StartsWith('(') && button.Split(' ').Length <= 4 && !IsIcon(button, signs)
-            && !button.Contains("page", StringComparison.OrdinalIgnoreCase))
+            && !button.Contains("page", StringComparison.OrdinalIgnoreCase) && !place.NotShown.Contains(button, StringComparer.Ordinal))
         .Distinct(StringComparer.Ordinal);
 
     private static string Fill(string template, string self, string? page, string name, string label) => template

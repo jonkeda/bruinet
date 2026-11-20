@@ -100,6 +100,13 @@ public sealed record Place
     /// <summary>What was not pressed here, and why.</summary>
     public IReadOnlyList<string> NotPressed { get; init; } = [];
 
+    /// <summary>
+    /// Buttons, sections and cards the reading gives that a test did not find on the app as the place opens (a button
+    /// that only shows in some state, one a member's locator does not fit): a draft leaves them out and says so.
+    /// Kept through a new reading, and taken off by hand when the reason is gone.
+    /// </summary>
+    public IReadOnlyList<string> NotShown { get; init; } = [];
+
     /// <summary>The accounts that saw it.</summary>
     public IReadOnlyList<string> Accounts { get; init; } = [];
 
