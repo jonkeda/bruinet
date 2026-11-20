@@ -112,6 +112,32 @@ public sealed class ClassMergeTests
     }
 
     [Fact]
+    public void A_person_s_class_is_only_added_to_and_keeps_its_first_line()
+    {
+        var hand = Existing[(Existing.IndexOf('\n', StringComparison.Ordinal) + 1)..];
+
+        var merged = ClassMerge.Merge(hand, Draft, "ContactDialog", addOnly: true);
+
+        Assert.Equal(["Since"], merged.Added);
+        Assert.Empty(merged.Replaced);
+        // The person's own member stays as it was written, and the file does not become a draft.
+        Assert.Contains("public TextRow<ContactDialog> Name => new(this, \"Naam\");", merged.Code, StringComparison.Ordinal);
+        Assert.DoesNotContain("<scraped", merged.Code, StringComparison.Ordinal);
+        Assert.Contains("public DateRow<ContactDialog> Since => new(this, \"Customer since\");", merged.Code, StringComparison.Ordinal);
+        Assert.Contains("using Shop.Controls;", merged.Code, StringComparison.Ordinal);
+        Assert.Equal(merged.Code, ClassMerge.Merge(merged.Code, Draft, "ContactDialog", addOnly: true).Code);
+    }
+
+    [Fact]
+    public void Only_the_members_that_are_asked_for_are_taken_from_the_draft()
+    {
+        var merged = ClassMerge.Merge(Existing, Draft, "ContactDialog", addOnly: true, only: ["Country", "Nobody"]);
+
+        Assert.Empty(merged.Added);
+        Assert.Equal(Existing, merged.Code);
+    }
+
+    [Fact]
     public void A_file_that_does_not_declare_the_class_is_said()
     {
         Assert.Contains("does not declare Nobody", Assert.Throws<ArgumentException>(() => ClassMerge.Merge(Existing, Draft, "Nobody")).Message, StringComparison.Ordinal);

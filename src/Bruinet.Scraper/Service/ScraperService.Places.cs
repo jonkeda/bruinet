@@ -166,6 +166,42 @@ public sealed partial class ScraperService
         }
     }
 
+    /// <summary>
+    /// Writes a draft into its file. A file that is there and declares the class is merged into
+    /// (<see cref="ClassMerge"/>): a class the Scraper drafted from a place gets the draft's members, a class a person
+    /// wrote is only added to; what only the class has stays either way.
+    /// </summary>
+    /// <param name="file">The file the draft belongs in.</param>
+    /// <param name="draft">The draft.</param>
+    /// <returns>What the merge did; null when the file was not there, or does not declare the class, and the draft was written as it is.</returns>
+    public static MergedClass? WriteDraft(string file, PlaceDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(file);
+        ArgumentNullException.ThrowIfNull(draft);
+        Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+        var before = File.Exists(file) ? File.ReadAllText(file) : null;
+        if (before is null || !DeclaresClass(before, draft.ClassName))
+        {
+            File.WriteAllText(file, draft.Code);
+            return null;
+        }
+
+        var merged = ClassMerge.Merge(before, draft.Code, draft.ClassName, addOnly: ScrapedHeader.Find(before)?.Page is null);
+        if (merged.Code != before)
+            File.WriteAllText(file, merged.Code);
+        return merged;
+    }
+
+    private static bool DeclaresClass(string code, string className) =>
+        System.Text.RegularExpressions.Regex.IsMatch(code, $@"\bclass\s+{System.Text.RegularExpressions.Regex.Escape(className)}\b");
+
+    // The file of the suite that declares a class: its own file before an older draft's part.
+    private static string? ClassFile(ScrapeProject project, string className) =>
+        Directory.EnumerateFiles(project.Folder, "*.cs", SearchOption.AllDirectories)
+            .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .OrderBy(PageDrafter.IsOlderDraft).ThenBy(file => file, StringComparer.Ordinal)
+            .FirstOrDefault(file => DeclaresClass(File.ReadAllText(file), className));
+
     // Where a draft goes: its class's own file. A class drafted before a draft was the whole class stays what it is,
     // one part of a partial class in its older file, beside a person's part.
     private static (PlaceDraft Draft, string? File) Target(string folder, PlaceDraft draft)

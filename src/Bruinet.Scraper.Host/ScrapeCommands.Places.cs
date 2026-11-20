@@ -24,7 +24,7 @@ public static partial class ScrapeCommands
         var kind = new Option<string>("--as") { Description = "What to draft: form (a member per field and button), row (a member per column of the list), or form-test (a test that holds the form against its class, saving nothing).", DefaultValueFactory = _ => "form" };
         var name = new Option<string?>("--name") { Description = "The class's name. Default: from the place." };
         var page = new Option<string?>("--page") { Description = "For a dialog: the class of the page it is on. Default: the page class that names the page's address." };
-        var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.cs. A test is only printed." };
+        var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.cs. A class that is there is merged into: a drafted one gets the draft's members, a person's is only added to. A test is only printed." };
         var command = new Command("draft", "Draft a class from a place of the list, in the suite's shape (draft-templates.md beside scraper.config.md): a form, a list's row, or the test that holds a form against its class.")
         {
             place, project, solution, list, kind, name, page, write,
@@ -44,9 +44,10 @@ public static partial class ScrapeCommands
             var (draft, file) = service.DraftPlace(projectName, places, parsed.GetValue(place)!, what, parsed.GetValue(name), parsed.GetValue(page));
             if (parsed.GetValue(write) && file is not null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(file)!);
-                await File.WriteAllTextAsync(file, draft.Code, cancellationToken).ConfigureAwait(false);
-                await io.Error.WriteLineAsync($"{draft.ClassName}: {draft.Members.Count} members written to {file}.").ConfigureAwait(false);
+                var merged = Bruinet.Scraper.Service.ScraperService.WriteDraft(file, draft);
+                await io.Error.WriteLineAsync(merged is null
+                    ? $"{draft.ClassName}: {draft.Members.Count} members written to {file}."
+                    : $"{draft.ClassName}: merged into {file}: {merged.Added.Count} added, {merged.Replaced.Count} replaced{(merged.Kept.Count > 0 ? $"; kept though the place does not give them: {string.Join(", ", merged.Kept)}" : "")}.").ConfigureAwait(false);
             }
             else
                 await io.Out.WriteAsync(draft.Code).ConfigureAwait(false);

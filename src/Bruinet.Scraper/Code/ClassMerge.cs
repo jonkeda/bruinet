@@ -19,6 +19,8 @@ public sealed record MergedClass(string Code, IReadOnlyList<string> Added, IRead
 /// Merges a draft into the class that is there, member by member: a member the draft has replaces the class's own of
 /// that name or is added, and a member only the class has stays. Who wrote a member does not decide; what the page
 /// shows does, and a member the page does not show is for its test to find. One file holds the class afterwards.
+/// A class a person wrote (its file does not start with the Scraper's line) is only added to: its own members stay
+/// as they are, and so does its first line.
 /// </summary>
 public static class ClassMerge
 {
@@ -26,8 +28,10 @@ public static class ClassMerge
     /// <param name="existing">The file as it is; it may hold other classes, which are not touched.</param>
     /// <param name="draft">The draft: a file with the class and the line it starts with.</param>
     /// <param name="className">The class.</param>
+    /// <param name="addOnly">Only adds: a member the class has stays as it is, and the file keeps its first line. For a class a person wrote.</param>
+    /// <param name="only">The draft's members that count; every one when null.</param>
     /// <exception cref="ArgumentException">One of the two does not declare the class.</exception>
-    public static MergedClass Merge(string existing, string draft, string className)
+    public static MergedClass Merge(string existing, string draft, string className, bool addOnly = false, IReadOnlyCollection<string>? only = null)
     {
         ArgumentNullException.ThrowIfNull(existing);
         ArgumentNullException.ThrowIfNull(draft);
@@ -41,7 +45,7 @@ public static class ClassMerge
         var members = target.Members.ToList();
         foreach (var member in source.Members)
         {
-            if (NameOf(member) is not { } name)
+            if (NameOf(member) is not { } name || (only is not null && !only.Contains(name)))
                 continue;
             var at = members.FindIndex(own => NameOf(own) == name);
             if (at < 0)
@@ -49,7 +53,7 @@ public static class ClassMerge
                 members.Add(member);
                 added.Add(name);
             }
-            else if (!Same(members[at], member))
+            else if (!addOnly && !Same(members[at], member))
             {
                 // The class's own lines above the member stay with the draft's member when the draft has none of its own.
                 members[at] = member.HasLeadingTrivia && member.GetLeadingTrivia().Any(trivia => !trivia.IsKind(SyntaxKind.WhitespaceTrivia) && !trivia.IsKind(SyntaxKind.EndOfLineTrivia)) ? member : member.WithLeadingTrivia(members[at].GetLeadingTrivia());
@@ -59,16 +63,24 @@ public static class ClassMerge
 
         var drafted = source.Members.Select(NameOf).OfType<string>().ToHashSet(StringComparer.Ordinal);
         var kept = target.Members.Select(NameOf).OfType<string>().Where(name => !drafted.Contains(name)).ToList();
-        var merged = was.ReplaceNode(target, target.WithMembers(SyntaxFactory.List(members)));
+        var merged = was.ReplaceNode(target, WithBody(target, source).WithMembers(SyntaxFactory.List(members)));
 
         // The draft's usings that the file lacks; the file's own stay, in their order.
+        if (addOnly && added.Count == 0)
+            return new MergedClass(existing, added, replaced, kept);
         var have = merged.Usings.Select(each => each.ToString().Trim()).ToHashSet(StringComparer.Ordinal);
         var missing = now.Usings.Where(each => !have.Contains(each.ToString().Trim())).Select(each => each.WithoutLeadingTrivia()).ToList();
         if (missing.Count > 0)
             merged = merged.WithUsings(merged.Usings.AddRange(missing));
 
-        return new MergedClass(WithFirstLine(merged.ToFullString(), FirstLine(draft)), added, replaced, kept);
+        return new MergedClass(addOnly ? merged.ToFullString() : WithFirstLine(merged.ToFullString(), FirstLine(draft)), added, replaced, kept);
     }
+
+    // A class declared without a body (class A(B b) : C(b);) gets the draft's braces before it gets members.
+    private static TypeDeclarationSyntax WithBody(TypeDeclarationSyntax target, TypeDeclarationSyntax source) =>
+        target.OpenBraceToken.IsKind(SyntaxKind.None) || target.OpenBraceToken.IsMissing
+            ? target.WithSemicolonToken(default).WithOpenBraceToken(source.OpenBraceToken).WithCloseBraceToken(source.CloseBraceToken.WithTrailingTrivia(target.SemicolonToken.TrailingTrivia))
+            : target;
 
     // The line that says what a class was made from is the draft's: it names the capture and the hash of now.
     private static string WithFirstLine(string code, string? header)

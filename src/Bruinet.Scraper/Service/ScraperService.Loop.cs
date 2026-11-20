@@ -192,6 +192,8 @@ public sealed partial class ScraperService
                     continue; // a test of that name is a person's, or an earlier loop's: it is not written over
                 if (Regex.IsMatch(suite.Text, $@"\bclass\s+{Regex.Escape(test.ClassName)}\b"))
                     continue;
+                if (list[key]?.Parent is { } parent && GivePageWhatTheTestNames(project, list, parent, test.Code) is { } given)
+                    written.Add(new Written(given.File, parent, given.Class, IsTest: false) { Before = given.Before });
                 Write(testFile, test.Code);
                 written.Add(new Written(testFile, key, test.ClassName, IsTest: true) { Of = exists ? null : form.ClassName });
             }
@@ -199,6 +201,33 @@ public sealed partial class ScraperService
             {
                 reasons.Add(ReasonClassifier.OfDraft(problem.Message, key));
             }
+        }
+    }
+
+    // A dialog's test presses a member of its page. A page's class that lacks it (a person's, or one drafted before the
+    // opener was on the page) gets it from a draft of the page: that member and no other, and nothing of its own changes.
+    // Returns the file that changed, what it held, and the class; null when nothing was added.
+    internal (string File, string Before, string Class)? GivePageWhatTheTestNames(ScrapeProject project, PlacesList list, string pageKey, string test)
+    {
+        if (list[pageKey] is null || (PageClassAt(project, pageKey) ?? DraftedFrom(project, pageKey, "form")) is not { } name || ClassFile(project, name) is not { } file)
+            return null;
+        try
+        {
+            var (draft, _) = DraftPlace(project.Name, list, pageKey, PlaceDraftKind.Form, name);
+            var named = draft.Members.Select(member => member.Name).Where(member => Regex.IsMatch(test, $@"\.{Regex.Escape(member)}\b")).ToList();
+            if (named.Count == 0)
+                return null;
+            var before = File.ReadAllText(file);
+            var merged = ClassMerge.Merge(before, draft.Code, name, addOnly: true, only: named);
+            if (merged.Added.Count == 0)
+                return null;
+            File.WriteAllText(file, merged.Code);
+            return (file, before, name);
+        }
+        catch (Exception problem) when (problem is ScraperProblem or ArgumentException)
+        {
+            // The page cannot be drafted or its class is not in that file: the test says what it lacks when it is built.
+            return null;
         }
     }
 
@@ -295,15 +324,22 @@ public sealed partial class ScraperService
         if (file.PutBack)
             return;
         file.PutBack = true;
-        if (File.Exists(file.File))
-            File.Delete(file.File);
+        Remove(file);
         reasons.Add(reason);
         foreach (var other in written.Where(each => !each.PutBack && (each.Of == file.Class || file.Of == each.Class)).ToList())
         {
             other.PutBack = true;
-            if (File.Exists(other.File))
-                File.Delete(other.File);
+            Remove(other);
         }
+    }
+
+    // A file the loop made goes; a file it added to is as it was.
+    private static void Remove(Written file)
+    {
+        if (file.Before is not null)
+            File.WriteAllText(file.File, file.Before);
+        else if (File.Exists(file.File))
+            File.Delete(file.File);
     }
 
     // Where a drafted test goes: its namespace under the suite's own, as folders; a module's tests in its Tests folder, whatever folder its pages are in.
@@ -342,10 +378,12 @@ public sealed partial class ScraperService
     [GeneratedRegex(@"<RootNamespace>([^<]+)</RootNamespace>")]
     private static partial Regex RootNamespaceElement();
 
-    // A file a loop wrote: the place it is of, its class, and for a test the class it holds.
+    // A file a loop wrote: the place it is of, its class, for a test the class it holds, and for a file that was there what it held.
     private sealed record Written(string File, string Place, string Class, bool IsTest)
     {
         public string? Of { get; init; }
+
+        public string? Before { get; init; }
 
         public bool PutBack { get; set; }
     }

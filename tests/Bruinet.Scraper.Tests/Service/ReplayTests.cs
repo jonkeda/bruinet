@@ -154,6 +154,60 @@ public sealed class ReplayTests : IAsyncLifetime
         Assert.Contains($" partial class {draft.ClassName}(", draft.Code, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void A_draft_written_into_a_file_that_is_there_is_merged_and_a_person_s_class_is_only_added_to()
+    {
+        var (draft, file) = _service.DraftPlace(null, _list, Dialog, PlaceDraftKind.Form);
+        Assert.Null(ScraperService.WriteDraft(file!, draft));
+        Assert.Equal(draft.Code, File.ReadAllText(file!));
+
+        // A person adds a member to the drafted class: drafting again keeps it.
+        File.WriteAllText(file!, draft.Code.TrimEnd()[..^1] + "\n    public int Mine => 1;\n}\n");
+        var again = ScraperService.WriteDraft(file!, draft)!;
+        Assert.True(again.Same);
+        Assert.Contains("Mine", again.Kept);
+        Assert.Contains("public int Mine => 1;", File.ReadAllText(file!), StringComparison.Ordinal);
+
+        // A class of that name a person wrote, with its own Country: the draft adds what it lacks and changes nothing else.
+        var hand = $"namespace Shop.UITests.Pages;\n\npublic sealed class {draft.ClassName}\n{{\n    public int Country => 2;\n}}\n";
+        File.WriteAllText(file!, hand);
+        var added = ScraperService.WriteDraft(file!, draft)!;
+        Assert.DoesNotContain("Country", added.Added);
+        Assert.NotEmpty(added.Added);
+        var text = File.ReadAllText(file!);
+        Assert.Contains("public int Country => 2;", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("<scraped", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_page_s_class_gets_the_member_a_dialog_s_test_names_and_no_other()
+    {
+        _list.Set(_list["/contact"]! with { Buttons = ["Export", "Import"] });
+        File.AppendAllText(Path.Combine(_project, DraftTemplates.FileName), "\n## Form page\n\n```csharp\n{Header}\nnamespace {Namespace};\n\npublic sealed class {Self}(IHtmlTestContext context) : PageObjectBase<{Self}>(context)\n{\n{Members}\n}\n```\n");
+        var project = _service.Projects().Single();
+        var (page, _) = _service.DraftPlace(null, _list, "/contact", PlaceDraftKind.Form, "ContactsPage");
+        Assert.Contains(page.Members, member => member.Name == "Export");
+        var file = Path.Combine(_project, "Pages", "ContactsPage.cs");
+        var before = File.ReadAllText(file);
+
+        // A test that names nothing the page's draft has leaves the class alone.
+        Assert.Null(_service.GivePageWhatTheTestNames(project, _list, "/contact", "page.Somewhere.Click();"));
+        Assert.Equal(before, File.ReadAllText(file));
+
+        var given = _service.GivePageWhatTheTestNames(project, _list, "/contact", "page.Export.Click();");
+
+        Assert.Equal((file, before, "ContactsPage"), given);
+        var after = File.ReadAllText(file);
+        Assert.Contains(" Export ", after, StringComparison.Ordinal);
+        Assert.DoesNotContain(" Import ", after, StringComparison.Ordinal);
+        // The class had no body; it has one now, and the person's other class is as it was.
+        Assert.Contains("PageObjectBase<ContactsPage>(context, \"/contact\")", after, StringComparison.Ordinal);
+        Assert.Contains("public TextRow<ContactForm> Fax", after, StringComparison.Ordinal);
+        Assert.DoesNotContain("<scraped", after, StringComparison.Ordinal);
+        // The same test again adds nothing.
+        Assert.Null(_service.GivePageWhatTheTestNames(project, _list, "/contact", "page.Export.Click();"));
+    }
+
     private void WriteDraft()
     {
         var (draft, file) = _service.DraftPlace(null, _list, Dialog, PlaceDraftKind.Form);
