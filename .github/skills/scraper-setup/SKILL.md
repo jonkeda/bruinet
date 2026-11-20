@@ -1,6 +1,6 @@
 ---
 name: scraper-setup
-description: Set the Scraper up for one app before it runs by itself - ask a person six questions (is the environment safe to write on, everything or a part, may it improve by itself, when may it ask, may it commit, who accepts a spec), write the answers into the app's own Scraper project as setup.md, cut the app into modules without walking it, and let the person choose what goes first. Use when asked to set up, configure or start the Scraper or the factory for an app, to point the Scraper at an application, or before the first `bruinet scrape factory` run on a suite.
+description: Set the Scraper up for one app before it runs by itself - ask a person six questions (is the environment safe to write on, everything or a part, may it improve by itself, when may it ask, may it commit, who accepts a spec), write the answers into the app's own Scraper project as setup.md, cut the app into modules without walking it, and let the person choose what goes first. Use when asked to set up, configure or start the Scraper or the factory for an app, to point the Scraper at an application, or before the first `bruinet scrape scraper` run on a suite.
 ---
 
 # The Scraper's setup for one app
@@ -15,7 +15,7 @@ whatever the answers are.
 
 1. The app has a suite and the Scraper's own project beside it (`<App>.Scraper`, the `site-setup` skill). From that
    project's folder: `bruinet scrape check` answers, signed in.
-2. `bruinet scrape factory setup` prints the answers there are. Ask only what has none, or what the person wants
+2. `bruinet scrape scraper setup` prints the answers there are. Ask only what has none, or what the person wants
    changed.
 
 ## The six questions
@@ -37,7 +37,7 @@ that it is an acceptance or test environment; a production environment is `read-
 ## Write the answers
 
 ```powershell
-bruinet scrape factory setup --set Writes=own-records --set Run=all --set Improve=data --set Ask=batch --set Commit=no --set Specs=person
+bruinet scrape scraper setup --set Writes=own-records --set Run=all --set Improve=data --set Ask=batch --set Commit=no --set Specs=person
 ```
 
 The hosts, the accounts and what is never pressed are the guards of `scraper.config.md` (`## Explore hosts`,
@@ -48,7 +48,7 @@ The hosts, the accounts and what is never pressed are the guards of `scraper.con
 ```powershell
 bruinet scrape places seed
 bruinet scrape places routes
-bruinet scrape factory modules --write
+bruinet scrape scraper modules --write
 ```
 
 `seed` and `routes` fill the list of places from the map, the suite and the routes the app's own scripts name;
@@ -62,7 +62,7 @@ tool's order then holds. When question 2 was "a part", write the modules they na
 
 - `setup.md` has an answer for every question, or the person said the careful value is fine.
 - `modules.md` is written, and the person saw it.
-- `bruinet scrape factory status` says what is owed.
+- `bruinet scrape scraper status` says what is owed.
 
 ## Never
 

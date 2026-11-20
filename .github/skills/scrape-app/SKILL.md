@@ -1,6 +1,6 @@
 ---
 name: scrape-app
-description: Take a running web app to page objects and tests with the Scraper's factory, group by group and unattended - set it up, cut it into modules, run loops (walk, read, draft, build, test), read why a batch stopped, fix the reason at its source, check the fix with replay, and go on until every place has a class and a test or a reason. Use when asked to scrape an app or a module with the factory, to run or continue the factory, to make page objects and tests for a whole app, or when `bruinet scrape factory run` stopped and someone asks what to do next.
+description: Take a running web app to page objects and tests with the Scraper's factory, group by group and unattended - set it up, cut it into modules, run loops (walk, read, draft, build, test), read why a batch stopped, fix the reason at its source, check the fix with replay, and go on until every place has a class and a test or a reason. Use when asked to scrape an app or a module with the factory, to run or continue the factory, to make page objects and tests for a whole app, or when `bruinet scrape scraper run` stopped and someone asks what to do next.
 ---
 
 # An app to page objects and tests
@@ -17,13 +17,13 @@ All commands from the app's Scraper project (`<App>.Scraper`), where `bruinet sc
 ## 0. Set up, once
 
 The `scraper-setup` skill: a person's answers in `setup.md`, and the app cut into modules in `modules.md`. Do not
-start a walk before `Writes` has an answer. `bruinet scrape factory status` says what is owed.
+start a walk before `Writes` has an answer. `bruinet scrape scraper status` says what is owed.
 
 ## 1. Run a batch
 
 ```powershell
-bruinet scrape factory run --dry-run
-bruinet scrape factory run --module <Module> --baseline "Module=<Module>"
+bruinet scrape scraper run --dry-run
+bruinet scrape scraper run --module <Module> --baseline "Module=<Module>"
 ```
 
 The first says which groups would run. The second runs them: each group in loops of six places, pages before what
@@ -54,20 +54,20 @@ the suite no longer builds, or when the sign-in ran out. Read `ledger.md`: its R
 
 ## 3. One fix, measured
 
-1. `bruinet scrape factory replay` before: it must say nothing changed. If it does not, a class is stale: draft it
+1. `bruinet scrape scraper replay` before: it must say nothing changed. If it does not, a class is stale: draft it
    again (`places draft "<place>" --name <Class> --write`) and run its test before anything else.
 2. Change one thing, at the source the table names. Signs and holders: `scraper.config.md` or the control library's
    `control-signs.md`. The draft's shape: `draft-templates.md`. A control: the `html-control` skill.
-3. `bruinet scrape factory replay` after: it says which fields gained or lost a control and which classes would be
+3. `bruinet scrape scraper replay` after: it says which fields gained or lost a control and which classes would be
    drafted differently. A field that lost its control means the change was wrong: take it back.
-4. `bruinet scrape factory keep`: every changed file against what `setup.md`'s `Improve` allows. A file outside it
+4. `bruinet scrape scraper keep`: every changed file against what `setup.md`'s `Improve` allows. A file outside it
    is not yours to keep: say so, and leave it for a person.
-5. `bruinet scrape factory note "<what changed, and why>"`, then `factory run … --again` for the groups the reason
+5. `bruinet scrape scraper note "<what changed, and why>"`, then `scraper run … --again` for the groups the reason
    stopped.
 
 ## 4. Until done
 
-A module is done when `factory status` shows nothing owed for its groups that is not parked with a reason, its
+A module is done when `scraper status` shows nothing owed for its groups that is not parked with a reason, its
 tests pass (`dotnet test --filter Module=<Module>`), and `replay` says nothing changed. Then the next module in
 `modules.md`.
 

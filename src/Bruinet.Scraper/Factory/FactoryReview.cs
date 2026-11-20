@@ -50,7 +50,7 @@ public static partial class FactoryReview
         var standing = last.Values.Where(each => owed.Contains(each.Reason.Place)).ToList();
         var never = owed.Where(key => !last.ContainsKey(key)).Order(StringComparer.Ordinal).ToList();
         var text = new StringBuilder();
-        text.Append("# The factory's review\n\nWhy each place that still owes a class was not kept, by reason: the last reason per place. Written from\n`state.json` by `bruinet scrape factory review` and after every batch; not edited by hand.\n\n");
+        text.Append("# The factory's review\n\nWhy each place that still owes a class was not kept, by reason: the last reason per place. Written from\n`state.json` by `bruinet scrape scraper review` and after every batch; not edited by hand.\n\n");
         text.Append(CultureInfo.InvariantCulture, $"{owed.Count} places owe a class: {standing.Count} with a reason, {never.Count} never tried.\n\n");
         text.Append("| Reason | Places | Fix at |\n| --- | --- | --- |\n");
         var groups = standing.GroupBy(each => each.Reason.Code, StringComparer.Ordinal).OrderByDescending(group => group.Count()).ThenBy(group => group.Key, StringComparer.Ordinal).ToList();

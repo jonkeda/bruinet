@@ -154,7 +154,7 @@ public static class FactoryLedger
     {
         ArgumentNullException.ThrowIfNull(state);
         var text = new StringBuilder();
-        text.Append("# The factory's ledger\n\nA row per loop: a group through walk, read, draft, build and test. Written from `state.json` by\n`bruinet scrape factory run`; not edited by hand (`bruinet scrape factory note` adds a line).\n\n## Loops\n\n");
+        text.Append("# The factory's ledger\n\nA row per loop: a group through walk, read, draft, build and test. Written from `state.json` by\n`bruinet scrape scraper run`; not edited by hand (`bruinet scrape scraper note` adds a line).\n\n## Loops\n\n");
         text.Append("| # | Batch | Group | Kept | Put back | Tests, first run | Minutes | Walk | Why not kept |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n");
         foreach (var loop in state.Loops)
         {

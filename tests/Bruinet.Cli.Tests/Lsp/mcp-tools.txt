@@ -43,8 +43,8 @@ scrape_draft_page_objects
 scrape_check_page_objects
 scrape_update_config
 scrape_create_project
-factory_status
-factory_replay
-factory_bench
-factory_review
+scraper_status
+scraper_replay
+scraper_bench
+scraper_review
 scrape_rename_page_object

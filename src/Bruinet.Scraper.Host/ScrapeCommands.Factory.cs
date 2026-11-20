@@ -6,10 +6,10 @@ using static Bruinet.Scraper.Host.HostOptions;
 
 namespace Bruinet.Scraper.Host;
 
-// bruinet scrape factory: the loops that take an app's places to page objects and tests, group by group.
+// bruinet scrape scraper: the loops that take an app's places to page objects and tests, group by group.
 public static partial class ScrapeCommands
 {
-    private static Command Factory(HostIo io) => new("factory", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
+    private static Command Factory(HostIo io) => new("scraper", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
         FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io),
     };
@@ -161,7 +161,7 @@ public static partial class ScrapeCommands
             if (queue.Count == 0)
             {
                 await io.Error.WriteLineAsync(given.Length == 0 && !setup.RunsAll && setup.Run.Count == 0 && parsed.GetValue(module) is null
-                    ? $"Nothing runs: {FactorySetup.FileName} has no answer for Run. Say which with 'factory setup --set Run=all', name a module with --module, or give the groups."
+                    ? $"Nothing runs: {FactorySetup.FileName} has no answer for Run. Say which with 'scraper setup --set Run=all', name a module with --module, or give the groups."
                     : "No group owes a place that was not tried before. The ledger says why each parked place was not kept; --again takes them up again.").ConfigureAwait(false);
                 return 0;
             }
@@ -220,7 +220,7 @@ public static partial class ScrapeCommands
     {
         // A group the list does not have is a slip of the hand (or a shell that rewrote /project into a path): nothing runs.
         if (given.Where(group => owed.Groups.All(each => each.Group != group)).ToList() is { Count: > 0 } strange)
-            throw new Bruinet.Scraper.Service.ScraperProblem($"The list of places has no group {string.Join(", ", strange)}. 'factory status' names the groups.");
+            throw new Bruinet.Scraper.Service.ScraperProblem($"The list of places has no group {string.Join(", ", strange)}. 'scraper status' names the groups.");
         var chosen = ModuleCut.ToRun(modules)
             .Where(each => onlyModule is null || string.Equals(each.Name, onlyModule, StringComparison.OrdinalIgnoreCase))
             .Where(each => given.Length > 0 || onlyModule is not null || setup.RunsAll || setup.Run.Contains(each.Name, StringComparer.OrdinalIgnoreCase))

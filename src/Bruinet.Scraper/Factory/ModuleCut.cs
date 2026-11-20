@@ -82,7 +82,7 @@ public static class ModuleCut
     {
         ArgumentNullException.ThrowIfNull(modules);
         var text = new StringBuilder();
-        text.Append("# Modules\n\nThe app cut into modules, from the list of places and without walking it. `Order` and `Do` are a person's to\nchange: `yes` runs in its order, `later` after everything that says yes, `no` is left out. The other columns are\nwritten again by `bruinet scrape factory modules --write`, which keeps `Order` and `Do`.\n\n## Modules\n\n");
+        text.Append("# Modules\n\nThe app cut into modules, from the list of places and without walking it. `Order` and `Do` are a person's to\nchange: `yes` runs in its order, `later` after everything that says yes, `no` is left out. The other columns are\nwritten again by `bruinet scrape scraper modules --write`, which keeps `Order` and `Do`.\n\n## Modules\n\n");
         text.Append("| Order | Module | Do | Groups | Pages known | Kinds | Owed |\n| --- | --- | --- | --- | --- | --- | --- |\n");
         foreach (var module in modules.OrderBy(module => module.Order))
         {

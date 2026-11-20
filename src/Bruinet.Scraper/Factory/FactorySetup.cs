@@ -152,7 +152,7 @@ public sealed record FactorySetup
     public string ToMarkdown()
     {
         var text = new StringBuilder();
-        text.Append("# Setup\n\nWhat a person answered about this app, once, before the factory runs. Change an answer here, or with\n`bruinet scrape factory setup --set Question=answer`. A row that is missing takes the careful value.\n\n## Setup\n\n");
+        text.Append("# Setup\n\nWhat a person answered about this app, once, before the factory runs. Change an answer here, or with\n`bruinet scrape scraper setup --set Question=answer`. A row that is missing takes the careful value.\n\n## Setup\n\n");
         text.Append("| Question | Answer | The answers |\n| --- | --- | --- |\n");
         text.Append(CultureInfo.InvariantCulture, $"| Writes | {Name(Writes)} | `read-only`: links and tabs only, every write held back. `own-records`: writes only on records the Scraper made itself. `free`: anything but what sends, pays or signs out |\n");
         text.Append(CultureInfo.InvariantCulture, $"| Run | {string.Join(", ", Run)} | `all`, or the modules by name in their order (`modules.md`). Empty: nothing runs until a person chose |\n");

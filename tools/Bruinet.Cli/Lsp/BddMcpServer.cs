@@ -138,10 +138,10 @@ public sealed partial class BddMcpServer : IDisposable
                 "record_video" => RecordVideo(arguments),
                 "write_review" => WriteReview(arguments),
                 "scrape_rename_page_object" => Scraper(() => RenamePageObject(arguments)),
-                "factory_status" => Scraper(() => FactoryStatus(arguments)),
-                "factory_replay" => Scraper(() => FactoryReplay(arguments)),
-                "factory_bench" => Scraper(() => FactoryBench(arguments)),
-                "factory_review" => Scraper(() => FactoryReviewOf(arguments)),
+                "scraper_status" => Scraper(() => FactoryStatus(arguments)),
+                "scraper_replay" => Scraper(() => FactoryReplay(arguments)),
+                "scraper_bench" => Scraper(() => FactoryBench(arguments)),
+                "scraper_review" => Scraper(() => FactoryReviewOf(arguments)),
                 "scrape_list_projects" => Scraper(() => Capped("projects", _server.ScraperProjects(), arguments)),
                 "scrape_list_events" => Scraper(() => Capped("events", _server.Scraper.RecordedActions((string?)arguments["project"], Required(arguments, "session")), arguments)),
                 "scrape_list_pages" => Scraper(() => RecordedPages(arguments)),
@@ -1668,7 +1668,7 @@ public sealed partial class BddMcpServer : IDisposable
         return new { report.Examples, report.Missed, Differences = shown, More = more, report.Problems };
     }
 
-    // Why each place that still owes a class was not kept: the review, as the document 'factory review' writes.
+    // Why each place that still owes a class was not kept: the review, as the document 'scraper review' writes.
     private object FactoryReviewOf(JsonObject arguments)
     {
         var project = (string?)arguments["project"];
