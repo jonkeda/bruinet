@@ -24,6 +24,8 @@ Bruinet.Html.Context.HtmlTestContextOptions.Headless.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.HtmlTestContextOptions() -> void
 Bruinet.Html.Context.HtmlTestContextOptions.Locale.get -> string?
 Bruinet.Html.Context.HtmlTestContextOptions.Locale.set -> void
+Bruinet.Html.Context.HtmlTestContextOptions.NavigationTimeoutMs.get -> int?
+Bruinet.Html.Context.HtmlTestContextOptions.NavigationTimeoutMs.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.get -> bool
 Bruinet.Html.Context.HtmlTestContextOptions.ShareBrowser.set -> void
 Bruinet.Html.Context.HtmlTestContextOptions.StorageStatePath.get -> string?

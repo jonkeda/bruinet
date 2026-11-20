@@ -25,6 +25,21 @@ public sealed class ContextOptionsTests
     }
 
     [Fact]
+    public async Task A_Navigation_GetsTheTimeTheOptionsGiveIt()
+    {
+        await using var context = await PlaywrightTestContext.CreateAsync(new HtmlTestContextOptions
+        {
+            Headless = true,
+            NavigationTimeoutMs = 1,
+        });
+
+        // No address answers in a millisecond; without the option the browser would wait 30 seconds for this one.
+        var error = Assert.Throws<PageLoadException>(() => context.NavigateTo("http://10.255.255.1/"));
+
+        Assert.Contains("Timeout 1ms exceeded", error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task A_SavedSignIn_StartsTheNextContext()
     {
         var path = Path.Combine(Path.GetTempPath(), $"bruinet-state-{Guid.NewGuid():N}", "state.json");

@@ -32,6 +32,7 @@ of its own:
 | --- | --- |
 | `StorageStatePath` | Starts the context from a saved sign-in; ignored when the file does not exist yet |
 | `Locale`, `ViewportWidth`, `ViewportHeight` | The browser's language and the page's size |
+| `NavigationTimeoutMs` | How long opening an address, a reload or going back may take; the browser's own limit is 30 seconds. For an app with a page that loads longer |
 | `AllowedHosts` | The hosts the page may navigate to; a navigation elsewhere is refused and listed in `RefusedNavigations`. Keeps a suite off production |
 
 Sign in once per account, then save the context's state with `SaveStorageState(path)` (git-ignored) for the next run.

@@ -91,6 +91,11 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
 
         var browserContext = await browser.NewContextAsync(ContextOptions(options, shown)).ConfigureAwait(false);
         var page = await browserContext.NewPageAsync().ConfigureAwait(false);
+        if (options.NavigationTimeoutMs is { } navigation)
+        {
+            page.SetDefaultNavigationTimeout(navigation);
+        }
+
         var refused = new List<string>();
         if (options.AllowedHosts is { } allowed)
         {

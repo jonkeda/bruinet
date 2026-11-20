@@ -41,6 +41,13 @@ public class HtmlTestContextOptions : Bruinet.Core.Configuration.TestContextOpti
     /// </summary>
     public IReadOnlyList<string>? AllowedHosts { get; set; }
 
+    /// <summary>
+    /// How long a navigation of the page may take (opening an address, a reload, going back), in milliseconds, or null
+    /// for the browser's own limit of 30 seconds. For an app with a page that takes longer than that to load.
+    /// Browser heads only.
+    /// </summary>
+    public int? NavigationTimeoutMs { get; set; }
+
     public bool EnableTracing { get; set; }
 
     public string? CdpEndpoint { get; set; }
