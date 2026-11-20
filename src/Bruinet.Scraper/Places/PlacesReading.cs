@@ -123,7 +123,7 @@ public static class PlacesReading
             {
                 read = read with { Fields = [.. facts.Fields.Select(field => field.ToListText())] };
                 // What a capture states of its fields; a fact that was seen on the app (typed, saved) is kept beside it.
-                var stated = facts.Fields.SelectMany(field => field.Facts).Select(fact => fact.ToText()).ToList();
+                var stated = facts.FieldFacts.Select(fact => fact.ToText()).ToList();
                 var seen = place.FieldFacts.Where(line => FieldFact.Parse(line) is { Level: not FieldFact.StatedLevel });
                 read = read with { FieldFacts = [.. stated.Concat(seen).Distinct(StringComparer.Ordinal)] };
             }

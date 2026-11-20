@@ -30,6 +30,64 @@ public sealed class FieldFactTests
     }
 
     [Fact]
+    public void What_a_form_said_when_saved_empty_is_seen_and_a_new_capture_replaces_only_what_the_last_one_stated()
+    {
+        var list = new PlacesList();
+        list.Add(new Place { Key = "/contact#/create", Kind = PlaceKind.Page, State = PlaceState.FormNotSaved, Fields = ["Name (text, required)"], FieldFacts = ["Name: max length 50 (stated, maxlength)"] });
+
+        // A test saved the form empty and wrote down what it said.
+        PlacesSeeds.AddRun(list, """{"place":"/contact#/create","required":["Name: Name is required","nothing with a colon"],"landed":null,"record":null,"note":null}""");
+        Assert.Equal(["Name: max length 50 (stated, maxlength)", "Name: message when empty Name is required (seen, saved empty)"], list["/contact#/create"]!.FieldFacts);
+
+        // A later walk states another length: that replaces the old one, and what was seen stays.
+        list.Add(new Place { Key = "/contact#/create", Kind = PlaceKind.Page, State = PlaceState.FormNotSaved, FieldFacts = ["Name: max length 100 (stated, maxlength)"] });
+        Assert.Equal(["Name: message when empty Name is required (seen, saved empty)", "Name: max length 100 (stated, maxlength)"], list["/contact#/create"]!.FieldFacts);
+    }
+
+    [Fact]
+    public void A_place_s_fields_are_a_spec_s_table_with_a_question_mark_for_what_nobody_knows()
+    {
+        var place = new Place
+        {
+            Key = "/contact#/create",
+            Fields = ["Name (text, required)", "Amount (number)", "Street (text)", "Select (text, (a table's own))"],
+            FieldFacts =
+            [
+                "Name: max length 100 (stated, maxlength)", "Name field: message when empty Name is required (seen, saved empty)",
+                "Amount: min 0 (stated, min)", "Amount: max 999 (read, the script of contact-create)",
+            ],
+        };
+
+        var table = FieldFact.Table(place).Split('\n');
+
+        Assert.Equal("| Field | Kind | Required | Min | Max | Message | From |", table[0]);
+        Assert.Equal("| Name | text | ☑ | ? | 100 | Name is required | max length: stated, maxlength; message when empty: seen, saved empty |", table[2]);
+        // A limit only read from a script is a question, not a cell.
+        Assert.Equal("| Amount | number | ☐ | 0 | 999? |  | min: stated, min; max: read, the script of contact-create |", table[3]);
+        Assert.Equal("| Street | text | ☐ | ? | ? |  |  |", table[4]);
+    }
+
+    [Fact]
+    public void The_rights_matrix_says_what_each_account_that_walked_saw_and_was_refused()
+    {
+        Place[] places =
+        [
+            new() { Key = "/contact", Kind = PlaceKind.Page, Accounts = ["Creator", "Reader"] },
+            new() { Key = "/contact#/create", Kind = PlaceKind.Page, Accounts = ["Creator"], RefusedTo = ["Reader"] },
+            new() { Key = "/right", Kind = PlaceKind.Page, Accounts = ["Creator"] },
+            new() { Key = "/contact › + Contact", Kind = PlaceKind.Dialog, Accounts = ["Creator"] },
+            new() { Key = "/never", Kind = PlaceKind.Page },
+        ];
+
+        var all = Bruinet.Scraper.Factory.FactoryReview.Rights(places, []);
+        var contacts = Bruinet.Scraper.Factory.FactoryReview.Rights(places, ["/contact"]);
+
+        Assert.Equal("| Page | Creator | Reader |\n| --- | --- | --- |\n| `/contact` | sees | sees |\n| `/contact#/create` | sees | refused |\n| `/right` | sees |  |\n", all);
+        Assert.DoesNotContain("/right", contacts, StringComparison.Ordinal);
+        Assert.Contains("| `/contact#/create` | sees | refused |", contacts, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void A_line_that_is_no_fact_is_none()
     {
         Assert.Null(FieldFact.Parse("Name (text, VTextField, required)"));

@@ -425,6 +425,24 @@ Explore or walk the page again, then update its page object. `scrape_list_pages`
 was made from an older capture; `scrape_diff_page` lists what was added, removed and changed since.
 `bruinet scrape places drift` does the same for the classes drafted from places.
 
+## Facts for a spec
+
+Beside each place's fields the list keeps what is known of the values they take, a line per fact with how sure it
+is: `Name: max length 255 (stated, maxlength)`. A field's own line, and so the hash a drafted class is held
+against, does not change when a fact is learned.
+
+| Level | Means | Comes from |
+| --- | --- | --- |
+| `stated` | The page says so itself | The field's attributes in a capture: `maxlength`, `minlength`, `min`, `max`, `step`, `pattern`, `inputmode`, `autocomplete`. A capture made before these were kept states nothing: walk the page again |
+| `seen` | The app did it when asked | What a form said when a test saved it empty (`places add --from-run`): `Waste: message when empty Waste is required (seen, saved empty)` |
+| `read` | A script says so and nobody tried | Nothing reads scripts for rules yet |
+
+`bruinet scrape places fields --facts` lists them; `places fields --table "<place>"` prints a place's fields as a
+spec's field table (Field, Kind, Required, Min, Max, Message, From), where a stated or seen limit is a cell, one
+only read is a question and what nobody knows is "?". No value a field holds and no choice a select offers is kept:
+a capture and the list hold no value of a record (AD-027, AD-043). `bruinet scrape scraper rights` gives the rights
+matrix: what each account that walked saw and was refused.
+
 ## The loop
 
 `tools/Scripts/scrape-loop.ps1` runs everything end to end, unattended, and writes one report. Run

@@ -33,6 +33,26 @@ public static partial class FactoryReview
         [ReasonCodes.Unknown] = "No rule fits. Read the evidence; when it is a kind of its own, it gets a rule in the classifier.",
     };
 
+    /// <summary>
+    /// What each account that walked the app saw and was refused, a row per page: the rights matrix of a spec. A cell
+    /// is "sees" (the account opened it), "refused" (the app said no, or sent it elsewhere) or empty (that account
+    /// did not walk there). Only what a walk as that account met: an account that never walked has no column.
+    /// </summary>
+    /// <param name="places">The places.</param>
+    /// <param name="only">Only pages whose key starts with one of these; every page when empty.</param>
+    public static string Rights(IEnumerable<Places.Place> places, IReadOnlyCollection<string> only)
+    {
+        ArgumentNullException.ThrowIfNull(places);
+        ArgumentNullException.ThrowIfNull(only);
+        var pages = places.Where(place => place.Kind == Places.PlaceKind.Page && place.SameAs is null && (only.Count == 0 || only.Any(start => place.Key == start || place.Key.StartsWith(start + "/", StringComparison.Ordinal) || place.Key.StartsWith(start + "#", StringComparison.Ordinal) || place.Key.StartsWith(start + "?", StringComparison.Ordinal))))
+            .Where(place => place.Accounts.Count + place.RefusedTo.Count > 0).OrderBy(place => place.Key, StringComparer.Ordinal).ToList();
+        var accounts = pages.SelectMany(place => place.Accounts.Concat(place.RefusedTo)).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToList();
+        var text = new System.Text.StringBuilder($"| Page | {string.Join(" | ", accounts)} |\n| --- |{string.Concat(accounts.Select(_ => " --- |"))}\n");
+        foreach (var page in pages)
+            text.Append(System.Globalization.CultureInfo.InvariantCulture, $"| `{page.Key}` | {string.Join(" | ", accounts.Select(account => page.RefusedTo.Contains(account, StringComparer.Ordinal) ? "refused" : page.Accounts.Contains(account, StringComparer.Ordinal) ? "sees" : ""))} |\n");
+        return text.ToString();
+    }
+
     /// <summary>The patterns that repeat and have no control, as a table: what a control would be worth making for.</summary>
     /// <param name="toMake">The patterns, most widespread first.</param>
     public static string Patterns(IReadOnlyList<Code.Pattern> toMake)

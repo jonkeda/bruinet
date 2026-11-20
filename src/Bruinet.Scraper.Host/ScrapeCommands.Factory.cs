@@ -11,8 +11,26 @@ public static partial class ScrapeCommands
 {
     private static Command Factory(HostIo io) => new("scraper", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
-        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io), FactoryPatterns(io), FactoryBrief(io), FactoryPromote(io), FactorySpec(io),
+        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io), FactoryPatterns(io), FactoryBrief(io), FactoryPromote(io), FactorySpec(io), FactoryRights(io),
     };
+
+    private static Command FactoryRights(HostIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var groups = new Argument<string[]>("groups") { Description = "Only the pages of these groups (/contact). Default: every page an account walked.", Arity = ArgumentArity.ZeroOrMore };
+        var command = new Command("rights", "What each account that walked the app saw and was refused, a row per page: the rights matrix a spec is written from. An account gets a column by walking as it (places walk --as <account> --links-and-tabs).")
+        {
+            groups, project, solution, list,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var places = PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io));
+            await io.Out.WriteAsync(FactoryReview.Rights(places.Places, parsed.GetValue(groups) ?? [])).ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
 
     private static Command FactorySpec(HostIo io)
     {

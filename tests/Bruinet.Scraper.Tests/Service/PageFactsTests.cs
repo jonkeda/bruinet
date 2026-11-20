@@ -126,12 +126,11 @@ public sealed class PageFactsTests
             N(4, 1, "label", "Amount"),
             N(5, 4, "input", null, ("type", "number"), ("min", "0"), ("step", "0.01")));
 
-        var fields = PageFacts.Of(page).Fields;
+        var facts = PageFacts.Of(page);
 
-        Assert.Equal(["Name: max length 100 (stated, maxlength)"], fields[0].Facts.Select(fact => fact.ToText()));
-        Assert.Equal(["Amount: min 0 (stated, min)", "Amount: step 0.01 (stated, step)"], fields[1].Facts.Select(fact => fact.ToText()));
+        Assert.Equal(["Name: max length 100 (stated, maxlength)", "Amount: min 0 (stated, min)", "Amount: step 0.01 (stated, step)"], facts.FieldFacts.Select(fact => fact.ToText()));
         // The field's own line does not change with what is known of it.
-        Assert.Equal("Name (text)", fields[0].ToListText());
+        Assert.Equal("Name (text)", facts.Fields[0].ToListText());
     }
 
     [Fact]

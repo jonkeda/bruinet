@@ -10,8 +10,6 @@ namespace Bruinet.Scraper.Service;
 /// <param name="Disabled">Whether it is disabled.</param>
 public sealed record PageField(string Label, string Kind, bool Required, bool Disabled)
 {
-    /// <summary>What the field says of the values it takes (its longest, its least and most, its pattern), each as the page states it.</summary>
-    public IReadOnlyList<Places.FieldFact> Facts { get; init; } = [];
 
     /// <summary>The control the field is, by the signs of the project and its control libraries; null when no sign fits.</summary>
     public string? Control { get; init; }
@@ -54,6 +52,9 @@ public sealed record PageFacts
     public IReadOnlyList<string> Tabs { get; init; } = [];
 
     public IReadOnlyList<PageField> Fields { get; init; } = [];
+
+    /// <summary>What the fields say of the values they take (a longest, a least and most, a pattern), each as the page states it by an attribute.</summary>
+    public IReadOnlyList<Places.FieldFact> FieldFacts { get; init; } = [];
 
     /// <summary>Texts the page marks as required (a class named so): a label's star, where the field itself says nothing.</summary>
     public IReadOnlyList<string> MarkedRequired { get; init; } = [];
@@ -101,8 +102,11 @@ public sealed record PageFacts
         // A label the page marks as required (a class named so, a star) says it for its field.
         var marked = scope.Where(node => Classes(node).Contains("required")).Select(node => Text(node).TrimEnd('*', ' ')).Where(text => text.Length > 0).ToHashSet(StringComparer.Ordinal);
 
+        var fields = scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number)))
+            .Select(node => (Node: node, Field: Field(snapshot, node, scope, signs ?? [], places, marked))).Where(each => each.Field.Label.Length > 0).DistinctBy(each => (each.Field.Label, each.Field.Kind)).Take(Most).ToList();
         return new PageFacts
         {
+            FieldFacts = [.. fields.SelectMany(each => Places.FieldFact.Stated(each.Field.Label, each.Node.Attributes))],
             Location = snapshot.Location,
             Title = snapshot.Title,
             Dialog = dialog is null ? null : Shorten(Clean(string.Join(' ', scope.Select(node => node.Text).Where(text => text is { Length: > 0 }).Take(12))), 160),
@@ -112,7 +116,7 @@ public sealed record PageFacts
             // And a tab that is drawn as a button is a tab: it is among the tabs, not here too.
             Buttons = Texts(scope.Where(node => IsButton(node) && !places.IsTab(node) && !InToolbar(snapshot, node, places) && !InControl(snapshot, node, signs)), node => Text(node) + Mark(snapshot, node, places)),
             Tabs = Texts(scope.Where(places.IsTab), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
-            Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope, signs ?? [], places, marked)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
+            Fields = [.. fields.Select(each => each.Field)],
             MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
             Messages = Texts(scope.Where(IsMessage), Text),
             Columns = Texts(scope.Where(node => node.Type == "th" || node.Role == "columnheader"), Text),
@@ -131,7 +135,7 @@ public sealed record PageFacts
         var label = Clean(LabelOf(snapshot, node, shown, sign?.Root.Number ?? 0, places));
         var kind = node.Role == "combobox" ? "combobox" : node.Type == "input" ? node.Attribute("type") ?? "text" : node.Type;
         var required = node.Attributes.ContainsKey("required") || node.Attribute("aria-required") == "true" || label.EndsWith('*') || marked.Contains(label.TrimEnd('*', ' '));
-        return new PageField(label.TrimEnd('*', ' '), kind, required, node.Attributes.ContainsKey("disabled")) { Control = sign?.Sign.Control, ControlMade = sign?.Sign.Made ?? true, InTable = InATable(snapshot, node), Holder = ControlSign.HolderOf(signs, snapshot, node)?.Control, Facts = Places.FieldFact.Stated(label.TrimEnd('*', ' '), node.Attributes) };
+        return new PageField(label.TrimEnd('*', ' '), kind, required, node.Attributes.ContainsKey("disabled")) { Control = sign?.Sign.Control, ControlMade = sign?.Sign.Made ?? true, InTable = InATable(snapshot, node), Holder = ControlSign.HolderOf(signs, snapshot, node)?.Control };
     }
 
     private static bool InATable(ScrapeSnapshot snapshot, ScrapeNode node)

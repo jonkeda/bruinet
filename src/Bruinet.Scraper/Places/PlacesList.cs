@@ -103,7 +103,7 @@ public sealed class PlacesList
             Heading = Text(read, found.Heading, held.Heading),
             Fields = Read(read, found.Fields, held.Fields),
             Buttons = Read(read, found.Buttons, held.Buttons),
-            FieldFacts = Read(read, found.FieldFacts, held.FieldFacts),
+            FieldFacts = Facts(found.FieldFacts, held.FieldFacts),
             Tabs = Read(read, found.Tabs, held.Tabs),
             Columns = Read(read, found.Columns, held.Columns),
             Calls = Sorted(held.Calls.Concat(found.Calls)),
@@ -162,6 +162,16 @@ public sealed class PlacesList
     private static string? Text(bool read, string? found, string? held) => read ? found ?? held : held ?? found;
 
     private static IReadOnlyList<string> Read(bool read, IReadOnlyList<string> found, IReadOnlyList<string> held) => read && found.Count > 0 ? found : held;
+
+    // What is known of the fields adds up: what a new capture states replaces what the last one stated, and what a
+    // test saw on the app stays until it is seen again.
+    private static IReadOnlyList<string> Facts(IReadOnlyList<string> found, IReadOnlyList<string> held)
+    {
+        if (found.Count == 0)
+            return held;
+        var stated = found.Any(line => FieldFact.Parse(line)?.Level == FieldFact.StatedLevel);
+        return [.. held.Where(line => !stated || FieldFact.Parse(line)?.Level != FieldFact.StatedLevel).Concat(found).Distinct(StringComparer.Ordinal)];
+    }
 
     private static PlaceState Later(PlaceState held, PlaceState found) => (held, found) switch
     {

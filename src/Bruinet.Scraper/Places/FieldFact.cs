@@ -29,6 +29,20 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
         ("pattern", "pattern"), ("inputmode", "input mode"), ("autocomplete", "autocomplete"),
     ];
 
+    /// <summary>What a fact is called when it is what the form said of a field that was left empty.</summary>
+    public const string MessageWhenEmpty = "message when empty";
+
+    /// <summary>
+    /// What a form said when a test saved it empty, as facts that were seen: each of <paramref name="said"/> is a
+    /// field and its message (<c>Name: Name is required</c>).
+    /// </summary>
+    public static IReadOnlyList<FieldFact> SavedEmpty(IEnumerable<string> said)
+    {
+        ArgumentNullException.ThrowIfNull(said);
+        return [.. said.Select(each => (Text: each, At: each.IndexOf(": ", StringComparison.Ordinal))).Where(each => each.At > 0 && each.At + 2 < each.Text.Length)
+            .Select(each => new FieldFact(each.Text[..each.At], MessageWhenEmpty, each.Text[(each.At + 2)..], SeenLevel, "saved empty"))];
+    }
+
     /// <summary>The fact as a line of the list.</summary>
     public string ToText() => $"{Field}: {Name} {Value} ({Level}, {Source})";
 
@@ -39,9 +53,11 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
         var match = Line().Match(line);
         if (!match.Success)
             return null;
-        var said = match.Groups["said"].Value;
-        var name = Attributes.Select(each => each.Name).OrderByDescending(each => each.Length).FirstOrDefault(each => said.StartsWith(each + " ", StringComparison.Ordinal));
-        return name is null ? null : new FieldFact(match.Groups["field"].Value, name, said[(name.Length + 1)..], match.Groups["level"].Value, match.Groups["source"].Value);
+        // A label may hold a colon itself (Start date: Time): the field ends where the first fact's name starts.
+        var body = match.Groups["body"].Value;
+        var found = Attributes.Select(each => each.Name).Append(MessageWhenEmpty).Select(name => (Name: name, At: body.IndexOf($": {name} ", StringComparison.Ordinal)))
+            .Where(each => each.At > 0).OrderBy(each => each.At).ThenByDescending(each => each.Name.Length).FirstOrDefault();
+        return found.Name is null ? null : new FieldFact(body[..found.At], found.Name, body[(found.At + found.Name.Length + 3)..], match.Groups["level"].Value, match.Groups["source"].Value);
     }
 
     /// <summary>What a field's own attributes state of the values it takes.</summary>
@@ -69,22 +85,26 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
     {
         ArgumentNullException.ThrowIfNull(place);
         var facts = place.FieldFacts.Select(Parse).OfType<FieldFact>().ToList();
-        var text = new System.Text.StringBuilder("| Field | Kind | Required | Min | Max | From |\n| --- | --- | :---: | --- | --- | --- |\n");
+        var text = new System.Text.StringBuilder("| Field | Kind | Required | Min | Max | Message | From |\n| --- | --- | :---: | --- | --- | --- | --- |\n");
         foreach (var field in place.Fields.Select(PlaceField.Parse).Where(field => !field.InTable))
         {
             var number = field.Kind is "number" or "range";
             var own = facts.Where(fact => fact.Field == field.Label).ToList();
             var (min, max) = (own.FirstOrDefault(fact => fact.Name == (number ? "min" : "min length")), own.FirstOrDefault(fact => fact.Name == (number ? "max" : "max length")));
-            var from = string.Join("; ", new[] { min, max }.OfType<FieldFact>().Select(fact => $"{fact.Name}: {fact.Level}, {fact.Source}").Distinct(StringComparer.Ordinal));
-            text.Append(System.Globalization.CultureInfo.InvariantCulture, $"| {field.Label.Replace("|", "/", StringComparison.Ordinal)} | {field.Kind} | {(field.Required ? "☑" : "☐")} | {Cell(min)} | {Cell(max)} | {from} |\n");
+            // A test names a field as its member is named ("Name field" for a member NameField): the label's words decide.
+            var message = facts.FirstOrDefault(fact => fact.Name == MessageWhenEmpty && (fact.Field == field.Label || string.Equals(Words(fact.Field), Words(field.Label), StringComparison.OrdinalIgnoreCase)));
+            var from = string.Join("; ", new[] { min, max, message }.OfType<FieldFact>().Select(fact => $"{fact.Name}: {fact.Level}, {fact.Source}").Distinct(StringComparer.Ordinal));
+            text.Append(System.Globalization.CultureInfo.InvariantCulture, $"| {field.Label.Replace("|", "/", StringComparison.Ordinal)} | {field.Kind} | {(field.Required ? "☑" : "☐")} | {Cell(min)} | {Cell(max)} | {message?.Value ?? ""} | {from} |\n");
         }
 
         return text.ToString();
     }
 
+    private static string Words(string label) => new string([.. label.Where(char.IsLetterOrDigit)]).Replace("field", "", StringComparison.OrdinalIgnoreCase);
+
     // A fact someone saw or the page states is a cell; a fact that was only read is a question; nothing known is "?".
     private static string Cell(FieldFact? fact) => fact is null ? "?" : fact.Level == ReadLevel ? $"{fact.Value}?" : fact.Value;
 
-    [GeneratedRegex(@"^(?<field>.+?): (?<said>.+) \((?<level>stated|seen|read), (?<source>[^()]+)\)$")]
+    [GeneratedRegex(@"^(?<body>.+) \((?<level>stated|seen|read), (?<source>[^()]+)\)$")]
     private static partial Regex Line();
 }
