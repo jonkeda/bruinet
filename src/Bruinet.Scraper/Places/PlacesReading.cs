@@ -120,7 +120,13 @@ public static class PlacesReading
         {
             // The capture is what the walk saw: its fields are read whole, labels and controls, as the reading is now.
             if (facts.Fields.Count > 0)
+            {
                 read = read with { Fields = [.. facts.Fields.Select(field => field.ToListText())] };
+                // What a capture states of its fields; a fact that was seen on the app (typed, saved) is kept beside it.
+                var stated = facts.Fields.SelectMany(field => field.Facts).Select(fact => fact.ToText()).ToList();
+                var seen = place.FieldFacts.Where(line => FieldFact.Parse(line) is { Level: not FieldFact.StatedLevel });
+                read = read with { FieldFacts = [.. stated.Concat(seen).Distinct(StringComparer.Ordinal)] };
+            }
             if (facts.Buttons.Count > 0)
                 read = read with { Buttons = [.. facts.Buttons.Select(Place.Clean).Where(button => button.Length > 0).Distinct(StringComparer.Ordinal).Take(40)] };
         }

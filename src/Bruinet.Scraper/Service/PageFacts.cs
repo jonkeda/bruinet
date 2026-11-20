@@ -10,6 +10,9 @@ namespace Bruinet.Scraper.Service;
 /// <param name="Disabled">Whether it is disabled.</param>
 public sealed record PageField(string Label, string Kind, bool Required, bool Disabled)
 {
+    /// <summary>What the field says of the values it takes (its longest, its least and most, its pattern), each as the page states it.</summary>
+    public IReadOnlyList<Places.FieldFact> Facts { get; init; } = [];
+
     /// <summary>The control the field is, by the signs of the project and its control libraries; null when no sign fits.</summary>
     public string? Control { get; init; }
 
@@ -128,7 +131,7 @@ public sealed record PageFacts
         var label = Clean(LabelOf(snapshot, node, shown, sign?.Root.Number ?? 0, places));
         var kind = node.Role == "combobox" ? "combobox" : node.Type == "input" ? node.Attribute("type") ?? "text" : node.Type;
         var required = node.Attributes.ContainsKey("required") || node.Attribute("aria-required") == "true" || label.EndsWith('*') || marked.Contains(label.TrimEnd('*', ' '));
-        return new PageField(label.TrimEnd('*', ' '), kind, required, node.Attributes.ContainsKey("disabled")) { Control = sign?.Sign.Control, ControlMade = sign?.Sign.Made ?? true, InTable = InATable(snapshot, node), Holder = ControlSign.HolderOf(signs, snapshot, node)?.Control };
+        return new PageField(label.TrimEnd('*', ' '), kind, required, node.Attributes.ContainsKey("disabled")) { Control = sign?.Sign.Control, ControlMade = sign?.Sign.Made ?? true, InTable = InATable(snapshot, node), Holder = ControlSign.HolderOf(signs, snapshot, node)?.Control, Facts = Places.FieldFact.Stated(label.TrimEnd('*', ' '), node.Attributes) };
     }
 
     private static bool InATable(ScrapeSnapshot snapshot, ScrapeNode node)

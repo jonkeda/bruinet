@@ -95,7 +95,7 @@ public sealed partial class ScraperService
         foreach (var (place, snapshot) in KeptPlaces(projectName, list))
         {
             var read = PlacesReading.Read(place, snapshot, project.ControlSigns, project.Config.Components, code, project.PlaceSigns);
-            if (read.Component == place.Component && read.Fields.SequenceEqual(place.Fields, StringComparer.Ordinal) && read.Buttons.SequenceEqual(place.Buttons, StringComparer.Ordinal))
+            if (read.Component == place.Component && read.Fields.SequenceEqual(place.Fields, StringComparer.Ordinal) && read.Buttons.SequenceEqual(place.Buttons, StringComparer.Ordinal) && read.FieldFacts.SequenceEqual(place.FieldFacts, StringComparer.Ordinal))
                 continue;
             list.Set(read);
             changed++;

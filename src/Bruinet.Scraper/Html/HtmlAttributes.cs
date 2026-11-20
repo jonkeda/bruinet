@@ -11,6 +11,8 @@ public static class HtmlAttributes
     [
         "id", "class", "name", "type", "placeholder", "title", "alt", "for", "href",
         "disabled", "readonly", "checked", "selected", "required", "contenteditable", "tabindex", "download", "open",
+        // What a field says of the values it takes: a fact for a spec, and no value of a record.
+        "maxlength", "minlength", "min", "max", "step", "pattern", "inputmode", "autocomplete",
     ];
 
     /// <summary>The test-id attributes in the order a locator prefers them, when the config names none.</summary>

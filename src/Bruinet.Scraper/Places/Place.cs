@@ -88,6 +88,13 @@ public sealed record Place
     /// <summary>What its buttons say.</summary>
     public IReadOnlyList<string> Buttons { get; init; } = [];
 
+    /// <summary>
+    /// What is known of the values its fields take, a line per fact (<c>Name: max length 100 (stated, maxlength)</c>):
+    /// for a spec's field table. Beside <see cref="Fields"/>, so a field's line, and the hash a class is held
+    /// against, do not change when a fact is learned. Never a record's own value.
+    /// </summary>
+    public IReadOnlyList<string> FieldFacts { get; init; } = [];
+
     /// <summary>Its tabs.</summary>
     public IReadOnlyList<string> Tabs { get; init; } = [];
 

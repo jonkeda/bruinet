@@ -152,14 +152,34 @@ public static partial class ScrapeCommands
     private static Command PlacesFields(HostIo io)
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
+        var table = new Option<string?>("--table") { Description = "Print instead a place's fields as a spec's field table (Field, Kind, Required, Min, Max, From): a limit that was stated or seen is a cell, one only read from a script a question, and what nobody knows a '?'." };
+        var facts = new Option<bool>("--facts") { Description = "List instead what is known of the values the fields take (a longest, a least and most, a pattern), each with how sure it is and where it came from: what a spec's field table is written from." };
         var command = new Command("fields", "Count the fields of the list by control: what no sign recognizes and what is still to make first.")
         {
-            project, solution, list, json,
+            project, solution, list, json, facts, table,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             await using var service = Service(io, parsed.GetValue(solution));
-            var counts = PlacesReading.Fields(PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)));
+            var places = PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io));
+            if (parsed.GetValue(table) is { } key)
+            {
+                await io.Out.WriteAsync(FieldFact.Table(places[key] ?? throw new Bruinet.Scraper.Service.ScraperProblem($"The list has no place '{key}'."))).ConfigureAwait(false);
+                return 0;
+            }
+
+            if (parsed.GetValue(facts))
+            {
+                var known = places.Places.Where(place => place.SameAs is null).SelectMany(place => place.FieldFacts.Select(line => (Place: place.Key, Line: line))).ToList();
+                await io.Out.WriteLineAsync("| Place | Fact |").ConfigureAwait(false);
+                await io.Out.WriteLineAsync("| --- | --- |").ConfigureAwait(false);
+                foreach (var (place, line) in known)
+                    await io.Out.WriteLineAsync($"| `{place}` | {line.Replace("|", "/", StringComparison.Ordinal)} |").ConfigureAwait(false);
+                await io.Error.WriteLineAsync($"{known.Count} facts on {known.Select(each => each.Place).Distinct(StringComparer.Ordinal).Count()} places.").ConfigureAwait(false);
+                return 0;
+            }
+
+            var counts = PlacesReading.Fields(places);
             if (parsed.GetValue(json))
             {
                 await io.Out.WriteLineAsync(System.Text.Json.JsonSerializer.Serialize(counts, PrettyJson)).ConfigureAwait(false);

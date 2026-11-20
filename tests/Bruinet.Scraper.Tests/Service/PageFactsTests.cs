@@ -117,6 +117,24 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void A_field_states_what_it_takes_by_its_attributes()
+    {
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "label", "Name"),
+            N(3, 2, "input", null, ("type", "text"), ("maxlength", "100")),
+            N(4, 1, "label", "Amount"),
+            N(5, 4, "input", null, ("type", "number"), ("min", "0"), ("step", "0.01")));
+
+        var fields = PageFacts.Of(page).Fields;
+
+        Assert.Equal(["Name: max length 100 (stated, maxlength)"], fields[0].Facts.Select(fact => fact.ToText()));
+        Assert.Equal(["Amount: min 0 (stated, min)", "Amount: step 0.01 (stated, step)"], fields[1].Facts.Select(fact => fact.ToText()));
+        // The field's own line does not change with what is known of it.
+        Assert.Equal("Name (text)", fields[0].ToListText());
+    }
+
+    [Fact]
     public void A_button_that_shows_only_an_icon_s_word_and_the_header_of_a_section_are_marked()
     {
         var places = new PlaceSigns { Icon = ["material-icons"], SectionHeader = ["panel-header"] };

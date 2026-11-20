@@ -103,6 +103,7 @@ public sealed class PlacesList
             Heading = Text(read, found.Heading, held.Heading),
             Fields = Read(read, found.Fields, held.Fields),
             Buttons = Read(read, found.Buttons, held.Buttons),
+            FieldFacts = Read(read, found.FieldFacts, held.FieldFacts),
             Tabs = Read(read, found.Tabs, held.Tabs),
             Columns = Read(read, found.Columns, held.Columns),
             Calls = Sorted(held.Calls.Concat(found.Calls)),
