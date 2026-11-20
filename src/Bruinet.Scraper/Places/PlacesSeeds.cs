@@ -118,7 +118,7 @@ public static partial class PlacesSeeds
                 notes.Add("a save lands on " + PlacesList.KeyAndPath(landed).Key);
             if (saved.Note is { Length: > 0 } note)
                 notes.Add(note);
-            list.Add(new Place { Key = saved.Place, Kind = list[saved.Place]?.Kind ?? PlaceKind.Dialog, State = PlaceState.Saved, Sources = [Run], Note = notes.Count == 0 ? null : string.Join(". ", notes), FieldFacts = [.. FieldFact.SavedEmpty(saved.Required ?? []).Select(fact => fact.ToText())] });
+            list.Add(new Place { Key = saved.Place, Kind = list[saved.Place]?.Kind ?? PlaceKind.Dialog, State = PlaceState.Saved, Sources = [Run], Note = notes.Count == 0 ? null : string.Join(". ", notes), FieldFacts = [.. (saved.Facts ?? []).Where(fact => FieldFact.Parse(fact) is { Level: FieldFact.SeenLevel }), .. FieldFact.SavedEmpty(saved.Required ?? []).Select(fact => fact.ToText())] });
             foreach (var address in new[] { saved.Landed, saved.Record }.Where(address => address is { Length: > 0 }))
                 list.Add(Opened(address!, Run, $"saving {saved.Place}"));
             if (saved.Record is { Length: > 0 } record)

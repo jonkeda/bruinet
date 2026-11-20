@@ -35,6 +35,12 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
     /// <summary>What a fact is called when it is what the form said of a value that does not fit the field.</summary>
     public const string MessageWhenWrong = "message when wrong";
 
+    /// <summary>What a fact is called when it is what the form said of a value that was saved and is too long.</summary>
+    public const string MessageWhenTooLong = "message when too long";
+
+    /// <summary>What a fact is called when it is a length a save took: the field's longest is that or more.</summary>
+    public const string Takes = "takes";
+
     /// <summary>
     /// What a form said when a test saved it empty, as facts that were seen: each of <paramref name="said"/> is a
     /// field and its message (<c>Name: Name is required</c>).
@@ -58,7 +64,7 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
             return null;
         // A label may hold a colon itself (Start date: Time): the field ends where the first fact's name starts.
         var body = match.Groups["body"].Value;
-        var found = Attributes.Select(each => each.Name).Append(MessageWhenEmpty).Append(MessageWhenWrong).Select(name => (Name: name, At: body.IndexOf($": {name} ", StringComparison.Ordinal)))
+        var found = Attributes.Select(each => each.Name).Append(MessageWhenEmpty).Append(MessageWhenWrong).Append(MessageWhenTooLong).Append(Takes).Select(name => (Name: name, At: body.IndexOf($": {name} ", StringComparison.Ordinal)))
             .Where(each => each.At > 0).OrderBy(each => each.At).ThenByDescending(each => each.Name.Length).FirstOrDefault();
         return found.Name is null ? null : new FieldFact(body[..found.At], found.Name, body[(found.At + found.Name.Length + 3)..], match.Groups["level"].Value, match.Groups["source"].Value);
     }
@@ -93,7 +99,7 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
         {
             var number = field.Kind is "number" or "range";
             // A test names a field as its member is named ("Name field" for a member NameField): the label's words decide.
-            var named = facts.Where(fact => fact.Field == field.Label || string.Equals(Words(fact.Field), Words(field.Label), StringComparison.OrdinalIgnoreCase)).ToList();
+            var named = Named(facts, field.Label);
             var (min, max) = (Surest(named, number ? "min" : "min length"), Surest(named, number ? "max" : "max length"));
             var (message, wrong) = (named.FirstOrDefault(fact => fact.Name == MessageWhenEmpty), named.FirstOrDefault(fact => fact.Name == MessageWhenWrong));
             var from = string.Join("; ", new[] { min, max, message, wrong }.OfType<FieldFact>().Select(fact => $"{fact.Name}: {fact.Level}, {fact.Source}").Distinct(StringComparer.Ordinal));
@@ -104,12 +110,16 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
     }
 
     // What the app did counts for more than what the page states, and that for more than what a script says.
-    private static FieldFact? Surest(List<FieldFact> facts, string name)
+    internal static FieldFact? Surest(List<FieldFact> facts, string name)
         => facts.Where(fact => fact.Name == name).OrderBy(fact => fact.Level switch { SeenLevel => 0, StatedLevel => 1, _ => 2 }).FirstOrDefault();
 
     // What a field says when it is left empty, and after it what it says of a value that does not fit.
     private static string Said(FieldFact? empty, FieldFact? wrong)
         => string.Join("; ", new[] { empty?.Value, wrong is null ? null : $"wrong value: {wrong.Value}" }.OfType<string>());
+
+    // The facts of one field. A test names a field as its member is named ("Name field", "Vat number" for "VAT number").
+    internal static List<FieldFact> Named(List<FieldFact> facts, string label)
+        => [.. facts.Where(fact => fact.Field == label || string.Equals(Words(fact.Field), Words(label), StringComparison.OrdinalIgnoreCase))];
 
     private static string Words(string label) => new string([.. label.Where(char.IsLetterOrDigit)]).Replace("field", "", StringComparison.OrdinalIgnoreCase);
 

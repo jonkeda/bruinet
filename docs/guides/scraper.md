@@ -444,6 +444,16 @@ for it: it fills a field that may keep less and confirms only that it holds some
 value took. What was seen counts for more than what is stated: the field table shows the seen limit when there are
 both, and a field's message for a wrong value stands in its Message cell after `wrong value:`.
 
+A save test goes one step on where the setup lets the Scraper write: after the empty save it saves with 300
+characters in every text field the browser holds no limit for. A save that is taken is a fact (`Remark: takes 300
+(seen, saved 300 characters)`: the longest is that or more); one that is refused gives what the form said
+(`message when too long`), and the test saves again with a value that fits.
+
+`places fields --spec "<place>"` prints the place's fields as the sections of a screen's spec: the field table
+(Field, Kind, Required, Min, Max, Message), "More about a field" (a pattern, what a wrong or too long value was
+answered with) and the open questions. A cell there is a fact, a dash where a limit does not apply, or the word
+"open" with its question below; a fact only read from a script is a question with its value as the proposal.
+
 `bruinet scrape places fields --facts` lists them; `places fields --table "<place>"` prints a place's fields as a
 spec's field table (Field, Kind, Required, Min, Max, Message, From), where a stated or seen limit is a cell, one
 only read is a question and what nobody knows is "?". No value a field holds and no choice a select offers is kept:

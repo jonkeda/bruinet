@@ -112,6 +112,39 @@ public sealed class FieldFactTests
     }
 
     [Fact]
+    public void A_screen_s_field_sections_hold_facts_dashes_and_open_questions_and_no_question_mark()
+    {
+        var list = new PlacesList();
+        list.Add(new Place
+        {
+            Key = "/contact#/create", Kind = PlaceKind.Page, State = PlaceState.FormNotSaved,
+            Fields = ["Kind (text, VSelect, required)", "Name (text, VTextField, required)", "E-mail (text, VTextField)", "Remark (text)", "Notes (textarea)", "Amount (number)", "Code (text)", "Search (text, in a table)"],
+            FieldFacts = ["Name: max length 255 (stated, maxlength)", "Code: pattern [A-Z]+ (stated, pattern)", "Code: max length 9 (read, the script of contact-create)", "Amount: max 500 (stated, max)"],
+        });
+        // A save test saved it empty, then with 300 characters where the browser holds no limit.
+        PlacesSeeds.AddRun(list, """{"place":"/contact#/create","required":["Name: Name is required"],"landed":"/contact","record":null,"note":null,"facts":["Remark: takes 300 (seen, saved 300 characters)","Notes: message when too long At most 2000 characters (seen, saved 300 characters)","E-mail: message when wrong not a valid email address (seen, typed x)"]}""");
+
+        var text = FieldSpec.Of(list["/contact#/create"]!);
+        var rows = text.Split('\n');
+
+        Assert.DoesNotContain("?", text.Replace("?\"", "", StringComparison.Ordinal), StringComparison.Ordinal);
+        Assert.Contains("| Kind | select | ☑ | – | – | open |", rows);
+        Assert.Contains("| Name | text | ☑ | 1 | 255 | Name is required |", rows);
+        Assert.Contains("| E-mail | text | ☐ | – | open |  |", rows);
+        Assert.Contains("| Remark | text | ☐ | – | 300 or more |  |", rows);
+        Assert.Contains("| Amount | number | ☐ | open | 500 |  |", rows);
+        // What was only read is no cell: it is a question with the value as the proposal.
+        Assert.Contains("| Code | text | ☐ | – | open |  |", rows);
+        Assert.Contains("- Code: its longest. the script of contact-create says 9; nobody tried it on the app.", rows);
+        Assert.Contains("| Code | A value shall match `[A-Z]+` (stated, pattern). |", rows);
+        Assert.Contains("| E-mail | A value that does not fit is answered with \"not a valid email address\" (seen, typed x). |", rows);
+        Assert.Contains("| Notes | A value that is too long is answered with \"At most 2000 characters\" (seen, saved 300 characters). |", rows);
+        Assert.Contains("- Kind: what the form says when it is left empty. No test saved the form without it.", rows);
+        Assert.Contains("- Remark: its longest. A save with 300 characters was taken (saved 300 characters); where it ends was not tried.", rows);
+        Assert.DoesNotContain(rows, row => row.StartsWith("| Search", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void A_line_that_is_no_fact_is_none()
     {
         Assert.Null(FieldFact.Parse("Name (text, VTextField, required)"));

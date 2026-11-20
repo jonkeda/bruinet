@@ -153,15 +153,22 @@ public static partial class ScrapeCommands
     {
         var (solution, project, json, list) = (Solution(), Project(), Json(), ListFile());
         var table = new Option<string?>("--table") { Description = "Print instead a place's fields as a spec's field table (Field, Kind, Required, Min, Max, From): a limit that was stated or seen is a cell, one only read from a script a question, and what nobody knows a '?'." };
+        var spec = new Option<string?>("--spec") { Description = "Print instead a place's fields as the sections of a screen's spec: the field table (Field, Kind, Required, Min, Max, Message), what more a field states or said of a wrong value, and the open questions. A cell is a fact, a dash or the word 'open': never a '?'." };
         var facts = new Option<bool>("--facts") { Description = "List instead what is known of the values the fields take (a longest, a least and most, a pattern), each with how sure it is and where it came from: what a spec's field table is written from." };
         var command = new Command("fields", "Count the fields of the list by control: what no sign recognizes and what is still to make first.")
         {
-            project, solution, list, json, facts, table,
+            project, solution, list, json, facts, table, spec,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
             await using var service = Service(io, parsed.GetValue(solution));
             var places = PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io));
+            if (parsed.GetValue(spec) is { } screen)
+            {
+                await io.Out.WriteAsync(FieldSpec.Of(places[screen] ?? throw new Bruinet.Scraper.Service.ScraperProblem($"The list has no place '{screen}'."))).ConfigureAwait(false);
+                return 0;
+            }
+
             if (parsed.GetValue(table) is { } key)
             {
                 await io.Out.WriteAsync(FieldFact.Table(places[key] ?? throw new Bruinet.Scraper.Service.ScraperProblem($"The list has no place '{key}'."))).ConfigureAwait(false);
