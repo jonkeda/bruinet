@@ -25,6 +25,7 @@ public static partial class FactoryReview
         [ReasonCodes.Timeout] = "The environment was slow. Run the place again.",
         [ReasonCodes.Refused] = "The app refused the page to the account. A person decides which account the place is for.",
         [ReasonCodes.PassedSecondTime] = "A wait is missing: find what the test did not wait for, in the template's test or in the control.",
+        [ReasonCodes.PassedThenFailed] = "The test passed and then failed on the same app: it reads or presses something before it is there. Find the step that does not wait, in the template's test or in the control.",
         [ReasonCodes.NoTemplate] = "The suite's templates lack a section the draft needs.",
         [ReasonCodes.NothingToCheck] = "The place shows nothing a test could check. Nothing to fix: a person writes a class when a test must name something there.",
         [ReasonCodes.ClassExists] = "A class of the draft's name is in the suite already. Nothing to fix unless the two are different things: then one of them needs another name.",

@@ -30,7 +30,7 @@ The first says which groups would run. The second runs them: each group in loops
 opens on them. `--no-walk` drafts from the captures there are (after a fix to reading or templates, no walk is
 needed); `--baseline` puts a loop back whole when a test that passed no longer does.
 
-A loop keeps a class only when its test passed on the app. What it puts back gets a reason with a code; a place it
+A loop keeps a class only when its test passed on the app, twice. What it puts back gets a reason with a code; a place it
 tried and did not keep is parked, and the next run does not take it up again without `--again`.
 
 ## 2. When it stops
@@ -48,7 +48,8 @@ the suite no longer builds, or when the sign-in ran out. Read `ledger.md`: its R
 | `nothing-to-check` | The place shows nothing a test could check | Nothing: it is listed. A person writes a class when a test must name something there |
 | `class-exists` | A class of that name is in the suite | Nothing: its place gets the test it lacks |
 | `timeout`, `signed-out` | The environment | Run again later; renew the sign-in with a test that signs in |
-| `passed-second-time` | A wait is missing | The template's test, or the control: find what it did not wait for |
+| `passed-second-time` | A wait is missing; the class is kept | The template's test, or the control: find what it did not wait for |
+| `passed-then-failed` | The same, the other way round: the test passed and failed when it ran again. Not kept | The same |
 | `unknown` | No rule fits | Read the evidence. If it is a kind of its own, it gets a rule in `ReasonClassifier` |
 
 ## 3. One fix, measured

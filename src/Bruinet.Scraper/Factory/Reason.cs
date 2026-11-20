@@ -39,6 +39,9 @@ public static class ReasonCodes
     /// <summary>A test failed, then passed when it ran again: a wait is missing.</summary>
     public const string PassedSecondTime = "passed-second-time";
 
+    /// <summary>A test passed, then failed when it ran again: it is not kept, because it would fail in a whole run.</summary>
+    public const string PassedThenFailed = "passed-then-failed";
+
     /// <summary>The project has no templates, or a template the draft needs is not there.</summary>
     public const string NoTemplate = "no-template";
 

@@ -238,7 +238,8 @@ public sealed partial class ScraperService
         return "the suite does not build after six rounds of putting back what did not";
     }
 
-    // Runs the loop's tests; what fails runs once more. A test that fails twice goes, with the class it holds.
+    // Runs the loop's tests; what fails runs once more, and so does what passed. A test that fails twice goes, with
+    // the class it holds; so does one that passed and then failed: it would fail in somebody's whole run.
     private async Task<(int Tests, int PassedFirst)> TestAndPutBackAsync(ScrapeProject project, PlacesList list, List<Written> written, List<Reason> reasons, CancellationToken cancellationToken)
     {
         var projectFile = Directory.EnumerateFiles(project.Folder, "*.csproj").First();
@@ -254,6 +255,7 @@ public sealed partial class ScraperService
 
         var failed = mine.Where(test => first.Tests.Any(outcome => outcome.Class == test.Class && !outcome.Passed)).ToList();
         var ran = mine.Count(test => first.Tests.Any(outcome => outcome.Class == test.Class));
+        await ConfirmAsync(projectFile, [.. mine.Except(failed)], Filter, written, reasons, cancellationToken).ConfigureAwait(false);
         if (failed.Count == 0)
             return (ran, ran);
         var second = await TestRunner.RunEachAsync(projectFile, Filter(failed), cancellationToken).ConfigureAwait(false);
@@ -272,6 +274,19 @@ public sealed partial class ScraperService
         }
 
         return (ran, ran - failed.Count);
+    }
+
+    // What passed runs once more, together: a test that passes once and fails once waits for something it does not name.
+    private static async Task ConfirmAsync(string projectFile, List<Written> passed, Func<IEnumerable<Written>, string> filter, List<Written> written, List<Reason> reasons, CancellationToken cancellationToken)
+    {
+        if (passed.Count == 0)
+            return;
+        var again = await TestRunner.RunEachAsync(projectFile, filter(passed), cancellationToken).ConfigureAwait(false);
+        foreach (var test in passed)
+        {
+            if (again.Tests.FirstOrDefault(outcome => outcome.Class == test.Class && !outcome.Passed) is { } failure)
+                PutBack(test, written, reasons, new Reason(ReasonCodes.PassedThenFailed, "test", test.Place, test.Class, failure.Message ?? "failed", FixPlaces.Templates));
+        }
     }
 
     // Deletes a file the loop wrote, and with it what the loop wrote that names its class: a class nothing checks is not kept, and a test of nothing does not build.
