@@ -145,6 +145,10 @@ public sealed class FactoryLoopTests : IDisposable
         Assert.Contains("needs-record x2 **Stopped:** a reason / repeated", ledger, StringComparison.Ordinal);
         Assert.Contains("| needs-record | 2 | 1 | reader |", ledger, StringComparison.Ordinal);
         Assert.Contains("| 2 | 2026-11-19 14:30 | Records come first. |", ledger, StringComparison.Ordinal);
+        // Where the minutes went, the station that took most first.
+        Assert.Contains("## Where the minutes went", ledger, StringComparison.Ordinal);
+        Assert.True(ledger.IndexOf("| test |", StringComparison.Ordinal) < ledger.IndexOf("| draft |", StringComparison.Ordinal));
+        Assert.Contains("75%", ledger, StringComparison.Ordinal);
         Assert.Empty(FactoryState.Load(Path.Combine(_root, "nowhere")).Loops);
     }
 

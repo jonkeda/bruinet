@@ -161,7 +161,7 @@ public sealed partial class ScraperService
                 // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
                 // A class a person wrote for the place names its members its own way: only its fields are checked.
                 IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns, under).Pressed;
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed), null);
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed, lanes: Factory.FactorySetup.Read(project.Home).Walkers), null);
             }
 
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns, under);

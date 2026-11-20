@@ -301,7 +301,8 @@ public static class PlaceDrafter
     /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): a card with several buttons has a member per button.</param>
     /// <param name="pressed">The members of the form's class a person presses (<see cref="PlaceDraft.Pressed"/>): the test checks that each is there, where its template has <c>{Checks}</c>.</param>
     /// <param name="saveMember">The form's member that saves: with it the draft is the save test (<see cref="RecordSaveTest"/>), not the test that only looks.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null)
+    /// <param name="lanes">How many tests of one module may run at once: a template's <c>{Lane}</c> is a number from 1 to this, the same for a class every time, so the tests that only look spread over that many groups.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -315,6 +316,7 @@ public static class PlaceDrafter
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
         var text = templates.Block(saveMember is null ? TestTemplate(place, templates, card, signs, onPage) : RecordSaveTest)
             .Replace("{SaveMember}", saveMember ?? "", StringComparison.Ordinal)
+            .Replace("{Lane}", Lane(className, lanes).ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{Place}", place.Key.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal), StringComparison.Ordinal)
             .Replace("        {TabSteps}\n", steps.Length == 0 ? "" : steps + "\n", StringComparison.Ordinal)
             .Replace("        {ListStep}\n", onPage is { Columns.Count: > 0 } && templates.Blocks.TryGetValue(ListStep, out var wait) ? "        " + wait + "\n" : "", StringComparison.Ordinal)
@@ -333,6 +335,13 @@ public static class PlaceDrafter
             .Replace("{PagesNamespace}", pagesNamespace ?? @namespace, StringComparison.Ordinal)
             .Replace("{Address}", record ? PlaceKinds.RecordAddress(place) : place.Key, StringComparison.Ordinal);
         return new PlaceDraft(className, text.TrimEnd() + "\n", [], []);
+    }
+
+    /// <summary>The lane a test class runs in, of <paramref name="lanes"/>: from its name, so it is the same in every draft.</summary>
+    public static int Lane(string className, int lanes)
+    {
+        ArgumentNullException.ThrowIfNull(className);
+        return lanes <= 1 ? 1 : className.Aggregate(17, (sum, letter) => unchecked((sum * 31) + letter) & 0x7fffffff) % lanes + 1;
     }
 
     // Which test a place gets: by what it is, what opens it, and whether its page is the page of one record.

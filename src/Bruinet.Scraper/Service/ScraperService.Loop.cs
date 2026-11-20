@@ -122,7 +122,18 @@ public sealed partial class ScraperService
         var (tests, passedFirst) = (0, 0);
         if (stop is null && options.Test && written.Any(each => each.IsTest && !each.PutBack))
         {
-            (tests, passedFirst) = await TestAndPutBackAsync(project, list, written, reasons, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                (tests, passedFirst) = await TestAndPutBackAsync(project, list, written, reasons, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                // A run of tests that takes longer than it may: what the loop wrote goes, and the batch stops there.
+                foreach (var each in written.Where(each => !each.PutBack).ToList())
+                    PutBack(each, written, reasons, new Reason(ReasonCodes.LoopTooLong, "test", each.Place, each.Class, $"the loop's tests ran over {TestRunner.RunLimit.TotalMinutes} minutes", FixPlaces.Environment));
+                stop = $"the loop's tests ran over {TestRunner.RunLimit.TotalMinutes} minutes";
+            }
+
             // What stood on a class that went goes with it.
             if (written.Any(each => each.PutBack))
                 stop = await BuildAndPutBackAsync(project, written, reasons, cancellationToken).ConfigureAwait(false);

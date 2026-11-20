@@ -162,6 +162,8 @@ public static class FactoryLedger
             text.Append(CultureInfo.InvariantCulture, $"| {loop.Number} | {loop.Batch} | `{loop.Group}` | {Files(loop.Kept)} | {Files(loop.PutBack)} | {(loop.Tests == 0 ? "-" : $"{loop.PassedFirst} of {loop.Tests}")} | {loop.Minutes} | {Cell(loop.Walk)} | {Cell(why)}{(loop.Stop is null ? "" : " **Stopped:** " + Cell(loop.Stop))} |\n");
         }
 
+        Minutes(state, text);
+
         var reasons = state.Loops.SelectMany(loop => loop.Reasons).GroupBy(reason => reason.Code, StringComparer.Ordinal).OrderByDescending(group => group.Count()).ToList();
         if (reasons.Count > 0)
         {
@@ -181,6 +183,22 @@ public static class FactoryLedger
         }
 
         return text.ToString();
+    }
+
+    // Where the minutes went: the stations of every loop, added up. What to make faster is the station at the top.
+    private static void Minutes(FactoryState state, StringBuilder text)
+    {
+        var stations = state.Loops.SelectMany(loop => loop.Seconds).GroupBy(each => each.Key, StringComparer.Ordinal)
+            .Select(group => (Station: group.Key, Seconds: group.Sum(each => each.Value), Loops: group.Count())).OrderByDescending(each => each.Seconds).ToList();
+        var all = stations.Sum(each => each.Seconds);
+        if (all <= 0)
+            return;
+        var kept = state.Loops.Sum(loop => loop.Kept.Count);
+        var each = kept == 0 ? "" : string.Create(CultureInfo.InvariantCulture, $": {Math.Round(all / kept)} seconds a kept file");
+        text.Append(CultureInfo.InvariantCulture, $"\n## Where the minutes went\n\n{Math.Round(all / 60, 1)} minutes over {state.Loops.Count} loops, {kept} files kept{each}.\n\n");
+        text.Append("| Station | Minutes | Share | Loops | Seconds a loop |\n| --- | --- | --- | --- | --- |\n");
+        foreach (var (station, seconds, loops) in stations)
+            text.Append(CultureInfo.InvariantCulture, $"| {station} | {Math.Round(seconds / 60, 1)} | {Math.Round(100 * seconds / all)}% | {loops} | {Math.Round(seconds / loops)} |\n");
     }
 
     private static string Files(IReadOnlyList<string> files) =>
