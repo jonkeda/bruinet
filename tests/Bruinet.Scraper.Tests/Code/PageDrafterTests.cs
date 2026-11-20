@@ -85,9 +85,9 @@ public sealed class PageDrafterTests : IDisposable
         var order = PageDrafter.Draft(project, index, index.Page("/orders/{id}")!, "OrderPage");
         var help = PageDrafter.Draft(project, index, index.Page("/help")!, "HelpPage");
 
-        Assert.Equal(Path.Combine("Modules/Orders/Pages", "OrderPage.scraped.cs"), order.Path);
+        Assert.Equal(Path.Combine("Modules/Orders/Pages", "OrderPage.cs"), order.Path);
         Assert.Contains("namespace Shop.UITests.Modules.Orders.Pages;", order.Code);
-        Assert.Equal(Path.Combine("Pages", "HelpPage.scraped.cs"), help.Path);
+        Assert.Equal(Path.Combine("Pages", "HelpPage.cs"), help.Path);
         Assert.Contains("namespace Shop.UITests.Pages;", help.Code);
     }
 
@@ -248,11 +248,11 @@ public sealed class PageDrafterTests : IDisposable
 
         var draft = PageDrafter.Draft(project, index, index.Page("/orders/{id}")!, "OrderPage");
 
-        Assert.Equal(Path.Combine("Pages", "OrderPage.scraped.cs"), draft.Path);
+        Assert.Equal(Path.Combine("Pages", "OrderPage.cs"), draft.Path);
         Assert.StartsWith("// <scraped page=\"/orders/{id}\" from=\"2026-09-30-explore/001-order.nodes.jsonl\" hash=\"", draft.Code);
         Assert.Contains("using Bruinet.Html.Controls.Buttons;\nusing Bruinet.Html.Interfaces;\nusing Bruinet.Html.Pages;", draft.Code.ReplaceLineEndings("\n"));
         Assert.Contains("namespace Shop.UITests.Pages;", draft.Code);
-        Assert.Contains("public sealed partial class OrderPage(IHtmlTestContext context) : PageObjectBase<OrderPage>(context, \"/orders/{id}\")", draft.Code);
+        Assert.Contains("public sealed class OrderPage(IHtmlTestContext context) : PageObjectBase<OrderPage>(context, \"/orders/{id}\")", draft.Code);
         Assert.Contains("    public ButtonControl<OrderPage> OrderDetails => new(this, Locator.ByDataTestId(\"order-details\"));", draft.Code);
         Assert.Single(draft.Members);
         Assert.Contains("    // Not drafted: shown only after a click", draft.Code);

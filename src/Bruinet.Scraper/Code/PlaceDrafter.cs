@@ -141,8 +141,8 @@ public static class PlaceDrafter
         PageMembers(place, templates, className, pageClass, opens, used, members, code, signs);
 
         var summary = dialog
-            ? $"The form \"{Xml(Label(place))}\" opens on {Xml(place.Parent ?? "")}: drafted from the list of places. Rename and prune; what is yours goes in the other part."
-            : $"The form at {Xml(place.Key)}: drafted from the list of places. Rename and prune; what is yours goes in the other part.";
+            ? $"The form \"{Xml(Label(place))}\" opens on {Xml(place.Parent ?? "")}: drafted from the list of places."
+            : $"The form at {Xml(place.Key)}: drafted from the list of places.";
         var body = string.Join("\n\n", code.Select(Indent));
         if (notDrafted.Count > 0)
             body += (body.Length > 0 ? "\n\n" : "") + "    // Not drafted:\n" + string.Join('\n', notDrafted.Select(line => "    // " + line));

@@ -143,7 +143,7 @@ public sealed partial class ScraperService
             if (kind == PlaceDraftKind.Row)
             {
                 var row = PlaceDrafter.Row(place, templates, className ?? PlaceDrafter.ClassName(place, kind, project.PlaceSigns), ns, project.PlaceSigns);
-                return (row, Path.Combine(project.Folder, folder, row.ClassName + PageDrafter.Extension));
+                return Target(Path.Combine(project.Folder, folder), row);
             }
 
             // A dialog's page: the class that names the page's address, or the one that was drafted from the page (a
@@ -158,7 +158,7 @@ public sealed partial class ScraperService
             // What a page's cards open: the dialogs of the page that the walk named after a card.
             var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);
-            return (form, Path.Combine(project.Folder, folder, form.ClassName + PageDrafter.Extension));
+            return Target(Path.Combine(project.Folder, folder), form);
         }
         catch (FormatException e)
         {
@@ -166,12 +166,24 @@ public sealed partial class ScraperService
         }
     }
 
+    // Where a draft goes: its class's own file. A class drafted before a draft was the whole class stays what it is,
+    // one part of a partial class in its older file, beside a person's part.
+    private static (PlaceDraft Draft, string? File) Target(string folder, PlaceDraft draft)
+    {
+        var older = Path.Combine(folder, draft.ClassName + PageDrafter.OlderExtension);
+        if (!File.Exists(older))
+            return (draft, Path.Combine(folder, draft.ClassName + PageDrafter.Extension));
+        var declared = $" class {draft.ClassName}(";
+        var asPart = draft.Code.Contains(" partial" + declared, StringComparison.Ordinal) ? draft.Code : draft.Code.Replace(declared, " partial" + declared, StringComparison.Ordinal);
+        return (draft with { Code = asPart }, older);
+    }
+
     // The class a draft of a place was written as: the file whose first line names the place and the kind.
     private static string? DraftedFrom(ScrapeProject project, string placeKey, string variant) =>
-        Directory.EnumerateFiles(project.Folder, "*" + PageDrafter.Extension, SearchOption.AllDirectories)
+        Directory.EnumerateFiles(project.Folder, "*" + PageDrafter.Extension, SearchOption.AllDirectories).Order(StringComparer.Ordinal)
             .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal) && !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
             .Where(file => ScrapedHeader.Find(File.ReadAllText(file)) is { } header && header.Page == placeKey && header.Variant == variant)
-            .Select(file => Path.GetFileName(file)[..^PageDrafter.Extension.Length]).FirstOrDefault();
+            .Select(PageDrafter.ClassOf).FirstOrDefault();
 
     // The page class that opens at an address: the class whose declaration, up to its body, names that address in
     // quotes (a base that takes it, whatever the base is called). One file may hold several pages.

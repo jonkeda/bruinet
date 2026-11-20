@@ -135,6 +135,25 @@ public sealed class ReplayTests : IAsyncLifetime
         Assert.Equal(2, report.Problems.Count);
     }
 
+    [Fact]
+    public void A_place_s_draft_goes_to_its_class_s_own_file_and_an_older_draft_keeps_its_file_as_a_part()
+    {
+        var (_, file) = _service.DraftPlace(null, _list, Dialog, PlaceDraftKind.Form);
+
+        Assert.EndsWith(".cs", file, StringComparison.Ordinal);
+        Assert.False(PageDrafter.IsOlderDraft(file!));
+
+        // A class drafted before a draft was the whole class: its file is there, beside a person's part.
+        var older = file![..^PageDrafter.Extension.Length] + PageDrafter.OlderExtension;
+        Directory.CreateDirectory(Path.GetDirectoryName(older)!);
+        File.WriteAllText(older, "");
+
+        var (draft, again) = _service.DraftPlace(null, _list, Dialog, PlaceDraftKind.Form);
+
+        Assert.Equal(older, again);
+        Assert.Contains($" partial class {draft.ClassName}(", draft.Code, StringComparison.Ordinal);
+    }
+
     private void WriteDraft()
     {
         var (draft, file) = _service.DraftPlace(null, _list, Dialog, PlaceDraftKind.Form);

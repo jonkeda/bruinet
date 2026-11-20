@@ -271,17 +271,19 @@ not open and no download; otherwise it stops and says after which click. The rep
 `explore.md` in the session, lists each capture and the click that led to it, each element skipped
 and why, and each request blocked.
 
-**A draft** is `Pages/<Name>.scraped.cs`, a `partial` class made from the page as it opens: a member
+**A draft** is `Pages/<Name>.cs`, the whole class, made from the page as it opens: a member
 per element with a stable locator, named from its test id or text. The class is named from the path and
 the hash route (`/contact#/create` is `ContactCreatePage`), and passes them as its URL, so the page opens
 itself and is loaded only on that route. An id of a word and a counter (`input-47`) is generated, not
 stable. What a part of the project already is (a class with a `Header.Control` signature that matches),
-what a control library's classes cover, a table's headers, and a name your part already has are left out
+what a control library's classes cover and a table's headers are left out
 and named in a comment, as is what has no stable locator and what only a click shows. A part is any class
-with a `Header.Control` signature, on a Bruinet base or on another control (`TableControl`, a library's). Put your own members in the other part,
-`Pages/<Name>.cs`. Drafting again replaces only the `.scraped.cs`. A page with a page object you
-made by hand is not drafted. A draft that does not build is put back and reported, and so is one
-that drops a member your part uses. Controls are not drafted: Draft lists the parts that repeat,
+with a `Header.Control` signature, on a Bruinet base or on another control (`TableControl`, a library's). The file's
+first line (`// <scraped page=… />`) says it is the Scraper's: drafting again writes over the file, and what it
+was before is in git. A page class of the draft's name without that line is yours and is not drafted. A draft that
+does not build is put back and reported. An older draft, `Pages/<Name>.scraped.cs` beside your part
+`Pages/<Name>.cs`, stays one part of a `partial` class when it is drafted again, and a name your part has is left
+out of it. Controls are not drafted: Draft lists the parts that repeat,
 and **Improve with the agent** makes them. **Verify** opens each page in the running app and finds
 every member's locator: once, several times, or not at all.
 

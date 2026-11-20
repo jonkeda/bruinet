@@ -24,7 +24,7 @@ public static partial class ScrapeCommands
         var kind = new Option<string>("--as") { Description = "What to draft: form (a member per field and button), row (a member per column of the list), or form-test (a test that holds the form against its class, saving nothing).", DefaultValueFactory = _ => "form" };
         var name = new Option<string?>("--name") { Description = "The class's name. Default: from the place." };
         var page = new Option<string?>("--page") { Description = "For a dialog: the class of the page it is on. Default: the page class that names the page's address." };
-        var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.scraped.cs. A test is only printed." };
+        var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.cs. A test is only printed." };
         var command = new Command("draft", "Draft a class from a place of the list, in the suite's shape (draft-templates.md beside scraper.config.md): a form, a list's row, or the test that holds a form against its class.")
         {
             place, project, solution, list, kind, name, page, write,

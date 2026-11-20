@@ -55,6 +55,15 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
 
     private string Pages(string file) => Path.Combine(_folder, "Pages", file);
 
+    // The draft as the Scraper wrote one before a draft was the whole class: one part of a partial class, in
+    // AccountPage.scraped.cs, so a person's part can be put beside it in AccountPage.cs.
+    private void AsOlderDraft()
+    {
+        var whole = File.ReadAllText(Pages("AccountPage.cs"));
+        File.Delete(Pages("AccountPage.cs"));
+        File.WriteAllText(Pages("AccountPage.scraped.cs"), whole.Replace("public sealed class AccountPage(", "public sealed partial class AccountPage(", StringComparison.Ordinal));
+    }
+
     [Fact]
     public async Task The_explored_pages_are_drafted_built_and_verified_and_a_second_draft_changes_nothing()
     {
@@ -63,8 +72,10 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
         Assert.True(drafted.Build!.Succeeded, string.Join('\n', drafted.Build.Problems) + drafted.Build.Output);
         var account = Assert.Single(drafted.Pages, p => p.Key == "/pages/account.html");
         Assert.Equal((DraftOutcome.Written, "AccountPage"), (account.Outcome, account.ClassName));
-        var code = File.ReadAllText(Pages("AccountPage.scraped.cs"));
-        Assert.Contains("public sealed partial class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context, \"/pages/account.html\")", code);
+        var code = File.ReadAllText(Pages("AccountPage.cs"));
+        Assert.StartsWith("// <scraped page=\"/pages/account.html\"", code);
+        Assert.Contains("public sealed class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context, \"/pages/account.html\")", code);
+        Assert.False(File.Exists(Pages("AccountPage.scraped.cs")));
         Assert.Contains("OrderDelete => new(this, Locator.ByDataTestId(\"order-delete\"));", code);
         // The dialog's close button is in the draft though the page opens with the dialog closed.
         Assert.Contains("OrderClose => new(this, Locator.ByDataTestId(\"order-close\"));", code);
@@ -82,9 +93,23 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task A_person_s_part_is_kept_and_a_member_it_uses_that_a_new_draft_drops_puts_the_draft_back()
+    public async Task A_page_class_of_the_draft_s_name_without_the_Scraper_s_line_is_a_person_s_and_is_not_drafted_over()
+    {
+        Directory.CreateDirectory(Path.Combine(_folder, "Pages"));
+        var own = "namespace Shop.UITests.Pages;\n\npublic sealed class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context, \"/pages/account.html\")\n{\n}\n";
+        File.WriteAllText(Pages("AccountPage.cs"), own);
+
+        var drafted = await _service.DraftAsync(null, "/pages/account.html");
+
+        Assert.Equal(DraftOutcome.Skipped, Assert.Single(drafted.Pages).Outcome);
+        Assert.Equal(own, File.ReadAllText(Pages("AccountPage.cs")));
+    }
+
+    [Fact]
+    public async Task An_older_draft_stays_a_part_its_person_s_part_is_kept_and_a_member_it_uses_that_a_new_draft_drops_puts_the_draft_back()
     {
         await _service.DraftAsync(null);
+        AsOlderDraft();
         // As if an earlier recording had a Gone element, and a person's part uses it.
         var scraped = Pages("AccountPage.scraped.cs");
         var withGone = File.ReadAllText(scraped).Replace("public sealed partial class AccountPage(IHtmlTestContext context) : PageObjectBase<AccountPage>(context, \"/pages/account.html\")\n{\n",
@@ -107,6 +132,7 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
     public async Task Verify_says_which_member_is_not_found_and_which_is_found_several_times()
     {
         await _service.DraftAsync(null);
+        AsOlderDraft();
         File.WriteAllText(Pages("AccountPage.cs"), """
             using Bruinet.Core.Locators;
             using Bruinet.Html.Controls.Buttons;
@@ -133,6 +159,7 @@ public sealed class DraftAndVerifyTests : IAsyncLifetime
     public async Task A_member_of_the_project_s_own_control_is_not_read_as_a_selector()
     {
         await _service.DraftAsync(null);
+        AsOlderDraft();
         File.WriteAllText(Path.Combine(_folder, "TabStrip.cs"), """
             using Bruinet.Core.Locators;
             using Bruinet.Html.Controls;

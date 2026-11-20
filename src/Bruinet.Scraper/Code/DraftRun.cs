@@ -40,17 +40,19 @@ public static class DraftRun
         var written = new List<(DraftedPage Page, string Full, string? Before)>();
         foreach (var recorded in pages)
         {
-            // A page object a person made for the page (not a draft) is theirs: it is not drafted over.
-            var own = code.FirstOrDefault(c => c.Header?.Page == recorded.Key && !c.File.EndsWith(PageDrafter.Extension, StringComparison.OrdinalIgnoreCase));
+            // A draft starts with the Scraper's line and is drafted over. A page class with the name the draft would
+            // get and without that line is a person's: it is not drafted over.
+            var named = PageDrafter.ClassName(recorded.Key, PageDrafter.Basis(recorded).Event.Title);
+            var own = code.Any(c => c.Header?.Page == recorded.Key) ? null : code.FirstOrDefault(c => c.Kind == CodeKind.Page && c.Header?.Page is null && c.Name == named);
             if (own is not null)
             {
                 outcomes.Add(new DraftedPage(recorded.Key, own.Name, Path.GetRelativePath(project.Folder, own.File), DraftOutcome.Skipped, 0, [], [], $"{own.Name} is made by hand for this page."));
                 continue;
             }
             var previous = code.FirstOrDefault(c => c.Header?.Page == recorded.Key);
-            var className = previous?.Name ?? Free(PageDrafter.ClassName(recorded.Key, PageDrafter.Basis(recorded).Event.Title), names);
+            var className = previous?.Name ?? Free(named, names);
             names.Add(className);
-            var draft = PageDrafter.Draft(project, index, recorded, className);
+            var draft = PageDrafter.Draft(project, index, recorded, className, asPart: previous is not null && PageDrafter.IsOlderDraft(previous.File));
             var path = previous is null ? draft.Path : Path.GetRelativePath(project.Folder, previous.File);
             var full = Path.Combine(project.Folder, path);
             var before = File.Exists(full) ? await File.ReadAllTextAsync(full, cancellationToken).ConfigureAwait(false) : null;

@@ -11,13 +11,27 @@ namespace Bruinet.Scraper.Code;
 /// <summary>
 /// A page object drafted from a recorded page by rules, with no model: a member per suggestion with a
 /// stable locator on the page as it opens (a hidden dialog or menu in its document too), and listed in a
-/// comment for a person: the unstable ones, and what only a click shows (a later state of the page). The draft is a <c>partial</c> class in <c>&lt;Name&gt;.scraped.cs</c>; a person's
-/// additions go in the other part, <c>&lt;Name&gt;.cs</c>, which a draft never touches.
+/// comment for a person: the unstable ones, and what only a click shows (a later state of the page). The draft is the whole class, in <c>&lt;Name&gt;.cs</c>:
+/// its first line (<see cref="ScrapedHeader"/>) says it is the Scraper's, and drafting again writes over it. An older draft is one part of a
+/// <c>partial</c> class in <c>&lt;Name&gt;.scraped.cs</c> (<see cref="OlderExtension"/>), beside a person's part; it is drafted again as that.
 /// </summary>
 public static class PageDrafter
 {
-    /// <summary>The ending of a drafted file.</summary>
-    public const string Extension = ".scraped.cs";
+    /// <summary>The ending of a drafted file: a class file like any other.</summary>
+    public const string Extension = ".cs";
+
+    /// <summary>The ending of a file drafted before a draft was the whole class: one part of a <c>partial</c> class.</summary>
+    public const string OlderExtension = ".scraped.cs";
+
+    /// <summary>Whether a file is an older draft, a part of a class beside a person's part.</summary>
+    public static bool IsOlderDraft(string file) => file.EndsWith(OlderExtension, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>The class a drafted file is named after, whichever its ending.</summary>
+    public static string ClassOf(string file)
+    {
+        var name = Path.GetFileName(file);
+        return name[..^(IsOlderDraft(name) ? OlderExtension : Extension).Length];
+    }
 
     // Folders of a path that say nothing about the page.
     private static readonly HashSet<string> Folders = new(StringComparer.OrdinalIgnoreCase) { "pages", "page", "views", "app", "index" };
@@ -62,8 +76,11 @@ public static class PageDrafter
         return session.FirstOrDefault(c => c.Event.Name is null) ?? session[0];
     }
 
-    /// <summary>Drafts one page from its <see cref="Basis"/>; what only its other states show is listed, not drafted.</summary>
-    public static PageDraft Draft(ScrapeProject project, RecordingIndex index, RecordedPage page, string className)
+    /// <summary>
+    /// Drafts one page from its <see cref="Basis"/>; what only its other states show is listed, not drafted.
+    /// <paramref name="asPart"/> drafts it as an older draft was: one part of a <c>partial</c> class.
+    /// </summary>
+    public static PageDraft Draft(ScrapeProject project, RecordingIndex index, RecordedPage page, string className, bool asPart = false)
     {
         var basis = Basis(page);
         var blazor = project.Config.Platform == "blazor";
@@ -107,13 +124,13 @@ public static class PageDrafter
         var containers = opened.Where(m => m.Stable && Containers.Contains(m.Control)).ToArray();
         var header = new ScrapedHeader { Page = page.Key, From = $"{basis.Session}/{basis.Event.Snapshot}", Hash = SnapshotFile.ContentHash(index.Read(basis)) };
         var (folder, ns) = project.PagesFor(page.Key);
-        var path = Path.Combine(folder, className + Extension);
+        var path = Path.Combine(folder, className + (asPart ? OlderExtension : Extension));
         var coveredLines = covered.GroupBy(c => c.By!, StringComparer.Ordinal)
             .Select(g => $"{g.Key}: {string.Join(", ", g.Select(c => $"{c.Suggestion.Name} ({c.Suggestion.Control})").Distinct(StringComparer.Ordinal))}")
             .ToArray();
         if (taken.Length > 0)
             coveredLines = [.. coveredLines, $"{className}.cs (your part, by name): {string.Join(", ", taken.Select(m => $"{m.Name} ({m.Control})"))}"];
-        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines), members, unstable) { AfterClick = afterClick };
+        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines, asPart), members, unstable) { AfterClick = afterClick };
     }
 
     // What covers a node, if anything: a table's header, a part of the project (by signature, the node or an ancestor,
@@ -124,7 +141,7 @@ public static class PageDrafter
         var page = code.FirstOrDefault(c => c.Kind == CodeKind.Page && c.Name.Split('<')[0] == className);
         if (page is null)
             return [];
-        var drafted = page.File.EndsWith(Extension, StringComparison.OrdinalIgnoreCase) && File.Exists(page.File)
+        var drafted = page.Header?.Page is not null && File.Exists(page.File)
             ? ProjectCode.ReadText(File.ReadAllText(page.File), page.File, page.Project).FirstOrDefault()?.Members.Select(m => m.Name) ?? []
             : [];
         return page.Members.Select(m => m.Name).Except(drafted, StringComparer.Ordinal).ToHashSet(StringComparer.Ordinal);
@@ -157,7 +174,7 @@ public static class PageDrafter
         }
     }
 
-    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor, int personal = 0, IReadOnlyList<string>? covered = null)
+    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor, int personal = 0, IReadOnlyList<string>? covered = null, bool asPart = false)
     {
         var baseClass = blazor ? "BlazorPageObjectBase" : "PageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
@@ -176,12 +193,12 @@ public static class PageDrafter
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"namespace {pageNamespace};");
         code.AppendLine();
-        code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update; add to the other part, {className}.cs.</summary>");
+        code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update{(asPart ? $"; add to the other part, {className}.cs" : "")}.</summary>");
         // The page's path and hash route, so it can open itself and know it is open. A path with an id
         // (/orders/{id}) is passed too: the page knows it is open on any record, and does not open itself.
         var pagePath = header.Page!;
         var urlArgument = pagePath.Length > 0 ? $", \"{pagePath}\"" : string.Empty;
-        code.AppendLine(CultureInfo.InvariantCulture, $"public sealed partial class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context{urlArgument})");
+        code.AppendLine(CultureInfo.InvariantCulture, $"public sealed {(asPart ? "partial " : "")}class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context{urlArgument})");
         code.AppendLine("{");
         for (var i = 0; i < members.Count; i++)
         {
