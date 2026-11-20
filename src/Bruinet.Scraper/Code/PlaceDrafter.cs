@@ -55,6 +55,13 @@ public static class PlaceDrafter
     /// </summary>
     public const string RowFormTest = "Row form test";
 
+    /// <summary>
+    /// The template of the wait for a page's list before a button of the page is pressed (<c>## List step</c>), put
+    /// where a test's template says <c>{ListStep}</c> when the dialog's page shows a list: a page whose list is still
+    /// loading may not answer a press yet.
+    /// </summary>
+    public const string ListStep = "List step";
+
     /// <summary>The template of one tab pressed before a row's button (<c>## Tab step</c>), with <c>{Label}</c> and <c>{Page}</c>.</summary>
     public const string TabStep = "Tab step";
 
@@ -233,6 +240,7 @@ public static class PlaceDrafter
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
         var text = templates.Block(TestTemplate(place, templates, card, signs, onPage))
             .Replace("        {TabSteps}\n", steps.Length == 0 ? "" : steps + "\n", StringComparison.Ordinal)
+            .Replace("        {ListStep}\n", onPage is { Columns.Count: > 0 } && templates.Blocks.TryGetValue(ListStep, out var wait) ? "        " + wait + "\n" : "", StringComparison.Ordinal)
             .Replace("{Icon}", Label(place), StringComparison.Ordinal)
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card), StringComparison.Ordinal)

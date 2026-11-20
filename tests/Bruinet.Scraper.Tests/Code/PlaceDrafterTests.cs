@@ -140,6 +140,19 @@ public sealed class PlaceDrafterTests
     }
 
     [Fact]
+    public void A_dialog_s_test_waits_for_its_page_s_list_when_the_page_shows_one()
+    {
+        var templates = DraftTemplates.Parse("## Form test\n\n```csharp\nopen {Page}\n        {ListStep}\npress {OpenerMember}\n```\n\n## List step\n\n```csharp\nwait(list of {Page});\n```\n");
+        var list = new Place { Key = "/day-off", State = PlaceState.Seen, Columns = ["Description", "Start date"] };
+
+        Assert.Equal("open DaysOffPage\n        wait(list of DaysOffPage);\npress AddDayOff\n",
+            PlaceDrafter.FormTest(DayOff, templates, "T", "Shop.Tests", "DayOffDialog", "DaysOffPage", signs: Signs, onPage: list).Code);
+        // A page without a list has nothing to wait for.
+        Assert.Equal("open DaysOffPage\npress AddDayOff\n",
+            PlaceDrafter.FormTest(DayOff, templates, "T", "Shop.Tests", "DayOffDialog", "DaysOffPage", signs: Signs, onPage: list with { Columns = [] }).Code);
+    }
+
+    [Fact]
     public void A_member_that_finds_its_field_through_a_holder_is_only_given_to_a_field_in_that_holder()
     {
         var templates = DraftTemplates.Parse("## Field members\n\n| Control | Kind | Holder | Member |\n| --- | --- | --- | --- |\n| VSelect | | FormRow | `public SelectRow<{Self}> {Name} => new(this, \"{Label}\");` |\n\n## Button member\n\n```csharp\nB\n```\n\n## Form page\n\n```csharp\n{Members}\n```\n");

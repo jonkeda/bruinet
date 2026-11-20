@@ -370,11 +370,12 @@ what the place is and how it opens; a template that is not there falls back to t
 | `Form test` | The test of a dialog a button named in words opens: `{OpenerMember}` is that button on the page's class |
 | `Card form test` | The test of a dialog a card's own button opens |
 | `Record form test`, `Record card form test` | The same two on the page of one record |
+| `List step` | The wait for a page's list, put where a test's template says `{ListStep}` when the dialog's page shows a list: a page whose list is still loading may not answer a press yet |
 | `Row form test`, `Tab step` | The test of a dialog that a button in a list's row opens (a button that shows only an icon and is no card's own): no member of the page stands for it, so the test presses the button of the first row that has `{Icon}`, after a `Tab step` per tab the list is under (`{TabSteps}`). Such a dialog is named after its page and its tab (`EquipmentBookingsFormDialog`) |
 
 A template is text with places in braces: `{Self}`, `{Page}`, `{Namespace}`, `{PagesNamespace}`, `{Module}`,
 `{Header}`, `{Summary}`, `{Members}`, `{Address}`, `{Form}`, `{Opener}`, `{OpenerMember}`, `{Checks}`, `{Icon}`,
-`{TabSteps}`, and in a member `{Name}` and `{Label}`.
+`{TabSteps}`, `{ListStep}`, and in a member `{Name}` and `{Label}`.
 
 ## Generate
 
