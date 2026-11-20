@@ -41,6 +41,13 @@
     Overrides the config's WebsocketApps: links (Explore's default), warn or ignore. The Blazor sample
     runs with warn unless this says otherwise, so its clicks are explored.
 
+.PARAMETER Factory
+    Runs the factory instead of explore, draft and verify: the app's places are seeded and walked, the app is cut
+    into modules, and loops draft a class and a test per place, build the suite and run the tests on the app
+    (scrape scraper run). The project is a test project from nothing, with the plain site's draft templates
+    (tools/Scripts/factory). The stages are App, Places, Guards, Modules, Run, Suite, Replay and, on the test
+    site, Faults: what each planted fault of the site ended as.
+
 .PARAMETER TurnOff
     A danger-word category to turn off in the project's config while the guard check still expects
     the profile: breaks a guard on purpose, to prove the loop catches it.
@@ -50,6 +57,7 @@
     pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Profile test-tenant -Repeat 3
     pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Agent copilot
     pwsh tools/Scripts/scrape-loop.ps1 -Target sites -Agent none
+    pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Factory
 #>
 param(
     [ValidateSet('test-site', 'blazor-sample', 'plain', 'react', 'vue2', 'blazor', 'sites')][string]$Target = 'test-site',
@@ -58,6 +66,7 @@ param(
     [int]$Repeat = 1,
     [int]$AgentMinutes = 0,
     [string]$TurnOff,
+    [switch]$Factory,
     [ValidateSet('', 'links', 'warn', 'ignore')][string]$WebsocketApps = '',
     [string]$OutDir
 )
@@ -155,19 +164,35 @@ function Stop-App($app) {
 }
 
 function Write-Project([string]$project, [string[]]$references) {
+    # The factory's suite runs its tests: a test project, with the browser and the fixture a plain site's templates use.
+    $tests = if ($Factory) { @"
+
+  <ItemGroup>
+    <ProjectReference Include="$(Join-Path $root 'src/Bruinet.Html.Playwright/Bruinet.Html.Playwright.csproj')" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <Using Include="Xunit" />
+  </ItemGroup>
+"@ } else { '' }
     @"
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>$(if ($Factory) { "`n    <IsPackable>false</IsPackable>`n    <IsTestProject>true</IsTestProject>" })
   </PropertyGroup>
   <ItemGroup>
     $($references -join "`n    ")
-  </ItemGroup>
+  </ItemGroup>$tests
 </Project>
 "@ | Set-Content (Join-Path $project "$($spec.Project).csproj")
+    if ($Factory) {
+        Copy-Item (Join-Path $PSScriptRoot 'factory' 'draft-templates.md') (Join-Path $project 'draft-templates.md')
+        # The fixture is the suite's own: in its namespace, so every test of it sees it.
+        (Get-Content (Join-Path $PSScriptRoot 'factory' 'SiteContext.cs') -Raw).Replace('__NAMESPACE__', $spec.Project) | Set-Content (Join-Path $project 'SiteContext.cs')
+    }
 }
 
 # A new UI test project for the target in the run's folder, restored from nuget.org as Bruinet is.
@@ -232,6 +257,125 @@ function Invoke-Scrape([string[]]$arguments) {
     return @{ Exit = $LASTEXITCODE; Json = $json; Text = $text }
 }
 
+# bruinet scrape for the factory: its exit code and what it said, both streams.
+function Invoke-Factory([string[]]$arguments) {
+    $out = & dotnet $server scrape @arguments --solution $folder --project $spec.Project 2>&1
+    return @{ Exit = $LASTEXITCODE; Text = (($out | ForEach-Object { "$_" }) -join "`n") }
+}
+
+function Last-Line([string]$text) { (($text -split "`n") | Where-Object { $_.Trim() } | Select-Object -Last 1) }
+
+# The factory's stages on a project that is there: places, guards, modules, the loops, the suite, replay.
+function Invoke-FactoryStages($app, [string]$project) {
+    $env:SCRAPE_SITE_URL = $app.Url
+    $env:MSYS_NO_PATHCONV = '1'
+
+    # The planted faults: pages of the test site no link leads to, named in a map, and a class a person wrote wrongly.
+    $faults = @()
+    if ($spec.Counters) {
+        $faults = @(
+            @{ Name = 'two buttons of one name'; Place = '/pages/faults/two-buttons.html' },
+            @{ Name = 'a tab with a count'; Place = '/pages/faults/tab-count.html' },
+            @{ Name = 'a slow page'; Place = '/pages/faults/slow.html' },
+            @{ Name = 'a page that needs a record'; Place = '/pages/record.html?id=7'; Record = $true },
+            @{ Name = 'a wrong hand-written class'; Place = '/pages/catalog.html'; Own = 'Pages/CatalogPage.cs' })
+        $map = Join-Path $folder 'faults-map.md'
+        $mapLines = @('# Pages no link leads to', '') + @($faults | Where-Object { -not $_.Own } | ForEach-Object { '- `' + $_.Place + '`' })
+        $mapLines -join "`n" | Set-Content $map
+        New-Item -ItemType Directory -Force (Join-Path $project 'Pages') | Out-Null
+        @"
+using Bruinet.Core.Locators;
+using Bruinet.Html.Controls.Buttons;
+using Bruinet.Html.Controls.Display;
+using Bruinet.Html.Interfaces;
+using Bruinet.Html.Pages;
+
+namespace $($spec.Project).Pages;
+
+/// <summary>The catalog, as a person wrote it: one member that is right and one that names what the page does not have.</summary>
+public sealed class CatalogPage(IHtmlTestContext context) : PageObjectBase<CatalogPage>(context, "/pages/catalog.html")
+{
+    public LabelControl<CatalogPage> Heading => new(this, Locator.ByCss("h1"));
+
+    public ButtonControl<CatalogPage> Checkout => new(this, Locator.ByCss("[data-testid='no-such-button']"));
+}
+"@ | Set-Content (Join-Path $project 'Pages' 'CatalogPage.cs')
+    }
+
+    $t = Get-Date
+    $seed = Invoke-Factory $(if ($faults.Count) { @('places', 'seed', '--map', $map) } else { @('places', 'seed') })
+    $walk = Invoke-Factory @('places', 'walk', '--headless')
+    ($seed.Text, $walk.Text) -join "`n" | Set-Content (Join-Path $folder 'places-walk.log')
+    $list = Join-Path $project '175-Places.json'
+    $places = if (Test-Path $list) { @((Get-Content $list -Raw | ConvertFrom-Json).places).Count } else { 0 }
+    Add-Stage 'Places' ($walk.Exit -eq 0 -and $places -ge $spec.MinPages) "$places places; $(Last-Line $walk.Text)" $t
+    if ($walk.Exit -ne 0 -or $places -lt $spec.MinPages) { throw 'stop' }
+
+    if ($spec.Counters) {
+        $t = Get-Date
+        $script:counters = Invoke-RestMethod "$($app.Url)_counters"
+        $moved = @($script:counters.PSObject.Properties | Where-Object Value -gt 0 | ForEach-Object Name)
+        Add-Stage 'Guards' ($moved.Count -eq 0) "moved: $(if ($moved.Count) { $moved -join ', ' } else { 'none' })" $t
+        if ($moved.Count) { throw 'stop' }
+    }
+
+    $t = Get-Date
+    $modules = Invoke-Factory @('scraper', 'modules', '--write')
+    $setup = Invoke-Factory @('scraper', 'setup', '--set', 'Run=all', '--set', 'Walkers=2')
+    Add-Stage 'Modules' ($modules.Exit -eq 0 -and $setup.Exit -eq 0) (Last-Line $modules.Text) $t
+    if ($modules.Exit -ne 0 -or $setup.Exit -ne 0) { throw 'stop' }
+
+    # The loops: a batch that stops by a rule is the factory doing its work, and is read from its state.
+    $t = Get-Date
+    $ran = Invoke-Factory @('scraper', 'run', '--no-walk', '--batch', '12', '--headless')
+    $ran.Text | Set-Content (Join-Path $folder 'factory-run.log')
+    $stateFile = Join-Path $project 'state.json'
+    $state = if (Test-Path $stateFile) { Get-Content $stateFile -Raw | ConvertFrom-Json -Depth 20 } else { $null }
+    $loops = if ($state) { @($state.loops) } else { @() }
+    $kept = @($loops | ForEach-Object { $_.kept } | Where-Object { $_ })
+    $reasons = @($loops | ForEach-Object { $_.reasons } | Where-Object { $_ })
+    $byCode = ($reasons | Group-Object code | Sort-Object Count -Descending | ForEach-Object { "$($_.Name) $($_.Count)" }) -join ', '
+    Add-Stage 'Run' ($loops.Count -gt 0 -and $kept.Count -gt 0) "$($loops.Count) loops, $($kept.Count) files kept$(if ($byCode) { "; reasons: $byCode" }); $(Last-Line $ran.Text)" $t
+    if ($loops.Count -eq 0 -or $kept.Count -eq 0) { throw 'stop' }
+    $review = Invoke-Factory @('scraper', 'review')
+
+    # The suite as the factory left it: it builds, and every test it kept passes once more, together.
+    $t = Get-Date
+    $out = & dotnet test $project -v:q -nologo /nr:false 2>&1
+    $summary = ($out | Where-Object { "$_" -match '(Passed|Failed)!\s+-' } | Select-Object -Last 1)
+    Add-Stage 'Suite' ($LASTEXITCODE -eq 0) "$(if ($summary) { "$summary".Trim() } else { ($out | Select-Object -Last 3) -join ' ' })" $t
+    if ($LASTEXITCODE -ne 0) { throw 'stop' }
+
+    $t = Get-Date
+    $replay = Invoke-Factory @('scraper', 'replay')
+    Add-Stage 'Replay' ($replay.Exit -eq 0 -and $replay.Text -match 'nothing changed') (Last-Line $replay.Text) $t
+
+    # What each planted fault ended as: a class the factory kept, a reason it gave, a page it owes a record for, or a
+    # person's class it left alone. A fault with no outcome was not met at all.
+    if ($faults.Count) {
+        $t = Get-Date
+        $status = Invoke-Factory @('scraper', 'status')
+        $outcomes = @()
+        foreach ($fault in $faults) {
+            $key = if ($fault.Record) { ($fault.Place -replace '\d+$', '{id}') } else { $fault.Place }
+            $class = Get-ChildItem (Join-Path $project 'Pages') -Filter *.cs -ErrorAction SilentlyContinue | Where-Object { (Get-Content $_.FullName -TotalCount 1) -match "<scraped page=`"$([regex]::Escape($key))`" variant=`"form`"" } | Select-Object -First 1
+            $reason = $reasons | Where-Object { $_.place -eq $key } | Select-Object -Last 1
+            $outcome = if ($fault.Own) {
+                $own = Join-Path $project $fault.Own
+                if ((Test-Path $own) -and (Get-Content $own -Raw) -match 'no-such-button' -and -not $class) { "left alone: a person's class is not the factory's to change$(if ($reason) { " ($($reason.code))" })" } else { $null }
+            }
+            elseif ($class) { "kept as $($class.BaseName)" }
+            elseif ($reason) { "reason $($reason.code): $("$($reason.evidence)".Substring(0, [math]::Min(110, "$($reason.evidence)".Length)))" }
+            elseif ($fault.Record -and $status.Text -match '(?<n>[1-9]\d*) pages of one record') { "owed as the page of one record: no template says how such a page is opened" }
+            else { $null }
+            $outcomes += "$($fault.Name): $(if ($outcome) { $outcome } else { 'NO OUTCOME' })"
+        }
+        Add-Stage 'Faults' (-not ($outcomes | Where-Object { $_ -match 'NO OUTCOME' })) ($outcomes -join '; ') $t
+    }
+
+    return @{ State = $state; Reasons = $reasons; Kept = $kept }
+}
+
 function Invoke-Agent([string]$solution, [string]$project, [string]$logFile) {
     $minutes = if ($AgentMinutes -gt 0) { $AgentMinutes } else { 10 }
     $prompt = "Use only the bruinet-bdd MCP tools. In the scraped project $($spec.Project), work on the drafted page objects (the *.scraped.cs files): detect_patterns, and for each repeated pattern write a control with write_code; give members better names where the draft's are poor; then check_code until it passes. Do not start or stop recordings, and do not explore."
@@ -263,7 +407,8 @@ function Get-Files([string]$folder) {
     return $files
 }
 
-Write-Host "scrape-loop: $Target, agent $Agent, profile $Profile, $Repeat run(s) into $OutDir"
+if ($Factory -and $Target -ne 'test-site') { throw 'The factory stage runs on the test site: -Target test-site -Factory.' }
+Write-Host "scrape-loop: $Target, $(if ($Factory) { 'the factory' } else { "agent $Agent" }), profile $Profile, $Repeat run(s) into $OutDir"
 Invoke-Build 'tools/Bruinet.Cli/Bruinet.Cli.csproj'
 if ($Target -eq 'test-site') { Invoke-Build 'tests/Bruinet.Scraper.TestSite/Bruinet.Scraper.TestSite.csproj' }
 elseif (-not $spec.Site) { Invoke-Build 'samples/Bruinet.Samples.Blazor.App/Bruinet.Samples.Blazor.App.csproj' }
@@ -295,6 +440,11 @@ for ($run = 1; $run -le $Repeat; $run++) {
         }
         $project = New-TargetProject $folder $app.Url
         Add-Stage 'App' $true "$($app.Url)" $t
+
+        if ($Factory) {
+            $made = Invoke-FactoryStages $app $project
+            throw 'stop'
+        }
 
         $t = Get-Date
         $explore = Invoke-Scrape @('explore', '--solution', $folder, '--project', $spec.Project, '--headless', '--yes')
@@ -365,7 +515,7 @@ for ($run = 1; $run -le $Repeat; $run++) {
     }
     $runs += [ordered]@{
         Run = $run; Folder = $folder; SiteDown = $siteDown
-        Passed = $siteDown -or (-not ($stages.Values | Where-Object { -not $_.Passed }) -and $stages.Contains('Verify'))
+        Passed = $siteDown -or (-not ($stages.Values | Where-Object { -not $_.Passed }) -and $stages.Contains($(if ($Factory) { 'Faults' } else { 'Verify' })))
         Stages = $stages; Counters = $counters
         Explore = if ($explored) { [ordered]@{ Stop = $explored.stop; Captures = @($explored.captures); Skipped = @($explored.skipped); Blocked = @($explored.blocked); Report = $explored.report } } else { $null }
     }

@@ -96,6 +96,41 @@ public sealed class PageFactsTests
 
     // A select's input lies many elements under its row, and a date's row holds a second input for its time.
     [Fact]
+    public void A_field_inside_its_own_label_is_called_what_that_label_says_and_a_tab_drawn_as_a_button_is_no_button()
+    {
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "label", "Email"),
+            N(3, 2, "input", null, ("type", "email")),
+            // The label before it is another field's: this one's own label is around it.
+            N(4, 1, "label", "Description"),
+            N(5, 4, "textarea", null, ("placeholder", "Describe your issue")),
+            N(6, 1, "div", null, ("role", "tablist")),
+            N(7, 6, "button", "Open (3)", ("role", "tab")),
+            N(8, 1, "button", "Refresh"));
+
+        var facts = PageFacts.Of(page);
+
+        Assert.Equal(["Email", "Description"], facts.Fields.Select(field => field.Label));
+        Assert.Equal(["Refresh"], facts.Buttons);
+        Assert.Equal(["Open (3)"], facts.Tabs);
+    }
+
+    [Fact]
+    public void A_button_that_shows_only_an_icon_s_word_and_the_header_of_a_section_are_marked()
+    {
+        var places = new PlaceSigns { Icon = ["material-icons"], SectionHeader = ["panel-header"] };
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "button"),
+            N(3, 2, "i", "arrow_back", ("class", "material-icons")),
+            N(4, 1, "button", "Credentials", ("class", "panel-header")),
+            N(5, 1, "button", "Save"));
+
+        Assert.Equal(["arrow_back (icon)", "Credentials (section)", "Save"], PageFacts.Of(page, null, places).Buttons);
+    }
+
+    [Fact]
     public void A_field_deep_under_its_row_takes_the_row_s_label_and_a_second_field_of_the_row_is_named_after_it()
     {
         var page = Page(

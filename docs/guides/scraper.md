@@ -1,8 +1,10 @@
 # The Scraper
 
 The Scraper records an app's pages into a UI test project and helps an agent (Copilot, Claude) make
-page objects and controls from them. Html and Blazor apps today. The decisions are in
-[AD-027](../../.docs/decisions/ad-027-the-scraper-records-into-the-project-and-calls-no-model.md).
+page objects and controls from them. Html and Blazor apps today. Its factory (`bruinet scrape scraper run`) goes
+further by itself: a class and a test per place of the app, kept only when the test passed. The decisions are in
+[AD-027](../../.docs/decisions/ad-027-the-scraper-records-into-the-project-and-calls-no-model.md) and
+[AD-045](../../.docs/decisions/ad-045-the-factory-keeps-what-a-test-proved.md).
 
 ## How it is used
 
@@ -434,7 +436,33 @@ pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Profile test-tenant -Repea
 pwsh tools/Scripts/scrape-loop.ps1 -Target blazor-sample
 pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Agent copilot
 pwsh tools/Scripts/scrape-loop.ps1 -Target sites -Agent none
+pwsh tools/Scripts/scrape-loop.ps1 -Target test-site -Factory
 ```
+
+`-Factory` runs the factory instead of explore, draft and verify, on the test site, from nothing: a new test
+project with the draft templates for a plain site (`tools/Scripts/factory/draft-templates.md`: Bruinet's own
+controls, a field found by its label, a button by its text) and a browser fixture (`SiteContext.cs`). Its stages:
+
+| Stage | Does | Fails when |
+| --- | --- | --- |
+| Places | `places seed` (the config's start address, and a map of the pages no link leads to) and `places walk --headless` | the walk fails, or finds fewer places than the site has pages |
+| Guards | reads the test site's counters | any counter moved |
+| Modules | `scraper modules --write` and the setup's answers for the run | either fails |
+| Run | `scraper run --no-walk`: loops that draft, build and test | no loop ran, or no file was kept. A batch that stops by a rule is the factory doing its work, and is read from `state.json` |
+| Suite | `dotnet test` on the project as the factory left it | it does not build, or a kept test fails |
+| Replay | `scraper replay` | a class would be drafted differently |
+| Faults | says what each planted fault ended as | a fault has no outcome at all |
+
+The planted faults are pages of the test site (`pages/faults/`) and one class written by hand into the new
+project, each a weakness the factory met on a real app:
+
+| Fault | Ends as |
+| --- | --- |
+| Two buttons of one name | Kept: the class gets two members (`Details`, `Details2`). Both find the first button: a locator by text cannot tell them apart |
+| A tab with a count ("Open (37)", another number on every load) | Kept: the tab is named and found without its count, and a tab drawn as a button is not also a button |
+| A slow page, whose form comes two seconds after the page | A reason, `nothing-to-check`: the walk read the page before its form was there |
+| A page that needs a record (`record.html?id=7`) | Owed as the page of one record: the plain templates do not say how such a page is opened |
+| A wrong hand-written class | Left alone: a person's class is not the factory's to change |
 
 The targets: `test-site` and `blazor-sample` run locally. `plain`, `react`, `vue2` and `blazor` are
 one public page each (the-internet, DemoQA, Element UI, MudBlazor), from the projects in

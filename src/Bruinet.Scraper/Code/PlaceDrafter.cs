@@ -44,6 +44,9 @@ public sealed record PlaceDraft(string ClassName, string Code, IReadOnlyList<(st
 {
     /// <summary>The members a person presses, by name: the form's buttons and the openers of a page's cards. A test of the class checks that each is there.</summary>
     public IReadOnlyList<string> Pressed { get; init; } = [];
+
+    /// <summary>The members that are fields, by name: for a suite whose test checks each field by its member (a template's <c>{FieldChecks}</c>).</summary>
+    public IReadOnlyList<string> Fields { get; init; } = [];
 }
 
 /// <summary>
@@ -235,6 +238,7 @@ public static class PlaceDrafter
             code.Add(required + Fill(template, className, pageClass, name, label));
         }
 
+        List<string> fieldNames = [.. members.Where(member => member.Name != TabsMember).Select(member => member.Name)];
         var buttons = members.Count;
         foreach (var button in Buttons(place, signs))
         {
@@ -266,7 +270,7 @@ public static class PlaceDrafter
             .Replace("{Members}", body, StringComparison.Ordinal)
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Page}", pageClass ?? className, StringComparison.Ordinal);
-        return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted) { Pressed = pressed };
+        return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted) { Pressed = pressed, Fields = fieldNames };
     }
 
     // The shared tabs first: one member, of the part that holds them. The place is given back with only its own tabs.
@@ -316,7 +320,7 @@ public static class PlaceDrafter
             {
                 var name = Unique(TabName(tab), used, templates.Reserved);
                 members.Add((name, tab));
-                code.Add(Fill(tabMember, className, pageClass, name, tab));
+                code.Add(Fill(tabMember, className, pageClass, name, WithoutCount(tab)));
             }
         }
 
@@ -397,8 +401,9 @@ public static class PlaceDrafter
     /// <param name="pressed">The members of the form's class a person presses (<see cref="PlaceDraft.Pressed"/>): the test checks that each is there, where its template has <c>{Checks}</c>.</param>
     /// <param name="saveMember">The form's member that saves: with it the draft is the save test (<see cref="RecordSaveTest"/>), not the test that only looks.</param>
     /// <param name="family">The tabs the page shares with the other pages of its address: the test finds them through the page's member of that part.</param>
+    /// <param name="fields">The members of the form's class that are fields (<see cref="PlaceDraft.Fields"/>): a template's <c>{FieldChecks}</c> checks that each is there. For a suite with no way of its own to hold a form against its class.</param>
     /// <param name="lanes">How many tests of one module may run at once: a template's <c>{Lane}</c> is a number from 1 to this, the same for a class every time, so the tests that only look spread over that many groups.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1, TabFamily? family = null)
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1, TabFamily? family = null, IReadOnlyList<string>? fields = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -420,6 +425,7 @@ public static class PlaceDrafter
             .Replace("{Icon}", Label(place), StringComparison.Ordinal)
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card) + (templates.Blocks.ContainsKey(OpenerByIcon) ? IconOfSeveral(place, signs, beside) : ""), StringComparison.Ordinal)
+            .Replace("{FieldChecks}\n", fields is { Count: > 0 } ? string.Join("\n", fields.Select(member => $"        {scope}.{member}.AssertVisible();")) + "\n" : "", StringComparison.Ordinal)
             .Replace("{Checks}\n", checks.Length == 0 ? "" : checks + "\n", StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
             .Replace("{Header}", Header(place, saveMember is null ? PlaceDraftKind.FormTest : PlaceDraftKind.SaveTest).ToString(), StringComparison.Ordinal)
@@ -530,7 +536,8 @@ public static class PlaceDrafter
     // A label that is an icon's name, as the walk writes a button that shows only an icon.
     private static bool IsIcon(string label, PlaceSigns? signs) => (signs ?? PlaceSigns.None).IconName.Any(start => label.StartsWith(start, StringComparison.Ordinal));
 
-    private static string TabName(string tab) => Identifier(tab) + "Tab";
+    // A tab may end in how many it holds now (Open (3)): the number is today's, the name is the tab's.
+    private static string TabName(string tab) => Identifier(WithoutCount(tab)) + "Tab";
 
     private static string OpenerName(string card) => "Edit" + Identifier(card);
 

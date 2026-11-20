@@ -63,6 +63,7 @@ How this differs from the other trees:
 - [AD-042: Native iOS mirrors native Android](decisions/ad-042-native-ios-mirrors-native-android.md)
 - [AD-043: The walk presses by environment and holds writes](decisions/ad-043-the-walk-presses-by-environment-and-holds-writes.md)
 - [AD-044: One product, four modules](decisions/ad-044-one-product-four-modules.md)
+- [AD-045: The factory keeps what a test proved](decisions/ad-045-the-factory-keeps-what-a-test-proved.md)
 
 ## Contracts
 

@@ -154,4 +154,6 @@ bruinet scrape draft
 bruinet scrape verify --headless
 ```
 
-`tools/Scripts/scrape-loop.ps1` runs explore, draft, an agent and verify this way, unattended.
+`tools/Scripts/scrape-loop.ps1` runs explore, draft, an agent and verify this way, unattended; with `-Factory` it
+runs the factory on the test site from nothing (seed, walk, modules, loops, the suite, replay) and says what each
+planted fault ended as.

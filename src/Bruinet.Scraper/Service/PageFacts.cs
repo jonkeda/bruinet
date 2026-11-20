@@ -106,7 +106,8 @@ public sealed record PageFacts
             Headings = Texts(scope.Where(node => node.Type is "h1" or "h2" or "h3" || node.Role == "heading"), Text),
             // A text editor's own buttons (bold, italic) are the editor's, not the page's.
             // So are a field's own (the cross that clears a select): they lie inside a control a sign names.
-            Buttons = Texts(scope.Where(node => IsButton(node) && !InToolbar(snapshot, node, places) && !InControl(snapshot, node, signs)), node => Text(node) + Mark(snapshot, node, places)),
+            // And a tab that is drawn as a button is a tab: it is among the tabs, not here too.
+            Buttons = Texts(scope.Where(node => IsButton(node) && !places.IsTab(node) && !InToolbar(snapshot, node, places) && !InControl(snapshot, node, signs)), node => Text(node) + Mark(snapshot, node, places)),
             Tabs = Texts(scope.Where(places.IsTab), node => Text(node) + (node.Attribute("aria-selected") == "true" ? " *" : string.Empty)),
             Fields = [.. scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number))).Select(node => Field(snapshot, node, scope, signs ?? [], places, marked)).Where(field => field.Label.Length > 0).DistinctBy(field => (field.Label, field.Kind)).Take(Most)],
             MarkedRequired = Texts(scope.Where(node => Classes(node).Contains("required")), Text),
@@ -154,7 +155,7 @@ public sealed record PageFacts
     {
         var placeholder = field.Attribute("placeholder");
         var named = field.Name is { Length: > 0 } name && !string.Equals(name, placeholder, StringComparison.Ordinal) ? name : null;
-        return Clean(named ?? LabelBeside(snapshot, field, shown, control, places ?? PlaceSigns.None) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
+        return Clean(named ?? LabelAround(snapshot, field) ?? LabelBeside(snapshot, field, shown, control, places ?? PlaceSigns.None) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
     }
 
     /// <summary>The elements of a capture that are on the screen.</summary>
@@ -226,6 +227,19 @@ public sealed record PageFacts
 
     private static bool InControl(ScrapeSnapshot snapshot, ScrapeNode node, IReadOnlyList<ControlSign>? signs)
         => signs is { Count: > 0 } && ControlSign.At(signs, snapshot, node) is { Sign.IsHolder: false };
+
+    // A field written inside its own label (<label>Topic <select>…</select></label>) is called what that label says itself.
+    private static string? LabelAround(ScrapeSnapshot snapshot, ScrapeNode field)
+    {
+        var level = 0;
+        for (var at = field.Parent; at > 0 && level < 4; at = snapshot[at].Parent, level++)
+        {
+            if (snapshot[at].Type == "label")
+                return snapshot[at].Text is { Length: > 0 } own && Clean(own).Length > 0 ? own : null;
+        }
+
+        return null;
+    }
 
     private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
     {

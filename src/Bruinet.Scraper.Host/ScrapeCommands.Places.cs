@@ -235,7 +235,7 @@ public static partial class ScrapeCommands
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var map = new Option<string[]>("--map") { Description = "A Markdown file that names the app's addresses in backticks (repeatable). Default: .testing/170-Map.md when the suite has it.", AllowMultipleArgumentsPerToken = false };
-        var command = new Command("seed", "Add what is known without opening the app: the map's addresses, the addresses of the suite's page objects, and the pages the recordings captured.")
+        var command = new Command("seed", "Add what is known without opening the app: the map's addresses, the addresses of the suite's page objects, the pages the recordings captured, and the address the app starts at.")
         {
             project, solution, list, map,
         };
@@ -260,8 +260,10 @@ public static partial class ScrapeCommands
             var fromSuite = suite is null || io.Services.SuiteAddresses is not { } addresses ? 0
                 : addresses(suite).Select(address => PlacesList.Known(address, PlacesSeeds.Suite)).Count(places.Add);
             var fromRecordings = service.SeedPlaces(name, places);
+            // Where the app starts: the one address every project has, and all a new one has.
+            var fromStart = Uri.TryCreate(service.Project(name).Config.StartUrl, UriKind.Absolute, out var start) && places.Add(PlacesList.Known(start.PathAndQuery + start.Fragment, "config")) ? 1 : 0;
             places.Save(file);
-            await io.Error.WriteLineAsync($"New: {fromMap} from the map, {fromSuite} from the suite's page objects, {fromRecordings} from the recordings. {places.Places.Count} places in {WriteDocument(places, file)}; {places.Frontier.Count()} still to open.").ConfigureAwait(false);
+            await io.Error.WriteLineAsync($"New: {fromMap} from the map, {fromSuite} from the suite's page objects, {fromRecordings} from the recordings, {fromStart} from the config's start address. {places.Places.Count} places in {WriteDocument(places, file)}; {places.Frontier.Count()} still to open.").ConfigureAwait(false);
             return 0;
         });
         return command;

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>A slow page</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <!-- A planted fault for the factory: the page's form comes two seconds after the page. A reading that does not
+       wait sees an empty page; a test that does not wait finds nothing. -->
+  <main>
+    <h1>Report</h1>
+    <div id="late"><p>Loading…</p></div>
+  </main>
+  <script>
+    setTimeout(() => {
+      document.getElementById('late').innerHTML = '<label>Period <input name="period"></label> <button type="button">Show report</button>';
+    }, 2000);
+  </script>
+</body>
+</html>

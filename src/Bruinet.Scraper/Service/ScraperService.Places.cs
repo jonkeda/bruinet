@@ -161,12 +161,7 @@ public sealed partial class ScraperService
             if (kind == PlaceDraftKind.SaveTest)
                 return (SaveTestOf(project, list, place, templates, className, formName, page ?? formName, ns, opens, under), null);
             if (kind == PlaceDraftKind.FormTest)
-            {
-                // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
-                // A class a person wrote for the place names its members its own way: only its fields are checked.
-                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns, under, family).Pressed;
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed, lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: DraftedFrom(project, place.Key, "form") is null ? null : family), null);
-            }
+                return (FormTestOf(project, list, place, templates, className, formName, page ?? formName, ns, opens, under, family), null);
 
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns, under, family);
             return Target(Path.Combine(project.Folder, folder), form);
@@ -175,6 +170,16 @@ public sealed partial class ScraperService
         {
             throw new ScraperProblem(e.Message);
         }
+    }
+
+    // The test checks what a draft of the class has: its fields, and what a person presses by name. A class a person
+    // wrote for the place names its members its own way: only what the suite's own check finds is checked.
+    private static PlaceDraft FormTestOf(ScrapeProject project, PlacesList list, Place place, DraftTemplates templates, string? className, string formName, string page, string ns, List<string>? opens, List<string>? under, TabFamily? family)
+    {
+        var drafted = DraftedFrom(project, place.Key, "form") is null ? null : PlaceDrafter.Form(place, templates, formName, ns, page, opens, project.PlaceSigns, under, family);
+        return PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns,
+            place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), drafted?.Pressed ?? [],
+            lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: drafted is null ? null : family, fields: drafted?.Fields);
     }
 
     // The save test of a dialog on a record's page, for a class the Scraper drafted: it presses the form's own button that saves.

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>A tab with a count</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <!-- A planted fault for the factory: a tab that says how many it holds. The number is today's; a member named
+       after it, or found by it, is wrong tomorrow. The count is drawn when the page loads, differently each time. -->
+  <main>
+    <h1>Tickets</h1>
+    <div role="tablist">
+      <button type="button" role="tab" aria-selected="true" id="open-tab">Open</button>
+      <button type="button" role="tab" aria-selected="false" id="closed-tab">Closed</button>
+    </div>
+    <p>The tickets of the tab.</p>
+  </main>
+  <script>
+    document.getElementById('open-tab').textContent = 'Open (' + (1 + Math.floor(Math.random() * 90)) + ')';
+    document.getElementById('closed-tab').textContent = 'Closed (' + (1 + Math.floor(Math.random() * 90)) + ')';
+  </script>
+</body>
+</html>
