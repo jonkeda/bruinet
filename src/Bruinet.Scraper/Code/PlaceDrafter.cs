@@ -262,6 +262,7 @@ public static class PlaceDrafter
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
             .Replace("{Summary}", summary, StringComparison.Ordinal)
             .Replace("{Address}", record ? PlaceKinds.RecordAddress(place) : place.Key, StringComparison.Ordinal)
+            .Replace("{PageName}", SpecDrafter.PageName(className), StringComparison.Ordinal)
             .Replace("{Members}", body, StringComparison.Ordinal)
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Page}", pageClass ?? className, StringComparison.Ordinal);

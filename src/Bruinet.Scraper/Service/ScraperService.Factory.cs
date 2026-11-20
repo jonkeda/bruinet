@@ -9,6 +9,82 @@ namespace Bruinet.Scraper.Service;
 // The factory's measures: what replaying the kept places gives, and the examples held against their places.
 public sealed partial class ScraperService
 {
+    /// <summary>
+    /// Drafts a spec from the drafted pages of one address (<see cref="SpecDrafter"/>): a rule and an example per page
+    /// that a tab of that address shows, in the suite's own phrases, without the steps the suite's other specs have.
+    /// </summary>
+    /// <param name="projectName">The project.</param>
+    /// <param name="list">The list of places.</param>
+    /// <param name="address">The address the pages share, before its <c>#</c> or <c>?</c> (<c>/project/view</c>).</param>
+    /// <param name="id">The spec's id.</param>
+    /// <param name="title">The spec's title.</param>
+    /// <param name="results">A results file of a run of the spec's scenarios: a rule whose scenario failed is left out. Null for none.</param>
+    /// <returns>The draft, and the file it belongs in: the specs folder beside the pages' folder.</returns>
+    /// <exception cref="ScraperProblem">The suite's templates do not say how a spec is written for the address, or no drafted page of it is reached by a tab.</exception>
+    public (SpecDraft Draft, string File) DraftSpec(string? projectName, PlacesList list, string address, string id, string title, string? results = null)
+    {
+        ArgumentNullException.ThrowIfNull(list);
+        var project = Project(projectName);
+        var templatesFile = Path.Combine(project.Home, DraftTemplates.FileName);
+        var templates = File.Exists(templatesFile) ? DraftTemplates.Parse(File.ReadAllText(templatesFile)) : throw new ScraperProblem($"{project.Name} has no {DraftTemplates.FileName}.");
+        if (!SpecDrafter.CanDraft(templates, address))
+            throw new ScraperProblem($"{DraftTemplates.FileName} does not say how a spec is written for {address}: it needs '## {SpecDrafter.Head}', '## {SpecDrafter.Opening}{address}', '## {SpecDrafter.PageSteps}', '## {SpecDrafter.ButtonStep}' and '## {SpecDrafter.PageRule}'.");
+
+        var pages = new List<SpecPage>();
+        foreach (var (place, snapshot) in KeptPlaces(project.Name, list).Where(each => each.Place.Kind == PlaceKind.Page).OrderBy(each => each.Place.Key, StringComparer.Ordinal))
+        {
+            if (PlaceDrafter.FamilyOf(place, list.Places, templates) is not { } family || family.Path != address || DraftedFrom(project, place.Key, "form") is not { } className)
+                continue;
+            // The tab that shows the page: the one its capture has selected, of the tabs its address shares.
+            var selected = PageFacts.Of(snapshot, project.ControlSigns, project.PlaceSigns).Tabs.Where(tab => tab.EndsWith(" *", StringComparison.Ordinal)).Select(tab => Place.Clean(tab[..^2]));
+            if (selected.FirstOrDefault(tab => family.Tabs.Contains(tab, StringComparer.Ordinal)) is not { } shownBy)
+                continue;
+            var (opens, under) = OpensOn(list, place);
+            var form = PlaceDrafter.Form(place, templates, className, "", null, opens, project.PlaceSigns, under, family);
+            var buttons = form.Members.Where(member => form.Pressed.Contains(member.Name) && place.Buttons.Any(button => button == member.Label || button == member.Label + " (disabled)")).Select(member => member.Label).ToList();
+            pages.Add(new SpecPage(place.Key, shownBy, SpecDrafter.PageName(className), buttons));
+        }
+
+        if (pages.Count == 0)
+            throw new ScraperProblem($"No drafted page at {address} is shown by a tab its address shares: there is nothing to draft a spec from.");
+        var (folder, _) = project.PagesFor(pages[0].Place);
+        var specs = Path.Combine(project.Folder, Path.GetDirectoryName(folder.TrimEnd('/', '\\')) ?? "", "Specs");
+        var file = Path.Combine(specs, id + ".spec.md");
+        // What the suite's other specs say already is not said again.
+        var existing = Directory.EnumerateFiles(project.Folder, "*.spec.md", SearchOption.AllDirectories)
+            .Where(each => !string.Equals(Path.GetFullPath(each), Path.GetFullPath(file), StringComparison.OrdinalIgnoreCase) && !each.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.Ordinal))
+            .SelectMany(each => SpecDrafter.StepsOf(File.ReadAllText(each))).ToHashSet(StringComparer.Ordinal);
+        return (SpecDrafter.Draft(id, title, address, pages, templates, existing, results is null ? null : FailedPlaces(results, id, pages, templates, existing)), file);
+    }
+
+    // The pages whose scenario failed in a run: a scenario is named after its rule (B7.PRJ.04.R3 …), and a rule's
+    // number is its page's place in the draft those scenarios were run from.
+    private static Dictionary<string, string> FailedPlaces(string results, string id, IReadOnlyList<SpecPage> pages, DraftTemplates templates, IReadOnlySet<string> existing)
+    {
+        var before = SpecDrafter.Draft(id, "x", pages.Count == 0 ? "" : PlaceDrafterFamilyPath(pages[0].Place), pages, templates, existing);
+        var failed = new Dictionary<string, string>(StringComparer.Ordinal);
+        var ruled = pages.Where(page => !before.LeftOut.Any(left => left.StartsWith(page.Place + ":", StringComparison.Ordinal))).ToList();
+        foreach (var outcome in Testing.TestRunner.ReadTrx(File.ReadAllText(results)).Where(outcome => !outcome.Passed))
+        {
+            var at = outcome.Name.IndexOf(id + ".R", StringComparison.Ordinal);
+            if (at < 0)
+                continue;
+            var digits = new string([.. outcome.Name[(at + id.Length + 2)..].TakeWhile(char.IsAsciiDigit)]);
+            if (!int.TryParse(digits, System.Globalization.NumberStyles.None, System.Globalization.CultureInfo.InvariantCulture, out var number) || number < 1 || number > ruled.Count)
+                continue;
+            var said = string.Join(' ', (outcome.Message ?? "failed").Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            failed[ruled[number - 1].Place] = said.Length > 200 ? said[..200] + "…" : said;
+        }
+
+        return failed;
+    }
+
+    private static string PlaceDrafterFamilyPath(string key)
+    {
+        var cut = key.IndexOfAny(['#', '?']);
+        return cut < 0 ? key : key[..cut];
+    }
+
     private sealed record DraftedFile(string Key, string File, ScrapedHeader Header);
 
     private static IEnumerable<DraftedFile> DraftedFiles(Bruinet.Scraper.Projects.ScrapeProject project) =>

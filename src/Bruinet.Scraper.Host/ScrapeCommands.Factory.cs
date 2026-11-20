@@ -11,8 +11,43 @@ public static partial class ScrapeCommands
 {
     private static Command Factory(HostIo io) => new("scraper", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
-        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io), FactoryPatterns(io), FactoryBrief(io), FactoryPromote(io),
+        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io), FactoryPatterns(io), FactoryBrief(io), FactoryPromote(io), FactorySpec(io),
     };
+
+    private static Command FactorySpec(HostIo io)
+    {
+        var (solution, project, list) = (Solution(), Project(), ListFile());
+        var address = new Argument<string>("address") { Description = "The address the pages share, before its # or ? (/project/view)." };
+        var id = new Option<string>("--id") { Description = "The spec's id (B7.PRJ.04).", Required = true };
+        var title = new Option<string>("--title") { Description = "The spec's title.", Required = true };
+        var write = new Option<bool>("--write") { Description = "Write the spec into the specs folder beside the pages' folder, as <id>.spec.md. A spec that is there and is not a draft (its Status is not 'draft') is not written over." };
+        var results = new Option<string?>("--results") { Description = "A results file (.trx) of a run of this spec's scenarios: a rule whose scenario failed is left out, with what the test said." };
+        var command = new Command("spec", "Draft a spec from the drafted pages of one address: a rule and an example per page a tab shows, in the suite's own phrases (the 'Spec …' blocks of draft-templates.md), without any step the suite's other specs have already. A draft for a person to give its intent and to accept.")
+        {
+            address, project, solution, list, id, title, write, results,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var name = ProjectName(service, parsed.GetValue(project), io);
+            var (draft, file) = service.DraftSpec(name, PlacesList.Load(PlacesFile(service, parsed.GetValue(project), parsed.GetValue(list), io)), parsed.GetValue(address)!, parsed.GetValue(id)!, parsed.GetValue(title)!, parsed.GetValue(results));
+            foreach (var left in draft.LeftOut)
+                await io.Error.WriteLineAsync($"Left out: {left}").ConfigureAwait(false);
+            if (!parsed.GetValue(write))
+            {
+                await io.Out.WriteAsync(draft.Text).ConfigureAwait(false);
+                return 0;
+            }
+
+            if (File.Exists(file) && !(await File.ReadAllTextAsync(file, cancellationToken).ConfigureAwait(false)).Contains("| Status | draft", StringComparison.Ordinal))
+                throw new Bruinet.Scraper.Service.ScraperProblem($"{file} is there and is not a draft: it is a person's now, and is not written over.");
+            Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+            await File.WriteAllTextAsync(file, draft.Text, cancellationToken).ConfigureAwait(false);
+            await io.Error.WriteLineAsync($"{draft.Rules.Count} rules written to {file}.").ConfigureAwait(false);
+            return 0;
+        });
+        return command;
+    }
 
     private static Command FactoryPromote(HostIo io)
     {
