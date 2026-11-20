@@ -162,7 +162,7 @@ public sealed record PageFacts
     {
         var placeholder = field.Attribute("placeholder");
         var named = field.Name is { Length: > 0 } name && !string.Equals(name, placeholder, StringComparison.Ordinal) ? name : null;
-        return Clean(named ?? LabelAround(snapshot, field) ?? LabelBeside(snapshot, field, shown, control, places ?? PlaceSigns.None) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
+        return Clean(named ?? LabelAround(snapshot, field) ?? LabelBeside(snapshot, field, shown, control, places ?? PlaceSigns.None) ?? LabelFor(snapshot, field) ?? placeholder ?? Given(field.Attribute("name")) ?? Given(field.Attribute("id")) ?? string.Empty);
     }
 
     /// <summary>The elements of a capture that are on the screen.</summary>
@@ -247,6 +247,14 @@ public sealed record PageFacts
 
         return null;
     }
+
+    // A label that names the field by its id (<label for="title">Title</label>), wherever it stands: asked after the
+    // label around and the label beside, so a page those name is named as it was. A radio's label names one choice, not the field. (Asked before the label beside, 42
+    // fields of Bouw7 read differently: a lead, not taken.)
+    private static string? LabelFor(ScrapeSnapshot snapshot, ScrapeNode field)
+        => field.Attribute("id") is { Length: > 0 } id && !string.Equals(field.Attribute("type"), "radio", StringComparison.OrdinalIgnoreCase)
+            ? snapshot.Nodes.FirstOrDefault(node => node.Type == "label" && string.Equals(node.Attribute("for"), id, StringComparison.Ordinal) && node.Text is { Length: > 0 } text && Clean(text).Length > 0)?.Text
+            : null;
 
     private static bool InToolbar(ScrapeSnapshot snapshot, ScrapeNode node, PlaceSigns places)
     {

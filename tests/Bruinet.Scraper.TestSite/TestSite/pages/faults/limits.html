@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Limits</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+  <!-- Planted for the factory's facts: a form whose fields state their limits in attributes (a longest, a least, a
+       number's range and step, a pattern), and one field that states nothing. No link leads here. -->
+  <main>
+    <h1>Limits</h1>
+    <form onsubmit="event.preventDefault();">
+      <label for="title">Title</label>
+      <input id="title" name="title" maxlength="40" minlength="2" required>
+
+      <label for="code">Code</label>
+      <input id="code" name="code" maxlength="6" pattern="[A-Z]{2}[0-9]{4}">
+
+      <label for="amount">Amount</label>
+      <input id="amount" name="amount" type="number" min="1" max="500" step="5">
+
+      <label for="remark">Remark</label>
+      <input id="remark" name="remark">
+
+      <button type="submit">Keep</button>
+    </form>
+  </main>
+</body>
+</html>

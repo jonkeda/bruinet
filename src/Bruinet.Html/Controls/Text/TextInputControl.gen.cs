@@ -111,6 +111,15 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
     }
 
     #endregion
+    #region Overfill
+
+    [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]
+    public TScope Overfill(string? text, int? timeoutMs = null)
+    {
+        return RunDoWithElement(element => { OverfillCore(element, text, timeoutMs); }, timeoutMs);
+    }
+
+    #endregion
     #region Submit
 
     [global::System.CodeDom.Compiler.GeneratedCode("Bruinet.Generator", "1.0")]

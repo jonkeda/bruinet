@@ -120,6 +120,28 @@ public partial class TextInputControl<TScope> : FocusableControlBase<TScope>, IE
             $"a value containing '{text}'", timeoutMs);
     }
 
+    /// <summary>
+    /// Fills <paramref name="text"/> into a field that may keep less of it (a <c>maxlength</c>, a mask), and confirms
+    /// only that the field holds something: what it kept is read after, with <c>GetText</c>. For finding a field's
+    /// limit; a test that enters a value uses <c>SetText</c>, which confirms the value took.
+    /// </summary>
+    /// <param name="element">The pre-found element.</param>
+    /// <param name="text">The text; null skips.</param>
+    /// <param name="timeoutMs">Optional timeout in milliseconds.</param>
+    protected virtual void OverfillCore(IHtmlElement element, string? text, int? timeoutMs = null)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        if (element.GetAttribute("readonly") is not null)
+            throw new Bruinet.Core.Exceptions.ActionRefusedException($"'{Locator}' is read-only: it takes no text.");
+
+        ActAndConfirm(
+            "Fill", () => element.Fill(text),
+            () => element.InputValue, value => !string.IsNullOrEmpty(value),
+            "a value", timeoutMs);
+    }
+
     /// <summary>Submits the input's form.</summary>
     /// <param name="element">The pre-found element.</param>
     /// <param name="timeoutMs">Optional timeout in milliseconds.</param>

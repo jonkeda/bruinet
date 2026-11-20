@@ -88,6 +88,30 @@ public sealed class FieldFactTests
     }
 
     [Fact]
+    public void What_a_test_saw_when_it_typed_is_added_and_the_place_is_as_it_was()
+    {
+        var list = new PlacesList();
+        list.Add(new Place { Key = "/contact#/create", Kind = PlaceKind.Page, State = PlaceState.FormNotSaved, Fields = ["Postcode (text)", "E-mail (text)"], FieldFacts = ["Postcode: max length 20 (stated, maxlength)"] });
+
+        PlacesSeeds.AddRun(list, """{"place":"/contact#/create","facts":["Postcode: max length 20 (seen, typed 300 characters)","E-mail: message when wrong not a valid email address (seen, typed x)","Postcode: max length 9 (read, a script)","no fact"]}""");
+        PlacesSeeds.AddRun(list, """{"place":"/nowhere","facts":["Name: max length 5 (seen, typed 300 characters)"]}""");
+
+        var place = list["/contact#/create"]!;
+        Assert.Equal(PlaceState.FormNotSaved, place.State);
+        Assert.Null(list["/nowhere"]);
+        Assert.Equal(["Postcode: max length 20 (stated, maxlength)", "Postcode: max length 20 (seen, typed 300 characters)", "E-mail: message when wrong not a valid email address (seen, typed x)"], place.FieldFacts);
+
+        // What was seen counts for more than what is stated, and a wrong value's message stands in the Message cell.
+        var table = FieldFact.Table(place).Split('\n');
+        Assert.Equal("| Postcode | text | ☐ | ? | 20 |  | max length: seen, typed 300 characters |", table[2]);
+        Assert.Equal("| E-mail | text | ☐ | ? | ? | wrong value: not a valid email address | message when wrong: seen, typed x |", table[3]);
+
+        // Seen again with another length: the old one goes.
+        PlacesSeeds.AddRun(list, """{"place":"/contact#/create","facts":["Postcode: max length 10 (seen, typed 300 characters)"]}""");
+        Assert.Equal(["Postcode: max length 20 (stated, maxlength)", "E-mail: message when wrong not a valid email address (seen, typed x)", "Postcode: max length 10 (seen, typed 300 characters)"], list["/contact#/create"]!.FieldFacts);
+    }
+
+    [Fact]
     public void A_line_that_is_no_fact_is_none()
     {
         Assert.Null(FieldFact.Parse("Name (text, VTextField, required)"));

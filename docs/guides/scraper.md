@@ -434,8 +434,15 @@ against, does not change when a fact is learned.
 | Level | Means | Comes from |
 | --- | --- | --- |
 | `stated` | The page says so itself | The field's attributes in a capture: `maxlength`, `minlength`, `min`, `max`, `step`, `pattern`, `inputmode`, `autocomplete`. A capture made before these were kept states nothing: walk the page again |
-| `seen` | The app did it when asked | What a form said when a test saved it empty (`places add --from-run`): `Waste: message when empty Waste is required (seen, saved empty)` |
+| `seen` | The app did it when asked | What a test wrote down (`places add --from-run`). Saved empty: `Waste: message when empty Waste is required (seen, saved empty)`. Typed and not saved: `Postcode: max length 20 (seen, typed 300 characters)`, `E-mail: message when wrong not a valid email address (seen, typed x)` |
 | `read` | A script says so and nobody tried | Nothing reads scripts for rules yet |
+
+The walk fills no form (AD-043), so typing is a test's work: it types through the page object what does not fit,
+reads what the field kept and what the form said, and writes a line `{"place": …, "facts": […]}` to the file the
+save tests write to. Such a line adds facts and leaves the place's state as it was. A text control has `Overfill`
+for it: it fills a field that may keep less and confirms only that it holds something, where `SetText` confirms the
+value took. What was seen counts for more than what is stated: the field table shows the seen limit when there are
+both, and a field's message for a wrong value stands in its Message cell after `wrong value:`.
 
 `bruinet scrape places fields --facts` lists them; `places fields --table "<place>"` prints a place's fields as a
 spec's field table (Field, Kind, Required, Min, Max, Message, From), where a stated or seen limit is a cell, one

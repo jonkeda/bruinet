@@ -117,6 +117,23 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void A_field_a_label_names_by_its_id_is_called_what_that_label_says()
+    {
+        // The label stands after its field and under another element: no label is around the field or before it.
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "input", null, ("id", "code"), ("name", "c"), ("maxlength", "6")),
+            N(3, 1, "footer"),
+            N(4, 3, "label", "Code", ("for", "code")),
+            N(5, 3, "label", "Nothing's", ("for", "none")));
+
+        var facts = PageFacts.Of(page);
+
+        Assert.Equal(["Code"], facts.Fields.Select(field => field.Label));
+        Assert.Equal(["Code: max length 6 (stated, maxlength)"], facts.FieldFacts.Select(fact => fact.ToText()));
+    }
+
+    [Fact]
     public void A_field_states_what_it_takes_by_its_attributes()
     {
         var page = Page(

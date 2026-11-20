@@ -280,7 +280,9 @@ function Invoke-FactoryStages($app, [string]$project) {
             @{ Name = 'a page that needs a record'; Place = '/pages/record.html?id=7'; Record = $true },
             @{ Name = 'a wrong hand-written class'; Place = '/pages/catalog.html'; Own = 'Pages/CatalogPage.cs' })
         $map = Join-Path $folder 'faults-map.md'
-        $mapLines = @('# Pages no link leads to', '') + @($faults | Where-Object { -not $_.Own } | ForEach-Object { '- `' + $_.Place + '`' })
+        # A page planted for the facts: its fields state their limits. It is no fault: nothing has to go wrong on it.
+        $limits = '/pages/faults/limits.html'
+        $mapLines = @('# Pages no link leads to', '') + @($faults | Where-Object { -not $_.Own } | ForEach-Object { '- `' + $_.Place + '`' }) + @('- `' + $limits + '`')
         $mapLines -join "`n" | Set-Content $map
         New-Item -ItemType Directory -Force (Join-Path $project 'Pages') | Out-Null
         @"
@@ -349,6 +351,19 @@ public sealed class CatalogPage(IHtmlTestContext context) : PageObjectBase<Catal
     $t = Get-Date
     $replay = Invoke-Factory @('scraper', 'replay')
     Add-Stage 'Replay' ($replay.Exit -eq 0 -and $replay.Text -match 'nothing changed') (Last-Line $replay.Text) $t
+
+    # What the planted form states of its fields is in the list as facts once the loops have read its capture, and the field that states
+    # nothing has none.
+    if ($faults.Count) {
+        $t = Get-Date
+        $facts = Invoke-Factory @('places', 'fields', '--facts')
+        $stated = @('Title: max length 40 (stated, maxlength)', 'Title: min length 2 (stated, minlength)', 'Code: pattern [A-Z]{2}[0-9]{4} (stated, pattern)', 'Amount: min 1 (stated, min)', 'Amount: max 500 (stated, max)', 'Amount: step 5 (stated, step)')
+        $absent = @($stated | Where-Object { -not $facts.Text.Contains($_) })
+        $table = Invoke-Factory @('places', 'fields', '--table', $limits)
+        $rows = $table.Text -match '\| Title \| text \| . \| 2 \| 40 \|' -and $table.Text -match '\| Amount \| number \| . \| 1 \| 500 \|' -and $table.Text -match '\| Remark \| text \| . \| \? \| \? \|'
+        $facts.Text + "`n" + $table.Text | Set-Content (Join-Path $folder 'facts.log')
+        Add-Stage 'Facts' ($absent.Count -eq 0 -and $rows -and $facts.Text -notmatch 'Remark:') "$($stated.Count - $absent.Count) of $($stated.Count) stated facts in the list$(if ($absent.Count) { '; not there: ' + ($absent -join ', ') }); the field table $(if ($rows) { 'has' } else { 'does not have' }) their cells" $t
+    }
 
     # What each planted fault ended as: a class the factory kept, a reason it gave, a page it owes a record for, or a
     # person's class it left alone. A fault with no outcome was not met at all.

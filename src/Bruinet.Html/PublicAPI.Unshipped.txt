@@ -279,6 +279,7 @@ Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetText(string? text, int? t
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.Submit(int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, Bruinet.Core.Locators.Locator! locator) -> void
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.TextInputControl(Bruinet.Html.Interfaces.IHtmlScope<TScope>! scope, string! selectorOrId) -> void
+Bruinet.Html.Controls.Text.TextInputControl<TScope>.Overfill(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.TypeText(string? text, int? timeoutMs = null) -> TScope
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.WaitPlaceholder(string? expected, int? timeoutMs = null) -> bool
 Bruinet.Html.Controls.Text.TextInputControl<TScope>.WaitReadOnly(bool? expected = true, int? timeoutMs = null) -> bool
@@ -602,6 +603,7 @@ virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.IsReadOnlyCore(Bruin
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetSecretCore(Bruinet.Html.Interfaces.IHtmlElement! element, string! secret, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SetTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? text, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.SubmitCore(Bruinet.Html.Interfaces.IHtmlElement! element, int? timeoutMs = null) -> void
+virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.OverfillCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? text, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.Text.TextInputControl<TScope>.TypeTextCore(Bruinet.Html.Interfaces.IHtmlElement! element, string? text, int? timeoutMs = null) -> void
 virtual Bruinet.Html.Controls.ToggleControlBase<TScope>.IsCheckedCore(Bruinet.Html.Interfaces.IHtmlElement? element) -> bool?
 virtual Bruinet.Html.Controls.ToggleControlBase<TScope>.SetCheckedCore(Bruinet.Html.Interfaces.IHtmlElement! element, bool? checked, int? timeoutMs = null) -> void

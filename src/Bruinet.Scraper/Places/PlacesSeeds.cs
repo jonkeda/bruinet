@@ -103,6 +103,14 @@ public static partial class PlacesSeeds
         {
             if (System.Text.Json.JsonSerializer.Deserialize<SavedForm>(line, json) is not { Place.Length: > 0 } saved)
                 continue;
+            // A test that only typed, and saved nothing: what it saw of the fields is added, and the place is as it was.
+            if (saved.Facts is { Count: > 0 } seen && saved.Required is null && saved.Landed is null && saved.Record is null)
+            {
+                if (list[saved.Place] is not null)
+                    list.Add(new Place { Key = saved.Place, Kind = list[saved.Place]!.Kind, State = PlaceState.Known, Sources = [Run], FieldFacts = [.. seen.Where(fact => FieldFact.Parse(fact) is { Level: FieldFact.SeenLevel })] });
+                continue;
+            }
+
             var notes = new List<string>();
             if (saved.Required is { Count: > 0 } required)
                 notes.Add("saved empty it says: " + string.Join("; ", required));
@@ -145,4 +153,8 @@ public static partial class PlacesSeeds
 /// <param name="Landed">The address after the save; null when the form stayed.</param>
 /// <param name="Record">The address of the record the save made; null when it has none of its own.</param>
 /// <param name="Note">Anything else: how the record is deleted.</param>
-public sealed record SavedForm(string Place, IReadOnlyList<string>? Required, string? Landed, string? Record, string? Note);
+public sealed record SavedForm(string Place, IReadOnlyList<string>? Required, string? Landed, string? Record, string? Note)
+{
+    /// <summary>What a test saw of the form's fields when it typed in them, each a fact's line (<c>Name: max length 255 (seen, typed 300 characters)</c>).</summary>
+    public IReadOnlyList<string>? Facts { get; init; }
+}

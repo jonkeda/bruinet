@@ -170,7 +170,9 @@ public sealed class PlacesList
         if (found.Count == 0)
             return held;
         var stated = found.Any(line => FieldFact.Parse(line)?.Level == FieldFact.StatedLevel);
-        return [.. held.Where(line => !stated || FieldFact.Parse(line)?.Level != FieldFact.StatedLevel).Concat(found).Distinct(StringComparer.Ordinal)];
+        // What is seen again of a field replaces what was seen of it before: a limit that changed is not kept twice.
+        var again = found.Select(FieldFact.Parse).OfType<FieldFact>().Where(fact => fact.Level == FieldFact.SeenLevel).Select(fact => (fact.Field, fact.Name)).ToHashSet();
+        return [.. held.Where(line => FieldFact.Parse(line) is not { } fact || (fact.Level == FieldFact.StatedLevel ? !stated : !again.Contains((fact.Field, fact.Name)))).Concat(found).Distinct(StringComparer.Ordinal)];
     }
 
     private static PlaceState Later(PlaceState held, PlaceState found) => (held, found) switch

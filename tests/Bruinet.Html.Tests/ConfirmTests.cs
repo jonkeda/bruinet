@@ -69,6 +69,26 @@ public class ConfirmTests
     }
 
     [Fact]
+    public void AFieldThatKeepsLessThanWasTyped_FailsSetText_AndTakesOverfill()
+    {
+        // A field with a longest of four: it keeps the first four characters of what is filled.
+        var kept = string.Empty;
+        _input.Setup(e => e.Fill(It.IsAny<string>())).Callback<string>(value => kept = value[..Math.Min(4, value.Length)]);
+        _input.Setup(e => e.InputValue).Returns(() => kept);
+
+        var page = new Page(_context.Object);
+        var error = Record.Exception(() => page.Title.SetText("abcdefgh", timeoutMs: 100));
+        page.Title.Overfill("abcdefgh", timeoutMs: 300);
+
+        Assert.Contains("did not take it", Assert.IsType<InvalidOperationException>(error).Message);
+        Assert.Equal("abcd", page.Title.GetText());
+
+        // A read-only field takes no text, as with SetText.
+        _input.Setup(e => e.GetAttribute("readonly")).Returns(string.Empty);
+        Assert.IsType<ActionRefusedException>(Record.Exception(() => page.Title.Overfill("abcdefgh", timeoutMs: 100)));
+    }
+
+    [Fact]
     public void AnEffectReadAsAList_IsNamedByItsItems()
     {
         var error = Record.Exception(() => new Page(_context.Object).Pick.Choose("00002 - Project 001"));
