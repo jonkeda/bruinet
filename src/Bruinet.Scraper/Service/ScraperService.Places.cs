@@ -153,10 +153,16 @@ public sealed partial class ScraperService
             // A form's test names the class that was drafted from the place, whatever it was called then.
             var formName = DraftedFrom(project, place.Key, "form")
                 ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns, PlaceDrafter.Beside(list.Places, place));
-            if (kind == PlaceDraftKind.FormTest)
-                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place)), null);
             // What a page's cards open: the dialogs of the page that the walk named after a card.
             var opens = place.Kind == PlaceKind.Page ? list.Places.Where(each => each.Kind == PlaceKind.Dialog && each.Parent == place.Key).Select(each => each.Key[(each.Key.LastIndexOf(" › ", StringComparison.Ordinal) + 3)..]).ToList() : null;
+            if (kind == PlaceDraftKind.FormTest)
+            {
+                // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
+                // A class a person wrote for the place names its members its own way: only its fields are checked.
+                IReadOnlyList<string> pressed = DraftedFrom(project, place.Key, "form") is null ? [] : PlaceDrafter.Form(place, templates, formName, ns, page ?? formName, opens, project.PlaceSigns).Pressed;
+                return (PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page ?? formName, ns, project.PlaceSigns, place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), pressed), null);
+            }
+
             var form = PlaceDrafter.Form(place, templates, className ?? formName, ns, page, opens, project.PlaceSigns);
             return Target(Path.Combine(project.Folder, folder), form);
         }

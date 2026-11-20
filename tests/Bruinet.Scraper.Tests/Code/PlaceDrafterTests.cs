@@ -122,6 +122,23 @@ public sealed class PlaceDrafterTests
     }
 
     [Fact]
+    public void A_test_checks_what_a_person_presses_beside_the_fields_and_a_template_without_checks_stays_as_it_is()
+    {
+        var form = PlaceDrafter.Form(DayOff, Templates, "DayOffDialog", "Shop.Pages", "DaysOffPage", signs: Signs);
+        Assert.Equal(["Cancel", "Create", "Save"], form.Pressed);
+
+        var with = DraftTemplates.Parse("## Form test\n\n```csharp\nopen {Form}\n{Checks}\nclose\n```\n");
+        var checkedTest = PlaceDrafter.FormTest(DayOff, with, "DayOffDialogTests", "Shop.Tests", "DayOffDialog", "DaysOffPage", signs: Signs, pressed: form.Pressed);
+        Assert.Equal("open DayOffDialog\n        form.Cancel.AssertVisible();\n        form.Create.AssertVisible();\n        form.Save.AssertVisible();\nclose\n", checkedTest.Code);
+
+        // Nothing to check leaves no empty line, and a page's members are the page's.
+        Assert.Equal("open DayOffDialog\nclose\n", PlaceDrafter.FormTest(DayOff, with, "DayOffDialogTests", "Shop.Tests", "DayOffDialog", "DaysOffPage", signs: Signs).Code);
+        var page = new Place { Key = "/day-off", State = PlaceState.Seen, Tabs = ["All"] };
+        var pageTest = PlaceDrafter.FormTest(page, DraftTemplates.Parse("## Form page test\n\n```csharp\n{Checks}\n```\n"), "DayOffPageTests", "Shop.Tests", "DayOffPage", "DayOffPage", signs: Signs, pressed: ["Export"]);
+        Assert.Equal("        page.AllTab.AssertVisible();\n        page.Export.AssertVisible();\n", pageTest.Code);
+    }
+
+    [Fact]
     public void A_card_with_two_buttons_that_each_open_a_dialog_gets_a_member_and_a_class_per_button()
     {
         var templates = DraftTemplates.Parse("## Form page\n\n```csharp\n{Members}\n```\n\n## Opener member\n\n```csharp\none {Name} of {Label}\n```\n\n## Opener member by icon\n\n```csharp\n{Name} of {Label} by {Icon}\n```\n\n## Card form test\n\n```csharp\ncard {Page}.{OpenerMember}\n```\n");

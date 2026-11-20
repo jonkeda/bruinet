@@ -192,7 +192,7 @@ public sealed partial class ScraperService
                     continue; // a test of that name is a person's, or an earlier loop's: it is not written over
                 if (Regex.IsMatch(suite.Text, $@"\bclass\s+{Regex.Escape(test.ClassName)}\b"))
                     continue;
-                if (list[key]?.Parent is { } parent && GivePageWhatTheTestNames(project, list, parent, test.Code) is { } given)
+                if (list[key]?.Parent is { } parent && GivePageWhatTheTestNames(project, list, parent, test.Code, key) is { } given)
                     written.Add(new Written(given.File, parent, given.Class, IsTest: false) { Before = given.Before });
                 Write(testFile, test.Code);
                 written.Add(new Written(testFile, key, test.ClassName, IsTest: true) { Of = exists ? null : form.ClassName });
@@ -206,28 +206,47 @@ public sealed partial class ScraperService
 
     // A dialog's test presses a member of its page. A page's class that lacks it (a person's, or one drafted before the
     // opener was on the page) gets it from a draft of the page: that member and no other, and nothing of its own changes.
-    // Returns the file that changed, what it held, and the class; null when nothing was added.
-    internal (string File, string Before, string Class)? GivePageWhatTheTestNames(ScrapeProject project, PlacesList list, string pageKey, string test)
+    // The opener may lie under a tab of the page (the dialog's key names the tab between the two): what that tab shows
+    // is the page's to name as well. Returns the file that changed, what it held, and the class; null when nothing was added.
+    internal (string File, string Before, string Class)? GivePageWhatTheTestNames(ScrapeProject project, PlacesList list, string pageKey, string test, string? dialogKey = null)
     {
         if (list[pageKey] is null || (PageClassAt(project, pageKey) ?? DraftedFrom(project, pageKey, "form")) is not { } name || ClassFile(project, name) is not { } file)
             return null;
-        try
+        var before = File.ReadAllText(file);
+        var now = before;
+        foreach (var source in new[] { pageKey }.Concat(TabsBetween(list, pageKey, dialogKey)))
         {
-            var (draft, _) = DraftPlace(project.Name, list, pageKey, PlaceDraftKind.Form, name);
-            var named = draft.Members.Select(member => member.Name).Where(member => Regex.IsMatch(test, $@"\.{Regex.Escape(member)}\b")).ToList();
-            if (named.Count == 0)
-                return null;
-            var before = File.ReadAllText(file);
-            var merged = ClassMerge.Merge(before, draft.Code, name, addOnly: true, only: named);
-            if (merged.Added.Count == 0)
-                return null;
-            File.WriteAllText(file, merged.Code);
-            return (file, before, name);
+            try
+            {
+                var (draft, _) = DraftPlace(project.Name, list, source, PlaceDraftKind.Form, name, name);
+                var named = draft.Members.Select(member => member.Name).Where(member => Regex.IsMatch(test, $@"\.{Regex.Escape(member)}\b")).ToList();
+                if (named.Count > 0)
+                    now = ClassMerge.Merge(now, draft.Code, name, addOnly: true, only: named).Code;
+            }
+            catch (Exception problem) when (problem is ScraperProblem or ArgumentException)
+            {
+                // That place cannot be drafted or the class is not in that file: the test says what it lacks when it is built.
+            }
         }
-        catch (Exception problem) when (problem is ScraperProblem or ArgumentException)
-        {
-            // The page cannot be drafted or its class is not in that file: the test says what it lacks when it is built.
+
+        if (now == before)
             return null;
+        File.WriteAllText(file, now);
+        return (file, before, name);
+    }
+
+    // The tabs pressed on a page before what opens a dialog: the places between the page's key and the dialog's that are tabs.
+    private static IEnumerable<string> TabsBetween(PlacesList list, string pageKey, string? dialogKey)
+    {
+        if (dialogKey is null || !dialogKey.StartsWith(pageKey + " › ", StringComparison.Ordinal))
+            yield break;
+        var parts = dialogKey[(pageKey.Length + 3)..].Split(" › ");
+        var key = pageKey;
+        foreach (var part in parts[..^1])
+        {
+            key += " › " + part;
+            if (list[key] is { Kind: PlaceKind.Tab })
+                yield return key;
         }
     }
 
@@ -340,6 +359,23 @@ public sealed partial class ScraperService
             File.WriteAllText(file.File, file.Before);
         else if (File.Exists(file.File))
             File.Delete(file.File);
+    }
+
+    /// <summary>
+    /// Writes a drafted test into its file, over the test the Scraper drafted there before. A file without the
+    /// Scraper's first line is a person's, or was a draft a person took over by removing that line: it is left alone.
+    /// </summary>
+    /// <param name="projectName">The project.</param>
+    /// <param name="test">The drafted test.</param>
+    /// <returns>The file, and whether it was written.</returns>
+    public (string File, bool Written) WriteTest(string? projectName, PlaceDraft test)
+    {
+        ArgumentNullException.ThrowIfNull(test);
+        var file = TestFile(Project(projectName), test);
+        if (File.Exists(file) && ScrapedHeader.Find(File.ReadAllText(file))?.Page is null)
+            return (file, false);
+        Write(file, test.Code);
+        return (file, true);
     }
 
     // Where a drafted test goes: its namespace under the suite's own, as folders; a module's tests in its Tests folder, whatever folder its pages are in.

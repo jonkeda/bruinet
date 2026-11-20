@@ -24,7 +24,11 @@ public enum PlaceDraftKind
 /// <param name="Code">Its code.</param>
 /// <param name="Members">The members it has, each as its name and the label or column it stands for.</param>
 /// <param name="NotDrafted">What the place shows that got no member, with why.</param>
-public sealed record PlaceDraft(string ClassName, string Code, IReadOnlyList<(string Name, string Label)> Members, IReadOnlyList<string> NotDrafted);
+public sealed record PlaceDraft(string ClassName, string Code, IReadOnlyList<(string Name, string Label)> Members, IReadOnlyList<string> NotDrafted)
+{
+    /// <summary>The members a person presses, by name: the form's buttons and the openers of a page's cards. A test of the class checks that each is there.</summary>
+    public IReadOnlyList<string> Pressed { get; init; } = [];
+}
 
 /// <summary>
 /// Drafts a class from a place of the list by rules, in the suite's own shape (<see cref="DraftTemplates"/>): a form
@@ -138,6 +142,7 @@ public static class PlaceDrafter
             code.Add(required + Fill(template, className, pageClass, name, label));
         }
 
+        var buttons = members.Count;
         foreach (var button in Buttons(place, signs))
         {
             var name = Unique(Identifier(button), used, templates.Reserved);
@@ -145,7 +150,8 @@ public static class PlaceDrafter
             code.Add(Fill(templates.Block("Button member"), className, pageClass, name, button));
         }
 
-        PageMembers(place, templates, className, pageClass, opens, used, members, code, signs);
+        // What a person presses: the buttons, and the openers of the page's cards (its tabs lie between the two).
+        List<string> pressed = [.. members.Skip(buttons).Select(member => member.Name), .. PageMembers(place, templates, className, pageClass, opens, used, members, code, signs)];
 
         var summary = dialog
             ? $"The form \"{Xml(Label(place))}\" opens on {Xml(place.Parent ?? "")}: drafted from the list of places."
@@ -163,11 +169,12 @@ public static class PlaceDrafter
             .Replace("{Members}", body, StringComparison.Ordinal)
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Page}", pageClass ?? className, StringComparison.Ordinal);
-        return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted);
+        return new PlaceDraft(className, text.TrimEnd() + "\n", members, notDrafted) { Pressed = pressed };
     }
 
     // A page's tabs, and the buttons its cards carry that open a dialog: both are the page's to name.
-    private static void PageMembers(Place place, DraftTemplates templates, string className, string? pageClass, IReadOnlyList<string>? opens, HashSet<string> used, List<(string Name, string Label)> members, List<string> code, PlaceSigns? signs)
+    // Returns the names of the openers.
+    private static List<string> PageMembers(Place place, DraftTemplates templates, string className, string? pageClass, IReadOnlyList<string>? opens, HashSet<string> used, List<(string Name, string Label)> members, List<string> code, PlaceSigns? signs)
     {
         if (templates.Blocks.TryGetValue("Tab member", out var tabMember))
         {
@@ -179,6 +186,7 @@ public static class PlaceDrafter
             }
         }
 
+        var openers = members.Count;
         if (templates.Blocks.TryGetValue("Opener member", out var openerMember))
         {
             foreach (var card in (opens ?? []).Select(opened => CardOf(opened, signs)).Where(card => card is not null).Distinct(StringComparer.Ordinal))
@@ -202,6 +210,8 @@ public static class PlaceDrafter
                 code.Add(Fill(openerMember, className, pageClass, name, card!));
             }
         }
+
+        return [.. members.Skip(openers).Select(member => member.Name)];
     }
 
     /// <summary>Drafts a list's row: a member per column the place's table has.</summary>
@@ -250,7 +260,8 @@ public static class PlaceDrafter
     /// <param name="signs">How an icon is named on this app's pages (<see cref="ScrapeProject.PlaceSigns"/>); none when left out.</param>
     /// <param name="onPage">For a dialog: the page it opens on, so a dialog on a record's page gets the test that opens that page on a record.</param>
     /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): a card with several buttons has a member per button.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null)
+    /// <param name="pressed">The members of the form's class a person presses (<see cref="PlaceDraft.Pressed"/>): the test checks that each is there, where its template has <c>{Checks}</c>.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -258,7 +269,9 @@ public static class PlaceDrafter
         var steps = templates.Blocks.TryGetValue(TabStep, out var step)
             ? string.Join("\n", Between(place).Select(tab => "        " + step.Replace("{Label}", tab.Replace("\"", "\\\"", StringComparison.Ordinal), StringComparison.Ordinal)))
             : "";
-        var checks = string.Join("\n", place.Kind == PlaceKind.Page ? place.Tabs.Select(tab => $"        page.{TabName(tab)}.AssertVisible();") : []);
+        // What the class declares beside its fields is checked too: a page's tabs, and every member a person presses.
+        var scope = place.Kind == PlaceKind.Page ? "page" : "form";
+        var checks = string.Join("\n", (place.Kind == PlaceKind.Page ? place.Tabs.Select(TabName) : []).Concat(pressed ?? []).Select(member => $"        {scope}.{member}.AssertVisible();"));
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
         var text = templates.Block(TestTemplate(place, templates, card, signs, onPage))
             .Replace("        {TabSteps}\n", steps.Length == 0 ? "" : steps + "\n", StringComparison.Ordinal)
@@ -266,6 +279,7 @@ public static class PlaceDrafter
             .Replace("{Icon}", Label(place), StringComparison.Ordinal)
             // What opens the form is a member of its page: a card's opener, or the button named after what it says ("+ Day off" is AddDayOff).
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card) + (templates.Blocks.ContainsKey(OpenerByIcon) ? IconOfSeveral(place, signs, beside) : ""), StringComparison.Ordinal)
+            .Replace("{Checks}\n", checks.Length == 0 ? "" : checks + "\n", StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
             .Replace("{Header}", Header(place, PlaceDraftKind.FormTest).ToString(), StringComparison.Ordinal)
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)

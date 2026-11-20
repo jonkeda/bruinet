@@ -211,6 +211,11 @@ public sealed class ReplayTests : IAsyncLifetime
         Assert.DoesNotContain("<scraped", after, StringComparison.Ordinal);
         // The same test again adds nothing.
         Assert.Null(_service.GivePageWhatTheTestNames(project, _list, "/contact", "page.Export.Click();"));
+
+        // What opens a dialog may lie under a tab of the page: the tab's button is the page's member too.
+        _list.Add(new Place { Key = "/contact › Settings", Kind = PlaceKind.Tab, State = PlaceState.Seen, Parent = "/contact", Buttons = ["Set up"] });
+        Assert.NotNull(_service.GivePageWhatTheTestNames(project, _list, "/contact", "page.SetUp.Click();", "/contact › Settings › Set up"));
+        Assert.Contains(" SetUp ", File.ReadAllText(file), StringComparison.Ordinal);
     }
 
     private void WriteDraft()
