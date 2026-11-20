@@ -17,6 +17,9 @@ public enum PlaceDraftKind
 
     /// <summary>A test that opens the form and checks that it shows every field its class declares; it saves nothing.</summary>
     FormTest,
+
+    /// <summary>A test that saves the form on a record of its own: empty, to see what it asks for, then with that filled in.</summary>
+    SaveTest,
 }
 
 /// <summary>A drafted class: its name, its code, and what was left out with why.</summary>
@@ -58,6 +61,12 @@ public static class PlaceDrafter
     /// <c>{TabSteps}</c> the tabs to press first, each written with <c>## Tab step</c>.
     /// </summary>
     public const string RowFormTest = "Row form test";
+
+    /// <summary>
+    /// The template of the test that saves a dialog on a record's page (<c>## Record save test</c>): <c>{SaveMember}</c>
+    /// is the form's button that saves, <c>{Place}</c> the place's key. Without it no save test is drafted.
+    /// </summary>
+    public const string RecordSaveTest = "Record save test";
 
     /// <summary>
     /// The template of a card's button when the card has several that each open a dialog (<c>## Opener member by icon</c>):
@@ -291,7 +300,8 @@ public static class PlaceDrafter
     /// <param name="onPage">For a dialog: the page it opens on, so a dialog on a record's page gets the test that opens that page on a record.</param>
     /// <param name="beside">What else opens on the place's page (<see cref="Beside"/>): a card with several buttons has a member per button.</param>
     /// <param name="pressed">The members of the form's class a person presses (<see cref="PlaceDraft.Pressed"/>): the test checks that each is there, where its template has <c>{Checks}</c>.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null)
+    /// <param name="saveMember">The form's member that saves: with it the draft is the save test (<see cref="RecordSaveTest"/>), not the test that only looks.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -303,7 +313,9 @@ public static class PlaceDrafter
         var scope = place.Kind == PlaceKind.Page ? "page" : "form";
         var checks = string.Join("\n", (place.Kind == PlaceKind.Page ? place.Tabs.Select(TabName) : []).Concat(pressed ?? []).Select(member => $"        {scope}.{member}.AssertVisible();"));
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
-        var text = templates.Block(TestTemplate(place, templates, card, signs, onPage))
+        var text = templates.Block(saveMember is null ? TestTemplate(place, templates, card, signs, onPage) : RecordSaveTest)
+            .Replace("{SaveMember}", saveMember ?? "", StringComparison.Ordinal)
+            .Replace("{Place}", place.Key.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal), StringComparison.Ordinal)
             .Replace("        {TabSteps}\n", steps.Length == 0 ? "" : steps + "\n", StringComparison.Ordinal)
             .Replace("        {ListStep}\n", onPage is { Columns.Count: > 0 } && templates.Blocks.TryGetValue(ListStep, out var wait) ? "        " + wait + "\n" : "", StringComparison.Ordinal)
             .Replace("{Icon}", Label(place), StringComparison.Ordinal)
@@ -311,7 +323,7 @@ public static class PlaceDrafter
             .Replace("{OpenerMember}", card is null ? Identifier(Label(place)) : OpenerName(card) + (templates.Blocks.ContainsKey(OpenerByIcon) ? IconOfSeveral(place, signs, beside) : ""), StringComparison.Ordinal)
             .Replace("{Checks}\n", checks.Length == 0 ? "" : checks + "\n", StringComparison.Ordinal)
             .Replace("{Checks}", checks, StringComparison.Ordinal)
-            .Replace("{Header}", Header(place, PlaceDraftKind.FormTest).ToString(), StringComparison.Ordinal)
+            .Replace("{Header}", Header(place, saveMember is null ? PlaceDraftKind.FormTest : PlaceDraftKind.SaveTest).ToString(), StringComparison.Ordinal)
             .Replace("{Namespace}", @namespace, StringComparison.Ordinal)
             .Replace("{Self}", className, StringComparison.Ordinal)
             .Replace("{Form}", formClass, StringComparison.Ordinal)

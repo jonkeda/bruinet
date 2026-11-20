@@ -118,6 +118,56 @@ public sealed class ScraperAppTests : IDisposable
         Assert.Contains("nothing-like-this", errors.ToString(), StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task A_record_is_made_with_the_run_s_marker_written_down_found_and_swept()
+    {
+        var (scraper, _) = MakeApp();
+        var shop = new ShopRecords();
+        async Task<(int Exit, string Out)> Run(params string[] args)
+        {
+            using var output = new StringWriter();
+            using var errors = new StringWriter();
+            var exit = await ScraperApp.RunAsync(["scraper", "records", .. args], app => app.AddRecord(shop), new HostIo(TextReader.Null, output, errors, scraper, Interactive: false));
+            return (exit, output.ToString());
+        }
+
+        // The careful setup makes nothing; with writing allowed a record is made and written down.
+        Assert.NotEqual(0, (await Run("--make", "contact")).Exit);
+        Assert.Empty(shop.Names);
+        Assert.Equal(0, (await ScraperApp.RunAsync(["scraper", "setup", "--set", "Writes=own-records"], io: new HostIo(TextReader.Null, TextWriter.Null, TextWriter.Null, scraper, Interactive: false))));
+        var made = await Run("--make", "contact");
+        Assert.Equal(0, made.Exit);
+        Assert.Contains("/contact/1", made.Out, StringComparison.Ordinal);
+        Assert.StartsWith(Bruinet.Core.Testing.RunMarker.Prefix, Assert.Single(shop.Names), StringComparison.Ordinal);
+        Assert.Contains("| contact | `/contact/1` |", File.ReadAllText(Path.Combine(scraper, "records.md")), StringComparison.Ordinal);
+
+        // A marked record that is still there fails the check; a sweep takes it away and the list with it.
+        Assert.Equal(1, (await Run("--check")).Exit);
+        var swept = await Run("--sweep", "--check");
+        Assert.Equal(0, swept.Exit);
+        Assert.Contains("contact: 0 with a run's marker", swept.Out, StringComparison.Ordinal);
+        Assert.Empty(shop.Names);
+        Assert.False(File.Exists(Path.Combine(scraper, "records.md")));
+    }
+
+    private sealed class ShopRecords : IRecordKind
+    {
+        public List<string> Names { get; } = [];
+
+        public string Name => "contact";
+
+        public Task<string> MakeAsync(string marker, CancellationToken cancellationToken = default)
+        {
+            Names.Add(marker + " contact");
+            return Task.FromResult($"/contact/{Names.Count}");
+        }
+
+        public Task<IReadOnlyList<string>> FindAsync(string marker, CancellationToken cancellationToken = default)
+            => Task.FromResult<IReadOnlyList<string>>([.. Names.Where(name => name.StartsWith(marker, StringComparison.Ordinal)).Select((_, at) => $"/contact/{at + 1}")]);
+
+        public Task<int> DeleteAsync(string marker, CancellationToken cancellationToken = default) => Task.FromResult(Names.RemoveAll(name => name.StartsWith(marker, StringComparison.Ordinal)));
+    }
+
     private sealed class NoRecord : IRecordKind
     {
         public string Name => "none";

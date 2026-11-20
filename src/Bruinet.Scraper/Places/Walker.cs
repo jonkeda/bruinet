@@ -88,6 +88,9 @@ public sealed record WalkResult(WalkStop Stop, int Opened, int Found, int Presse
 public sealed partial class Walker(ScrapeProject project, IExploreSource source, IPageCalls calls, RequestGuard guard, WalkOptions options, Func<CancellationToken, Task<ScrapeSnapshot>> capture, Action<PlacesList> save)
 {
     private static readonly string[] SaveWords = ["save", "submit", "apply", "ok", "opslaan", "toepassen", "bewaren", "speichern", "ubernehmen", "enregistrer", "valider", "create", "aanmaken", "add", "toevoegen", "erstellen", "hinzufugen", "creer", "ajouter"];
+    /// <summary>True when a button's label says it saves a form: the walk does not press it, and a save test does.</summary>
+    public static bool Saves(string label) => SaveWords.Any(word => DangerWords.Contains(label, word));
+
     private static readonly string[] DeleteWords = DangerWords.ByCategory["delete"].Concat(DangerWords.ByCategory["approve"]).ToArray();
     private static readonly TimeSpan PageLimit = TimeSpan.FromMinutes(4);
 

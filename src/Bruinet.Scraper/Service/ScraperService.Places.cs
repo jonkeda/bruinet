@@ -154,6 +154,8 @@ public sealed partial class ScraperService
             var formName = DraftedFrom(project, place.Key, "form")
                 ?? PlaceDrafter.ClassName(place, PlaceDraftKind.Form, project.PlaceSigns, PlaceDrafter.Beside(list.Places, place));
             var (opens, under) = OpensOn(list, place);
+            if (kind == PlaceDraftKind.SaveTest)
+                return (SaveTestOf(project, list, place, templates, className, formName, page ?? formName, ns, opens, under), null);
             if (kind == PlaceDraftKind.FormTest)
             {
                 // The test checks what a draft of the class has: its fields by their rows, and what a person presses by name.
@@ -169,6 +171,21 @@ public sealed partial class ScraperService
         {
             throw new ScraperProblem(e.Message);
         }
+    }
+
+    // The save test of a dialog on a record's page, for a class the Scraper drafted: it presses the form's own button that saves.
+    private static PlaceDraft SaveTestOf(ScrapeProject project, PlacesList list, Place place, DraftTemplates templates, string? className, string formName, string page, string ns, List<string>? opens, List<string>? under)
+    {
+        if (!templates.Blocks.ContainsKey(PlaceDrafter.RecordSaveTest))
+            throw new ScraperProblem($"{DraftTemplates.FileName} has no '## {PlaceDrafter.RecordSaveTest}': how the suite saves a form on a record of its own is not known.");
+        if (place.Kind != PlaceKind.Dialog || place.Parent is null || list[place.Parent] is not { } onPage || !PlaceKinds.IsRecord(onPage))
+            throw new ScraperProblem($"{place.Key} is not a dialog on the page of one record: a save test needs a record the test makes for itself.");
+        if (DraftedFrom(project, place.Key, "form") is null)
+            throw new ScraperProblem($"No class was drafted from {place.Key}: a save test is drafted for a class the Scraper drafted.");
+        var form = PlaceDrafter.Form(place, templates, formName, ns, page, opens, project.PlaceSigns, under);
+        var save = form.Members.Where(member => form.Pressed.Contains(member.Name)).Select(member => (member.Name, Label: member.Label)).LastOrDefault(member => Places.Walker.Saves(member.Label)).Name
+            ?? throw new ScraperProblem($"{place.Key} shows no button that saves: no save test is drafted.");
+        return PlaceDrafter.FormTest(place, templates, className ?? formName + "SaveTests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns, onPage, PlaceDrafter.Beside(list.Places, place), saveMember: save);
     }
 
     // What a page's cards open: the dialogs of the page that the walk named after a card. And of those, what opens

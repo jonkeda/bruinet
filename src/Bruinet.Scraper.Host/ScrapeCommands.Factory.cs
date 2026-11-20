@@ -11,8 +11,67 @@ public static partial class ScrapeCommands
 {
     private static Command Factory(HostIo io) => new("scraper", "The factory: an app's places to page objects and tests, a small group at a time. What is left, by group.")
     {
-        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io),
+        FactorySetupCommand(io), FactoryModules(io), FactoryStatus(io), FactoryRun(io), FactoryNote(io), FactoryReplay(io), FactoryBench(io), FactoryKeep(io), FactoryReviewCommand(io), FactoryRecords(io),
     };
+
+    /// <summary>The file in the app's own Scraper place that lists the records the Scraper made for itself.</summary>
+    public const string RecordsFile = "records.md";
+
+    private static Command FactoryRecords(HostIo io)
+    {
+        var (solution, project) = (Solution(), Project());
+        var make = new Option<string?>("--make") { Description = "Make one record of this kind, with the run's marker at the start of its name, and write it down." };
+        var sweep = new Option<bool>("--sweep") { Description = "Delete every record of every kind whose name starts with a run's marker, this run's and what an earlier one left." };
+        var check = new Option<bool>("--check") { Description = "Exit 1 when the app holds a record with a run's marker: something was made and not taken away." };
+        var command = new Command("records", $"The records the Scraper may make for itself in this app, by the kinds its own Scraper project adds (a contact, a project): what the app holds with a run's marker now. With --make one is made and written down in {RecordsFile}; --sweep takes them all away.")
+        {
+            project, solution, make, sweep, check,
+        };
+        command.Action(io, async (parsed, cancellationToken) =>
+        {
+            await using var service = Service(io, parsed.GetValue(solution));
+            var scraped = service.Project(ProjectName(service, parsed.GetValue(project), io));
+            var kinds = io.Services.Records;
+            if (kinds.Count == 0)
+            {
+                await io.Error.WriteLineAsync("This app's Scraper project adds no kind of record (app.AddRecord in its Program.cs): nothing can be made, found or swept.").ConfigureAwait(false);
+                return parsed.GetValue(check) ? 1 : 0;
+            }
+
+            var file = Path.Combine(scraped.Home, RecordsFile);
+            if (parsed.GetValue(make) is { } wanted)
+            {
+                var kind = kinds.FirstOrDefault(each => string.Equals(each.Name, wanted, StringComparison.OrdinalIgnoreCase))
+                    ?? throw new Bruinet.Scraper.Service.ScraperProblem($"No kind of record '{wanted}': the kinds are {string.Join(", ", kinds.Select(each => each.Name))}.");
+                if (FactorySetup.Read(scraped.Home).Writes == WritesAllowed.ReadOnly)
+                    throw new Bruinet.Scraper.Service.ScraperProblem($"{FactorySetup.FileName} says Writes is read-only: no record is made.");
+                var marker = Bruinet.Core.Testing.RunMarker.Current;
+                var address = await kind.MakeAsync(marker, cancellationToken).ConfigureAwait(false);
+                var head = File.Exists(file) ? "" : "# The Scraper's own records\n\nWhat `scraper records --make` made in the app, each with the run's marker at the start of its name. `scraper records --sweep` deletes them and empties this list.\n\n| Kind | Address | Marker | Made |\n| --- | --- | --- | --- |\n";
+                await File.AppendAllTextAsync(file, head + string.Create(CultureInfo.InvariantCulture, $"| {kind.Name} | `{address}` | {marker} | {DateTimeOffset.Now:yyyy-MM-dd HH:mm} |\n"), cancellationToken).ConfigureAwait(false);
+                await io.Out.WriteLineAsync(address).ConfigureAwait(false);
+            }
+
+            if (parsed.GetValue(sweep))
+            {
+                foreach (var kind in kinds)
+                    await io.Error.WriteLineAsync($"{kind.Name}: {await kind.DeleteAsync(Bruinet.Core.Testing.RunMarker.Prefix, cancellationToken).ConfigureAwait(false)} deleted.").ConfigureAwait(false);
+                if (File.Exists(file))
+                    File.Delete(file);
+            }
+
+            var left = 0;
+            foreach (var kind in kinds)
+            {
+                var found = await kind.FindAsync(Bruinet.Core.Testing.RunMarker.Prefix, cancellationToken).ConfigureAwait(false);
+                left += found.Count;
+                await io.Out.WriteLineAsync($"{kind.Name}: {found.Count} with a run's marker{(found.Count == 0 ? "" : ": " + string.Join(", ", found.Take(10)))}").ConfigureAwait(false);
+            }
+
+            return parsed.GetValue(check) && left > 0 ? 1 : 0;
+        });
+        return command;
+    }
 
     private static Command FactoryReviewCommand(HostIo io)
     {
@@ -132,11 +191,12 @@ public static partial class ScrapeCommands
         var noWalk = new Option<bool>("--no-walk") { Description = "Do not walk: draft from the captures there are." };
         var noTest = new Option<bool>("--no-test") { Description = "Do not run the drafted tests on the app: stop after the build." };
         var dryRun = new Option<bool>("--dry-run") { Description = "Say which groups would run, and run none." };
+        var save = new Option<bool>("--save") { Description = "Draft no class: draft a save test for each dialog on a record's page that has a drafted class and no save test yet. The test saves the form on a record it makes for itself and deletes that record again. Not where the setup's Writes is read-only." };
         var again = new Option<bool>("--again") { Description = "Take up again the places an earlier run tried and did not keep. Default: they are parked, each with its reason in the ledger, until what they wait for is there." };
         var baseline = new Option<string?>("--baseline") { Description = "Tests that must still pass after each loop, as a dotnet test filter (Module=Projects): they run before a loop writes and again at its end, and a loop that breaks one is put back whole." };
         var command = new Command("run", "Run loops of the factory: each group through walk, read, draft, build and test. What does not build or does not pass twice is put back, with a reason; the loop is written into the state and the ledger. Stops when a reason comes three times in the batch, when two loops in a row keep nothing, or when the suite does not build. Exit 1 when it stopped by a rule.")
         {
-            groups, project, solution, list, module, batch, noWalk, noTest, dryRun, again, baseline, headless, json,
+            groups, project, solution, list, module, batch, noWalk, noTest, dryRun, again, save, baseline, headless, json,
         };
         command.Action(io, async (parsed, cancellationToken) =>
         {
@@ -183,7 +243,7 @@ public static partial class ScrapeCommands
                 cancellationToken.ThrowIfCancellationRequested();
                 // A large group goes in loops of a few places: its pages are walked once, in its first loop.
                 var first = !ran.Any(each => each.Group == group);
-                var loop = await service.RunLoopAsync(name, file, group, new Bruinet.Scraper.Service.LoopOptions { Walk = first && !parsed.GetValue(noWalk), Test = !parsed.GetValue(noTest), Visible = !parsed.GetValue(headless) && io.Interactive, Batch = number, Baseline = parsed.GetValue(baseline), Skip = taken, Progress = new Said(io.Error) }, cancellationToken).ConfigureAwait(false);
+                var loop = await service.RunLoopAsync(name, file, group, new Bruinet.Scraper.Service.LoopOptions { Walk = first && !parsed.GetValue(noWalk), Test = !parsed.GetValue(noTest), Visible = !parsed.GetValue(headless) && io.Interactive, Batch = number, Baseline = parsed.GetValue(baseline), Save = parsed.GetValue(save), Skip = taken, Progress = new Said(io.Error) }, cancellationToken).ConfigureAwait(false);
                 taken.UnionWith(loop.Places);
                 // The same group again while it has places this run did not take up.
                 if (loop.Places.Count > 0 && service.OwedPlaces(name, PlacesList.Load(file)).Groups.FirstOrDefault(each => each.Group == group) is { } still

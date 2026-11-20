@@ -48,7 +48,7 @@ public static partial class ScrapeCommands
     {
         var (solution, project, list) = (Solution(), Project(), ListFile());
         var place = new Argument<string>("place") { Description = "The place's key, as the list writes it (\"/day-off › + Day off\")." };
-        var kind = new Option<string>("--as") { Description = "What to draft: form (a member per field and button), row (a member per column of the list), or form-test (a test that holds the form against its class, saving nothing).", DefaultValueFactory = _ => "form" };
+        var kind = new Option<string>("--as") { Description = "What to draft: form (a member per field and button), row (a member per column of the list), form-test (a test that holds the form against its class, saving nothing), or save-test (for a dialog on a record's page: a test that saves it on a record of its own).", DefaultValueFactory = _ => "form" };
         var name = new Option<string?>("--name") { Description = "The class's name. Default: from the place." };
         var page = new Option<string?>("--page") { Description = "For a dialog: the class of the page it is on. Default: the page class that names the page's address." };
         var write = new Option<bool>("--write") { Description = "Write the draft into the pages folder of the place's module, as <Class>.cs. A class that is there is merged into: a drafted one gets the draft's members, a person's is only added to. A test is written over the test the Scraper drafted before, and not over a person's." };
@@ -67,7 +67,8 @@ public static partial class ScrapeCommands
                 "form" => Bruinet.Scraper.Code.PlaceDraftKind.Form,
                 "row" => Bruinet.Scraper.Code.PlaceDraftKind.Row,
                 "form-test" => Bruinet.Scraper.Code.PlaceDraftKind.FormTest,
-                var other => throw new ArgumentException($"--as is form, row or form-test, not '{other}'."),
+                "save-test" => Bruinet.Scraper.Code.PlaceDraftKind.SaveTest,
+                var other => throw new ArgumentException($"--as is form, row, form-test or save-test, not '{other}'."),
             };
             var (draft, file) = service.DraftPlace(projectName, places, parsed.GetValue(place)!, what, parsed.GetValue(name), parsed.GetValue(page));
             if (parsed.GetValue(write) && parsed.GetValue(replace) && file is not null && File.Exists(file) && Bruinet.Scraper.Code.ScrapedHeader.Find(await File.ReadAllTextAsync(file, cancellationToken).ConfigureAwait(false))?.Page is not null)
@@ -82,7 +83,7 @@ public static partial class ScrapeCommands
                     ? $"{draft.ClassName}: {draft.Members.Count} members written to {file}."
                     : $"{draft.ClassName}: merged into {file}: {merged.Added.Count} added, {merged.Replaced.Count} replaced{(merged.Kept.Count > 0 ? $"; kept though the place does not give them: {string.Join(", ", merged.Kept)}" : "")}.").ConfigureAwait(false);
             }
-            else if (parsed.GetValue(write) && what == Bruinet.Scraper.Code.PlaceDraftKind.FormTest)
+            else if (parsed.GetValue(write) && what is Bruinet.Scraper.Code.PlaceDraftKind.FormTest or Bruinet.Scraper.Code.PlaceDraftKind.SaveTest)
             {
                 var (testFile, written) = service.WriteTest(projectName, draft);
                 await io.Error.WriteLineAsync(written ? $"{draft.ClassName}: written to {testFile}." : $"{draft.ClassName}: not written. {testFile} does not start with the Scraper's line: it is a person's.").ConfigureAwait(false);

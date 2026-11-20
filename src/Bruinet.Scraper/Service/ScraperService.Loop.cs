@@ -29,6 +29,12 @@ public sealed record LoopOptions
     /// </summary>
     public string? Baseline { get; init; }
 
+    /// <summary>
+    /// Drafts no class: the loop drafts a save test for each dialog of the group on a record's page whose class the
+    /// Scraper drafted and that has none yet. Only where the setup lets the Scraper write.
+    /// </summary>
+    public bool Save { get; init; }
+
     /// <summary>The most places one loop takes up: a small group shows a fault before it is repeated twenty times.</summary>
     public int MaxPlaces { get; init; } = 6;
 
@@ -103,7 +109,10 @@ public sealed partial class ScraperService
 
         if (stop is null)
         {
-            Draft(project, list, group, options, taken, written, reasons);
+            if (options.Save)
+                DraftSaveTests(project, list, group, options, taken, written, reasons);
+            else
+                Draft(project, list, group, options, taken, written, reasons);
             Station("draft");
 
             stop = await BuildAndPutBackAsync(project, written, reasons, cancellationToken).ConfigureAwait(false);
@@ -200,6 +209,40 @@ public sealed partial class ScraperService
             catch (ScraperProblem problem)
             {
                 reasons.Add(ReasonClassifier.OfDraft(problem.Message, key));
+            }
+        }
+    }
+
+    /// <summary>What a place is called among the places a run took up when its save test was tried: a save is another try than its class.</summary>
+    public static string SaveKey(string place) => "save: " + place;
+
+    // A save test for each dialog of the group that can have one and has none: on a record's page, of a class the Scraper drafted.
+    private void DraftSaveTests(ScrapeProject project, PlacesList list, string group, LoopOptions options, List<string> taken, List<Written> written, List<Reason> reasons)
+    {
+        if (FactorySetup.Read(project.Home).Writes == WritesAllowed.ReadOnly)
+        {
+            reasons.Add(new Reason(ReasonCodes.Refused, "draft", "", "", "the setup's Writes is read-only: no form is saved", FixPlaces.Person));
+            return;
+        }
+
+        var dialogs = list.Places.Where(place => place.Kind == PlaceKind.Dialog && place.SameAs is null && PlaceKinds.GroupOf(place) == group
+            && place.Parent is { } parent && list[parent] is { } page && PlaceKinds.IsRecord(page) && DraftedFrom(project, place.Key, "form") is not null);
+        foreach (var place in dialogs.Where(place => !options.Skip.Contains(SaveKey(place.Key))).Take(options.MaxPlaces))
+        {
+            try
+            {
+                var (test, _) = DraftPlace(project.Name, list, place.Key, PlaceDraftKind.SaveTest);
+                var file = TestFile(project, test);
+                if (File.Exists(file))
+                    continue; // it has its save test
+                taken.Add(SaveKey(place.Key));
+                Write(file, test.Code);
+                written.Add(new Written(file, place.Key, test.ClassName, IsTest: true));
+            }
+            catch (ScraperProblem problem)
+            {
+                taken.Add(SaveKey(place.Key));
+                reasons.Add(ReasonClassifier.OfDraft(problem.Message, place.Key));
             }
         }
     }
