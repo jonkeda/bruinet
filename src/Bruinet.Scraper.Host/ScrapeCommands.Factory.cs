@@ -218,6 +218,9 @@ public static partial class ScrapeCommands
     // The groups that owe something, by the order of their modules; a person's choice of modules, or of groups, narrows it.
     private static List<string> GroupsToRun(IReadOnlyList<AppModule> modules, OwedReport owed, FactorySetup setup, string[] given, string? onlyModule)
     {
+        // A group the list does not have is a slip of the hand (or a shell that rewrote /project into a path): nothing runs.
+        if (given.Where(group => owed.Groups.All(each => each.Group != group)).ToList() is { Count: > 0 } strange)
+            throw new Bruinet.Scraper.Service.ScraperProblem($"The list of places has no group {string.Join(", ", strange)}. 'factory status' names the groups.");
         var chosen = ModuleCut.ToRun(modules)
             .Where(each => onlyModule is null || string.Equals(each.Name, onlyModule, StringComparison.OrdinalIgnoreCase))
             .Where(each => given.Length > 0 || onlyModule is not null || setup.RunsAll || setup.Run.Contains(each.Name, StringComparer.OrdinalIgnoreCase))

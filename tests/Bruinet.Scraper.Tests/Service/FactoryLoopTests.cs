@@ -31,6 +31,8 @@ public sealed class FactoryLoopTests : IDisposable
     [InlineData("The form does not show the field 'Country'.", false, ReasonCodes.LabelNotFound, FixPlaces.Reader)]
     [InlineData("The page /project/view#/planning is not at its address after 15 s.", false, ReasonCodes.DidNotOpen, FixPlaces.DraftKind)]
     [InlineData("System.TimeoutException: Timeout 15000ms exceeded.", false, ReasonCodes.Timeout, FixPlaces.Environment)]
+    [InlineData("Assert.Equal() Failure: Collections differ\n           Expected: string[]                      []\n           Actual:   <generated> [\"Start date time\"]", false, ReasonCodes.LabelNotFound, FixPlaces.Reader)]
+    [InlineData("ScopeNotReadyException : Scope 'APage' did not become ready for AssertVisible on control 'ATab' within 15000 ms.", false, ReasonCodes.DidNotOpen, FixPlaces.DraftKind)]
     [InlineData("Anything at all", true, ReasonCodes.NeedsRecord, FixPlaces.Records)]
     [InlineData("Something nobody foresaw", false, ReasonCodes.Unknown, FixPlaces.Person)]
     public void A_test_s_failure_is_a_reason_with_a_code_and_where_to_fix_it(string message, bool record, string code, string fixAt)

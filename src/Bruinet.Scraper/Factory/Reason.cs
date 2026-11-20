@@ -141,10 +141,10 @@ public static partial class ReasonClassifier
     }
 
     // A form's test holds the labels its class declares against the page: what is missing comes as a list that should be empty.
-    [GeneratedRegex(@"does not show|not (found|shown) on|no (field|row|label) |labels? .* (missing|not)|Collections differ\s+Expected:\s+string\[\] \[\]", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"does not show|not (found|shown) on|no (field|row|label) |labels? .* (missing|not)|Collections differ\s+Expected:\s+string\[\]\s+\[\]", RegexOptions.IgnoreCase)]
     private static partial Regex NotShown();
 
     // What a test looked for is not there: the page or the part it is of did not open as the test opens it.
-    [GeneratedRegex(@"did not open|is not (loaded|at its address|open)|could not be opened|not visible|Expected Visible to be 'True'|Expected Exists to be 'True'", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"did not open|did not become ready|is not (loaded|at its address|open)|could not be opened|not visible|Expected Visible to be 'True'|Expected Exists to be 'True'", RegexOptions.IgnoreCase)]
     private static partial Regex DidNotOpen();
 }
