@@ -142,6 +142,25 @@ public sealed class FieldFactTests
         Assert.Contains("- Kind: what the form says when it is left empty. No test saved the form without it.", rows);
         Assert.Contains("- Remark: its longest. A save with 300 characters was taken (saved 300 characters); where it ends was not tried.", rows);
         Assert.DoesNotContain(rows, row => row.StartsWith("| Search", StringComparison.Ordinal));
+        // What was seen is also a row a reader can try again.
+        Assert.Contains("| 1 | the form as it opens, saved | the form stays, with \"Name is required\" | saved empty |", rows);
+        Assert.Contains("| 2 | E-mail holds a single letter | the field says \"not a valid email address\" | typed x |", rows);
+        Assert.Contains("| 3 | Remark holds 300 characters, saved | the save is taken | saved 300 characters |", rows);
+        Assert.Contains("| 4 | Notes holds 300 characters, saved | the form stays, with \"At most 2000 characters\" | saved 300 characters |", rows);
+    }
+
+    [Fact]
+    public void A_list_s_columns_are_a_table_in_their_order_and_what_a_capture_does_not_hold_is_open()
+    {
+        var place = new Place { Key = "/contact", Kind = PlaceKind.Page, Columns = ["Name", "City"], Fields = ["Search (text, in a table)"] };
+
+        var rows = FieldSpec.Of(place).Split('\n');
+
+        Assert.DoesNotContain("## The fields", rows);
+        Assert.Contains("| Name | open | open | open |", rows);
+        Assert.True(Array.IndexOf(rows, "| Name | open | open | open |") < Array.IndexOf(rows, "| City | open | open | open |"));
+        Assert.Contains("- The table has fields of its own (Search): which column each filters is not known.", rows);
+        Assert.Equal(string.Empty, FieldSpec.Of(new Place { Key = "/empty", Kind = PlaceKind.Page }));
     }
 
     [Fact]

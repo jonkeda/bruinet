@@ -179,8 +179,12 @@ public sealed partial class ScraperService
         var drafted = DraftedFrom(project, place.Key, "form") is null ? null : PlaceDrafter.Form(place, templates, formName, ns, page, opens, project.PlaceSigns, under, family);
         return PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns,
             place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), drafted?.Pressed ?? [],
-            lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: drafted is null ? null : family, fields: drafted?.Fields);
+            lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: drafted is null ? null : family, fields: drafted?.Fields, saver: drafted is null ? null : Saver(drafted));
     }
+
+    // The member of a drafted form that saves it, by the walk's save words; null when the form shows none.
+    private static string? Saver(PlaceDraft form)
+        => form.Members.Where(member => form.Pressed.Contains(member.Name)).Select(member => (member.Name, member.Label)).LastOrDefault(member => Places.Walker.Saves(member.Label)).Name;
 
     // The save test of a dialog on a record's page, for a class the Scraper drafted: it presses the form's own button that saves.
     private static PlaceDraft SaveTestOf(ScrapeProject project, PlacesList list, Place place, DraftTemplates templates, string? className, string formName, string page, string ns, List<string>? opens, List<string>? under)
@@ -192,7 +196,7 @@ public sealed partial class ScraperService
         if (DraftedFrom(project, place.Key, "form") is null)
             throw new ScraperProblem($"No class was drafted from {place.Key}: a save test is drafted for a class the Scraper drafted.");
         var form = PlaceDrafter.Form(place, templates, formName, ns, page, opens, project.PlaceSigns, under);
-        var save = form.Members.Where(member => form.Pressed.Contains(member.Name)).Select(member => (member.Name, Label: member.Label)).LastOrDefault(member => Places.Walker.Saves(member.Label)).Name
+        var save = Saver(form)
             ?? throw new ScraperProblem($"{place.Key} shows no button that saves: no save test is drafted.");
         return PlaceDrafter.FormTest(place, templates, className ?? formName + "SaveTests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns, onPage, PlaceDrafter.Beside(list.Places, place), saveMember: save);
     }

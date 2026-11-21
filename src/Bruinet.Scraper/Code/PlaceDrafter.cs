@@ -403,7 +403,8 @@ public static class PlaceDrafter
     /// <param name="family">The tabs the page shares with the other pages of its address: the test finds them through the page's member of that part.</param>
     /// <param name="fields">The members of the form's class that are fields (<see cref="PlaceDraft.Fields"/>): a template's <c>{FieldChecks}</c> checks that each is there. For a suite with no way of its own to hold a form against its class.</param>
     /// <param name="lanes">How many tests of one module may run at once: a template's <c>{Lane}</c> is a number from 1 to this, the same for a class every time, so the tests that only look spread over that many groups.</param>
-    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1, TabFamily? family = null, IReadOnlyList<string>? fields = null)
+    /// <param name="saver">The member of the form that saves it, for a template line that names it (<c>{Saver}</c>); null when the form shows none, and such a line is left out.</param>
+    public static PlaceDraft FormTest(Place place, DraftTemplates templates, string className, string @namespace, string formClass, string pageClass, string? pagesNamespace = null, PlaceSigns? signs = null, Place? onPage = null, IReadOnlyCollection<string>? beside = null, IReadOnlyList<string>? pressed = null, string? saveMember = null, int lanes = 1, TabFamily? family = null, IReadOnlyList<string>? fields = null, string? saver = null)
     {
         ArgumentNullException.ThrowIfNull(place);
         ArgumentNullException.ThrowIfNull(templates);
@@ -416,7 +417,12 @@ public static class PlaceDrafter
         string TabOf(string tab) => family is not null && family.Tabs.Contains(tab, StringComparer.Ordinal) ? $"{TabsMember}.{TabName(tab)}" : TabName(tab);
         var checks = string.Join("\n", (place.Kind == PlaceKind.Page ? place.Tabs.Select(TabOf) : []).Concat((pressed ?? []).Where(member => member != TabsMember)).Select(member => $"        {scope}.{member}.AssertVisible();"));
         var record = place.Kind == PlaceKind.Page && PlaceKinds.IsRecord(place) && templates.Blocks.ContainsKey(RecordPageTest);
-        var text = templates.Block(saveMember is null ? TestTemplate(place, templates, card, signs, onPage) : RecordSaveTest)
+        // A line that names the form's button that saves ({Saver}) is for a form that shows one: left out otherwise.
+        var template = templates.Block(saveMember is null ? TestTemplate(place, templates, card, signs, onPage) : RecordSaveTest);
+        template = saver is not null
+            ? template.Replace("{Saver}", saver, StringComparison.Ordinal)
+            : string.Join("\n", template.Split('\n').Where(line => !line.Contains("{Saver}", StringComparison.Ordinal)));
+        var text = template
             .Replace("{SaveMember}", saveMember ?? "", StringComparison.Ordinal)
             .Replace("{Lane}", Lane(className, lanes).ToString(System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal)
             .Replace("{Place}", place.Key.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal), StringComparison.Ordinal)

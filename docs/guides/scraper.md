@@ -452,7 +452,13 @@ characters in every text field the browser holds no limit for. A save that is ta
 `places fields --spec "<place>"` prints the place's fields as the sections of a screen's spec: the field table
 (Field, Kind, Required, Min, Max, Message), "More about a field" (a pattern, what a wrong or too long value was
 answered with) and the open questions. A cell there is a fact, a dash where a limit does not apply, or the word
-"open" with its question below; a fact only read from a script is a question with its value as the proposal.
+"open" with its question below; a fact only read from a script is a question with its value as the proposal. What
+was seen is written once more as "Examples", a row a reader can try again (the empty save, a single letter, a long
+save), and a place with columns gets "The list": its columns in their order, with what a capture does not hold
+(what a column shows, sorts by and filters on) as open.
+
+A template's test may name the form's button that saves as `{Saver}`: the member of the drafted form the walk's
+save words find. A line that names it is left out for a form that shows none, or whose class a person wrote.
 
 `bruinet scrape places fields --facts` lists them; `places fields --table "<place>"` prints a place's fields as a
 spec's field table (Field, Kind, Required, Min, Max, Message, From), where a stated or seen limit is a cell, one
