@@ -14,7 +14,7 @@ its own words where Cucumber has no equivalent.
 | callable step (`## Step:`) | (none) | a Markdown sequence of steps with parameters (AD-017) |
 | control verb | (none) | a step declared on a control method (`I tap {control}`) |
 | page phrase | (closest: a page-object step definition) | a step declared on a page object, valid on that page only |
-| head | (none) | the driver a feature runs through: `maui`, `web`, `mixed`, `service` |
+| head | (none) | the driver a feature runs through: `maui`, `web`, `mixed`, `service`, `api` |
 | subject | actor (Screenplay) | who performs a step: `Daan taps Save` |
 | journey | (tags by convention) | the user journey a feature belongs to |
 

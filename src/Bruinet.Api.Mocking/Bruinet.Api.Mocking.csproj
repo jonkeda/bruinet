@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
     <ProjectReference Include="..\Bruinet.Api.Contracts\Bruinet.Api.Contracts.csproj" />
+    <ProjectReference Include="..\Bruinet.Api.OpenApi\Bruinet.Api.OpenApi.csproj" />
     <ProjectReference Include="..\Bruinet.Api.Replay\Bruinet.Api.Replay.csproj" />
     <!-- Steps/: the request steps a feature file opts into with Using MockRequests. -->
     <ProjectReference Include="..\Bruinet.Bdd\Bruinet.Bdd.csproj" />

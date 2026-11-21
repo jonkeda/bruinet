@@ -255,6 +255,12 @@ public static class BddTagConventions
     /// <summary>A scenario that runs without a screen, against the app's services; it runs only on a suite whose head is <c>service</c>.</summary>
     public const string Service = "service";
 
+    /// <summary>
+    /// A scenario that runs without a screen, through the suite's API objects against the running environment; it
+    /// runs only on a suite whose head is <c>api</c>.
+    /// </summary>
+    public const string Api = "api";
+
     /// <summary>The native Android app, driven by the NativeAndroid platform.</summary>
     public const string NativeAndroid = "native-android";
 
@@ -286,7 +292,7 @@ public static class BddTagConventions
     /// The head tags. A scenario tagged with one or more runs only on a suite whose
     /// <see cref="BddConfigFields.Head"/> is among them; one with none runs on every head.
     /// </summary>
-    public static IReadOnlyList<string> Heads { get; } = [Maui, Web, Mixed, Service, NativeAndroid, NativeIos];
+    public static IReadOnlyList<string> Heads { get; } = [Maui, Web, Mixed, Service, Api, NativeAndroid, NativeIos];
 
     /// <summary>The heads these tags name, with <c>@native</c> read as both native heads; empty when they name none.</summary>
     /// <param name="normalizedTags">The scenario's tags without <c>@</c>, compared ignoring case.</param>
@@ -301,11 +307,15 @@ public static class BddTagConventions
     /// The heads a scenario must name to run there: a suite with one of these runs only the
     /// scenarios tagged with it, so an untagged scenario stays a UI scenario.
     /// </summary>
-    public static IReadOnlyList<string> OptInHeads { get; } = [Mixed, Service];
+    public static IReadOnlyList<string> OptInHeads { get; } = [Mixed, Service, Api];
 
     /// <summary>Whether <paramref name="head"/> is the head without a screen.</summary>
     /// <param name="head">A suite's head, or null.</param>
     public static bool IsService(string? head) => string.Equals(head, Service, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Whether <paramref name="head"/> has no screen: <c>service</c> (the app's services, in the test process) or <c>api</c> (a running environment, over the wire).</summary>
+    /// <param name="head">A suite's head, or null.</param>
+    public static bool HasNoScreen(string? head) => IsService(head) || string.Equals(head, Api, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>Why a scenario with these tags does not run on <paramref name="suiteHead"/>; null when it does.</summary>
     /// <param name="normalizedTags">The scenario's tags without <c>@</c>, compared ignoring case.</param>

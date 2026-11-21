@@ -324,6 +324,17 @@ public sealed class ApiSession : IDisposable
         return exchange;
     }
 
+    // A body read into memory, so it can be written down and still be read by the caller.
+    private static Task BufferAsync(HttpContent content, CancellationToken cancellationToken)
+    {
+#if NET9_0_OR_GREATER
+        return content.LoadIntoBufferAsync(cancellationToken);
+#else
+        cancellationToken.ThrowIfCancellationRequested();
+        return content.LoadIntoBufferAsync();
+#endif
+    }
+
     private static bool IsText(string? mediaType)
         => mediaType is null || mediaType.Contains("json", StringComparison.OrdinalIgnoreCase) || mediaType.Contains("xml", StringComparison.OrdinalIgnoreCase)
             || mediaType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) || mediaType.Contains("form-urlencoded", StringComparison.OrdinalIgnoreCase);
@@ -348,7 +359,7 @@ public sealed class ApiSession : IDisposable
             if (request.Content is not null && IsText(contentType))
             {
                 // Buffered, so it can be written down and sent again after a renewed sign-in.
-                await request.Content.LoadIntoBufferAsync(cancellationToken).ConfigureAwait(false);
+                await BufferAsync(request.Content, cancellationToken).ConfigureAwait(false);
                 body = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             }
 
@@ -393,7 +404,7 @@ public sealed class ApiSession : IDisposable
             var answerType = response.Content.Headers.ContentType?.MediaType;
             if (IsText(answerType))
             {
-                await response.Content.LoadIntoBufferAsync(cancellationToken).ConfigureAwait(false);
+                await BufferAsync(response.Content, cancellationToken).ConfigureAwait(false);
                 answer = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             }
 

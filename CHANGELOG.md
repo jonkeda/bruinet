@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **bruinet upgrade** (also the MCP tool `upgrade`): moves a project that uses Bruinet to the names this Bruinet has.
+  It applies the rename rows of the changes list (`## Renames`: packages, namespaces, types, and names to keep) to
+  the project's code, projects and the names a suite holds as text, then builds and gives the errors no rename
+  explains. `--check` changes nothing.
+- **Bruinet.Api.OpenApi** and **bruinet api describe**, **diff**, **uncalled**, **check**: a description of an API,
+  read from an OpenAPI 3 document in JSON or merged from the exchanges a run kept (observed: shapes only, no values);
+  what two descriptions differ in; the operations no run called; each answer against its schema.
+  `MockApiServer.StubDescribed` fakes a whole back end from a description.
+- **A page's calls** (`PlaywrightTestContext.Calls`): the page's fetch and XHR calls as exchanges, so a page object's
+  save gives the write it caused. **FormCheck** (`Bruinet.Api.Contracts`) finds each typed value in the sent body
+  and compares typed, sent and stored per field.
+- **The `api` head**: a scenario tagged `@api` runs on a suite whose head is `api`, bound to the suite's API objects,
+  against a running environment and without a screen; a screen step there is BDDB013.
+- `ApiSession.Client`: the session as an `HttpClient`, so a client generated from a description is guarded, signed,
+  logged and kept as the session's own calls are. `BRUINET_API_EXCHANGES` also keeps the walk's and every page's calls.
 - **The API session** (`Bruinet.Core.Api`): a service on a running environment called as an account of
   `TestAccounts.md`, for what a test does beside the screen. It holds what every suite wrote by hand: the hosts a suite
   may call (`ApiEnvironmentGuard`), the account's sign-in with renewal (`IApiSignIn`: a token from a web session's
@@ -304,6 +319,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   superseded). `TestPages.IsFirstModelPage` and `FirstModelPageInterface` with it; composition and UAT find pages by `ITestPage`.
 
 ### Changed
+- **The API packages are one family, in 0.2.0**: `Bruinet.Contracts` is `Bruinet.Api.Contracts`, `Bruinet.Mocking.Http`
+  is `Bruinet.Api.Replay`, `Bruinet.Mocking` (the WireMock server, with BRUINET001) is `Bruinet.Api.Mocking`; the mock
+  sensors are a package of their own, `Bruinet.Mocking.Sensors`. Namespaces follow the package names; no type is
+  renamed and no old package forwards to a new one.
 - The spec runner (`BddSpecReader`) reads a spec by the format: the title is the first line, a chapter is
   `### Chapter:` as written, a `####` example is one only in a chapter, and a heading inside a fenced block is text.
   No spec of Bouw7's or Todo's changed what it runs.

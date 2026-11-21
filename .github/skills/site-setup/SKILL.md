@@ -25,6 +25,9 @@ The shape is Bouw7's (`BruinetB7/Bouw7/`); copy its structure, not its content.
    `Privacy` stays off on a test environment.
 4. **Accounts**: `TestAccounts.md` (name, role, organization, `Writes`, environment, purpose) and
    the local file. A session helper that signs in once per account and saves its state.
+   When tests will make or remove data beside the screen, the suite gets a `Support/Api` folder from the start: a
+   class that opens Bruinet's API session as an account, with the hosts it may call in the suite's settings, and
+   API objects over it (skill `api-object`). No suite writes its own HTTP client, host check or delete-by-marker.
 5. **Docs**: `AGENTS.md` (Never, Where code goes, Running) and `.testing/` with `000-Readme.md`,
    `100-Loops.md` (one row per module), `150-Structure.md`, `200-Tasklist.md`, `300-Environment.md`,
    `400-FrictionLog.md`, `600-Improvements.md` (its `Every` row and an empty Reviews table: the

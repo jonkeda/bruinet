@@ -4,6 +4,8 @@ A feature file can run without a screen, against the app's services, database an
 on the `service` head. The same `*.feature.md` files serve the UI suites and the service suite;
 a scenario's tags say where it runs. The decision is [AD-020](../../.docs/decisions/ad-020-a-tier-is-a-head.md).
 
+The same rule over the wire, against a running environment, is the `api` head: [API testing](api-testing.md).
+
 ## When A Scenario Goes To `service`
 
 Ask what the assertion looks at:

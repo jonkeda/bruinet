@@ -373,12 +373,13 @@ public static class BddBinder
                 match = matches[0];
             }
 
-            // The service head has no screen: a step that opens, drives or reads one cannot run there.
-            if (BddTagConventions.IsService(app?.Head ?? catalogs.SuiteHead) && IsScreenStep(match.Pattern))
+            // The service and api heads have no screen: a step that opens, drives or reads one cannot run there.
+            if ((app?.Head ?? catalogs.SuiteHead) is { } screenless && BddTagConventions.HasNoScreen(screenless) && IsScreenStep(match.Pattern))
             {
+                screenless = screenless.ToLowerInvariant();
                 diagnostics.Add(Error(
                     "BDDB013",
-                    $"'{step.Text}' is a UI step ('{match.Pattern.Phrase}'); the service head has no screen. Use a step the service head declares, or tag the scenario for a UI head.",
+                    $"'{step.Text}' is a UI step ('{match.Pattern.Phrase}'); the {screenless} head has no screen. Use a step the {screenless} head declares, or tag the scenario for a UI head.",
                     step.Source));
                 return;
             }

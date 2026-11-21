@@ -38,6 +38,7 @@
     <ProjectReference Include="..\..\src\Bruinet.Api.Replay\Bruinet.Api.Replay.csproj" />
     <!-- spec check, spec trace: the Spec module -->
     <ProjectReference Include="..\..\src\Bruinet.Spec\Bruinet.Spec.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.OpenApi\Bruinet.Api.OpenApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>

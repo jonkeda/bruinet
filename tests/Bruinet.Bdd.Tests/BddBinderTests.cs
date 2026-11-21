@@ -289,6 +289,32 @@ public sealed class BddBinderTests
     }
 
     [Fact]
+    public void Bind_OnTheApiHead_AScreenStepIsAnError_AndAStepOfItsOwnBinds()
+    {
+        var document = ParseValid("""
+            # Feature: Stored
+
+            @api
+            ## Scenario: No screen
+
+            ```gherkin
+            Given a contact "Arend" exists
+            When I tap Save
+            ```
+            """);
+        var catalog = new BddCommandCatalog();
+        catalog.Register(BddEffectiveStepKeyword.Given, "a contact {name} exists", "ContactSteps.Exists");
+        catalog.Register(BddEffectiveStepKeyword.When, "I tap {control}", "Builtin.Control.Tap", allowsTable: false, controlVerb: new BddControlVerb("Click", 0, NamesControl: true, Navigates: false));
+        var catalogs = new BddCatalogSet(catalog, [], suiteHead: "api", new Dictionary<string, BddCommandCatalog>(), []);
+
+        var result = BddBinder.Bind(document, catalogs);
+
+        var diagnostic = Assert.Single(result.Diagnostics, x => x.Code == "BDDB013");
+        Assert.Contains("'I tap Save' is a UI step", diagnostic.Message);
+        Assert.Contains("the api head has no screen", diagnostic.Message);
+    }
+
+    [Fact]
     public void Bind_OnAHead_LeavesScenariosForOtherHeadsUnbound()
     {
         var document = ParseValid("""

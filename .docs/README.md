@@ -64,6 +64,7 @@ How this differs from the other trees:
 - [AD-043: The walk presses by environment and holds writes](decisions/ad-043-the-walk-presses-by-environment-and-holds-writes.md)
 - [AD-044: One product, four modules](decisions/ad-044-one-product-four-modules.md)
 - [AD-045: The factory keeps what a test proved](decisions/ad-045-the-factory-keeps-what-a-test-proved.md)
+- [AD-046: A test reaches a service through API objects on a session](decisions/ad-046-a-test-reaches-a-service-through-api-objects-on-a-session.md)
 
 ## Contracts
 

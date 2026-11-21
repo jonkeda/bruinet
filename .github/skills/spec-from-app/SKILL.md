@@ -14,6 +14,9 @@ accepts it; you never do, unless the person has said in so many words that you d
 
 - The journey: an id (`B7.HRS.01`: product, module, number) and a name ("Log hours").
 - The module's recordings (`Recordings/<run>/*.nodes.jsonl`, from Explore) and its page objects.
+- For a rule about what is stored, or a product whose user is another system: the exchanges of a run
+  (`BRUINET_API_EXCHANGES`) and the suite's API description (`bruinet api describe`). They say what the back end
+  takes and answers; an example about stored data is then written in the API objects' words and tagged `@api`.
 - The running app on acc, signed in as the accounts of `TestAccounts.md`.
 
 ## Steps

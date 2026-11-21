@@ -60,6 +60,12 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             }
         };
         page.PageError += (_, error) => StepLog.Add(StepLogLevel.Error, "browser", error, elsewhere: true);
+
+        // A run that keeps its exchanges (BRUINET_API_EXCHANGES) keeps the page's calls from the start.
+        if (Bruinet.Core.Api.ApiExchangeLog.Current is not null)
+        {
+            _calls = new PageCalls(page);
+        }
     }
 
     private PlaywrightTestContext(

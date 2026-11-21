@@ -60,6 +60,8 @@ invariants behind it - what must stay true when *changing* Bruinet - are in
   run, `bruinet tests affected`, what runs the suite whole, and what selection misses
 - [SQL Replay](guides/sql-replay.md) - a UI test without its database: the SQL log, recording and
   replaying, the app's wiring (EF, ADO.NET, an app in its own process), stale recordings and re-records
+- [API Testing](guides/api-testing.md) - beside the screen on a running environment: the API session and its guards,
+  API objects, a saved form checked against what was stored, an API's description (observed or written), the `api` head.
 - [HTTP Replay](guides/http-replay.md) - a test without the services its app calls: record once, replay with none,
   a mode per dependency and the hermetic run
 - [API Contracts](guides/contracts.md) - a live run's calls checked against the DTOs the app reads and the

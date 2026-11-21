@@ -15,6 +15,7 @@ run's report with its class and what was done.
 | --- | --- | --- |
 | Test bug | The app is right and the test asked the wrong thing: a stale assertion, a wrong expected value, a missing wait, the wrong account | Fix the test, rerun it alone, back to stage 6 |
 | Site changed | A locator finds nothing or the wrong thing; the page looks different in the screenshot | `scrape verify` the module; on a miss back to stage 2 (Explore), the redraft is a diff for a person |
+| Site changed, below the screen | A value the API gives has another shape: a test that reads through an API object fails on a field, or a form's stored-check fails | `bruinet api diff <suite>/api.observed.json` after a run with `BRUINET_API_EXCHANGES` set and `bruinet api describe`: a field gone, a type changed or a status added says the back end changed; the diff is the finding for a person |
 | App bug | The app does what the spec says it must not, reproducibly | Stays a failure (never weakened or skipped). Write `.testing/issues/<date>-<test>.md`: steps, expected (the rule), seen, screenshot. 👤 |
 | Environment | acc down, sign-in refused, a timeout on every test, a notification or slow load covering the page | Rerun once; if it stays, note it in the report and stop the run |
 | Spec | The app's behaviour is plausible and the spec assumed otherwise | Back to the spec's owner as an open question; the rule waits |

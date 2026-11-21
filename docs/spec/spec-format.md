@@ -15,6 +15,7 @@ product's letters in front (`B7.HRS.01`). It starts with `# Spec: <journey id> <
 | Product | The product's name |
 | Journey | The journey's id and name |
 | Where | The places a person uses it: devices, the web |
+| | For a product whose user is another system the place is `API`: the rules are then about what a caller can observe (a status, a field, a message), and the examples are in the words of the suite's API objects ([API testing](../guides/api-testing.md)) |
 | Status | `draft`, or `accepted <date>` once the owner said it is what the product means |
 
 Then these sections, in this order. Leave out a section with nothing in it, except Intent, Rules

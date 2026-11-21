@@ -385,7 +385,35 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
         if (_guard is null && request.ResourceType is "script" && response.Status is >= 200 and < 300)
             _scripts.Enqueue(request.Url);
         if (request.ResourceType is "xhr" or "fetch")
+        {
             _calls.Enqueue(Bruinet.Scraper.Service.PageCall.Of(request.Method, request.Url, response.Status, request.Method is "GET" or "HEAD" or "OPTIONS" ? null : request.PostData));
+            // With BRUINET_API_EXCHANGES set, the call is kept with its answer: a description of the API is merged from it.
+            if (Bruinet.Core.Api.ApiExchangeLog.Current is { } log)
+                _ = KeepExchangeAsync(log, response);
+        }
+    }
+
+    private static async Task KeepExchangeAsync(string log, IResponse response)
+    {
+        var request = response.Request;
+        string? body = null;
+        string? type = null;
+        try
+        {
+            type = (await response.HeaderValueAsync("content-type").ConfigureAwait(false))?.Split(';')[0].Trim();
+            if (type is null || type.Contains("json", StringComparison.OrdinalIgnoreCase))
+                body = await response.TextAsync().ConfigureAwait(false);
+        }
+        catch (PlaywrightException)
+        {
+            // The page went on before the body was read: the call and its status are kept, the body is not.
+        }
+
+        Bruinet.Core.Api.ApiExchangeLog.Append(log, new Bruinet.Core.Api.ApiExchange(Guid.NewGuid().ToString("N"), DateTimeOffset.UtcNow, request.Method, request.Url, response.Status, type, Bruinet.Core.Api.ApiMasks.Mask(body, Bruinet.Core.Api.ApiMasks.DefaultFields))
+        {
+            RequestBody = Bruinet.Core.Api.ApiMasks.Mask(request.PostData, Bruinet.Core.Api.ApiMasks.DefaultFields),
+            Source = "walk",
+        });
     }
 
     /// <summary>How long a click waits for its element to be visible and still.</summary>

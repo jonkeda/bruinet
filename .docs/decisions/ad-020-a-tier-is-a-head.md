@@ -5,7 +5,7 @@ UI heads (AD-014). A suite whose config (`bdd.config.md`) says `Head | service` 
 services, database and fake backend without a screen: the Todo sample's `TodoServiceFixture` starts a
 new headless `TodoHost` per scenario.
 
-- **Opt-in heads.** `mixed` and `service` run only the scenarios tagged for them. A scenario tagged
+- **Opt-in heads.** `mixed`, `service` and `api` (AD-046) run only the scenarios tagged for them. A scenario tagged
   `@service` alone is skipped on `maui` and `web`; `@service @maui` runs on both; an untagged
   scenario never runs on `service`. A suite lists only the scenarios its head runs, so a shared
   folder does not show another head's cases as skipped.

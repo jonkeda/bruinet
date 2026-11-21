@@ -61,6 +61,8 @@ Task workflows live in `.github/skills/` (Claude Code reads them through stubs i
 - [ai-item](.github/skills/ai-item/SKILL.md) - build one item of the AI improvements plan
   (`.my/aiimprovements/plan.md`) through design, test-first build, checks, an agent check,
   review and close.
+- [api-object](.github/skills/api-object/SKILL.md) - write an API object of a suite over the API session: test data
+  beside the screen, a saved form checked against what was stored, a scenario on the `api` head.
 - [api-upgrade](.github/skills/api-upgrade/SKILL.md) - keep and apply the list of public API
   changes that projects using Bruinet must follow (any `PublicAPI.Unshipped.txt` edit).
 - [decision-record](.github/skills/decision-record/SKILL.md) - record a decision that rules
