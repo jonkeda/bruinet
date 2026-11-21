@@ -1,7 +1,7 @@
 # API testing with Bruinet: proposal
 
 Status: proposal, nothing built. Written 2026-11-20. It continues the service-clients design
-([B18](../service-clients/design.md)), which was written before Bouw7 had any API code; Bouw7 now has 350 lines of it
+([B18](design.md)), which was written before Bouw7 had any API code; Bouw7 now has 350 lines of it
 (`Bouw7.Web.UITests/Support/Api`), and this proposal starts from what those lines turned out to need.
 
 ## In short
@@ -23,7 +23,7 @@ Status: proposal, nothing built. Written 2026-11-20. It continues the service-cl
 | Exists | What it does | What it lacks for this |
 | --- | --- | --- |
 | `Bouw7Api`, `Bouw7Seed` (Bouw7 suite) | Set-up, clean-up and read checks on acc: token from the saved sign-in, acc-only host check, `Writes` guard, deletes only marked records, seed records | All of it is Bouw7's own; dynamic JSON, no description, no step log |
-| `RunMarker` (`Bruinet.Core`) | One marker per run in a record's name | The clean-up registry of B18 was never built |
+| `RunMarker`, `CleanUpRegistry` (`Bruinet.Core`) | One marker per run in a record's name; undos run in reverse | Nothing joins the registry to a call: a create does not register its delete |
 | `Bruinet.Contracts` | An exchange checked against the DTO the app reads; round trip of a write; calls no contract covers (AD-035) | Reads the app's own exchange log; has no client of its own |
 | `Bruinet.Mocking`, `Bruinet.Mocking.Http` | WireMock stubs; record and replay of an app's outgoing calls, with redaction (AD-034) | Faces the other way: it answers the app, it does not call a service |
 | The service head | Feature files below the UI, in the test process (AD-020) | In process only; nothing over the wire to a running environment |
@@ -124,7 +124,7 @@ then become `Bruinet.UI.*`, and how do projects that already use Bruinet follow.
 | `Bruinet.Mocking` (the WireMock server, stubs, request steps) | `Bruinet.Api.Mocking` | `Mocking`, not `Mock`: a namespace named `Mock` gets in the way of every type and variable of that name |
 | `Bruinet.Mocking` (`Sensors/`: mock audio, frames, input) | Stays out of `Api` | These fake a device, not a service. They need a home first: their platform package, or a small package of their own if AD-026 gives one a reason |
 | `Bruinet.Mocking.Data` and its hooks | Not in this rename | SQL replay is a database, not an API. A later `Bruinet.Data.*` is its own question |
-| `Bruinet.Mocking.Analyzers` | Follows what it checks | To be read before the rename: it was not looked at for this proposal |
+| `Bruinet.Mocking.Analyzers` | `Bruinet.Api.Mocking.Analyzers` | Read 2026-11-21: its one rule (BRUINET001, AD-012) is about a mock answer's body, so it follows the WireMock server |
 
 What it costs, counted as files that name the package (sources, projects and docs, 2026-11-20):
 

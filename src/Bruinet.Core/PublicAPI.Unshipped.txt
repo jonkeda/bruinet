@@ -1,4 +1,118 @@
 #nullable enable
+Bruinet.Core.Api.ApiCallException
+Bruinet.Core.Api.ApiCallException.ApiCallException() -> void
+Bruinet.Core.Api.ApiCallException.ApiCallException(string! message) -> void
+Bruinet.Core.Api.ApiCallException.ApiCallException(string! message, System.Exception! innerException) -> void
+Bruinet.Core.Api.ApiCallException.Exchange.get -> Bruinet.Core.Api.ApiExchange?
+Bruinet.Core.Api.ApiCallException.Exchange.init -> void
+Bruinet.Core.Api.ApiEnvironmentGuard
+Bruinet.Core.Api.ApiEnvironmentGuard.Allows(string! host) -> bool
+Bruinet.Core.Api.ApiEnvironmentGuard.ApiEnvironmentGuard(System.Collections.Generic.IEnumerable<string!>! hosts) -> void
+Bruinet.Core.Api.ApiEnvironmentGuard.Check(System.Uri! address) -> void
+Bruinet.Core.Api.ApiEnvironmentGuard.Hosts.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Api.ApiExchange
+Bruinet.Core.Api.ApiExchange.Account.get -> string?
+Bruinet.Core.Api.ApiExchange.Account.init -> void
+Bruinet.Core.Api.ApiExchange.ContentType.get -> string?
+Bruinet.Core.Api.ApiExchange.ContentType.init -> void
+Bruinet.Core.Api.ApiExchange.Describe() -> string!
+Bruinet.Core.Api.ApiExchange.DurationMs.get -> long
+Bruinet.Core.Api.ApiExchange.DurationMs.init -> void
+Bruinet.Core.Api.ApiExchange.Error.get -> string?
+Bruinet.Core.Api.ApiExchange.Error.init -> void
+Bruinet.Core.Api.ApiExchange.Id.get -> string!
+Bruinet.Core.Api.ApiExchange.Id.init -> void
+Bruinet.Core.Api.ApiExchange.Json() -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiExchange.Method.get -> string!
+Bruinet.Core.Api.ApiExchange.Method.init -> void
+Bruinet.Core.Api.ApiExchange.Path.get -> string!
+Bruinet.Core.Api.ApiExchange.RequestBody.get -> string?
+Bruinet.Core.Api.ApiExchange.RequestBody.init -> void
+Bruinet.Core.Api.ApiExchange.RequestContentType.get -> string?
+Bruinet.Core.Api.ApiExchange.RequestContentType.init -> void
+Bruinet.Core.Api.ApiExchange.ResponseBody.get -> string?
+Bruinet.Core.Api.ApiExchange.ResponseBody.init -> void
+Bruinet.Core.Api.ApiExchange.SentJson() -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiExchange.Source.get -> string!
+Bruinet.Core.Api.ApiExchange.Source.init -> void
+Bruinet.Core.Api.ApiExchange.StatusCode.get -> int?
+Bruinet.Core.Api.ApiExchange.StatusCode.init -> void
+Bruinet.Core.Api.ApiExchange.Succeeded.get -> bool
+Bruinet.Core.Api.ApiExchange.TimestampUtc.get -> System.DateTimeOffset
+Bruinet.Core.Api.ApiExchange.TimestampUtc.init -> void
+Bruinet.Core.Api.ApiExchange.Url.get -> string!
+Bruinet.Core.Api.ApiExchange.Url.init -> void
+Bruinet.Core.Api.ApiExchangeLog
+Bruinet.Core.Api.ApiKeySignIn
+Bruinet.Core.Api.ApiKeySignIn.Apply(System.Net.Http.HttpRequestMessage! request) -> void
+Bruinet.Core.Api.ApiKeySignIn.Renew() -> bool
+Bruinet.Core.Api.ApiMasks
+Bruinet.Core.Api.ApiSeed
+Bruinet.Core.Api.ApiSession
+Bruinet.Core.Api.ApiSession.Account.get -> string!
+Bruinet.Core.Api.ApiSession.ApiSession(Bruinet.Core.Api.ApiSessionOptions! options, Bruinet.Core.Testing.TestAccount! account, Bruinet.Core.Api.IApiSignIn? signIn = null) -> void
+Bruinet.Core.Api.ApiSession.ApiSession(Bruinet.Core.Api.ApiSessionOptions! options, string! account, bool writes, Bruinet.Core.Api.IApiSignIn? signIn = null) -> void
+Bruinet.Core.Api.ApiSession.BaseAddress.get -> System.Uri!
+Bruinet.Core.Api.ApiSession.Call(System.Net.Http.HttpMethod! method, string! path, string? body = null, string! contentType = "application/json") -> Bruinet.Core.Api.ApiExchange!
+Bruinet.Core.Api.ApiSession.CleanUp.get -> Bruinet.Core.Testing.CleanUpRegistry!
+Bruinet.Core.Api.ApiSession.Delete(string! path, System.Text.Json.Nodes.JsonNode? body = null) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiSession.DeleteMarked(Bruinet.Core.Api.MarkedResource! resource, string! id) -> bool
+Bruinet.Core.Api.ApiSession.Dispose() -> void
+Bruinet.Core.Api.ApiSession.Exchanges.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Api.ApiExchange!>!
+Bruinet.Core.Api.ApiSession.Get(string! path) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiSession.Kept.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Api.ApiSession.Made(Bruinet.Core.Api.MarkedResource! resource, string! id) -> void
+Bruinet.Core.Api.ApiSession.Marked(Bruinet.Core.Api.MarkedResource! resource) -> System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonObject!>!
+Bruinet.Core.Api.ApiSession.Post(string! path, System.Text.Json.Nodes.JsonNode? body) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiSession.Put(string! path, System.Text.Json.Nodes.JsonNode? body) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiSession.Send(System.Net.Http.HttpMethod! method, string! path, System.Text.Json.Nodes.JsonNode? body = null) -> System.Text.Json.Nodes.JsonNode?
+Bruinet.Core.Api.ApiSession.Sweep(Bruinet.Core.Api.MarkedResource! resource) -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Api.ApiSession.Writes.get -> bool
+Bruinet.Core.Api.ApiSessionOptions
+Bruinet.Core.Api.ApiSessionOptions.AllowedHosts.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Api.ApiSessionOptions.AllowedHosts.init -> void
+Bruinet.Core.Api.ApiSessionOptions.ApiSessionOptions() -> void
+Bruinet.Core.Api.ApiSessionOptions.BaseAddress.get -> System.Uri!
+Bruinet.Core.Api.ApiSessionOptions.BaseAddress.init -> void
+Bruinet.Core.Api.ApiSessionOptions.ExchangeLog.get -> string?
+Bruinet.Core.Api.ApiSessionOptions.ExchangeLog.init -> void
+Bruinet.Core.Api.ApiSessionOptions.Handler.get -> System.Net.Http.HttpMessageHandler?
+Bruinet.Core.Api.ApiSessionOptions.Handler.init -> void
+Bruinet.Core.Api.ApiSessionOptions.MaskedFields.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+Bruinet.Core.Api.ApiSessionOptions.MaskedFields.init -> void
+Bruinet.Core.Api.ApiSessionOptions.ReadPaths.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Core.Api.ApiSessionOptions.ReadPaths.init -> void
+Bruinet.Core.Api.ApiSessionOptions.Timeout.get -> System.TimeSpan
+Bruinet.Core.Api.ApiSessionOptions.Timeout.init -> void
+Bruinet.Core.Api.ApiSignIns
+Bruinet.Core.Api.BearerSignIn
+Bruinet.Core.Api.BearerSignIn.Apply(System.Net.Http.HttpRequestMessage! request) -> void
+Bruinet.Core.Api.BearerSignIn.BearerSignIn(System.Func<string!>! fetch, System.Func<System.DateTimeOffset>? now = null) -> void
+Bruinet.Core.Api.BearerSignIn.Renew() -> bool
+Bruinet.Core.Api.IApiSignIn
+Bruinet.Core.Api.IApiSignIn.Apply(System.Net.Http.HttpRequestMessage! request) -> void
+Bruinet.Core.Api.IApiSignIn.Renew() -> bool
+Bruinet.Core.Api.MarkedResource
+Bruinet.Core.Api.MarkedResource.Delete.get -> System.Action<Bruinet.Core.Api.ApiSession!, System.Text.Json.Nodes.JsonObject!>?
+Bruinet.Core.Api.MarkedResource.Id(System.Text.Json.Nodes.JsonObject! record) -> string?
+Bruinet.Core.Api.MarkedResource.IdField.get -> string!
+Bruinet.Core.Api.MarkedResource.IdField.init -> void
+Bruinet.Core.Api.MarkedResource.Keep.get -> System.Func<Bruinet.Core.Api.ApiSession!, System.Text.Json.Nodes.JsonObject!, string?>?
+Bruinet.Core.Api.MarkedResource.Keep.init -> void
+Bruinet.Core.Api.MarkedResource.List.get -> System.Func<Bruinet.Core.Api.ApiSession!, System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonObject!>!>!
+Bruinet.Core.Api.MarkedResource.MarkedResource(string! name, System.Func<Bruinet.Core.Api.ApiSession!, System.Collections.Generic.IReadOnlyList<System.Text.Json.Nodes.JsonObject!>!>! list, System.Func<Bruinet.Core.Api.ApiSession!, string!, System.Text.Json.Nodes.JsonObject?>! read, System.Action<Bruinet.Core.Api.ApiSession!, System.Text.Json.Nodes.JsonObject!>? delete) -> void
+Bruinet.Core.Api.MarkedResource.MarkedText(System.Text.Json.Nodes.JsonObject! record) -> string?
+Bruinet.Core.Api.MarkedResource.MarkerField.get -> string!
+Bruinet.Core.Api.MarkedResource.MarkerField.init -> void
+Bruinet.Core.Api.MarkedResource.Name.get -> string!
+Bruinet.Core.Api.MarkedResource.Read.get -> System.Func<Bruinet.Core.Api.ApiSession!, string!, System.Text.Json.Nodes.JsonObject?>!
+Bruinet.Core.Api.SeedRecord
+Bruinet.Core.Api.SeedRecord.IsThere.get -> System.Func<Bruinet.Core.Api.ApiSession!, bool>!
+Bruinet.Core.Api.SeedRecord.IsThere.init -> void
+Bruinet.Core.Api.SeedRecord.Make.get -> System.Action<Bruinet.Core.Api.ApiSession!>!
+Bruinet.Core.Api.SeedRecord.Make.init -> void
+Bruinet.Core.Api.SeedRecord.Name.get -> string!
+Bruinet.Core.Api.SeedRecord.Name.init -> void
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.AttachmentsDirectory.get -> string!
 Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.BddDirectory.get -> string!
@@ -1062,6 +1176,8 @@ abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScop
 abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.Self.get -> TScope
 abstract Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindIn(TElement! root, Bruinet.Core.Locators.Locator! locator) -> TElement?
 abstract Bruinet.Core.Scopes.ObjectBase<TContext>.Context.get -> TContext
+const Bruinet.Core.Api.ApiExchangeLog.Variable = "BRUINET_API_EXCHANGES" -> string!
+const Bruinet.Core.Api.ApiMasks.Masked = "***" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RootDirectoryEnvironmentVariable = "BRUINET_TEST_RESULTS_DIR" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.RunIdEnvironmentVariable = "BRUINET_TEST_RUN_ID" -> string!
 const Bruinet.Core.Artifacts.TestArtifactOptions.SuiteEnvironmentVariable = "BRUINET_TEST_SUITE" -> string!
@@ -1094,6 +1210,18 @@ override Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScop
 override Bruinet.Core.Scopes.ScopeReadiness.ToString() -> string!
 override Bruinet.Core.Testing.TestAccount.ToString() -> string!
 override sealed Bruinet.Core.Scopes.AppRootBase<TContext, TElement>.Context.get -> TContext
+static Bruinet.Core.Api.ApiExchangeLog.Append(string! path, Bruinet.Core.Api.ApiExchange! exchange) -> void
+static Bruinet.Core.Api.ApiExchangeLog.Current.get -> string?
+static Bruinet.Core.Api.ApiExchangeLog.Parse(string! line) -> Bruinet.Core.Api.ApiExchange?
+static Bruinet.Core.Api.ApiExchangeLog.Read(string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Core.Api.ApiExchange!>!
+static Bruinet.Core.Api.ApiMasks.DefaultFields.get -> System.Collections.Generic.IReadOnlyCollection<string!>!
+static Bruinet.Core.Api.ApiMasks.Mask(string? body, System.Collections.Generic.IReadOnlyCollection<string!>! fields) -> string?
+static Bruinet.Core.Api.ApiMasks.Parse(string? text) -> System.Text.Json.Nodes.JsonNode?
+static Bruinet.Core.Api.ApiSeed.Ensure(Bruinet.Core.Api.ApiSession! session, System.Collections.Generic.IEnumerable<Bruinet.Core.Api.SeedRecord!>! records) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Core.Api.ApiSession.ReadText(System.Net.Http.HttpResponseMessage! response) -> string!
+static Bruinet.Core.Api.ApiSignIns.ClientCredentials(System.Uri! tokenAddress, string! clientId, string! clientSecret, string? scope = null, System.Func<System.Net.Http.HttpMessageHandler!>? handler = null) -> Bruinet.Core.Api.BearerSignIn!
+static Bruinet.Core.Api.ApiSignIns.FromCookies(System.Net.CookieContainer! cookies, System.Uri! tokenAddress, string! who, System.Func<System.Net.Http.HttpMessageHandler!>? handler = null) -> Bruinet.Core.Api.BearerSignIn!
+static Bruinet.Core.Api.BearerSignIn.Expiry(string! token) -> System.DateTimeOffset?
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(Bruinet.Core.Configuration.ArtifactsOptions! artifacts, string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider.Create(string? suiteName = null) -> Bruinet.Core.Artifacts.DefaultTestArtifactPathProvider!
 static Bruinet.Core.Artifacts.TestArtifactManifestWriter.Read(string! runDirectory) -> Bruinet.Core.Artifacts.TestArtifactManifest?
@@ -1250,3 +1378,6 @@ virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.ProbeContentReadiness(TElement! root) -> Bruinet.Core.Scopes.ScopeReadiness
 virtual Bruinet.Core.Scopes.ContainerObjectBase<TContext, TElement, TParentScope, TScope>.TryFindRootElement() -> TElement?
 virtual Bruinet.Core.Scopes.ObjectBase<TContext>.ScopeName.get -> string!
+Bruinet.Core.Api.ApiExchange.ApiExchange(string! Id, System.DateTimeOffset TimestampUtc, string! Method, string! Url, int? StatusCode, string? ContentType, string? ResponseBody) -> void
+Bruinet.Core.Api.ApiKeySignIn.ApiKeySignIn(string! header, string! key) -> void
+Bruinet.Core.Api.SeedRecord.SeedRecord(string! Name, System.Func<Bruinet.Core.Api.ApiSession!, bool>! IsThere, System.Action<Bruinet.Core.Api.ApiSession!>! Make) -> void

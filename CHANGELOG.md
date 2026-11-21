@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **The API session** (`Bruinet.Core.Api`): a service on a running environment called as an account of
+  `TestAccounts.md`, for what a test does beside the screen. It holds what every suite wrote by hand: the hosts a suite
+  may call (`ApiEnvironmentGuard`), the account's sign-in with renewal (`IApiSignIn`: a token from a web session's
+  cookies, client credentials, a key), no write as an account whose `Writes` is `no`, every call in the step log and
+  kept as an `ApiExchange` with its secrets masked (`BRUINET_API_EXCHANGES` names a file for them), deleting only a
+  record whose text, as the service gives it, carries a run's marker (`MarkedResource`, `Sweep`, `DeleteMarked`), the
+  undo of what was made (`Made`, on `CleanUpRegistry`) and a seed (`ApiSeed`). `Bruinet.Html.Playwright.SavedSignIn`
+  makes the sign-in from a browser's saved sign-in. A suite's API objects are written over it; tests call those.
 - **Bruinet is one product in four modules**: Test (what Bruinet was), Spec (was Lirenet), Develop (was Frainet) and
   Migrate (was Gaminet), in one solution, one build and one release; references between them point one way
   (`ModuleTests`). The root README names them first.

@@ -39,6 +39,9 @@ Bruinet.Html.Playwright.PlaywrightTestContext.Timeouts.get -> Bruinet.Core.Confi
 Bruinet.Html.Playwright.PlaywrightTestContext.TryFindElement(Bruinet.Core.Locators.Locator! locator) -> Bruinet.Html.Interfaces.IHtmlElement?
 Bruinet.Html.Playwright.PlaywrightTestContext.WaitFirst(int? timeoutMs, params System.Func<bool>![]! outcomes) -> int
 Bruinet.Html.Playwright.PlaywrightTestContext.WaitReady(int? timeoutMs = null) -> bool
+Bruinet.Html.Playwright.SavedSignIn
 static Bruinet.Html.Playwright.PlaywrightTestContext.CreateAsync(Bruinet.Html.Context.HtmlTestContextOptions! options) -> System.Threading.Tasks.Task<Bruinet.Html.Playwright.PlaywrightTestContext!>!
 static Bruinet.Html.Playwright.PlaywrightTestContext.ForFrame(Microsoft.Playwright.IPage! page, Microsoft.Playwright.IFrame! frame, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Html.Playwright.PlaywrightTestContext!
 static Bruinet.Html.Playwright.PlaywrightTestContext.ForPage(Microsoft.Playwright.IPage! page, Bruinet.Html.Context.HtmlTestContextOptions? options = null) -> Bruinet.Html.Playwright.PlaywrightTestContext!
+static Bruinet.Html.Playwright.SavedSignIn.Cookies(string! statePath, string! host) -> System.Net.CookieContainer!
+static Bruinet.Html.Playwright.SavedSignIn.Token(string! statePath, System.Uri! tokenAddress, string! who) -> Bruinet.Core.Api.BearerSignIn!
