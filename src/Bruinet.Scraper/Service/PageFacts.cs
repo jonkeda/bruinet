@@ -102,11 +102,13 @@ public sealed record PageFacts
         // A label the page marks as required (a class named so, a star) says it for its field.
         var marked = scope.Where(node => Classes(node).Contains("required")).Select(node => Text(node).TrimEnd('*', ' ')).Where(text => text.Length > 0).ToHashSet(StringComparer.Ordinal);
 
-        var fields = scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number)))
-            .Select(node => (Node: node, Field: Field(snapshot, node, scope, signs ?? [], places, marked))).Where(each => each.Field.Label.Length > 0).DistinctBy(each => (each.Field.Label, each.Field.Kind)).Take(Most).ToList();
+        var all = scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number)))
+            .Select(node => (Node: node, Field: Field(snapshot, node, scope, signs ?? [], places, marked))).Where(each => each.Field.Label.Length > 0).ToList();
+        var filters = ColumnFilters(scope.Where(node => node.Type == "th" || node.Role == "columnheader").Select(node => (Node: node, Text: Text(node))).ToList(), all);
+        var fields = all.DistinctBy(each => (each.Field.Label, each.Field.Kind)).Take(Most).ToList();
         return new PageFacts
         {
-            FieldFacts = [.. fields.SelectMany(each => Places.FieldFact.Stated(each.Field.Label, each.Node.Attributes))],
+            FieldFacts = [.. fields.SelectMany(each => Places.FieldFact.Stated(each.Field.Label, each.Node.Attributes)), .. filters],
             Location = snapshot.Location,
             Title = snapshot.Title,
             Dialog = dialog is null ? null : Shorten(Clean(string.Join(' ', scope.Select(node => node.Text).Where(text => text is { Length: > 0 }).Take(12))), 160),
@@ -246,6 +248,21 @@ public sealed record PageFacts
         }
 
         return null;
+    }
+
+    // A table's own field that stands right under a column's header filters that column: the page shows so by where
+    // it puts it. One fact per column, with the kind of the field (a text, a choice).
+    private static IEnumerable<Places.FieldFact> ColumnFilters(List<(ScrapeNode Node, string Text)> headers, List<(ScrapeNode Node, PageField Field)> fields)
+    {
+        foreach (var (header, text) in headers.Where(each => each.Text.Length > 0 && each.Node.Bounds is { Width: > 0 }).DistinctBy(each => each.Text))
+        {
+            var at = header.Bounds!.Value;
+            var under = fields.FirstOrDefault(each => each.Field.InTable && each.Node.Bounds is { Width: > 0 } box
+                && box.X + (box.Width / 2) >= at.X && box.X + (box.Width / 2) < at.X + at.Width
+                && box.Y >= at.Y + at.Height - 2 && box.Y <= at.Y + (4 * at.Height));
+            if (under.Node is not null)
+                yield return new Places.FieldFact(text, Places.FieldFact.Filter, Places.FieldSpec.Kind(under.Field.Control, under.Field.Kind), Places.FieldFact.StatedLevel, "a field under the column");
+        }
     }
 
     // A label that names the field by its id (<label for="title">Title</label>), wherever it stands: asked after the

@@ -134,6 +134,33 @@ public sealed class PageFactsTests
     }
 
     [Fact]
+    public void A_table_s_field_right_under_a_column_s_header_filters_that_column()
+    {
+        ScrapeNode At(ScrapeNode node, int x, int y, int width = 100) => node with { Bounds = new ScrapeBounds(x, y, width, 20) };
+        var page = Page(
+            N(1, 0, "body"),
+            N(2, 1, "table"),
+            N(3, 2, "thead"),
+            At(N(4, 3, "th", "Name"), 0, 100),
+            At(N(5, 3, "th", "City"), 100, 100),
+            At(N(6, 3, "th", "Kind"), 200, 100),
+            N(7, 2, "tbody"),
+            N(8, 7, "tr"),
+            N(9, 8, "td"),
+            At(N(10, 9, "input", null, ("placeholder", "Search")), 10, 122, 80),
+            N(11, 8, "td"),
+            // A field far below the header is a row's own cell, not the column's filter.
+            At(N(12, 11, "input", null, ("placeholder", "Search")), 110, 400, 80),
+            N(13, 8, "td"),
+            At(N(14, 13, "select", null, ("name", "kind")), 210, 122, 80));
+
+        var facts = PageFacts.Of(page);
+
+        Assert.Equal(["Name: filter text (stated, a field under the column)", "Kind: filter select (stated, a field under the column)"],
+            facts.FieldFacts.Where(fact => fact.Name == Bruinet.Scraper.Places.FieldFact.Filter).Select(fact => fact.ToText()));
+    }
+
+    [Fact]
     public void A_field_states_what_it_takes_by_its_attributes()
     {
         var page = Page(

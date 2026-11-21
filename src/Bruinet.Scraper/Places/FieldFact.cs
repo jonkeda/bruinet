@@ -38,6 +38,9 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
     /// <summary>What a fact is called when it is what the form said of a value that was saved and is too long.</summary>
     public const string MessageWhenTooLong = "message when too long";
 
+    /// <summary>What a fact is called when it is how a list's column is filtered: the kind of the field under its header.</summary>
+    public const string Filter = "filter";
+
     /// <summary>What a fact is called when it is a length a save took: the field's longest is that or more.</summary>
     public const string Takes = "takes";
 
@@ -64,7 +67,7 @@ public sealed partial record FieldFact(string Field, string Name, string Value, 
             return null;
         // A label may hold a colon itself (Start date: Time): the field ends where the first fact's name starts.
         var body = match.Groups["body"].Value;
-        var found = Attributes.Select(each => each.Name).Append(MessageWhenEmpty).Append(MessageWhenWrong).Append(MessageWhenTooLong).Append(Takes).Select(name => (Name: name, At: body.IndexOf($": {name} ", StringComparison.Ordinal)))
+        var found = Attributes.Select(each => each.Name).Append(MessageWhenEmpty).Append(MessageWhenWrong).Append(MessageWhenTooLong).Append(Takes).Append(Filter).Select(name => (Name: name, At: body.IndexOf($": {name} ", StringComparison.Ordinal)))
             .Where(each => each.At > 0).OrderBy(each => each.At).ThenByDescending(each => each.Name.Length).FirstOrDefault();
         return found.Name is null ? null : new FieldFact(body[..found.At], found.Name, body[(found.At + found.Name.Length + 3)..], match.Groups["level"].Value, match.Groups["source"].Value);
     }

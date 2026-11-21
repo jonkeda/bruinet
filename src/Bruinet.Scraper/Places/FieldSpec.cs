@@ -27,7 +27,7 @@ public static class FieldSpec
         {
             var label = field.Label.Replace("|", "/", StringComparison.Ordinal);
             var named = FieldFact.Named(facts, field.Label);
-            var kind = Kind(field);
+            var kind = Kind(field.Control, field.Kind);
             var (min, max) = Limits(field, kind, named, label, open);
             var empty = named.FirstOrDefault(fact => fact.Name == FieldFact.MessageWhenEmpty);
             if (field.Required && empty is null)
@@ -51,13 +51,20 @@ public static class FieldSpec
     {
         if (place.Columns.Count == 0)
             return string.Empty;
-        var text = new StringBuilder("\n## The list\n\nThe columns in their order, as the page shows them.\n\n| Column | Shows | Sorts | Filter |\n| --- | --- | --- | --- |\n");
+        // A field right under a column's header filters it. Where a capture shows such fields, a column without one
+        // has none; where it shows none at all, nobody looked.
+        var filters = place.FieldFacts.Select(FieldFact.Parse).OfType<FieldFact>().Where(fact => fact.Name == FieldFact.Filter).ToList();
+        var own = place.Fields.Select(PlaceField.Parse).Where(field => field.InTable).Select(field => field.Label).ToList();
+        var text = new StringBuilder("\n## The list\n\nThe columns in their order, as the page shows them. Filter is the kind of the field under the column's header.\n\n| Column | Shows | Sorts | Filter |\n| --- | --- | --- | --- |\n");
         foreach (var column in place.Columns)
-            text.Append(CultureInfo.InvariantCulture, $"| {column.Replace("|", "/", StringComparison.Ordinal)} | open | open | open |\n");
-        var filters = place.Fields.Select(PlaceField.Parse).Where(field => field.InTable).Select(field => field.Label).ToList();
-        text.Append("\n## Open questions of the list\n\n- What each column shows, whether it sorts and what it filters on: a capture holds the headers only.\n");
-        if (filters.Count > 0)
-            text.Append(CultureInfo.InvariantCulture, $"- The table has fields of its own ({string.Join(", ", filters)}): which column each filters is not known.\n");
+        {
+            var filter = filters.FirstOrDefault(fact => fact.Field == column)?.Value ?? (filters.Count > 0 ? "none" : "open");
+            text.Append(CultureInfo.InvariantCulture, $"| {column.Replace("|", "/", StringComparison.Ordinal)} | open | open | {filter} |\n");
+        }
+
+        text.Append("\n## Open questions of the list\n\n- What each column shows and whether it sorts: a capture holds the headers only.\n");
+        if (filters.Count == 0 && own.Count > 0)
+            text.Append(CultureInfo.InvariantCulture, $"- The table has fields of its own ({string.Join(", ", own)}): which column each filters is not known.\n");
         return text.ToString();
     }
 
@@ -142,15 +149,15 @@ public static class FieldSpec
     }
 
     // What a reader calls the field: the element's own kind, or what its control is by its name.
-    private static string Kind(PlaceField field)
+    internal static string Kind(string? named, string own)
     {
-        var control = field.Control ?? string.Empty;
+        var control = named ?? string.Empty;
         foreach (var (word, kind) in new[] { ("Select", "select"), ("Autocomplete", "select"), ("Combobox", "select"), ("Radio", "choice"), ("Date", "date"), ("Time", "time"), ("Checkbox", "checkbox"), ("Switch", "checkbox") })
         {
             if (control.Contains(word, StringComparison.Ordinal))
                 return kind;
         }
 
-        return field.Kind.Length == 0 ? "text" : field.Kind;
+        return own.Length == 0 ? "text" : own;
     }
 }

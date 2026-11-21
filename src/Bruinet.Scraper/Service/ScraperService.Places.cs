@@ -179,8 +179,24 @@ public sealed partial class ScraperService
         var drafted = DraftedFrom(project, place.Key, "form") is null ? null : PlaceDrafter.Form(place, templates, formName, ns, page, opens, project.PlaceSigns, under, family);
         return PlaceDrafter.FormTest(place, templates, className ?? formName + "Tests", ns.Replace(".Pages", ".Tests", StringComparison.Ordinal), formName, page, ns, project.PlaceSigns,
             place.Parent is null ? null : list[place.Parent], PlaceDrafter.Beside(list.Places, place), drafted?.Pressed ?? [],
-            lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: drafted is null ? null : family, fields: drafted?.Fields, saver: drafted is null ? null : Saver(drafted));
+            lanes: Factory.FactorySetup.Read(project.Home).Walkers, family: drafted is null ? null : family, fields: drafted?.Fields, saver: drafted is null ? PersonSaver(project, place, formName) : Saver(drafted));
     }
+
+    // The member of a class a person wrote that saves its form: a button's member whose locator says what the place's
+    // saving button says. Null when the class has none that can be told so.
+    private static string? PersonSaver(ScrapeProject project, Place place, string className)
+    {
+        var label = place.Buttons.Select(Place.Clean).LastOrDefault(Places.Walker.Saves);
+        if (label is null || ClassFile(project, className) is not { } file || !File.Exists(file))
+            return null;
+        var said = new[] { $"\"{label}\"", $"\\\"{label}\\\"", $"'{label}'" };
+        return File.ReadLines(file).Select(line => (Line: line, Member: PersonMember().Match(line)))
+            .Where(each => each.Member.Success && said.Any(text => each.Line.Contains(text, StringComparison.Ordinal)))
+            .Select(each => each.Member.Groups["name"].Value).FirstOrDefault();
+    }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"^\s*public\s+\w*Button\w*<[^>]*>\s+(?<name>\w+)\s*=>")]
+    private static partial System.Text.RegularExpressions.Regex PersonMember();
 
     // The member of a drafted form that saves it, by the walk's save words; null when the form shows none.
     private static string? Saver(PlaceDraft form)

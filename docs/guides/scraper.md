@@ -455,10 +455,13 @@ answered with) and the open questions. A cell there is a fact, a dash where a li
 "open" with its question below; a fact only read from a script is a question with its value as the proposal. What
 was seen is written once more as "Examples", a row a reader can try again (the empty save, a single letter, a long
 save), and a place with columns gets "The list": its columns in their order, with what a capture does not hold
-(what a column shows, sorts by and filters on) as open.
+(what a column shows and sorts by) as open. A column's Filter is a stated fact: a table's own field that stands
+right under the column's header in the capture (`Name: filter text (stated, a field under the column)`); where a
+capture shows such fields, a column without one has none.
 
 A template's test may name the form's button that saves as `{Saver}`: the member of the drafted form the walk's
-save words find. A line that names it is left out for a form that shows none, or whose class a person wrote.
+save words find. For a class a person wrote it is the button's member whose locator says what the place's saving
+button says. A line that names `{Saver}` is left out for a form where neither is found.
 
 `bruinet scrape places fields --facts` lists them; `places fields --table "<place>"` prints a place's fields as a
 spec's field table (Field, Kind, Required, Min, Max, Message, From), where a stated or seen limit is a cell, one
