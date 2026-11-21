@@ -103,9 +103,9 @@ public sealed record PageFacts
         var marked = scope.Where(node => Classes(node).Contains("required")).Select(node => Text(node).TrimEnd('*', ' ')).Where(text => text.Length > 0).ToHashSet(StringComparer.Ordinal);
 
         var all = scope.Where(node => IsField(node) && !scope.Any(around => around.Number != node.Number && IsField(around) && Within(snapshot, node, around.Number)))
-            .Select(node => (Node: node, Field: Field(snapshot, node, scope, signs ?? [], places, marked))).Where(each => each.Field.Label.Length > 0).ToList();
+            .Select(node => (Node: node, Field: Field(snapshot, node, scope, signs ?? [], places, marked))).ToList();
         var filters = ColumnFilters(scope.Where(node => node.Type == "th" || node.Role == "columnheader").Select(node => (Node: node, Text: Text(node))).ToList(), all);
-        var fields = all.DistinctBy(each => (each.Field.Label, each.Field.Kind)).Take(Most).ToList();
+        var fields = all.Where(each => each.Field.Label.Length > 0).DistinctBy(each => (each.Field.Label, each.Field.Kind)).Take(Most).ToList();
         return new PageFacts
         {
             FieldFacts = [.. fields.SelectMany(each => Places.FieldFact.Stated(each.Field.Label, each.Node.Attributes)), .. filters],
@@ -256,6 +256,11 @@ public sealed record PageFacts
     {
         foreach (var (header, text) in headers.Where(each => each.Text.Length > 0 && each.Node.Bounds is { Width: > 0 }).DistinctBy(each => each.Text))
         {
+            // A header that says it sorts: by the attribute for it, or a class named so.
+            if (header.Attribute("aria-sort") is { Length: > 0 })
+                yield return new Places.FieldFact(text, Places.FieldFact.Sorts, "yes", Places.FieldFact.StatedLevel, "aria-sort");
+            else if (Classes(header).Contains("sortable"))
+                yield return new Places.FieldFact(text, Places.FieldFact.Sorts, "yes", Places.FieldFact.StatedLevel, "a class named sortable");
             var at = header.Bounds!.Value;
             var under = fields.FirstOrDefault(each => each.Field.InTable && each.Node.Bounds is { Width: > 0 } box
                 && box.X + (box.Width / 2) >= at.X && box.X + (box.Width / 2) < at.X + at.Width

@@ -142,7 +142,7 @@ public sealed class PageFactsTests
             N(2, 1, "table"),
             N(3, 2, "thead"),
             At(N(4, 3, "th", "Name"), 0, 100),
-            At(N(5, 3, "th", "City"), 100, 100),
+            At(N(5, 3, "th", "City", ("aria-sort", "none")), 100, 100),
             At(N(6, 3, "th", "Kind"), 200, 100),
             N(7, 2, "tbody"),
             N(8, 7, "tr"),
@@ -152,12 +152,14 @@ public sealed class PageFactsTests
             // A field far below the header is a row's own cell, not the column's filter.
             At(N(12, 11, "input", null, ("placeholder", "Search")), 110, 400, 80),
             N(13, 8, "td"),
-            At(N(14, 13, "select", null, ("name", "kind")), 210, 122, 80));
+            // A filter needs no label of its own: the column's header is its name.
+            At(N(14, 13, "select"), 210, 122, 80));
 
         var facts = PageFacts.Of(page);
 
         Assert.Equal(["Name: filter text (stated, a field under the column)", "Kind: filter select (stated, a field under the column)"],
             facts.FieldFacts.Where(fact => fact.Name == Bruinet.Scraper.Places.FieldFact.Filter).Select(fact => fact.ToText()));
+        Assert.Equal(["City: sorts yes (stated, aria-sort)"], facts.FieldFacts.Where(fact => fact.Name == Bruinet.Scraper.Places.FieldFact.Sorts).Select(fact => fact.ToText()));
     }
 
     [Fact]

@@ -163,9 +163,9 @@ public sealed class FieldFactTests
         Assert.Equal(string.Empty, FieldSpec.Of(new Place { Key = "/empty", Kind = PlaceKind.Page }));
 
         // The capture showed a field under one column: that one filters by it, and the other has none.
-        var known = FieldSpec.Of(place with { FieldFacts = ["City: filter select (stated, a field under the column)"] }).Split('\n');
-        Assert.Contains("| Name | open | open | none |", known);
-        Assert.Contains("| City | open | open | select |", known);
+        var known = FieldSpec.Of(place with { FieldFacts = ["City: filter select (stated, a field under the column)", "Name: sorts yes (stated, aria-sort)"] }).Split('\n');
+        Assert.Contains("| Name | open | yes | none |", known);
+        Assert.Contains("| City | open | no | select |", known);
         Assert.DoesNotContain(known, row => row.StartsWith("- The table has fields of its own", StringComparison.Ordinal));
     }
 

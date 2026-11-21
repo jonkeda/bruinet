@@ -53,16 +53,19 @@ public static class FieldSpec
             return string.Empty;
         // A field right under a column's header filters it. Where a capture shows such fields, a column without one
         // has none; where it shows none at all, nobody looked.
-        var filters = place.FieldFacts.Select(FieldFact.Parse).OfType<FieldFact>().Where(fact => fact.Name == FieldFact.Filter).ToList();
+        var known = place.FieldFacts.Select(FieldFact.Parse).OfType<FieldFact>().ToList();
+        var (filters, sorts) = (known.Where(fact => fact.Name == FieldFact.Filter).ToList(), known.Where(fact => fact.Name == FieldFact.Sorts).ToList());
         var own = place.Fields.Select(PlaceField.Parse).Where(field => field.InTable).Select(field => field.Label).ToList();
         var text = new StringBuilder("\n## The list\n\nThe columns in their order, as the page shows them. Filter is the kind of the field under the column's header.\n\n| Column | Shows | Sorts | Filter |\n| --- | --- | --- | --- |\n");
         foreach (var column in place.Columns)
         {
             var filter = filters.FirstOrDefault(fact => fact.Field == column)?.Value ?? (filters.Count > 0 ? "none" : "open");
-            text.Append(CultureInfo.InvariantCulture, $"| {column.Replace("|", "/", StringComparison.Ordinal)} | open | open | {filter} |\n");
+            text.Append(CultureInfo.InvariantCulture, $"| {column.Replace("|", "/", StringComparison.Ordinal)} | open | {(sorts.Any(fact => fact.Field == column) ? "yes" : sorts.Count > 0 ? "no" : "open")} | {filter} |\n");
         }
 
-        text.Append("\n## Open questions of the list\n\n- What each column shows and whether it sorts: a capture holds the headers only.\n");
+        text.Append("\n## Open questions of the list\n\n- What each column shows: a capture holds the headers only.\n");
+        if (sorts.Count == 0)
+            text.Append("- Whether a column sorts: no header says so by itself.\n");
         if (filters.Count == 0 && own.Count > 0)
             text.Append(CultureInfo.InvariantCulture, $"- The table has fields of its own ({string.Join(", ", own)}): which column each filters is not known.\n");
         return text.ToString();

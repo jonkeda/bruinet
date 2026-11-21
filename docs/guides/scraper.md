@@ -445,9 +445,11 @@ value took. What was seen counts for more than what is stated: the field table s
 both, and a field's message for a wrong value stands in its Message cell after `wrong value:`.
 
 A save test goes one step on where the setup lets the Scraper write: after the empty save it saves with 300
-characters in every text field the browser holds no limit for. A save that is taken is a fact (`Remark: takes 300
-(seen, saved 300 characters)`: the longest is that or more); one that is refused gives what the form said
-(`message when too long`), and the test saves again with a value that fits.
+characters in every text field, or what the browser lets a field keep. A save that is taken is a fact (`Remark:
+takes 300 (seen, saved 300 characters)`: the longest is that or more). One that is refused is saved again with a
+single letter in each field that said something: a field that still complains refuses the value itself (`message
+when wrong`), one that is silent refused the length (`message when too long`). How long "long" is, is the suite's
+to set for a run (Bouw7: `BOUW7_LONG_SAVE`), to find where a longest ends. A probe types -1 into a number field.
 
 `places fields --spec "<place>"` prints the place's fields as the sections of a screen's spec: the field table
 (Field, Kind, Required, Min, Max, Message), "More about a field" (a pattern, what a wrong or too long value was
@@ -457,7 +459,8 @@ was seen is written once more as "Examples", a row a reader can try again (the e
 save), and a place with columns gets "The list": its columns in their order, with what a capture does not hold
 (what a column shows and sorts by) as open. A column's Filter is a stated fact: a table's own field that stands
 right under the column's header in the capture (`Name: filter text (stated, a field under the column)`); where a
-capture shows such fields, a column without one has none.
+capture shows such fields, a column without one has none. A header that says it sorts (`aria-sort`, a class
+named sortable) is a stated fact too (`City: sorts yes`).
 
 A template's test may name the form's button that saves as `{Saver}`: the member of the drafted form the walk's
 save words find. For a class a person wrote it is the button's member whose locator says what the place's saving
