@@ -1,6 +1,6 @@
 # API testing with Bruinet: proposal
 
-Status: proposal, nothing built. Written 2026-11-20. It continues the service-clients design
+Status: built in most of its phases on 2026-11-21; [plan.md](plan.md) has what was done per task and [report.md](report.md) the account. The text below is the proposal as it was written on 2026-11-20, with two rows corrected. It continues the service-clients design
 ([B18](design.md)), which was written before Bouw7 had any API code; Bouw7 now has 350 lines of it
 (`Bouw7.Web.UITests/Support/Api`), and this proposal starts from what those lines turned out to need.
 

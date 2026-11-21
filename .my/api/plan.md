@@ -1,6 +1,6 @@
 # Development plan: the task list for API testing
 
-Status: A0 and A1 done (2026-11-21); the rest as its boxes say. Written 2026-11-21 on branch `api`. The owner then asked: "implement the full tasklist. make your own decisions. do not ask questions", so every 👤 below was decided by the agent and says so. Asked by the owner: "create a tasklist
+Status: A0 to A4 and A6 done and shown on Bouw7's acc; A5 built but for a client generated from a real description (A5.2, A5.5: Heimdall's description is not here); A7 waits for a site with SOAP; A8 done but for deleting this folder, which waits for the open tasks (2026-11-21). Open: A0.8, A3.8, A4.7, A5.2, A5.5, A8.4. The account: [report.md](report.md). Written 2026-11-21 on branch `api`. The owner then asked: "implement the full tasklist. make your own decisions. do not ask questions", so every 👤 below was decided by the agent and says so.
 developmentplan for the api design and proposal". It turns [proposal.md](proposal.md) (2026-11-20) and the older
 service-clients design [design.md](design.md) (B18) into tasks. Where the two differ the proposal wins: it is the
 later one and was answered by the owner.
@@ -52,6 +52,7 @@ something from outside (a description).
 | A0.4 | Schemathesis is not run on acc by anything in this plan; `docs` say how a person runs it, reads only | Generated calls on a shared environment are a person's to start |
 | A0.5 | Heimdall's description is not in the suite and was not fetched; A5 is built and proven on Bruinet's own sample service and on Bouw7's observed description | Copying it is a person's act in another repository |
 | A0.7 | `Bruinet.Mocking.Analyzers` follows the WireMock server: `Bruinet.Api.Mocking.Analyzers` | Its one rule (BRUINET001) is about a mock answer's body |
+| A0.8 | Not done, and left open: no library of §2 was taken (`Bruinet.Api.OpenApi` depends on nothing but Bruinet), so no version or licence was checked. It is done when the first of them goes into `Directory.Packages.props` | Checking names nobody uses yet proves nothing |
 | A1.1 | No separate design note: `src/Bruinet.Core/Api` and `ApiSessionTests` are it | A note written after the code would only repeat it |
 | A1.7 | A create registers its delete only where the API object says so (`ApiSession.Made`); Bouw7's API objects do not, because a Bouw7 session lives for one `using` | A record deleted when the session closes would be gone before the test looked at it |
 
@@ -59,6 +60,33 @@ Baselines (A0.9, A0.10), 2026-11-21: `Bruinet.Core.Tests` 145 of 149 (the four t
 `BroadCatchTests.NoFile_HoldsMoreBroadCatches_ThanItsAllowance` and three of `SolutionTests`; they failed before any
 change of this plan), `Bruinet.Contracts.Tests` 133, `Bruinet.Mocking.Tests` 60, `Bruinet.Mocking.Http.Tests` 31,
 `Bruinet.Cli.Tests` 478. Bouw7: the API's data tests and the seed run, 5 of 5 on acc.
+
+## How each phase ended (2026-11-21)
+
+| Task | How it ended |
+| --- | --- |
+| A2.4 | No throw-away rename: the real one was the proof. `bruinet upgrade` ran over Bruinet itself (267 names in 112 files), and `--check` on `samples/`, `tests/` and Bouw7 then reported nothing left but the command's own test data |
+| A2.6 | The sensors are the package `Bruinet.Mocking.Sensors`, namespace unchanged; the analyzer is `Bruinet.Api.Mocking.Analyzers` |
+| A2.7 | Nothing to rename: the session stays in `Bruinet.Core.Api` (A0.1) |
+| A2.8 | 0.2.0, not a major: before 1.0 a minor version may break the API (`VERSIONING.md`) |
+| A2 | What the rename could not see: a name written relative to `Bruinet` (`Mocking.Http.HttpCall` inside a `Bruinet.*` namespace, four places in the Todo sample). The build named them, as the command's last step is meant to |
+| A3.2 | The map is not a file beside the page object: Bouw7 writes it as facts of the form in `saved-forms.jsonl` ("Name is sent as `name`"), which the list of places already reads. `FormCheck.ToJson` and `FromJson` keep one as a file where a suite wants that |
+| A3.5 | `PlacesSaveTests` saves two forms (department, project category); both are checked typed, sent and stored with one call each (`StoredForm.SaveAndCheck`). Finding: the category's field Description is stored as `name` |
+| A3.8 | Open. The factory does not draft the pair yet |
+| A4.1 | The store is the file `BRUINET_API_EXCHANGES` names: every session's calls, every page's (fetch and XHR) and the walk's. The recordings of `Bruinet.Api.Replay` are not read into it |
+| A4.2 | Our own merge was enough; Dev Proxy was not tried |
+| A4.6 | Bouw7's draft: 68 operations from 1223 exchanges of a read-only walk of the contact pages and of the Contacts and Projects scenarios with the data and form tests (63 of 63 passed). Not a whole-suite run and not a whole walk |
+| A4.7 | Open: needs Heimdall's description (A0.5) |
+| A5.1 | The package reads OpenAPI 3 in JSON with `System.Text.Json`, without `Microsoft.OpenApi` (AD-046, "Ruled out"): YAML and OpenAPI 2 are not read |
+| A5.2 | Half. `ApiSession.Client` is the seam a generated client is built on, tested, and the guide has the Kiota lines. No client was generated: there is no description to generate from |
+| A5.4 | Our own stubs over `MockApiServer` (`StubDescribed`), not `WireMock.Net.OpenApiParser` |
+| A5.5 | Open: needs Heimdall's description |
+| A5.6 | Words only, in the guide: a person runs it, reads only. Nothing in Bruinet starts it |
+| A5 gate | Not met: no suite has a real description |
+| A6.3 | The format and `spec-from-app` say it; no such spec exists yet |
+| A6 gate | Two scenarios of B7.CON.02 (R5, R7) pass on acc on the `api` head in 0.6 s and 2 s, and `bruinet spec trace --results` counts both as passing. The same spec's nine examples through the browser took 48 s |
+| A8.1 | One record, AD-046, for all of it; AD-020 names the `api` head |
+| A8.4 | Open: this folder stays until A3.8, A4.7, A5.2 and A5.5 are done or dropped |
 
 ## A0 Decisions and a baseline
 
@@ -73,7 +101,7 @@ change of this plan), `Bruinet.Contracts.Tests` 133, `Bruinet.Mocking.Tests` 60,
 - [x] A0.6 **B** Repair the proposal's link to B18; correct its row on the clean-up registry
 - [x] A0.7 **B** Read `Bruinet.Mocking.Analyzers` (`AnonymousMockBodyAnalyzer`): what it checks decides which package
   it follows in the rename. One line in the proposal's Names table
-- [x] A0.8 **B** Check each library of §2 online: current version, licence, target framework (the proposal's names
+- [ ] A0.8 **B** Check each library of §2 online: current version, licence, target framework (the proposal's names
   are from memory). Choose `JsonSchema.Net` or `NJsonSchema`. A table in the proposal; nothing in
   `Directory.Packages.props` yet
 - [x] A0.9 **B** Baseline: `Bruinet.Core.Tests`, `Bruinet.Contracts.Tests`, `Bruinet.Mocking.Tests`,
@@ -119,63 +147,63 @@ gate, not the workbench.
 
 The proposal's Names section. The command first, so the rename is its first real use.
 
-- [ ] A2.1 **B** A rename row in `changes.md` gets a form a program reads: old name, new name, kind (package,
+- [x] A2.1 **B** A rename row in `changes.md` gets a form a program reads: old name, new name, kind (package,
   namespace, type). `check-api-changes.ps1` accepts it; the other rows stay prose
-- [ ] A2.2 **B** `bruinet upgrade <folder> [--from <commit>] [--check]`: rewrites `using` lines and qualified names in
+- [x] A2.2 **B** `bruinet upgrade <folder> [--from <commit>] [--check]`: rewrites `using` lines and qualified names in
   C#, package and project references, and names held as text (`bdd.config.md`'s `## Using`, settings sections).
   `--check` lists and changes nothing. Then it builds and reports what no row explains
-- [ ] A2.3 **B** The same as a tool of `bruinet mcp`
-- [ ] A2.4 **B** Proven on a throw-away rename of a small package in `samples/` and `tests/`, then undone
-- [ ] A2.5 **B** The renames, each with its row: `Bruinet.Contracts` to `Bruinet.Api.Contracts`,
+- [x] A2.3 **B** The same as a tool of `bruinet mcp`
+- [x] A2.4 **B** Proven on a throw-away rename of a small package in `samples/` and `tests/`, then undone
+- [x] A2.5 **B** The renames, each with its row: `Bruinet.Contracts` to `Bruinet.Api.Contracts`,
   `Bruinet.Mocking.Http` to `Bruinet.Api.Replay`, `Bruinet.Mocking` (server, stubs, request steps) to
   `Bruinet.Api.Mocking`; their test projects, `PackageId`s, solution folders, docs and skills
-- [ ] A2.6 **B** The sensors move as A0.3 decided; the analyzers as A0.7 found. `Bruinet.Mocking.Data` and its hooks
+- [x] A2.6 **B** The sensors move as A0.3 decided; the analyzers as A0.7 found. `Bruinet.Mocking.Data` and its hooks
   are not renamed
-- [ ] A2.7 **B** The session of A1 takes its final name if A0.1 chose a package
-- [ ] A2.8 **B** A major version, both renames in it (`BREAKING-CHANGES-POLICY.md`, `VERSIONING.md`); no bridge
+- [x] A2.7 **B** The session of A1 takes its final name if A0.1 chose a package
+- [x] A2.8 **B** A major version, both renames in it (`BREAKING-CHANGES-POLICY.md`, `VERSIONING.md`); no bridge
   packages
-- [ ] A2.9 **7** `bruinet upgrade` on Bouw7: expected to change nothing but A1's names, since Bouw7 uses neither
+- [x] A2.9 **7** `bruinet upgrade` on Bouw7: expected to change nothing but A1's names, since Bouw7 uses neither
   renamed package. The report is the proof
-- [ ] **Gate:** Bruinet builds and A0.9's tests pass with the same counts under the new names; `bruinet upgrade
+- [x] **Gate:** Bruinet builds and A0.9's tests pass with the same counts under the new names; `bruinet upgrade
   --check` on `samples/`, `tests/` and Bouw7 reports nothing left
 
 ## A3 A form checked through the API
 
 The proposal's phase 2 and use two (§4).
 
-- [ ] A3.1 **B** A page object's save returns the exchange it caused (the write and its answer), from the calls the
+- [x] A3.1 **B** A page object's save returns the exchange it caused (the write and its answer), from the calls the
   web head already sees. The new record's id comes from it, not from the screen
-- [ ] A3.2 **B** The field map: fill each field with a value of its own, find each value in the body that was sent,
+- [x] A3.2 **B** The field map: fill each field with a value of its own, find each value in the body that was sent,
   keep the map (page object field to a place in the JSON) beside the page object. A field with no place in the body
   is a finding, listed
-- [ ] A3.3 **B** The three-way check: typed, sent, read back. `RoundTripCheck` compares the last two; the first is
+- [x] A3.3 **B** The three-way check: typed, sent, read back. `RoundTripCheck` compares the last two; the first is
   new
-- [ ] A3.4 **B** A read after a write waits by polling the API object with a named interval, never a sleep
-- [ ] A3.5 **7** `PlacesSaveTests` checks each saved form against the API with no line per form
-- [ ] A3.6 **7** The other direction for one form: a record made through the API, the page shown to have it
-- [ ] A3.7 **B** A suite phrase pattern for scenarios (`Then the contact "{run} Arend" is stored as a Supplier`),
+- [x] A3.4 **B** A read after a write waits by polling the API object with a named interval, never a sleep
+- [x] A3.5 **7** `PlacesSaveTests` checks each saved form against the API with no line per form
+- [x] A3.6 **7** The other direction for one form: a record made through the API, the page shown to have it
+- [x] A3.7 **B** A suite phrase pattern for scenarios (`Then the contact "{run} Arend" is stored as a Supplier`),
   bound to an API object; no generic HTTP steps
 - [ ] A3.8 **B** The Scraper's factory drafts the pair for a form it has a page object for (after A3.5 holds)
-- [ ] **Gate:** `PlacesSaveTests` on acc: every form it saves is checked typed, sent and stored; the findings (a
+- [x] **Gate:** `PlacesSaveTests` on acc: every form it saves is checked typed, sent and stored; the findings (a
   field never sent, a value stored differently) are a list a person reads
 
 ## A4 The observed description
 
 The proposal's phase 3 and the first half of use three (§5).
 
-- [ ] A4.1 **B** One store of exchanges, fed by the walk (which today writes a held call down and keeps no answers),
+- [x] A4.1 **B** One store of exchanges, fed by the walk (which today writes a held call down and keeps no answers),
   a test run, an HTTP recording and the API objects' own calls. Redaction and the key scan of `Mocking.Http` on what
   is kept in git
-- [ ] A4.2 **B** The merge: addresses with their parameters found by comparing calls, each body's shape, how many
+- [x] A4.2 **B** The merge: addresses with their parameters found by comparing calls, each body's shape, how many
   exchanges stand behind each. Shapes only, no values. Output: a draft OpenAPI file in the suite, marked "observed"
-- [ ] A4.3 **B** `bruinet api describe` (write or refresh the draft) and `bruinet api diff` (two descriptions)
-- [ ] A4.4 **B** The calls no test makes, listed against the description (as `UnregisteredEndpoints` does for
+- [x] A4.3 **B** `bruinet api describe` (write or refresh the draft) and `bruinet api diff` (two descriptions)
+- [x] A4.4 **B** The calls no test makes, listed against the description (as `UnregisteredEndpoints` does for
   contracts)
-- [ ] A4.5 **B** The diff as a "site changed" signal in `run-triage`
-- [ ] A4.6 **7** Bouw7's draft from one walk and one suite run, committed
+- [x] A4.5 **B** The diff as a "site changed" signal in `run-triage`
+- [x] A4.6 **7** Bouw7's draft from one walk and one suite run, committed
 - [ ] A4.7 **7** When Heimdall's description is in the suite (A0.5): the observed one held against it, the
   differences counted. That number says how good the observing is
-- [ ] **Gate:** Bouw7 has a draft description from one walk and one suite run; an answer changed on purpose (in a
+- [x] **Gate:** Bouw7 has a draft description from one walk and one suite run; an answer changed on purpose (in a
   recorded exchange) shows in `bruinet api diff`. If the merge proves harder than it looks, Dev Proxy is tried
   before more is built (§2)
 
@@ -183,13 +211,13 @@ The proposal's phase 3 and the first half of use three (§5).
 
 The proposal's phase 4. Needs a description: Heimdall's (A0.5), or A4's once it is trusted.
 
-- [ ] A5.1 **B** The package, with `Microsoft.OpenApi`, in `Directory.Packages.props` (versions from A0.8)
+- [x] A5.1 **B** The package, with `Microsoft.OpenApi`, in `Directory.Packages.props` (versions from A0.8)
 - [ ] A5.2 **B** The typed client: Kiota into the session (base address, token, the logging handler); NSwag only
   where a description is 2.0
-- [ ] A5.3 **B** Each answer checked against its schema, beside `Bruinet.Api.Contracts`, not instead of it
-- [ ] A5.4 **B** A fake service from a description (`WireMock.Net.OpenApiParser`), which hand-written stubs override
+- [x] A5.3 **B** Each answer checked against its schema, beside `Bruinet.Api.Contracts`, not instead of it
+- [x] A5.4 **B** A fake service from a description (`WireMock.Net.OpenApiParser`), which hand-written stubs override
 - [ ] A5.5 **7** Bouw7's API objects on the generated client: a renamed field fails the build
-- [ ] A5.6 **B** Schemathesis as an outside tool at a gate, as A0.4 decided; never a package reference
+- [x] A5.6 **B** Schemathesis as an outside tool at a gate, as A0.4 decided; never a package reference
 - [ ] **Gate:** one suite with a real description builds its API objects on the generated client, and its tests pass
   against the fake service with acc switched off
 
@@ -197,13 +225,13 @@ The proposal's phase 4. Needs a description: Heimdall's (A0.5), or A4's once it 
 
 The proposal's phase 5 and the second half of use three.
 
-- [ ] A6.1 **B** The head: the same feature files, bound to API objects, against the running environment, tagged
+- [x] A6.1 **B** The head: the same feature files, bound to API objects, against the running environment, tagged
   `@api`. The rule for which example goes there is the service head's ("ask what the assertion looks at")
-- [ ] A6.2 **B** `bruinet spec trace` counts an example run on the `api` head
-- [ ] A6.3 **B** The spec format with `API` in its `Where` row, for a product whose user is another system;
+- [x] A6.2 **B** `bruinet spec trace` counts an example run on the `api` head
+- [x] A6.3 **B** The spec format with `API` in its `Where` row, for a product whose user is another system;
   `spec-from-app` takes exchanges as a second source
-- [ ] A6.4 **7** One Bouw7 spec's data examples on the head
-- [ ] **Gate:** those examples pass on acc on the `api` head, count in `bruinet spec trace`, and their time per
+- [x] A6.4 **7** One Bouw7 spec's data examples on the head
+- [x] **Gate:** those examples pass on acc on the `api` head, count in `bruinet spec trace`, and their time per
   example is written beside the same examples' time through the UI
 
 ## A7 `Bruinet.Api.Soap`
@@ -215,11 +243,11 @@ so no other suite gets WCF (AD-026). The session of A1 already carries a SOAP ca
 
 AGENTS.md's rule for `.my/`: extract, then delete.
 
-- [ ] A8.1 **B** Decision records in `.docs/decisions/` for what rules something out: no `Bruinet.UI` prefix; no
+- [x] A8.1 **B** Decision records in `.docs/decisions/` for what rules something out: no `Bruinet.UI` prefix; no
   generic HTTP steps; no bridge packages; no Pact; observed and described as two grades
-- [ ] A8.2 **B** A guide in `docs/guides/` (API objects and the session) and the commands in `docs/run/cli.md`;
+- [x] A8.2 **B** A guide in `docs/guides/` (API objects and the session) and the commands in `docs/run/cli.md`;
   `docs/README.md` and the README's package table show the `Api` area
-- [ ] A8.3 **B** A skill for writing an API object, beside `html-ui-test`; `site-setup` and `run-triage` mention the
+- [x] A8.3 **B** A skill for writing an API object, beside `html-ui-test`; `site-setup` and `run-triage` mention the
   session and the diff
 - [ ] A8.4 **B** `.my/api/` deleted, links repointed
 - [ ] **Gate:** nothing in `docs/`, `.docs/` or code points into `.my/api/`
