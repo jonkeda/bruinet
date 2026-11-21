@@ -1,0 +1,56 @@
+#nullable enable
+Bruinet.Api.OpenApi.ApiDescription
+Bruinet.Api.OpenApi.ApiDescription.ApiDescription() -> void
+Bruinet.Api.OpenApi.ApiDescription.Find(string! method, string! path) -> Bruinet.Api.OpenApi.ApiOperation?
+Bruinet.Api.OpenApi.ApiDescription.IsObserved.get -> bool
+Bruinet.Api.OpenApi.ApiDescription.IsObserved.init -> void
+Bruinet.Api.OpenApi.ApiDescription.Operations.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.OpenApi.ApiOperation!>!
+Bruinet.Api.OpenApi.ApiDescription.Operations.init -> void
+Bruinet.Api.OpenApi.ApiDescription.Servers.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Api.OpenApi.ApiDescription.Servers.init -> void
+Bruinet.Api.OpenApi.ApiDescription.Title.get -> string!
+Bruinet.Api.OpenApi.ApiDescription.Title.init -> void
+Bruinet.Api.OpenApi.ApiDescription.ToJson() -> string!
+Bruinet.Api.OpenApi.ApiDescription.Version.get -> string!
+Bruinet.Api.OpenApi.ApiDescription.Version.init -> void
+Bruinet.Api.OpenApi.ApiOperation
+Bruinet.Api.OpenApi.ApiOperation.ApiOperation(string! method, string! path) -> void
+Bruinet.Api.OpenApi.ApiOperation.Matches(string! path) -> bool
+Bruinet.Api.OpenApi.ApiOperation.Method.get -> string!
+Bruinet.Api.OpenApi.ApiOperation.Name.get -> string!
+Bruinet.Api.OpenApi.ApiOperation.Observed.get -> int
+Bruinet.Api.OpenApi.ApiOperation.Observed.init -> void
+Bruinet.Api.OpenApi.ApiOperation.Parameters.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.OpenApi.ApiParameter!>!
+Bruinet.Api.OpenApi.ApiOperation.Parameters.init -> void
+Bruinet.Api.OpenApi.ApiOperation.Path.get -> string!
+Bruinet.Api.OpenApi.ApiOperation.Request.get -> System.Text.Json.Nodes.JsonObject?
+Bruinet.Api.OpenApi.ApiOperation.Request.init -> void
+Bruinet.Api.OpenApi.ApiOperation.Response(int status, out bool described) -> System.Text.Json.Nodes.JsonObject?
+Bruinet.Api.OpenApi.ApiOperation.Responses.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Text.Json.Nodes.JsonObject?>!
+Bruinet.Api.OpenApi.ApiOperation.Responses.init -> void
+Bruinet.Api.OpenApi.ApiParameter
+Bruinet.Api.OpenApi.ApiParameter.In.get -> string!
+Bruinet.Api.OpenApi.ApiParameter.In.init -> void
+Bruinet.Api.OpenApi.ApiParameter.Name.get -> string!
+Bruinet.Api.OpenApi.ApiParameter.Name.init -> void
+Bruinet.Api.OpenApi.ApiParameter.Required.get -> bool
+Bruinet.Api.OpenApi.ApiParameter.Required.init -> void
+Bruinet.Api.OpenApi.ApiParameter.Type.get -> string!
+Bruinet.Api.OpenApi.ApiParameter.Type.init -> void
+Bruinet.Api.OpenApi.DescriptionCheck
+Bruinet.Api.OpenApi.DescriptionDiff
+Bruinet.Api.OpenApi.ObservedDescription
+Bruinet.Api.OpenApi.SchemaSample
+Bruinet.Api.OpenApi.Shapes
+static Bruinet.Api.OpenApi.ApiDescription.Read(string! json) -> Bruinet.Api.OpenApi.ApiDescription!
+static Bruinet.Api.OpenApi.DescriptionCheck.Check(Bruinet.Api.OpenApi.ApiDescription! description, Bruinet.Core.Api.ApiExchange! exchange) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.OpenApi.DescriptionCheck.Check(string! name, System.Text.Json.Nodes.JsonObject! schema, System.Text.Json.Nodes.JsonNode? value) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.OpenApi.DescriptionCheck.Uncalled(Bruinet.Api.OpenApi.ApiDescription! description, System.Collections.Generic.IEnumerable<Bruinet.Core.Api.ApiExchange!>! exchanges) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.OpenApi.ApiOperation!>!
+static Bruinet.Api.OpenApi.DescriptionDiff.Compare(Bruinet.Api.OpenApi.ApiDescription! before, Bruinet.Api.OpenApi.ApiDescription! now) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.OpenApi.ObservedDescription.Merge(System.Collections.Generic.IEnumerable<Bruinet.Core.Api.ApiExchange!>! exchanges, string! title = "API", System.Collections.Generic.IReadOnlyCollection<string!>? hosts = null) -> Bruinet.Api.OpenApi.ApiDescription!
+static Bruinet.Api.OpenApi.ObservedDescription.Template(string! path) -> (string! Path, System.Collections.Generic.IReadOnlyList<(string! Name, string! Type)>! Values)
+static Bruinet.Api.OpenApi.SchemaSample.Of(System.Text.Json.Nodes.JsonObject? schema) -> System.Text.Json.Nodes.JsonNode?
+static Bruinet.Api.OpenApi.Shapes.Flatten(System.Text.Json.Nodes.JsonObject? schema) -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+static Bruinet.Api.OpenApi.Shapes.Merge(System.Text.Json.Nodes.JsonObject? one, System.Text.Json.Nodes.JsonObject! other) -> System.Text.Json.Nodes.JsonObject!
+static Bruinet.Api.OpenApi.Shapes.Of(System.Text.Json.Nodes.JsonNode? value) -> System.Text.Json.Nodes.JsonObject!
+Bruinet.Api.OpenApi.ApiParameter.ApiParameter(string! Name, string! In, bool Required, string! Type) -> void

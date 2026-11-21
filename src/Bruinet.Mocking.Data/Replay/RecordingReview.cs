@@ -28,7 +28,7 @@ public static class RecordingReview
         try
         {
             using var document = JsonDocument.Parse(json);
-            // An HTTP recording (Bruinet.Mocking.Http) has Exchanges too, beside it in Recordings/http: its exchanges have no Text.
+            // An HTTP recording (Bruinet.Api.Replay) has Exchanges too, beside it in Recordings/http: its exchanges have no Text.
             return document.RootElement.ValueKind == JsonValueKind.Object && document.RootElement.TryGetProperty("Exchanges", out var exchanges)
                    && !(document.RootElement.TryGetProperty("Kind", out var kind) && kind.ValueKind == JsonValueKind.String && kind.GetString() == "http")
                    && (exchanges.ValueKind != JsonValueKind.Array || exchanges.GetArrayLength() == 0 || exchanges[0].TryGetProperty("Text", out _));

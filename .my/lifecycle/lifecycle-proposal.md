@@ -53,7 +53,7 @@ So one spine, and four parts around it (section 8):
 | Page objects and ControlObjects | The seam: same scenario, old and new screen | The screen inventory in code |
 | Scraper (Record, Explore) | Capture of the old system: screens and navigation | Drift check: the app vs its described screens |
 | SQL replay, schema snapshot | Same data under old and new; a first draft of the data model | Tests without a database |
-| HTTP replay, `Bruinet.Contracts` | Old API vs what the new client reads | Contract checks per release |
+| HTTP replay, `Bruinet.Api.Contracts` | Old API vs what the new client reads | Contract checks per release |
 | Mixed head | Old and new parts in one journey, while both live | Journeys across apps |
 | Heads and tiers | Old head and new head | Fast loop vs the judge |
 | Test selection | "What does this converted screen reach" | Tests per change |
@@ -109,7 +109,7 @@ yet to **judge** one.
 | SQL log (`Bruinet.Mocking.Data`): every command and the objects it names, never its values | Replay without a database; timing reports | The *effect*: which rows changed, to what values. No comparison of two runs |
 | Schema snapshot | Replay | A comparison of two schemas; a mapping to the domain model |
 | HTTP recording and replay; `Refresh` already lists which answers changed | Hermetic tests | Pointing the same recorded requests at a *second* system and reporting the differences as parity |
-| `Bruinet.Contracts` (AD-035): each response against the DTO the app reads; `ExpectedRequest` from the reference client, "for a migrated app, the old app's serializer" | Shape of responses and of writes | Behaviour, not only shape: status codes, errors, rights per role, sequences |
+| `Bruinet.Api.Contracts` (AD-035): each response against the DTO the app reads; `ExpectedRequest` from the reference client, "for a migrated app, the old app's serializer" | Shape of responses and of writes | Behaviour, not only shape: status codes, errors, rights per role, sequences |
 | The `service` head: feature files below the UI | A few Todo scenarios | Steps for API and database that any product can declare, as page objects do for screens |
 | Volatile values (record twice, mark what differs) | Replay matching | The same trick for comparing old and new: ids and clocks must not count as differences |
 

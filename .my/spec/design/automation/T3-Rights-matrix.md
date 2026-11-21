@@ -44,7 +44,7 @@ agrees with the server.
    shown and pressing it shows the refusal, with nothing changed.
 
 **At the API**, the same matrix drives a test per cell on the `service` head or against the real API with
-each role's token: the action's request (from the contract the app reads, `Bruinet.Contracts`) is sent and
+each role's token: the action's request (from the contract the app reads, `Bruinet.Api.Contracts`) is sent and
 the status compared: ☑ success, ☐ and ⊘ refused. Only actions with a request are checked there; "See the
 list" is a GET.
 

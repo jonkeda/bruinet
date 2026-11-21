@@ -70,7 +70,7 @@ Bruinet/
 │   ├── Bruinet.Wpf/        # WPF automation
 │   ├── Bruinet.Html/       # Web automation
 │   ├── Bruinet.Maui/       # Mobile automation
-│   └── Bruinet.Mocking/    # API mocking
+│   └── Bruinet.Api.Mocking/    # API mocking
 ├── tests/
 │   └── ...                 # Test projects
 ├── samples/

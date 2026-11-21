@@ -1,5 +1,5 @@
 using Bruinet.Cli;
-using Bruinet.Mocking.Http;
+using Bruinet.Api.Replay;
 
 namespace Bruinet.Cli.Tests.Http;
 

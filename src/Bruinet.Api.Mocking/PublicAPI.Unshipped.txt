@@ -1,0 +1,99 @@
+#nullable enable
+Bruinet.Api.Mocking.ApiStubBuilder
+Bruinet.Api.Mocking.ApiStubBuilder.AtPriority(int priority) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.ApiStubBuilder.EchoesRequestBody(int statusCode = 200) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.Fails(int statusCode = 500) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.FailsFirst(int times, int statusCode = 500) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.ApiStubBuilder.RespondsWith(System.Func<Bruinet.Api.Mocking.RecordedRequest!, Bruinet.Api.Mocking.MockResponse!>! respond) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.ReturnsJson(object? body, int statusCode = 200, System.Text.Json.JsonSerializerOptions? options = null) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.ReturnsJson<TBody>(TBody body, int statusCode = 200, System.Text.Json.JsonSerializerOptions? options = null) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.ReturnsSample(string! relativePath, int statusCode = 200) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.ReturnsStatus(int statusCode) -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.ReturnsText(string! body, int statusCode = 200, string! contentType = "text/plain") -> Bruinet.Api.Mocking.MockApiServer!
+Bruinet.Api.Mocking.ApiStubBuilder.WithDelay(System.TimeSpan delay) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.ApiStubBuilder.WithHeader(string! name, string! value) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.ApiStubBuilder.WithQuery(string! name, string! value) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer
+Bruinet.Api.Mocking.MockApiServer.BaseUrl.get -> string!
+Bruinet.Api.Mocking.MockApiServer.CopyRecordedTo(Bruinet.Api.Replay.HttpReplaySession! session) -> void
+Bruinet.Api.Mocking.MockApiServer.Delete(string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.Dispose() -> void
+Bruinet.Api.Mocking.MockApiServer.FormRequestCount(string? method, string! path, System.Func<System.Collections.Generic.IReadOnlyDictionary<string!, string!>!, bool>! predicate) -> int
+Bruinet.Api.Mocking.MockApiServer.Get(string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.IsStarted.get -> bool
+Bruinet.Api.Mocking.MockApiServer.JsonRequestCount(string? method, string! path, System.Func<System.Text.Json.JsonElement, bool>! predicate) -> int
+Bruinet.Api.Mocking.MockApiServer.Options.get -> Bruinet.Api.Mocking.MockApiServerOptions!
+Bruinet.Api.Mocking.MockApiServer.Patch(string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.Port.get -> int
+Bruinet.Api.Mocking.MockApiServer.Post(string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.Put(string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.Record(string! target) -> void
+Bruinet.Api.Mocking.MockApiServer.Replay(Bruinet.Api.Replay.HttpRecording! recording, Bruinet.Api.Replay.HttpReplayOptions? options = null) -> void
+Bruinet.Api.Mocking.MockApiServer.ReplayMisses() -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Api.Mocking.MockApiServer.RequestBodies(string? method, string! path) -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Api.Mocking.MockApiServer.RequestCount(string? method, string! path) -> int
+Bruinet.Api.Mocking.MockApiServer.RequestCount(string? method, string! path, System.Func<Bruinet.Api.Mocking.RecordedRequest!, bool>! predicate) -> int
+Bruinet.Api.Mocking.MockApiServer.Requests() -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Mocking.RecordedRequest!>!
+Bruinet.Api.Mocking.MockApiServer.Requests(string? method, string! path) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Mocking.RecordedRequest!>!
+Bruinet.Api.Mocking.MockApiServer.Reset() -> void
+Bruinet.Api.Mocking.MockApiServer.ResetRequests() -> void
+Bruinet.Api.Mocking.MockApiServer.Server.get -> WireMock.Server.WireMockServer!
+Bruinet.Api.Mocking.MockApiServer.Stub(string! method, string! path) -> Bruinet.Api.Mocking.ApiStubBuilder!
+Bruinet.Api.Mocking.MockApiServer.WaitForRequest(string? method, string! path, System.Func<Bruinet.Api.Mocking.RecordedRequest!, bool>? predicate = null, System.TimeSpan? timeout = null, int skip = 0) -> Bruinet.Api.Mocking.RecordedRequest!
+Bruinet.Api.Mocking.MockApiServer.WaitForRequestAsync(string? method, string! path, System.Func<Bruinet.Api.Mocking.RecordedRequest!, bool>? predicate = null, System.TimeSpan? timeout = null, int skip = 0, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<Bruinet.Api.Mocking.RecordedRequest!>!
+Bruinet.Api.Mocking.MockApiServerOptions
+Bruinet.Api.Mocking.MockApiServerOptions.Port.get -> int
+Bruinet.Api.Mocking.MockApiServerOptions.Port.init -> void
+Bruinet.Api.Mocking.MockApiServerOptions.SamplesDirectory.get -> string!
+Bruinet.Api.Mocking.MockApiServerOptions.SamplesDirectory.init -> void
+Bruinet.Api.Mocking.MockResponse
+Bruinet.Api.Mocking.MockResponse.Body.get -> string?
+Bruinet.Api.Mocking.MockResponse.Body.init -> void
+Bruinet.Api.Mocking.MockResponse.ContentType.get -> string!
+Bruinet.Api.Mocking.MockResponse.ContentType.init -> void
+Bruinet.Api.Mocking.MockResponse.MockResponse(int StatusCode, string? Body = null, string! ContentType = "application/json") -> void
+Bruinet.Api.Mocking.MockResponse.StatusCode.get -> int
+Bruinet.Api.Mocking.MockResponse.StatusCode.init -> void
+Bruinet.Api.Mocking.NetworkStateFile
+Bruinet.Api.Mocking.NetworkStateFile.Dispose() -> void
+Bruinet.Api.Mocking.NetworkStateFile.IsOnline.get -> bool
+Bruinet.Api.Mocking.NetworkStateFile.Path.get -> string!
+Bruinet.Api.Mocking.NetworkStateFile.SetOffline() -> void
+Bruinet.Api.Mocking.NetworkStateFile.SetOnline() -> void
+Bruinet.Api.Mocking.RecordedRequest
+Bruinet.Api.Mocking.RecordedRequest.Body.get -> string?
+Bruinet.Api.Mocking.RecordedRequest.BodyAs<T>(System.Text.Json.JsonSerializerOptions? options = null) -> T?
+Bruinet.Api.Mocking.RecordedRequest.BodyAsForm() -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Api.Mocking.RecordedRequest.BodyMatchesJson(System.Func<System.Text.Json.JsonElement, bool>! predicate) -> bool
+Bruinet.Api.Mocking.RecordedRequest.Headers.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Api.Mocking.RecordedRequest.Method.get -> string!
+Bruinet.Api.Mocking.RecordedRequest.Path.get -> string!
+Bruinet.Api.Mocking.RecordedRequest.Query.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Api.Mocking.RecordedRequest.ReceivedAtUtc.get -> System.DateTime
+Bruinet.Api.Mocking.SampleFiles
+const Bruinet.Api.Mocking.ApiStubBuilder.DefaultPriority = 10 -> int
+const Bruinet.Api.Mocking.MockApiServer.ReplayMissStatus = 599 -> int
+const Bruinet.Api.Mocking.NetworkStateFile.Offline = "offline" -> string!
+const Bruinet.Api.Mocking.NetworkStateFile.Online = "online" -> string!
+override Bruinet.Api.Mocking.RecordedRequest.ToString() -> string!
+static Bruinet.Api.Mocking.MockApiServer.AcquireShared(Bruinet.Api.Mocking.MockApiServerOptions? options = null) -> Bruinet.Api.Mocking.MockApiServer!
+static Bruinet.Api.Mocking.MockApiServer.Start(Bruinet.Api.Mocking.MockApiServerOptions? options = null) -> Bruinet.Api.Mocking.MockApiServer!
+static Bruinet.Api.Mocking.MockResponse.Json(object? body, int statusCode = 200, System.Text.Json.JsonSerializerOptions? options = null) -> Bruinet.Api.Mocking.MockResponse!
+static Bruinet.Api.Mocking.MockResponse.Json<TBody>(TBody body, int statusCode = 200, System.Text.Json.JsonSerializerOptions? options = null) -> Bruinet.Api.Mocking.MockResponse!
+static Bruinet.Api.Mocking.MockResponse.Status(int statusCode) -> Bruinet.Api.Mocking.MockResponse!
+static Bruinet.Api.Mocking.NetworkStateFile.Create(string? path = null) -> Bruinet.Api.Mocking.NetworkStateFile!
+static Bruinet.Api.Mocking.SampleFiles.Load(string! samplesDirectory, string! relativePath) -> string!
+static Bruinet.Api.Mocking.SampleFiles.Resolve(string! samplesDirectory, string! relativePath) -> string!
+static readonly Bruinet.Api.Mocking.MockApiServer.DefaultJsonOptions -> System.Text.Json.JsonSerializerOptions!
+static readonly Bruinet.Api.Mocking.MockApiServer.DefaultRequestTimeout -> System.TimeSpan
+static readonly Bruinet.Api.Mocking.MockApiServer.RequestPollInterval -> System.TimeSpan
+Bruinet.Api.Mocking.MockApiServer.WritesSince(System.DateTime sinceUtc) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.RecordedWrite!>!
+static Bruinet.Api.Mocking.MockApiServer.Shared.get -> Bruinet.Api.Mocking.MockApiServer?
+Bruinet.Api.Mocking.Steps.MockRequestSteps
+Bruinet.Api.Mocking.Steps.MockRequestSteps.MockRequestSteps(System.IServiceProvider! services) -> void
+Bruinet.Api.Mocking.Steps.MockRequestSteps.NoneSent(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path) -> void
+Bruinet.Api.Mocking.Steps.MockRequestSteps.CountSent(Bruinet.Bdd.BddExecutionContext! context, int count, string! method, string! path) -> void
+Bruinet.Api.Mocking.Steps.MockRequestSteps.OneSent(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path) -> void
+Bruinet.Api.Mocking.Steps.MockRequestSteps.LastHas(Bruinet.Bdd.BddExecutionContext! context, string! method, string! path, Bruinet.Bdd.BddTable! table) -> void
+const Bruinet.Api.Mocking.Steps.MockRequestSteps.Namespace = "MockRequests" -> string!
+const Bruinet.Api.Mocking.Steps.MockRequestSteps.Absent = "(absent)" -> string!

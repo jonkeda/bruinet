@@ -16,7 +16,7 @@ the device's database is not reset between scenarios. Additions and checks are s
 to the same real types, compared on the listed columns only.
 
 A mock response body is a contract type or a recorded sample, never an anonymous object.
-`BRUINET001` (shipped in `Bruinet.Mocking`) reports one.
+`BRUINET001` (shipped in `Bruinet.Api.Mocking`) reports one.
 
 **Ruled out:** anonymous-object stub bodies (they compile whatever their fields are called, and a
 test passes against JSON the app would never be sent); a private copy of a model for seeding (it

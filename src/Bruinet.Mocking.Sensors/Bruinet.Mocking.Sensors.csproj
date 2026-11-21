@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);mocking;sensors</PackageTags>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <RootNamespace>Bruinet.Mocking.Sensors</RootNamespace>
+    <Description>Mock sensors for UI tests: an audio source and sink, a frame source and an input source that stand in for a device.</Description>
+    <PackageId>Bruinet.Mocking.Sensors</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>

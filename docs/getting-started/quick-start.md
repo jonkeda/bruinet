@@ -26,7 +26,7 @@ dotnet add package Bruinet.Maui.FlaUI
 dotnet add package Bruinet.Html.Playwright
 dotnet add package Bruinet.Wpf
 dotnet add package Bruinet.WinForms
-dotnet add package Bruinet.Mocking
+dotnet add package Bruinet.Api.Mocking
 dotnet add package Bruinet.Uat
 ```
 

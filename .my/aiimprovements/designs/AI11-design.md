@@ -16,7 +16,7 @@ nothing outside its process: **hermetic**. It serves three uses:
 
 ## What exists
 
-- `Bruinet.Mocking`: `MockApiServer` over WireMock.Net (stubs by hand: `Get(path).ReturnsJson(...)`, `FailsFirst`,
+- `Bruinet.Api.Mocking`: `MockApiServer` over WireMock.Net (stubs by hand: `Get(path).ReturnsJson(...)`, `FailsFirst`,
   `WithDelay`, request counts and waits). The Todo sample stubs its backend with it. Stubs are written, not recorded.
 - `Bruinet.Mocking.Data`: SQL replay (AD-031): `BRUINET_SQL_REPLAY=Record|Replay`, a recording per test, record twice
   to find volatile values, a miss names the command, `bruinet sql stale|diff|reviewed`. HTTP replay copies its shape,
@@ -118,8 +118,8 @@ Both write and read the same recording format, so a recording made in process re
 
 | Package | What |
 | --- | --- |
-| `Bruinet.Mocking.Http` (new) | the recording, matching, `HttpReplayHandler`, `HttpReplayTransport` (Azure.Core), `AddBruinetHttpReplay()` |
-| `Bruinet.Mocking` | `MockApiServer` gains `Record(target)` and `Replay(recording)` over WireMock.Net's proxy and mappings |
+| `Bruinet.Api.Replay` (new) | the recording, matching, `HttpReplayHandler`, `HttpReplayTransport` (Azure.Core), `AddBruinetHttpReplay()` |
+| `Bruinet.Api.Mocking` | `MockApiServer` gains `Record(target)` and `Replay(recording)` over WireMock.Net's proxy and mappings |
 | `Bruinet.Uat` | the `Hermetic`, `HttpRedact`, `HttpReplayPace` config fields and the `## Dependencies` table (`BRUINET_DEP_<NAME>` overrides); a scenario's misses fail it |
 | `Bruinet.Mocking.Data` | `sqlite` `copy`: the seeded template made once per build, a copy per test, deleted after |
 | `tools/Bruinet.Cli` | `bruinet http ...`; the MCP tools above |
@@ -128,7 +128,7 @@ Both write and read the same recording format, so a recording made in process re
 
 1. Spike (a day): an Azure OpenAI streamed chat and a plain JSON API, recorded through WireMock.Net's proxy and through
    a `DelegatingHandler`, replayed into the Foundry client. Settles the streaming question and the format.
-2. `Bruinet.Mocking.Http`: the recording, matching with volatile fields from two recordings, presets, redaction,
+2. `Bruinet.Api.Replay`: the recording, matching with volatile fields from two recordings, presets, redaction,
    misses; unit tests over recorded fixtures.
 3. In process: `AddBruinetHttpReplay()`, the Azure transport, the hermetic connect guard; the Todo sample's sync
    recorded and replayed on MauiHeadless and bUnit.

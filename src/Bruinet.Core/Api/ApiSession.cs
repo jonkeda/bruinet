@@ -43,6 +43,8 @@ public sealed class ApiSessionOptions
 /// </summary>
 public sealed class ApiSession : IDisposable
 {
+    private static readonly HttpRequestOptionsKey<ApiExchange> KeptExchange = new("Bruinet.ApiExchange");
+
     private readonly HttpClient _http;
     private readonly ApiSessionOptions _options;
     private readonly ApiEnvironmentGuard _guard;
@@ -66,10 +68,10 @@ public sealed class ApiSession : IDisposable
         _signIn = signIn;
         Account = account;
         Writes = writes;
-        _http = options.Handler is null ? new HttpClient() : new HttpClient(options.Handler, disposeHandler: false);
-        _http.BaseAddress = options.BaseAddress;
-        _http.Timeout = options.Timeout;
         _log = options.ExchangeLog ?? ApiExchangeLog.Current;
+#pragma warning disable CA2000 // The client owns the handlers and disposes them with itself; a handler a test gave stays the test's.
+        _http = new HttpClient(new Calls(this, options.Handler ?? new HttpClientHandler(), ownsInner: options.Handler is null)) { BaseAddress = options.BaseAddress, Timeout = options.Timeout };
+#pragma warning restore CA2000
     }
 
     /// <summary>A session as an account of <c>TestAccounts.md</c>.</summary>
@@ -89,6 +91,13 @@ public sealed class ApiSession : IDisposable
 
     /// <summary>The service's address.</summary>
     public Uri BaseAddress => _options.BaseAddress;
+
+    /// <summary>
+    /// The session as an HTTP client, for a client generated from a description (Kiota, NSwag): every call through it
+    /// is a call of the session, so the hosts, the account's sign-in, the rule on writes, the step log and the
+    /// exchanges hold for it too. A suite's API objects wrap such a client; tests never see it.
+    /// </summary>
+    public HttpClient Client => _http;
 
     /// <summary>The undo of what was made through this session, run in reverse when the session is disposed.</summary>
     public CleanUpRegistry CleanUp { get; } = new();
@@ -157,20 +166,24 @@ public sealed class ApiSession : IDisposable
     {
         ArgumentNullException.ThrowIfNull(method);
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        var address = new Uri(_options.BaseAddress, path);
-        _guard.Check(address);
-        if (!Writes && IsWrite(method, address.AbsolutePath))
+        using var request = new HttpRequestMessage(method, new Uri(_options.BaseAddress, path));
+        if (body is not null)
         {
-            throw new ApiCallException($"{Account} never writes ({TestAccounts.FileName}): {method} {address.AbsolutePath} is refused.");
+            request.Content = new StringContent(body, Encoding.UTF8, contentType);
         }
 
-        var exchange = Exchange(method, address, body, contentType);
-        if (exchange.StatusCode == (int)HttpStatusCode.Unauthorized && _signIn?.Renew() == true)
+        try
         {
-            exchange = Exchange(method, address, body, contentType);
+            using var response = _http.SendAsync(request).GetAwaiter().GetResult();
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+        {
+            // The handler kept the exchange when the transport failed; a timeout of the client itself it never saw.
+            var failed = request.Options.TryGetValue(KeptExchange, out var seen) ? seen : Keep(Failed(request, body is null ? null : contentType, body, DateTimeOffset.UtcNow, 0, e));
+            throw new ApiCallException($"{failed.Describe()}.", e) { Exchange = failed };
         }
 
-        return exchange;
+        return request.Options.TryGetValue(KeptExchange, out var exchange) ? exchange : throw new ApiCallException($"{method} {path} left no exchange.");
     }
 
     /// <summary>The records of a kind that carry a run's marker: this run's, and what an earlier run left.</summary>
@@ -279,49 +292,17 @@ public sealed class ApiSession : IDisposable
             ? exchange.Json()
             : throw new ApiCallException($"{exchange.Describe()}: {Short(exchange.ResponseBody)}") { Exchange = exchange };
 
-    private ApiExchange Exchange(HttpMethod method, Uri address, string? body, string contentType)
-    {
-        using var request = new HttpRequestMessage(method, address);
-        if (body is not null)
+    private ApiExchange Failed(HttpRequestMessage request, string? contentType, string? body, DateTimeOffset started, long ms, Exception error)
+        => new(Guid.NewGuid().ToString("N"), started, request.Method.Method, request.RequestUri!.ToString(), null, null, null)
         {
-            request.Content = new StringContent(body, Encoding.UTF8, contentType);
-        }
+            RequestContentType = contentType,
+            RequestBody = ApiMasks.Mask(body, _options.MaskedFields),
+            Account = Account,
+            DurationMs = ms,
+            Error = $"{error.GetType().Name}: {error.Message}",
+        };
 
-        _signIn?.Apply(request);
-        var started = DateTimeOffset.UtcNow;
-        var clock = Stopwatch.StartNew();
-        var sent = ApiMasks.Mask(body, _options.MaskedFields);
-        ApiExchange exchange;
-        try
-        {
-            using var response = _http.SendAsync(request).GetAwaiter().GetResult();
-            exchange = new ApiExchange(Guid.NewGuid().ToString("N"), started, method.Method, address.ToString(), (int)response.StatusCode, response.Content.Headers.ContentType?.MediaType, ApiMasks.Mask(ReadText(response), _options.MaskedFields))
-            {
-                RequestContentType = body is null ? null : contentType,
-                RequestBody = sent,
-                Account = Account,
-                DurationMs = clock.ElapsedMilliseconds,
-            };
-        }
-        catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
-        {
-            exchange = new ApiExchange(Guid.NewGuid().ToString("N"), started, method.Method, address.ToString(), null, null, null)
-            {
-                RequestContentType = body is null ? null : contentType,
-                RequestBody = sent,
-                Account = Account,
-                DurationMs = clock.ElapsedMilliseconds,
-                Error = $"{e.GetType().Name}: {e.Message}",
-            };
-            Keep(exchange);
-            throw new ApiCallException($"{exchange.Describe()}.", e) { Exchange = exchange };
-        }
-
-        Keep(exchange);
-        return exchange;
-    }
-
-    private void Keep(ApiExchange exchange)
+    private ApiExchange Keep(ApiExchange exchange)
     {
         lock (_exchanges)
         {
@@ -338,6 +319,92 @@ public sealed class ApiSession : IDisposable
         if (_log is not null)
         {
             ApiExchangeLog.Append(_log, exchange);
+        }
+
+        return exchange;
+    }
+
+    private static bool IsText(string? mediaType)
+        => mediaType is null || mediaType.Contains("json", StringComparison.OrdinalIgnoreCase) || mediaType.Contains("xml", StringComparison.OrdinalIgnoreCase)
+            || mediaType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) || mediaType.Contains("form-urlencoded", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Every call of the session, its own and a generated client's: the host is checked, a write as an account that
+    /// never writes refused, the sign-in put on, renewed once when the service refuses it, and the exchange kept.
+    /// </summary>
+    private sealed class Calls(ApiSession session, HttpMessageHandler inner, bool ownsInner) : DelegatingHandler(inner)
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var address = request.RequestUri ?? throw new ApiCallException("A call has no address.");
+            session._guard.Check(address);
+            if (!session.Writes && session.IsWrite(request.Method, address.AbsolutePath))
+            {
+                throw new ApiCallException($"{session.Account} never writes ({TestAccounts.FileName}): {request.Method} {address.AbsolutePath} is refused.");
+            }
+
+            string? body = null;
+            var contentType = request.Content?.Headers.ContentType?.MediaType;
+            if (request.Content is not null && IsText(contentType))
+            {
+                // Buffered, so it can be written down and sent again after a renewed sign-in.
+                await request.Content.LoadIntoBufferAsync(cancellationToken).ConfigureAwait(false);
+                body = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            var response = await OnceAsync(request, body, contentType, cancellationToken).ConfigureAwait(false);
+            if (response.StatusCode == HttpStatusCode.Unauthorized && session._signIn?.Renew() == true)
+            {
+                response.Dispose();
+                response = await OnceAsync(request, body, contentType, cancellationToken).ConfigureAwait(false);
+            }
+
+            return response;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            // A handler a test gave is the test's to dispose.
+            if (disposing && !ownsInner)
+            {
+                return;
+            }
+
+            base.Dispose(disposing);
+        }
+
+        private async Task<HttpResponseMessage> OnceAsync(HttpRequestMessage request, string? body, string? contentType, CancellationToken cancellationToken)
+        {
+            session._signIn?.Apply(request);
+            var started = DateTimeOffset.UtcNow;
+            var clock = Stopwatch.StartNew();
+            HttpResponseMessage response;
+            try
+            {
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception e) when (e is HttpRequestException or TaskCanceledException)
+            {
+                request.Options.Set(KeptExchange, session.Keep(session.Failed(request, contentType, body, started, clock.ElapsedMilliseconds, e)));
+                throw;
+            }
+
+            string? answer = null;
+            var answerType = response.Content.Headers.ContentType?.MediaType;
+            if (IsText(answerType))
+            {
+                await response.Content.LoadIntoBufferAsync(cancellationToken).ConfigureAwait(false);
+                answer = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            request.Options.Set(KeptExchange, session.Keep(new ApiExchange(Guid.NewGuid().ToString("N"), started, request.Method.Method, request.RequestUri!.ToString(), (int)response.StatusCode, answerType, ApiMasks.Mask(answer, session._options.MaskedFields))
+            {
+                RequestContentType = body is null ? null : contentType,
+                RequestBody = ApiMasks.Mask(body, session._options.MaskedFields),
+                Account = session.Account,
+                DurationMs = clock.ElapsedMilliseconds,
+            }));
+            return response;
         }
     }
 }

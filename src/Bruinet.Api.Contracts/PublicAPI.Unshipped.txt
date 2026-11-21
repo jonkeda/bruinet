@@ -1,0 +1,287 @@
+#nullable enable
+Bruinet.Api.Contracts.ContractEvidence
+Bruinet.Api.Contracts.ContractEvidence.ContractEvidence(string? Environment = null, bool RequireRemoteHost = true) -> void
+Bruinet.Api.Contracts.ContractEvidence.Environment.get -> string?
+Bruinet.Api.Contracts.ContractEvidence.Environment.init -> void
+Bruinet.Api.Contracts.ContractEvidence.Never.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Api.Contracts.ContractEvidence.Never.init -> void
+Bruinet.Api.Contracts.ContractEvidence.RequireRemoteHost.get -> bool
+Bruinet.Api.Contracts.ContractEvidence.RequireRemoteHost.init -> void
+Bruinet.Api.Contracts.ContractExchange
+Bruinet.Api.Contracts.ContractExchange.ContentType.get -> string?
+Bruinet.Api.Contracts.ContractExchange.ContentType.init -> void
+Bruinet.Api.Contracts.ContractExchange.ContractExchange(string! Id, System.DateTimeOffset TimestampUtc, string! Method, string! Path, int? StatusCode, string? ContentType, string? ResponseBody) -> void
+Bruinet.Api.Contracts.ContractExchange.Environment.get -> string?
+Bruinet.Api.Contracts.ContractExchange.Environment.init -> void
+Bruinet.Api.Contracts.ContractExchange.Error.get -> string?
+Bruinet.Api.Contracts.ContractExchange.Error.init -> void
+Bruinet.Api.Contracts.ContractExchange.Id.get -> string!
+Bruinet.Api.Contracts.ContractExchange.Id.init -> void
+Bruinet.Api.Contracts.ContractExchange.IsTruncated.get -> bool
+Bruinet.Api.Contracts.ContractExchange.IsTruncated.init -> void
+Bruinet.Api.Contracts.ContractExchange.Method.get -> string!
+Bruinet.Api.Contracts.ContractExchange.Method.init -> void
+Bruinet.Api.Contracts.ContractExchange.Path.get -> string!
+Bruinet.Api.Contracts.ContractExchange.Path.init -> void
+Bruinet.Api.Contracts.ContractExchange.RequestBody.get -> string?
+Bruinet.Api.Contracts.ContractExchange.RequestBody.init -> void
+Bruinet.Api.Contracts.ContractExchange.RequestContentType.get -> string?
+Bruinet.Api.Contracts.ContractExchange.RequestContentType.init -> void
+Bruinet.Api.Contracts.ContractExchange.ResponseBody.get -> string?
+Bruinet.Api.Contracts.ContractExchange.ResponseBody.init -> void
+Bruinet.Api.Contracts.ContractExchange.StatusCode.get -> int?
+Bruinet.Api.Contracts.ContractExchange.StatusCode.init -> void
+Bruinet.Api.Contracts.ContractExchange.TimestampUtc.get -> System.DateTimeOffset
+Bruinet.Api.Contracts.ContractExchange.TimestampUtc.init -> void
+Bruinet.Api.Contracts.ContractExchanges
+Bruinet.Api.Contracts.ContractIssue
+Bruinet.Api.Contracts.ContractIssue.ContractIssue(Bruinet.Api.Contracts.ContractSeverity Severity, string! Path, string! Message, int Count, string! FirstLocation) -> void
+Bruinet.Api.Contracts.ContractIssue.Count.get -> int
+Bruinet.Api.Contracts.ContractIssue.Count.init -> void
+Bruinet.Api.Contracts.ContractIssue.FirstLocation.get -> string!
+Bruinet.Api.Contracts.ContractIssue.FirstLocation.init -> void
+Bruinet.Api.Contracts.ContractIssue.Message.get -> string!
+Bruinet.Api.Contracts.ContractIssue.Message.init -> void
+Bruinet.Api.Contracts.ContractIssue.Path.get -> string!
+Bruinet.Api.Contracts.ContractIssue.Path.init -> void
+Bruinet.Api.Contracts.ContractIssue.Severity.get -> Bruinet.Api.Contracts.ContractSeverity
+Bruinet.Api.Contracts.ContractIssue.Severity.init -> void
+Bruinet.Api.Contracts.ContractModules
+Bruinet.Api.Contracts.ContractOutcome
+Bruinet.Api.Contracts.ContractOutcome.ContractOutcome(string! Module, string! Endpoint, string! Status) -> void
+Bruinet.Api.Contracts.ContractOutcome.Endpoint.get -> string!
+Bruinet.Api.Contracts.ContractOutcome.Endpoint.init -> void
+Bruinet.Api.Contracts.ContractOutcome.Module.get -> string!
+Bruinet.Api.Contracts.ContractOutcome.Module.init -> void
+Bruinet.Api.Contracts.ContractOutcome.Status.get -> string!
+Bruinet.Api.Contracts.ContractOutcome.Status.init -> void
+Bruinet.Api.Contracts.ContractReport
+Bruinet.Api.Contracts.ContractResult
+Bruinet.Api.Contracts.ContractResult.Add(Bruinet.Api.Contracts.ContractSeverity severity, string! location, string! message) -> void
+Bruinet.Api.Contracts.ContractResult.Blocked.get -> System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractIssue!>!
+Bruinet.Api.Contracts.ContractResult.ContractResult(string! endpoint) -> void
+Bruinet.Api.Contracts.ContractResult.Endpoint.get -> string!
+Bruinet.Api.Contracts.ContractResult.Failures.get -> System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractIssue!>!
+Bruinet.Api.Contracts.ContractResult.Issues.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ContractIssue!>!
+Bruinet.Api.Contracts.ContractResult.ItemCount.get -> int
+Bruinet.Api.Contracts.ContractResult.ItemCount.set -> void
+Bruinet.Api.Contracts.ContractResult.Passed.get -> bool
+Bruinet.Api.Contracts.ContractResult.ToMarkdown() -> string!
+Bruinet.Api.Contracts.ContractResult.Warnings.get -> System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractIssue!>!
+Bruinet.Api.Contracts.ContractRunFolder
+Bruinet.Api.Contracts.ContractRunFolder.ContractRunFolder(string! directory, System.Func<System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.IContractModule!>!>! modules) -> void
+Bruinet.Api.Contracts.ContractRunFolder.Directory.get -> string!
+Bruinet.Api.Contracts.ContractRunFolder.ReadOutcomes() -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ContractOutcome!>!
+Bruinet.Api.Contracts.ContractRunFolder.Write(string! report, string! environment, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractResult!>! results, string? note = null, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.UnregisteredEndpoint!>? unregistered = null) -> string!
+Bruinet.Api.Contracts.ContractRunSummary
+Bruinet.Api.Contracts.ContractSeverity
+Bruinet.Api.Contracts.ContractSeverity.Blocked = 2 -> Bruinet.Api.Contracts.ContractSeverity
+Bruinet.Api.Contracts.ContractSeverity.Failure = 0 -> Bruinet.Api.Contracts.ContractSeverity
+Bruinet.Api.Contracts.ContractSeverity.Warning = 1 -> Bruinet.Api.Contracts.ContractSeverity
+Bruinet.Api.Contracts.DtoContract
+Bruinet.Api.Contracts.DtoContract.CodedValues.get -> System.Collections.Generic.IReadOnlyDictionary<string!, System.Type!>!
+Bruinet.Api.Contracts.DtoContract.CodedValues.init -> void
+Bruinet.Api.Contracts.DtoContract.DtoContract(string! Endpoint, System.Type! DtoType) -> void
+Bruinet.Api.Contracts.DtoContract.DtoType.get -> System.Type!
+Bruinet.Api.Contracts.DtoContract.DtoType.init -> void
+Bruinet.Api.Contracts.DtoContract.Endpoint.get -> string!
+Bruinet.Api.Contracts.DtoContract.Endpoint.init -> void
+Bruinet.Api.Contracts.DtoContract.KnownUnmapped.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Api.Contracts.DtoContract.KnownUnmapped.init -> void
+Bruinet.Api.Contracts.DtoContract.MatchesPath(string! absolutePath) -> bool
+Bruinet.Api.Contracts.DtoContract.Method.get -> string!
+Bruinet.Api.Contracts.DtoContract.Request.get -> Bruinet.Api.Contracts.ExpectedRequest?
+Bruinet.Api.Contracts.DtoContract.Request.init -> void
+Bruinet.Api.Contracts.DtoContract.Required.get -> System.Collections.Generic.IReadOnlySet<string!>!
+Bruinet.Api.Contracts.DtoContract.Required.init -> void
+Bruinet.Api.Contracts.DtoContractValidator
+Bruinet.Api.Contracts.ExchangeContractCheck
+Bruinet.Api.Contracts.ExchangeLookup
+Bruinet.Api.Contracts.ExpectedField
+Bruinet.Api.Contracts.ExpectedField.ExpectedField(string! Path, Bruinet.Api.Contracts.ExpectedValue Value, bool Optional = false, string? Note = null) -> void
+Bruinet.Api.Contracts.ExpectedField.Note.get -> string?
+Bruinet.Api.Contracts.ExpectedField.Note.init -> void
+Bruinet.Api.Contracts.ExpectedField.Optional.get -> bool
+Bruinet.Api.Contracts.ExpectedField.Optional.init -> void
+Bruinet.Api.Contracts.ExpectedField.Path.get -> string!
+Bruinet.Api.Contracts.ExpectedField.Path.init -> void
+Bruinet.Api.Contracts.ExpectedField.Value.get -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedField.Value.init -> void
+Bruinet.Api.Contracts.ExpectedRequest
+Bruinet.Api.Contracts.ExpectedRequest.Body.get -> Bruinet.Api.Contracts.RequestBodyKind
+Bruinet.Api.Contracts.ExpectedRequest.Body.init -> void
+Bruinet.Api.Contracts.ExpectedRequest.ExpectedRequest(Bruinet.Api.Contracts.RequestBodyKind Body, string! Source, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ExpectedField!>! Fields) -> void
+Bruinet.Api.Contracts.ExpectedRequest.Fields.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ExpectedField!>!
+Bruinet.Api.Contracts.ExpectedRequest.Fields.init -> void
+Bruinet.Api.Contracts.ExpectedRequest.Source.get -> string!
+Bruinet.Api.Contracts.ExpectedRequest.Source.init -> void
+Bruinet.Api.Contracts.ExpectedRequestCheck
+Bruinet.Api.Contracts.ExpectedRequestMockCheck
+Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Any = 8 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.ApprovedDifference = 11 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Bool = 5 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Day = 3 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Decimal = 2 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Empty = 7 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.File = 9 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Integer = 1 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Moment = 4 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Null = 6 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Omitted = 10 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.ExpectedValue.Text = 0 -> Bruinet.Api.Contracts.ExpectedValue
+Bruinet.Api.Contracts.FormCheck
+Bruinet.Api.Contracts.FormFieldPlace
+Bruinet.Api.Contracts.FormFieldPlace.Field.get -> string!
+Bruinet.Api.Contracts.FormFieldPlace.Field.init -> void
+Bruinet.Api.Contracts.FormFieldPlace.Path.get -> string?
+Bruinet.Api.Contracts.FormFieldPlace.Path.init -> void
+Bruinet.Api.Contracts.FormFieldPlace.Typed.get -> string!
+Bruinet.Api.Contracts.FormFieldPlace.Typed.init -> void
+Bruinet.Api.Contracts.IContractModule
+Bruinet.Api.Contracts.IContractModule.Contracts.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.DtoContract!>!
+Bruinet.Api.Contracts.IContractModule.MockRequests.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.MockContractRequest!>!
+Bruinet.Api.Contracts.IContractModule.Name.get -> string!
+Bruinet.Api.Contracts.LiveContractGate
+Bruinet.Api.Contracts.LiveContractSettings
+Bruinet.Api.Contracts.LiveContractSettings.Account.get -> string?
+Bruinet.Api.Contracts.LiveContractSettings.Account.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.AccountDefined.get -> bool
+Bruinet.Api.Contracts.LiveContractSettings.AccountDefined.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.AccountFile.get -> string!
+Bruinet.Api.Contracts.LiveContractSettings.AccountFile.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.AccountSetting.get -> string!
+Bruinet.Api.Contracts.LiveContractSettings.AccountSetting.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.LiveApi.get -> bool
+Bruinet.Api.Contracts.LiveContractSettings.LiveApi.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.LiveApiSetting.get -> string!
+Bruinet.Api.Contracts.LiveContractSettings.LiveApiSetting.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.MockBackend.get -> bool
+Bruinet.Api.Contracts.LiveContractSettings.MockBackend.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.MockBackendSetting.get -> string!
+Bruinet.Api.Contracts.LiveContractSettings.MockBackendSetting.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.RealSignIn.get -> bool
+Bruinet.Api.Contracts.LiveContractSettings.RealSignIn.init -> void
+Bruinet.Api.Contracts.LiveContractSettings.SignInSetting.get -> string!
+Bruinet.Api.Contracts.LiveContractSettings.SignInSetting.init -> void
+Bruinet.Api.Contracts.LocalAccount
+Bruinet.Api.Contracts.LocalAccount.LocalAccount(string! Username, string! Password, string! Organization) -> void
+Bruinet.Api.Contracts.LocalAccount.Organization.get -> string!
+Bruinet.Api.Contracts.LocalAccount.Organization.init -> void
+Bruinet.Api.Contracts.LocalAccount.Password.get -> string!
+Bruinet.Api.Contracts.LocalAccount.Password.init -> void
+Bruinet.Api.Contracts.LocalAccount.Username.get -> string!
+Bruinet.Api.Contracts.LocalAccount.Username.init -> void
+Bruinet.Api.Contracts.LocalAccountStore
+Bruinet.Api.Contracts.LocalAccountStore.FileName.get -> string!
+Bruinet.Api.Contracts.LocalAccountStore.Find(string! name, string? searchFrom = null) -> Bruinet.Api.Contracts.LocalAccount?
+Bruinet.Api.Contracts.LocalAccountStore.FindFile(string? searchFrom = null) -> string?
+Bruinet.Api.Contracts.LocalAccountStore.KeyPrefix.get -> string!
+Bruinet.Api.Contracts.LocalAccountStore.LocalAccountStore(string! keyPrefix, string! fileName = ".env.local") -> void
+Bruinet.Api.Contracts.LocalAccountStore.Parse(System.Collections.Generic.IEnumerable<string!>! lines, string! name) -> Bruinet.Api.Contracts.LocalAccount?
+Bruinet.Api.Contracts.MockContractRequest
+Bruinet.Api.Contracts.MockContractRequest.Contract.get -> Bruinet.Api.Contracts.DtoContract!
+Bruinet.Api.Contracts.MockContractRequest.Contract.init -> void
+Bruinet.Api.Contracts.MockContractRequest.Form.get -> System.Collections.Generic.IReadOnlyDictionary<string!, string!>!
+Bruinet.Api.Contracts.MockContractRequest.Form.init -> void
+Bruinet.Api.Contracts.MockContractRequest.MockContractRequest(Bruinet.Api.Contracts.DtoContract! Contract, string! Path) -> void
+Bruinet.Api.Contracts.MockContractRequest.Path.get -> string!
+Bruinet.Api.Contracts.MockContractRequest.Path.init -> void
+Bruinet.Api.Contracts.RecordedWrite
+Bruinet.Api.Contracts.RecordedWrite.Body.get -> string?
+Bruinet.Api.Contracts.RecordedWrite.Body.init -> void
+Bruinet.Api.Contracts.RecordedWrite.ContentType.get -> string?
+Bruinet.Api.Contracts.RecordedWrite.ContentType.init -> void
+Bruinet.Api.Contracts.RecordedWrite.Method.get -> string!
+Bruinet.Api.Contracts.RecordedWrite.Method.init -> void
+Bruinet.Api.Contracts.RecordedWrite.Path.get -> string!
+Bruinet.Api.Contracts.RecordedWrite.Path.init -> void
+Bruinet.Api.Contracts.RecordedWrite.RecordedWrite(string! Method, string! Path, string? ContentType, string? Body) -> void
+Bruinet.Api.Contracts.RequestBodyKind
+Bruinet.Api.Contracts.RequestBodyKind.Form = 1 -> Bruinet.Api.Contracts.RequestBodyKind
+Bruinet.Api.Contracts.RequestBodyKind.Json = 0 -> Bruinet.Api.Contracts.RequestBodyKind
+Bruinet.Api.Contracts.RequestBodyKind.Multipart = 2 -> Bruinet.Api.Contracts.RequestBodyKind
+Bruinet.Api.Contracts.RoundTripCheck
+Bruinet.Api.Contracts.RoundTripCheck.ValueMatch
+Bruinet.Api.Contracts.RoundTripCheck.ValueMatch.Different = 2 -> Bruinet.Api.Contracts.RoundTripCheck.ValueMatch
+Bruinet.Api.Contracts.RoundTripCheck.ValueMatch.Equal = 0 -> Bruinet.Api.Contracts.RoundTripCheck.ValueMatch
+Bruinet.Api.Contracts.RoundTripCheck.ValueMatch.SameValueOtherKind = 1 -> Bruinet.Api.Contracts.RoundTripCheck.ValueMatch
+Bruinet.Api.Contracts.RoundTripField
+Bruinet.Api.Contracts.RoundTripField.Kind.get -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripField.Kind.init -> void
+Bruinet.Api.Contracts.RoundTripField.ReadPath.get -> string!
+Bruinet.Api.Contracts.RoundTripField.ReadPath.init -> void
+Bruinet.Api.Contracts.RoundTripField.RoundTripField(string! SentPath, string! ReadPath, Bruinet.Api.Contracts.RoundTripKind Kind = Bruinet.Api.Contracts.RoundTripKind.Value) -> void
+Bruinet.Api.Contracts.RoundTripField.SentPath.get -> string!
+Bruinet.Api.Contracts.RoundTripField.SentPath.init -> void
+Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.CalendarDay = 1 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.Decimal = 5 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.IdList = 2 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.IdsIncluded = 3 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.SameMoment = 4 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.RoundTripKind.Value = 0 -> Bruinet.Api.Contracts.RoundTripKind
+Bruinet.Api.Contracts.TruncatedJson
+Bruinet.Api.Contracts.UnregisteredEndpoint
+Bruinet.Api.Contracts.UnregisteredEndpoint.Count.get -> int
+Bruinet.Api.Contracts.UnregisteredEndpoint.Count.init -> void
+Bruinet.Api.Contracts.UnregisteredEndpoint.Host.get -> string?
+Bruinet.Api.Contracts.UnregisteredEndpoint.Host.init -> void
+Bruinet.Api.Contracts.UnregisteredEndpoint.Method.get -> string!
+Bruinet.Api.Contracts.UnregisteredEndpoint.Method.init -> void
+Bruinet.Api.Contracts.UnregisteredEndpoint.Path.get -> string!
+Bruinet.Api.Contracts.UnregisteredEndpoint.Path.init -> void
+Bruinet.Api.Contracts.UnregisteredEndpoint.UnregisteredEndpoint(string! Method, string? Host, string! Path, int Count) -> void
+Bruinet.Api.Contracts.UnregisteredEndpoints
+const Bruinet.Api.Contracts.ContractRunSummary.Blocked = "Blocked" -> string!
+const Bruinet.Api.Contracts.ContractRunSummary.Mismatch = "Mismatch" -> string!
+const Bruinet.Api.Contracts.ContractRunSummary.Skipped = "Skipped" -> string!
+const Bruinet.Api.Contracts.ContractRunSummary.Validated = "Validated" -> string!
+const Bruinet.Api.Contracts.LocalAccountStore.DefaultAccountName = "default" -> string!
+const Bruinet.Api.Contracts.LocalAccountStore.DefaultFileName = ".env.local" -> string!
+override Bruinet.Api.Contracts.ContractResult.ToString() -> string!
+static Bruinet.Api.Contracts.ContractExchanges.AbsolutePath(string! path) -> string!
+static Bruinet.Api.Contracts.ContractExchanges.HasData(string? body) -> bool
+static Bruinet.Api.Contracts.ContractExchanges.Host(string! path) -> string?
+static Bruinet.Api.Contracts.ContractExchanges.Matching(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>! exchanges, Bruinet.Api.Contracts.DtoContract! contract, System.DateTimeOffset since) -> System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>!
+static Bruinet.Api.Contracts.ContractExchanges.Newest(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>! exchanges, Bruinet.Api.Contracts.DtoContract! contract, System.DateTimeOffset since) -> Bruinet.Api.Contracts.ContractExchange?
+static Bruinet.Api.Contracts.ContractModules.AllContracts(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.IContractModule!>! modules) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.DtoContract!>!
+static Bruinet.Api.Contracts.ContractModules.FromAssembly(System.Reflection.Assembly! assembly) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.IContractModule!>!
+static Bruinet.Api.Contracts.ContractOutcome.From(string! module, Bruinet.Api.Contracts.ContractResult! result) -> Bruinet.Api.Contracts.ContractOutcome!
+static Bruinet.Api.Contracts.ContractReport.Render(string! module, string! environment, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractResult!>! results, string? note = null, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.UnregisteredEndpoint!>? unregistered = null) -> string!
+static Bruinet.Api.Contracts.ContractRunFolder.DirectoryFor(string! root, string? runName) -> string!
+static Bruinet.Api.Contracts.ContractRunFolder.FindRepositoryRoot(string! start) -> string!
+static Bruinet.Api.Contracts.ContractRunSummary.ModuleName(string! reportName) -> string!
+static Bruinet.Api.Contracts.ContractRunSummary.Render(System.Collections.Generic.IReadOnlyList<(string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.DtoContract!>! Contracts)>! modules, System.Collections.Generic.IReadOnlyList<(string! Module, Bruinet.Api.Contracts.ContractResult! Result)>! recorded) -> string!
+static Bruinet.Api.Contracts.ContractRunSummary.Render(System.Collections.Generic.IReadOnlyList<(string! Name, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.DtoContract!>! Contracts)>! modules, System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ContractOutcome!>! outcomes) -> string!
+static Bruinet.Api.Contracts.DtoContractValidator.HasOffset(string! text) -> bool
+static Bruinet.Api.Contracts.DtoContractValidator.IsDateOnly(string? text) -> bool
+static Bruinet.Api.Contracts.DtoContractValidator.Validate(string? json, Bruinet.Api.Contracts.DtoContract! contract, System.Text.Json.JsonSerializerOptions! options) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.ExchangeContractCheck.Check(Bruinet.Api.Contracts.ContractExchange? exchange, Bruinet.Api.Contracts.DtoContract! contract, System.Text.Json.JsonSerializerOptions! options, Bruinet.Api.Contracts.ContractEvidence! evidence) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.ExchangeLookup.Deserialize<T>(string? json, System.Text.Json.JsonSerializerOptions! options) -> T?
+static Bruinet.Api.Contracts.ExchangeLookup.FindItem(string? body, int id) -> string?
+static Bruinet.Api.Contracts.ExchangeLookup.ListPageWith(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>! exchanges, Bruinet.Api.Contracts.DtoContract! listContract, System.DateTimeOffset since, int id) -> (Bruinet.Api.Contracts.ContractExchange? Exchange, string? Item)
+static Bruinet.Api.Contracts.ExchangeLookup.NewestForId(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>! exchanges, Bruinet.Api.Contracts.DtoContract! contract, System.DateTimeOffset since, int id) -> Bruinet.Api.Contracts.ContractExchange?
+static Bruinet.Api.Contracts.ExchangeLookup.QueryParameter(string? path, string! name) -> string?
+static Bruinet.Api.Contracts.ExchangeLookup.ReadId(string? body) -> int?
+static Bruinet.Api.Contracts.ExchangeLookup.Warning(string! endpoint, string! message) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.ExpectedRequestCheck.Compare(Bruinet.Api.Contracts.DtoContract! contract, string? contentType, string? body) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.ExpectedRequestCheck.DescribeMultipart(string! contentType, byte[]! body) -> string!
+static Bruinet.Api.Contracts.ExpectedRequestMockCheck.Failures(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.DtoContract!>! contracts, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.RecordedWrite!>! writes) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.ContractResult!>!
+static Bruinet.Api.Contracts.FormCheck.Compare(string! name, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.FormFieldPlace!>! places, string? sentJson, string? storedJson) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.FormCheck.FromJson(string! mapJson, System.Collections.Generic.IReadOnlyDictionary<string!, string!>! typed) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.FormFieldPlace!>!
+static Bruinet.Api.Contracts.FormCheck.Map(System.Collections.Generic.IReadOnlyDictionary<string!, string!>! typed, string? sentJson) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.FormFieldPlace!>!
+static Bruinet.Api.Contracts.FormCheck.ToJson(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.FormFieldPlace!>! places) -> string!
+static Bruinet.Api.Contracts.LiveContractGate.SkipReason(Bruinet.Api.Contracts.LiveContractSettings! settings, string! account) -> string?
+static Bruinet.Api.Contracts.RoundTripCheck.Compare(string! name, string? sentJson, string? readJson, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.RoundTripField!>! fields) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.RoundTripCheck.Compare(string! name, string? sentJson, string? readJson, System.Collections.Generic.IEnumerable<string!>! fields) -> Bruinet.Api.Contracts.ContractResult!
+static Bruinet.Api.Contracts.RoundTripCheck.Match(System.Text.Json.JsonElement sent, System.Text.Json.JsonElement read) -> Bruinet.Api.Contracts.RoundTripCheck.ValueMatch
+static Bruinet.Api.Contracts.RoundTripField.Day(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.RoundTripField.Ids(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.RoundTripField.IdsKept(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.RoundTripField.Moment(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.RoundTripField.Number(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.RoundTripField.Same(string! sentPath, string? readPath = null) -> Bruinet.Api.Contracts.RoundTripField!
+static Bruinet.Api.Contracts.TruncatedJson.CompleteArrayItems(string? body) -> (string! Json, int Count)?
+static Bruinet.Api.Contracts.UnregisteredEndpoints.Find(System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.ContractExchange!>! exchanges, System.Collections.Generic.IEnumerable<Bruinet.Api.Contracts.DtoContract!>! contracts) -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Contracts.UnregisteredEndpoint!>!
+Bruinet.Api.Contracts.FormFieldPlace.FormFieldPlace(string! Field, string! Typed, string? Path) -> void

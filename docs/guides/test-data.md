@@ -180,7 +180,7 @@ mock.Get(TodoApi.TodosPath).ReturnsJson(new[] { new TodoDto(1, "Milk") });   // 
 mock.Get(TodoApi.TodosPath).ReturnsJson(new { titel = "x" });           // BRUINET001
 ```
 
-`BRUINET001` is an analyzer shipped in the `Bruinet.Mocking` package. It also reports anonymous
+`BRUINET001` is an analyzer shipped in the `Bruinet.Api.Mocking` package. It also reports anonymous
 items in arrays and lists, and in `MockResponse.Json` inside a `RespondsWith` callback. Tests of
 the mock server itself may suppress it with a reason (`<NoWarn>$(NoWarn);BRUINET001</NoWarn>`).
 Prefer a typed fake per API (the Todo sample's `TodoServerStub`) over one stub per test.

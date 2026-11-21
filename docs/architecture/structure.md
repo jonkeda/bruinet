@@ -26,7 +26,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - `Bruinet.Stride.Automation`
 - `Bruinet.Bdd` - feature files without a UI: parse, bind, values, tables, callable steps, namespaces, run
 - `Bruinet.Blazor`
-- `Bruinet.Contracts` - API contracts: a recorded call checked against the DTO the app reads and the request the reference client sends, and the run report
+- `Bruinet.Api.Contracts` - API contracts: a recorded call checked against the DTO the app reads and the request the reference client sends, and the run report
 - `Bruinet.Core`
 - `Bruinet.Html`
 - `Bruinet.Html.Playwright`
@@ -35,7 +35,7 @@ their own `.slnx` with Visual Studio's MSBuild.
 - `Bruinet.Maui.CommunityToolkit`
 - `Bruinet.Maui.FlaUI`
 - `Bruinet.Logging` - an `ILoggerProvider` for an app's services: what the app logs goes with the step that made it (`StepLog` in Core)
-- `Bruinet.Mocking`
+- `Bruinet.Api.Mocking`
 - `Bruinet.NativeAndroid` - native Android apps (Views, AndroidX, Material) through Appium, in MAUI's and Html's shape
 - `Bruinet.NativeIos` - native iOS apps (UIKit) through Appium and XCUITest, in native Android's shape
 - `Bruinet.Presenter`

@@ -279,7 +279,7 @@ public sealed class McpRunTests : IDisposable
     [Fact]
     public void GetHttpCalls_GivesTheScenariosCallsInItsNewestRun_WithTheMisses()
     {
-        var log = Bruinet.Mocking.Http.HttpCallLog.PathFor(Bruinet.Mocking.Http.HttpReplaySession.PathFor(Path.Combine(Suite, "Recordings"), "Counts"));
+        var log = Bruinet.Api.Replay.HttpCallLog.PathFor(Bruinet.Api.Replay.HttpReplaySession.PathFor(Path.Combine(Suite, "Recordings"), "Counts"));
         Directory.CreateDirectory(Path.GetDirectoryName(log)!);
         File.WriteAllText(log, """
             {

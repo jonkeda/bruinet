@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.Api.OpenApi.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Api.OpenApi\Bruinet.Api.OpenApi.csproj" />
+  </ItemGroup>
+
+</Project>

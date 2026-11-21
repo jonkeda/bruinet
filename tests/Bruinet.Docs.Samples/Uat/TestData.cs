@@ -1,7 +1,7 @@
 // docs/guides/test-data.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
 using System.Text.Json;
 using Bruinet.Bdd;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.TestData;
 using Bruinet.Uat;
 using Xunit;

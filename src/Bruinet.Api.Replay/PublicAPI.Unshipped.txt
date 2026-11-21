@@ -1,0 +1,145 @@
+#nullable enable
+Bruinet.Api.Replay.HermeticGuard
+Bruinet.Api.Replay.HermeticViolationException
+Bruinet.Api.Replay.HermeticViolationException.HermeticViolationException(string! message) -> void
+Bruinet.Api.Replay.HttpCall
+Bruinet.Api.Replay.HttpCall.Exchange.get -> int
+Bruinet.Api.Replay.HttpCall.Exchange.init -> void
+Bruinet.Api.Replay.HttpCall.HttpCall(string! Method, string! Url, int Status, string! Outcome, int Exchange) -> void
+Bruinet.Api.Replay.HttpCall.Method.get -> string!
+Bruinet.Api.Replay.HttpCall.Method.init -> void
+Bruinet.Api.Replay.HttpCall.Outcome.get -> string!
+Bruinet.Api.Replay.HttpCall.Outcome.init -> void
+Bruinet.Api.Replay.HttpCall.Status.get -> int
+Bruinet.Api.Replay.HttpCall.Status.init -> void
+Bruinet.Api.Replay.HttpCall.Url.get -> string!
+Bruinet.Api.Replay.HttpCall.Url.init -> void
+Bruinet.Api.Replay.HttpCallLog
+Bruinet.Api.Replay.HttpCallLog.Calls.get -> System.Collections.Generic.List<Bruinet.Api.Replay.HttpCall!>!
+Bruinet.Api.Replay.HttpCallLog.Calls.set -> void
+Bruinet.Api.Replay.HttpCallLog.HttpCallLog() -> void
+Bruinet.Api.Replay.HttpCallLog.Misses.get -> System.Collections.Generic.List<string!>!
+Bruinet.Api.Replay.HttpCallLog.Misses.set -> void
+Bruinet.Api.Replay.HttpCallLog.Mode.get -> string!
+Bruinet.Api.Replay.HttpCallLog.Mode.set -> void
+Bruinet.Api.Replay.HttpCallLog.Unused.get -> System.Collections.Generic.List<int>!
+Bruinet.Api.Replay.HttpCallLog.Unused.set -> void
+Bruinet.Api.Replay.HttpChunk
+Bruinet.Api.Replay.HttpChunk.Data.get -> string!
+Bruinet.Api.Replay.HttpChunk.Data.set -> void
+Bruinet.Api.Replay.HttpChunk.DelayMs.get -> int
+Bruinet.Api.Replay.HttpChunk.DelayMs.set -> void
+Bruinet.Api.Replay.HttpChunk.HttpChunk() -> void
+Bruinet.Api.Replay.HttpExchange
+Bruinet.Api.Replay.HttpExchange.Chunks.get -> System.Collections.Generic.List<Bruinet.Api.Replay.HttpChunk!>?
+Bruinet.Api.Replay.HttpExchange.Chunks.set -> void
+Bruinet.Api.Replay.HttpExchange.DurationMs.get -> int
+Bruinet.Api.Replay.HttpExchange.DurationMs.set -> void
+Bruinet.Api.Replay.HttpExchange.Failure.get -> string?
+Bruinet.Api.Replay.HttpExchange.Failure.set -> void
+Bruinet.Api.Replay.HttpExchange.HttpExchange() -> void
+Bruinet.Api.Replay.HttpExchange.Index.get -> int
+Bruinet.Api.Replay.HttpExchange.Index.set -> void
+Bruinet.Api.Replay.HttpExchange.Method.get -> string!
+Bruinet.Api.Replay.HttpExchange.Method.set -> void
+Bruinet.Api.Replay.HttpExchange.PathAndQuery.get -> string!
+Bruinet.Api.Replay.HttpExchange.RequestBody.get -> string?
+Bruinet.Api.Replay.HttpExchange.RequestBody.set -> void
+Bruinet.Api.Replay.HttpExchange.RequestBodyEncoding.get -> string?
+Bruinet.Api.Replay.HttpExchange.RequestBodyEncoding.set -> void
+Bruinet.Api.Replay.HttpExchange.RequestHeaders.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Api.Replay.HttpExchange.RequestHeaders.set -> void
+Bruinet.Api.Replay.HttpExchange.ResponseBody.get -> string?
+Bruinet.Api.Replay.HttpExchange.ResponseBody.set -> void
+Bruinet.Api.Replay.HttpExchange.ResponseBodyEncoding.get -> string?
+Bruinet.Api.Replay.HttpExchange.ResponseBodyEncoding.set -> void
+Bruinet.Api.Replay.HttpExchange.ResponseHeaders.get -> System.Collections.Generic.Dictionary<string!, string!>!
+Bruinet.Api.Replay.HttpExchange.ResponseHeaders.set -> void
+Bruinet.Api.Replay.HttpExchange.Status.get -> int
+Bruinet.Api.Replay.HttpExchange.Status.set -> void
+Bruinet.Api.Replay.HttpExchange.Url.get -> string!
+Bruinet.Api.Replay.HttpExchange.Url.set -> void
+Bruinet.Api.Replay.HttpExchange.Volatile.get -> System.Collections.Generic.List<string!>!
+Bruinet.Api.Replay.HttpExchange.Volatile.set -> void
+Bruinet.Api.Replay.HttpRecording
+Bruinet.Api.Replay.HttpRecording.Exchanges.get -> System.Collections.Generic.List<Bruinet.Api.Replay.HttpExchange!>!
+Bruinet.Api.Replay.HttpRecording.Exchanges.set -> void
+Bruinet.Api.Replay.HttpRecording.HttpRecording() -> void
+Bruinet.Api.Replay.HttpRecording.KeepVolatile(Bruinet.Api.Replay.HttpRecording! previous) -> void
+Bruinet.Api.Replay.HttpRecording.Kind.get -> string!
+Bruinet.Api.Replay.HttpRecording.Kind.set -> void
+Bruinet.Api.Replay.HttpRecording.MarkVolatile(Bruinet.Api.Replay.HttpRecording! previous) -> void
+Bruinet.Api.Replay.HttpRecording.Save(string! path) -> void
+Bruinet.Api.Replay.HttpRecording.Version.get -> int
+Bruinet.Api.Replay.HttpRecording.Version.set -> void
+Bruinet.Api.Replay.HttpRecordingDiff
+Bruinet.Api.Replay.HttpRecordingReview
+Bruinet.Api.Replay.HttpRecordingSecretException
+Bruinet.Api.Replay.HttpRecordingSecretException.HttpRecordingSecretException(string! message) -> void
+Bruinet.Api.Replay.HttpReplayHandler
+Bruinet.Api.Replay.HttpReplayHandler.HttpReplayHandler(Bruinet.Api.Replay.HttpReplaySession! session) -> void
+Bruinet.Api.Replay.HttpReplayHandler.HttpReplayHandler(Bruinet.Api.Replay.HttpReplaySession! session, System.Net.Http.HttpMessageHandler! inner) -> void
+Bruinet.Api.Replay.HttpReplayHandler.Session.get -> Bruinet.Api.Replay.HttpReplaySession!
+Bruinet.Api.Replay.HttpReplayMissException
+Bruinet.Api.Replay.HttpReplayMissException.HttpReplayMissException(string! message) -> void
+Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplayMode.Off = 0 -> Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplayMode.Record = 1 -> Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplayMode.Refresh = 3 -> Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplayMode.Replay = 2 -> Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplayOptions
+Bruinet.Api.Replay.HttpReplayOptions.Hermetic.get -> bool
+Bruinet.Api.Replay.HttpReplayOptions.Hermetic.set -> void
+Bruinet.Api.Replay.HttpReplayOptions.HttpReplayOptions() -> void
+Bruinet.Api.Replay.HttpReplayOptions.IgnoredFields.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Api.Replay.HttpReplayOptions.Pace.get -> Bruinet.Api.Replay.HttpReplayPace
+Bruinet.Api.Replay.HttpReplayOptions.Pace.set -> void
+Bruinet.Api.Replay.HttpReplayOptions.RedactedFields.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Api.Replay.HttpReplayOptions.RedactedHeaders.get -> System.Collections.Generic.ISet<string!>!
+Bruinet.Api.Replay.HttpReplayOptions.Redacting(string? names) -> Bruinet.Api.Replay.HttpReplayOptions!
+Bruinet.Api.Replay.HttpReplayOptions.WithPreset(System.Collections.Generic.IEnumerable<string!>! fields) -> Bruinet.Api.Replay.HttpReplayOptions!
+Bruinet.Api.Replay.HttpReplayPace
+Bruinet.Api.Replay.HttpReplayPace.None = 0 -> Bruinet.Api.Replay.HttpReplayPace
+Bruinet.Api.Replay.HttpReplayPace.Recorded = 1 -> Bruinet.Api.Replay.HttpReplayPace
+Bruinet.Api.Replay.HttpReplayPresets
+Bruinet.Api.Replay.HttpReplayServiceCollectionExtensions
+Bruinet.Api.Replay.HttpReplaySession
+Bruinet.Api.Replay.HttpReplaySession.Add(Bruinet.Api.Replay.HttpExchange! exchange) -> void
+Bruinet.Api.Replay.HttpReplaySession.Calls.get -> System.Collections.Generic.IReadOnlyList<Bruinet.Api.Replay.HttpCall!>!
+Bruinet.Api.Replay.HttpReplaySession.Changes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Api.Replay.HttpReplaySession.Finish() -> void
+Bruinet.Api.Replay.HttpReplaySession.HttpReplaySession(Bruinet.Api.Replay.HttpReplayMode mode, string! path, Bruinet.Api.Replay.HttpReplayOptions? options = null) -> void
+Bruinet.Api.Replay.HttpReplaySession.Misses.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Bruinet.Api.Replay.HttpReplaySession.Mode.get -> Bruinet.Api.Replay.HttpReplayMode
+Bruinet.Api.Replay.HttpReplaySession.Options.get -> Bruinet.Api.Replay.HttpReplayOptions!
+Bruinet.Api.Replay.HttpReplaySession.Path.get -> string!
+Bruinet.Api.Replay.HttpReplaySession.SendAsync(System.Net.Http.HttpRequestMessage! request, System.Func<System.Net.Http.HttpRequestMessage!, System.Threading.CancellationToken, System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!>! network, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage!>!
+Bruinet.Api.Replay.HttpReplaySession.ThrowIfMissed() -> void
+const Bruinet.Api.Replay.HttpRecordingReview.FileName = "reviewed.http.json" -> string!
+const Bruinet.Api.Replay.HttpReplaySession.ModeVariable = "BRUINET_HTTP_REPLAY" -> string!
+static Bruinet.Api.Replay.HermeticGuard.Handler() -> System.Net.Http.SocketsHttpHandler!
+static Bruinet.Api.Replay.HermeticGuard.IsViolation(System.Exception? exception) -> bool
+static Bruinet.Api.Replay.HttpCallLog.Load(string! path) -> Bruinet.Api.Replay.HttpCallLog?
+static Bruinet.Api.Replay.HttpCallLog.PathFor(string! recordingPath) -> string!
+static Bruinet.Api.Replay.HttpRecording.Load(string! path) -> Bruinet.Api.Replay.HttpRecording?
+static Bruinet.Api.Replay.HttpRecording.Parse(string! json) -> Bruinet.Api.Replay.HttpRecording?
+static Bruinet.Api.Replay.HttpRecordingDiff.Compare(Bruinet.Api.Replay.HttpRecording? before, Bruinet.Api.Replay.HttpRecording? after) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.Replay.HttpRecordingDiff.Compare(Bruinet.Api.Replay.HttpRecording? before, Bruinet.Api.Replay.HttpRecording? after, System.Collections.Generic.IReadOnlyCollection<string!>! ignoredFields) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.Replay.HttpRecordingReview.Accept(string! folder) -> void
+static Bruinet.Api.Replay.HttpRecordingReview.Hash(string! json) -> string!
+static Bruinet.Api.Replay.HttpRecordingReview.IsRecording(string! json) -> bool
+static Bruinet.Api.Replay.HttpRecordingReview.Recordings(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.Replay.HttpRecordingReview.Stale(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.Replay.HttpRecordingReview.Unreviewed(string! folder) -> System.Collections.Generic.IReadOnlyList<string!>!
+static Bruinet.Api.Replay.HttpReplayHandler.Create(Bruinet.Api.Replay.HttpReplaySession! session) -> Bruinet.Api.Replay.HttpReplayHandler!
+static Bruinet.Api.Replay.HttpReplayOptions.ForSuite(bool hermetic, string? redact = null, string? pace = null, string? where = null) -> Bruinet.Api.Replay.HttpReplayOptions!
+static Bruinet.Api.Replay.HttpReplayPresets.Named(string! name) -> System.Collections.Generic.IReadOnlyList<string!>?
+static Bruinet.Api.Replay.HttpReplayServiceCollectionExtensions.AddBruinetHttpReplay(this Microsoft.Extensions.DependencyInjection.IServiceCollection! services, Bruinet.Api.Replay.HttpReplaySession! session) -> Microsoft.Extensions.DependencyInjection.IServiceCollection!
+static Bruinet.Api.Replay.HttpReplaySession.ForMode(string! mode, string! folder, string! test, Bruinet.Api.Replay.HttpReplayOptions? options = null) -> Bruinet.Api.Replay.HttpReplaySession?
+static Bruinet.Api.Replay.HttpReplaySession.FromEnvironment(string! folder, string! test, Bruinet.Api.Replay.HttpReplayOptions? options = null) -> Bruinet.Api.Replay.HttpReplaySession?
+static Bruinet.Api.Replay.HttpReplaySession.ModeFromEnvironment(System.Func<string!, string?>? environment = null) -> Bruinet.Api.Replay.HttpReplayMode
+static Bruinet.Api.Replay.HttpReplaySession.PathFor(string! folder, string! test) -> string!
+static readonly Bruinet.Api.Replay.HttpReplayOptions.DefaultRedactedFields -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Api.Replay.HttpReplayOptions.DefaultRedactedHeaders -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Api.Replay.HttpReplayPresets.Model -> System.Collections.Generic.IReadOnlyList<string!>!
+static readonly Bruinet.Api.Replay.HttpReplayPresets.OAuth -> System.Collections.Generic.IReadOnlyList<string!>!

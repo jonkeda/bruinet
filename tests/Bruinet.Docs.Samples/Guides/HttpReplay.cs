@@ -1,6 +1,6 @@
 // docs/guides/http-replay.md quotes these regions: change them here, then run tools/Scripts/update-doc-samples.ps1.
-using Bruinet.Mocking;
-using Bruinet.Mocking.Http;
+using Bruinet.Api.Mocking;
+using Bruinet.Api.Replay;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

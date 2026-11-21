@@ -21,7 +21,7 @@ public sealed class AlwaysOnline : IConnectivityState
 /// </summary>
 /// <remarks>
 /// <para>
-/// The app side of the test network switch (Bruinet.Mocking's <c>NetworkStateFile</c>; the
+/// The app side of the test network switch (Bruinet.Api.Mocking's <c>NetworkStateFile</c>; the
 /// pattern is Construction's <c>NetworkStateOverride</c>). Only used when the launch settings name
 /// a file, which only a test run does.
 /// </para>

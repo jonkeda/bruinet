@@ -10,7 +10,7 @@ dotnet_diagnostic.RS0030.severity = none
 dotnet_diagnostic.RS0030.severity = none
 [Bruinet.Maui/Testing/NavigationRecovery.cs]
 dotnet_diagnostic.RS0030.severity = none
-[Bruinet.Mocking/MockApiServer.cs]
+[Bruinet.Api.Mocking/MockApiServer.cs]
 dotnet_diagnostic.RS0030.severity = none
 [Bruinet.Html/Testing/WebAppHost.cs]
 dotnet_diagnostic.RS0030.severity = none
@@ -28,7 +28,7 @@ dotnet_diagnostic.RS0030.severity = none
 dotnet_diagnostic.RS0030.severity = none
 
 # Retries: a file or service that was busy.
-[Bruinet.Mocking/NetworkStateFile.cs]
+[Bruinet.Api.Mocking/NetworkStateFile.cs]
 dotnet_diagnostic.RS0030.severity = none
 [Bruinet.Bdd/BddBreakpoints.cs]
 dotnet_diagnostic.RS0030.severity = none
@@ -50,9 +50,9 @@ dotnet_diagnostic.RS0030.severity = none
 dotnet_diagnostic.RS0030.severity = none
 [Bruinet.Presenter/ViewModels/PresenterShellViewModel.Run.cs]
 dotnet_diagnostic.RS0030.severity = none
-[Bruinet.Mocking.Http/HttpReplaySession.cs]
+[Bruinet.Api.Replay/HttpReplaySession.cs]
 dotnet_diagnostic.RS0030.severity = none
-[Bruinet.Mocking/Sensors/MockAudioSource.cs]
+[Bruinet.Mocking.Sensors/MockAudioSource.cs]
 dotnet_diagnostic.RS0030.severity = none
 [Bruinet.FlaUI/UiaElementBase.cs]
 dotnet_diagnostic.RS0030.severity = none

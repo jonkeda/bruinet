@@ -16,7 +16,7 @@ Publishing a GitHub release tagged `vX.Y.Z`, or `vX.Y.Z-suffix` for a prerelease
 
 ## Between releases
 
-Each CI run on `main` packs and checks the packages too, as `0.1.0-ci.<run number>`, and keeps them as the run's
+Each CI run on `main` packs and checks the packages too, as `0.2.0-ci.<run number>`, and keeps them as the run's
 artifacts. They are for trying a change, not for depending on.
 
 ## What a version promises

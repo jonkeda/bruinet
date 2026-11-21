@@ -49,7 +49,7 @@ public static class BddReplayFields
     /// <summary><c>none</c> (the default) or <c>recorded</c>: whether a replayed answer takes as long as it did, a streamed one part by part.</summary>
     public const string HttpReplayPace = "HttpReplayPace";
 
-    /// <summary>The run's HTTP replay mode (<c>Record</c>, <c>Replay</c>, <c>Refresh</c>), as <c>Bruinet.Mocking.Http</c> reads it.</summary>
+    /// <summary>The run's HTTP replay mode (<c>Record</c>, <c>Replay</c>, <c>Refresh</c>), as <c>Bruinet.Api.Replay</c> reads it.</summary>
     public const string HttpReplayVariable = "BRUINET_HTTP_REPLAY";
 }
 

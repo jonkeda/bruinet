@@ -30,9 +30,9 @@
     <ProjectReference Include="..\..\src\Bruinet.Stride\Bruinet.Stride.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Stride.Automation\Bruinet.Stride.Automation.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.Uat\Bruinet.Uat.csproj" />
-    <ProjectReference Include="..\..\src\Bruinet.Contracts\Bruinet.Contracts.csproj" />
-    <ProjectReference Include="..\..\src\Bruinet.Mocking\Bruinet.Mocking.csproj" />
-    <ProjectReference Include="..\..\src\Bruinet.Mocking.Http\Bruinet.Mocking.Http.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.Contracts\Bruinet.Api.Contracts.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.Mocking\Bruinet.Api.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.Replay\Bruinet.Api.Replay.csproj" />
     <ProjectReference Include="..\..\src\Bruinet.TestData\Bruinet.TestData.csproj" />
     <!-- The app side of the MAUI samples (the gesture bridge) and the pages of MauiHeadless's own sample, in their net10.0 builds. -->
     <ProjectReference Include="..\..\samples\Bruinet.Maui.AppSupport\Bruinet.Maui.AppSupport.csproj" SetTargetFramework="TargetFramework=net10.0" />

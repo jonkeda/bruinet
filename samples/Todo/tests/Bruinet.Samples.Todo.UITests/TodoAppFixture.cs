@@ -1,4 +1,4 @@
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Contracts;
 using Bruinet.Samples.Todo.TestSupport;
 using Bruinet.Samples.Todo.TestSupport.Uat;
@@ -23,7 +23,7 @@ public abstract class TodoAppFixture : TodoAppFixtureBase, ITodoArrangement
         ?? throw new InvalidOperationException("The backend was used before it was started.");
 
     /// <inheritdoc />
-    public IReadOnlyList<Mocking.Http.HttpCall>? ReplayedCalls => HttpReplay.ReplayedCalls;
+    public IReadOnlyList<Bruinet.Api.Replay.HttpCall>? ReplayedCalls => HttpReplay.ReplayedCalls;
 
     /// <summary>The fake API's state: what the app has sent it, and changes "from another device".</summary>
     public TodoServerStub Server => _server

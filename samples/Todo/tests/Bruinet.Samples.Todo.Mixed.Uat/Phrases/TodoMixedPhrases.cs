@@ -1,6 +1,6 @@
 using Bruinet.Bdd;
 using Bruinet.Core.Testing;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Mixed.Uat.Runtime;
 using Bruinet.Samples.Todo.UITests;
 using Bruinet.Samples.Todo.Web.UITests;

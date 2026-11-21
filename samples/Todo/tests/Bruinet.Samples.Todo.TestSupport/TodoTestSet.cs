@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Contracts;
 using Bruinet.Samples.Todo.Core.Models;
 using Bruinet.Samples.Todo.Infrastructure.Api;

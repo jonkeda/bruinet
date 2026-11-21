@@ -1,6 +1,6 @@
 # AD-034: A Dependency Is Replayed, Stubbed Or Copied By Its Kind, And The Real One Judges The Gate
 
-`Bruinet.Mocking.Http` records each outgoing HTTP call a test's app makes and its answer, and replays them with no
+`Bruinet.Api.Replay` records each outgoing HTTP call a test's app makes and its answer, and replays them with no
 service: a test's own recording (`Recordings/http/<test>.json`), matched by method, path, query and a JSON body field by
 field, values that change between runs left out of the match. A run's mode is `BRUINET_HTTP_REPLAY`, the same shape as
 SQL replay (AD-031). A suite says per dependency how its tests get it, in `uat.config.md`'s `## Dependencies`: an HTTP

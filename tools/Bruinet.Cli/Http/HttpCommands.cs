@@ -1,6 +1,6 @@
 using System.CommandLine;
 using Bruinet.Cli.Sql;
-using Bruinet.Mocking.Http;
+using Bruinet.Api.Replay;
 
 namespace Bruinet.Cli.Http;
 

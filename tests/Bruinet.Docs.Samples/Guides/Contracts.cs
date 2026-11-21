@@ -1,5 +1,5 @@
 // docs/guides/contracts.md quotes this region: change it here, then run tools/Scripts/update-doc-samples.ps1.
-using Bruinet.Contracts;
+using Bruinet.Api.Contracts;
 
 namespace Bruinet.Docs.Samples.Guides;
 

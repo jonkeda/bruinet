@@ -1,6 +1,6 @@
 using Bruinet.Core.Testing;
 using Bruinet.Html.Testing;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Infrastructure;
 using Bruinet.Samples.Todo.TestSupport.Uat;
 using Bruinet.Samples.Todo.Web.UITests.Pages;
@@ -73,7 +73,7 @@ public abstract class TodoWebFixture : IAsyncLifetime, ITodoArrangement
     public TodoHttpReplay HttpReplay => _http ?? throw new InvalidOperationException("The fixture is not started.");
 
     /// <inheritdoc />
-    public IReadOnlyList<Mocking.Http.HttpCall>? ReplayedCalls => _http?.ReplayedCalls;
+    public IReadOnlyList<Bruinet.Api.Replay.HttpCall>? ReplayedCalls => _http?.ReplayedCalls;
 
     public virtual async Task InitializeAsync()
     {

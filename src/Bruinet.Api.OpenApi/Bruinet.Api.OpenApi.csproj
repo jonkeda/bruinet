@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageTags>$(PackageTags);api;openapi;description</PackageTags>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <RootNamespace>Bruinet.Api.OpenApi</RootNamespace>
+    <Description>A description of an API for tests: read from an OpenAPI 3 document or merged from the calls Bruinet saw, the difference between two, the operations no test calls, each answer checked against its schema, and an example of what a schema describes.</Description>
+    <PackageId>Bruinet.Api.OpenApi</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bruinet.Core\Bruinet.Core.csproj" />
+    <ProjectReference Include="..\Bruinet.Api.Contracts\Bruinet.Api.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

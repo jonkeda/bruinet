@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Bruinet.Api.Replay.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Api.Replay\Bruinet.Api.Replay.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The real service a test records: a WireMock server, stopped before the replay. -->
+    <PackageReference Include="WireMock.Net" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+  </ItemGroup>
+
+</Project>

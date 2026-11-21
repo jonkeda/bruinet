@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Contracts;
 
 namespace Bruinet.Samples.Todo.TestSupport;

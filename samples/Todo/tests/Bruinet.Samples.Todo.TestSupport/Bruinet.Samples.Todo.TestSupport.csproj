@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Bruinet.Mocking\Bruinet.Mocking.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Bruinet.Api.Mocking\Bruinet.Api.Mocking.csproj" />
     <!-- SQL replay of the app's file on the in-process heads (TodoSqlReplay). -->
     <ProjectReference Include="..\..\..\..\src\Bruinet.Mocking.Data\Bruinet.Mocking.Data.csproj" />
     <ProjectReference Include="..\..\..\..\src\Bruinet.TestData\Bruinet.TestData.csproj" />

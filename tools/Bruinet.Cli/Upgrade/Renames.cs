@@ -21,8 +21,8 @@ internal sealed record RenameHit(string File, string Old, string New, int Count)
 /// <summary>
 /// The renames a project using Bruinet follows, read from the changes list
 /// (<c>.github/skills/api-upgrade/references/changes.md</c>, <c>## Renames</c>) and applied to a folder's files: a name
-/// is replaced where it stands as a whole dotted name, so <c>Bruinet.Mocking</c> does not touch
-/// <c>Bruinet.Mocking.Data</c> when a <c>keep</c> row names that one, and does take <c>Bruinet.Mocking.Steps</c> with it.
+/// is replaced where it stands as a whole dotted name, so <c>Bruinet.Api.Mocking</c> does not touch
+/// <c>Bruinet.Mocking.Data</c> when a <c>keep</c> row names that one, and does take <c>Bruinet.Api.Mocking.Steps</c> with it.
 /// </summary>
 internal static class Renames
 {
@@ -31,7 +31,7 @@ internal static class Renames
 
     // What holds a Bruinet name in a consumer: code, projects, and the names a suite keeps as text.
     private static readonly string[] Extensions =
-        [".cs", ".csproj", ".props", ".targets", ".sln", ".slnx", ".md", ".json", ".feature", ".steps", ".config", ".yml", ".yaml", ".ps1", ".razor", ".xaml"];
+        [".cs", ".csproj", ".props", ".targets", ".sln", ".slnx", ".md", ".json", ".feature", ".steps", ".config", ".yml", ".yaml", ".ps1", ".razor", ".xaml", ".txt", ".xml", ".editorconfig", ".globalconfig", ".runsettings"];
 
     private static readonly string[] TypeExtensions = [".cs", ".razor", ".xaml", ".md"];
 

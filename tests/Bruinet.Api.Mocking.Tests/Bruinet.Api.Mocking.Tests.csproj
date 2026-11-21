@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Uses Bruinet.Bdd's engine, which is experimental (BRUINET010, docs/experimental.md): opted in knowingly. -->
+    <NoWarn>$(NoWarn);BRUINET010</NoWarn>
+    <RootNamespace>Bruinet.Api.Mocking.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" />
+    <!-- The analyzer tests compile snippets against Bruinet.Api.Mocking. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bruinet.Core\Bruinet.Core.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.Mocking\Bruinet.Api.Mocking.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Mocking.Sensors\Bruinet.Mocking.Sensors.csproj" />
+    <ProjectReference Include="..\..\src\Bruinet.Api.Mocking.Analyzers\Bruinet.Api.Mocking.Analyzers.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ContractSamples\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

@@ -111,6 +111,23 @@ public sealed class ApiSessionTests
     }
 
     [Fact]
+    public async Task A_generated_client_on_the_sessions_http_client_is_guarded_signed_and_kept_too()
+    {
+        using var service = new FakeService { Accepts = "token" };
+        using var session = new ApiSession(Options(service), "Reader", writes: false, new BearerSignIn(() => "token"));
+
+        using var answer = await session.Client.GetAsync(new Uri("/contact/1", UriKind.Relative));
+        var body = await answer.Content.ReadAsStringAsync();
+        using var content = new StringContent("{}", Encoding.UTF8, "application/json");
+        await Assert.ThrowsAsync<ApiCallException>(() => session.Client.PostAsync(new Uri("/contact", UriKind.Relative), content));
+        await Assert.ThrowsAsync<ApiCallException>(() => session.Client.GetAsync(new Uri("https://api.example.com/contact/1")));
+
+        Assert.Equal("{}", body);
+        Assert.Equal(["GET /contact/1"], service.Calls);
+        Assert.Equal("GET /contact/1 as Reader answered 200", Assert.Single(session.Exchanges).Describe());
+    }
+
+    [Fact]
     public void A_token_is_fetched_again_a_minute_before_it_runs_out()
     {
         var now = new DateTimeOffset(2026, 11, 21, 9, 0, 0, TimeSpan.Zero);

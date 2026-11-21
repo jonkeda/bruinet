@@ -421,9 +421,9 @@ public sealed partial class BddMcpServer : IDisposable
         => replay?.Trim().ToLowerInvariant() switch
         {
             null or "" => null,
-            "record" => new() { [Bruinet.Mocking.Http.HttpReplaySession.ModeVariable] = "Record", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Record" },
-            "replay" => new() { [Bruinet.Mocking.Http.HttpReplaySession.ModeVariable] = "Replay", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Replay" },
-            "refresh" => new() { [Bruinet.Mocking.Http.HttpReplaySession.ModeVariable] = "Refresh", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Record" },
+            "record" => new() { [Bruinet.Api.Replay.HttpReplaySession.ModeVariable] = "Record", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Record" },
+            "replay" => new() { [Bruinet.Api.Replay.HttpReplaySession.ModeVariable] = "Replay", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Replay" },
+            "refresh" => new() { [Bruinet.Api.Replay.HttpReplaySession.ModeVariable] = "Refresh", [Bruinet.Mocking.Data.Replay.ReplayRegistry.ModeVariable] = "Record" },
             _ => throw new ToolProblem($"replay '{replay}': record, replay or refresh."),
         };
 
@@ -435,14 +435,14 @@ public sealed partial class BddMcpServer : IDisposable
         var name = _server.ScenarioNames(uri, line).FirstOrDefault() ?? throw new ToolProblem("There is no scenario heading at that line.");
         var project = _server.Context(new Uri(uri).LocalPath, (string?)arguments["suite"]).Suite?.ProjectDirectory
             ?? throw new ToolProblem("No suite holds or links this feature file.");
-        var file = Path.GetFileName(Bruinet.Mocking.Http.HttpCallLog.PathFor(Bruinet.Mocking.Http.HttpReplaySession.PathFor(project, name)));
+        var file = Path.GetFileName(Bruinet.Api.Replay.HttpCallLog.PathFor(Bruinet.Api.Replay.HttpReplaySession.PathFor(project, name)));
         var path = Directory.EnumerateFiles(project, file, SearchOption.AllDirectories)
             .Where(found => !found.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase)
                             && !found.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
             .OrderByDescending(File.GetLastWriteTimeUtc)
             .FirstOrDefault()
             ?? throw new ToolProblem($"No HTTP calls of '{name}' yet: run it with run_scenario and replay set, in a suite whose host gives the app an HttpReplaySession.");
-        var log = Bruinet.Mocking.Http.HttpCallLog.Load(path)!;
+        var log = Bruinet.Api.Replay.HttpCallLog.Load(path)!;
         var calls = Cut(log.Calls, arguments);
         return new
         {

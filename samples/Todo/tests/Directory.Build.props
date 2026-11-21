@@ -15,10 +15,10 @@
     <PackageReference Include="coverlet.collector" PrivateAssets="all" />
   </ItemGroup>
 
-  <!-- BRUINET001: mock response bodies are contract types, not anonymous objects (AD-012). Bruinet.Mocking
+  <!-- BRUINET001: mock response bodies are contract types, not anonymous objects (AD-012). Bruinet.Api.Mocking
        is a project reference here, so its analyzer is added by hand; the package carries it itself. -->
   <ItemGroup>
-    <ProjectReference Include="$(MSBuildThisFileDirectory)../../../src/Bruinet.Mocking.Analyzers/Bruinet.Mocking.Analyzers.csproj"
+    <ProjectReference Include="$(MSBuildThisFileDirectory)../../../src/Bruinet.Api.Mocking.Analyzers/Bruinet.Api.Mocking.Analyzers.csproj"
                       OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

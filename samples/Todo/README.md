@@ -5,7 +5,7 @@ that can prove it, and every test traced back to a user journey. It shows:
 
 - **Bruinet.Maui** driving the app on Windows (FlaUI) and Android (Appium), through page
   objects and ControlObjects only: tests never touch a driver, an element or a sleep.
-- **WireMock** (`Bruinet.Mocking`) standing in for the backend, with the requests it received
+- **WireMock** (`Bruinet.Api.Mocking`) standing in for the backend, with the requests it received
   asserted by waiting for them.
 - **A seeded SQLite database** for the app's local state, built with the app's own migrations.
 - **A test pyramid** from unit tests to manual charters, kept honest by a report that compares

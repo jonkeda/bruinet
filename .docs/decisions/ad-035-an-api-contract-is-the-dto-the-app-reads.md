@@ -1,6 +1,6 @@
 # AD-035: An API Contract Is The DTO The App Reads, And The Real Service Judges It
 
-`Bruinet.Contracts` checks the calls an app made against the types the app itself reads them with. A `DtoContract`
+`Bruinet.Api.Contracts` checks the calls an app made against the types the app itself reads them with. A `DtoContract`
 names one endpoint and its response DTO; the validator walks a recorded body against that type, field by field, with the
 app's own `JsonSerializerOptions`. A write's contract may also hold an `ExpectedRequest`: the body the reference client
 sends (for a migrated app, the old app's serializer), field by field, with the value kind each field must have.
@@ -25,7 +25,7 @@ real service can say whether it accepts a call, so a mock that answers never pas
 - passing a contract on a mock's answer: the mock holds what the test author believed, not what the service sends;
 - one fixed log format: each app already logs its calls its own way; a mapping into `ContractExchange` is one method.
 
-**Planned:** record a live contract run through `Bruinet.Mocking.Http` (AD-034), so a replay in CI answers with what the
+**Planned:** record a live contract run through `Bruinet.Api.Replay` (AD-034), so a replay in CI answers with what the
 real service sent, and the live run stays the gate.
 
 **Broken when:** a contract passes with no call from the real service; a contract passes on production evidence the

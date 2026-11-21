@@ -12,6 +12,11 @@ longer name that a shorter row must leave alone. A name is replaced where it sta
 
 | Commit | Kind | Old | New |
 | --- | --- | --- | --- |
+| ApiFamily | package | `Bruinet.Contracts` | `Bruinet.Api.Contracts` |
+| ApiFamily | package | `Bruinet.Mocking.Http` | `Bruinet.Api.Replay` |
+| ApiFamily | package | `Bruinet.Mocking` | `Bruinet.Api.Mocking` |
+| ApiFamily | keep | `Bruinet.Mocking.Data` | |
+| ApiFamily | keep | `Bruinet.Mocking.Sensors` | |
 
 ## Made
 
@@ -19,6 +24,7 @@ Newest first. Apply oldest first.
 
 | Commit | Change | Find | Write instead |
 | --- | --- | --- | --- |
+| ApiFamily | The packages that check, replay and fake API calls are one family: `Bruinet.Contracts` is `Bruinet.Api.Contracts`, `Bruinet.Mocking.Http` is `Bruinet.Api.Replay`, `Bruinet.Mocking` (the WireMock server, stubs, the request steps, with its analyzer BRUINET001) is `Bruinet.Api.Mocking`; each package's namespaces follow its name, no type is renamed. The mock sensors (`MockAudioSink`, `MockAudioSource`, `MockFrameSource`, `MockInputSource`) left that package for a new one, `Bruinet.Mocking.Sensors`, and keep their namespace. `Bruinet.Mocking.Data` and its hooks are as they were. No old package forwards to a new one | The rows of `## Renames`; for the sensors: a use of `Bruinet.Mocking.Sensors` in a project that referenced only `Bruinet.Mocking` | `bruinet upgrade <folder>`; for the sensors add a reference to the package `Bruinet.Mocking.Sensors` |
 | ApiSession | New, breaks no one: `Bruinet.Core.Api` (`ApiSession`, `ApiSessionOptions`, `ApiEnvironmentGuard`, `IApiSignIn`, `BearerSignIn`, `ApiKeySignIn`, `ApiSignIns`, `MarkedResource`, `ApiSeed`, `SeedRecord`, `ApiExchange`, `ApiExchangeLog`, `ApiMasks`, `ApiCallException`) and `Bruinet.Html.Playwright.SavedSignIn`. A suite that wrote its own HTTP client for set-up and clean-up may move it onto the session | A suite's own `HttpClient` for test data, its own host check, `Writes` check and delete-by-marker | Optional: API objects over `ApiSession` (Bouw7's `Support/Api` is the example); the session's failure is `ApiCallException`, not `InvalidOperationException` |
 | PlaceSigns | The Scraper no longer knows Vuetify's, Font Awesome's, Material's or a text editor's class names. What is a tab, an open menu, a dialog, a toolbar, a part's title and an icon beyond the platform's roles is read from `## Place signs` (columns `What`, `Sign`) of a control library's signs file and of `scraper.config.md`. A suite on Vuetify 2 that has neither loses its tabs, its titled parts' buttons and the names of its icon buttons in a walk and in a draft. New commands: `bruinet scrape factory status`, `replay`, `bench` | A `scraper.config.md` of a suite whose pages use `v-tab`, `mdi-`, `fa-`, `ck-editor` and has no `## Place signs` and no control library with one | Add the rows (Bouw7's `Bruinet.Web.Vuetify2/control-signs.md` and `Bouw7.Scraper/scraper.config.md` have them); `bruinet scrape factory replay` says whether anything reads differently |
 | ScraperHost | The Scraper's command line is a library, `Bruinet.Scraper.Host` (`ScrapeCommands`, `ScraperApp`, `HostIo`, `IRecordKind`, `IPlaceReader`): an app's own Scraper project runs it. A `scraper.config.md` may name the suite it works on (`| Suite | ../<App>.UITests |` under `## App`); the config, draft templates, recordings and list of places are then read beside the config, and `ScrapeProject.Home` is that folder while `Folder` stays the suite. Without the row nothing changes | - | Optional: move the Scraper's files of a suite into `<App>.Scraper` and add the `Suite` row |

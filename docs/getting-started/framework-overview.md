@@ -28,7 +28,7 @@ Tests and UAT scenarios
 | `Bruinet.Html.Playwright` | Playwright-backed web driver |
 | `Bruinet.Blazor` | Blazor-focused web testing helpers |
 | `Bruinet.Stride` and `Bruinet.Stride.Automation` | Stride UI automation and in-game hooks |
-| `Bruinet.Mocking` | WireMock and mock sensor helpers |
+| `Bruinet.Api.Mocking` | WireMock and mock sensor helpers |
 | `Bruinet.NativeAndroid` | Native Android automation helpers |
 | `Bruinet.NativeIos` | Native iOS automation helpers |
 | `Bruinet.Uat` | Markdown-driven UAT scenario runtime |

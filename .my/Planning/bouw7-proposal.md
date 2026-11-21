@@ -46,7 +46,7 @@ On Bruinet's `move` branch:
 | Make controls | Scraper patterns + agent through MCP; `html-control`, `convert-control` skills | The IDEs do not send the prompt (clipboard / unsent chat). 7 Bouw7 drafts in `Scraper.Sites/Bruinet.Html.Bouw7` |
 | Readable scenarios | `*.feature.md`, UAT runtime, phrases from attributes | No Bouw7 phrases yet |
 | Several apps in one scenario | **Mixed head**, `Apps` table with a `User` column, `{user}` subjects (AD-015), Todo's `Mixed.Uat` | A user is a name only: it has no account, password or organization (section 8.1) |
-| Accounts | `LocalAccountStore` in `Bruinet.Contracts` reads `<PREFIX>_<NAME>_USERNAME/_PASSWORD/_ORGANIZATION` from a git-ignored `.env.local`; Construction has named accounts `admin`, `user`, `reader`, `create` | Lives in the contract-test package, not where UI tests and BDD look; no link to scenario subjects; no sign-in cache (section 8.1) |
+| Accounts | `LocalAccountStore` in `Bruinet.Api.Contracts` reads `<PREFIX>_<NAME>_USERNAME/_PASSWORD/_ORGANIZATION` from a git-ignored `.env.local`; Construction has named accounts `admin`, `user`, `reader`, `create` | Lives in the contract-test package, not where UI tests and BDD look; no link to scenario subjects; no sign-in cache (section 8.1) |
 | Phone app (later) | MAUI heads (FlaUI, Appium, Headless, DevFlow); Construction's test host with auth, fixtures and page objects | Construction's suite runs against WireMock; acc runs use DevFlow/CDP sign-in |
 | Test data | `Bruinet.TestData` typed sets | No create/clean-up against a shared acc tenant (B7, B18) |
 | Agents | CLI, MCP server, skills, `scrape-loop.ps1` (explore → draft → agent → verify) | No orchestrator above one stage; no spec, scenario or triage stages |
@@ -276,7 +276,7 @@ TOD.02. Bouw7 is a good second product: real, not ours, with several modules and
 
 ### 8.1 Accounts: a common way in Bruinet
 
-**What exists:** `LocalAccountStore` (in `Bruinet.Contracts`) reads named accounts from a
+**What exists:** `LocalAccountStore` (in `Bruinet.Api.Contracts`) reads named accounts from a
 git-ignored `.env.local`; Construction's live contract tests name an account per test; the `Apps`
 table has a `User` column that is only a name. There is no single place where a scenario's
 subject, a test's account, its credentials, its organization and its rights meet.
@@ -340,7 +340,7 @@ Scraper alike.
    an account a module needs is missing.
 
 It lives in **`Bruinet.Core`** (Q11), next to `TestAppSet`, recorded as a decision (AD).
-`LocalAccountStore` moves there from `Bruinet.Contracts`.
+`LocalAccountStore` moves there from `Bruinet.Api.Contracts`.
 
 For Bouw7, the existing Construction accounts map one to one: `user` → NormalUser, `admin` →
 Admin, `reader` → Reader, `create` → Creator. Q6: `admin` and `user` belong to their own
@@ -410,7 +410,7 @@ repository (`.my/service-clients/design.md`) answers how it fits Bruinet. What i
 
 | Question | Options to weigh |
 | --- | --- |
-| How does it relate to what exists? | The **service head** (the app's own services, in the test process), `Bruinet.Mocking.Http` and WireMock (fake services), `Bruinet.Contracts` (DTO contracts and recorded exchanges). B18 is the real client next to them; it may share the contracts' DTOs and exchange logging |
+| How does it relate to what exists? | The **service head** (the app's own services, in the test process), `Bruinet.Api.Replay` and WireMock (fake services), `Bruinet.Api.Contracts` (DTO contracts and recorded exchanges). B18 is the real client next to them; it may share the contracts' DTOs and exchange logging |
 | What is protocol-neutral, in `Bruinet.Core`? | A service and its endpoints per environment, authentication from an account (8.1), every call in the step log and artifacts with masks, a clean-up registry (each create registers its undo, run in reverse at the end), and the run marker |
 | What is per protocol, in a package each (AD-026)? | **OpenAPI**: a typed client generated from the spec (NSwag or Kiota) at build time. **SOAP**: a client from the WSDL (`dotnet-svcutil`). Later **GraphQL** (Strawberry Shake) and **OData**. Each adapter only plugs the generated client into the core |
 | Generated or dynamic? | Generated typed clients (checked by the build, easy for agents to use) or calls by operation id read from the spec at run time (no code generation). Proposal: generated |
@@ -464,7 +464,7 @@ Each is confirmed only when the friction log shows it.
 | B11 | **`bruinet new site`** (`site-setup`): a child folder in a container repository with careful guards, accounts and sign-in | The "next site in a day" goal |
 | B12 | ~~**Dutch danger words**~~ already in Bruinet (English, Dutch, German, French) | Found in phase 1b |
 | B13 | **The orchestrator**: `bruinet loop` with stages, gates, budgets and a morning report (section 6.2) | G4 |
-| B14 | **Common accounts** in `Bruinet.Core`: `TestAccounts.md` and a git-ignored `TestAccounts.local.md`, account subjects in BDD, `[Account]`, fail when missing, write guard, `bruinet accounts check` (section 8.1) | Every suite with a login needs it; today it is in `Bruinet.Contracts` and Construction only |
+| B14 | **Common accounts** in `Bruinet.Core`: `TestAccounts.md` and a git-ignored `TestAccounts.local.md`, account subjects in BDD, `[Account]`, fail when missing, write guard, `bruinet accounts check` (section 8.1) | Every suite with a login needs it; today it is in `Bruinet.Api.Contracts` and Construction only |
 | B15 | **Frainet in the loop**: F1, F2, F4, F5 first | The definition of done and spec ⇄ scenario drift |
 | B16 | **Parity runs**: one scenario against two heads, with a side-by-side report | Converted app vs web; later old vs new where both exist |
 | B17 | **Tab pages**: a tab's content as its own page object, tab switches as waited-for state changes, and tab states in the Scraper (section 8.2) | Bouw7 uses tabs a lot; switches went unnoticed |

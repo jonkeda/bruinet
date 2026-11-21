@@ -1,6 +1,6 @@
 # API Contracts
 
-`Bruinet.Contracts` checks the HTTP calls an app makes against the DTOs the app reads them with. A live run
+`Bruinet.Api.Contracts` checks the HTTP calls an app makes against the DTOs the app reads them with. A live run
 proves the real service still answers in that shape. A hermetic run proves every write the app sends to a mock
 backend still matches the request the reference client sends. The decision is
 [AD-035](../../.docs/decisions/ad-035-an-api-contract-is-the-dto-the-app-reads.md).

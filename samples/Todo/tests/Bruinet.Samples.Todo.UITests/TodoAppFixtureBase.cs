@@ -3,7 +3,7 @@ using Bruinet.Maui.Configuration;
 using Bruinet.Maui.Enums;
 using Bruinet.Maui.Headless;
 using Bruinet.Maui.Testing;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.App.Services;
 using Bruinet.Samples.Todo.Infrastructure;
 using Bruinet.Samples.Todo.TestSupport;
@@ -78,7 +78,7 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     /// </summary>
     public void BeginReplay(string scenario)
     {
-        if (HttpReplay.Mode != Mocking.Http.HttpReplayMode.Off)
+        if (HttpReplay.Mode != Bruinet.Api.Replay.HttpReplayMode.Off)
         {
             LetTheLastTestFinish();
         }
@@ -89,7 +89,7 @@ public abstract class TodoAppFixtureBase : MauiTestFixtureBase
     /// <summary>Ends the scenario's HTTP replay session, its own work finished inside it: its recording saved, or its misses thrown.</summary>
     public void EndReplay()
     {
-        if (HttpReplay.Mode != Mocking.Http.HttpReplayMode.Off)
+        if (HttpReplay.Mode != Bruinet.Api.Replay.HttpReplayMode.Off)
         {
             LetTheLastTestFinish();
         }

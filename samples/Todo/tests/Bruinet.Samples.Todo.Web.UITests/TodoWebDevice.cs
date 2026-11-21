@@ -3,7 +3,7 @@ using Bruinet.Core.Interfaces;
 using Bruinet.Core.Services;
 using Bruinet.Core.Testing;
 using System.Diagnostics;
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Samples.Todo.Infrastructure;
 using Bruinet.Samples.Todo.Infrastructure.Data;
 using Bruinet.Samples.Todo.Web.UITests.Pages;

@@ -1,4 +1,4 @@
-using Bruinet.Mocking;
+using Bruinet.Api.Mocking;
 using Bruinet.Bdd;
 
 namespace Bruinet.Samples.Todo.TestSupport.Uat;
@@ -36,5 +36,5 @@ public interface ITodoArrangement : IBddClock
     /// The running scenario's HTTP calls while it is replayed (<see cref="TodoHttpReplay.ReplayedCalls"/>): a replay sends the
     /// stub server nothing, so what it received is read here. Null when the backend is the stub.
     /// </summary>
-    IReadOnlyList<Bruinet.Mocking.Http.HttpCall>? ReplayedCalls => null;
+    IReadOnlyList<Bruinet.Api.Replay.HttpCall>? ReplayedCalls => null;
 }

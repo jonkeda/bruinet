@@ -1,4 +1,4 @@
-global using Bruinet.Mocking;
+global using Bruinet.Api.Mocking;
 global using Bruinet.Samples.Todo.Contracts;
 global using Bruinet.Samples.Todo.Core.Models;
 global using Bruinet.Samples.Todo.Core.Services;

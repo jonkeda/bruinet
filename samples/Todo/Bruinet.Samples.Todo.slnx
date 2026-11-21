@@ -26,7 +26,7 @@
   <Project Path="../../src/Bruinet.Maui.CommunityToolkit/Bruinet.Maui.CommunityToolkit.csproj" />
   <Project Path="../../src/Bruinet.Maui.FlaUI/Bruinet.Maui.FlaUI.csproj" />
   <Project Path="../../src/Bruinet.Maui/Bruinet.Maui.csproj" />
-  <Project Path="../../src/Bruinet.Mocking/Bruinet.Mocking.csproj" />
+  <Project Path="../../src/Bruinet.Api.Mocking/Bruinet.Api.Mocking.csproj" />
   <Project Path="../../src/Bruinet.TestData/Bruinet.TestData.csproj" />
   <Project Path="../../src/Bruinet.Uia.Contracts/Bruinet.Uia.Contracts.csproj" />
   <Project Path="../Bruinet.Maui.AppSupport/Bruinet.Maui.AppSupport.csproj" />

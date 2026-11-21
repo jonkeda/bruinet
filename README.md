@@ -110,9 +110,10 @@ The packages come from this organisation's GitHub Packages feed, not nuget.org: 
 | `Bruinet.Uat` | Markdown-driven UAT scenario runtime for xUnit |
 | `Bruinet.TestData` | Typed, validated test data and test sets |
 | `Bruinet.Logging` | An app's log kept by the step that made it, for the step's result: `AddBruinetStepLog()` |
-| `Bruinet.Mocking` | WireMock servers and mock sensors for UI tests |
-| `Bruinet.Mocking.Http` | HTTP replay: an app's calls recorded once against the real services and answered from the recording |
-| `Bruinet.Contracts` | API contract checks against the real service: each response against the DTO the app reads it into |
+| `Bruinet.Api.Mocking` | WireMock servers for UI tests |
+| `Bruinet.Mocking.Sensors` | Mock sensors for UI tests: audio, frames, input |
+| `Bruinet.Api.Replay` | HTTP replay: an app's calls recorded once against the real services and answered from the recording |
+| `Bruinet.Api.Contracts` | API contract checks against the real service: each response against the DTO the app reads it into |
 | `Bruinet.Traits` | Typed xUnit trait attributes (tier, owner, run set, journey, covered row, head) and `TraitCheck`, which reports tests without one tier and a known owner |
 
 **Platforms**

@@ -27,7 +27,7 @@ the code.
 | --- | --- | --- | --- |
 | Every thing and term a rule, field table or screen names is in the model | The spec files | Lirenet `check` | **New** (the vocabulary check of the Lirenet proposal) |
 | **Test data obeys the model**: every hour entry names a project that exists; every employee one department | The suite's test sets | Unit, at test-data load | ✓ `TestDataDefinition.DefineRules` (`UniqueIds`, `Require`, `ForEach`); **new**: rules generated from the relations (one-to-many → the child names an existing parent) |
-| **The API returns what the model says**: a project's response has its hour entries, or a link to them | The contracts (`Bruinet.Contracts`, the DTO the app reads) | Integration | ✓ contracts check shape; **new**: a report of model relations no DTO carries |
+| **The API returns what the model says**: a project's response has its hour entries, or a link to them | The contracts (`Bruinet.Api.Contracts`, the DTO the app reads) | Integration | ✓ contracts check shape; **new**: a report of model relations no DTO carries |
 | **The database has a home for each thing** | The schema snapshot (SQL replay) | none, a report | ✓ snapshot; **new**: a mapping table thing → table, and a report of things with no table. Never a failure: the model is not the schema |
 
 The one that pays most is the **test data** check: test sets are hand-written JSON, and a test set that
