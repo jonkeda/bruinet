@@ -129,6 +129,7 @@ public sealed partial class BddMcpServer : IDisposable
                 "step_state" => StepState(arguments),
                 "step_screenshot" => _server.StepScreenshotAsync().GetAwaiter().GetResult() is var shot && shot.Path is { } taken ? Screenshot(taken) : throw new ToolProblem($"No screenshot: {shot.Reason}"),
                 "list_results" => ListResults(arguments),
+                "upgrade" => Bruinet.Cli.Upgrade.UpgradeCommand.Run(Path.GetFullPath(Required(arguments, "folder"), _solutionDir), Bruinet.Cli.Upgrade.UpgradeCommand.ChangesList(), (string?)arguments["from"], (bool?)arguments["check"] ?? false, build: !((bool?)arguments["check"] ?? false) && ((bool?)arguments["build"] ?? true)),
                 "get_trace" => GetTrace(arguments),
                 "diff_since_green" => DiffSinceGreen(arguments),
                 "get_http_calls" => HttpCalls(arguments),

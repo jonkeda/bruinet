@@ -3,6 +3,16 @@
 What a project using Bruinet must change, per change. `Find` is a regex for consumer code
 (`*.cs`, and where noted `*.feature`, `*.steps`, `*.config`, `*.json`).
 
+## Renames
+
+A renamed package, namespace or type, in the form `bruinet upgrade <folder>` reads and applies (newest first; `--from
+<Commit>` applies only the rows above that change's). `Kind` is `package`, `namespace` or `type`; a `keep` row names a
+longer name that a shorter row must leave alone. A name is replaced where it stands whole: `Bruinet.A` also renames
+`Bruinet.A.B` unless a row of its own, or a `keep`, names `Bruinet.A.B`. Every other change stays a row under `## Made`.
+
+| Commit | Kind | Old | New |
+| --- | --- | --- | --- |
+
 ## Made
 
 Newest first. Apply oldest first.

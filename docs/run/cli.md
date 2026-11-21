@@ -92,6 +92,7 @@ The Scraper drives Playwright's Chromium. Install it once per machine with
 | `bruinet http diff --recordings <folder> [--base <rev>]` | What each re-recorded test's calls changed against git: calls added and gone, statuses and answers | |
 | `bruinet http accept --recordings <folder>` | Marks every HTTP recording read as it is now (`reviewed.json`) | |
 | `bruinet http check --recordings <folder>` | The gate: HTTP recordings that went in unread; exit 1 when any | |
+| `bruinet upgrade <folder> [--from <change>] [--check] [--no-build]` | Moves a project that uses Bruinet to the names this Bruinet has: applies the rename rows of the changes list (packages, namespaces, types) to its code, projects and the names a suite holds as text, then builds and gives the errors no rename explains. `--check` changes nothing; exit 1 when anything would change or the build has errors | [API changes](../../.github/skills/api-upgrade/SKILL.md) |
 | `bruinet voice list [--project <folder>]` | The lines of the project's video scripts with no clip in its speech folder, and their characters; exit 1 when any | [Narrated Recordings](../guides/narrated-recordings.md) |
 | `bruinet voice fill [--project <folder>]` | Adds what the local speech cache holds to the speech folder; costs nothing | |
 | `bruinet voice buy [--project <folder>] [--yes]` | As `fill`, and buys the lines found nowhere from the voice's service; asks first | |

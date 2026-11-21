@@ -97,4 +97,9 @@
     <Copy SourceFiles="@(RecorderFile)" DestinationFolder="$(PublishDir)recorders" SkipUnchangedFiles="true" />
   </Target>
 
+  <!-- bruinet upgrade reads the rename rows of the changes list this tool was built with (skill api-upgrade). -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\.github\skills\api-upgrade\references\changes.md" LogicalName="Bruinet.Cli.changes.md" Link="Upgrade\changes.md" />
+  </ItemGroup>
+
 </Project>

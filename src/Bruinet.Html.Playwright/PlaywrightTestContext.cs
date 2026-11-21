@@ -30,6 +30,7 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
     private IBrowserContext? _browserContext;
     private List<string> _refused = [];
     private bool _disposed;
+    private PageCalls? _calls;
 
     private PlaywrightTestContext(
         IPlaywright playwright,
@@ -367,6 +368,12 @@ public sealed class PlaywrightTestContext : IHtmlTestContext, IHtmlPageProbe, Br
             IncludeTimestamp = true,
             Format = ScreenshotFormat.Png,
         });
+
+    /// <summary>
+    /// The calls the page makes to its back end, kept from the first time this is read: read it (or take its
+    /// <see cref="PageCalls.Mark"/>) before the action whose calls a test wants.
+    /// </summary>
+    public PageCalls Calls => _calls ??= new PageCalls(_page);
 
     /// <summary>The page's navigations refused because their host is not in the options' <c>AllowedHosts</c>.</summary>
     public IReadOnlyList<string> RefusedNavigations

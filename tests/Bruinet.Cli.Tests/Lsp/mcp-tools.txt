@@ -11,6 +11,7 @@ write_review
 list_states
 set_state
 run_scenario
+upgrade
 list_results
 step_start
 step_move
