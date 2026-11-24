@@ -9,6 +9,10 @@ is a record the walk owns, named with `--own`: a record a test made, with the ru
 name. The walk reads a form and never saves it; a form is saved by a test, through its page
 object, which writes down where the save led (`places add --from-run`).
 
+**Amended (2026-11-24):** what the walk may not press on `production`, a person may, in the Recorder (AD-027):
+`places seed` reads the presses of a session the Recorder made into the list, each place with from where and by
+which press, as the walk writes it. The request guard is not in the Recorder: there a write lands.
+
 **Why:** most of an app is behind its buttons, so a walk that only follows links lists the menu
 again. On a shared test environment pressing is allowed, but the data there belongs to other
 people's tests and demos: a button's effect is seen, and its call written down, without the call

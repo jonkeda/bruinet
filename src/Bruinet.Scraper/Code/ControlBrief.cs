@@ -256,7 +256,7 @@ public static partial class ControlBrief
                 if (!here.Any(o => ControlKind.Subtree(o.Snapshot, o.Root).Any(n => Says(n, label))))
                     continue;
                 var after = session.Events.FirstOrDefault(e => e.Number == number);
-                var before = session.Events.Where(e => e.Page == page && e.Number < number).MaxBy(e => e.Number);
+                var before = session.Events.Where(e => e.Snapshot is not null && e.Page == page && e.Number < number).MaxBy(e => e.Number);
                 var change = after is null || before is null ? "" : ": " + Change(session.ReadSnapshot(before), session.ReadSnapshot(after));
                 facts.Add($"clicked '{label}' on {page} ({session.Id} capture #{number}){change}");
                 if (facts.Count == MaxClicks)

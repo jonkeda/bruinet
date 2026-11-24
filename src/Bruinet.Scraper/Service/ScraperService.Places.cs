@@ -26,13 +26,15 @@ public sealed record PlaceDrift(string Class, string Place, string Note, IReadOn
 public sealed partial class ScraperService
 {
     /// <summary>
-    /// Adds to a list of places what is known without opening the app: the pages the project's recordings captured.
+    /// Adds to a list of places what is known without opening the app: the pages the project's recordings captured,
+    /// and what a person reached by pressing in a session the Recorder made.
     /// </summary>
     /// <returns>How many places were new to the list.</returns>
     public int SeedPlaces(string? projectName, PlacesList list)
     {
         ArgumentNullException.ThrowIfNull(list);
-        return PlacesSeeds.FromRecordings(Project(projectName)).Count(list.Add);
+        var project = Project(projectName);
+        return PlacesSeeds.FromRecordings(project).Concat(PlacesSeeds.FromPresses(project)).Count(list.Add);
     }
 
     /// <summary>

@@ -96,7 +96,7 @@ public sealed class McpToolsTests : IDisposable
         var tools = Listed().ToDictionary(tool => (string)tool["name"]!, tool => tool["annotations"]!);
 
         Assert.Equal(["delete_results"], tools.Where(tool => (bool?)tool.Value["destructiveHint"] == true).Select(tool => tool.Key));
-        Assert.Equal(["scrape_explore", "scrape_check_page_objects"], tools.Where(tool => (bool)tool.Value["openWorldHint"]!).Select(tool => tool.Key));
+        Assert.Equal(["scrape_explore", "scrape_check_page_objects", "scrape_record_open"], tools.Where(tool => (bool)tool.Value["openWorldHint"]!).Select(tool => tool.Key));
         Assert.Contains("list_results", tools.Where(tool => (bool)tool.Value["readOnlyHint"]!).Select(tool => tool.Key));
         Assert.DoesNotContain("step_screenshot", tools.Where(tool => (bool)tool.Value["readOnlyHint"]!).Select(tool => tool.Key));
     }
@@ -124,6 +124,8 @@ public sealed class McpToolsTests : IDisposable
             ["get_http_calls"] = new() { ["path"] = Feature, ["line"] = 3 },
             ["list_affected_tests"] = new() { ["suite"] = Path.GetFileName(Counter) },
             ["scrape_get_page"] = new() { ["page"] = "/orders" },
+            // With no Recorder open they say so at once; with one open, the wait is short.
+            ["scrape_record_wait"] = new() { ["minutes"] = 0.01 },
             ["scraper_status"] = [],
             ["scraper_replay"] = [],
             ["scraper_bench"] = [],

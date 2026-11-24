@@ -4,8 +4,8 @@ namespace Bruinet.Scraper.Html;
 public static class HtmlAttributes
 {
     /// <summary>
-    /// The attributes kept by name, besides every <c>data-*</c> and <c>aria-*</c> one. <c>value</c> is never
-    /// kept: what a user typed is not recorded.
+    /// The attributes kept by name, besides every <c>data-*</c> and <c>aria-*</c> one. <c>value</c> is not
+    /// one of them: what a user typed is recorded only by the Recorder with its switch on (AD-027).
     /// </summary>
     public static readonly IReadOnlyList<string> Kept =
     [

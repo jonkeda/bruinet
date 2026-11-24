@@ -49,3 +49,8 @@ scraper_replay
 scraper_bench
 scraper_review
 scrape_rename_page_object
+scrape_record_open
+scrape_record_start
+scrape_record_stop
+scrape_record_status
+scrape_record_wait

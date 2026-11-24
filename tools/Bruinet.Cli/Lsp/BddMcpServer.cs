@@ -158,6 +158,9 @@ public sealed partial class BddMcpServer : IDisposable
                 "scrape_write_file" => Scraper(() => WriteCode(arguments)),
                 "scrape_build" => Scraper(() => _server.Scraper.CheckCodeAsync((string?)arguments["project"]).GetAwaiter().GetResult()),
                 "scrape_explore" => Scraper(() => ExploreApp(arguments)),
+                "scrape_record_open" => Scraper(() => OpenRecorder(arguments)),
+                "scrape_record_start" or "scrape_record_stop" or "scrape_record_status" => Recorder(new Bruinet.Scraper.Record.RecorderRequest(name["scrape_record_".Length..])),
+                "scrape_record_wait" => Recorder(new Bruinet.Scraper.Record.RecorderRequest("wait", Minutes: Math.Clamp((double?)arguments["minutes"] ?? 5, 0.01, 30))),
                 "scrape_update_config" => Scraper(() => UpdateConfig(arguments)),
                 "scrape_create_project" => Scraper(() => CreateProject(arguments)),
                 "scrape_draft_page_objects" => Scraper(() => _server.Scraper.DraftAsync((string?)arguments["project"], (string?)arguments["page"]).GetAwaiter().GetResult()),
@@ -272,6 +275,22 @@ public sealed partial class BddMcpServer : IDisposable
     }
 
     // Asks first: the summary until the person agreed, then the run. Links only and headless unless asked otherwise.
+    // The Recorder for a project: the one that runs, else one started for it. Not recording until a person, or scrape_record_start, says so.
+    private object OpenRecorder(JsonObject arguments)
+    {
+        var named = (string?)arguments["project"];
+        var folder = named is not null || _server.Scraper.Projects().Count == 1 ? _server.Scraper.Project(named).Home : null;
+        var (status, problem) = Bruinet.Scraper.Host.RecorderLauncher.OpenAsync(folder, (string?)arguments["url"], (string?)arguments["account"], Environment.CurrentDirectory).GetAwaiter().GetResult();
+        return status ?? throw new ToolProblem("The Recorder did not open: " + problem);
+    }
+
+    private static object Recorder(Bruinet.Scraper.Record.RecorderRequest request)
+    {
+        var status = Bruinet.Scraper.Record.RecorderLink.AskAsync(request).GetAwaiter().GetResult()
+            ?? throw new ToolProblem("No Recorder is running: open one with scrape_record_open.");
+        return status.Problem is { } problem && request.Do is "start" ? throw new ToolProblem(problem) : status;
+    }
+
     private object ExploreApp(JsonObject arguments)
     {
         var options = new Bruinet.Scraper.Explore.ExploreOptions

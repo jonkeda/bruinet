@@ -103,6 +103,11 @@ public sealed partial class BddMcpServer
         Reads("scraper_bench", "Holds a scraped project's examples (## Examples of its config: a place and the class a person wrote for it) against what their places read as now. Each difference says who is right: DraftIsRight (the place shows it, the example does not name it), ExampleIsRight (the example names it, the page shows it, the reading misses it: counts against the Scraper), NotOnThePage.", Project, Max),
         Reads("scraper_review", "Why each place of a scraped project that still owes a class was not kept by the factory: the last reason per place from the factory's state, gathered by reason (does-not-build, needs-record, no-page-class, ...) and by what the evidence has in common, with where the fix belongs; the places never tried; and what waits for a person. As Markdown. The brief a fix starts from: fix one reason at its source, measure with scraper_replay.", Project),
         Writes("scrape_rename_page_object", "Renames a scraped project's page object for a recorded page: its class, its draft and the person's part, in the files that declare it. Files that only use it are listed, not changed: fix them, then scrape_build. " + AsksFirst, Project, PageKey, new("newName", "string", "The new class name.", Required: true), Confirm),
+        OpensBrowser("scrape_record_open", "Opens the Recorder: a window with the app in a webview, where a person clicks and the pages and presses are recorded into a scraped project. For an app the walk may not press on. It opens not recording, and nothing here clicks or types in the page. Gives how the Recorder is.", Project, new("url", "string", "The address to open; where the project's recorder.settings.json left off when left out."), new("account", "string", "Whose sign-in a Recorder that starts keeps, e.g. Admin; its own when left out.")),
+        Writes("scrape_record_start", "Starts recording in the open Recorder, as its button does: from now on each press of the person and each page it shows is kept. Refused, with why, when the folder is no scraped project or the page is not on one of its Explore hosts."),
+        Writes("scrape_record_stop", "Stops the recording in the open Recorder, as its button does. Gives the session and how many pages and presses it holds: seed the places from it and draft."),
+        Reads("scrape_record_status", "How the open Recorder is: recording or not, its folder and address, the session, and the pages and presses so far."),
+        Reads("scrape_record_wait", "Waits until the person stops a recording in the Recorder (the one that is on, or the next), then gives the session and its counts: go on with its pages. When the time runs out first, ended is false: call it again.", new Param("minutes", "number", "How long to wait at most, up to 30; 5 when left out.")),
     ];
 
     // The instructions an agent reads once: the two families, each from its entry tool (M10).
@@ -117,6 +122,7 @@ public sealed partial class BddMcpServer
         Scraper (page objects from the pages Explore and the walk captured), from scrape_list_projects:
         - Pages: scrape_explore, scrape_list_pages, scrape_get_page, scrape_detect_patterns, scrape_draft_page_objects, scrape_build.
         - Controls: scrape_get_control_brief per pattern, scrape_write_file, scrape_build, scrape_check_page_objects.
+        - Where the walk may not press (production): scrape_record_open, tell the person to record and press Stop, scrape_record_wait, then go on.
         Never invent a phrase: leave a step that has none as a marked gap.
         The Scraper never signs in: a sign-in page stops it until a person has signed in.
         """;

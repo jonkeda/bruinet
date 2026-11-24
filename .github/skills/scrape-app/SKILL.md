@@ -33,6 +33,24 @@ needed); `--baseline` puts a loop back whole when a test that passed no longer d
 A loop keeps a class only when its test passed on the app, twice. What it puts back gets a reason with a code; a place it
 tried and did not keep is parked, and the next run does not take it up again without `--again`.
 
+### Where the walk may not press: a person records
+
+On `Environment production` the walk presses only what is known to show more, and you do not press there either.
+A person does, in the Recorder ([the guide](../../../docs/guides/scraper.md#the-recorder-a-person-presses)):
+
+1. `scrape_record_open` (or `bruinet scrape record`). It opens not recording. Say which pages owe most
+   (`bruinet scrape scraper status`), so the person knows where to go, and ask them to press Start, click through,
+   and press Stop.
+2. `scrape_record_wait` (`bruinet scrape record wait`). It answers when they press Stop; when the time ran out, call
+   it again. A person who started the Recorder by hand pastes its sentence instead: "Read the recording … and go on
+   with its pages".
+3. `bruinet scrape places seed`, then `bruinet scrape places read`: the pages, tabs and dialogs they reached are in
+   the list, each with the press that led there and its capture.
+4. `bruinet scrape scraper run --no-walk`: drafts from those captures.
+
+What a person found is not found again by itself: when `places drift` says a recorded place changed, ask for that
+part to be recorded again.
+
 ## 2. When it stops
 
 It stops by itself when one reason came three times in the batch, when loops that kept nothing cost minutes, when
@@ -80,4 +98,6 @@ waits for whom. `setup.md`'s `Ask` says when you may ask a person; until then, p
 - Keep a class whose test did not pass on the app.
 - Run two walks or two test runs on the environment at once, or build while a test run is going.
 - Change a guard of `scraper.config.md`, or `Writes` in `setup.md`, to get past a stop.
+- Press, type or pick in the Recorder's page by any means (a script, a debugging port, the screen): there the
+  person presses.
 - Commit or push beyond what `setup.md`'s `Commit` says.

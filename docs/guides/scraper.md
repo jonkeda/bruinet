@@ -289,6 +289,54 @@ out of it. Controls are not drafted: Draft lists the parts that repeat,
 and **Improve with the agent** makes them. **Verify** opens each page in the running app and finds
 every member's locator: once, several times, or not at all.
 
+## The Recorder: a person presses
+
+On a production site the walk presses only what is known to show more, so what is behind the other buttons stays
+unknown, and a model that presses there is not an option. The Recorder is for that case: a window with the app in a
+webview, where a person clicks through the app and the Scraper records. Windows (WebView2) and Mac (WKWebView).
+
+```powershell
+# from the app's Scraper project (the folder with scraper.config.md); every argument is optional
+bruinet scrape record --url https://app.example.com/projects --as Admin
+```
+
+Every control is in the column on the left:
+
+| Control | What it does |
+| --- | --- |
+| Back, forward, reload, start | As a browser's; start opens the config's `StartUrl` |
+| Address | Where the page is. Type one and press Enter to open it; **Earlier addresses** lists the ones opened by hand before |
+| Save in | The Scraper project. Fixed while recording |
+| Start recording / Stop recording | One button. It starts only in a Scraper project, on a page of one of its `## Explore hosts` |
+| Record values | Off: no value of a field is read. On: each captured page holds its fields' values as they are then (a password too: sign in before Start) |
+| What to tell the AI | A sentence for the chat, for the state the Recorder is in, with **Copy** |
+
+What is recorded, between Start and Stop, is a session like any other (`Recordings/<day>-record/`): a page capture
+when recording starts and whenever the page shows something else after a step, and in `recording.json` an event of
+kind `press` per press, before the page it led to:
+
+```json
+{ "number": 4, "kind": "press", "at": "2026-11-24T10:12:03+00:00", "location": "https://app.example.com/project/view?id=12",
+  "page": "/project/view", "name": "New phase", "role": "button", "target": "css:[data-testid='new-phase']", "node": 212 }
+```
+
+`name` is what was pressed as the page says it, `role` what it is (`button`, `link`, `tab`, `row`, `clickable`),
+`target` a locator when it has something stable, `node` its number in the page capture before it. A key or a typed
+text is never an event. `bruinet scrape places seed` reads the presses into the list of places: the page, tab or
+dialog a press led to, with from where and by which press, and the capture it can be read and drafted from.
+
+Its settings are `recorder.settings.json` beside `scraper.config.md`: the address it closed on, the earlier
+addresses and the switch. Add it to `.gitignore` when the addresses are not for the repository. The sign-in is the
+webview's own, per `--as` name, under the user's profile.
+
+From a chat, with Bruinet's MCP server: `scrape_record_open` opens it (not recording), `scrape_record_start`,
+`scrape_record_stop` and `scrape_record_status` do what their names say, and `scrape_record_wait` answers when the
+person presses Stop, so the model goes on by itself. From a shell the same: `bruinet scrape record status`, `start`,
+`stop`, `wait --minutes 10`. None of them presses or types in the page.
+
+What it does not do: hold a write back (what the person presses, happens), record the page's calls, or read a frame
+of another site or a closed shadow root. On a Mac the page is shown by Safari's engine.
+
 ## The places of an app
 
 Explore records pages to draft page objects from. It does not answer "which pages does the app have": its budget is
@@ -300,7 +348,7 @@ would be written for (a page, a tab, a dialog, a menu, a part a press shows), or
 | Call | Does |
 | --- | --- |
 | `bruinet scrape places show` | Prints the list; `--write` writes the document, `--json` the list itself |
-| `bruinet scrape places seed` | Adds what is known without opening the app: the addresses a map names in backticks (`--map`, default `.testing/170-Map.md`), the addresses of the suite's page objects, the pages the recordings captured |
+| `bruinet scrape places seed` | Adds what is known without opening the app: the addresses a map names in backticks (`--map`, default `.testing/170-Map.md`), the addresses of the suite's page objects, the pages the recordings captured, and what a person reached by pressing in a session the [Recorder](#the-recorder-a-person-presses) made |
 | `bruinet scrape places routes` | Opens each page of the list and reads the scripts only it loads, as text: a single-page app's route table survives in what it serves (`path:"/view/:id",component:…`). Each route is a known page; one with a parameter has no address until a record's own is found |
 | `bruinet scrape places walk` | Opens each page that is known and not yet opened (the frontier), reads it, and presses what a person can press, each once. `--own <address>` opens a record the walk owns at its own address first |
 | `bruinet scrape places add --from-run <file>` | Adds what tests found when they saved forms through their page objects |

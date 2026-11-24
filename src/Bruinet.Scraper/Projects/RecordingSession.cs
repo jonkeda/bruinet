@@ -7,8 +7,8 @@ namespace Bruinet.Scraper.Projects;
 
 /// <summary>
 /// One recording session: a folder with <c>recording.json</c>, the ordered list of what happened, and a
-/// snapshot file (and screenshot) per captured page. A test recording has the person's actions in the
-/// same list, each pointing at a node of its page's latest capture.
+/// snapshot file (and screenshot) per captured page. A session the Recorder made has the person's presses in the
+/// same list, each pointing at a node of the page capture before it.
 /// </summary>
 public sealed class RecordingSession
 {
@@ -20,6 +20,8 @@ public sealed class RecordingSession
         WriteIndented = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        // A locator's quotes and a label's accents as they are: the file is read by people too.
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
     private readonly List<RecordingEvent> _events;
@@ -104,6 +106,32 @@ public sealed class RecordingSession
             Snapshot = snapshotFile,
             Screenshot = screenshotFile,
             Nodes = snapshot.Nodes.Count,
+        };
+        _events.Add(e);
+        Save();
+        return e;
+    }
+
+    /// <summary>Adds a person's press: what was pressed and where, after the page capture it was pressed on.</summary>
+    /// <param name="location">Where the page was.</param>
+    /// <param name="name">What was pressed, as the page says it.</param>
+    /// <param name="role">What it is.</param>
+    /// <param name="target">A locator of it, or null.</param>
+    /// <param name="node">Its number in the last page capture, or 0.</param>
+    /// <param name="at">When.</param>
+    public RecordingEvent AddPress(string location, string name, string role, string? target, int node, DateTimeOffset at)
+    {
+        var e = new RecordingEvent
+        {
+            Number = _events.Count + 1,
+            Kind = RecordingEvent.PressKind,
+            At = at,
+            Location = Redactor.Mask(location, _masks) ?? "",
+            Page = PageKey.Of(location),
+            Name = Redactor.Mask(name, _masks),
+            Role = role,
+            Target = target,
+            Node = node,
         };
         _events.Add(e);
         Save();

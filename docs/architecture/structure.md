@@ -9,7 +9,7 @@ Working directory for paths in this document: Bruinet root.
 | `src/` | Active Bruinet source projects |
 | `tests/` | Active unit, UI, and UAT test projects |
 | `samples/` | Sample applications used by UI tests and demos |
-| `tools/` | Developer tools: `bruinet`, the command line (`tools/Bruinet.Cli`: the Scraper, test data, control generation, the language and MCP servers), and the IDE extensions |
+| `tools/` | Developer tools: `bruinet`, the command line (`tools/Bruinet.Cli`: the Scraper, test data, control generation, the language and MCP servers), the Recorder (`tools/Bruinet.Recorder`: a MAUI window with the app in a webview, where a person clicks and the Scraper records), and the IDE extensions |
 | `docs/` | Active curated documentation |
 | `.my/` | Plans for work in flight |
 | `Bruinet.sln` | The solution: every project, in folders by area, each test project beside the one it is named after. Tests and the Presenter also find the repository root by it |

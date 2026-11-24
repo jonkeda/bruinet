@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **The Recorder** (`tools/Bruinet.Recorder`, `bruinet scrape record`, MCP `scrape_record_open`, `_start`, `_stop`,
+  `_status`, `_wait`): a window with the app in a webview, for a site the walk may not press on. A person clicks; a
+  session gets the page captures and, new in `recording.json`, an event of kind `press` per press (`name`, `role`,
+  `target`, `node`). `places seed` reads the presses into the list of places. A switch records fields' values as
+  they are. Windows and Mac (AD-027, amended).
 - **bruinet upgrade** (also the MCP tool `upgrade`): moves a project that uses Bruinet to the names this Bruinet has.
   It applies the rename rows of the changes list (`## Renames`: packages, namespaces, types, and names to keep) to
   the project's code, projects and the names a suite holds as text, then builds and gives the errors no rename

@@ -18,7 +18,7 @@ public static partial class ScrapeCommands
     /// <summary>The <c>scrape</c> command with its subcommands.</summary>
     public static Command Build(HostIo io) => new("scrape", "The Scraper: explore or walk an app, then draft and verify page objects (docs/guides/scraper.md).")
     {
-        New(io), List(io), Check(io), Explore(io), Draft(io), Verify(io), Find(io), Look(io), Config(io), Places(io), Factory(io), InstallBrowser(io),
+        New(io), List(io), Check(io), Explore(io), Draft(io), Verify(io), Find(io), Look(io), Config(io), Places(io), Factory(io), Record(io), InstallBrowser(io),
     };
 
     private static Command New(HostIo io)
