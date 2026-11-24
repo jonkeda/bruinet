@@ -332,7 +332,8 @@ webview's own, per `--as` name, under the user's profile.
 From a chat, with Bruinet's MCP server: `scrape_record_open` opens it (not recording), `scrape_record_start`,
 `scrape_record_stop` and `scrape_record_status` do what their names say, and `scrape_record_wait` answers when the
 person presses Stop, so the model goes on by itself. From a shell the same: `bruinet scrape record status`, `start`,
-`stop`, `wait --minutes 10`. None of them presses or types in the page.
+`stop`, `wait --minutes 10`. None of them presses or types in the page. The `record-app` skill is the round for an
+agent: open, say where to go, wait, seed, draft.
 
 What it does not do: hold a write back (what the person presses, happens), record the page's calls, or read a frame
 of another site or a closed shadow root. On a Mac the page is shown by Safari's engine.

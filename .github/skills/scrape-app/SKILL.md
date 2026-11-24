@@ -36,20 +36,8 @@ tried and did not keep is parked, and the next run does not take it up again wit
 ### Where the walk may not press: a person records
 
 On `Environment production` the walk presses only what is known to show more, and you do not press there either.
-A person does, in the Recorder ([the guide](../../../docs/guides/scraper.md#the-recorder-a-person-presses)):
-
-1. `scrape_record_open` (or `bruinet scrape record`). It opens not recording. Say which pages owe most
-   (`bruinet scrape scraper status`), so the person knows where to go, and ask them to press Start, click through,
-   and press Stop.
-2. `scrape_record_wait` (`bruinet scrape record wait`). It answers when they press Stop; when the time ran out, call
-   it again. A person who started the Recorder by hand pastes its sentence instead: "Read the recording … and go on
-   with its pages".
-3. `bruinet scrape places seed`, then `bruinet scrape places read`: the pages, tabs and dialogs they reached are in
-   the list, each with the press that led there and its capture.
-4. `bruinet scrape scraper run --no-walk`: drafts from those captures.
-
-What a person found is not found again by itself: when `places drift` says a recorded place changed, ask for that
-part to be recorded again.
+A person does, in the Recorder: the [record-app](../record-app/SKILL.md) skill opens it, waits for their Stop and
+seeds the places. Then `bruinet scrape scraper run --no-walk` drafts from what they recorded.
 
 ## 2. When it stops
 
