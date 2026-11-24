@@ -11,6 +11,15 @@ public sealed record StartOptions(string? Folder, string? Url, string Account)
     /// <summary>The account when none is named.</summary>
     public const string OwnAccount = "own";
 
+    /// <summary>
+    /// The account name that stands for the one the person is signed in to the computer with: the webview then signs
+    /// in to what takes that account without asking, and shows the device as a browser of the computer does.
+    /// </summary>
+    public const string OsAccount = "os";
+
+    /// <summary>True when the webview may sign in with the computer's own account (<c>--as os</c>).</summary>
+    public bool UseOsAccount => string.Equals(Account, OsAccount, StringComparison.OrdinalIgnoreCase);
+
     /// <summary>Reads the options; the folder is the current one when it is a Scraper project and none is named.</summary>
     public static StartOptions Parse(IReadOnlyList<string> arguments, string currentDirectory)
     {

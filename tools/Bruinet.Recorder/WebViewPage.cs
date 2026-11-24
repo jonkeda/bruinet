@@ -14,6 +14,13 @@ public sealed partial class WebViewPage : IRecorderPage
     /// <summary>Raised when the page is at another address, also one a single-page app only wrote in the address bar.</summary>
     public event EventHandler<string>? AddressChanged;
 
+    /// <summary>
+    /// Set before <see cref="AttachAsync"/>: the folder of the webview's profile, when the webview is to sign in with
+    /// the account the person is signed in to the computer with (a site behind the company's sign-in that asks for a
+    /// managed device). Null, the default: the webview knows no account but what a person types in it.
+    /// </summary>
+    public string? OsAccountProfile { get; init; }
+
     /// <summary>Makes the platform's webview ready: after this, a page that opens has the watcher. Call once, before the first page.</summary>
     public partial Task AttachAsync(WebView view);
 

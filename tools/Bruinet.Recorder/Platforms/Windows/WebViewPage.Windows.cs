@@ -13,7 +13,19 @@ public sealed partial class WebViewPage
         ArgumentNullException.ThrowIfNull(view);
         var native = view.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.WebView2
             ?? throw new InvalidOperationException("The webview has no WebView2 yet: attach once it is on the page.");
-        await native.EnsureCoreWebView2Async();
+        if (OsAccountProfile is null)
+        {
+            await native.EnsureCoreWebView2Async();
+        }
+        else
+        {
+            // The supported way for an app's webview to meet a rule on the device: it signs in with the Windows
+            // account, so the device is checked as it is for Edge. Asked for by the person, at start (--as os).
+            var options = new CoreWebView2EnvironmentOptions { AllowSingleSignOnUsingOSPrimaryAccount = true };
+            var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, OsAccountProfile, options);
+            await native.EnsureCoreWebView2Async(environment);
+        }
+
         _core = native.CoreWebView2;
         await _core.AddScriptToExecuteOnDocumentCreatedAsync(RecorderScripts.Watcher(RecorderScripts.PostWebView2));
         _core.WebMessageReceived += (_, e) => Posted(TryText(e));

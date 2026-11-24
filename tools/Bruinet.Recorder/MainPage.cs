@@ -13,7 +13,7 @@ namespace Bruinet.Recorder;
 public sealed class MainPage : ContentPage
 {
     private readonly StartOptions _options;
-    private readonly WebViewPage _page = new();
+    private readonly WebViewPage _page;
     private readonly Scraper.Record.Recorder _recorder;
     private readonly CancellationTokenSource _closing = new();
 
@@ -46,6 +46,7 @@ public sealed class MainPage : ContentPage
     {
         ArgumentNullException.ThrowIfNull(options);
         _options = options;
+        _page = new WebViewPage { OsAccountProfile = options.UseOsAccount ? options.ProfileFolder : null };
         _recorder = new Scraper.Record.Recorder(_page);
         Content = Layout();
 
@@ -113,7 +114,8 @@ public sealed class MainPage : ContentPage
             return;
         await _page.AttachAsync(_view).ConfigureAwait(true);
         OpenFolder(_options.Folder);
-        await GoAsync(_options.Url ?? _settings.Address ?? StartAddress(), byHand: _options.Url is not null).ConfigureAwait(true);
+        var left = Scraper.Record.Recorder.Refusal(_projectFolder, _settings.Address) is null ? _settings.Address : null;
+        await GoAsync(_options.Url ?? left ?? StartAddress(), byHand: _options.Url is not null).ConfigureAwait(true);
         Refresh();
         _ = RecorderLink.ServeAsync(AnswerAsync, _closing.Token);
     }
@@ -255,7 +257,8 @@ public sealed class MainPage : ContentPage
 
     private void Close()
     {
-        if (_projectFolder is not null && _current.Length > 0)
+        // Where it was, when that is a page of the app: a step of a sign-in elsewhere cannot be opened again by its address.
+        if (_projectFolder is not null && Scraper.Record.Recorder.Refusal(_projectFolder, _current) is null)
             (_settings with { Address = _current }).Save(_projectFolder);
         _closing.Cancel();
     }

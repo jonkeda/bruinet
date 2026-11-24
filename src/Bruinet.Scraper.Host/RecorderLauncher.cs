@@ -62,13 +62,30 @@ public static class RecorderLauncher
         var beside = Path.Combine(AppContext.BaseDirectory, "recorder", name);
         if (File.Exists(beside))
             return beside;
+        // Up from this program: Bruinet's own repository, or a repository that holds Bruinet as a folder beside the
+        // app (an app's own Scraper project runs from its own build folder).
         for (var folder = new DirectoryInfo(AppContext.BaseDirectory); folder is not null; folder = folder.Parent)
         {
-            var built = Path.Combine(folder.FullName, "tools", "Bruinet.Recorder", "bin");
-            if (Directory.Exists(built))
-                return Directory.EnumerateFiles(built, name, SearchOption.AllDirectories).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
+            foreach (var root in new[] { folder.FullName }.Concat(Children(folder)))
+            {
+                var built = Path.Combine(root, "tools", "Bruinet.Recorder", "bin");
+                if (Directory.Exists(built) && Directory.EnumerateFiles(built, name, SearchOption.AllDirectories).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault() is { } found)
+                    return found;
+            }
         }
 
         return null;
+    }
+
+    private static IEnumerable<string> Children(DirectoryInfo folder)
+    {
+        try
+        {
+            return [.. folder.EnumerateDirectories().Select(child => child.FullName)];
+        }
+        catch (Exception e) when (e is UnauthorizedAccessException or IOException)
+        {
+            return []; // a folder that may not be listed holds no Bruinet for us
+        }
     }
 }

@@ -327,7 +327,9 @@ dialog a press led to, with from where and by which press, and the capture it ca
 
 Its settings are `recorder.settings.json` beside `scraper.config.md`: the address it closed on, the earlier
 addresses and the switch. Add it to `.gitignore` when the addresses are not for the repository. The sign-in is the
-webview's own, per `--as` name, under the user's profile.
+webview's own, per `--as` name, under the user's profile. `--as os` (Windows) is the one name that means something:
+the webview signs in with the account the person is signed in to Windows with, without asking, and shows the device
+as Edge does. It is for a site behind a company sign-in that asks for a managed device; leave it out otherwise.
 
 From a chat, with Bruinet's MCP server: `scrape_record_open` opens it (not recording), `scrape_record_start`,
 `scrape_record_stop` and `scrape_record_status` do what their names say, and `scrape_record_wait` answers when the
