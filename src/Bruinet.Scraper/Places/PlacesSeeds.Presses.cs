@@ -18,28 +18,37 @@ public static partial class PlacesSeeds
         ArgumentNullException.ThrowIfNull(project);
         foreach (var session in project.Sessions())
         {
+            // A press led to the last capture before the next press: the page as it settled, not as it was on the way
+            // (a frame still showing the page it leaves, a dialog still without its content).
+            RecordingEvent? last = null;
             RecordingEvent? before = null;
             RecordingEvent? press = null;
+            RecordingEvent? after = null;
             foreach (var e in session.Events)
             {
                 if (e.Kind == RecordingEvent.PressKind)
                 {
-                    press = e;
-                    continue;
+                    if (Reached(project, session, before, press, after) is { } place)
+                        yield return place;
+                    (before, press, after) = (last, e, null);
                 }
-
-                if (e.Kind != RecordingEvent.PageKind || e.Snapshot is null)
-                    continue;
-                if (press is not null && before is not null && project.IsOwnPage(e.Location) && Reached(project, session, before, press, e) is { } place)
-                    yield return place;
-                press = null;
-                before = e;
+                else if (e.Kind == RecordingEvent.PageKind && e.Snapshot is not null)
+                {
+                    last = e;
+                    if (press is not null)
+                        after = e;
+                }
             }
+
+            if (Reached(project, session, before, press, after) is { } reached)
+                yield return reached;
         }
     }
 
-    private static Place? Reached(ScrapeProject project, RecordingSession session, RecordingEvent before, RecordingEvent press, RecordingEvent after)
+    private static Place? Reached(ScrapeProject project, RecordingSession session, RecordingEvent? before, RecordingEvent? press, RecordingEvent? after)
     {
+        if (before is null || press is null || after is null || !project.IsOwnPage(after.Location))
+            return null;
         var parent = PlacesList.KeyAndPath(before.Location).Key;
         var pressedOn = session.ReadSnapshot(before);
         var inRow = press.Role == "row" || (press.Node >= 1 && press.Node <= pressedOn.Nodes.Count && InRow(pressedOn, pressedOn[press.Node]));
