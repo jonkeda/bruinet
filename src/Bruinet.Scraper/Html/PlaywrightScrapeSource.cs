@@ -651,6 +651,9 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
             var number = next++;
             global[local.N] = number;
             hosts.TryGetValue((frame, local.N), out var child);
+            FrameCapture? inner = null;
+            if (child is not null)
+                frames.TryGetValue(child, out inner);
             nodes.Add(new ScrapeNode
             {
                 Number = number,
@@ -661,11 +664,12 @@ public sealed class PlaywrightScrapeSource : IExploreSource, IPageCalls
                 Name = local.Name,
                 Text = local.Text,
                 Frame = child?.Url,
+                FrameTitle = inner?.Title is { Length: > 0 } title ? title : null,
                 Bounds = local.Box is { Length: 4 } b ? new ScrapeBounds(b[0], b[1], b[2], b[3]) : null,
                 Attributes = local.Attr ?? new Dictionary<string, string>(),
             });
             _numbers.Add((frame, local.N));
-            if (child is not null && frames.TryGetValue(child, out var inner))
+            if (child is not null && inner is not null)
                 next = Append(child, inner, next, number, frames, hosts, nodes);
             foreach (var c in children[local.N])
                 Visit(c, number);

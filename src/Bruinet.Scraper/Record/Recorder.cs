@@ -268,7 +268,7 @@ public sealed class Recorder : IAsyncDisposable
             return;
         var node = posted.Node >= 1 && posted.Node <= snapshot.Nodes.Count ? posted.Node : 0;
         var target = node > 0 ? PressTarget.Of(snapshot, snapshot[node], project.Config.TestIds) : null;
-        session.AddPress(snapshot.Location, posted.Name ?? "", posted.Role ?? "button", target, node, _at.AddTicks(1));
+        session.AddPress(ContentFrame.Location(snapshot), posted.Name ?? "", posted.Role ?? "button", target, node, _at.AddTicks(1));
         _at = _at.AddTicks(1);
         _presses++;
     }

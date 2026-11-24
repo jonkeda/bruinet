@@ -19,6 +19,7 @@ public static class Redactor
                 Name = Mask(n.Name, masks),
                 Text = Mask(n.Text, masks),
                 Frame = Mask(n.Frame, masks),
+                FrameTitle = Mask(n.FrameTitle, masks),
                 Attributes = n.Attributes.ToDictionary(a => a.Key, a => Mask(a.Value, masks)!, StringComparer.Ordinal),
             }).ToArray(),
         };

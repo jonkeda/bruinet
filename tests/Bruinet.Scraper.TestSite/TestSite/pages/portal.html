@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Portal</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <style>iframe { width: 100%; height: 900px; border: 0; }</style>
+</head>
+<body>
+  <!-- An app that shows every page inside a frame of its own site: the address bar stays on the portal while the
+       frame goes from page to page. What a person presses, and what it shows, is in the frame. -->
+  <header>
+    <h1 data-testid="portal-title">Portal</h1>
+  </header>
+  <iframe name="MainWindow" src="account.html" title="The page" data-testid="portal-main"></iframe>
+</body>
+</html>

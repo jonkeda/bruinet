@@ -105,6 +105,7 @@ public static class SnapshotFile
         Add(o, "name", node.Name);
         Add(o, "text", node.Text);
         Add(o, "frame", node.Frame);
+        Add(o, "frameTitle", node.FrameTitle);
         if (node.Bounds is { } b)
             o["box"] = new JsonArray(b.X, b.Y, b.Width, b.Height);
         if (node.Attributes.Count > 0)
@@ -135,6 +136,7 @@ public static class SnapshotFile
             Name = (string?)o["name"],
             Text = (string?)o["text"],
             Frame = (string?)o["frame"],
+            FrameTitle = (string?)o["frameTitle"],
             Bounds = box is { Count: 4 } ? new ScrapeBounds((int)box[0]!, (int)box[1]!, (int)box[2]!, (int)box[3]!) : null,
             Attributes = o["attr"]?.AsObject().ToDictionary(a => a.Key, a => (string?)a.Value ?? "", StringComparer.Ordinal)
                 ?? new Dictionary<string, string>(),

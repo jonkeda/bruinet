@@ -85,7 +85,10 @@ public sealed class RecordingSession
     {
         snapshot = Redactor.Apply(snapshot, _masks);
         var number = _events.Count + 1;
-        var baseName = $"{number:000}-{Slug.Of(pageName ?? snapshot.Title, "page")}";
+        // An app that shows each page in a frame under one address: the capture is named after the frame's page.
+        var location = ContentFrame.Location(snapshot);
+        var title = ContentFrame.Title(snapshot);
+        var baseName = $"{number:000}-{Slug.Of(pageName ?? title, "page")}";
         var snapshotFile = baseName + SnapshotFile.Extension;
         SnapshotFile.Write(snapshot, Path.Combine(Folder, snapshotFile));
         string? screenshotFile = null;
@@ -99,9 +102,10 @@ public sealed class RecordingSession
             Number = number,
             Kind = RecordingEvent.PageKind,
             At = snapshot.CapturedAt,
-            Location = snapshot.Location,
-            Page = PageKey.Of(snapshot.Location),
-            Title = snapshot.Title,
+            Location = location,
+            Shell = location == snapshot.Location ? null : snapshot.Location,
+            Page = PageKey.Of(location),
+            Title = title,
             Name = pageName,
             Snapshot = snapshotFile,
             Screenshot = screenshotFile,

@@ -149,6 +149,53 @@ public sealed class RecorderTests : IAsyncLifetime
         Assert.Equal(3, service.KeptPlaces(null, list).Count);
     }
 
+    // An app that shows its pages in a frame of its own site (Exact Online's MenuPortal): the address stays the
+    // portal's, and the press, the dialog and the next page are all inside the frame.
+    [Fact]
+    public async Task A_press_inside_a_frame_of_the_same_site_is_recorded_with_what_it_showed_and_where_the_frame_went()
+    {
+        var portal = _site.Url("pages/portal.html");
+        await _person.Page.GotoAsync(portal);
+        var frame = _person.Page.FrameLocator("[data-testid=portal-main]");
+        await frame.Locator("[data-testid=order-details]").WaitForAsync();
+        await _recorder.StartAsync(Folder, portal);
+        await PagesAsync(1);
+
+        await frame.Locator("[data-testid=order-details]").ClickAsync();
+        await PagesAsync(2);
+        await frame.Locator("[data-testid=order-close]").ClickAsync();
+        await PagesAsync(3);
+        await frame.Locator("[data-testid=nav-catalog]").ClickAsync();
+        await PagesAsync(4);
+        var session = await _recorder.StopAsync();
+
+        var events = session!.Events;
+        Assert.Equal(["page", "press", "page", "press", "page", "press", "page"], events.Select(e => e.Kind));
+        Assert.Equal(("Order details", "button", "css:[data-testid='order-details']"), (events[1].Name, events[1].Role, events[1].Target));
+        // The press points at the button's node, which is one of the frame's nodes in the capture of the whole page.
+        var before = session.ReadSnapshot(events[0]);
+        Assert.Equal("order-details", before[events[1].Node].Attribute("data-testid"));
+        // The dialog the press opened is in the capture after it.
+        Assert.Contains(session.ReadSnapshot(events[2]).Nodes, n => n.Type == "dialog" && n.Attributes.ContainsKey("open"));
+        // The link took the frame to another page; the portal's own address did not change.
+        var last = session.ReadSnapshot(events[^1]);
+        Assert.EndsWith("/pages/portal.html", last.Location, StringComparison.Ordinal);
+        Assert.EndsWith("/pages/catalog.html", last.Nodes.Single(n => n.Attribute("data-testid") == "portal-main").Frame, StringComparison.Ordinal);
+
+        // Each capture is named after the page the frame shows, with the portal as its shell: a page of its own.
+        Assert.Equal(["/pages/account.html", "/pages/account.html", "/pages/account.html", "/pages/account.html", "/pages/account.html", "/pages/account.html", "/pages/catalog.html"], events.Select(e => e.Page));
+        Assert.Equal(("Account", "Phase 14 Demo Site - Catalog"), (events[0].Title, events[^1].Title));
+        Assert.All(events.Where(e => e.Kind == RecordingEvent.PageKind), e => Assert.EndsWith("/pages/portal.html", e.Shell, StringComparison.Ordinal));
+
+        // So the places are the frame's pages, each reached by its press, and not parts of one portal page.
+        await using var service = new ScraperService(_solution, _ => throw new InvalidOperationException("Seeding opens no browser."));
+        var list = new PlacesList();
+        service.SeedPlaces(null, list);
+        Assert.Equal(PlaceKind.Dialog, list["/pages/account.html › Order details"]?.Kind);
+        Assert.Equal("'Catalog' on /pages/account.html", list["/pages/catalog.html"]?.Via);
+        Assert.Null(list["/pages/portal.html"]);
+    }
+
     [Fact]
     public async Task Waiting_ends_when_the_person_stops()
     {

@@ -33,6 +33,9 @@ public sealed record ScrapeNode
     /// <summary>For a frame's host (an <c>iframe</c>): the address of the document inside it, whose nodes are its children.</summary>
     public string? Frame { get; init; }
 
+    /// <summary>For a frame's host whose document was read: that document's title.</summary>
+    public string? FrameTitle { get; init; }
+
     /// <summary>The platform's other attributes, by name: in Html <c>id</c>, <c>class</c>, <c>name</c>, <c>type</c>, <c>placeholder</c> and every <c>data-*</c>.</summary>
     public IReadOnlyDictionary<string, string> Attributes { get; init; } = Empty;
 

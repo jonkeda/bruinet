@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   session gets the page captures and, new in `recording.json`, an event of kind `press` per press (`name`, `role`,
   `target`, `node`). `places seed` reads the presses into the list of places. A switch records fields' values as
   they are. Windows and Mac (AD-027, amended).
+- Scraper: a capture of an app that shows its pages in a frame under one address is named after the frame's address
+  and title when that frame is of the app's own site and covers most of the page (`ContentFrame`), with the outer
+  address as the event's `shell`; a frame's title is kept on its node (`frameTitle`).
 - **bruinet upgrade** (also the MCP tool `upgrade`): moves a project that uses Bruinet to the names this Bruinet has.
   It applies the rename rows of the changes list (`## Renames`: packages, namespaces, types, and names to keep) to
   the project's code, projects and the names a suite holds as text, then builds and gives the errors no rename

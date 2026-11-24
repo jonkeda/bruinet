@@ -40,6 +40,7 @@ public static class CapturedDocument
                 Name = node.Name,
                 Text = node.Text,
                 Frame = node.Frame,
+                FrameTitle = node.FrameTitle,
                 Bounds = node.Box is { Length: 4 } b ? new ScrapeBounds(b[0], b[1], b[2], b[3]) : null,
                 Attributes = node.Attr ?? new Dictionary<string, string>(),
             })],
@@ -48,5 +49,5 @@ public static class CapturedDocument
 
     private sealed record Document(string? Location, string? Title, Node[]? Nodes);
 
-    private sealed record Node(int N, int P, string? Kind, string? Type, string? Role, string? Name, string? Text, string? Frame, int[]? Box, Dictionary<string, string>? Attr);
+    private sealed record Node(int N, int P, string? Kind, string? Type, string? Role, string? Name, string? Text, string? Frame, string? FrameTitle, int[]? Box, Dictionary<string, string>? Attr);
 }

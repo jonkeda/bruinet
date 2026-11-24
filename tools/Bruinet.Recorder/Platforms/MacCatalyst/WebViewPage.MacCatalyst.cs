@@ -16,7 +16,7 @@ public sealed partial class WebViewPage
         _native = view.Handler?.PlatformView as WKWebView
             ?? throw new InvalidOperationException("The webview has no WKWebView yet: attach once it is on the page.");
         var content = _native.Configuration.UserContentController;
-        content.AddUserScript(new WKUserScript(new NSString(RecorderScripts.Watcher(RecorderScripts.PostWebKit)), WKUserScriptInjectionTime.AtDocumentStart, isForMainFrameOnly: true));
+        content.AddUserScript(new WKUserScript(new NSString(RecorderScripts.Watcher(RecorderScripts.PostWebKit)), WKUserScriptInjectionTime.AtDocumentStart, isForMainFrameOnly: false));
         content.AddScriptMessageHandler(new Listener(this), "bruinet");
         // The address, also when a single-page app only wrote it: WKWebView's URL is observable.
         _addressObserver = _native.AddObserver("URL", NSKeyValueObservingOptions.New, _ => At(_native.Url?.AbsoluteString));

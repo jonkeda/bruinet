@@ -18,6 +18,11 @@
         return (name.startsWith('data-') && !scoped.test(name)) || (name.startsWith('aria-') && name !== 'aria-label') || keptNames.has(name);
     }
 
+    // Told by its namespace: an element of a frame is of that frame's own kind, and no instance of this one's.
+    function isSvg(el) {
+        return el.namespaceURI === 'http://www.w3.org/2000/svg';
+    }
+
     function ownText(el) {
         let text = '';
         for (const child of el.childNodes)
@@ -57,7 +62,7 @@
             type: el.tagName.toLowerCase(),
             role: el.getAttribute('role'),
             name: el.getAttribute('aria-label'),
-            text: el instanceof SVGElement ? null : ownText(el),
+            text: isSvg(el) ? null : ownText(el),
             box: rect.width || rect.height ? [Math.round(rect.x), Math.round(rect.y), Math.round(rect.width), Math.round(rect.height)] : null,
             attr: Object.keys(attr).length ? attr : null,
         };
@@ -69,12 +74,13 @@
                 try { inner = el.contentDocument; } catch { /* another site's frame: not ours to read */ }
                 if (inner && inner.documentElement) {
                     node.frame = inner.location.href;
+                    node.frameTitle = inner.title || undefined;
                     capture(inner.documentElement, number);
                 }
             }
             return;
         }
-        if (el instanceof SVGElement) return; // an icon is one node, not its paths
+        if (isSvg(el)) return; // an icon is one node, not its paths
         if (el.shadowRoot) {
             const root = add({ p: number, kind: 'shadow-root' }, el.shadowRoot);
             for (const child of el.shadowRoot.children) capture(child, root);

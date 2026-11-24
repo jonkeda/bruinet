@@ -27,6 +27,12 @@ public sealed record RecordingEvent
     /// <summary>Where the app was.</summary>
     public string Location { get; init; } = "";
 
+    /// <summary>
+    /// For a page shown in a frame of an app that keeps one address (<see cref="Snapshots.ContentFrame"/>): that
+    /// address, the shell's. <see cref="Location"/>, <see cref="Page"/> and <see cref="Title"/> are then the frame's.
+    /// </summary>
+    public string? Shell { get; init; }
+
     /// <summary>The page's key (<see cref="PageKey"/>).</summary>
     public string Page { get; init; } = "";
 

@@ -337,6 +337,12 @@ person presses Stop, so the model goes on by itself. From a shell the same: `bru
 `stop`, `wait --minutes 10`. None of them presses or types in the page. The `record-app` skill is the round for an
 agent: open, say where to go, wait, seed, draft.
 
+An app that keeps one address and shows each page in a frame (a portal with its pages in a `MainWindow`) is recorded
+as its pages: presses and changes inside a frame of the app's own site are seen, and a capture is named after the
+frame's address and title when that frame covers most of the page, with the portal's address beside it as `shell`.
+A widget in a frame (a payment box, an editor) covers less, and the page keeps its own name. This holds for every
+recording, Explore's too.
+
 What it does not do: hold a write back (what the person presses, happens), record the page's calls, or read a frame
 of another site or a closed shadow root. On a Mac the page is shown by Safari's engine.
 
