@@ -101,19 +101,47 @@ public sealed class RecorderTests : IAsyncLifetime
         await _person.Page.FillAsync("[data-testid=profile-name]", "Ada");
         await _person.Page.ClickAsync("[data-testid=tab-history]");
         await PagesAsync(2);
+        var without = await _recorder.StopAsync();
 
         await _recorder.SetRecordValuesAsync(true);
-        await _person.Page.ClickAsync("[data-testid=tab-overview]");
-        await PagesAsync(3);
+        await _recorder.StartAsync(Folder, Account);
+        await PagesAsync(1);
+        var with = await _recorder.StopAsync();
+
+        static string? Value(Bruinet.Scraper.Snapshots.ScrapeSnapshot capture) => capture.Nodes.Single(n => n.Attribute("data-testid") == "profile-name").Attribute("value");
+        Assert.All(without!.Events.Where(e => e.Snapshot is not null).Select(without.ReadSnapshot), capture => Assert.Null(Value(capture)));
+        Assert.Equal("Ada", Value(with!.ReadSnapshot(with.Events.Single())));
+        // Typing is no event: only the presses and the pages are.
+        Assert.DoesNotContain(without.Events, e => e.Kind is not (RecordingEvent.PageKind or RecordingEvent.PressKind));
+    }
+
+    // A page that goes on changing with no press between (its data arrives, a person types with values on) is one
+    // capture, the page as it ended up: not one for every time it went still.
+    [Fact]
+    public async Task Between_two_presses_there_is_one_capture_the_page_as_it_ended_up()
+    {
+        await _recorder.StartAsync(Folder, Account);
+        await PagesAsync(1);
+
+        await _person.Page.EvaluateAsync("document.querySelector('[data-testid=account-title]').textContent = 'Loaded'");
+        await UntilAsync(() => Title() == "Loaded");
+        await _person.Page.EvaluateAsync("document.querySelector('[data-testid=account-title]').textContent = 'Loaded twice'");
+        await UntilAsync(() => Title() == "Loaded twice");
+        await _person.Page.ClickAsync("[data-testid=tab-history]");
+        await PagesAsync(2);
         var session = await _recorder.StopAsync();
 
-        var captures = session!.Events.Where(e => e.Snapshot is not null).Select(session.ReadSnapshot).ToList();
-        string? Value(int capture) => captures[capture].Nodes.Single(n => n.Attribute("data-testid") == "profile-name").Attribute("value");
-        Assert.Null(Value(0));
-        Assert.Null(Value(1));
-        Assert.Equal("Ada", Value(2));
-        // Typing is no event: only the presses and the pages are.
-        Assert.DoesNotContain(session.Events, e => e.Kind is not (RecordingEvent.PageKind or RecordingEvent.PressKind));
+        Assert.Equal(["page", "press", "page"], session!.Events.Select(e => e.Kind));
+        Assert.Equal([1, 2, 3], session.Events.Select(e => e.Number));
+        Assert.Equal(2, Directory.GetFiles(session.Folder, "*.nodes.jsonl").Length);
+        // The press points into the one capture before it, which is the page as it was when pressed.
+        var before = session.ReadSnapshot(session.Events[0]);
+        Assert.Equal("Loaded twice", before.Nodes.Single(n => n.Attribute("data-testid") == "account-title").Text);
+        Assert.Equal("tab-history", before[session.Events[1].Node].Attribute("data-testid"));
+
+        string? Title() => _recorder.Session is { Events.Count: 1 } now
+            ? now.ReadSnapshot(now.Events[0]).Nodes.Single(n => n.Attribute("data-testid") == "account-title").Text
+            : null;
     }
 
     [Fact]
@@ -208,12 +236,14 @@ public sealed class RecorderTests : IAsyncLifetime
     }
 
     // Waits for what the Recorder says it wrote: the watcher posts when the page went still, not when a click returned.
-    private async Task PagesAsync(int pages)
+    private Task PagesAsync(int pages) => UntilAsync(() => _recorder.Pages >= pages, () => $"The recording has {_recorder.Pages} pages after 30 s, not {pages}.");
+
+    private async Task UntilAsync(Func<bool> holds, Func<string>? otherwise = null)
     {
         var reached = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         void Check(object? sender, EventArgs e)
         {
-            if (_recorder.Pages >= pages)
+            if (holds())
                 reached.TrySetResult();
         }
 
@@ -225,7 +255,7 @@ public sealed class RecorderTests : IAsyncLifetime
         }
         catch (TimeoutException)
         {
-            Assert.Fail($"The recording has {_recorder.Pages} pages after 30 s, not {pages}. Problem: {_recorder.Problem ?? "none"}.");
+            Assert.Fail($"{otherwise?.Invoke() ?? "What was waited for did not come in 30 s."} Problem: {_recorder.Problem ?? "none"}.");
         }
         finally
         {

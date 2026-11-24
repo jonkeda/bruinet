@@ -81,9 +81,21 @@ public sealed class RecordingSession
     /// <param name="snapshot">The page as captured.</param>
     /// <param name="screenshot">A PNG of it, or null.</param>
     /// <param name="pageName">What the user called the page; its title when null.</param>
-    public RecordingEvent AddPage(ScrapeSnapshot snapshot, byte[]? screenshot = null, string? pageName = null)
+    /// <param name="insteadOfLast">
+    /// True when this capture is the same page as the session's last event, read again later (the Recorder: the page
+    /// changed and no press came between): it takes that event's place, so one capture stands for the page as it
+    /// ended up. Without such a last event it is added as any other.
+    /// </param>
+    public RecordingEvent AddPage(ScrapeSnapshot snapshot, byte[]? screenshot = null, string? pageName = null, bool insteadOfLast = false)
     {
         snapshot = Redactor.Apply(snapshot, _masks);
+        if (insteadOfLast && _events.Count > 0 && _events[^1] is { Kind: RecordingEvent.PageKind } last && last.Page == PageKey.Of(ContentFrame.Location(snapshot)))
+        {
+            foreach (var file in new[] { last.Snapshot, last.Screenshot }.Where(file => file is not null))
+                File.Delete(Path.Combine(Folder, file!));
+            _events.RemoveAt(_events.Count - 1);
+        }
+
         var number = _events.Count + 1;
         // An app that shows each page in a frame under one address: the capture is named after the frame's page.
         var location = ContentFrame.Location(snapshot);

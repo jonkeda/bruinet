@@ -313,7 +313,8 @@ Every control is in the column on the left:
 
 What is recorded, between Start and Stop, is a session like any other (`Recordings/<day>-record/`): a page capture
 when recording starts and whenever the page shows something else after a step, and in `recording.json` an event of
-kind `press` per press, before the page it led to:
+kind `press` per press, before the page it led to. Between two presses there is one capture: a page that goes on
+changing with no press between (its data arrives, a person types) is kept as it ended up:
 
 ```json
 { "number": 4, "kind": "press", "at": "2026-11-24T10:12:03+00:00", "location": "https://app.example.com/project/view?id=12",

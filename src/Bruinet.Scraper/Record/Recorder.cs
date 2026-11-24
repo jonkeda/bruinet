@@ -24,6 +24,7 @@ public sealed class Recorder : IAsyncDisposable
     private ScrapeProject? _project;
     private RecordingSession? _session;
     private string? _lastHash;
+    private bool _pressedSinceCapture;
     private DateTimeOffset _at;
     private bool _values;
     private int _pages;
@@ -255,13 +256,18 @@ public sealed class Recorder : IAsyncDisposable
         if (!Uri.TryCreate(snapshot.Location, UriKind.Absolute, out var location) || !MayRecord(project, location))
             return;
 
-        // The same page as the last capture, read again: one capture. A press points at a node of that one.
+        // The same page as the last capture, read again: one capture. A press points at a node of that one. A page
+        // that changed with no press between (its data came, a person typed) takes the last capture's place: between
+        // two presses there is one capture, the page as it ended up.
         var hash = SnapshotFile.ContentHash(snapshot);
         if (hash != _lastHash)
         {
-            session.AddPage(snapshot);
+            var events = session.Events.Count;
+            session.AddPage(snapshot, insteadOfLast: _lastHash is not null && !_pressedSinceCapture);
             _lastHash = hash;
-            _pages++;
+            _pressedSinceCapture = false;
+            if (session.Events.Count > events)
+                _pages++;
         }
 
         if (posted.Kind != "press")
@@ -271,6 +277,7 @@ public sealed class Recorder : IAsyncDisposable
         session.AddPress(ContentFrame.Location(snapshot), posted.Name ?? "", posted.Role ?? "button", target, node, _at.AddTicks(1));
         _at = _at.AddTicks(1);
         _presses++;
+        _pressedSinceCapture = true;
     }
 
     private static bool MayRecord(ScrapeProject project, Uri location) =>
