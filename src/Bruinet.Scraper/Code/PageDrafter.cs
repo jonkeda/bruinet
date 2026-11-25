@@ -85,11 +85,19 @@ public static class PageDrafter
         var basis = Basis(page);
         var blazor = project.Config.Platform == "blazor";
         static string Key(ControlSuggestion s) => $"{s.Scope}|{s.Locator}";
-        var opened = ControlAdvisor.Suggest(index.Read(basis), project.Config.TestIds, blazor);
+        // A page shown in a frame of a shell is the frame's content; the shell is what is around the frame.
+        var inFrame = ContentFrame.Of(index.Read(basis)) is { } shown && page.Key == PageKey.Of(shown.Frame!);
+        IReadOnlyList<ControlSuggestion> Suggest(PageCapture capture)
+        {
+            var read = index.Read(capture);
+            return OfThePage(read, ControlAdvisor.Suggest(read, project.Config.TestIds, blazor), page.Key);
+        }
+
+        var opened = Suggest(basis);
         var have = opened.Select(Key).ToHashSet(StringComparer.Ordinal);
         // Verify opens the page as it opens: a member only a click shows would not be found there.
         var afterClick = page.Captures.Where(c => c.Session == basis.Session && c != basis)
-            .SelectMany(c => ControlAdvisor.Suggest(index.Read(c), project.Config.TestIds, blazor).Where(s => s.Stable).Select(s => (Capture: c, Suggestion: s)))
+            .SelectMany(c => Suggest(c).Where(s => s.Stable).Select(s => (Capture: c, Suggestion: s)))
             .Where(x => !have.Contains(Key(x.Suggestion)))
             .DistinctBy(x => Key(x.Suggestion))
             .Select(x => new ShownAfter(x.Suggestion, x.Capture.Event.DisplayName))
@@ -101,7 +109,7 @@ public static class PageDrafter
         bool Personal(ControlSuggestion s) => Redactor.Mask(s.Locator, masks) != s.Locator || Redactor.Mask(s.Name, masks) != s.Name
             || s.Locator.Contains('{') && masks.Any(m => s.Locator.Contains(m.Replacement, StringComparison.Ordinal));
         var personal = opened.Count(Personal);
-        opened = opened.Where(s => !Personal(s)).ToList();
+        opened = [.. opened.Where(s => !Personal(s))];
 
         // What a part already covers is left out and named, so the page uses the part: the project's own controls and
         // components (by their header's signature), a control library's elements (## Control libraries), a table's header.
@@ -114,7 +122,7 @@ public static class PageDrafter
         var covered = opened.Select(s => (Suggestion: s, By: CoveredBy(snapshot, snapshot[s.Node], parts, project.Config.ControlLibraries)))
             .Where(x => x.By is not null)
             .ToArray();
-        opened = opened.Where(s => covered.All(c => c.Suggestion != s)).ToList();
+        opened = [.. opened.Where(s => covered.All(c => c.Suggestion != s))];
         var members = Unique(opened.Where(m => m.Stable && !Containers.Contains(m.Control)).ToList(), className);
         // A name the person's part already has is theirs: the draft leaves it out rather than not build.
         var own = PersonsMembers(code, className);
@@ -130,7 +138,24 @@ public static class PageDrafter
             .ToArray();
         if (taken.Length > 0)
             coveredLines = [.. coveredLines, $"{className}.cs (your part, by name): {string.Join(", ", taken.Select(m => $"{m.Name} ({m.Control})"))}"];
-        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines, asPart), members, unstable) { AfterClick = afterClick };
+        return new PageDraft(page.Key, className, path, Code(ns, className, header, members, unstable, containers, afterClick, blazor, personal, coveredLines, asPart, inFrame), members, unstable) { AfterClick = afterClick };
+    }
+
+    // What of a capture is this page's: for a page shown in a frame of a shell (ContentFrame), the frame and what is
+    // in it; for the shell itself, the frame and what is around it; for any other page, everything.
+    private static IReadOnlyList<ControlSuggestion> OfThePage(ScrapeSnapshot snapshot, IReadOnlyList<ControlSuggestion> suggestions, string pageKey)
+    {
+        if (ContentFrame.Of(snapshot) is not { } frame)
+            return suggestions;
+        var inside = new HashSet<int>();
+        foreach (var node in snapshot.Nodes)
+        {
+            if (node.Parent == frame.Number || inside.Contains(node.Parent))
+                inside.Add(node.Number);
+        }
+
+        var isContent = pageKey == PageKey.Of(frame.Frame!);
+        return [.. suggestions.Where(s => s.Node == frame.Number || inside.Contains(s.Node) == isContent)];
     }
 
     // What covers a node, if anything: a table's header, a part of the project (by signature, the node or an ancestor,
@@ -174,7 +199,7 @@ public static class PageDrafter
         }
     }
 
-    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor, int personal = 0, IReadOnlyList<string>? covered = null, bool asPart = false)
+    private static string Code(string pageNamespace, string className, ScrapedHeader header, IReadOnlyList<ControlSuggestion> members, IReadOnlyList<ControlSuggestion> unstable, IReadOnlyList<ControlSuggestion> containers, IReadOnlyList<ShownAfter> afterClick, bool blazor, int personal = 0, IReadOnlyList<string>? covered = null, bool asPart = false, bool inFrame = false)
     {
         var baseClass = blazor ? "BlazorPageObjectBase" : "PageObjectBase";
         var namespaces = new SortedSet<string>(StringComparer.Ordinal) { "Bruinet.Core.Locators", "Bruinet.Html.Interfaces", blazor ? "Bruinet.Blazor.Pages" : "Bruinet.Html.Pages" };
@@ -193,11 +218,12 @@ public static class PageDrafter
         code.AppendLine();
         code.AppendLine(CultureInfo.InvariantCulture, $"namespace {pageNamespace};");
         code.AppendLine();
-        code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}: drafted by the Scraper from a recording. Draft again to update{(asPart ? $"; add to the other part, {className}.cs" : "")}.</summary>");
+        code.AppendLine(CultureInfo.InvariantCulture, $"/// <summary>The page {Xml(header.Page!)}{(inFrame ? ", shown in a frame of the app's shell" : "")}: drafted by the Scraper from a recording. Draft again to update{(asPart ? $"; add to the other part, {className}.cs" : "")}.</summary>");
         // The page's path and hash route, so it can open itself and know it is open. A path with an id
         // (/orders/{id}) is passed too: the page knows it is open on any record, and does not open itself.
         var pagePath = header.Page!;
-        var urlArgument = pagePath.Length > 0 ? $", \"{pagePath}\"" : string.Empty;
+        // A page in a frame of a shell has the shell's address in the address bar: it does not open itself by its own.
+        var urlArgument = pagePath.Length > 0 && !inFrame ? $", \"{pagePath}\"" : string.Empty;
         code.AppendLine(CultureInfo.InvariantCulture, $"public sealed {(asPart ? "partial " : "")}class {className}(IHtmlTestContext context) : {baseClass}<{className}>(context{urlArgument})");
         code.AppendLine("{");
         for (var i = 0; i < members.Count; i++)

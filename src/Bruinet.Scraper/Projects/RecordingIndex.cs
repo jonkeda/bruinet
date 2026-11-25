@@ -24,7 +24,11 @@ public sealed class RecordingIndex
         foreach (var session in sessions)
         {
             bySession[session.Id] = session;
-            captures.AddRange(session.Events.Where(e => e.Kind == RecordingEvent.PageKind && e.Snapshot is not null).Select(e => new PageCapture(session.Id, e)));
+            var captured = session.Events.Where(e => e.Kind == RecordingEvent.PageKind && e.Snapshot is not null).ToList();
+            captures.AddRange(captured.Select(e => new PageCapture(session.Id, e)));
+            // An app that shows its pages in a frame under one address: that address is a page too, the shell around
+            // them (its menu, its header). Each capture of a page in it is also a capture of the shell.
+            captures.AddRange(captured.Where(e => e.Shell is not null).Select(e => new PageCapture(session.Id, e with { Location = e.Shell!, Page = PageKey.Of(e.Shell!), Title = "", Shell = null })));
         }
         var pages = captures
             .GroupBy(c => c.Event.Page, StringComparer.Ordinal)
