@@ -281,3 +281,5 @@ MauiHeadless.Hosting.TestDispatcher.FollowsWallClock.get -> bool
 MauiHeadless.Hosting.TestDispatcher.FollowsWallClock.set -> void
 MauiHeadless.MauiTestContextOptions.TimeFollowsWallClock.get -> bool
 MauiHeadless.MauiTestContextOptions.TimeFollowsWallClock.set -> void
+MauiHeadless.MauiTestContext.RaiseResumed(Microsoft.Maui.Controls.Window! window) -> void
+MauiHeadless.MauiTestContext.RaiseStopped(Microsoft.Maui.Controls.Window! window) -> void

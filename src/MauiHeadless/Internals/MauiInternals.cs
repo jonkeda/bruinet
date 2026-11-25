@@ -41,6 +41,12 @@ internal static class MauiInternals
     public static void AddWindow(Application application, Window window)
         => AddWindowMethod.Value.Invoke(application, [window]);
 
+    /// <summary>The window's lifecycle as the platform raises it when the app returns to the foreground.</summary>
+    public static void RaiseResumed(Window window) => ((IWindow)window).Resumed();
+
+    /// <summary>The window's lifecycle as the platform raises it when the app goes to the background.</summary>
+    public static void RaiseStopped(Window window) => ((IWindow)window).Stopped();
+
     /// <summary>Closes <paramref name="window"/> in <paramref name="application"/>.</summary>
     public static void RemoveWindow(Application application, Window window)
         => RemoveWindowMethod.Value.Invoke(application, [window]);

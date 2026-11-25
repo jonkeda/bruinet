@@ -28,6 +28,19 @@ public sealed class ClearWindowTests : IDisposable
     public void Dispose() => _ctx.Dispose();
 
     [Fact]
+    public void Resumed_and_stopped_reach_the_window_as_the_platform_raises_them()
+    {
+        var events = new List<string>();
+        _driver.Window.Resumed += (_, _) => events.Add("resumed");
+        _driver.Window.Stopped += (_, _) => events.Add("stopped");
+
+        _driver.RaiseStopped();
+        _driver.RaiseResumed();
+
+        Assert.Equal(["stopped", "resumed"], events);
+    }
+
+    [Fact]
     public void A_back_with_an_alert_open_closes_the_alert_and_keeps_the_page()
     {
         _push.Click();

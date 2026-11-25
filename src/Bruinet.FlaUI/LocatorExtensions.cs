@@ -70,6 +70,10 @@ public static class LocatorExtensions
         };
     }
 
+    /// <summary>Whether the locator names an element by its id, which the Name fallback of <see cref="ToCondition"/> also matches.</summary>
+    internal static bool IsIdentity(this Locator locator)
+        => locator.Strategy is LocatorStrategy.AutomationId or LocatorStrategy.AccessibilityId or LocatorStrategy.Id;
+
     private static ControlType ParseControlType(string value)
     {
         if (Enum.TryParse<ControlType>(value, ignoreCase: true, out var controlType))

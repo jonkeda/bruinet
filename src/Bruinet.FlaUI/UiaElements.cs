@@ -66,7 +66,15 @@ public static class UiaElements
     public static string InstanceKey(AutomationElement element)
     {
         ArgumentNullException.ThrowIfNull(element);
-        return string.Join('.', element.Properties.RuntimeId.Value);
+        try
+        {
+            return string.Join('.', element.Properties.RuntimeId.Value);
+        }
+        catch (global::FlaUI.Core.Exceptions.PropertyNotSupportedException error)
+        {
+            // Every live element has a runtime id; a removed one reports the property as not supported.
+            throw new global::FlaUI.Core.Exceptions.ElementNotAvailableException(error);
+        }
     }
 
     /// <summary>
@@ -112,8 +120,19 @@ public static class UiaElements
         ArgumentNullException.ThrowIfNull(app);
         ArgumentNullException.ThrowIfNull(within);
         ArgumentNullException.ThrowIfNull(locator);
-        return FindFirstPastWebViews(app, within, TreeScope.Descendants, locator.ToCondition(app.ConditionFactory));
+        var found = FindFirstPastWebViews(app, within, TreeScope.Descendants, locator.ToCondition(app.ConditionFactory));
+        if (found is not null && locator.IsIdentity() && !HasAutomationId(found, locator.Value)
+            && FindFirstPastWebViews(app, within, TreeScope.Descendants, app.ConditionFactory.ByAutomationId(locator.Value)) is { } byId)
+        {
+            // The Name fallback found a title or caption first; the element that carries the id is the one asked for.
+            return byId;
+        }
+
+        return found;
     }
+
+    private static bool HasAutomationId(AutomationElement element, string value)
+        => string.Equals(element.Properties.AutomationId.ValueOrDefault, value, StringComparison.Ordinal);
 
     /// <summary>Every descendant of <paramref name="within"/> matching <paramref name="locator"/> now. One attempt.</summary>
     /// <param name="app">The app, for its conditions.</param>
@@ -126,6 +145,12 @@ public static class UiaElements
         ArgumentNullException.ThrowIfNull(locator);
         var found = new List<AutomationElement>();
         FindAllPastWebViews(app, within, TreeScope.Descendants, locator.ToCondition(app.ConditionFactory), found);
+        if (locator.IsIdentity() && found.Any(element => HasAutomationId(element, locator.Value)))
+        {
+            // Elements found only by the Name fallback (a title or caption) stay out when the id itself matched.
+            return found.Where(element => HasAutomationId(element, locator.Value)).ToList();
+        }
+
         return found;
     }
 

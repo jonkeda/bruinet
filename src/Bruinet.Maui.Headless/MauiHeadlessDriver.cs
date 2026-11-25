@@ -203,6 +203,25 @@ public sealed class MauiHeadlessDriver : IMauiDriver
     public void ResetAppState() => ClearWindow();
 
     /// <summary>
+    /// Tells the app it came back to the foreground, as the platform does when a user returns to it: the
+    /// window raises <c>Resumed</c> and the application's <c>OnResume</c> runs. A device run reaches the same
+    /// point by sending the app to the background and back.
+    /// </summary>
+    public void RaiseResumed()
+    {
+        TestContext.RaiseResumed(Window);
+    }
+
+    /// <summary>
+    /// Tells the app it went to the background: the window raises <c>Stopped</c> and the application's
+    /// <c>OnSleep</c> runs.
+    /// </summary>
+    public void RaiseStopped()
+    {
+        TestContext.RaiseStopped(Window);
+    }
+
+    /// <summary>
     /// Clears what a test left in the window: focus taken away, its dialogs dismissed (top first), its
     /// modal pages popped, the navigation back at its root, and the app's queued work run. The app's own
     /// state (its services, view models, data) stays: that is the fixture's to reset.

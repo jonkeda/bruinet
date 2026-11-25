@@ -154,6 +154,28 @@ public sealed class MauiTestContext : IDisposable
     /// <summary>Moves the virtual clock forward: delayed work and timers due by then run, in order.</summary>
     public void AdvanceTime(TimeSpan by) => Dispatcher.AdvanceTime(by);
 
+    /// <summary>
+    /// Raises what the platform raises when the app returns to the foreground: <paramref name="window"/>'s
+    /// <c>Resumed</c> event and its application's <c>OnResume</c>. Runs on the dispatcher, as the platform does.
+    /// </summary>
+    /// <param name="window">A window this context rendered.</param>
+    public void RaiseResumed(Window window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        Dispatcher.Run(() => MauiInternals.RaiseResumed(window));
+    }
+
+    /// <summary>
+    /// Raises what the platform raises when the app goes to the background: <paramref name="window"/>'s
+    /// <c>Stopped</c> event and its application's <c>OnSleep</c>. Runs on the dispatcher.
+    /// </summary>
+    /// <param name="window">A window this context rendered.</param>
+    public void RaiseStopped(Window window)
+    {
+        ArgumentNullException.ThrowIfNull(window);
+        Dispatcher.Run(() => MauiInternals.RaiseStopped(window));
+    }
+
     /// <summary>The context that rendered <paramref name="element"/>, or null when none did.</summary>
     public static MauiTestContext? Of(Element element)
     {
